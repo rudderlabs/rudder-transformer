@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+  transformer:
+    build:
+      context: .
+    ports:
+      - "9090:9090"

@@ -8,7 +8,7 @@ permissions:
     pattern: "**"
     owner: ubuntu
     group: ubuntu
-    mode: 664
+    mode: 755
 
 hooks:
   # AfterInstall:

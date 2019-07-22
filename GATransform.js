@@ -5,46 +5,46 @@ var http = require('http');
 var qs = require('querystring');
 
 //Load and parse configurations for different messages
-var pageviewConfigFile = fs.readFileSync('data/GAPageViewConfig.json');
+var pageviewConfigFile = fs.readFileSync('GAPageViewConfig.json');
 var pageviewConfigJson = JSON.parse(pageviewConfigFile);
 
-var screenviewConfigFile = fs.readFileSync('data/GAScreenViewConfig.json');
+var screenviewConfigFile = fs.readFileSync('GAScreenViewConfig.json');
 var screenviewConfigJson = JSON.parse(screenviewConfigFile);
 
-var nonEcomGenericEventConfigFile = fs.readFileSync('data/GANonEComEventConfig.json');
+var nonEcomGenericEventConfigFile = fs.readFileSync('GANonEComEventConfig.json');
 var nonEcomGenericEventConfigJson = JSON.parse(nonEcomGenericEventConfigFile);
 
-var promotionEventConfigFile = fs.readFileSync('data/GAPromotionEventConfig.json');
+var promotionEventConfigFile = fs.readFileSync('GAPromotionEventConfig.json');
 var promotionEventConfigJson = JSON.parse(promotionEventConfigFile);
 
-var paymentRelatedEventConfigFile = fs.readFileSync('data/GAPaymentRelatedEventConfig.json');
+var paymentRelatedEventConfigFile = fs.readFileSync('GAPaymentRelatedEventConfig.json');
 var paymentRelatedEventConfigJson = JSON.parse(paymentRelatedEventConfigFile);
 
-var refundEventConfigFile = fs.readFileSync('data/GARefundEventConfig.json');
+var refundEventConfigFile = fs.readFileSync('GARefundEventConfig.json');
 var refundEventConfigJson = JSON.parse(refundEventConfigFile);
 
 //Single configuration file for all product list related events
-var productListEventConfigFile = fs.readFileSync('data/GAProductListEventConfig.json');
+var productListEventConfigFile = fs.readFileSync('GAProductListEventConfig.json');
 var productListEventConfigJson = JSON.parse(productListEventConfigFile);
 
-var transactionEventConfigFile = fs.readFileSync('data/GATransactionEventConfig.json');
+var transactionEventConfigFile = fs.readFileSync('GATransactionEventConfig.json');
 var transactionEventConfigJson = JSON.parse(transactionEventConfigFile);
 
 //Use single config file for both Product Click and View events since directly mapped
 //attributes remain the same
-var productEventConfigFile = fs.readFileSync('data/GAProductEventConfig.json');
+var productEventConfigFile = fs.readFileSync('GAProductEventConfig.json');
 var productEventConfigJson = JSON.parse(productEventConfigFile);
 
 //Similarly single sharing event config
-var sharingEventConfigFile = fs.readFileSync('data/GASharingEventConfig.json');
+var sharingEventConfigFile = fs.readFileSync("GASharingEventConfig.json");
 var sharingEventConfigJson = JSON.parse(sharingEventConfigFile);
 
 //Config file for generic e-commerce events
-var ecomGenericEventConfigFile = fs.readFileSync('data/GAEComGenericEventConfig.json');
+var ecomGenericEventConfigFile = fs.readFileSync("GAEComGenericEventConfig.json");
 var ecomGenericEventConfigJson = JSON.parse(ecomGenericEventConfigFile);
 
 //Load customer credentials
-var customerCredentialsConfig = fs.readFileSync('data/GACustomerCredentialsConfig.json');
+var customerCredentialsConfig = fs.readFileSync('GACustomerCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
 
 //Helper function for generating desired JSON from Map

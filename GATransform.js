@@ -5,46 +5,46 @@ var http = require('http');
 var qs = require('querystring');
 
 //Load and parse configurations for different messages
-var pageviewConfigFile = fs.readFileSync('GAPageViewConfig.json');
+var pageviewConfigFile = fs.readFileSync('data/GAPageViewConfig.json');
 var pageviewConfigJson = JSON.parse(pageviewConfigFile);
 
-var screenviewConfigFile = fs.readFileSync('GAScreenViewConfig.json');
+var screenviewConfigFile = fs.readFileSync('data/GAScreenViewConfig.json');
 var screenviewConfigJson = JSON.parse(screenviewConfigFile);
 
-var nonEcomGenericEventConfigFile = fs.readFileSync('GANonEComEventConfig.json');
+var nonEcomGenericEventConfigFile = fs.readFileSync('data/GANonEComEventConfig.json');
 var nonEcomGenericEventConfigJson = JSON.parse(nonEcomGenericEventConfigFile);
 
-var promotionEventConfigFile = fs.readFileSync('GAPromotionEventConfig.json');
+var promotionEventConfigFile = fs.readFileSync('data/GAPromotionEventConfig.json');
 var promotionEventConfigJson = JSON.parse(promotionEventConfigFile);
 
-var paymentRelatedEventConfigFile = fs.readFileSync('GAPaymentRelatedEventConfig.json');
+var paymentRelatedEventConfigFile = fs.readFileSync('data/GAPaymentRelatedEventConfig.json');
 var paymentRelatedEventConfigJson = JSON.parse(paymentRelatedEventConfigFile);
 
-var refundEventConfigFile = fs.readFileSync('GARefundEventConfig.json');
+var refundEventConfigFile = fs.readFileSync('data/GARefundEventConfig.json');
 var refundEventConfigJson = JSON.parse(refundEventConfigFile);
 
 //Single configuration file for all product list related events
-var productListEventConfigFile = fs.readFileSync('GAProductListEventConfig.json');
+var productListEventConfigFile = fs.readFileSync('data/GAProductListEventConfig.json');
 var productListEventConfigJson = JSON.parse(productListEventConfigFile);
 
-var transactionEventConfigFile = fs.readFileSync('GATransactionEventConfig.json');
+var transactionEventConfigFile = fs.readFileSync('data/GATransactionEventConfig.json');
 var transactionEventConfigJson = JSON.parse(transactionEventConfigFile);
 
 //Use single config file for both Product Click and View events since directly mapped
 //attributes remain the same
-var productEventConfigFile = fs.readFileSync('GAProductEventConfig.json');
+var productEventConfigFile = fs.readFileSync('data/GAProductEventConfig.json');
 var productEventConfigJson = JSON.parse(productEventConfigFile);
 
 //Similarly single sharing event config
-var sharingEventConfigFile = fs.readFileSync("GASharingEventConfig.json");
+var sharingEventConfigFile = fs.readFileSync("data/GASharingEventConfig.json");
 var sharingEventConfigJson = JSON.parse(sharingEventConfigFile);
 
 //Config file for generic e-commerce events
-var ecomGenericEventConfigFile = fs.readFileSync("GAEComGenericEventConfig.json");
+var ecomGenericEventConfigFile = fs.readFileSync("data/GAEComGenericEventConfig.json");
 var ecomGenericEventConfigJson = JSON.parse(ecomGenericEventConfigFile);
 
 //Load customer credentials
-var customerCredentialsConfig = fs.readFileSync('GACustomerCredentialsConfig.json');
+var customerCredentialsConfig = fs.readFileSync('data/GACustomerCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
 
 //Helper function for generating desired JSON from Map
@@ -477,49 +477,4 @@ async function process(jsonQobj){
 
 }
 
-//Main server body
-http.createServer(function (req,res){
-	if (req.method == 'POST') {
-        var body = '';
-	var respBody = '';	
-
-        req.on('data', function (data) {
-            body += data;
-
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-                request.connection.destroy();
-        });
-
-        req.on('end', async function () {
-			try {	//need to send 400 error for malformed JSON
-				var requestJson = JSON.parse(body);
-				//console.log("Input JSON parsed successfully");
-				respJson = await process(jsonQ(requestJson));
-				var respList = "[" + respJson + "]"; //caller expects list
-				console.log(respList);
-				res.statusCode = 200;
-				res.end(respList);
-			} catch (se) {
-					
-				switch(se.constructor.name){
-					case 'RangeError':
-						res.statusCode = 400; //400 for unexpected value as well
-						res.statusMessage = se.message;
-						break;
-					case 'SyntaxError':
-						console.log(se.message);
-						res.statusCode = 400; //400 for JSON syntax error
-						res.statusMessage = 'Malformed JSON payload ' + se.message;
-						break;
-					default:
-						res.statusCode = 500;	//500 for other errors
-						res.statusMessage = se.message;
-						console.log(se.stack);
-				}
-				res.end()	
-			}
-		});
-    }
-}).listen(9090);
+exports.process = process;

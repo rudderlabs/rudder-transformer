@@ -7,7 +7,6 @@ module.exports = {
         console.log("ga:get() starting");
 
         var requestJson = JSON.parse(body);
-        console.log("Input JSON parsed successfully");
         return await gat.process(jsonQ(requestJson));
 
     },

@@ -20,7 +20,11 @@ function start(port, route) {
    //Main server body
     http.createServer(function (request,response){
         var pathname = url.parse(request.url).pathname;
-	    if (request.method == 'POST') {
+        
+        //Adding logic for a call that will invalidate cache
+        //for particular module in order that next require call for
+        //that module will reload the same
+	    if (request.method == 'POST' && pathname != "/reload") {
             var body = '';
 	        var respBody = '';	
 
@@ -59,7 +63,13 @@ function start(port, route) {
 				    }
 				    response.end()	
 			    }
-		    });
+            });
+        //logic for module cache invalidation    
+        } else if (pathname == "/reload") {
+            var query = url.parse(request.url, true).query;
+            delete require.cache[require.resolve("./"+query.version+"/"+query.name+".js")];
+            response.statusCode=200;
+            response.end();
         }
     }).listen(port);
 }

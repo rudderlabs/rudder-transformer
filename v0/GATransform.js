@@ -4,6 +4,7 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
+
 //Load and parse configurations for different messages
 var pageviewConfigFile = fs.readFileSync('data/GAPageViewConfig.json');
 var pageviewConfigJson = JSON.parse(pageviewConfigFile);
@@ -409,7 +410,7 @@ async function process(jsonQobj){
 
 	//Route to appropriate process depending on type of message received
 	var messageType = String(jsonQobj.find("rl_message").find('rl_type').value()).toLowerCase();
-	console.log(String(messageType));
+	//console.log(String(messageType));
 	switch (messageType){
 		case 'page':
 			//console.log('processing page');

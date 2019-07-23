@@ -72,6 +72,11 @@ function responseBuilderSimple (parameterMap, jsonQobj, hitType, mappingJson, cr
 	var responseMap = new Map();	
 	responseMap.set("endpoint","https://www.google-analytics.com/collect");
 	responseMap.set("request-format","PARAMS");
+
+	//Need to set user_id outside of payload
+	jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
+		responseMap.set("user_id",String(value));
+	});
 	
 	//Now add static parameters to the parameter map
 	parameterMap.set("v","1");

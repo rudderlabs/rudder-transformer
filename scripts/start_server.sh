@@ -5,4 +5,4 @@ chown -R ubuntu:ubuntu /home/ubuntu/transformer
 cd /home/ubuntu/transformer
 sudo -u ubuntu npm install
 sudo -u ubuntu pm2 stop all
-sudo -u ubuntu pm2 start npm -- start 
+sudo -u ubuntu pm2 start GATransform.js

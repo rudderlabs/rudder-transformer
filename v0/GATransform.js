@@ -57,21 +57,29 @@ const mapToObj = m => {
   };
 
 //Basic response builder
-//We pass the responseMap with any processing-specific key-value prepopulated
+//We pass the parameterMap with any processing-specific key-value prepopulated
 //We also pass the incoming payload, the hit type to be generated and
 //the field mapping and credentials JSONs
-function responseBuilderSimple (responseMap, jsonQobj, hitType, mappingJson, credsJson){
+function responseBuilderSimple (parameterMap, jsonQobj, hitType, mappingJson, credsJson){
 
 	//We'll keep building a simple key-value JSON structure which will be finally returned
-	//We add the static parts as well as the direct mappings from config JSON	
+	//We add the static parts as well as the direct mappings from config JSON
+	//There will be three keys - endpoint, request-format and payload
+	//The payload will be another JSON containing the key-value pairs to be sent
+	//finally as query parameters
+	
+	//Create a final map to be used for response and populate the static parts first
+	var responseMap = new Map();	
 	responseMap.set("endpoint","https://www.google-analytics.com/collect");
 	responseMap.set("request-format","PARAMS");
-	responseMap.set("v","1");
-	responseMap.set("t",String(hitType));
+	
+	//Now add static parameters to the parameter map
+	parameterMap.set("v","1");
+	parameterMap.set("t",String(hitType));
 
 	//Add the customer 	credentials
 	jsonQ.each(credsJson, function(key,value){
-		responseMap.set("tid",String(value));
+		parameterMap.set("tid",String(value));
 	});
 	var loopCounter = 1;
 	//Iterate through each key mapping of pageview type messges
@@ -99,13 +107,17 @@ function responseBuilderSimple (responseMap, jsonQobj, hitType, mappingJson, cre
 				
 		tempObj.each(function (index, path, value){
 			//Add the derived key-value pair to the response JSON
-			responseMap.set(String(destinationKey),String(value));
+			parameterMap.set(String(destinationKey),String(value));
 		});
 		
 	});
 
-	//Convert map to JSON
+	//Assign parameter map against payload key
+	responseMap.set("payload",mapToObj(parameterMap));
+
+	//Convert response map to JSON
 	var responseJson = JSON.stringify(mapToObj(responseMap));
+
 	var events = []
 	events.push(responseJson);
 	return events;
@@ -138,23 +150,23 @@ function processNonEComGenericEvent(jsonQobj){
 //Function for processing promotion viewed or clicked event
 function processPromotionEvent(jsonQobj){
 	return new Promise((resolve)=>{
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		var eventString = String(jsonQobj.find('rl_message').find('rl_event').value());
 		switch(eventString.toLowerCase()){
 			case 'promotion viewed':
-				responseMap.set("promoa","view"); //pre-populate
+				parameterMap.set("promoa","view"); //pre-populate
 				break;
 			case 'promotion clicked':
-				responseMap.set("promoa","promo_click");
+				parameterMap.set("promoa","promo_click");
 				break;
 		}
 		
 		//Future releases will have additional logic for below elements allowing for
 		//customer-side overriding of event category and event action values
-		responseMap.set("ec",eventString);
-		responseMap.set("ea",eventString);
+		parameterMap.set("ec",eventString);
+		parameterMap.set("ea",eventString);
 
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'event',promotionEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'event',promotionEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
@@ -162,17 +174,17 @@ function processPromotionEvent(jsonQobj){
 //Function for processing payment-related events
 function processPaymentRelatedEvent(jsonQobj){
 	return new Promise((resolve)=>{
-		var responseMap = new Map();
-		responseMap.set("pa","checkout"); //pre-populate
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'transaction',paymentRelatedEventConfigJson, customerCredentialsConfigJson));
+		var parameterMap = new Map();
+		parameterMap.set("pa","checkout"); //pre-populate
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'transaction',paymentRelatedEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
 //Function for processing order refund events
 function processRefundEvent(jsonQobj){
 	return new Promise((resolve)=>{
-		var responseMap = new Map();
-		responseMap.set("pa","refund"); //pre-populate
+		var parameterMap = new Map();
+		parameterMap.set("pa","refund"); //pre-populate
 
 		//First we need to check whether we're dealing with full refund or partial refund
 		//In case of partial refund, product array will be present in payload
@@ -184,39 +196,39 @@ function processRefundEvent(jsonQobj){
 			productArray.each(function(index, path, value){
 				//If product_id is not provided, then SKU will be used in place of id
 				if (!value.product_id || 0 === value.product_id.length){
-					responseMap.set("pr"+prodIndex+"id",value.sku);
+					parameterMap.set("pr"+prodIndex+"id",value.sku);
 				} else {
-					responseMap.set("pr"+prodIndex+"id",value.product_id);
+					parameterMap.set("pr"+prodIndex+"id",value.product_id);
 				}
 				
-				responseMap.set("pr"+prodIndex+"nm",value.name);
-				responseMap.set("pr"+prodIndex+"ca",value.category);
-				responseMap.set("pr"+prodIndex+"br",value.brand);
-				responseMap.set("pr"+prodIndex+"va",value.variant);
-				responseMap.set("pr"+prodIndex+"cc",value.coupon);
-				responseMap.set("pr"+prodIndex+"ps",value.position);
-				responseMap.set("pr"+prodIndex+"pr",value.price);
-				responseMap.set("pr"+prodIndex+"qt",value.quantity);
+				parameterMap.set("pr"+prodIndex+"nm",value.name);
+				parameterMap.set("pr"+prodIndex+"ca",value.category);
+				parameterMap.set("pr"+prodIndex+"br",value.brand);
+				parameterMap.set("pr"+prodIndex+"va",value.variant);
+				parameterMap.set("pr"+prodIndex+"cc",value.coupon);
+				parameterMap.set("pr"+prodIndex+"ps",value.position);
+				parameterMap.set("pr"+prodIndex+"pr",value.price);
+				parameterMap.set("pr"+prodIndex+"qt",value.quantity);
 				prodIndex++;
 			});
 		} else { //full refund, only populate order_id
-			responseMap.set("ti",String(jsonQobj.find("order_id").value()));
+			parameterMap.set("ti",String(jsonQobj.find("order_id").value()));
 		} 
 		//Finally fill up with mandatory and directly mapped fields
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'transaction',refundEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'transaction',refundEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
 //Function for processing product and cart shared events
 function processSharingEvent(jsonQobj){
 	return new Promise((resolve)=>{
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		//URL will be there for Product Shared event, hence that can be used as share target
 		//For Cart Shared, the list of product ids can be shared
 		var eventTypeString = String(jsonQobj.find("rl_event").value());
 		switch (eventTypeString.toLowerCase()){
 			case "product shared":
-				responseMap.set("st",String(jsonQobj.find("rl_properties").find("url").value()));
+				parameterMap.set("st",String(jsonQobj.find("rl_properties").find("url").value()));
 				break;
 			case "cart shared":
 				var productIdArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
@@ -224,12 +236,12 @@ function processSharingEvent(jsonQobj){
 				productIdArray.each(function (path, index, value){
 					shareTargetString += " " + value.product_id;
 				});	
-				responseMap.set("st",shareTargetString);
+				parameterMap.set("st",shareTargetString);
 				break;
 			default:
-				responseMap.set("st","empty");	
+				parameterMap.set("st","empty");	
 		}
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'social',sharingEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'social',sharingEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
@@ -237,20 +249,20 @@ function processSharingEvent(jsonQobj){
 function processProductListEvent(jsonQobj){
 	return new Promise((resolve)=>{
 		var eventString = String(jsonQobj.find('rl_message').find('rl_event').value());
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		//Future releases will have additional logic for below elements allowing for
 		//customer-side overriding of event category and event action values
-		responseMap.set("ec",eventString);
-		responseMap.set("ea",eventString);
+		parameterMap.set("ec",eventString);
+		parameterMap.set("ea",eventString);
 
 		//Set action depending on Product List Action
 		switch(eventString.toLowerCase()){
 			case 'product list viewed':
 			case 'product list filtered':
-				responseMap.set("pa","detail");
+				parameterMap.set("pa","detail");
 				break;
 			case 'product list clicked':
-				responseMap.set("pa","click");
+				parameterMap.set("pa","click");
 				break;
 		}
 
@@ -263,23 +275,23 @@ function processProductListEvent(jsonQobj){
 			productArray.each(function(index, path, value){
 				//If product_id is not provided, then SKU will be used in place of id
 				if (!value.product_id || 0 === value.product_id.length){
-					responseMap.set("il1pi"+prodIndex+"id",value.sku);
+					parameterMap.set("il1pi"+prodIndex+"id",value.sku);
 				} else {
-					responseMap.set("il1pi"+prodIndex+"id",value.product_id);
+					parameterMap.set("il1pi"+prodIndex+"id",value.product_id);
 				}
-				responseMap.set("il1pi"+prodIndex+"nm",value.name);
-				responseMap.set("il1pi"+prodIndex+"ca",value.category);
-				responseMap.set("il1pi"+prodIndex+"br",value.brand);
-				responseMap.set("il1pi"+prodIndex+"va",value.variant);
-				responseMap.set("il1pi"+prodIndex+"cc",value.coupon);
-				responseMap.set("il1pi"+prodIndex+"ps",value.position);
-				responseMap.set("il1pi"+prodIndex+"pr",value.price);
+				parameterMap.set("il1pi"+prodIndex+"nm",value.name);
+				parameterMap.set("il1pi"+prodIndex+"ca",value.category);
+				parameterMap.set("il1pi"+prodIndex+"br",value.brand);
+				parameterMap.set("il1pi"+prodIndex+"va",value.variant);
+				parameterMap.set("il1pi"+prodIndex+"cc",value.coupon);
+				parameterMap.set("il1pi"+prodIndex+"ps",value.position);
+				parameterMap.set("il1pi"+prodIndex+"pr",value.price);
 				prodIndex++;
 			});
 		} else { //throw error, empty Product List in Product List Viewed event payload
 			throw new Error("Empty Product List provided for Product List Viewed Event");
 		} 
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'event',productListEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'event',productListEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
@@ -287,29 +299,29 @@ function processProductListEvent(jsonQobj){
 function processProductEvent(jsonQobj){
 	return new Promise((resolve)=>{
 		var eventString = String(jsonQobj.find('rl_message').find('rl_event').value());
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		//Future releases will have additional logic for below elements allowing for
 		//customer-side overriding of event category and event action values
-		responseMap.set("ec",eventString);
-		responseMap.set("ea",eventString);
+		parameterMap.set("ec",eventString);
+		parameterMap.set("ea",eventString);
 
 		//Set product action to click or detail depending on event
 		switch(eventString.toLowerCase()){
 			case 'product clicked':
 				//Set product action to click
-				responseMap.set("pa","click");
+				parameterMap.set("pa","click");
 				break;
 			case 'product viewed':
-				responseMap.set("pa","detail");
+				parameterMap.set("pa","detail");
 				break;
 			case 'product added':
 			case 'wishlist product added to cart':	
 			case 'product added to wishlist':
-				responseMap.set("pa","add");
+				parameterMap.set("pa","add");
 				break;
 			case 'product removed':
 			case 'product removed from wishlist':	
-				responseMap.set("pa","remove");
+				parameterMap.set("pa","remove");
 				break;		
 		}
 		
@@ -318,11 +330,11 @@ function processProductEvent(jsonQobj){
 
 		//If product_id not present, use sku
 		if (!productId || 0 === productId.length){
-			responseMap.set("pr1id",sku);
+			parameterMap.set("pr1id",sku);
 		} else {
-			responseMap.set("pr1id",productId);
+			parameterMap.set("pr1id",productId);
 		}
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'event',productEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'event',productEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
@@ -330,19 +342,19 @@ function processProductEvent(jsonQobj){
 function processTransactionEvent(jsonQobj){
 	return new Promise((resolve)=>{
 		var eventString = String(jsonQobj.find('rl_message').find('rl_event').value());
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		
 		//Set product action as per event
 		switch(eventString.toLowerCase()){
 			case 'checkout started':
 			case 'order updated':
-				responseMap.set("pa","checkout");
+				parameterMap.set("pa","checkout");
 				break;
 			case 'order completed':
-				responseMap.set("pa","purchase");
+				parameterMap.set("pa","purchase");
 				break;
 			case 'order cancelled':
-				responseMap.set("pa","refund");
+				parameterMap.set("pa","refund");
 				break;		
 		}
 		
@@ -354,13 +366,13 @@ function processTransactionEvent(jsonQobj){
 		if (!revenueString || 0 === revenueString.length) { //revenue field is null or empty, cannot be used
 			if (!valueString || 0 === valueString.length) { //value field is null or empty, cannot be used
 				if (!(!totalString || 0 === totalString.length)) { //last option - total field
-					responseMap.set("tr", totalString);
+					parameterMap.set("tr", totalString);
 				}
 			} else {
-				responseMap.set("tr", valueString); //value field is populated, usable
+				parameterMap.set("tr", valueString); //value field is populated, usable
 			}
 		} else {
-			responseMap.set("tr",revenueString); //revenue field is populated, usable
+			parameterMap.set("tr",revenueString); //revenue field is populated, usable
 		}
 		var productArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();	
 		if (productArray.length > 0){ 
@@ -370,23 +382,23 @@ function processTransactionEvent(jsonQobj){
 			productArray.each(function(index, path, value){
 				//If product_id is not provided, then SKU will be used in place of id
 				if (!value.product_id || 0 === value.product_id.length){
-					responseMap.set("pr"+prodIndex+"id",value.sku);
+					parameterMap.set("pr"+prodIndex+"id",value.sku);
 				} else {
-					responseMap.set("pr"+prodIndex+"id",value.product_id);
+					parameterMap.set("pr"+prodIndex+"id",value.product_id);
 				}
-				responseMap.set("pr"+prodIndex+"nm",value.name);
-				responseMap.set("pr"+prodIndex+"ca",value.category);
-				responseMap.set("pr"+prodIndex+"br",value.brand);
-				responseMap.set("pr"+prodIndex+"va",value.variant);
-				responseMap.set("pr"+prodIndex+"cc",value.coupon);
-				responseMap.set("pr"+prodIndex+"ps",value.position);
-				responseMap.set("pr"+prodIndex+"pr",value.price);
+				parameterMap.set("pr"+prodIndex+"nm",value.name);
+				parameterMap.set("pr"+prodIndex+"ca",value.category);
+				parameterMap.set("pr"+prodIndex+"br",value.brand);
+				parameterMap.set("pr"+prodIndex+"va",value.variant);
+				parameterMap.set("pr"+prodIndex+"cc",value.coupon);
+				parameterMap.set("pr"+prodIndex+"ps",value.position);
+				parameterMap.set("pr"+prodIndex+"pr",value.price);
 				prodIndex++;
 			});
 		} else { //throw error, empty Product List in Product List Viewed event payload
 			throw new Error("No product information supplied for transaction event");
 		} 
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'transaction',transactionEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'transaction',transactionEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 
@@ -394,13 +406,13 @@ function processTransactionEvent(jsonQobj){
 function processEComGenericEvent(jsonQobj){
 	return new Promise((resolve)=>{
 		var eventString = String(jsonQobj.find('rl_message').find('rl_event').value());
-		var responseMap = new Map();
+		var parameterMap = new Map();
 		//Future releases will have additional logic for below elements allowing for
 		//customer-side overriding of event category and event action values
-		responseMap.set("ec",eventString);
-		responseMap.set("ea",eventString);
+		parameterMap.set("ec",eventString);
+		parameterMap.set("ea",eventString);
 				
-		resolve(responseBuilderSimple(responseMap,jsonQobj,'event',ecomGenericEventConfigJson, customerCredentialsConfigJson));
+		resolve(responseBuilderSimple(parameterMap,jsonQobj,'event',ecomGenericEventConfigJson, customerCredentialsConfigJson));
 	});
 }
 

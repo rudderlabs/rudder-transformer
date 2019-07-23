@@ -1,4 +1,4 @@
 {
-	"rl_context.rl_traits.rl_anonymous_id":"user_id",	
-	"rl_properties.title":"user_properties.rl_title"
+	"rl_context.rl_traits.rl_title":"user_properties.title",
+	"rl_anonymous_id":"user_properties.user_id"	
 }

@@ -81,6 +81,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	//multiple objects of same type
 	var objMap = new Map(); 
 	jsonQ.each(mappingJson, function(sourceKey, destinationKey){
+		console.log(destinationKey);
 		//Reset reference point to root
 		var tempObj = jsonQobj.find('rl_message');
 
@@ -95,59 +96,79 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 			tempObj = tempObj.find(pathElements[i]);	
 		}
 
+		
 		//Once the entry for the source key has been found, the value needs to be mapped 
 		//to the destination key
+
+		//There might be multiple entries for multiple levels of the same structure
+		//or for multiple elements at same level in the structure. Hence the root
+		//should be initialized outside
+		var rootObj = {};
 				
 		tempObj.each(function (index, path, value){
 			//Destination key can also be part of a structure
 			var destinationPathElements = destinationKey.split('.');
 			//Construct the object hierarchy, checking for existence at each step
-			var root = {};
 			var parent = {};
 			for (var level=0; level<destinationPathElements.length; level++){
-				console.log(destinationPathElements[level]);
+				
 				//Now there can be 3 situations - the root, intermediate branch, 
 				//or leaf. If root, check if the root object exists, else create
 				//if branch, check if root object has the branch, else add
 				//for leaf - check if penultimate branch has leaf, else add
+				
+				
 				switch(level){
 				case 0: //root
 					var tmp = objMap.get(destinationPathElements[0]);
+					
 					if (!tmp){ //root itself does not exist
 						rootObj = {};
 						objMap.set(destinationPathElements[0],rootObj);
 						parent = rootObj; //for next calls
+				
 					} else { //root exits, set parent to root
 						parent = tmp;
+				
 					}
 					break;
 				case destinationPathElements.length-1: //leaf
+					
 					//leaf will have value
 					parent[destinationPathElements[level]]=value;
 					break;
 				default: //all other cases, i.e. intermediate branches
-					var tmp = parent[destinationPathElements[level]];
-					if (!tmp){ //level does not exists
-						branchObj = {};
-						parent[destinationPathElements[level]] = branchObj;
-						parent = branchObj;
-					} else {
-						parent = tmp;
+					//however this needs to be skipped for a.b cases
+					if (destinationPathElements.length>2){
+						var tmp = parent[destinationPathElements[level]];
+						if (!tmp){ //level does not exists
+				
+							branchObj = {};
+							parent[destinationPathElements[level]] = branchObj;
+							parent = branchObj;
+						} else {
+				
+							parent = tmp;
+						}
+	
 					}
+					
 					break;
 
 				}
-
+				//Ensure that updated object is in map, might be redundant
+				//objMap.set(destinationPathElements[0],rootObj);
+				
 			}
 			
 
 		});
 		
 	});
-
+	
 	//Now add the entire object map to the parameter map against 
 	//the designated root element name
-	parameterMap.set(rootElementName, objMap);
+	parameterMap.set(rootElementName, mapToObj(objMap));
 
 	switch (rl_type){
 	case "identify":

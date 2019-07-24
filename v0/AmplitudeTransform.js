@@ -69,6 +69,12 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	var responseMap = new Map();	
 	responseMap.set("request-format","PARAMS");
 
+	//User Id for internal routing purpose needs to be set
+	var anonId = jsonQobj.find("rl_anonymous_id");
+	anonId.each(function (index, path, value){
+		responseMap.set("user_id", String(value));
+	});
+
 	
 	//Amplitude HTTP API calls take two parameters
 	//First one is a api_key and the second one is a complete JSON
@@ -80,6 +86,15 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	//be able to add properties to the same without ending up with
 	//multiple objects of same type
 	var objMap = new Map(); 
+
+	//Add fixed-logic fields to objMap
+	var libraryName = jsonQobj.find("rl_library").find("rl_name");
+
+	libraryName.each(function(index, path, value){
+		objMap.set("platform",String(value).split(".")[2]);
+	});
+
+
 	jsonQ.each(mappingJson, function(sourceKey, destinationKey){
 		console.log(destinationKey);
 		//Reset reference point to root
@@ -110,57 +125,62 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 			var destinationPathElements = destinationKey.split('.');
 			//Construct the object hierarchy, checking for existence at each step
 			var parent = {};
-			for (var level=0; level<destinationPathElements.length; level++){
+	
+			//to be directly added to root level
+			if (destinationPathElements.length<2){ 
+
+				objMap.set(destinationPathElements[0],value);
+
+			} else { //multi-level hierarchy
+
+				for (var level=0; level<destinationPathElements.length; level++){
 				
-				//Now there can be 3 situations - the root, intermediate branch, 
-				//or leaf. If root, check if the root object exists, else create
-				//if branch, check if root object has the branch, else add
-				//for leaf - check if penultimate branch has leaf, else add
-				
-				
-				switch(level){
-				case 0: //root
-					var tmp = objMap.get(destinationPathElements[0]);
+					//Now there can be 3 situations - the root, intermediate branch, 
+					//or leaf. If root, check if the root object exists, else create
+					//if branch, check if root object has the branch, else add
+					//for leaf - check if penultimate branch has leaf, else add
 					
-					if (!tmp){ //root itself does not exist
-						rootObj = {};
-						objMap.set(destinationPathElements[0],rootObj);
-						parent = rootObj; //for next calls
-				
-					} else { //root exits, set parent to root
-						parent = tmp;
-				
-					}
-					break;
-				case destinationPathElements.length-1: //leaf
+					switch(level){
+					case 0: //root
+						var tmp = objMap.get(destinationPathElements[0]);
+						
+						if (!tmp){ //root itself does not exist
+							rootObj = {};
+							objMap.set(destinationPathElements[0],rootObj);
+							parent = rootObj; //for next calls
 					
-					//leaf will have value
-					parent[destinationPathElements[level]]=value;
-					break;
-				default: //all other cases, i.e. intermediate branches
-					//however this needs to be skipped for a.b cases
-					if (destinationPathElements.length>2){
-						var tmp = parent[destinationPathElements[level]];
-						if (!tmp){ //level does not exists
-				
-							branchObj = {};
-							parent[destinationPathElements[level]] = branchObj;
-							parent = branchObj;
-						} else {
-				
+						} else { //root exits, set parent to root
 							parent = tmp;
+					
 						}
+						break;
+					case destinationPathElements.length-1: //leaf
+						
+						//leaf will have value
+						parent[destinationPathElements[level]]=value;
+						break;
+					default: //all other cases, i.e. intermediate branches
+						//however this needs to be skipped for a.b cases
+						if (destinationPathElements.length>2){
+							var tmp = parent[destinationPathElements[level]];
+							if (!tmp){ //level does not exists
+					
+								branchObj = {};
+								parent[destinationPathElements[level]] = branchObj;
+								parent = branchObj;
+							} else {
+					
+								parent = tmp;
+							}
+		
+						}
+						
+						break;
 	
 					}
 					
-					break;
-
 				}
-				//Ensure that updated object is in map, might be redundant
-				//objMap.set(destinationPathElements[0],rootObj);
-				
 			}
-			
 
 		});
 		

@@ -10,6 +10,11 @@ var qs = require('querystring');
 var identifyConfigFile = fs.readFileSync('data/AmplitudeIdentifyConfig.json');
 var identifyConfigJson = JSON.parse(identifyConfigFile);
 
+var pageConfigFile = fs.readFileSync('data/AmplitudePageConfig.json');
+var pageConfigJson = JSON.parse(pageConfigFile);
+
+var screenConfigFile = fs.readFileSync('data/AmplitudeScreenConfig.json');
+var screenConfigJson = JSON.parse(screenConfigFile);
 
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
@@ -59,7 +64,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 
 
 	jsonQ.each(mappingJson, function(sourceKey, destinationKey){
-		//console.log(destinationKey);
+		console.log(destinationKey);
 		//Reset reference point to root
 		var tempObj = jsonQobj.find('rl_context').parent();
 
@@ -149,16 +154,27 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 		
 	});
 	
-	//Now add the entire object map to the parameter map against 
-	//the designated root element name
-	parameterMap.set(rootElementName, mapToObj(objMap));
 
 	switch (rl_type){
 	case "identify":
 		responseMap.set("endpoint","https://api.amplitude.com/identify");
 		break;
+	case "pageview":
+		responseMap.set("endpoint","https://api.amplitude.com/httpapi");
+		objMap.set("event_type","pageview");
+		objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+		break;	
+	case "screenview":
+		responseMap.set("endpoint","https://api.amplitude.com/httpapi");
+		objMap.set("event_type","screenview");
+		objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+		break;	
+		
 	}
 
+	//Now add the entire object map to the parameter map against 
+	//the designated root element name
+	parameterMap.set(rootElementName, mapToObj(objMap));
 
 	//Assign parameter map against payload key
 	responseMap.set("payload",mapToObj(parameterMap));
@@ -171,6 +187,17 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	return events;
 }
 
+//Handler code for 'page' calls
+function processPage(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'pageview', pageConfigJson, customerCredentialsConfigJson);
+}
+
+//Handler code for 'screen' calls
+function processScreen(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'screenview', screenConfigJson, customerCredentialsConfigJson);
+}
 
 
 //Handler code for "identify"
@@ -178,6 +205,30 @@ function processIdentify(jsonQobj){
 	var parameterMap = new Map();
 	return responseBuilderSimple(parameterMap, 'identification', jsonQobj,'identify', identifyConfigJson, customerCredentialsConfigJson);
 }
+
+//Generic process function which invokes specific handler functions depending on message type
+//and event type where applicable
+function processSingleMessage(jsonQobj){
+
+	//Route to appropriate process depending on type of message received
+	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
+	//console.log(String(messageType));
+	switch (messageType){
+	case 'identify':
+		return processIdentify(jsonQobj);
+	case 'page':
+		return processPage(jsonQobj);	
+	case 'screen':
+		return processScreen(jsonQobj);		
+	default:
+		console.log('could not determine type');
+		var events = []
+		events.push("{\"error\":\"message type not supported\"}");
+		return events;
+	}
+
+}
+
 
 //Iterate over input batch and generate response for each message
 function process (jsonQobj){
@@ -190,22 +241,6 @@ function process (jsonQobj){
 		
 	});
 	return respList;
-}
-//Generic process function which invokes specific handler functions depending on message type
-//and event type where applicable
-function processSingleMessage(jsonQobj){
-
-	//Route to appropriate process depending on type of message received
-	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
-	//console.log(String(messageType));
-	switch (messageType){
-	case 'identify':
-		return processIdentify(jsonQobj);
-	default:
-		console.log('could not determine type');
-		throw new RangeError('Unexpected value in type field');
-	}
-
 }
 
 exports.process = process;

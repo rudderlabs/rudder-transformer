@@ -1,4 +1,4 @@
-async function route(pathname, req, res, body) {
+function route(pathname, req, res, body) {
     console.log("transformerRouter:route() About to route a request for " + pathname);
 
     try {
@@ -12,13 +12,13 @@ async function route(pathname, req, res, body) {
         if (typeof handler["post"] === 'function') {
             //route to the right method in the module based on the HTTP action
             if(req.method.toLowerCase() == 'get') {
-                respToReturn = await handler["get"](req, res, body);
+                respToReturn = handler["get"](req, res, body);
             } else if (req.method.toLowerCase() == 'post') {
-                respToReturn = await handler["post"](req, res, body);
+                respToReturn = handler["post"](req, res, body);
             } else if (req.method.toLowerCase() == 'put') {
-                respToReturn = await handler["put"](req, res, body);
+                respToReturn = handler["put"](req, res, body);
             } else if (req.method.toLowerCase() == 'delete') {
-                respToReturn = await handler["delete"](req, res, body);
+                respToReturn = handler["delete"](req, res, body);
             }
 
             console.log("transformerRouter:route() routed successfully");

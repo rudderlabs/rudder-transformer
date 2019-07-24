@@ -40,11 +40,15 @@ function start(port, route) {
 
                 request.on('end', async function () {
                     try {	//need to send 400 error for malformed JSON
-                        respJson = await route(pathname, request, response, body);
-                        var respList = "[" + respJson + "]"; //caller expects list
-                        console.log(respList);
-                        response.statusCode = 200;
-                        response.end(respList);
+                        //respJson = await route(pathname, request, response, body);
+                        //var respList = "[" + respJson + "]"; //caller expects list
+                        respList = route(pathname, request, response, body).then(function(result){
+                            respList = "["+String(result)+"]";
+                            console.log(respList);
+                            response.statusCode = 200;
+                            response.end(respList);
+    
+                        });
                     } catch (se) {
                         
                         switch(se.constructor.name){

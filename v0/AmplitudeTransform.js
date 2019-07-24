@@ -186,12 +186,9 @@ function process (jsonQobj){
 	jsonQobj.find("rl_message").each(function (index, path, value){
 		//console.log(++counter);
 		result = processSingleMessage(jsonQ(value));
-		console.log(result);
 		respList.push(result);
-		console.log("Resp List inside loop " + respList);
 		
 	});
-	console.log("Resp List : " + respList);
 	return respList;
 }
 //Generic process function which invokes specific handler functions depending on message type

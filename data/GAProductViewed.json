@@ -41,7 +41,7 @@
         ,
         "rl_type": "track",
         "rl_message_id": "a9809fe1-8ea6-4270-9063-a9251ce0d96a",
-        "timestamp": "2019-07-17 10:11:05+0000",
+        "rl_timestamp": "2019-07-17 10:11:05+0000",
         "rl_anonymous_id": "63833df8-b291-4e2c-9411-17bbf948082b",
         "rl_event": "Product Viewed",
         "rl_properties": {

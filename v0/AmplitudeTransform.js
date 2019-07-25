@@ -16,6 +16,13 @@ var pageConfigJson = JSON.parse(pageConfigFile);
 var screenConfigFile = fs.readFileSync('data/AmplitudeScreenConfig.json');
 var screenConfigJson = JSON.parse(screenConfigFile);
 
+var promotionViewedConfigFile = fs.readFileSync('data/AmplitudePromotionViewedConfig.json');
+var promotionViewedConfigJson = JSON.parse(promotionViewedConfigFile);
+
+
+var promotionClickedConfigFile = fs.readFileSync('data/AmplitudePromotionClickedConfig.json');
+var promotionClickedConfigJson = JSON.parse(promotionClickedConfigFile);
+
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
@@ -109,42 +116,42 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 					//for leaf - check if penultimate branch has leaf, else add
 					
 					switch(level){
-					case 0: //root
-						var tmp = objMap.get(destinationPathElements[0]);
+						case 0: //root
+							var tmp = objMap.get(destinationPathElements[0]);
+							
+							if (!tmp){ //root itself does not exist
+								rootObj = {};
+								objMap.set(destinationPathElements[0],rootObj);
+								parent = rootObj; //for next calls
 						
-						if (!tmp){ //root itself does not exist
-							rootObj = {};
-							objMap.set(destinationPathElements[0],rootObj);
-							parent = rootObj; //for next calls
-					
-						} else { //root exits, set parent to root
-							parent = tmp;
-					
-						}
-						break;
-					case destinationPathElements.length-1: //leaf
-						
-						//leaf will have value
-						parent[destinationPathElements[level]]=value;
-						break;
-					default: //all other cases, i.e. intermediate branches
-						//however this needs to be skipped for a.b cases
-						if (destinationPathElements.length>2){
-							var tmp = parent[destinationPathElements[level]];
-							if (!tmp){ //level does not exists
-					
-								branchObj = {};
-								parent[destinationPathElements[level]] = branchObj;
-								parent = branchObj;
-							} else {
-					
+							} else { //root exits, set parent to root
 								parent = tmp;
-							}
-		
-						}
 						
-						break;
-	
+							}
+							break;
+						case destinationPathElements.length-1: //leaf
+							
+							//leaf will have value
+							parent[destinationPathElements[level]]=value;
+							break;
+						default: //all other cases, i.e. intermediate branches
+							//however this needs to be skipped for a.b cases
+							if (destinationPathElements.length>2){
+								var tmp = parent[destinationPathElements[level]];
+								if (!tmp){ //level does not exists
+						
+									branchObj = {};
+									parent[destinationPathElements[level]] = branchObj;
+									parent = branchObj;
+								} else {
+						
+									parent = tmp;
+								}
+			
+							}
+							
+							break;
+		
 					}
 					
 				}
@@ -156,20 +163,14 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	
 
 	switch (rl_type){
-	case "identify":
-		responseMap.set("endpoint","https://api.amplitude.com/identify");
-		break;
-	case "pageview":
-		responseMap.set("endpoint","https://api.amplitude.com/httpapi");
-		objMap.set("event_type","pageview");
-		objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
-		break;	
-	case "screenview":
-		responseMap.set("endpoint","https://api.amplitude.com/httpapi");
-		objMap.set("event_type","screenview");
-		objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
-		break;	
-		
+		case "identify":
+			responseMap.set("endpoint","https://api.amplitude.com/identify");
+			break;
+		default:
+			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
+			objMap.set("event_type",rl_type);
+			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+			break;	
 	}
 
 	//Now add the entire object map to the parameter map against 
@@ -206,6 +207,20 @@ function processIdentify(jsonQobj){
 	return responseBuilderSimple(parameterMap, 'identification', jsonQobj,'identify', identifyConfigJson, customerCredentialsConfigJson);
 }
 
+//Handler code for "promotion viewed"
+function processPromotionViewed(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion viewed', promotionViewedConfigJson, customerCredentialsConfigJson);
+}
+
+//Handler code for "promotion clicked"
+function processPromotionClicked(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion clicked', promotionClickedConfigJson, customerCredentialsConfigJson);
+}
+
+
+
 //Generic process function which invokes specific handler functions depending on message type
 //and event type where applicable
 function processSingleMessage(jsonQobj){
@@ -214,17 +229,28 @@ function processSingleMessage(jsonQobj){
 	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
 	//console.log(String(messageType));
 	switch (messageType){
-	case 'identify':
-		return processIdentify(jsonQobj);
-	case 'page':
-		return processPage(jsonQobj);	
-	case 'screen':
-		return processScreen(jsonQobj);		
-	default:
-		console.log('could not determine type');
-		var events = []
-		events.push("{\"error\":\"message type not supported\"}");
-		return events;
+		case 'identify':
+			return processIdentify(jsonQobj);
+		case 'page':
+			return processPage(jsonQobj);	
+		case 'screen':
+			return processScreen(jsonQobj);		
+		case 'track':
+			var eventType = String(jsonQobj.find('rl_event').value()).toLowerCase();	
+			switch(eventType){
+				case 'promotion viewed':
+					return processPromotionViewed(jsonQobj);
+					break;
+				case 'promotion clicked':
+					return processPromotionClicked(jsonQobj);
+					break;	
+				
+			}
+		default:
+			console.log('could not determine type');
+			var events = []
+			events.push("{\"error\":\"message type not supported\"}");
+			return events;
 	}
 
 }

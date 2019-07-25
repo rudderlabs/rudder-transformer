@@ -105,7 +105,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 			//to be directly added to root level
 			if (destinationPathElements.length<2){ 
 
-				objMap.set(destinationPathElements[0],value);
+				objMap.set(destinationPathElements[0],String(value));
 
 			} else { //multi-level hierarchy
 
@@ -133,7 +133,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 						case destinationPathElements.length-1: //leaf
 							
 							//leaf will have value
-							parent[destinationPathElements[level]]=value;
+							parent[destinationPathElements[level]]=String(value);
 							break;
 						default: //all other cases, i.e. intermediate branches
 							//however this needs to be skipped for a.b cases

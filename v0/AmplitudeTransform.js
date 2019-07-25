@@ -174,6 +174,8 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 			break;	
 	}
 
+	//Add the user_id to the obj map
+	objMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
 	//Now add the entire object map to the parameter map against 
 	//the designated root element name
 	parameterMap.set(rootElementName, JSON.stringify(mapToObj(objMap)));

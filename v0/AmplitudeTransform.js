@@ -240,6 +240,8 @@ function processSingleMessage(jsonQobj){
 				case "product removed":
 				case "product added to wishlist":
 				case "product removed from wishlist":		
+				case "product list viewed":
+				case "product list clicked":	
 					configJson = productActionsConfigJson;
 					break;		
 			}
@@ -261,15 +263,56 @@ function processSingleMessage(jsonQobj){
 
 }
 
+//Method for handling product list actions
+function processProductListAction(jsonQobj, respList){
+
+	//We have to generate multiple Amplitude calls per product list event
+	var productArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
+	
+	//placeholder for some common fields and structures that would be required
+	var rl_type = String(jsonQobj.find("rl_type").value());
+	var rl_event = String(jsonQobj.find("rl_event").value());
+	var rl_context = jsonQobj.find("rl_context").value();
+	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value());
+	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value());
+
+	//Now construct complete payloads for each product and 
+	//get them processed through single message processing logic
+	productArray.each(function (index, path, value){
+			var tempObj = {};
+			tempObj['rl_type'] = rl_type;
+			tempObj['rl_event'] = rl_event;
+			tempObj['rl_context'] = rl_context;
+			tempObj['rl_anonymous_id'] = rl_anonymous_id;
+			tempObj['rl_properties'] = value;
+			result = processSingleMessage(jsonQ(tempObj));
+			respList.push(result);
+
+	});
+
+	return respList;
+}
+
 
 //Iterate over input batch and generate response for each message
 function process (jsonQobj){
 	var respList = [];
 	var counter = 0;
 	jsonQobj.find("rl_message").each(function (index, path, value){
+		var singleJsonQObj = jsonQ(value);
+		var messageType = String(singleJsonQObj.find('rl_type').value()).toLowerCase();
+		var rlEventType = String(singleJsonQObj.find('rl_event').value()).toLowerCase();
 		//console.log(++counter);
-		result = processSingleMessage(jsonQ(value));
-		respList.push(result);
+		if (messageType == "track" 
+			&& (rlEventType == "product list clicked" 
+			|| rlEventType == "product list viewed")
+		) {
+			result = processProductListAction(singleJsonQObj, respList);
+		} else {
+			result = processSingleMessage(singleJsonQObj);
+			respList.push(result);
+		}
+		
 		
 	});
 	return respList;

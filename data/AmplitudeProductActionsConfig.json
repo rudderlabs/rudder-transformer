@@ -1,5 +1,4 @@
 {
-	"rl_anonymous_id":"event_properties.user_id",
 	"rl_context.rl_traits.rl_title":"user_properties.title",
 	"rl_context.rl_app.rl_version":"app_version",
 	"rl_context.rl_os.rl_name":"os_name",

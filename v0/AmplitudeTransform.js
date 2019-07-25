@@ -170,7 +170,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
 			objMap.set("event_type",amplitudeEventType);
-			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+			objMap.set("time",String(new Date(String(jsonQobj.find("rl_timestamp").value())).getTime()));
 			break;	
 	}
 
@@ -285,6 +285,7 @@ function processProductListAction(jsonQobj, respList){
 			tempObj['rl_context'] = rl_context;
 			tempObj['rl_anonymous_id'] = rl_anonymous_id;
 			tempObj['rl_properties'] = value;
+			tempObj['rl_timestamp'] = rl_timestamp;
 			result = processSingleMessage(jsonQ(tempObj));
 			respList.push(result);
 

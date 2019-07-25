@@ -49,11 +49,8 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	responseMap.set("request-format","PARAMS");
 
 	//User Id for internal routing purpose needs to be set
-	var anonId = jsonQobj.find("rl_anonymous_id");
-	anonId.each(function (index, path, value){
-		responseMap.set("user_id", String(value));
-	});
-
+	responseMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
+	
 	
 	//Amplitude HTTP API calls take two parameters
 	//First one is a api_key and the second one is a complete JSON

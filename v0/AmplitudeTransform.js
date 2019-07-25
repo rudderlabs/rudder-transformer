@@ -23,9 +23,9 @@ var promotionViewedConfigJson = JSON.parse(promotionViewedConfigFile);
 var promotionClickedConfigFile = fs.readFileSync('data/AmplitudePromotionClickedConfig.json');
 var promotionClickedConfigJson = JSON.parse(promotionClickedConfigFile);
 
-var productClickedOrViewedConfigFile 
-= fs.readFileSync('data/AmplitudeProductClickedOrViewedConfig.json');
-var productClickedOrViewedConfigJson = JSON.parse(productClickedOrViewedConfigFile);
+var productActionsConfigFile 
+= fs.readFileSync('data/AmplitudeProductActionsConfig.json');
+var productActionsConfigJson = JSON.parse(productActionsConfigFile);
 
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
@@ -237,7 +237,11 @@ function processSingleMessage(jsonQobj){
 					break;
 				case "product clicked":
 				case "product viewed":	
-					configJson = productClickedOrViewedConfigJson;
+				case "product added":
+				case "product removed":
+				case "product added to wishlist":
+				case "product removed from wishlist":		
+					configJson = productActionsConfigJson;
 					break;		
 			}
 			break;

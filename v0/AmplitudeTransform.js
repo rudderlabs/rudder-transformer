@@ -105,7 +105,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 			//to be directly added to root level
 			if (destinationPathElements.length<2){ 
 
-				objMap.set(destinationPathElements[0],value);
+				objMap.set(destinationPathElements[0],String(value));
 
 			} else { //multi-level hierarchy
 
@@ -133,7 +133,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 						case destinationPathElements.length-1: //leaf
 							
 							//leaf will have value
-							parent[destinationPathElements[level]]=value;
+							parent[destinationPathElements[level]]=String(value);
 							break;
 						default: //all other cases, i.e. intermediate branches
 							//however this needs to be skipped for a.b cases
@@ -170,7 +170,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
 			objMap.set("event_type",amplitudeEventType);
-			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+			objMap.set("time",String(new Date(String(jsonQobj.find("rl_timestamp").value())).getTime()));
 			break;	
 	}
 
@@ -285,6 +285,7 @@ function processProductListAction(jsonQobj, respList){
 			tempObj['rl_context'] = rl_context;
 			tempObj['rl_anonymous_id'] = rl_anonymous_id;
 			tempObj['rl_properties'] = value;
+			tempObj['rl_timestamp'] = rl_timestamp;
 			result = processSingleMessage(jsonQ(tempObj));
 			respList.push(result);
 

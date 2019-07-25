@@ -1,0 +1,24 @@
+{
+  "name": "rudder-transformer",
+  "version": "1.0.0",
+  "description": "Transformer is a service which transforms Rudder events to destination specific singular events.",
+  "main": "echoServer.js",
+  "dependencies": {
+    "jsonq": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node transformerIndex.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rudderlabs/rudder-transformer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rudderlabs/rudder-transformer/issues"
+  },
+  "homepage": "https://github.com/rudderlabs/rudder-transformer#readme"
+}

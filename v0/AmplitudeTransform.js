@@ -36,9 +36,9 @@ const mapToObj = m => {
   };
 
 //Build response for Amplitude. In this case, endpoint will be different depending 
-//on the event type being sent to Amplitude 
+//on Rudder "rl_type"
 //Also, the payload will be a complex JSON and not just key-value pairs
-function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitudeEventType, mappingJson, credsJson){
+function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type, mappingJson, credsJson){
 	
 	//Create a final map to be used for response and populate the static parts first
 	var responseMap = new Map();	
@@ -162,13 +162,13 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	});
 	
 
-	switch (amplitudeEventType){
+	switch (rl_type){
 		case "identify":
 			responseMap.set("endpoint","https://api.amplitude.com/identify");
 			break;
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
-			objMap.set("event_type",amplitudeEventType);
+			objMap.set("event_type",rl_type);
 			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
 			break;	
 	}
@@ -188,68 +188,70 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	return events;
 }
 
+//Handler code for 'page' calls
+function processPage(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'pageview', pageConfigJson, customerCredentialsConfigJson);
+}
+
+//Handler code for 'screen' calls
+function processScreen(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'screenview', screenConfigJson, customerCredentialsConfigJson);
+}
+
+
+//Handler code for "identify"
+function processIdentify(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'identification', jsonQobj,'identify', identifyConfigJson, customerCredentialsConfigJson);
+}
+
+//Handler code for "promotion viewed"
+function processPromotionViewed(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion viewed', promotionViewedConfigJson, customerCredentialsConfigJson);
+}
+
+//Handler code for "promotion clicked"
+function processPromotionClicked(jsonQobj){
+	var parameterMap = new Map();
+	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion clicked', promotionClickedConfigJson, customerCredentialsConfigJson);
+}
+
 
 
 //Generic process function which invokes specific handler functions depending on message type
 //and event type where applicable
 function processSingleMessage(jsonQobj){
 
-	var parameterMap = new Map(); //map for holding reqwuest parameters
-	var payloadObjectName = "";
-	var configJson;
-	var amplitudeEventType = "";
-	var error = false;
-
-	var events = []; //placeholder for events returned
 	//Route to appropriate process depending on type of message received
 	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
-	console.log(String(messageType));
+	//console.log(String(messageType));
 	switch (messageType){
 		case 'identify':
-			payloadObjectName = "identification";
-			amplitudeEventType = "identify";
-			configJson = identifyConfigJson; 
-			break;
+			return processIdentify(jsonQobj);
 		case 'page':
-			payloadObjectName = "event";
-			amplitudeEventType = "pageview";
-			configJson = pageConfigJson;
-			break;
+			return processPage(jsonQobj);	
 		case 'screen':
-			payloadObjectName = "event";
-			amplitudeEventType = "screenview";
-			configJson = screenConfigJson;
-			break;
+			return processScreen(jsonQobj);		
 		case 'track':
-			var rlEventType = String(jsonQobj.find('rl_event').value());	
-			payloadObjectName = "event";
-			amplitudeEventType = rlEventType;
-			switch(rlEventType.toLowerCase()){ //decide config to be used based on RL event
-				case "promotion clicked":
-					configJson = promotionClickedConfigJson;
+			var eventType = String(jsonQobj.find('rl_event').value()).toLowerCase();	
+			switch(eventType){
+				case 'promotion viewed':
+					return processPromotionViewed(jsonQobj);
 					break;
-				case "promotion viewed":
-					configJson = promotionViewedConfigJson;
-					break;
-				case "product clicked":
-					configJson = productClickedConfigJson;
-					break;		
+				case 'promotion clicked':
+					return processPromotionClicked(jsonQobj);
+					break;	
+				
 			}
-			break;
 		default:
 			console.log('could not determine type');
-			error = true;
+			var events = []
+			events.push("{\"error\":\"message type not supported\"}");
+			return events;
 	}
-
-	if (error){ // error has occurred, single error messge response
-		events.push("{\"error\":\"message type not supported\"}");
-	} else { //proper processing, return payload from processing function
-		events = 
-		responseBuilderSimple(parameterMap, payloadObjectName, jsonQobj, 
-			amplitudeEventType, configJson, customerCredentialsConfigJson);
-	}
-	console.log(String(events));
-	return events;
 
 }
 

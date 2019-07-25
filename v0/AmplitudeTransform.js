@@ -179,7 +179,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 
 	//Now add the entire object map to the parameter map against 
 	//the designated root element name
-	parameterMap.set(rootElementName, encodeURI(JSON.stringify(mapToObj(objMap))));
+	parameterMap.set(rootElementName, JSON.stringify(mapToObj(objMap)));
 
 	//Assign parameter map against payload key
 	responseMap.set("payload",mapToObj(parameterMap));

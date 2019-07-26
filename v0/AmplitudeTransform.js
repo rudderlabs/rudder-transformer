@@ -23,6 +23,13 @@ var promotionViewedConfigJson = JSON.parse(promotionViewedConfigFile);
 var promotionClickedConfigFile = fs.readFileSync('data/AmplitudePromotionClickedConfig.json');
 var promotionClickedConfigJson = JSON.parse(promotionClickedConfigFile);
 
+var productActionsConfigFile 
+= fs.readFileSync('data/AmplitudeProductActionsConfig.json');
+var productActionsConfigJson = JSON.parse(productActionsConfigFile);
+
+var coinsPurchasedConfigFile = fs.readFileSync('data/AmplitudeCoinsPurchasedEventConfig.json');
+var coinsPurchasedConfigJson = JSON.parse(coinsPurchasedConfigFile);
+
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
@@ -36,20 +43,17 @@ const mapToObj = m => {
   };
 
 //Build response for Amplitude. In this case, endpoint will be different depending 
-//on Rudder "rl_type"
+//on the event type being sent to Amplitude 
 //Also, the payload will be a complex JSON and not just key-value pairs
-function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type, mappingJson, credsJson){
+function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitudeEventType, mappingJson, credsJson){
 	
 	//Create a final map to be used for response and populate the static parts first
 	var responseMap = new Map();	
 	responseMap.set("request-format","PARAMS");
 
 	//User Id for internal routing purpose needs to be set
-	var anonId = jsonQobj.find("rl_anonymous_id");
-	anonId.each(function (index, path, value){
-		responseMap.set("user_id", String(value));
-	});
-
+	responseMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
+	
 	
 	//Amplitude HTTP API calls take two parameters
 	//First one is a api_key and the second one is a complete JSON
@@ -104,7 +108,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 			//to be directly added to root level
 			if (destinationPathElements.length<2){ 
 
-				objMap.set(destinationPathElements[0],value);
+				objMap.set(destinationPathElements[0],String(value));
 
 			} else { //multi-level hierarchy
 
@@ -132,7 +136,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 						case destinationPathElements.length-1: //leaf
 							
 							//leaf will have value
-							parent[destinationPathElements[level]]=value;
+							parent[destinationPathElements[level]]=String(value);
 							break;
 						default: //all other cases, i.e. intermediate branches
 							//however this needs to be skipped for a.b cases
@@ -162,20 +166,27 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	});
 	
 
-	switch (rl_type){
+	switch (amplitudeEventType){
 		case "identify":
 			responseMap.set("endpoint","https://api.amplitude.com/identify");
 			break;
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
-			objMap.set("event_type",rl_type);
-			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+			objMap.set("event_type",amplitudeEventType);
+			objMap.set("time",String(new Date(String(jsonQobj.find("rl_timestamp").value())).getTime()));
 			break;	
 	}
 
+	//Add the user_id to the obj map
+	objMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
+
+	//Also add insert_id, we're using rl_message_id for this
+	objMap.set("insert_id", String(jsonQobj.find("rl_message_id").value()));
+
+	
 	//Now add the entire object map to the parameter map against 
 	//the designated root element name
-	parameterMap.set(rootElementName, mapToObj(objMap));
+	parameterMap.set(rootElementName, JSON.stringify(mapToObj(objMap)));
 
 	//Assign parameter map against payload key
 	responseMap.set("payload",mapToObj(parameterMap));
@@ -188,85 +199,180 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, rl_type
 	return events;
 }
 
-//Handler code for 'page' calls
-function processPage(jsonQobj){
-	var parameterMap = new Map();
-	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'pageview', pageConfigJson, customerCredentialsConfigJson);
-}
-
-//Handler code for 'screen' calls
-function processScreen(jsonQobj){
-	var parameterMap = new Map();
-	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'screenview', screenConfigJson, customerCredentialsConfigJson);
-}
-
-
-//Handler code for "identify"
-function processIdentify(jsonQobj){
-	var parameterMap = new Map();
-	return responseBuilderSimple(parameterMap, 'identification', jsonQobj,'identify', identifyConfigJson, customerCredentialsConfigJson);
-}
-
-//Handler code for "promotion viewed"
-function processPromotionViewed(jsonQobj){
-	var parameterMap = new Map();
-	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion viewed', promotionViewedConfigJson, customerCredentialsConfigJson);
-}
-
-//Handler code for "promotion clicked"
-function processPromotionClicked(jsonQobj){
-	var parameterMap = new Map();
-	return responseBuilderSimple(parameterMap, 'event', jsonQobj,'promotion clicked', promotionClickedConfigJson, customerCredentialsConfigJson);
-}
-
 
 
 //Generic process function which invokes specific handler functions depending on message type
 //and event type where applicable
 function processSingleMessage(jsonQobj){
 
+	var parameterMap = new Map(); //map for holding reqwuest parameters
+	var payloadObjectName = "";
+	var configJson;
+	var amplitudeEventType = "";
+	var error = false;
+
+	var events = []; //placeholder for events returned
 	//Route to appropriate process depending on type of message received
 	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
-	//console.log(String(messageType));
+	console.log(String(messageType));
 	switch (messageType){
 		case 'identify':
-			return processIdentify(jsonQobj);
+			payloadObjectName = "identification";
+			amplitudeEventType = "identify";
+			configJson = identifyConfigJson; 
+			break;
 		case 'page':
-			return processPage(jsonQobj);	
+			payloadObjectName = "event";
+			amplitudeEventType = "pageview";
+			configJson = pageConfigJson;
+			break;
 		case 'screen':
-			return processScreen(jsonQobj);		
+			payloadObjectName = "event";
+			amplitudeEventType = "screenview";
+			configJson = screenConfigJson;
+			break;
 		case 'track':
-			var eventType = String(jsonQobj.find('rl_event').value()).toLowerCase();	
-			switch(eventType){
-				case 'promotion viewed':
-					return processPromotionViewed(jsonQobj);
+			var rlEventType = String(jsonQobj.find('rl_event').value());	
+			payloadObjectName = "event";
+			amplitudeEventType = rlEventType;
+			switch(rlEventType.toLowerCase()){ //decide config to be used based on RL event
+				case "promotion clicked":
+					configJson = promotionClickedConfigJson;
 					break;
-				case 'promotion clicked':
-					return processPromotionClicked(jsonQobj);
+				case "promotion viewed":
+					configJson = promotionViewedConfigJson;
+					break;
+				case "product clicked":
+				case "product viewed":	
+				case "product added":
+				case "product removed":
+				case "product added to wishlist":
+				case "product removed from wishlist":		
+				case "product list viewed":
+				case "product list clicked":	
+					configJson = productActionsConfigJson;
+					break;		
+				case "coins purchased":
+					configJson = coinsPurchasedConfigJson;
 					break;	
-				
 			}
+			break;
 		default:
 			console.log('could not determine type');
-			var events = []
-			events.push("{\"error\":\"message type not supported\"}");
-			return events;
+			error = true;
 	}
+
+	if (error){ // error has occurred, single error messge response
+		events.push("{\"error\":\"message type not supported\"}");
+	} else { //proper processing, return payload from processing function
+		events = 
+		responseBuilderSimple(parameterMap, payloadObjectName, jsonQobj, 
+			amplitudeEventType, configJson, customerCredentialsConfigJson);
+	}
+	console.log(String(events));
+	return events;
 
 }
 
+//Method for handling product list actions
+function processProductListAction(jsonQobj, respList){
+
+	//We have to generate multiple Amplitude calls per product list event
+	var productArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
+	
+
+	//Now construct complete payloads for each product and 
+	//get them processed through single message processing logic
+	productArray.each(function (index, path, value){
+			var tempObj = createSingleMessageBasicStructure(jsonQobj);			
+			tempObj['rl_properties'] = value;
+			result = processSingleMessage(jsonQ(tempObj));
+			respList.push(result);
+
+	});
+
+	return respList;
+}
+
+//Utility method for creating the structure required for single message processing
+//with basic fields populated
+function createSingleMessageBasicStructure(jsonQobj){
+
+	//placeholder for some common fields and structures that would be required
+	var rl_type = String(jsonQobj.find("rl_type").value()[0]);
+	var rl_event = String(jsonQobj.find("rl_event").value()[0]);
+	var rl_context = jsonQobj.find("rl_context").value()[0];
+	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
+	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value()[0]);
+	var rl_integrations = jsonQobj.find("rl_integrations").value()[0];
+	
+	
+	var tempObj = {};
+	tempObj['rl_type'] = rl_type;
+	tempObj['rl_event'] = rl_event;
+	tempObj['rl_context'] = rl_context;
+	tempObj['rl_anonymous_id'] = rl_anonymous_id;
+	tempObj['rl_timestamp'] = rl_timestamp;
+	tempObj['rl_integrations'] = rl_integrations;
+	
+	return tempObj;
+}
+
+function processTransaction(jsonQobj, respList){
+
+	//generate revenue calls for each revenue event - income, tax, discount, refund
+	var tempObj = createSingleMessageBasicStructure(jsonQobj);
+
+	//retrieve the income, tax and discount elements
+	var rl_revenue = String(jsonQobj.find("rl_properties").find("revenue").value());
+	var rl_tax = String(jsonQobj.find("rl_properties").find("tax").value());
+	var rl_discount = String(jsonQobj.find("rl_properties").find("discount").value());
+
+	//For order cancel or refund, amounts need to be made negative
+	var transactionEvent = String(jsonQobj.find("rl_event").value()).toLowerCase();
+	if(transactionEvent == "order cancelled" 
+	|| transactionEvent == "order refunded") {}
+
+
+
+	//generate call for each product
+	processProductListAction(jsonQobj, respList);
+}
 
 //Iterate over input batch and generate response for each message
 function process (jsonQobj){
 	var respList = [];
 	var counter = 0;
 	jsonQobj.find("rl_message").each(function (index, path, value){
+		var singleJsonQObj = jsonQ(value);
+		var messageType = String(singleJsonQObj.find('rl_type').value()).toLowerCase();
+		var rlEventType = String(singleJsonQObj.find('rl_event').value()).toLowerCase();
 		//console.log(++counter);
-		result = processSingleMessage(jsonQ(value));
-		respList.push(result);
+
+		//special handling required for product list events and transaction events
+		//which can require generation of multiple calls to Amplitude from a single
+		//Rudderlabs call
+		if (messageType == "track" 
+			&& (rlEventType == "product list clicked" 
+			|| rlEventType == "product list viewed")
+		) {
+			processProductListAction(singleJsonQObj, respList);
+		} else if (messageType == "track"
+					&& (rlEventType == "checkout started" 
+					|| rlEventType == "order updayed"
+					|| rlEventType == "order completed"
+					|| rlEventType == "order cancelled")
+		){
+			processTransaction(jsonQobj, respList);
+
+		} else {
+			result = processSingleMessage(singleJsonQObj);
+			respList.push(result);
+		}
 		
 	});
 	return respList;
 }
 
 exports.process = process;
+exports.createSingleMessageBasicStructure = createSingleMessageBasicStructure;

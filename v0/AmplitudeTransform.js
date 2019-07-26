@@ -299,6 +299,7 @@ function createSingleMessageBasicStructure(jsonQobj){
 	var rl_context = jsonQobj.find("rl_context").value()[0];
 	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
 	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value()[0]);
+	var rl_integrations = jsonQobj.find("rl_timestamp").value();
 	
 	var tempObj = {};
 	tempObj['rl_type'] = rl_type;
@@ -306,7 +307,7 @@ function createSingleMessageBasicStructure(jsonQobj){
 	tempObj['rl_context'] = rl_context;
 	tempObj['rl_anonymous_id'] = rl_anonymous_id;
 	tempObj['rl_timestamp'] = rl_timestamp;
-
+	
 	return tempObj;
 }
 
@@ -323,14 +324,8 @@ function processTransaction(jsonQobj, respList){
 	//For order cancel or refund, amounts need to be made negative
 	var transactionEvent = String(jsonQobj.find("rl_event").value()).toLowerCase();
 	if(transactionEvent == "order cancelled" 
-	|| transactionEvent == "order refunded") {
-		rl_revenue = "-"+rl_revenue;
-		rl_tax = "-"+rl_tax;
-		rl_discount = "-"+rl_discount;
-	}
+	|| transactionEvent == "order refunded") {}
 
-
-	
 
 
 	//generate call for each product

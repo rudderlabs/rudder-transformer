@@ -18,6 +18,7 @@
 	"rl_context.rl_traits.rl_lastname":"user_properties.lastname",
 	"rl_context.rl_traits.rl_gender":"user_properties.gender",
 	"rl_properties.name":"event_properties.screen_name",
-	"rl_context.rl_app.rl_name":"app_name"
+	"rl_context.rl_app.rl_name":"app_name",
+	"rl_message_id":"insert_id"
 		
 }

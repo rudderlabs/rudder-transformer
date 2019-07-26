@@ -71,6 +71,7 @@ function start(port){
                         basicObj['rl_properties'] = {}
                         basicObj['rl_properties']['quantity'] = String(totalQuantity);
                         basicObj['rl_properties']['price'] = String(totalPrice);
+                        basicObj['rl_integrations'] = jsonQobj.find("rl_integrations").value()[0];
 
                         //Construct single message
                         var messageObj = {};
@@ -102,7 +103,7 @@ function start(port){
         }).listen(port);
         console.log(`Worker ${process.pid} started`);
     }
-    console.log("echoServer: started")
+    console.log("aggregatorServer: started")
 }
 
 start(9292);

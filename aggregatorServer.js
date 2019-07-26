@@ -87,8 +87,8 @@ function start(port){
                         responseObj['sent_at'] = String(jsonQobj.find("sent_at").value());
                         responseObj['batch'] = messageList;
 
-                        response.end(JSON.stringify(responseObj));
-
+                        //response.end(JSON.stringify(responseObj));
+                        response.end(JSON.stringify(messageList));
                         //response.end(body);
 
                     } catch (se) {

@@ -179,6 +179,11 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 
 	//Add the user_id to the obj map
 	objMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
+
+	//Also add insert_id, we're using rl_message_id for this
+	objMap.set("insert_id", String(jsonQobj.find("rl_message_id").value()));
+
+	
 	//Now add the entire object map to the parameter map against 
 	//the designated root element name
 	parameterMap.set(rootElementName, JSON.stringify(mapToObj(objMap)));
@@ -299,7 +304,8 @@ function createSingleMessageBasicStructure(jsonQobj){
 	var rl_context = jsonQobj.find("rl_context").value()[0];
 	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
 	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value()[0]);
-	var rl_integrations = jsonQobj.find("rl_timestamp").value();
+	var rl_integrations = jsonQobj.find("rl_integrations").value()[0];
+	
 	
 	var tempObj = {};
 	tempObj['rl_type'] = rl_type;
@@ -307,6 +313,7 @@ function createSingleMessageBasicStructure(jsonQobj){
 	tempObj['rl_context'] = rl_context;
 	tempObj['rl_anonymous_id'] = rl_anonymous_id;
 	tempObj['rl_timestamp'] = rl_timestamp;
+	tempObj['rl_integrations'] = rl_integrations;
 	
 	return tempObj;
 }

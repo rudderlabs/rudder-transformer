@@ -27,6 +27,9 @@ var productActionsConfigFile
 = fs.readFileSync('data/AmplitudeProductActionsConfig.json');
 var productActionsConfigJson = JSON.parse(productActionsConfigFile);
 
+var coinsPurchasedConfigFile = fs.readFileSync('data/AmplitudeCoinsPurchasedEventConfig.json');
+var coinsPurchasedConfigJson = JSON.parse(coinsPurchasedConfigFile);
+
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
@@ -244,6 +247,9 @@ function processSingleMessage(jsonQobj){
 				case "product list clicked":	
 					configJson = productActionsConfigJson;
 					break;		
+				case "coins purchased":
+					configJson = coinsPurchasedConfigJson;
+					break;	
 			}
 			break;
 		default:
@@ -269,23 +275,12 @@ function processProductListAction(jsonQobj, respList){
 	//We have to generate multiple Amplitude calls per product list event
 	var productArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
 	
-	//placeholder for some common fields and structures that would be required
-	var rl_type = String(jsonQobj.find("rl_type").value());
-	var rl_event = String(jsonQobj.find("rl_event").value());
-	var rl_context = jsonQobj.find("rl_context").value();
-	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value());
-	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value());
 
 	//Now construct complete payloads for each product and 
 	//get them processed through single message processing logic
 	productArray.each(function (index, path, value){
-			var tempObj = {};
-			tempObj['rl_type'] = rl_type;
-			tempObj['rl_event'] = rl_event;
-			tempObj['rl_context'] = rl_context;
-			tempObj['rl_anonymous_id'] = rl_anonymous_id;
+			var tempObj = createSingleMessageBasicStructure(jsonQobj);			
 			tempObj['rl_properties'] = value;
-			tempObj['rl_timestamp'] = rl_timestamp;
 			result = processSingleMessage(jsonQ(tempObj));
 			respList.push(result);
 
@@ -294,6 +289,53 @@ function processProductListAction(jsonQobj, respList){
 	return respList;
 }
 
+//Utility method for creating the structure required for single message processing
+//with basic fields populated
+function createSingleMessageBasicStructure(jsonQobj){
+
+	//placeholder for some common fields and structures that would be required
+	var rl_type = String(jsonQobj.find("rl_type").value()[0]);
+	var rl_event = String(jsonQobj.find("rl_event").value()[0]);
+	var rl_context = jsonQobj.find("rl_context").value()[0];
+	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
+	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value()[0]);
+	
+	var tempObj = {};
+	tempObj['rl_type'] = rl_type;
+	tempObj['rl_event'] = rl_event;
+	tempObj['rl_context'] = rl_context;
+	tempObj['rl_anonymous_id'] = rl_anonymous_id;
+	tempObj['rl_timestamp'] = rl_timestamp;
+
+	return tempObj;
+}
+
+function processTransaction(jsonQobj, respList){
+
+	//generate revenue calls for each revenue event - income, tax, discount, refund
+	var tempObj = createSingleMessageBasicStructure(jsonQobj);
+
+	//retrieve the income, tax and discount elements
+	var rl_revenue = String(jsonQobj.find("rl_properties").find("revenue").value());
+	var rl_tax = String(jsonQobj.find("rl_properties").find("tax").value());
+	var rl_discount = String(jsonQobj.find("rl_properties").find("discount").value());
+
+	//For order cancel or refund, amounts need to be made negative
+	var transactionEvent = String(jsonQobj.find("rl_event").value()).toLowerCase();
+	if(transactionEvent == "order cancelled" 
+	|| transactionEvent == "order refunded") {
+		rl_revenue = "-"+rl_revenue;
+		rl_tax = "-"+rl_tax;
+		rl_discount = "-"+rl_discount;
+	}
+
+
+	
+
+
+	//generate call for each product
+	processProductListAction(jsonQobj, respList);
+}
 
 //Iterate over input batch and generate response for each message
 function process (jsonQobj){
@@ -304,19 +346,31 @@ function process (jsonQobj){
 		var messageType = String(singleJsonQObj.find('rl_type').value()).toLowerCase();
 		var rlEventType = String(singleJsonQObj.find('rl_event').value()).toLowerCase();
 		//console.log(++counter);
+
+		//special handling required for product list events and transaction events
+		//which can require generation of multiple calls to Amplitude from a single
+		//Rudderlabs call
 		if (messageType == "track" 
 			&& (rlEventType == "product list clicked" 
 			|| rlEventType == "product list viewed")
 		) {
-			result = processProductListAction(singleJsonQObj, respList);
+			processProductListAction(singleJsonQObj, respList);
+		} else if (messageType == "track"
+					&& (rlEventType == "checkout started" 
+					|| rlEventType == "order updayed"
+					|| rlEventType == "order completed"
+					|| rlEventType == "order cancelled")
+		){
+			processTransaction(jsonQobj, respList);
+
 		} else {
 			result = processSingleMessage(singleJsonQObj);
 			respList.push(result);
 		}
-		
 		
 	});
 	return respList;
 }
 
 exports.process = process;
+exports.createSingleMessageBasicStructure = createSingleMessageBasicStructure;

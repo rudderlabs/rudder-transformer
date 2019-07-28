@@ -48,6 +48,10 @@ function start(port, route) {
                             response.statusCode = 200;
                             response.end(respList);
     
+                        }).catch(function (error){
+                            response.statusCode = 500;	//500 for other errors
+                            response.statusMessage = error.message;
+                            response.end("[{\"error\":\"Invalid Input\"}]");
                         });
                     } catch (se) {
                         
@@ -66,7 +70,7 @@ function start(port, route) {
                                 response.statusMessage = se.message;
                                 console.log(se.stack);
                         }
-                        response.end()	
+                        response.end();	
                     }
                 });
             //logic for module cache invalidation    

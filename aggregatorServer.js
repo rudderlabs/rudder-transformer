@@ -8,6 +8,13 @@ const url = require("url");
 const jsonQ = require("jsonq");
 const amplitudeJS = require("./v0/AmplitudeTransform.js");
 
+//Conditional enable/disable of logging
+const DEBUG = false;
+if (!DEBUG){
+    console.log = function() {};
+}
+
+
 function start(port){
     if(!port){
         port = 9191;
@@ -23,6 +30,7 @@ function start(port){
 
         cluster.on('exit', (worker, code, signal) => {
             console.log(`worker ${worker.process.pid} died`);
+            
         });
     } else {
         //Main server body
@@ -96,14 +104,19 @@ function start(port){
                         response.statusCode = 500;	//500 for other errors
                         response.statusMessage = se.message;
                         console.log(se.stack);
+                        
                         response.end()	
                     }
                 });
             }
         }).listen(port);
+
         console.log(`Worker ${process.pid} started`);
+        
     }
-    console.log("aggregatorServer: started")
+
+    console.log("aggregatorServer: started");
+    
 }
 
 start(9292);

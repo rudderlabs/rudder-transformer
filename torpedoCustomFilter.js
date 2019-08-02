@@ -138,7 +138,7 @@ function start(port){
 
                                 //Repeat sequence as in the case of GA
                                 //for adding message to push list
-                                singleMessageObj = jsonQ(value);
+                                singleMessageObj = value;
 
                                 //Set rl_integrations to only Amplitude
                                 singleMessageObj['rl_integrations'] = 'amplitude';

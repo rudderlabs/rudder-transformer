@@ -382,3 +382,4 @@ function process (jsonQobj){
 
 exports.process = process;
 exports.createSingleMessageBasicStructure = createSingleMessageBasicStructure;
+exports.mapToObj = mapToObj;

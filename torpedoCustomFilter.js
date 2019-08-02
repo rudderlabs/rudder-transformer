@@ -72,31 +72,33 @@ function start(port){
                         var userTotalPayments = new Map();
 
                         //Also map structures for keeping user-specific
-                        //context and user-specific anonymous_id
-                        //These are really just for completeness sake. They
+                        //context just for completeness sake. They
                         //do not influence processing in any way
                         var userContext = new Map();
-                        var userAnonymousId = new Map();
-
+                        
                         //And finally a counter for catching every n-th message
                         var messageCounter = 0;
 
                         jsonQobj.find("rl_message").each(function (index, path, value){
 
-                            //First create 1:1 message for GA   
-                            var singleMessageObj = jsonQ(value);
-
-                            //Set rl_integrations to only GA
-                            singleMessageObj['rl_integrations'] = 'GA';
+                            
+                            
 
                             //Construct single message
                             var messageObj = {};
-                            messageObj['rl_message'] = singleMessageObj;
-                            
+
+                            //GA message is as-is full payload
+                            messageObj['rl_message'] = value;
+
+                            //Set rl_integrations to only GA
+                            messageObj['rl_message']['rl_integrations'] = 'GA';
+
                             //Add the GA message
                             messageList.push(messageObj);
 
                             //Next proceed to prepare information for the per-user Amplitude event
+                            var singleMessageObj = jsonQ(value);
+
 
                             //First extract the user_id 
                             var user_id 
@@ -122,18 +124,12 @@ function start(port){
                             //The map will be used at the very end once all messages 
                             //have been iterated
 
-                            //Also need keep set rl_context and rl_anonymous_id
-                            //for the user in order to populate the same into the
-                            //combined message for the user at the end
+                            //Also need keep set rl_context for the user in order to 
+                            //populate the same into the combined message for the user 
+                            //at the end
                             if (!userContext.has(user_id)){
                                 userContext.set(user_id, singleMessageObj.find("rl_context").value()[0]);
                             }    
-
-                            if (!userAnonymousId.has(user_id)){
-                                userAnonymousId.set(user_id, String(singleMessageObj.find("rl_context").value()));
-                            }    
-
-
 
                             //Now to also send across every fifth message as-is 
                             //to Amplitude
@@ -165,21 +161,10 @@ function start(port){
 
                             //Object to use as input for single, basic message 
                             //construction
-                            var singleMessageConstructionInput = {};
+                            var basicObj = {};
 
-                            singleMessageConstructionInput['rl_context']
+                            basicObj['rl_context']
                              = userContext.get(userId);
-
-                            singleMessageConstructionInput['rl_anonymous_id']
-                             = userAnonymousId.get(userId);
-
-                            var tempMessageObject = {};
-                            tempMessageObject['rl_message'] 
-                            = singleMessageConstructionInput;
-
-                            //Construct single object for this user
-                            var basicObj 
-                            = amplitudeJS.createSingleMessageBasicStructure(jsonQ(tempMessageObject));
 
                             basicObj['rl_user_properties'] = {};
                             basicObj['rl_user_properties']['user_id'] = userId;
@@ -189,8 +174,12 @@ function start(port){
                             = totalPaymentsForUser;
                             basicObj['rl_integrations'] = "amplitude";
 
-                            //Re-init message
-                            tempMessageObject = {};
+                            //Everything is track for Amplitude
+                            basicObj['rl_type'] = "track";
+                            basicObj['rl_event'] = "total_payments_per_user_per_session";
+
+                            
+                            var tempMessageObject = {};
                             tempMessageObject['rl_message'] = basicObj;
 
                             //Add to message list

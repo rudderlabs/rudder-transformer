@@ -52,7 +52,7 @@ function start(port){
 
                 request.on('end', async function () {
                     try {	//need to send 400 error for malformed JSON
-
+                        console.log(body);  
                         response.statusCode = 200;
                         response.end(body);
 
@@ -65,6 +65,8 @@ function start(port){
                         response.end()	
                     }
                 });
+            } else {
+                console.log(url.parse(request.url,true).query);
             }
         }).listen(port);
         console.log(`Worker ${process.pid} started`);

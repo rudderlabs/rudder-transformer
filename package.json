@@ -1,0 +1,24 @@
+{
+  "name": "rudder-transformer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "GATransform.js",
+  "scripts": {
+    "start": "node transformerIndex.js",
+    "start-ut": "node echoServer.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rudderlabs/rudder-transformer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rudderlabs/rudder-transformer/issues"
+  },
+  "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
+  "dependencies": {
+    "jsonq": "^1.2.0"
+  }
+}

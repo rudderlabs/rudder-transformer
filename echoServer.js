@@ -46,13 +46,13 @@ function start(port){
 
                     // Too much POST data, kill the connection!
                     // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-                    if (body.length > 1e6)
+                    if (body.length > 1e8)
                         request.connection.destroy();
                 });
 
                 request.on('end', async function () {
                     try {	//need to send 400 error for malformed JSON
-
+                        console.log(body);  
                         response.statusCode = 200;
                         response.end(body);
 
@@ -65,6 +65,8 @@ function start(port){
                         response.end()	
                     }
                 });
+            } else {
+                console.log(url.parse(request.url,true).query);
             }
         }).listen(port);
         console.log(`Worker ${process.pid} started`);

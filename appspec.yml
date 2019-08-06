@@ -1,6 +1,10 @@
 version: 0.0
 os: linux
 files:
+  - source: scripts/user-transformer.service
+    destination: /etc/systemd/system/
+  - source: scripts/dest-transformer.service
+    destination: /etc/systemd/system/
   - source: /
     destination: /home/ubuntu/rudder-transformer
 permissions:

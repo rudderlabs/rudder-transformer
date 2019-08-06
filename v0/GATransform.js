@@ -88,10 +88,14 @@ function responseBuilderSimple (parameterMap, jsonQobj, hitType, mappingJson, cr
 	parameterMap.set("v","1");
 	parameterMap.set("t",String(hitType));
 
-	//Add the customer 	credentials
-	jsonQ.each(credsJson, function(key,value){
-		parameterMap.set("tid",String(value));
-	});
+	jsonQobj.find("rl_destination").each((i, p, value) => {
+		parameterMap.set("tid", String(value.Config.trackingId));
+	  });
+	  //   Add the customer credentials
+	  //   jsonQ.each(credsJson, function(key, value) {
+	  //     parameterMap.set('tid', String(value));
+	  //   });
+
 	var loopCounter = 1;
 	//Iterate through each key mapping of pageview type messges
 	//the source keys are provided in the format a.b.c.d which means

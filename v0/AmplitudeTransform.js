@@ -63,9 +63,12 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	
 	//Amplitude HTTP API calls take two parameters
 	//First one is a api_key and the second one is a complete JSON
-	jsonQ.each(credsJson, function(key,value){
-		parameterMap.set("api_key",String(value));
+	jsonQobj.find("rl_destination").each((i, p, value) => {
+		parameterMap.set("api_key", String(value.Config.apiKey));
 	});
+	// jsonQ.each(credsJson, function(key,value){
+	// 	parameterMap.set("api_key",String(value));
+	// });
 
 	//We would need to maintain a map of RHS objects in order to 
 	//be able to add properties to the same without ending up with
@@ -170,8 +173,8 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		});
 		
 	});
-	
 
+	
 	switch (amplitudeEventType){
 		case "identify":
 			responseMap.set("endpoint","https://api.amplitude.com/identify");
@@ -179,7 +182,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
 			objMap.set("event_type",amplitudeEventType);
-			objMap.set("time",String(new Date(String(jsonQobj.find("rl_timestamp").value())).getTime()));
+			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
 			break;	
 	}
 
@@ -309,7 +312,7 @@ function createSingleMessageBasicStructure(jsonQobj){
 	var rl_event = String(jsonQobj.find("rl_event").value()[0]);
 	var rl_context = jsonQobj.find("rl_context").value()[0];
 	var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
-	var rl_timestamp = String(jsonQobj.find("rl_timestamp").value()[0]);
+	var rl_timestamp = jsonQobj.find("rl_timestamp").value()[0];
 	var rl_integrations = jsonQobj.find("rl_integrations").value()[0];
 	
 	

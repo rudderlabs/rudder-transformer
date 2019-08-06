@@ -2,9 +2,9 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/transformer
+    destination: /home/ubuntu/rudder-transformer
 permissions:
-  - object:  /home/ubuntu/transformer
+  - object:  /home/ubuntu/rudder-transformer
     pattern: "**"
     owner: ubuntu
     group: ubuntu

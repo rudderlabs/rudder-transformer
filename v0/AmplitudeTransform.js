@@ -5,7 +5,7 @@ var http = require('http');
 var qs = require('querystring');
 
 //Conditional enable/disable of logging
-const DEBUG = false;
+const DEBUG = true;
 if (!DEBUG){
 	console.log = function (){};
 }
@@ -35,6 +35,9 @@ var productActionsConfigJson = JSON.parse(productActionsConfigFile);
 
 var coinsPurchasedConfigFile = fs.readFileSync('data/AmplitudeCoinsPurchasedEventConfig.json');
 var coinsPurchasedConfigJson = JSON.parse(coinsPurchasedConfigFile);
+
+var revenueGeneratedConfigFile = fs.readFileSync('data/AmplitudeRevenueConfig.json');
+var revenueGeneratedConfigJson = JSON.parse(revenueGeneratedConfigFile);
 
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
@@ -82,8 +85,33 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		objMap.set("platform",String(value).split(".")[2]);
 	});
 
+	var moreMappedJson = mappingJson
 
-	jsonQ.each(mappingJson, function(sourceKey, destinationKey){
+	// Adding mapping for free flowing rl_properties to amp event_properties
+	jsonQobj.find("rl_properties").each(function (index, path, value) {
+		console.log('=============')
+		console.log(value);
+		var mappingJsonQObj = jsonQ(mappingJson)
+		jsonQ.each(value, function(key, val) {
+			console.log("==key==:: ", key)
+			if (mappingJsonQObj.find("rl_properties." + key).length == 0) {
+				console.log("===adding extra mapping===")
+				moreMappedJson["rl_properties." + key] = "event_properties." + key
+			}
+		})
+	});
+
+	//Add custom user_props mapping
+	jsonQobj.find("rl_user_properties").each(function (index, path, value) {
+		console.log("====custom user_props===")
+		jsonQ.each(value, function(key, val) {
+			console.log(key + " : " + val)
+			moreMappedJson["rl_user_properties." + key] = "user_properties." + key
+		})
+	})
+
+
+	jsonQ.each(moreMappedJson, function(sourceKey, destinationKey){
 		console.log(destinationKey);
 		//Reset reference point to root
 		var tempObj = jsonQobj.find('rl_context').parent();
@@ -117,7 +145,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 			//to be directly added to root level
 			if (destinationPathElements.length<2){ 
 
-				objMap.set(destinationPathElements[0],String(value));
+				objMap.set(destinationPathElements[0],(value));
 
 			} else { //multi-level hierarchy
 
@@ -145,7 +173,7 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 						case destinationPathElements.length-1: //leaf
 							
 							//leaf will have value
-							parent[destinationPathElements[level]]=String(value);
+							parent[destinationPathElements[level]]=(value);
 							break;
 						default: //all other cases, i.e. intermediate branches
 							//however this needs to be skipped for a.b cases
@@ -182,15 +210,15 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
 			objMap.set("event_type",amplitudeEventType);
-			objMap.set("time",new Date(String(jsonQobj.find("rl_timestamp").value())).getTime());
+			objMap.set("time",(new Date((jsonQobj.find("rl_timestamp").value()[0])).getTime()));
 			break;	
 	}
 
 	//Add the user_id to the obj map
-	objMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
+	objMap.set("user_id", (jsonQobj.find("rl_anonymous_id").value()[0]));
 
 	//Also add insert_id, we're using rl_message_id for this
-	objMap.set("insert_id", String(jsonQobj.find("rl_message_id").value()));
+	objMap.set("insert_id", (jsonQobj.find("rl_message_id").value()[0]));
 
 	
 	//Now add the entire object map to the parameter map against 
@@ -202,6 +230,8 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 
 	//Convert response map to JSON
 	var responseJson = JSON.stringify(mapToObj(responseMap));
+
+	console.log(JSON.parse(responseJson))
 
 	var events = []
 	events.push(responseJson);
@@ -224,7 +254,7 @@ function processSingleMessage(jsonQobj){
 	//Route to appropriate process depending on type of message received
 	var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
 	console.log(String(messageType));
-	switch (messageType){
+	switch (messageType){ 
 		case 'identify':
 			payloadObjectName = "identification";
 			amplitudeEventType = "identify";
@@ -244,6 +274,12 @@ function processSingleMessage(jsonQobj){
 			var rlEventType = String(jsonQobj.find('rl_event').value());	
 			payloadObjectName = "event";
 			amplitudeEventType = rlEventType;
+			// Revenue Event, rl_event name can be anything
+			if (jsonQobj.find('productId').parent().find('quantity').length > 0 &&
+			jsonQobj.find('productId').parent().find('price').length > 0) {
+				console.log("==taking revenue===")
+				configJson = revenueGeneratedConfigJson;
+			}
 			switch(rlEventType.toLowerCase()){ //decide config to be used based on RL event
 				case "promotion clicked":
 					configJson = promotionClickedConfigJson;
@@ -260,10 +296,13 @@ function processSingleMessage(jsonQobj){
 				case "product list viewed":
 				case "product list clicked":	
 					configJson = productActionsConfigJson;
-					break;		
-				case "coins purchased":
-					configJson = coinsPurchasedConfigJson;
 					break;	
+				default:
+					configJson = screenConfigJson;
+					break;
+				/* case "coins purchased":
+					configJson = coinsPurchasedConfigJson;
+					break; */	
 			}
 			break;
 		default:

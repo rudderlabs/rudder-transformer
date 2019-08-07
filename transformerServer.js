@@ -5,7 +5,7 @@ var url = require("url");
 var jsonQ = require('jsonq');
 
 //Conditional enable/disable debug
-const DEBUG = false;
+const DEBUG = true;
 if (!DEBUG){
     console.log = function(){};
 }

@@ -1,0 +1,83 @@
+{
+    "sent_at": "2019-08-07 05:52:43+0000",
+    "batch": [
+      {
+        "rl_message": {
+          "rl_channel": "Identification Channel",
+          "rl_context": {
+            "rl_app": {
+              "rl_build": "0",
+              "rl_name": "com.rudderlabs.android.library.test",
+              "rl_namespace": "com.rudderlabs.android.library.test",
+              "rl_version": "1.0.0"
+            },
+            "rl_traits": {
+              "rl_address": {
+                "rl_city": "New York",
+                "rl_country": "USA",
+                "rl_postalcode": "ZA22334",
+                "rl_state": "New York",
+                "rl_street": "Wall Street"
+              },
+              "rl_age": 25,
+              "rl_birthday": "05-09-1997",
+              "rl_company": {
+                "rl_name": "Rudder Labs",
+                "rl_id": "test--company--id",
+                "rl_industry": "Software Engg"
+              },
+              "rl_createdat": "",
+              "rl_description": "Rudder Labs Company",
+              "rl_email": "example@gmail.com",
+              "rl_firstname": "Example",
+              "rl_gender": "Female",
+              "rl_id": "8c3f46c6-2bab-4fa6-b59d-e8d3c8b4045f",
+              "rl_lastname": "Traits",
+              "rl_name": "Example Traits",
+              "rl_phone": "9876543212",
+              "rl_title": "Mrs",
+              "rl_username": "example_traits"
+            },
+            "rl_library": {
+              "rl_name": "com.rudderlabs.android.library",
+              "rl_version": "1.0"
+            },
+            "rl_os": {
+              "rl_name": "Android",
+              "rl_version": "9"
+            },
+            "rl_screen": {
+              "rl_density": 1,
+              "rl_width": 470,
+              "rl_height": 320
+            },
+            "rl_user_agent": "",
+            "rl_locale": "en-US",
+            "rl_device": {
+              "rl_id": "20c1843c-e577-4187-b5a6-1a7f610d8115",
+              "rl_manufacturer": "unknown",
+              "rl_model": "robolectric",
+              "rl_name": "robolectric"
+            },
+            "rl_network": {
+              "rl_carrier": ""
+            }
+          },
+          "rl_type": "identify",
+          "rl_message_id": "29b851a7-a435-47fe-8edb-68a6db02bab9",
+          "rl_timestamp": "2019-08-07 05:52:43+0000",
+          "rl_anonymous_id": "20c1843c-e577-4187-b5a6-1a7f610d8115",
+          "rl_user_id": "8c3f46c6-2bab-4fa6-b59d-e8d3c8b4045f",
+          "rl_event": "Identify",
+          "rl_user_properties": {
+            "first_name": "Sayan",
+            "last_name": "Mitra",
+            "age": 25
+          },
+          "rl_integrations": [
+            "rudderlabs"
+          ]
+        }
+      }
+    ]
+  }

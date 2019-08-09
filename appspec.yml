@@ -8,7 +8,7 @@ files:
   - source: /
     destination: /home/ubuntu/rudder-transformer
 permissions:
-  - object:  /home/ubuntu/rudder-transformer
+  - object: /home/ubuntu/rudder-transformer
     pattern: "**"
     owner: ubuntu
     group: ubuntu

@@ -1,0 +1,8 @@
+{
+    "rl_properties.rating_value":"af_rating_value",
+    "rl_properties.content_type":"af_content_type",
+    "rl_properties.content_id":"af_content_id",
+    "rl_properties.content":"af_content",
+    "rl_properties.currency":"af_currency",
+    "rl_properties.max_rating_value":"af_max_rating_value"
+}

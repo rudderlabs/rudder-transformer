@@ -81,7 +81,9 @@ function start(port){
 
                         jsonQobj.find("rl_message").each(function (index, path, value){
 
-                            
+                            //Extract the rl_anonymous_id for direct inclusion under
+                            //rl_message
+                            var anonymousId = (jsonQ(value)).find("rl_anonymous_id").value()[0];
                             
 
                             //Construct single message
@@ -93,6 +95,9 @@ function start(port){
                             //Set rl_integrations to only GA
                             //messageObj['rl_message']['rl_integrations'] = 'GA';
                             messageObj['rl_message']['rl_integrations'] = '{"GA":true}';
+
+                            //Add rl_anonymous_id
+                            messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
 
                             //Add the GA message
                             messageList.push(messageObj);
@@ -148,6 +153,9 @@ function start(port){
                                 //Construct single message
                                 messageObj = {};
                                 messageObj['rl_message'] = singleMessageObj;
+                                //Add rl_anonymous_id
+                                messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
+
                                 
                                 //Add the Amplitude message
                                 messageList.push(messageObj);
@@ -184,6 +192,16 @@ function start(port){
                             
                             var tempMessageObject = {};
                             tempMessageObject['rl_message'] = basicObj;
+
+                            //Add rl_anonymous_id
+                            //Temporary if-then to handle changing message structure
+                            if (!basicObj['rl_context']['rl_traits']){
+                                tempMessageObject['rl_message']['rl_anonymous_id'] 
+                                = userId;
+                            } else {
+                                tempMessageObject['rl_message']['rl_anonymous_id'] 
+                                = basicObj['rl_context']['rl_traits']['rl_anonymous_id'];    
+                            }
 
                             //Add to message list
                             messageList.push(tempMessageObject);

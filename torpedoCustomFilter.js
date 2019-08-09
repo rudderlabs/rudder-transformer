@@ -91,7 +91,8 @@ function start(port){
                             messageObj['rl_message'] = value;
 
                             //Set rl_integrations to only GA
-                            messageObj['rl_message']['rl_integrations'] = 'GA';
+                            //messageObj['rl_message']['rl_integrations'] = 'GA';
+                            messageObj['rl_message']['rl_integrations'] = '{"GA":true}';
 
                             //Add the GA message
                             messageList.push(messageObj);
@@ -141,7 +142,8 @@ function start(port){
                                 singleMessageObj = value;
 
                                 //Set rl_integrations to only Amplitude
-                                singleMessageObj['rl_integrations'] = 'amplitude';
+                                //singleMessageObj['rl_integrations'] = 'amplitude';
+                                singleMessageObj['rl_integrations'] = '{"AM":true}';
     
                                 //Construct single message
                                 messageObj = {};
@@ -172,7 +174,8 @@ function start(port){
                             basicObj['rl_properties'] = {};
                             basicObj['rl_properties']['total_payments'] 
                             = totalPaymentsForUser;
-                            basicObj['rl_integrations'] = "amplitude";
+                            //basicObj['rl_integrations'] = "amplitude";
+                            basicObj['rl_integrations'] = '{"AM":true}';
 
                             //Everything is track for Amplitude
                             basicObj['rl_type'] = "track";

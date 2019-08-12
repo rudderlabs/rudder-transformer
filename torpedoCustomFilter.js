@@ -12,7 +12,7 @@ const jsonQ = require("jsonq");
 const amplitudeJS = require("./v0/AmplitudeTransform.js");
 
 //Conditional enable/disable of logging
-const DEBUG = false;
+const DEBUG = true;
 if (!DEBUG){
     console.log = function() {};
 }
@@ -222,6 +222,7 @@ function start(port){
                         responseObj['batch'] = messageList;
 
                         //response.end(JSON.stringify(responseObj));
+                        console.log(JSON.stringify(messageList))
                         response.end(JSON.stringify(messageList));
                         //response.end(body);
 

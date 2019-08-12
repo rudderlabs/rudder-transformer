@@ -94,7 +94,7 @@ function start(port){
 
                             //Set rl_integrations to only GA
                             //messageObj['rl_message']['rl_integrations'] = 'GA';
-                            messageObj['rl_message']['rl_integrations'] = '{"GA":true}';
+                            messageObj['rl_message']['rl_integrations'] = '{"All": false, "GA":true}';
 
                             //Add rl_anonymous_id
                             messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
@@ -148,7 +148,7 @@ function start(port){
 
                                 //Set rl_integrations to only Amplitude
                                 //singleMessageObj['rl_integrations'] = 'amplitude';
-                                singleMessageObj['rl_integrations'] = '{"AM":true}';
+                                singleMessageObj['rl_integrations'] = '{"All": false, "AM":true}';
     
                                 //Construct single message
                                 messageObj = {};
@@ -183,7 +183,7 @@ function start(port){
                             basicObj['rl_properties']['total_payments'] 
                             = totalPaymentsForUser;
                             //basicObj['rl_integrations'] = "amplitude";
-                            basicObj['rl_integrations'] = '{"AM":true}';
+                            basicObj['rl_integrations'] = '{"All": false, "AM":true}';
 
                             //Everything is track for Amplitude
                             basicObj['rl_type'] = "track";

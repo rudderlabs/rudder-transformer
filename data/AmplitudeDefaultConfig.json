@@ -9,6 +9,7 @@
 	"rl_context.rl_app.rl_name":"app_name",
 	"rl_context.rl_app.rl_version":"app_version",
     "rl_context.rl_platform":"platform",
-    "rl_context.rl_locale":"language"
+    "rl_context.rl_locale":"language",
+    "rl_properties.category":"event_type"
 		
 }

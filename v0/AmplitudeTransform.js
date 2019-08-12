@@ -212,7 +212,9 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 			break;
 		default:
 			responseMap.set("endpoint","https://api.amplitude.com/httpapi");
-			objMap.set("event_type",amplitudeEventType);
+			if (amplitudeEventType && amplitudeEventType != null) {
+				objMap.set("event_type",amplitudeEventType);
+			}
 			objMap.set("time",(new Date((jsonQobj.find("rl_timestamp").value()[0])).getTime()));
 			break;	
 	}

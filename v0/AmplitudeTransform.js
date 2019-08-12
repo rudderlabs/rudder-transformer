@@ -39,6 +39,9 @@ var coinsPurchasedConfigJson = JSON.parse(coinsPurchasedConfigFile);
 var revenueGeneratedConfigFile = fs.readFileSync('data/AmplitudeRevenueConfig.json');
 var revenueGeneratedConfigJson = JSON.parse(revenueGeneratedConfigFile);
 
+var defaultConfigFile = fs.readFileSync('data/AmplitudeDefaultConfig.json');
+var defaultConfigJson = JSON.parse(defaultConfigFile);
+
 //Load customer credentials
 var customerCredentialsConfig = fs.readFileSync('data/AmplitudeCredentialsConfig.json');
 var customerCredentialsConfigJson = JSON.parse(customerCredentialsConfig);
@@ -81,9 +84,9 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	//Add fixed-logic fields to objMap
 	var libraryName = jsonQobj.find("rl_library").find("rl_name");
 
-	libraryName.each(function(index, path, value){
+	/* libraryName.each(function(index, path, value){
 		objMap.set("platform",String(value).split(".")[2]);
-	});
+	}); */
 
 	var moreMappedJson = mappingJson
 
@@ -217,8 +220,8 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	//Add the user_id to the obj map
 	objMap.set("user_id", (jsonQobj.find("rl_anonymous_id").value()[0]));
 
-	//Also add insert_id, we're using rl_message_id for this
-	objMap.set("insert_id", (jsonQobj.find("rl_message_id").value()[0]));
+	//Also add insert_id, we're using rl_message_id for this (Check if required??)
+	//objMap.set("insert_id", (jsonQobj.find("rl_message_id").value()[0]));
 
 	
 	//Now add the entire object map to the parameter map against 
@@ -298,7 +301,7 @@ function processSingleMessage(jsonQobj){
 					configJson = productActionsConfigJson;
 					break;	
 				default:
-					configJson = screenConfigJson;
+					configJson = defaultConfigJson; //this also our default
 					break;
 				/* case "coins purchased":
 					configJson = coinsPurchasedConfigJson;

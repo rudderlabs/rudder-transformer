@@ -9,5 +9,5 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 9191
+EXPOSE 9292
 CMD [ "npm", "run", "start-ut" ]

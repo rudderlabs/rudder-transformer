@@ -10,39 +10,39 @@ const amplitudeJS = require("./v0/AmplitudeTransform.js");
 
 //Conditional enable/disable of logging
 const DEBUG = false;
-if (!DEBUG){
-    console.log = function() {};
+if (!DEBUG) {
+    console.log = function () { };
 }
 
 
-function start(port){
-    if(!port){
-        port = 9191;
+function start(port) {
+    if (!port) {
+        port = 9292;
     }
 
     if (cluster.isMaster) {
         console.log(`Master ${process.pid} is running`);
 
-    // Fork workers.
+        // Fork workers.
         for (let i = 0; i < numCPUs; i++) {
             cluster.fork();
         }
 
         cluster.on('exit', (worker, code, signal) => {
             console.log(`worker ${worker.process.pid} died`);
-            
+
         });
     } else {
         //Main server body
-        http.createServer(function (request,response){
+        http.createServer(function (request, response) {
             var pathname = url.parse(request.url).pathname;
-            
+
             //Adding logic for a call that will invalidate cache
             //for particular module in order that next require call for
             //that module will reload the same
             if (request.method == 'POST') {
                 var body = '';
-                var respBody = '';	
+                var respBody = '';
 
                 request.on('data', function (data) {
                     body += data;
@@ -67,10 +67,10 @@ function start(port){
                         var totalQuantity = 0;
                         var totalPrice = 0;
 
-                        jsonQobj.find("rl_properties").each(function (index, path, value){
-                            totalQuantity += parseInt(String(value.quantity),10);
+                        jsonQobj.find("rl_properties").each(function (index, path, value) {
+                            totalQuantity += parseInt(String(value.quantity), 10);
                             totalPrice += parseFloat(String(value.price));
-                        });    
+                        });
 
                         //Construct single object
                         var basicObj = amplitudeJS.createSingleMessageBasicStructure(jsonQobj);
@@ -100,23 +100,23 @@ function start(port){
                         //response.end(body);
 
                     } catch (se) {
-                
+
                         response.statusCode = 500;	//500 for other errors
                         response.statusMessage = se.message;
                         console.log(se.stack);
-                        
-                        response.end()	
+
+                        response.end()
                     }
                 });
             }
         }).listen(port);
 
         console.log(`Worker ${process.pid} started`);
-        
+
     }
 
     console.log("aggregatorServer: started");
-    
+
 }
 
 start(9292);

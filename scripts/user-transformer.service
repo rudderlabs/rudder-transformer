@@ -5,8 +5,7 @@ After = network.target
 [Service]
 WorkingDirectory = /home/ubuntu/rudder-transformer
 Restart = always
-ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/echoServer.js
+ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/aggregatorServer.js
 
 [Install]
 WantedBy = multi-user.target
-

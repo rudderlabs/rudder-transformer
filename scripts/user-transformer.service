@@ -6,6 +6,9 @@ After = network.target
 WorkingDirectory = /home/ubuntu/rudder-transformer
 Restart = always
 ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/aggregatorServer.js
+StandardOutput = syslog
+StandardError = syslog
+SyslogIdentifier = user-transformer
 
 [Install]
 WantedBy = multi-user.target

@@ -6,6 +6,9 @@ After = network.target
 WorkingDirectory = /home/ubuntu/rudder-transformer
 Restart = always
 ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/transformerIndex.js
+StandardOutput = syslog
+StandardError = syslog
+SyslogIdentifier = dest-transformer
 
 [Install]
 WantedBy = multi-user.target

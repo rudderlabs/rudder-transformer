@@ -215,12 +215,19 @@ function responseBuilderSimple (parameterMap, jsonQobj){
     var responseMap = new Map();
     var app_id = String(jsonQobj.find("rl_context").find("rl_app").find("rl_namespace").value());
 	responseMap.set("endpoint","https://api2.appsflyer.com/inappevent/"+app_id);
-	responseMap.set("request-format","PARAMS");
 
-	
+    var requestConfigMap = new Map();
+    requestConfigMap.set("request-format","JSON");
+    requestConfigMap.set("request_method","POST");
+
+    responseMap.set("request_config", mapToObj(requestConfigMap));
+    
+    jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
+		responseMap.set("user_id",String(value));
+	});
 	
 	jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
-		parameterMap.set("appsflyer_id",String(value));
+        parameterMap.set("appsflyer_id",String(value));
     });
     
     //customer_user_id
@@ -233,8 +240,13 @@ function responseBuilderSimple (parameterMap, jsonQobj){
     parameterMap.set("af_events_api","true");
 
     responseMap.set("payload",mapToObj(parameterMap));
-    
-    var headerMap = new Map();//TODO
+
+    var headerMap = new Map();
+    jsonQobj.find("rl_destination").each((i, p, value) => {
+		headerMap.set("authentication", String(value.Config.apiKey));
+    });
+    headerMap.set("Content-Type", 'application/json')
+    responseMap.set("header",mapToObj(headerMap));
 
 	var responseJson = JSON.stringify(mapToObj(responseMap));
 

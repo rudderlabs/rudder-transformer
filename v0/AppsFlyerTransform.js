@@ -254,7 +254,23 @@ function getEventValueMapFromMappingJson(parameterMap, jsonQobj, mappingJson, is
 
     var eventValueMap = new Map();
 
-	jsonQ.each(mappingJson, function(sourceKey, destinationKey){
+    var moreMappedJson = mappingJson
+
+	// Adding mapping for free flowing rl_properties to appsFlyer.
+	jsonQobj.find("rl_properties").each(function (index, path, value) {
+		console.log('=============')
+		console.log(value);
+		var mappingJsonQObj = jsonQ(mappingJson)
+		jsonQ.each(value, function(key, val) {
+			console.log("==key==:: ", key)
+			if (mappingJsonQObj.find("rl_properties." + key).length == 0) {
+				console.log("===adding extra mapping===")
+				moreMappedJson["rl_properties." + key] = key
+			}
+		})
+	});
+
+	jsonQ.each(moreMappedJson, function(sourceKey, destinationKey){
 		var tempObj = jsonQobj.find('rl_context').parent();
 
 		var pathElements = sourceKey.split('.');
@@ -290,15 +306,29 @@ function getEventValueMapFromMappingJson(parameterMap, jsonQobj, mappingJson, is
 
 }
 
+function processNonTrackEvents(parameterMap, jsonQobj, eventName){
+    parameterMap.set("eventName", eventName);
+    getEventValueForUnIdentifiedTrackEvent(parameterMap, jsonQobj);
+}
+
 function processSingleMessage(jsonQobj){
     var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
     var parameterMap = new Map();
+    var eventName = String(jsonQobj.find('rl_event').value());
     switch (messageType){
         case 'track':
             processEventTypeTrack(parameterMap, jsonQobj);
             break;
+        case 'screen':
+            eventName = 'screen'
+            processNonTrackEvents(parameterMap, jsonQobj, eventName);
+            break;
+        case 'page':
+            eventName = 'page'
+            processNonTrackEvents(parameterMap, jsonQobj, eventName);
+            break;
         default:
-            parameterMap.set("eventName",  String(jsonQobj.find('rl_event').value()));
+            parameterMap.set("eventName", eventName);
             parameterMap.set("eventValue", "");
     }
     return responseBuilderSimple(parameterMap,jsonQobj); 

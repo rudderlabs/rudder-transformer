@@ -3,19 +3,21 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
-var aFDescriptionConfigFile = fs.readFileSync('data/AFDescriptionConfig.json');
-var aFDescriptionConfigJson = JSON.parse(aFDescriptionConfigFile);
-
-var aFAdClickOrAdViewConfigFile = fs.readFileSync('data/AFAdClickOrAdViewConfig.json');
-var aFAdClickOrAdViewConfigJson = JSON.parse(aFAdClickOrAdViewConfigFile);
-
-var aFAddPaymentInfoConfigFile = fs.readFileSync('data/AFAddPaymentInfoConfig.json');
-var aFAddPaymentInfoConfigJson = JSON.parse(aFAddPaymentInfoConfigFile);
-
 var aFAddToCartOrWishlistConfigFile = fs.readFileSync('data/AFAddToCartOrWishlistConfig.json');
 var aFAddToCartOrWishlistConfigJson = JSON.parse(aFAddToCartOrWishlistConfigFile);
 
-var aFCompleteRegistrationConfigFile = fs.readFileSync('data/AFCompleteRegistrationConfig.json');
+var aFPurchaseConfigFile = fs.readFileSync('data/AFPurchaseConfig.json');
+var aFPurchaseConfigJson = JSON.parse(aFPurchaseConfigFile);
+
+var aFSearchConfigFile = fs.readFileSync('data/AFSearchConfig.json');
+var aFSearchConfigJson = JSON.parse(aFSearchConfigFile);
+
+var aFContentViewConfigFile = fs.readFileSync('data/AFContentViewConfig.json');
+var aFContentViewConfigJson = JSON.parse(aFContentViewConfigFile);
+
+
+
+/* var aFCompleteRegistrationConfigFile = fs.readFileSync('data/AFCompleteRegistrationConfig.json');
 var aFCompleteRegistrationConfigJson = JSON.parse(aFCompleteRegistrationConfigFile);
 
 var aFLevelAchievedConfigFile = fs.readFileSync('data/AFLevelAchievedConfig.json');
@@ -48,14 +50,14 @@ var aFUpdateConfigJson = JSON.parse(aFUpdateConfigFile);
 var aFInitiatedCheckoutConfigFile = fs.readFileSync('data/AFInitiatedCheckoutConfig.json');
 var aFInitiatedCheckoutConfigJson = JSON.parse(aFInitiatedCheckoutConfigFile);
 
-var aFPurchaseConfigFile = fs.readFileSync('data/AFPurchaseConfig.json');
-var aFPurchaseConfigJson = JSON.parse(aFPurchaseConfigFile);
+var aFDescriptionConfigFile = fs.readFileSync('data/AFDescriptionConfig.json');
+var aFDescriptionConfigJson = JSON.parse(aFDescriptionConfigFile);
 
-var aFSearchConfigFile = fs.readFileSync('data/AFSearchConfig.json');
-var aFSearchConfigJson = JSON.parse(aFSearchConfigFile);
+var aFAdClickOrAdViewConfigFile = fs.readFileSync('data/AFAdClickOrAdViewConfig.json');
+var aFAdClickOrAdViewConfigJson = JSON.parse(aFAdClickOrAdViewConfigFile);
 
-var aFContentViewConfigFile = fs.readFileSync('data/AFContentViewConfig.json');
-var aFContentViewConfigJson = JSON.parse(aFContentViewConfigFile);
+var aFAddPaymentInfoConfigFile = fs.readFileSync('data/AFAddPaymentInfoConfig.json');
+var aFAddPaymentInfoConfigJson = JSON.parse(aFAddPaymentInfoConfigFile); */
 
 
 function processEventTypeTrack(parameterMap, jsonQobj){
@@ -65,23 +67,50 @@ function processEventTypeTrack(parameterMap, jsonQobj){
     var isMultiSupport = false;
     var isUnIdentifiedEvent = false;
     switch(eventType.toLowerCase()){
-        case 'level achieved':
-            eventName = 'af_level_achieved';
-            jsonConfig = aFLevelAchievedConfigJson;
-            break;
-        case 'add payment info':
-            eventName = 'af_add_payment_info';
-            jsonConfig = aFAddPaymentInfoConfigJson;
-            break;
-        case 'add to cart':
+        case 'wishlist product added to cart': //'add to cart':
             eventName = 'af_add_to_cart';
             jsonConfig = aFAddToCartOrWishlistConfigJson;
             isMultiSupport = true;
             break;
-        case 'add to wishlist':
+        case 'product added to wishlist'://'add to wishlist':
             eventName = 'af_add_to_wishlist';
             jsonConfig = aFAddToCartOrWishlistConfigJson;
             isMultiSupport = true;
+            break;
+        case 'checkout started':
+            eventName = 'af_initiated_checkout';
+            jsonConfig = aFAddToCartOrWishlistConfigJson;
+            isMultiSupport = true;
+            break;
+        case 'order completed':
+            eventName = 'af_purchase';
+            jsonConfig = aFPurchaseConfigJson;
+            isMultiSupport = true;
+            break;
+        case 'product removed':
+            eventName = 'remove_from_cart';
+            jsonConfig = aFPurchaseConfigJson;
+            break;
+        case 'products searched':
+            eventName = 'af_search';
+            jsonConfig = aFSearchConfigJson;
+            break;
+        case 'product viewed':
+            eventName = 'af_content_view';
+            jsonConfig = aFContentViewConfigJson;
+            isMultiSupport = true;
+            break;
+        default:
+            eventName = eventType.toLowerCase();
+            isUnIdentifiedEvent = true;
+            break;
+        /* case 'level achieved':
+            eventName = 'af_level_achieved';
+            jsonConfig = aFLevelAchievedConfigJson;
+            break;
+        case 'payment info entered':
+            eventName = 'af_add_payment_info';
+            jsonConfig = aFAddPaymentInfoConfigJson;
             break;
         case 'complete registration':
             eventName = 'af_complete_registration';
@@ -90,16 +119,6 @@ function processEventTypeTrack(parameterMap, jsonQobj){
         case 'tutorial completion':
             eventName = 'af_tutorial_completion';
             jsonConfig = aFTutorialCompletionConfigJson;
-            isMultiSupport = true;
-			break;
-		case 'initiated checkout':
-            eventName = 'af_initiated_checkout';
-            jsonConfig = aFInitiatedCheckoutConfigJson;
-            isMultiSupport = true;
-			break;
-		case 'purchase':
-            eventName = 'af_purchase';
-            jsonConfig = aFPurchaseConfigJson;
             isMultiSupport = true;
 			break;
 		case 'subscription':
@@ -115,10 +134,6 @@ function processEventTypeTrack(parameterMap, jsonQobj){
             jsonConfig = aFRateConfigJson;
             isMultiSupport = true;
             break;
-        case 'search':
-            eventName = 'af_search';
-            jsonConfig = aFSearchConfigJson;
-            break;
         case 'spent credits':
             eventName = 'af_spent_credits';
             jsonConfig = aFSpentCreditConfigJson;
@@ -127,11 +142,6 @@ function processEventTypeTrack(parameterMap, jsonQobj){
         case 'achievement unlocked':
             eventName = 'af_achievement_unlocked';
             jsonConfig = aFDescriptionConfigJson;
-            break;
-        case 'content view':
-            eventName = 'af_content_view';
-            jsonConfig = aFContentViewConfigFileJson;
-            isMultiSupport = true;
             break;
         case 'list view':
             eventName = 'af_list_view';
@@ -174,11 +184,7 @@ function processEventTypeTrack(parameterMap, jsonQobj){
             eventName = 'af_update';
             jsonConfig = aFUpdateConfigJson;
             isMultiSupport = true;
-            break;
-        default:
-            eventName = eventType.toLowerCase();
-            isUnIdentifiedEvent = true;
-            break;
+            break; */
 
             
     }
@@ -219,10 +225,18 @@ function responseBuilderSimple (parameterMap, jsonQobj){
     
     jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
 		responseMap.set("user_id",String(value));
-	});
-	
-	jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
-        parameterMap.set("appsflyer_id",String(value));
+    });
+    
+    var headerMap = new Map();
+    jsonQobj.find("rl_destination").each((i, p, value) => {
+        headerMap.set("authentication", String(value.Config.apiKey));
+        parameterMap.set("appsflyer_id",String(value.Config.appsFlyerId));
+    });
+    headerMap.set("Content-Type", 'application/json')
+    responseMap.set("header", mapToObj(headerMap));
+
+    jsonQobj.find("rl_destination_props").each((i, p, value) => {
+        parameterMap.set("appsflyer_id",String(value.AF.rl_af_uid));
     });
     
     //customer_user_id
@@ -236,12 +250,7 @@ function responseBuilderSimple (parameterMap, jsonQobj){
 
     responseMap.set("payload",mapToObj(parameterMap));
 
-    var headerMap = new Map();
-    jsonQobj.find("rl_destination").each((i, p, value) => {
-		headerMap.set("authentication", String(value.Config.apiKey));
-    });
-    headerMap.set("Content-Type", 'application/json')
-    responseMap.set("header",mapToObj(headerMap));
+    
 
 	var responseJson = JSON.stringify(mapToObj(responseMap));
 
@@ -284,12 +293,12 @@ function getEventValueMapFromMappingJson(parameterMap, jsonQobj, mappingJson, is
         });
     });
     if(isMultiSupport){
-        var productIdArray = jsonQobj.find("rl_properties").find("products").find("content_id").parent();
+        var productIdArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
         var contentIdArray = [];
         var quantityArray = [];
         var priceArray = [];
         productIdArray.each(function (path, index, value){
-            contentIdArray.push(value.content_id);
+            contentIdArray.push(value.product_id);
             quantityArray.push(value.quantity);
             priceArray.push(value.price);
         });	

@@ -1,8 +1,8 @@
 {
     "rl_properties.revenue":"af_revenue",
     "rl_properties.customer_user_id":"af_customer_user_id",
-    "rl_properties.content_type":"af_content_type",
-    "rl_properties.content_id":"af_content_id",
+    "rl_properties.category":"af_content_type",
+    "rl_properties.product_id":"af_content_id",
     "rl_properties.class":"af_class",
     "rl_properties.date_a":"af_date_a",
     "rl_properties.date_b":"af_date_b",

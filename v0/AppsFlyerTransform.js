@@ -3,11 +3,6 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
-const DEBUG = true;
-if (!DEBUG){
-	console.log = function (){};
-}
-
 var aFDescriptionConfigFile = fs.readFileSync('data/AFDescriptionConfig.json');
 var aFDescriptionConfigJson = JSON.parse(aFDescriptionConfigFile);
 

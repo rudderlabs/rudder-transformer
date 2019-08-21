@@ -4,12 +4,6 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
-//Conditional enable/disable of logging
-const DEBUG = false;
-if (!DEBUG){
-	console.log = function() {};
-}
-
 
 //Load and parse configurations for different messages
 var pageviewConfigFile = fs.readFileSync('data/GAPageViewConfig.json');

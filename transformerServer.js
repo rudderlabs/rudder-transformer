@@ -4,12 +4,6 @@ const numCPUs = require('os').cpus().length;
 var url = require("url");
 var jsonQ = require('jsonq');
 
-//Conditional enable/disable debug
-const DEBUG = true;
-if (!DEBUG){
-    console.log = function(){};
-}
-
 
 function start(port, route) {
 

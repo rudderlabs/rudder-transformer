@@ -1,9 +1,3 @@
-//Conditional enable/disable of logging
-const DEBUG = true;
-if (!DEBUG){
-    console.log = function (){};
-}
-
 function route(pathname, req, res, body) {
     console.log("transformerRouter:route() About to route a request for " + pathname);
 

@@ -4,12 +4,6 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
-//Conditional enable/disable of logging
-const DEBUG = false;
-if (!DEBUG){
-	console.log = function() {};
-}
-
 
 //Load and parse configurations for different messages
 var pageviewConfigFile = fs.readFileSync('data/GAPageViewConfig.json');
@@ -77,7 +71,15 @@ function responseBuilderSimple (parameterMap, jsonQobj, hitType, mappingJson, cr
 	//Create a final map to be used for response and populate the static parts first
 	var responseMap = new Map();	
 	responseMap.set("endpoint","https://www.google-analytics.com/collect");
-	responseMap.set("request-format","PARAMS");
+	//responseMap.set("request-format","PARAMS");
+
+	var requestConfigMap = new Map();
+    requestConfigMap.set("request-format","PARAMS");
+	requestConfigMap.set("request_method","GET");
+	
+	responseMap.set("request_config", mapToObj(requestConfigMap));
+
+    responseMap.set("header",{});
 
 	//Need to set user_id outside of payload
 	jsonQobj.find('rl_anonymous_id').each(function (index, path, value){

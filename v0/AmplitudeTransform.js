@@ -4,12 +4,6 @@ var fs = require('fs');
 var http = require('http');
 var qs = require('querystring');
 
-//Conditional enable/disable of logging
-const DEBUG = true;
-if (!DEBUG){
-	console.log = function (){};
-}
-
 
 //Load and parse configurations for different messages
 
@@ -61,7 +55,14 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	
 	//Create a final map to be used for response and populate the static parts first
 	var responseMap = new Map();	
-	responseMap.set("request-format","PARAMS");
+	//responseMap.set("request-format","PARAMS");
+	var requestConfigMap = new Map();
+    requestConfigMap.set("request-format","PARAMS");
+	requestConfigMap.set("request_method","GET");
+	
+	responseMap.set("request_config", mapToObj(requestConfigMap));
+
+    responseMap.set("header",{});
 
 	//User Id for internal routing purpose needs to be set
 	responseMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));

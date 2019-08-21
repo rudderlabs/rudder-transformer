@@ -4,12 +4,7 @@ const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
 const url = require("url");
-
-//Conditional enable/disable of debug
-const DEBUG = false;
-if (!DEBUG){
-    console.log = function(){};
-}
+require("./util/logUtil");
 
 function start(port){
     if(!port){

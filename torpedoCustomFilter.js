@@ -10,12 +10,7 @@ const numCPUs = require('os').cpus().length;
 const url = require("url");
 const jsonQ = require("jsonq");
 const amplitudeJS = require("./v0/AmplitudeTransform.js");
-
-//Conditional enable/disable of logging
-const DEBUG = true;
-if (!DEBUG){
-    console.log = function() {};
-}
+require("./util/logUtil");
 
 function start(port){
     if(!port){

@@ -1,12 +1,6 @@
 var jsonQ = require('jsonq');
 var amplitude = require("./AmplitudeTransform.js");
 
-//Condtional enable/disable of logging
-const DEBUG = true;
-if (!DEBUG){
-    console.log = function (){};
-}
-
 module.exports = {
 
     get: async function(req, res, body) {

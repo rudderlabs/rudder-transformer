@@ -4,7 +4,9 @@ After = network.target
 
 [Service]
 WorkingDirectory = /home/ubuntu/rudder-transformer
-Restart = always
+Restart = on-failure
+RestartSec = 3s
+StartLimitInterval = 0
 ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/transformerIndex.js
 StandardOutput = syslog
 StandardError = syslog

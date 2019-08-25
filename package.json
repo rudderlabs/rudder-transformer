@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "json-ptr": "^1.1.2",
+    "json-query": "^2.2.2",
     "jsonq": "^1.2.0"
   }
 }

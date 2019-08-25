@@ -1,0 +1,9 @@
+{
+    "/rl_message/rl_properties/revenue": "/CUSTOM_EVENTS/0/_valueToSum",
+    "/rl_message/rl_properties/currency": "/CUSTOM_EVENTS/0/fb_currency",
+    "/rl_message/rl_properties/name": "/CUSTOM_EVENTS/0/fb_description",
+    "/rl_message/rl_properties/products/sub/product_id": "/CUSTOM_EVENTS/0/fb_content_id/",
+    "/rl_message/rl_properties/category": "/CUSTOM_EVENTS/0/fb_content_type",
+    "/rl_message/rl_properties/query": "/CUSTOM_EVENTS/0/fb_search_string",
+    "/rl_message/rl_properties/quantity": "/CUSTOM_EVENTS/0/fb_num_items"
+}

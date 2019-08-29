@@ -80,6 +80,8 @@ function start(port){
                             //rl_message
                             var anonymousId = (jsonQ(value)).find("rl_anonymous_id").value()[0];
                             
+                            //rl_event will be required for populating "ec"
+                            var eventName = (jsonQ(value)).find("rl_message").find("rl_event").value()[0];
 
                             //Construct single message
                             var messageObj = new Object();
@@ -94,13 +96,16 @@ function start(port){
                             //Add rl_anonymous_id
                             messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
 
+                            //set category to rl_event value
+                            messageObj['rl_message']['rl_properties']['category'] 
+                            = eventName;
+
+
                             //Add the GA message
                             messageList.push(messageObj);
                             
 
                             //Send only non-spin events to Amplitude
-
-                            var eventName = (jsonQ(value)).find("rl_message").find("rl_event").value()[0];
                             
                             if (!(eventName && eventName.match(/spin_result/g))){ //non-spin event
                                 //Repeat construction 

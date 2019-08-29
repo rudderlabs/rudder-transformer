@@ -148,7 +148,7 @@ function start(port){
         
     }
 
-    console.log("aggregatorServer: started");
+    console.log("userTransformer: started");
     
 }
 

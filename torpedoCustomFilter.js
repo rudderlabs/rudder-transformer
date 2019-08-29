@@ -82,10 +82,10 @@ function start(port){
                             
 
                             //Construct single message
-                            var messageObj = {};
+                            var messageObj = new Object();
 
                             //GA message is as-is full payload
-                            messageObj['rl_message'] = value;
+                            messageObj['rl_message'] = Object.assign({},value);
 
                             //Set rl_integrations to only GA
                             //messageObj['rl_message']['rl_integrations'] = 'GA';
@@ -96,120 +96,31 @@ function start(port){
 
                             //Add the GA message
                             messageList.push(messageObj);
-
-                            //Next proceed to prepare information for the per-user Amplitude event
-                            var singleMessageObj = jsonQ(value);
-
-
-                            //First extract the user_id 
-                            var user_id 
-                            = String(singleMessageObj.find("rl_user_properties").find("user_id").value());
-
-                            //Also extract the total_payments
-                            var total_payments 
-                            = parseFloat(String(singleMessageObj.find("rl_properties").find("total_payments").value()));
-
-                            //Check if entry exits for the user in the total_payments map
-                            //Add existing value from map to the total_payments extracted
-                            //in previous step
-                            if (userTotalPayments.has(user_id)) {
-                                total_payments += userTotalPayments.get(user_id);
-                            } 
                             
-                            //Set total_payments against user_id
-                            //The first time a message is encountered for the user
-                            //the value will get set as-is. For all subsequent occurrences 
-                            //within the same batch, value will keep getting added
-                            userTotalPayments.set(user_id, total_payments);
 
-                            //The map will be used at the very end once all messages 
-                            //have been iterated
+                            //Send only non-spin events to Amplitude
 
-                            //Also need keep set rl_context for the user in order to 
-                            //populate the same into the combined message for the user 
-                            //at the end
-                            if (!userContext.has(user_id)){
-                                userContext.set(user_id, singleMessageObj.find("rl_context").value()[0]);
-                            }    
+                            var eventName = (jsonQ(value)).find("rl_message").find("rl_event").value()[0];
+                            
+                            if (!(eventName && eventName.match(/spin_result/g))){ //non-spin event
+                                //Repeat construction 
+                                var messageObjAM = new Object();
 
-                            //Now to also send across every fifth message as-is 
-                            //to Amplitude
-                            messageCounter++;
-                            if ((messageCounter % 5) == 0){
-
-                                //Repeat sequence as in the case of GA
-                                //for adding message to push list
-                                singleMessageObj = value;
+                                //Amplitude message is as-is full payload for non-spin message
+                                messageObjAM['rl_message'] = Object.assign({},value);
 
                                 //Set rl_integrations to only Amplitude
-                                //singleMessageObj['rl_integrations'] = 'amplitude';
-                                singleMessageObj['rl_integrations'] = '{"All": false, "AM":true}';
-    
-                                //Construct single message
-                                messageObj = {};
-                                messageObj['rl_message'] = singleMessageObj;
-                                //Add rl_anonymous_id
-                                messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
+                                messageObjAM['rl_message']['rl_integrations'] = '{"All": false, "AM":true}';
 
-                                
-                                //Add the Amplitude message
-                                messageList.push(messageObj);
-    
+                                //Add rl_anonymous_id
+                                messageObjAM['rl_message']['rl_anonymous_id'] = anonymousId;
+
+                                //Add the AM message
+                                messageList.push(messageObjAM);
+
                             }
 
                         });    
-
-                        //All messages iterated through and message list populated
-                        //Time to now construct last set of messages for total_payments
-                        userTotalPayments.forEach(function (totalPaymentsForUser, 
-                                                            userId, map){
-
-                            //Object to use as input for single, basic message 
-                            //construction
-                            var basicObj = {};
-
-                            basicObj['rl_context']
-                             = userContext.get(userId);
-
-                            basicObj['rl_user_properties'] = {};
-                            basicObj['rl_user_properties']['user_id'] = userId;
-
-                            basicObj['rl_properties'] = {};
-                            basicObj['rl_properties']['total_payments'] 
-                            = totalPaymentsForUser;
-                            //basicObj['rl_integrations'] = "amplitude";
-                            basicObj['rl_integrations'] = '{"All": false, "AM":true}';
-
-                            //Everything is track for Amplitude
-                            basicObj['rl_type'] = "track";
-                            basicObj['rl_event'] = "total_payments_per_user_per_session";
-
-                            
-                            var tempMessageObject = {};
-                            tempMessageObject['rl_message'] = basicObj;
-
-                            //Add rl_anonymous_id
-                            //Temporary if-then to handle changing message structure
-                            if (!basicObj['rl_context']['rl_traits']){
-                                tempMessageObject['rl_message']['rl_anonymous_id'] 
-                                = userId;
-                            } else {
-                                tempMessageObject['rl_message']['rl_anonymous_id'] 
-                                = basicObj['rl_context']['rl_traits']['rl_anonymous_id'];    
-                            }
-
-                            //Add to message list
-                            messageList.push(tempMessageObject);
-                                                                
-
-                        });
-
-
-
-
-
-                        
-
 
                         //Construct overall payload
                         var responseObj = {};
@@ -217,7 +128,7 @@ function start(port){
                         responseObj['batch'] = messageList;
 
                         //response.end(JSON.stringify(responseObj));
-                        console.log(JSON.stringify(messageList))
+                        //console.log(JSON.stringify(messageList))
                         response.end(JSON.stringify(messageList));
                         //response.end(body);
 

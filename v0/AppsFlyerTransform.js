@@ -268,12 +268,13 @@ function getEventValueMapFromMappingJson(parameterMap, jsonQobj, mappingJson, is
 	// Adding mapping for free flowing rl_properties to appsFlyer.
 	jsonQobj.find("rl_properties").each(function (index, path, value) {
 		console.log('=============')
-		console.log(value);
+        console.log(value);
 		var mappingJsonQObj = jsonQ(mappingJson)
 		jsonQ.each(value, function(key, val) {
-			console.log("==key==:: ", key)
-			if (mappingJsonQObj.find("rl_properties." + key).length == 0) {
-				console.log("===adding extra mapping===")
+            console.log("==key==:: ", key)
+            console.log("type of val: " + typeof(val))
+			if (mappingJsonQObj.find("rl_properties." + key).length == 0 && typeof(val) !== "object") {
+				console.log("===adding extra mapping===" + key)
 				moreMappedJson["rl_properties." + key] = key
 			}
 		})
@@ -293,6 +294,7 @@ function getEventValueMapFromMappingJson(parameterMap, jsonQobj, mappingJson, is
         });
     });
     if(isMultiSupport){
+        console.log("multi support")
         var productIdArray = jsonQobj.find("rl_properties").find("products").find("product_id").parent();
         var contentIdArray = [];
         var quantityArray = [];

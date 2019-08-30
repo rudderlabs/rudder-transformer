@@ -1,0 +1,9 @@
+{
+    "rl_user_properties.rl_createdat":"$created",
+    "rl_user_properties.rl_email":"$email",
+    "rl_user_properties.rl_firstname":"$firstName",
+    "rl_user_properties.rl_lastname":"$lastName",
+    "rl_user_properties.rl_name":"$name",
+    "rl_user_properties.rl_username":"$username",
+    "rl_user_properties.rl_phone":"$phone"
+}

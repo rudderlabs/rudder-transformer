@@ -91,7 +91,8 @@ function responseBuilderSimple (parameterMap, jsonQobj, hitType, mappingJson, cr
 	parameterMap.set("t",String(hitType));
 
 	jsonQobj.find("rl_destination").each((i, p, value) => {
-		parameterMap.set("tid", String(value.Config.trackingId));
+		console.log("tid: ", String(value.config.trackingID))
+		parameterMap.set("tid", String(value.config.trackingID));
 	  });
 	  //   Add the customer credentials
 	  //   jsonQ.each(credsJson, function(key, value) {

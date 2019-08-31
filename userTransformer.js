@@ -79,7 +79,7 @@ function start(port){
                             var anonymousId = (jsonQ(value)).find("rl_anonymous_id").value()[0];
                             
                             //rl_event will be required for populating "ec"
-                            var eventName = (jsonQ(value)).find("rl_message").find("rl_event").value()[0];
+                            var eventName = (jsonQ(value)).find("rl_event").value()[0];
 
 
                             //Construct single message
@@ -103,6 +103,8 @@ function start(port){
                             }
                             messageObj['rl_message']['rl_properties']['category'] 
                             = eventName;
+
+                            console.log(messageObj)
 
                             //Add the GA message
                             messageList.push(messageObj);

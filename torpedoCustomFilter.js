@@ -1,9 +1,7 @@
 //Implementation of custom filter for Torpedo
 //It will take in a batch and then
-//a) Emit 1:1 request for each message with "ga" as integration
-//b) Emit 1 message for "amplitude" per user_id where the "total_payments" property 
-//          value is the sum of all total_payments for that user in that batch
-//c) Emit every 5th event for "amplitude"
+//a) Emit 1:1 request for each message with "GA" as integration
+//b) Emit 1:1 request for each non-spin message with "AM" as integration
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
@@ -97,6 +95,12 @@ function start(port){
                             messageObj['rl_message']['rl_anonymous_id'] = anonymousId;
 
                             //set category to rl_event value
+
+                            //Temporary fix for non-existent rl_properties
+                            if (!messageObj['rl_message']['rl_properties']){
+                                messageObj['rl_message']['rl_properties'] = {};
+                            }
+                            
                             messageObj['rl_message']['rl_properties']['category'] 
                             = eventName;
 

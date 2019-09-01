@@ -1,207 +1,159 @@
-var jsonQ = require('jsonq');
+var ptr = require('json-ptr')
 var fs = require('fs');
-var http = require('http');
-var qs = require('querystring');
 
 var mPIdentifyConfigFile = fs.readFileSync('data/MPIdentifyConfig.json');
 var mPIdentifyConfigJson = JSON.parse(mPIdentifyConfigFile);
 
-function processEventTypeTrack(jsonQobj){
+function processEventTypeTrack(requestMessage){
     console.log("in processEventTypeTrack")
-    var eventType = String(jsonQobj.find('rl_event').value()).toLowerCase();
+    var eventType = ptr.get(requestMessage, '/rl_message/rl_event');
     var eventName = eventType;
     var response = []
+
+    var revenue = ptr.get(requestMessage, '/rl_message/rl_properties/revenue');
+    console.log("revenue: " + revenue)
             
-    if(jsonQobj.find("rl_properties").find("revenue").length > 0){
+    if(revenue){
         console.log("==tracking revenue===")
-        var parameterMap = new Map()
-        response.push(processRevenueEvents(parameterMap, jsonQobj));
+        response.push(processRevenueEvents(requestMessage));
     }
-    var parameterMap = new Map()
-    parameterMap.set("event", eventName);
-    response.push(getEventValueForTrackEvent(parameterMap, jsonQobj));
+    response.push(getEventValueForTrackEvent(requestMessage));
     return response
 }
 
-function getEventValueForTrackEvent(parameterMap, jsonQobj){
-    var prop = (jsonQobj.find("rl_properties").value())[0];
+function getEventValueForTrackEvent(requestMessage){
+
+    parameterMap = {}
+    var eventName = ptr.get(requestMessage, '/rl_message/rl_event');
+    parameterMap['event'] = eventName;
+    var prop = ptr.get(requestMessage, '/rl_message/rl_properties')
     var properties = {}
     properties['properties'] = prop
-    jsonQobj.find("rl_destination").each((i, p, value) => {
-        properties['token'] = String(value.Config.apiKey)
-    });
-    jsonQobj.find("rl_anonymous_id").each((i, p, value) => {
-        properties['distinct_id'] = String(value)
-    });
-    jsonQobj.find("rl_timestamp").each((i, p, value) => {
-        properties['time'] = String(value)
-    });
-    parameterMap.set("properties", properties);
-    return responseBuilderSimple (parameterMap, jsonQobj, "track")
+    properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    properties['time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
+    parameterMap['properties'] = properties;
+    return responseBuilderSimple (parameterMap, requestMessage, "track")
 }
 
-function processRevenueEvents(parameterMap, jsonQobj){
-    var revenueValue = jsonQobj.find("rl_properties").find("revenue").value();
+function processRevenueEvents(requestMessage){
+    var revenueValue = ptr.get(requestMessage, '/rl_message/rl_properties/revenue');
     var transactionMap = {}
-    transactionMap['$time'] = jsonQobj.find("rl_timestamp").value();
+    var parameterMap = {}
+    var properties = {}
+    transactionMap['$time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
     transactionMap['$amount'] = revenueValue;
     parameterMap['$append'] = JSON.stringify({'$transactions': transactionMap});
-    jsonQobj.find("rl_destination").each((i, p, value) => {
-        parameterMap['token'] = String(value.Config.apiKey)
-    });
-    jsonQobj.find("rl_anonymous_id").each((i, p, value) => {
-        parameterMap['distinct_id'] = String(value)
-    });
-    return responseBuilderSimple (parameterMap, jsonQobj, "revenue")
+    properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    return responseBuilderSimple (parameterMap, requestMessage, "revenue")
 }
 
-function getEventValueForUnIdentifiedTrackEvent(parameterMap, jsonQobj){
-    var properties = (jsonQobj.find("rl_properties").value())[0];
-    //var parameterMap = new Map()
-    parameterMap.set("properties", JSON.stringify(properties));
-    return responseBuilderSimple (parameterMap, jsonQobj, "track")
+function getEventValueForUnIdentifiedTrackEvent(requestMessage){
+    var properties = ptr.get(requestMessage, '/rl_message/rl_properties');
+    var prop = ptr.get(requestMessage, '/rl_message/rl_properties')
+    console.log("properties: " + prop)
+    return properties
 }
 
-//Helper function for generating desired JSON from Map
-const mapToObj = m => {
-	return Array.from(m).reduce((obj, [key, value]) => {
-	  obj[key] = value;
-	  return obj;
-	}, {});
-  };
+function responseBuilderSimple (parameterMap, requestMessage, eventType){
 
-
-function responseBuilderSimple (parameterMap, jsonQobj, eventType){
-
-    var responseMap = new Map();
+    var responseMap = {};
     if(eventType == 'track'){
-        responseMap.set("endpoint", "http://api.mixpanel.com/track/");
+        responseMap['endpoint'] = "http://api.mixpanel.com/track/";
     }else {
-        responseMap.set("endpoint", "http://api.mixpanel.com/engage/");
+        responseMap['endpoint'] = "http://api.mixpanel.com/engage/";
     }
 	
 
-    var requestConfigMap = new Map();
-    requestConfigMap.set("request-format","JSON");
-    requestConfigMap.set("request_method","POST");
+    var requestConfigMap = {};
+    requestConfigMap['request-format'] = "JSON";
+    requestConfigMap['request_method'] = "POST";
 
-    responseMap.set("request_config", mapToObj(requestConfigMap));
+    responseMap['request_config'] = requestConfigMap;
     
-    jsonQobj.find('rl_anonymous_id').each(function (index, path, value){
-		responseMap.set("user_id",String(value));
-    });
-    responseMap.set("header", {});
+	responseMap['user_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id');
+    responseMap['header'] = {};
 
-    responseMap.set("payload",mapToObj(parameterMap));
+    responseMap['payload'] = parameterMap;
 
-    var responseJson = JSON.stringify(mapToObj(responseMap));
+    var responseJson = JSON.stringify(responseMap);
     console.log(responseJson)
 	return responseJson;
 }
 
-function getEventValueMapFromMappingJson(propertiesMap, jsonQobj, mappingJson){
+function getEventValueMapFromMappingJson(propertiesMap, requestMessage, mappingJson){
 
-    var eventValueMap = new Map();
+    for(var k in requestMessage["rl_message"]["rl_context"]["rl_user_properties"]){
+        if(requestMessage["rl_message"]["rl_context"]["rl_user_properties"].hasOwnProperty(k)){
 
-    var moreMappedJson = mappingJson
+            console.log(k);
+            var rudderPath = '/rl_message/rl_context/rl_user_properties/'+k;
+            if(mappingJson[rudderPath]){
+                console.log("in if")
+                ptr.set(propertiesMap, mappingJson[rudderPath], requestMessage["rl_message"]["rl_context"]["rl_user_properties"][k], true)
+            } else {
+                console.log("in else")
+                ptr.set(propertiesMap, "/"+k, requestMessage["rl_message"]["rl_context"]["rl_user_properties"][k], true)
+            }
+            
+        }
 
-	// Adding mapping for free flowing rl_properties to appsFlyer.
-	jsonQobj.find("rl_user_properties").each(function (index, path, value) {
-		console.log('=============')
-		console.log(value);
-		var mappingJsonQObj = jsonQ(mappingJson)
-		jsonQ.each(value, function(key, val) {
-			console.log("==key==:: ", key)
-			if (mappingJsonQObj.find("rl_user_properties." + key).length == 0) {
-				console.log("===adding extra mapping===")
-				moreMappedJson["rl_user_properties." + key] = key
-			}
-		})
-	});
-
-	jsonQ.each(moreMappedJson, function(sourceKey, destinationKey){
-		var tempObj = jsonQobj.find('rl_context').parent();
-
-		var pathElements = sourceKey.split('.');
-
-		for (var i=0; i<pathElements.length; i++) {
-			tempObj = tempObj.find(pathElements[i]);	
-		}
-				
-		tempObj.each(function (index, path, value){
-			propertiesMap.set(String(destinationKey),String(value));
-        });
-    });
-    
-    /* var eventValue = JSON.stringify(mapToObj(eventValueMap));
-    if(eventValue == "{}"){
-        eventValue = "";
     }
-    console.log(eventValue);
-    parameterMap.set("eventValue", eventValue); */
-    console.log(propertiesMap);
-    return JSON.stringify(mapToObj(propertiesMap))
+    console.log(propertiesMap)
+    return propertiesMap
 }
 
-function processIdentifyEvents(jsonQobj, eventName){
+function processIdentifyEvents(requestMessage, eventName){
     var jsonConfig = mPIdentifyConfigJson;
-    var parameterMap = new Map()
-    jsonQobj.find("rl_destination").each((i, p, value) => {
-        parameterMap.set("$token", String(value.Config.apiKey))
-    });
-    jsonQobj.find("rl_anonymous_id").each((i, p, value) => {
-        parameterMap.set("$distinct_id", String(value))
-    });
-    var propertiesMap = new Map()
-    propertiesMap = getEventValueMapFromMappingJson(propertiesMap, jsonQobj, jsonConfig);
-    parameterMap.set("$set", propertiesMap)
-    return responseBuilderSimple (parameterMap, jsonQobj, "identify")
+    var parameterMap = {}
+    parameterMap['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    parameterMap['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    var propertiesMap = {}
+    propertiesMap = getEventValueMapFromMappingJson(propertiesMap, requestMessage, jsonConfig);
+    parameterMap['$set'] = propertiesMap
+    return responseBuilderSimple (parameterMap, requestMessage, "identify")
 }
 
-function processPageOrScreenEvents(jsonQobj, eventName){
+function processPageOrScreenEvents(requestMessage, eventName){
     
-    var parameterMap = new Map()
-    parameterMap.set("event", eventName);
-    getEventValueForUnIdentifiedTrackEvent(parameterMap, jsonQobj);
-    return responseBuilderSimple (parameterMap, jsonQobj, "track")
+    var parameterMap = {}
+    parameterMap['event'] = eventName;
+    parameterMap['properties'] = getEventValueForUnIdentifiedTrackEvent(requestMessage);
+    return responseBuilderSimple (parameterMap, requestMessage, "track")
 }
 
-function processSingleMessage(jsonQobj){
+function processSingleMessage(requestMessage){
     console.log("in processSingleMessage")
-    var messageType = String(jsonQobj.find('rl_type').value()).toLowerCase();
+    var messageType = ptr.get(requestMessage, '/rl_message/rl_type');
     console.log("messageType = " + messageType)
-    var parameterMap = new Map();
-    var eventName = String(jsonQobj.find('rl_event').value());
-    var eventType = "";
+    var eventName = ptr.get(requestMessage, '/rl_message/rl_event');
     var response = []
     switch (messageType){
         case 'track':
-            response = processEventTypeTrack(jsonQobj);
+            response = processEventTypeTrack(requestMessage);
             break;
         case 'screen':
             eventName = 'screen'
-            response = processPageOrScreenEvents(jsonQobj, eventName);
+            response = processPageOrScreenEvents(requestMessage, eventName);
             break;
         case 'page':
             eventName = 'page'
-            response = processPageOrScreenEvents(jsonQobj, eventName);
+            response = processPageOrScreenEvents(requestMessage, eventName);
             break;
         case 'identify':
-            response = processIdentifyEvents(jsonQobj, eventName);
+            response = processIdentifyEvents(requestMessage, eventName);
             break;
         default:
     }
-    
-    //response.push(responseBuilderSimple(parameterMap,jsonQobj, eventType)); 
     return response
 }
 
-function process (jsonQobj){
+function process (requestJsonArray){
     var respList = [];
-	jsonQobj.find("rl_message").each(function (index, path, value){
-		result = processSingleMessage(jsonQ(value));
+	requestJsonArray.forEach(requestMessage => {
+        result = processSingleMessage(requestMessage);
 		respList.push(result);
-		
     });
 	return respList;
 }

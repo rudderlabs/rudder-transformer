@@ -4,6 +4,17 @@ var fs = require('fs');
 var mPIdentifyConfigFile = fs.readFileSync('data/MPIdentifyConfig.json');
 var mPIdentifyConfigJson = JSON.parse(mPIdentifyConfigFile);
 
+function getEventTime(requestMessage){
+    var timeStamp = new Date(ptr.get(requestMessage, '/rl_message/rl_timestamp'))
+    console.log("timestamp: " + timeStamp.toISOString())
+    return timeStamp.toISOString()
+}
+
+function getEventEpochTime(requestMessage){
+    var timeStamp = new Date(ptr.get(requestMessage, '/rl_message/rl_timestamp'))
+    return timeStamp.getTime()/1000
+}
+
 function processEventTypeTrack(requestMessage){
     console.log("in processEventTypeTrack")
     var eventType = ptr.get(requestMessage, '/rl_message/rl_event');
@@ -32,7 +43,7 @@ function getEventValueForTrackEvent(requestMessage){
     properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
     properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
     properties['time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
-    parameterMap['properties'] = properties;
+    parameterMap['properties'] = properties//JSON.stringify(properties)
     return responseBuilderSimple (parameterMap, requestMessage, "track")
 }
 
@@ -40,12 +51,12 @@ function processRevenueEvents(requestMessage){
     var revenueValue = ptr.get(requestMessage, '/rl_message/rl_properties/revenue');
     var transactionMap = {}
     var parameterMap = {}
-    var properties = {}
-    transactionMap['$time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
+    
+    transactionMap['$time'] = getEventTime(requestMessage)//timeStamp.toISOString();
     transactionMap['$amount'] = revenueValue;
-    parameterMap['$append'] = JSON.stringify({'$transactions': transactionMap});
-    properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    parameterMap['$append'] = {'$transactions': transactionMap}//JSON.stringify({'$transactions': transactionMap});
+    parameterMap['$token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
     return responseBuilderSimple (parameterMap, requestMessage, "revenue")
 }
 
@@ -67,7 +78,7 @@ function responseBuilderSimple (parameterMap, requestMessage, eventType){
 	
 
     var requestConfigMap = {};
-    requestConfigMap['request-format'] = "JSON";
+    requestConfigMap['request-format'] = "PARAMS";
     requestConfigMap['request_method'] = "POST";
 
     responseMap['request_config'] = requestConfigMap;
@@ -75,7 +86,9 @@ function responseBuilderSimple (parameterMap, requestMessage, eventType){
 	responseMap['user_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id');
     responseMap['header'] = {};
 
-    responseMap['payload'] = parameterMap;
+    console.log(parameterMap)
+    var encodedData = Buffer.from(JSON.stringify(parameterMap)).toString('base64')
+    responseMap['payload'] = {'data': encodedData};
 
     var responseJson = JSON.stringify(responseMap);
     console.log(responseJson)
@@ -107,8 +120,9 @@ function getEventValueMapFromMappingJson(propertiesMap, requestMessage, mappingJ
 function processIdentifyEvents(requestMessage, eventName){
     var jsonConfig = mPIdentifyConfigJson;
     var parameterMap = {}
-    parameterMap['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    parameterMap['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    parameterMap['$token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    //parameterMap['$time'] = getEventTime(requestMessage)
     var propertiesMap = {}
     propertiesMap = getEventValueMapFromMappingJson(propertiesMap, requestMessage, jsonConfig);
     parameterMap['$set'] = propertiesMap
@@ -116,10 +130,17 @@ function processIdentifyEvents(requestMessage, eventName){
 }
 
 function processPageOrScreenEvents(requestMessage, eventName){
-    
-    var parameterMap = {}
+
+
+    parameterMap = {}
     parameterMap['event'] = eventName;
-    parameterMap['properties'] = getEventValueForUnIdentifiedTrackEvent(requestMessage);
+    var prop = ptr.get(requestMessage, '/rl_message/rl_properties')
+    var properties = {}
+    properties['properties'] = prop
+    properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
+    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    properties['time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
+    parameterMap['properties'] = properties//JSON.stringify(properties)
     return responseBuilderSimple (parameterMap, requestMessage, "track")
 }
 

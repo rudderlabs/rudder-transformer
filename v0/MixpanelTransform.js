@@ -37,11 +37,9 @@ function getEventValueForTrackEvent(requestMessage){
     parameterMap = {}
     var eventName = ptr.get(requestMessage, '/rl_message/rl_event');
     parameterMap['event'] = eventName;
-    var prop = ptr.get(requestMessage, '/rl_message/rl_properties')
-    var properties = {}
-    properties['properties'] = prop
+    var properties = ptr.get(requestMessage, '/rl_message/rl_properties')
     properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_context/rl_traits/rl_anonymous_id')
     properties['time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
     parameterMap['properties'] = properties//JSON.stringify(properties)
     return responseBuilderSimple (parameterMap, requestMessage, "track")
@@ -56,7 +54,7 @@ function processRevenueEvents(requestMessage){
     transactionMap['$amount'] = revenueValue;
     parameterMap['$append'] = {'$transactions': transactionMap}//JSON.stringify({'$transactions': transactionMap});
     parameterMap['$token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_context/rl_traits/rl_anonymous_id')
     return responseBuilderSimple (parameterMap, requestMessage, "revenue")
 }
 
@@ -83,7 +81,7 @@ function responseBuilderSimple (parameterMap, requestMessage, eventType){
 
     responseMap['request_config'] = requestConfigMap;
     
-	responseMap['user_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id');
+	responseMap['user_id'] = ptr.get(requestMessage, '/rl_message/rl_context/rl_traits/rl_anonymous_id');
     responseMap['header'] = {};
 
     console.log(parameterMap)
@@ -97,17 +95,17 @@ function responseBuilderSimple (parameterMap, requestMessage, eventType){
 
 function getEventValueMapFromMappingJson(propertiesMap, requestMessage, mappingJson){
 
-    for(var k in requestMessage["rl_message"]["rl_context"]["rl_user_properties"]){
-        if(requestMessage["rl_message"]["rl_context"]["rl_user_properties"].hasOwnProperty(k)){
+    for(var k in requestMessage["rl_message"]["rl_context"]["rl_traits"]){
+        if(requestMessage["rl_message"]["rl_context"]["rl_traits"].hasOwnProperty(k)){
 
             console.log(k);
-            var rudderPath = '/rl_message/rl_context/rl_user_properties/'+k;
+            var rudderPath = '/rl_message/rl_context/rl_traits/'+k;
             if(mappingJson[rudderPath]){
                 console.log("in if")
-                ptr.set(propertiesMap, mappingJson[rudderPath], requestMessage["rl_message"]["rl_context"]["rl_user_properties"][k], true)
+                ptr.set(propertiesMap, mappingJson[rudderPath], requestMessage["rl_message"]["rl_context"]["rl_traits"][k], true)
             } else {
                 console.log("in else")
-                ptr.set(propertiesMap, "/"+k, requestMessage["rl_message"]["rl_context"]["rl_user_properties"][k], true)
+                ptr.set(propertiesMap, "/"+k, requestMessage["rl_message"]["rl_context"]["rl_traits"][k], true)
             }
             
         }
@@ -121,7 +119,7 @@ function processIdentifyEvents(requestMessage, eventName){
     var jsonConfig = mPIdentifyConfigJson;
     var parameterMap = {}
     parameterMap['$token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    parameterMap['$distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_context/rl_traits/rl_anonymous_id')
     //parameterMap['$time'] = getEventTime(requestMessage)
     var propertiesMap = {}
     propertiesMap = getEventValueMapFromMappingJson(propertiesMap, requestMessage, jsonConfig);
@@ -134,11 +132,11 @@ function processPageOrScreenEvents(requestMessage, eventName){
 
     parameterMap = {}
     parameterMap['event'] = eventName;
-    var prop = ptr.get(requestMessage, '/rl_message/rl_properties')
-    var properties = {}
-    properties['properties'] = prop
+    var properties = ptr.get(requestMessage, '/rl_message/rl_properties')
+    //var properties = {}
+    //properties['properties'] = prop
     properties['token'] = ptr.get(requestMessage, '/rl_message/rl_destination/Config/apiKey')
-    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_anonymous_id')
+    properties['distinct_id'] = ptr.get(requestMessage, '/rl_message/rl_context/rl_traits/rl_anonymous_id')
     properties['time'] = ptr.get(requestMessage, '/rl_message/rl_timestamp')
     parameterMap['properties'] = properties//JSON.stringify(properties)
     return responseBuilderSimple (parameterMap, requestMessage, "track")

@@ -12,5 +12,6 @@
     "rl_context.rl_locale":"language",
     "rl_properties.category":"event_type",
 	"rl_properties.price":"price",
-	"rl_properties.quantity":"quantity"	
+	"rl_properties.quantity":"quantity",
+	"rl_request_ip":"ip"
 }

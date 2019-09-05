@@ -10,6 +10,7 @@
 	"rl_context.rl_app.rl_version":"app_version",
     "rl_context.rl_platform":"platform",
     "rl_context.rl_locale":"language",
-    "rl_properties.category":"event_type"
+	"rl_properties.category":"event_type",
+	"rl_request_ip":"ip"
 		
 }

@@ -6,4 +6,3 @@ phases:
       nodejs: 10
     commands:
       - npm install
-      - npm test

@@ -4,6 +4,23 @@
 	"rl_event":"ea",
 	"rl_properties.category":"ec",
 	"rl_properties.label":"el",
-	"rl_properties.value":"ev"
+	"rl_properties.value":"ev",
+	"rl_properties.current_module_name":"cd1",
+	"rl_properties.questId": "cd2",
+	"rl_properties.questItemId": "cd3",
+	"rl_properties.game_name":"cd4",
+	"rl_properties.internetReachability":"cd5",
+	"rl_properties.game_id":"cd6",
+	"rl_properties.assets_Load_Time":"cm1",
+	"rl_properties.coin_balance":"cm2",
+	"rl_properties.total_load_time":"cm3",
+	"rl_properties.bet_amount":"cm4",
+	"rl_properties.bet_multiplier":"cm5",
+	"rl_properties.days_in_game":"cm6",
+	"rl_properties.gem_balance":"cm7",
+	"rl_properties.level":"cm8",
+	"rl_properties.win_amount":"cm9",
+	"rl_properties.no_of_spin":"cm10"
+	
 }
 

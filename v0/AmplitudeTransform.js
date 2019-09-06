@@ -64,10 +64,6 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 
     responseMap.set("header",{});
 
-	//User Id for internal routing purpose needs to be set
-	responseMap.set("user_id", String(jsonQobj.find("rl_anonymous_id").value()));
-	
-	
 	//Amplitude HTTP API calls take two parameters
 	//First one is a api_key and the second one is a complete JSON
 	jsonQobj.find("rl_destination").each((i, p, value) => {
@@ -221,7 +217,14 @@ function responseBuilderSimple (parameterMap, rootElementName, jsonQobj, amplitu
 	}
 
 	//Add the user_id to the obj map
-	objMap.set("user_id", (jsonQobj.find("rl_anonymous_id").value()[0]));
+	var userID = jsonQobj.find("rl_user_id").value()[0]
+	if(!userID) {
+		userID = jsonQobj.find("rl_anonymous_id").value()[0]
+	}
+	objMap.set("user_id", userID);
+
+	//User Id for internal routing purpose needs to be set
+	responseMap.set("user_id", userID);
 
 	//Also add insert_id, we're using rl_message_id for this (Check if required??)
 	//objMap.set("insert_id", (jsonQobj.find("rl_message_id").value()[0]));

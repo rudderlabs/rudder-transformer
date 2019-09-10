@@ -57,6 +57,28 @@ const mapToObj = m => {
   }, {});
 };
 
+// Utility method for creating the structure required for single message processing
+// with basic fields populated
+function createSingleMessageBasicStructure(jsonQobj) {
+  // placeholder for some common fields and structures that would be required
+  var rl_type = String(jsonQobj.find("rl_type").value()[0]);
+  var rl_event = String(jsonQobj.find("rl_event").value()[0]);
+  var rl_context = jsonQobj.find("rl_context").value()[0];
+  var rl_anonymous_id = String(jsonQobj.find("rl_anonymous_id").value()[0]);
+  var rl_timestamp = jsonQobj.find("rl_timestamp").value()[0];
+  var rl_integrations = jsonQobj.find("rl_integrations").value()[0];
+
+  var tempObj = {};
+  tempObj.rl_type = rl_type;
+  tempObj.rl_event = rl_event;
+  tempObj.rl_context = rl_context;
+  tempObj.rl_anonymous_id = rl_anonymous_id;
+  tempObj.rl_timestamp = rl_timestamp;
+  tempObj.rl_integrations = rl_integrations;
+
+  return tempObj;
+}
+
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
 // Also, the payload will be a complex JSON and not just key-value pairs

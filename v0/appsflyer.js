@@ -1,34 +1,29 @@
-var jsonQ = require('jsonq');
+var jsonQ = require("jsonq");
 var appsflyer = require("./AppsFlyerTransform.js");
 
 module.exports = {
+  async get(req, res, body) {
+    console.log("appsflyer:get() starting");
 
-    get: async function(req, res, body) {
-        console.log("appsflyer:get() starting");
+    var requestJson = JSON.parse(body);
+    return appsflyer.process(jsonQ(requestJson));
+  },
+  async post(req, res, body) {
+    console.log("appsflyer:post() starting");
 
-        var requestJson = JSON.parse(body);
-        return appsflyer.process(jsonQ(requestJson));
+    var requestJson = JSON.parse(body);
+    return appsflyer.process(jsonQ(requestJson));
+  },
+  async put(req, res, body) {
+    console.log("appsflyer:put() starting");
 
-    },
-    post: async function(req, res, body) {
-        console.log("appsflyer:post() starting");
-        
-        var requestJson = JSON.parse(body);
-        return appsflyer.process(jsonQ(requestJson));
+    var requestJson = JSON.parse(body);
+    return appsflyer.process(jsonQ(requestJson));
+  },
+  async delete(req, res, body) {
+    console.log("appsflyer:delete() starting");
 
-    },
-    put: async function(req, res, body) {
-        console.log("appsflyer:put() starting");
-
-        var requestJson = JSON.parse(body);
-        return appsflyer.process(jsonQ(requestJson));
-
-    },
-    delete: async function(req, res, body) {
-        console.log("appsflyer:delete() starting");
-
-        var requestJson = JSON.parse(body);
-        return appsflyer.process(jsonQ(requestJson));
-
-    }
+    var requestJson = JSON.parse(body);
+    return appsflyer.process(jsonQ(requestJson));
+  }
 };

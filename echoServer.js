@@ -8,7 +8,7 @@ require("./util/logUtil");
 
 function start(port) {
   if (!port) {
-    port = 9191;
+    port = 9292;
   }
 
   if (cluster.isMaster) {
@@ -67,4 +67,4 @@ function start(port) {
   console.log("echoServer: started");
 }
 
-start(9191);
+start(9292);

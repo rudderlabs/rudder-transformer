@@ -1,34 +1,29 @@
-var jsonQ = require('jsonq');
+var jsonQ = require("jsonq");
 var gat = require("./GATransform.js");
 
 module.exports = {
+  async get(req, res, body) {
+    console.log("ga:get() starting");
 
-    get: async function(req, res, body) {
-        console.log("ga:get() starting");
+    var requestJson = JSON.parse(body);
+    return gat.process(jsonQ(requestJson));
+  },
+  async post(req, res, body) {
+    console.log("ga:post() starting");
 
-        var requestJson = JSON.parse(body);
-        return gat.process(jsonQ(requestJson));
+    var requestJson = JSON.parse(body);
+    return gat.process(jsonQ(requestJson));
+  },
+  async put(req, res, body) {
+    console.log("ga:put() starting");
 
-    },
-    post: async function(req, res, body) {
-        console.log("ga:post() starting");
-        
-        var requestJson = JSON.parse(body);
-        return gat.process(jsonQ(requestJson));
+    var requestJson = JSON.parse(body);
+    return gat.process(jsonQ(requestJson));
+  },
+  async delete(req, res, body) {
+    console.log("ga:delete() starting");
 
-    },
-    put: async function(req, res, body) {
-        console.log("ga:put() starting");
-
-        var requestJson = JSON.parse(body);
-        return gat.process(jsonQ(requestJson));
-
-    },
-    delete: async function(req, res, body) {
-        console.log("ga:delete() starting");
-
-        var requestJson = JSON.parse(body);
-        return gat.process(jsonQ(requestJson));
-
-    }
+    var requestJson = JSON.parse(body);
+    return gat.process(jsonQ(requestJson));
+  }
 };

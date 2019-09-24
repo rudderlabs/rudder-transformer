@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node transformerIndex.js",
     "start-ut": "node aggregatorServer.js",
+    "start-et": "node echoServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

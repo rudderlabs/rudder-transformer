@@ -1,4 +1,7 @@
-function route(pathname, req, res, body) {
+var jsonQ = require("jsonq");
+var { userTransformHandler } = require("./util/customTransformer");
+
+async function route(pathname, req, res, body) {
   console.log(
     "transformerRouter:route() About to route a request for " + pathname
   );
@@ -10,17 +13,19 @@ function route(pathname, req, res, body) {
 
     console.log("transformerRouter:route() selected handler: " + handler);
 
+    const jsonObj = await userTransformHandler(jsonQ(JSON.parse(body)));
+
     // make sure we got a correct instantiation of the module
     if (typeof handler.post === "function") {
       // route to the right method in the module based on the HTTP action
       if (req.method.toLowerCase() == "get") {
-        respToReturn = handler.get(req, res, body);
+        respToReturn = handler.get(req, res, jsonObj);
       } else if (req.method.toLowerCase() == "post") {
-        respToReturn = handler.post(req, res, body);
+        respToReturn = handler.post(req, res, jsonObj);
       } else if (req.method.toLowerCase() == "put") {
-        respToReturn = handler.put(req, res, body);
+        respToReturn = handler.put(req, res, jsonObj);
       } else if (req.method.toLowerCase() == "delete") {
-        respToReturn = handler.delete(req, res, body);
+        respToReturn = handler.delete(req, res, jsonObj);
       }
 
       console.log("transformerRouter:route() routed successfully");

@@ -1,7 +1,7 @@
 {
-	"rl_context.rl_traits.rl_anonymous_id":"cid",	
-	"rl_properties.title":"dt",
-	"rl_properties.url":"dl",
-	"rl_properties.path":"dp",
-	"rl_properties.referrer":"dr"	
+	"anonymous_id":"cid",	
+	"properties.title":"dt",
+	"properties.url":"dl",
+	"properties.path":"dp",
+	"properties.referrer":"dr"	
 }

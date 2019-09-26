@@ -100,7 +100,7 @@ function responseBuilderSimple(
   responseMap.set("header", {});
 
   // Need to set user_id outside of payload
-  jsonQobj.find("rl_anonymous_id").each(function(index, path, value) {
+  jsonQobj.find("anonymous_id").each(function(index, path, value) {
     responseMap.set("user_id", String(value));
   });
 
@@ -108,7 +108,7 @@ function responseBuilderSimple(
   parameterMap.set("v", "1");
   parameterMap.set("t", String(hitType));
 
-  jsonQobj.find("rl_destination").each((i, p, value) => {
+  jsonQobj.find("destination").each((i, p, value) => {
     console.log("destination: ", value);
     console.log("tid: ", String(value.Config.trackingID));
     parameterMap.set("tid", String(value.Config.trackingID));
@@ -126,7 +126,7 @@ function responseBuilderSimple(
   jsonQ.each(mappingJson, function(sourceKey, destinationKey) {
     // The structure for page messages is the root, so we have to reset the reference
     // point before traversing for every key
-    var tempObj = jsonQobj.find("rl_context").parent();
+    var tempObj = jsonQobj.find("context").parent();
 
     // console.log(tempObj.length)
 
@@ -195,7 +195,7 @@ function processNonEComGenericEvent(jsonQobj) {
 // Function for processing promotion viewed or clicked event
 function processPromotionEvent(jsonQobj) {
   var parameterMap = new Map();
-  var eventString = String(jsonQobj.find("rl_event").value());
+  var eventString = String(jsonQobj.find("event").value());
   switch (eventString.toLowerCase()) {
     case "promotion viewed":
       parameterMap.set("promoa", "view"); // pre-populate
@@ -241,7 +241,7 @@ function processRefundEvent(jsonQobj) {
   // First we need to check whether we're dealing with full refund or partial refund
   // In case of partial refund, product array will be present in payload
   var productArray = jsonQobj
-    .find("rl_properties")
+    .find("properties")
     .find("products")
     .find("product_id")
     .parent();
@@ -287,14 +287,14 @@ function processSharingEvent(jsonQobj) {
   var parameterMap = new Map();
   // URL will be there for Product Shared event, hence that can be used as share target
   // For Cart Shared, the list of product ids can be shared
-  var eventTypeString = String(jsonQobj.find("rl_event").value());
+  var eventTypeString = String(jsonQobj.find("event").value());
   switch (eventTypeString.toLowerCase()) {
     case "product shared":
       parameterMap.set(
         "st",
         String(
           jsonQobj
-            .find("rl_properties")
+            .find("properties")
             .find("url")
             .value()
         )
@@ -302,7 +302,7 @@ function processSharingEvent(jsonQobj) {
       break;
     case "cart shared":
       var productIdArray = jsonQobj
-        .find("rl_properties")
+        .find("properties")
         .find("products")
         .find("product_id")
         .parent();
@@ -326,7 +326,7 @@ function processSharingEvent(jsonQobj) {
 
 // Function for processing product list view event
 function processProductListEvent(jsonQobj) {
-  var eventString = String(jsonQobj.find("rl_event").value());
+  var eventString = String(jsonQobj.find("_event").value());
   var parameterMap = new Map();
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
@@ -346,7 +346,7 @@ function processProductListEvent(jsonQobj) {
   }
 
   var productArray = jsonQobj
-    .find("rl_properties")
+    .find("properties")
     .find("products")
     .find("product_id")
     .parent();
@@ -387,7 +387,7 @@ function processProductListEvent(jsonQobj) {
 
 // Function for processing product viewed or clicked events
 function processProductEvent(jsonQobj) {
-  var eventString = String(jsonQobj.find("rl_event").value());
+  var eventString = String(jsonQobj.find("event").value());
   var parameterMap = new Map();
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
@@ -417,13 +417,13 @@ function processProductEvent(jsonQobj) {
 
   var productId = String(
     jsonQobj
-      .find("rl_properties")
+      .find("properties")
       .find("product_id")
       .value()
   );
   var sku = String(
     jsonQobj
-      .find("rl_properties")
+      .find("properties")
       .find("sku")
       .value()
   );
@@ -445,7 +445,7 @@ function processProductEvent(jsonQobj) {
 
 // Function for processing transaction event
 function processTransactionEvent(jsonQobj) {
-  var eventString = String(jsonQobj.find("rl_event").value());
+  var eventString = String(jsonQobj.find("event").value());
   var parameterMap = new Map();
 
   // Set product action as per event
@@ -466,19 +466,19 @@ function processTransactionEvent(jsonQobj) {
   // One of total/revenue/value should be there
   var revenueString = String(
     jsonQobj
-      .find("rl_properties")
+      .find("properties")
       .find("revenue")
       .value()
   );
   var valueString = String(
     jsonQobj
-      .find("rl_properties")
+      .find("properties")
       .find("value")
       .value()
   );
   var totalString = String(
     jsonQobj
-      .find("rl_properties")
+      .find("properties")
       .find("total")
       .value()
   );
@@ -498,7 +498,7 @@ function processTransactionEvent(jsonQobj) {
     parameterMap.set("tr", revenueString); // revenue field is populated, usable
   }
   var productArray = jsonQobj
-    .find("rl_properties")
+    .find("properties")
     .find("products")
     .find("product_id")
     .parent();
@@ -538,7 +538,7 @@ function processTransactionEvent(jsonQobj) {
 // Function for handling generic e-commerce events
 function processEComGenericEvent(jsonQobj) {
   console.log("processEComGenericEvent called");
-  var eventString = String(jsonQobj.find("rl_event").value());
+  var eventString = String(jsonQobj.find("event").value());
   var parameterMap = new Map();
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
@@ -558,7 +558,7 @@ function processEComGenericEvent(jsonQobj) {
 // and event type where applicable
 function processSingleMessage(jsonQobj) {
   // Route to appropriate process depending on type of message received
-  var messageType = String(jsonQobj.find("rl_type").value()).toLowerCase();
+  var messageType = String(jsonQobj.find("type").value()).toLowerCase();
   // console.log(String(messageType));
   switch (messageType) {
     case "page":
@@ -568,7 +568,7 @@ function processSingleMessage(jsonQobj) {
       // console.log('processing screen');
       return processScreenviews(jsonQobj);
     case "track":
-      var eventType = String(jsonQobj.find("rl_event").value()).toLowerCase();
+      var eventType = String(jsonQobj.find("event").value()).toLowerCase();
       // console.log(eventType);
       // There can be both ECommerce as well as Non-ECommerce 'track' events
       // Need to handle individually
@@ -627,7 +627,7 @@ function process(jsonQobj) {
   var respList = [];
   var counter = 0;
   var result;
-  jsonQobj.find("rl_message").each(function(index, path, value) {
+  jsonQobj.find("message").each(function(index, path, value) {
     result = processSingleMessage(jsonQ(value));
     respList.push(result);
   });

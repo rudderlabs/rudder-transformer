@@ -78,7 +78,8 @@ function responseBuilderSimple(
   jsonQobj,
   hitType,
   mappingJson,
-  credsJson
+  credsJson,
+  destJsonQ
 ) {
   // We'll keep building a simple key-value JSON structure which will be finally returned
   // We add the static parts as well as the direct mappings from config JSON
@@ -108,10 +109,8 @@ function responseBuilderSimple(
   parameterMap.set("v", "1");
   parameterMap.set("t", String(hitType));
 
-  jsonQobj.find("destination").each((i, p, value) => {
-    console.log("destination: ", value);
-    console.log("tid: ", String(value.Config.trackingID));
-    parameterMap.set("tid", String(value.Config.trackingID));
+  destJsonQ.find("trackingID").each((i, p, value) => {
+    parameterMap.set("tid", String(value));
   });
   //   Add the customer credentials
   //   jsonQ.each(credsJson, function(key, value) {
@@ -182,13 +181,14 @@ function processScreenviews(jsonQobj) {
 }
 
 // Function for processing non-ecom generic track events
-function processNonEComGenericEvent(jsonQobj) {
+function processNonEComGenericEvent(jsonQobj, destJsonQ) {
   return responseBuilderSimple(
     new Map(),
     jsonQobj,
     "event",
     nonEcomGenericEventConfigJson,
-    customerCredentialsConfigJson
+    customerCredentialsConfigJson,
+    destJsonQ
   );
 }
 
@@ -556,7 +556,7 @@ function processEComGenericEvent(jsonQobj) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(jsonQobj) {
+function processSingleMessage(jsonQobj, destJsonQ) {
   // Route to appropriate process depending on type of message received
   var messageType = String(jsonQobj.find("type").value()).toLowerCase();
   // console.log(String(messageType));
@@ -611,7 +611,7 @@ function processSingleMessage(jsonQobj) {
         case "products searched":
           return processEComGenericEvent(jsonQobj);
         default:
-          return processNonEComGenericEvent(jsonQobj);
+          return processNonEComGenericEvent(jsonQobj, destJsonQ);
       }
     default:
       console.log("could not determine type");
@@ -627,10 +627,17 @@ function process(jsonQobj) {
   var respList = [];
   var counter = 0;
   var result;
-  jsonQobj.find("message").each(function(index, path, value) {
-    result = processSingleMessage(jsonQ(value));
-    respList.push(result);
+
+  var destinationJsonQ;
+
+  jsonQobj.find("destination").each(function(index, path, value) {
+    var destJsonQ = jsonQ(value);
+    jsonQobj.find("message").each(function(index, path, value) {
+      result = processSingleMessage(jsonQ(value), destJsonQ);
+      respList.push(result);
+    });
   });
+
   return respList;
 }
 

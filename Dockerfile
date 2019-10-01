@@ -1,7 +1,4 @@
-FROM node:10.16.0-alpine
-
-# Needed for installing isolated-vm
-RUN apk add python make g++
+FROM node:10.16.0
 
 # Create app directory
 WORKDIR /app

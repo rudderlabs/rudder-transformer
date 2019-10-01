@@ -7,8 +7,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN python -V
-
 RUN npm install
 
 COPY . .

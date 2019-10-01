@@ -1,4 +1,4 @@
-FROM node:10.16.0
+FROM nikolaik/python-nodejs:python3.5-nodejs12
 
 # Create app directory
 WORKDIR /app

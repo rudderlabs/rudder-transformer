@@ -15,6 +15,7 @@ async function runUserTransform(events, code) {
   const res = await fnRef.apply(context.global.derefInto(), [
     sharedMessagesList
   ]);
+  isolate.dispose();
   return res;
 }
 

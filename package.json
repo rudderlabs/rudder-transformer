@@ -20,7 +20,11 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
-    "jsonq": "^1.2.0"
+    "get-value": "^3.0.1",
+    "jsonq": "^1.2.0",
+    "koa": "^2.8.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",

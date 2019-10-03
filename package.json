@@ -24,7 +24,8 @@
     "jsonq": "^1.2.0",
     "koa": "^2.8.2",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "jest": "^24.9.0",

@@ -1,4 +1,6 @@
 const get = require("get-value");
+const _ = require("lodash");
+
 const { EventType } = require("../../constants");
 const {
   GAEvent,
@@ -15,6 +17,20 @@ const defaultRequestConfig = {
   request_method: "GET"
 };
 
+const isDefined = x => !_.isUndefined(x);
+
+function toStringValues(obj) {
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === "object") {
+      return toString(obj[key]);
+    }
+
+    obj[key] = "" + obj[key];
+  });
+
+  return obj;
+}
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -26,7 +42,7 @@ function responseBuilderSimple(
   mappingJson,
   destination
 ) {
-  const payload = {
+  const rawPayload = {
     v: "1",
     t: hitType,
     tid: destination.Config.trackingID
@@ -34,54 +50,39 @@ function responseBuilderSimple(
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    payload[mappingJson[sourceKey]] = get(message, sourceKey);
+    rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
+  // Remove keys with undefined values
+  const payload = _.pickBy(rawPayload, isDefined);
+  const params = _.pickBy(parameters, isDefined);
 
   const response = {
     endpoint: GA_ENDPOINT,
     request_config: defaultRequestConfig,
     header: {},
     user_id: message.anonymous_id,
-    payload: { ...parameters, ...payload }
+    payload: toStringValues({ ...params, ...payload })
   };
   return response;
 }
 
 // Function for processing pageviews
-function processPageviews(message, destination) {
-  return responseBuilderSimple(
-    {},
-    message,
-    "pageview",
-    mappingConfig[GAConfigCategory.PAGE],
-    destination
-  );
+function processPageViews(message) {
+  return {};
 }
 
 // Function for processing screenviews
-function processScreenviews(message, destination) {
-  return responseBuilderSimple(
-    {},
-    message,
-    "screenview",
-    mappingConfig[GAConfigCategory.SCREEN],
-    destination
-  );
+function processScreenViews(message) {
+  return {};
 }
 
 // Function for processing non-ecom generic track events
-function processNonEComGenericEvent(message, destination) {
-  return responseBuilderSimple(
-    {},
-    message,
-    "event",
-    mappingConfig[GAConfigCategory.NON_ECOM],
-    destination
-  );
+function processNonEComGenericEvent(message) {
+  return {};
 }
 
 // Function for processing promotion viewed or clicked event
-function processPromotionEvent(message, destination) {
+function processPromotionEvent(message) {
   const eventString = message.event;
 
   // Future releases will have additional logic for below elements allowing for
@@ -100,29 +101,17 @@ function processPromotionEvent(message, destination) {
       break;
   }
 
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "event",
-    mappingConfig[GAConfigCategory.PROMOTION],
-    destination
-  );
+  return parameters;
 }
 
 // Function for processing payment-related events
-function processPaymentRelatedEvent(message, destination) {
+function processPaymentRelatedEvent(message) {
   const parameters = { pa: "checkout" };
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "transaction",
-    mappingConfig[GAConfigCategory.PAYMENT],
-    destination
-  );
+  return parameters;
 }
 
 // Function for processing order refund events
-function processRefundEvent(message, destination) {
+function processRefundEvent(message) {
   const parameters = { pa: "refund" };
 
   const { products } = message.properties;
@@ -152,17 +141,11 @@ function processRefundEvent(message, destination) {
     parameters["ti"] = message.order_id;
   }
   // Finally fill up with mandatory and directly mapped fields
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "transaction",
-    mappingConfig[GAConfigCategory.REFUND],
-    destination
-  );
+  return parameters;
 }
 
 // Function for processing product and cart shared events
-function processSharingEvent(message, destination) {
+function processSharingEvent(message) {
   const parameters = {};
   // URL will be there for Product Shared event, hence that can be used as share target
   // For Cart Shared, the list of product ids can be shared
@@ -182,17 +165,11 @@ function processSharingEvent(message, destination) {
     default:
       parameterMap.set("st", "empty");
   }
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "social",
-    mappingConfig[GAConfigCategory.SHARING],
-    destination
-  );
+  return parameters;
 }
 
 // Function for processing product list view event
-function processProductListEvent(message, destination) {
+function processProductListEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
@@ -235,17 +212,11 @@ function processProductListEvent(message, destination) {
       "Empty Product List provided for Product List Viewed Event"
     );
   }
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "event",
-    mappingConfig[GAConfigCategory.PRODUCT_LIST],
-    destination
-  );
+  return parameters;
 }
 
 // Function for processing product viewed or clicked events
-function processProductEvent(message, destination) {
+function processProductEvent(message) {
   const eventString = message.event;
 
   // Future releases will have additional logic for below elements allowing for
@@ -275,21 +246,19 @@ function processProductEvent(message, destination) {
       break;
   }
 
-  const productId = message.properties.product_id;
-  const sku = message.properties.sku;
-  parameters["pr1id"] = productId ? productId : sku;
+  const { sku, product_id } = message.properties;
 
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "event",
-    mappingConfig[GAConfigCategory.PRODUCT],
-    destination
-  );
+  if (!product_id || product_id.length === 0) {
+    parameters["pr1id"] = sku;
+  } else {
+    parameters["pr1id"] = product_id;
+  }
+
+  return parameters;
 }
 
 // Function for processing transaction event
-function processTransactionEvent(message, destination) {
+function processTransactionEvent(message) {
   const eventString = message.event;
   const parameters = {};
 
@@ -349,30 +318,18 @@ function processTransactionEvent(message, destination) {
     // throw error, empty Product List in Product List Viewed event payload
     throw new Error("No product information supplied for transaction event");
   }
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "transaction",
-    mappingConfig[GAConfigCategory.TRANSACTION],
-    destination
-  );
+  return parameters;
 }
 
 // Function for handling generic e-commerce events
-function processEComGenericEvent(message, destination) {
+function processEComGenericEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
     ec: eventString
   };
 
-  return responseBuilderSimple(
-    parameters,
-    message,
-    "event",
-    mappingConfig[GAConfigCategory.ECOM_GENERIC],
-    destination
-  );
+  return parameters;
 }
 
 // Generic process function which invokes specific handler functions depending on message type
@@ -380,43 +337,67 @@ function processEComGenericEvent(message, destination) {
 function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type.toLowerCase();
+  let customParams = {};
+  let category;
 
   switch (messageType) {
     case EventType.PAGE:
-      return processPageviews(message);
+      customParams = processPageViews(message);
+      category = GAConfigCategory.PAGE;
+      break;
     case EventType.SCREEN:
-      return processScreenviews(message);
+      customParams = processScreenViews(message);
+      category = GAConfigCategory.SCREEN;
+      break;
     case EventType.TRACK:
       const eventName = message.event.toLowerCase();
-      const category = GAEvent[nameToEventMap[eventName]].category;
+      category = GAEvent[nameToEventMap[eventName]]
+        ? GAEvent[nameToEventMap[eventName]].category
+        : GAConfigCategory.NON_ECOM;
 
-      switch (category) {
-        case GAConfigCategory.PRODUCT_LIST:
-          return processProductListEvent(message);
-        case GAConfigCategory.PROMOTION:
-          return processPromotionEvent(message);
-        case GAConfigCategory.PRODUCT:
-          return processProductEvent(message);
-        case GAConfigCategory.TRANSACTION:
-          return processTransactionEvent(message);
-        case GAConfigCategory.PAYMENT:
-          return processPaymentRelatedEvent(message);
-        case GAConfigCategory.REFUND:
-          return processRefundEvent(message);
-        case GAConfigCategory.SHARING:
-          return processSharingEvent(message);
-        case GAConfigCategory.ECOM_GENERIC:
-          return processEComGenericEvent(message);
+      switch (category.name) {
+        case GAConfigCategory.PRODUCT_LIST.name:
+          customParams = processProductListEvent(message);
+          break;
+        case GAConfigCategory.PROMOTION.name:
+          customParams = processPromotionEvent(message);
+          break;
+        case GAConfigCategory.PRODUCT.name:
+          customParams = processProductEvent(message);
+          break;
+        case GAConfigCategory.TRANSACTION.name:
+          customParams = processTransactionEvent(message);
+          break;
+        case GAConfigCategory.PAYMENT.name:
+          customParams = processPaymentRelatedEvent(message);
+          break;
+        case GAConfigCategory.REFUND.name:
+          customParams = processRefundEvent(message);
+          break;
+        case GAConfigCategory.SHARING.name:
+          customParams = processSharingEvent(message);
+          break;
+        case GAConfigCategory.ECOM_GENERIC.name:
+          customParams = processEComGenericEvent(message);
+          break;
         default:
-          return processNonEComGenericEvent(message, destination);
+          customParams = processNonEComGenericEvent(message);
+          break;
       }
+      break;
     default:
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
-      const events = [];
-      events.push('{"error":"message type not supported"}');
-      return events;
+      return { error: "message type not supported" };
   }
+
+  return responseBuilderSimple(
+    customParams,
+    message,
+    category.hitType,
+    mappingConfig[category.name],
+    destination
+  );
 }
 
 // Iterate over input batch and generate response for each message

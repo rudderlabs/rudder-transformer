@@ -15,16 +15,15 @@ const getDirectories = source =>
     .filter(isDirectory);
 
 const getHandler = versionedDestination => {
-  return require(`./${versionedDestination}`);
+  return require(`./${versionedDestination}/transform`);
 };
 
 versions.forEach(version => {
   const versionDestinations = getDirectories(version);
   versionDestinations.forEach(versionedDestination => {
     const handler = getHandler(versionedDestination);
-    handler.initialize();
     router.post(`/${versionedDestination}`, (ctx, next) => {
-      ctx.body = handler.transform(ctx.request.body);
+      ctx.body = handler.process(ctx.request.body);
     });
   });
 });

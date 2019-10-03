@@ -1,15 +1,51 @@
+const fs = require("fs");
+const path = require("path");
+
 const GAConfigCategory = {
-  PAGE: "GAPageViewConfig",
-  SCREEN: "GAScreenViewConfig",
-  NON_ECOM: "GANonEComEventConfig",
-  PROMOTION: "GAPromotionEventConfig",
-  PAYMENT: "GAPaymentRelatedEventConfig",
-  REFUND: "GARefundEventConfig",
-  PRODUCT: "GAProductEventConfig",
-  PRODUCT_LIST: "GAProductListEventConfig",
-  TRANSACTION: "GATransactionEventConfig",
-  SHARING: "GASharingEventConfig",
-  ECOM_GENERIC: "GAEComGenericEventConfig"
+  PAGE: {
+    name: "GAPageViewConfig",
+    hitType: "pageview"
+  },
+  SCREEN: {
+    name: "GAScreenViewConfig",
+    hitType: "screenview"
+  },
+  NON_ECOM: {
+    name: "GANonEComEventConfig",
+    hitType: "event"
+  },
+  PROMOTION: {
+    name: "GAPromotionEventConfig",
+    hitType: "event"
+  },
+  PAYMENT: {
+    name: "GAPaymentRelatedEventConfig",
+    hitType: "transaction"
+  },
+  REFUND: {
+    name: "GARefundEventConfig",
+    hitType: "transaction"
+  },
+  PRODUCT: {
+    name: "GAProductEventConfig",
+    hitType: "event"
+  },
+  PRODUCT_LIST: {
+    name: "GAProductListEventConfig",
+    hitType: "event"
+  },
+  TRANSACTION: {
+    name: "GATransactionEventConfig",
+    hitType: "transaction"
+  },
+  SHARING: {
+    name: "GASharingEventConfig",
+    hitType: "social"
+  },
+  ECOM_GENERIC: {
+    name: "GAEComGenericEventConfig",
+    hitType: "event"
+  }
 };
 
 const GAEvent = {
@@ -134,10 +170,11 @@ const GAEvent = {
 const GA_ENDPOINT = "https://www.google-analytics.com/collect";
 
 const mappingConfig = {};
-const categories = Object.keys(GAConfigCategory);
-categories.forEach(category => {
-  mappingConfig[category] = JSON.parse(
-    fs.readFileSync(`data/${GAConfigCategory[category]}`)
+const categoryKeys = Object.keys(GAConfigCategory);
+categoryKeys.forEach(categoryKey => {
+  const category = GAConfigCategory[categoryKey];
+  mappingConfig[category.name] = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `./data/${category.name}.json`))
   );
 });
 

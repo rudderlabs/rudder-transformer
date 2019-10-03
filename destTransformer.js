@@ -16,4 +16,5 @@ if (clusterEnabled) {
   cluster.start(PORT, app);
 } else {
   app.listen(PORT);
+  console.log(`Listening on Port: ${PORT}`);
 }

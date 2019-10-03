@@ -13,8 +13,8 @@ const {
 // Load and parse configurations for different messages
 
 const defaultRequestConfig = {
-  "request-format": "PARAMS",
-  request_method: "GET"
+  requestFormat: "PARAMS",
+  requestMethod: "GET"
 };
 
 const isDefined = x => !_.isUndefined(x);
@@ -58,7 +58,7 @@ function responseBuilderSimple(
 
   const response = {
     endpoint: GA_ENDPOINT,
-    request_config: defaultRequestConfig,
+    requestConfig: defaultRequestConfig,
     header: {},
     user_id: message.anonymous_id,
     payload: toStringValues({ ...params, ...payload })

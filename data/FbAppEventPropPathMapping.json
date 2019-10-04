@@ -1,0 +1,9 @@
+{
+    "revenue": "/rl_message/rl_properties/revenue",
+    "currency": "/rl_message/rl_properties/currency",
+    "name":  "/rl_message/rl_properties/name",
+    "products": "/rl_message/rl_properties/products/sub/product_id",
+    "category": "/rl_message/rl_properties/category",
+    "query":  "/rl_message/rl_properties/query",
+    "quantity":  "/rl_message/rl_properties/quantity"
+}

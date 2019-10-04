@@ -1,5 +1,5 @@
-const integration = "ga";
-const name = "Google Analytics";
+const integration = "mp";
+const name = "Mixpanel";
 
 const fs = require("fs");
 const path = require("path");
@@ -16,8 +16,6 @@ test(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
   const output = transformer.process(inputData);
-
-  console.log(JSON.stringify(output));
 
   expect(output).toEqual(expectedData);
 });

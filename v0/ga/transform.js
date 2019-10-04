@@ -45,7 +45,7 @@ function responseBuilderSimple(
     requestConfig: defaultRequestConfig,
     header: {},
     user_id: message.anonymous_id,
-    payload: toStringValues({ ...params, ...payload })
+    payload: { ...params, ...payload }
   };
   return response;
 }

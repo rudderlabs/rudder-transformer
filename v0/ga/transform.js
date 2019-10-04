@@ -3,33 +3,17 @@ const _ = require("lodash");
 
 const { EventType } = require("../../constants");
 const {
-  GAEvent,
+  Event,
   GA_ENDPOINT,
-  GAConfigCategory,
+  ConfigCategory,
   mappingConfig,
   nameToEventMap
 } = require("./config");
-
-// Load and parse configurations for different messages
-
-const defaultRequestConfig = {
-  requestFormat: "PARAMS",
-  requestMethod: "GET"
-};
-
-const isDefined = x => !_.isUndefined(x);
-
-function toStringValues(obj) {
-  Object.keys(obj).forEach(key => {
-    if (typeof obj[key] === "object") {
-      return toString(obj[key]);
-    }
-
-    obj[key] = "" + obj[key];
-  });
-
-  return obj;
-}
+const {
+  removeUndefinedValues,
+  toStringValues,
+  defaultRequestConfig
+} = require("../util");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -53,8 +37,8 @@ function responseBuilderSimple(
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
   // Remove keys with undefined values
-  const payload = _.pickBy(rawPayload, isDefined);
-  const params = _.pickBy(parameters, isDefined);
+  const payload = removeUndefinedValues(rawPayload, isDefined);
+  const params = removeUndefinedValues(parameters, isDefined);
 
   const response = {
     endpoint: GA_ENDPOINT,
@@ -93,10 +77,10 @@ function processPromotionEvent(message) {
   };
 
   switch (eventString.toLowerCase()) {
-    case GAEvent.PROMOTION_VIEWED:
+    case Event.PROMOTION_VIEWED:
       parameters["promoa"] = "view";
       break;
-    case GAEvent.PROMOTION_CLICKED:
+    case Event.PROMOTION_CLICKED:
       parameters["promoa"] = "promo_click";
       break;
   }
@@ -151,10 +135,10 @@ function processSharingEvent(message) {
   // For Cart Shared, the list of product ids can be shared
   const eventTypeString = message.event;
   switch (eventTypeString.toLowerCase()) {
-    case GAEvent.PRODUCT_SHARED:
+    case Event.PRODUCT_SHARED:
       parameters[st] = message.properties.url;
       break;
-    case GAEvent.CART_SHARED:
+    case Event.CART_SHARED:
       const products = message.properties.products;
       let shareTargetString = ""; // all product ids will be concatenated with separation
       products.forEach(product => {
@@ -178,11 +162,11 @@ function processProductListEvent(message) {
 
   // Set action depending on Product List Action
   switch (eventString.toLowerCase()) {
-    case GAEvent.PRODUCT_LIST_VIEWED:
-    case GAEvent.PRODUCT_LIST_FILTERED:
+    case Event.PRODUCT_LIST_VIEWED:
+    case Event.PRODUCT_LIST_FILTERED:
       parameters["pa"] = "detail";
       break;
-    case GAEvent.PRODUCT_LIST_CLICKED:
+    case Event.PRODUCT_LIST_CLICKED:
       parameters["pa"] = "click";
       break;
   }
@@ -229,19 +213,19 @@ function processProductEvent(message) {
 
   // Set product action to click or detail depending on event
   switch (eventString.toLowerCase()) {
-    case GAEvent.PRODUCT_CLICKED:
+    case Event.PRODUCT_CLICKED:
       parameters["pa"] = "click";
       break;
-    case GAEvent.PRODUCT_VIEWED:
+    case Event.PRODUCT_VIEWED:
       parameters["pa"] = "detail";
       break;
-    case GAEvent.PRODUCT_ADDED:
-    case GAEvent.WISHLIST_PRODUCT_ADDED_TO_CART:
-    case GAEvent.PRODUCT_ADDED_TO_WISHLIST:
+    case Event.PRODUCT_ADDED:
+    case Event.WISHLIST_PRODUCT_ADDED_TO_CART:
+    case Event.PRODUCT_ADDED_TO_WISHLIST:
       parameters["pa"] = "add";
       break;
-    case GAEvent.PRODUCT_REMOVED:
-    case GAEvent.PRODUCT_REMOVED_FROM_WISHLIST:
+    case Event.PRODUCT_REMOVED:
+    case Event.PRODUCT_REMOVED_FROM_WISHLIST:
       parameters["pa"] = "remove";
       break;
   }
@@ -264,14 +248,14 @@ function processTransactionEvent(message) {
 
   // Set product action as per event
   switch (eventString.toLowerCase()) {
-    case GAEvent.CHECKOUT_STARTED:
-    case GAEvent.ORDER_UPDATED:
+    case Event.CHECKOUT_STARTED:
+    case Event.ORDER_UPDATED:
       parameters["pa"] = "checkout";
       break;
-    case GAEvent.ORDER_COMPLETED:
+    case Event.ORDER_COMPLETED:
       parameters["pa"] = "purchase";
       break;
-    case GAEvent.ORDER_CANCELLED:
+    case Event.ORDER_CANCELLED:
       parameters["pa"] = "refund";
       break;
   }
@@ -343,41 +327,41 @@ function processSingleMessage(message, destination) {
   switch (messageType) {
     case EventType.PAGE:
       customParams = processPageViews(message);
-      category = GAConfigCategory.PAGE;
+      category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
       customParams = processScreenViews(message);
-      category = GAConfigCategory.SCREEN;
+      category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
       const eventName = message.event.toLowerCase();
-      category = GAEvent[nameToEventMap[eventName]]
-        ? GAEvent[nameToEventMap[eventName]].category
-        : GAConfigCategory.NON_ECOM;
+      category = Event[nameToEventMap[eventName]]
+        ? Event[nameToEventMap[eventName]].category
+        : ConfigCategory.NON_ECOM;
 
       switch (category.name) {
-        case GAConfigCategory.PRODUCT_LIST.name:
+        case ConfigCategory.PRODUCT_LIST.name:
           customParams = processProductListEvent(message);
           break;
-        case GAConfigCategory.PROMOTION.name:
+        case ConfigCategory.PROMOTION.name:
           customParams = processPromotionEvent(message);
           break;
-        case GAConfigCategory.PRODUCT.name:
+        case ConfigCategory.PRODUCT.name:
           customParams = processProductEvent(message);
           break;
-        case GAConfigCategory.TRANSACTION.name:
+        case ConfigCategory.TRANSACTION.name:
           customParams = processTransactionEvent(message);
           break;
-        case GAConfigCategory.PAYMENT.name:
+        case ConfigCategory.PAYMENT.name:
           customParams = processPaymentRelatedEvent(message);
           break;
-        case GAConfigCategory.REFUND.name:
+        case ConfigCategory.REFUND.name:
           customParams = processRefundEvent(message);
           break;
-        case GAConfigCategory.SHARING.name:
+        case ConfigCategory.SHARING.name:
           customParams = processSharingEvent(message);
           break;
-        case GAConfigCategory.ECOM_GENERIC.name:
+        case ConfigCategory.ECOM_GENERIC.name:
           customParams = processEComGenericEvent(message);
           break;
         default:

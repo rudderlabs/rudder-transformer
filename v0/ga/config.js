@@ -1,7 +1,6 @@
-const fs = require("fs");
-const path = require("path");
+const { getMappingConfig } = require("../util");
 
-const GAConfigCategory = {
+const ConfigCategory = {
   PAGE: {
     name: "GAPageViewConfig",
     hitType: "pageview"
@@ -48,146 +47,139 @@ const GAConfigCategory = {
   }
 };
 
-const GAEvent = {
+const Event = {
   PRODUCT_LIST_VIEWED: {
     name: "product list viewed",
-    category: GAConfigCategory.PRODUCT_LIST
+    category: ConfigCategory.PRODUCT_LIST
   },
   PRODUCT_LIST_FILTERED: {
     name: "product list filtered",
-    category: GAConfigCategory.PRODUCT_LIST
+    category: ConfigCategory.PRODUCT_LIST
   },
   PRODUCT_LIST_CLICKED: {
     name: "product list clicked",
-    category: GAConfigCategory.PRODUCT_LIST
+    category: ConfigCategory.PRODUCT_LIST
   },
   PROMOTION_VIEWED: {
     name: "promotion viewed",
-    category: GAConfigCategory.PROMOTION
+    category: ConfigCategory.PROMOTION
   },
   PROMOTION_CLICKED: {
     name: "promotion clicked",
-    category: GAConfigCategory.PROMOTION
+    category: ConfigCategory.PROMOTION
   },
   PRODUCT_CLICKED: {
     name: "product clicked",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   PRODUCT_VIEWED: {
     name: "product viewed",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   PRODUCT_ADDED: {
     name: "product added",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   WISHLIST_PRODUCT_ADDED_TO_CART: {
     name: "wishlist product added to cart",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   PRODUCT_REMOVED: {
     name: "product removed",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   PRODUCT_REMOVED_FROM_WISHLIST: {
     name: "product removed from wishlist",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   PRODUCT_ADDED_TO_WISHLIST: {
     name: "product added to wishlist",
-    category: GAConfigCategory.PRODUCT
+    category: ConfigCategory.PRODUCT
   },
   CHECKOUT_STARTED: {
     name: "checkout started",
-    category: GAConfigCategory.TRANSACTION
+    category: ConfigCategory.TRANSACTION
   },
   ORDER_UPDATED: {
     name: "order updated",
-    category: GAConfigCategory.TRANSACTION
+    category: ConfigCategory.TRANSACTION
   },
   ORDER_COMPLETED: {
     name: "order completed",
-    category: GAConfigCategory.TRANSACTION
+    category: ConfigCategory.TRANSACTION
   },
   ORDER_CANCELLED: {
     name: "order cancelled",
-    category: GAConfigCategory.TRANSACTION
-  },
-  CHECKOUT_STEP_VIEWED: {
-    name: "checkout step viewed",
-    category: GAConfigCategory.PAYMENT
-  },
-  CHECKOUT_STEP_COMPLETED: {
-    name: "checkout step completed",
-    category: GAConfigCategory.PAYMENT
-  },
-  PAYMENT_INFO_ENTERED: {
-    name: "payment info entered",
-    category: GAConfigCategory.PAYMENT
+    category: ConfigCategory.TRANSACTION
   },
   ORDER_REFUNDED: {
     name: "order refunded",
-    category: GAConfigCategory.REFUND
+    category: ConfigCategory.REFUND
+  },
+  CHECKOUT_STEP_VIEWED: {
+    name: "checkout step viewed",
+    category: ConfigCategory.PAYMENT
+  },
+  CHECKOUT_STEP_COMPLETED: {
+    name: "checkout step completed",
+    category: ConfigCategory.PAYMENT
+  },
+  PAYMENT_INFO_ENTERED: {
+    name: "payment info entered",
+    category: ConfigCategory.PAYMENT
   },
   PRODUCT_SHARED: {
     name: "product shared",
-    category: GAConfigCategory.SHARING
+    category: ConfigCategory.SHARING
   },
   CART_SHARED: {
     name: "cart shared",
-    category: GAConfigCategory.SHARING
+    category: ConfigCategory.SHARING
   },
   CART_VIEWED: {
     name: "cart viewed",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   COUPON_ENTERED: {
     name: "coupon entered",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   COUPON_APPLIED: {
     name: "coupon applied",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   COUPON_DENIED: {
     name: "coupon denied",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   COUPON_REMOVED: {
     name: "coupon removed",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   PRODUCT_REVIEWED: {
     name: "product reviewed",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   },
   PRODUCTS_SEARCHED: {
     name: "products searched",
-    category: GAConfigCategory.ECOM_GENERIC
+    category: ConfigCategory.ECOM_GENERIC
   }
 };
 
 const GA_ENDPOINT = "https://www.google-analytics.com/collect";
 
-const mappingConfig = {};
-const categoryKeys = Object.keys(GAConfigCategory);
-categoryKeys.forEach(categoryKey => {
-  const category = GAConfigCategory[categoryKey];
-  mappingConfig[category.name] = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, `./data/${category.name}.json`))
-  );
-});
+const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const nameToEventMap = {};
-const events = Object.keys(GAEvent);
+const events = Object.keys(Event);
 events.forEach(event => {
   nameToEventMap[event.name] = event;
 });
 
 module.exports = {
-  GAEvent,
+  Event,
   GA_ENDPOINT,
-  GAConfigCategory,
+  ConfigCategory,
   mappingConfig,
   nameToEventMap
 };

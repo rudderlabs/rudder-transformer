@@ -1,18 +1,19 @@
+const integration = "s3";
+const name = "S3";
+
 const fs = require("fs");
 const path = require("path");
-const s3Transformer = require("../v0/s3/transform");
-const { compareJSON } = require("./util");
+const transformer = require(`../v0/${integration}/transform`);
 
-test("S3 tests", () => {
+test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/s3_input.json")
+    path.resolve(__dirname, `./data/${integration}_input.json`)
   );
   const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/s3_output.json")
+    path.resolve(__dirname, `./data/${integration}_output.json`)
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  const output = s3Transformer.process(inputData);
-  // console.log(compareJSON(output, expectedData));
+  const output = transformer.process(inputData);
   expect(output).toEqual(expectedData);
 });

@@ -1,17 +1,20 @@
+const integration = "am";
+const name = "Amplitude";
+
 const fs = require("fs");
 const path = require("path");
-const amplitudeTransformer = require("../v0/am/transform");
+const transformer = require(`../v0/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
-test("Amplitude Tests", () => {
+test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/am_input.json")
+    path.resolve(__dirname, `./data/${integration}_input.json`)
   );
   const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/am_output.json")
+    path.resolve(__dirname, `./data/${integration}_output.json`)
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  const output = amplitudeTransformer.process(inputData);
+  const output = transformer.process(inputData);
   expect(output).toEqual(expectedData);
 });

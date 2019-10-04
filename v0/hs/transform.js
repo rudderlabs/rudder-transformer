@@ -83,9 +83,8 @@ function getTransformedJSON(message, mappingJson) {
 }
 
 function processSingleMessage(message, destination) {
-  const messageType = message.type;
   let response;
-  switch (messageType) {
+  switch (message.type) {
     case EventType.TRACK:
       response = processTrack(message, destination);
       break;
@@ -97,14 +96,8 @@ function processSingleMessage(message, destination) {
 }
 
 function process(events) {
-  const respList = [];
-
-  events.forEach(event => {
-    const result = processSingleMessage(event.message, event.destination);
-    respList.push(result);
+  return events.map(event => {
+    return processSingleMessage(event.message, event.destination);
   });
-
-  return respList;
 }
-
 exports.process = process;

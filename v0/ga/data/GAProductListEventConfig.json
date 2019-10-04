@@ -1,5 +1,4 @@
 {
-	"rl_context.rl_traits.rl_anonymous_id":"cid",	
-	"rl_properties.list_id":"il1nm"
+  "context.traits.anonymous_id": "cid",
+  "properties.list_id": "il1nm"
 }
-

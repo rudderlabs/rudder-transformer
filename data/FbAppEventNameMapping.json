@@ -1,0 +1,11 @@
+{
+    "Application Installed": "MOBILE_APP_INSTALL",
+    "Application Opened": "fb_mobile_activate_app",
+    "Products Searched": "fb_mobile_search",
+    "Product Viewed": "fb_mobile_content_view",
+    "Product Added": "fb_mobile_add_to_cart",
+    "Product Added to Wishlist": "fb_mobile_add_to_wishlist",
+    "Payment Info Entered": "fb_mobile_add_payment_info",
+    "Checkout Started": "fb_mobile_initiated_checkout",
+    "Order Completed": "fb_mobile_purchase"
+}

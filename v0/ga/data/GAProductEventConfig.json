@@ -1,14 +1,12 @@
 {
-	"rl_context.rl_traits.rl_anonymous_id":"cid",	
-	"rl_properties.name":"pr1nm",
-	"rl_properties.category":"pr1ca",
-	"rl_properties.brand":"pr1br",
-	"rl_properties.variant":"pr1va",
-	"rl_properties.coupon":"pr1cc",
-	"rl_properties.currency":"cu",
-	"rl_properties.position":"pr1ps",
-	"rl_properties.price":"pr1pr",
-	"rl_properties.quantity":"pr1qt"
+  "context.traits.anonymous_id": "cid",
+  "properties.name": "pr1nm",
+  "properties.category": "pr1ca",
+  "properties.brand": "pr1br",
+  "properties.variant": "pr1va",
+  "properties.coupon": "pr1cc",
+  "properties.currency": "cu",
+  "properties.position": "pr1ps",
+  "properties.price": "pr1pr",
+  "properties.quantity": "pr1qt"
 }
-
-

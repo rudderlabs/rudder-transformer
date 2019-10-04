@@ -1,11 +1,9 @@
 {
-	"rl_context.rl_traits.rl_anonymous_id":"cid",	
-	"rl_properties.order_id":"ti",
-	"rl_properties.affiliation":"ta",
-	"rl_properties.shipping":"ts",
-	"rl_properties.tax":"tt",
-	"rl_properties.coupon":"tcc",
-	"rl_properties.currency":"cu"
+  "context.traits.anonymous_id": "cid",
+  "properties.order_id": "ti",
+  "properties.affiliation": "ta",
+  "properties.shipping": "ts",
+  "properties.tax": "tt",
+  "properties.coupon": "tcc",
+  "properties.currency": "cu"
 }
-
-

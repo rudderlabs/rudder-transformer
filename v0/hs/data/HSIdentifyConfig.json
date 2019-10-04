@@ -1,0 +1,14 @@
+{
+  "context.traits.email": "email",
+  "context.traits.firstname": "firstName",
+  "context.traits.lastname": "lastName",
+  "context.traits.name": "name",
+  "context.traits.username": "username",
+  "context.traits.phone": "phone",
+  "context.traits.address.street": "address",
+  "context.traits.address.city": "city",
+  "context.traits.address.country": "country",
+  "context.traits.address.state": "state",
+  "context.traits.address.postalcode": "zip",
+  "context.traits.company.name": "company"
+}

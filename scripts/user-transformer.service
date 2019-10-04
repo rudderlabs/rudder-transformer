@@ -4,8 +4,10 @@ After = network.target
 
 [Service]
 WorkingDirectory = /home/ubuntu/rudder-transformer
-Restart = always
-ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/aggregatorServer.js
+Restart = on-failure
+RestartSec = 3s
+StartLimitInterval = 0
+ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/userTransformer.js
 StandardOutput = syslog
 StandardError = syslog
 SyslogIdentifier = user-transformer

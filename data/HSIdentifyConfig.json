@@ -1,0 +1,15 @@
+{
+    "/rl_message/rl_context/rl_traits/rl_email":"/email",
+    "/rl_message/rl_context/rl_traits/rl_firstname":"/firstName",
+    "/rl_message/rl_context/rl_traits/rl_lastname":"/lastName",
+    "/rl_message/rl_context/rl_traits/rl_name":"/name",
+    "/rl_message/rl_context/rl_traits/rl_username":"/username",
+    "/rl_message/rl_context/rl_traits/rl_phone":"/phone",
+    "/rl_message/rl_context/rl_traits/rl_address/rl_street":"/address",
+    "/rl_message/rl_context/rl_traits/rl_address/rl_city":"/city",
+    "/rl_message/rl_context/rl_traits/rl_address/rl_country":"/country",
+    "/rl_message/rl_context/rl_traits/rl_address/rl_state":"/state",
+    "/rl_message/rl_context/rl_traits/rl_address/rl_postalcode":"/zip",
+    "/rl_message/rl_context/rl_traits/rl_company/rl_name":"/company"
+
+}

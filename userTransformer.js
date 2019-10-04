@@ -81,7 +81,6 @@ function start(port) {
 
                 // rl_event will be required for populating "ec"
                 var eventName = jsonQ(value)
-                  .find("rl_message")
                   .find("rl_event")
                   .value()[0];
 
@@ -93,8 +92,10 @@ function start(port) {
 
                 // Set rl_integrations to only GA
                 // messageObj['rl_message']['rl_integrations'] = 'GA';
-                messageObj.rl_message.rl_integrations =
-                  '{"All": false, "GA":true}';
+                messageObj.rl_message.rl_integrations = {
+                  All: false,
+                  GA: true
+                };
 
                 // Add rl_anonymous_id
                 messageObj.rl_message.rl_anonymous_id = anonymousId;
@@ -105,8 +106,9 @@ function start(port) {
                 if (!messageObj.rl_message.rl_properties) {
                   messageObj.rl_message.rl_properties = {};
                 }
-
                 messageObj.rl_message.rl_properties.category = eventName;
+
+                console.log(messageObj);
 
                 // Add the GA message
                 messageList.push(messageObj);
@@ -122,8 +124,10 @@ function start(port) {
                   messageObjAM.rl_message = { ...value };
 
                   // Set rl_integrations to only Amplitude
-                  messageObjAM.rl_message.rl_integrations =
-                    '{"All": false, "AM":true}';
+                  messageObjAM.rl_message.rl_integrations = {
+                    All: false,
+                    AM: true
+                  };
 
                   // Add rl_anonymous_id
                   messageObjAM.rl_message.rl_anonymous_id = anonymousId;
@@ -157,7 +161,7 @@ function start(port) {
     console.log(`Worker ${process.pid} started`);
   }
 
-  console.log("aggregatorServer: started");
+  console.log("userTransformer: started");
 }
 
-start(9393);
+start(9191);

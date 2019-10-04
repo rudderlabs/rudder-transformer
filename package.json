@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node transformerIndex.js",
     "start-ut": "node aggregatorServer.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-et": "node echoServer.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,24 @@
     "json-ptr": "^1.1.2",
     "json-query": "^2.2.2",
     "jsonq": "^1.2.0"
+    "get-value": "^3.0.1",
+    "jsonq": "^1.2.0",
+    "koa": "^2.8.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.15",
+    "set-value": "^3.0.1"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "prettier": "^1.18.2"
   }
 }

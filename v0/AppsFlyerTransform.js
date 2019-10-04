@@ -328,6 +328,72 @@ function responseBuilderSimple(parameterMap, jsonQobj) {
   events.push(responseJson);
   return events;
 }
+function getEventValueMapFromMappingJson(
+  parameterMap,
+  jsonQobj,
+  mappingJson,
+  isMultiSupport
+) {
+  var eventValueMap = new Map();
+
+  var moreMappedJson = mappingJson;
+
+  // Adding mapping for free flowing rl_properties to appsFlyer.
+  jsonQobj.find("rl_properties").each(function(index, path, value) {
+    console.log("=============");
+    console.log(value);
+    var mappingJsonQObj = jsonQ(mappingJson);
+    jsonQ.each(value, function(key, val) {
+      console.log("==key==:: ", key);
+      console.log("type of val: " + typeof val);
+      if (
+        mappingJsonQObj.find("rl_properties." + key).length == 0 &&
+        typeof val !== "object"
+      ) {
+        console.log("===adding extra mapping===" + key);
+        moreMappedJson["rl_properties." + key] = key;
+      }
+    });
+  });
+
+  jsonQ.each(moreMappedJson, function(sourceKey, destinationKey) {
+    var tempObj = jsonQobj.find("rl_context").parent();
+
+    var pathElements = sourceKey.split(".");
+
+    for (var i = 0; i < pathElements.length; i++) {
+      tempObj = tempObj.find(pathElements[i]);
+    }
+
+    tempObj.each(function(index, path, value) {
+      eventValueMap.set(String(destinationKey), String(value));
+    });
+  });
+  if (isMultiSupport) {
+    console.log("multi support");
+    var productIdArray = jsonQobj
+      .find("rl_properties")
+      .find("products")
+      .find("product_id")
+      .parent();
+    var contentIdArray = [];
+    var quantityArray = [];
+    var priceArray = [];
+    productIdArray.each(function(path, index, value) {
+      contentIdArray.push(value.product_id);
+      quantityArray.push(value.quantity);
+      priceArray.push(value.price);
+    });
+    eventValueMap.set("af_content_id", contentIdArray);
+    eventValueMap.set("af_quantity", quantityArray);
+    eventValueMap.set("af_price", priceArray);
+  }
+  var eventValue = JSON.stringify(mapToObj(eventValueMap));
+  if (eventValue == "{}") {
+    eventValue = "";
+  }
+  parameterMap.set("eventValue", eventValue);
+}
 
 function processNonTrackEvents(parameterMap, jsonQobj, eventName) {
   parameterMap.set("eventName", eventName);

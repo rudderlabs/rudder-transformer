@@ -3,7 +3,7 @@ const path = require("path");
 const gaTransformer = require("../v0/ga/transform");
 const { compareJSON } = require("./util");
 
-test("test output", () => {
+test("Google Analytics tests", () => {
   const inputDataFile = fs.readFileSync(
     path.resolve(__dirname, "./data/ga_input.json")
   );

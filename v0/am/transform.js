@@ -51,6 +51,7 @@ function responseBuilderSimple(
   rawPayload["time"] = new Date(message.timestamp).getTime();
   rawPayload["event_type"] = evType;
   rawPayload["user_id"] = message.anonymous_id;
+  const payload = removeUndefinedValues(rawPayload);
 
   const response = {
     endpoint,
@@ -59,7 +60,7 @@ function responseBuilderSimple(
     user_id: message.anonymous_id,
     payload: {
       api_key: destination.Config.apiKey,
-      [rootElementName]: removeUndefinedValues(rawPayload)
+      [rootElementName]: payload
     }
   };
   return response;

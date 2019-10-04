@@ -160,6 +160,7 @@ function processProductListAction(message) {
     productEvent.properties = product;
     eventList.push(productEvent);
   });
+
   return eventList;
 }
 
@@ -178,35 +179,31 @@ function processTransaction(message) {
   return [];
 }
 
-async function filterAndPopulateToSendEvents(messageType, eventType, event){
-  const arr = []
-    if (messageType === EventType.TRACK){
-      if (eventType === Event.PRODUCT_LIST_VIEWED.name || eventType === Event.PRODUCT_LIST_CLICKED.name){
-        await arr.push(processProductListAction(event.message));
-        return arr
-      } else if ( 
-        eventType == Event.CHECKOUT_STARTED.name ||
-        eventType == Event.ORDER_UPDATED.name ||
-        eventType == Event.ORDER_COMPLETED.name ||
-        eventType == Event.ORDER_CANCELLED.name){
-          await arr.push(processTransaction(event.message)); 
-          return arr
-        }
-    }else {
-      await arr.push(event.message);
-      return arr
-    }
-}
-
-async function process(events) {
+function process(events) {
   const respList = [];
 
   events.forEach(event => {
     const { message, destination } = event;
     const messageType = message.type.toLowerCase();
     const eventType = message.event.toLowerCase();
-
-    const toSendEvents = await filterAndPopulateToSendEvents(messageType, eventType, event)
+    const toSendEvents = [];
+    if (
+      messageType === EventType.TRACK &&
+      (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+        eventType === Event.PRODUCT_LIST_CLICKED)
+    ) {
+      toSendEvents.push(processProductListAction(message));
+    } else if (
+      messageType === EventType.TRACK &&
+      (eventType == Event.CHECKOUT_STARTED.name ||
+        eventType == Event.ORDER_UPDATED.name ||
+        eventType == Event.ORDER_COMPLETED.name ||
+        eventType == Event.ORDER_CANCELLED.name)
+    ) {
+      toSendEvents.push(processTransaction(message));
+    } else {
+      toSendEvents.push(message);
+    }
 
     toSendEvents.forEach(sendEvent => {
       respList.push(processSingleMessage(sendEvent, destination));

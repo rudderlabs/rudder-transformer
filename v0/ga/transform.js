@@ -37,8 +37,8 @@ function responseBuilderSimple(
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
   // Remove keys with undefined values
-  const payload = removeUndefinedValues(rawPayload, isDefined);
-  const params = removeUndefinedValues(parameters, isDefined);
+  const payload = removeUndefinedValues(rawPayload);
+  const params = removeUndefinedValues(parameters);
 
   const response = {
     endpoint: GA_ENDPOINT,

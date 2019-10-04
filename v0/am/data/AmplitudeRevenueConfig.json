@@ -1,21 +1,19 @@
 {
-	"rl_context.rl_os.rl_name":"os_name",
-	"rl_context.rl_os.rl_version":"os_version",
-	"rl_context.rl_device.rl_model":"device_model",
-	"rl_context.rl_device.rl_manufacturer":"device_manufacturer",
-	"rl_context.rl_device.rl_name":"device_brand",
-	"rl_context.rl_device.rl_id":"device_id",
-	"rl_context.rl_network.rl_carrier":"carrier",
-	"rl_context.rl_app.rl_name":"app_name",
-	"rl_context.rl_app.rl_version":"app_version",
-    "rl_context.rl_platform":"platform",
-    "rl_context.rl_locale":"language",
-    "rl_properties.productId":"productId",
-	"rl_properties.price":"price",
-	"rl_properties.quantity":"quantity",
-	"rl_properties.revenue":"revenue",
-	"rl_properties.revenueType":"revenueType",
-    "rl_properties.category":"event_type"
-    
-		
+  "rl_context.rl_os.rl_name": "os_name",
+  "rl_context.rl_os.rl_version": "os_version",
+  "rl_context.rl_device.rl_model": "device_model",
+  "rl_context.rl_device.rl_manufacturer": "device_manufacturer",
+  "rl_context.rl_device.rl_name": "device_brand",
+  "rl_context.rl_device.rl_id": "device_id",
+  "rl_context.rl_network.rl_carrier": "carrier",
+  "rl_context.rl_app.rl_name": "app_name",
+  "rl_context.rl_app.rl_version": "app_version",
+  "rl_context.rl_platform": "platform",
+  "rl_context.rl_locale": "language",
+  "rl_properties.productId": "productId",
+  "rl_properties.price": "price",
+  "rl_properties.quantity": "quantity",
+  "rl_properties.revenue": "revenue",
+  "rl_properties.revenueType": "revenueType",
+  "rl_properties.category": "event_type"
 }

@@ -5,10 +5,10 @@ const { compareJSON } = require("./util");
 
 test("test output", () => {
   const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/input.json")
+    path.resolve(__dirname, "./data/ga_input.json")
   );
   const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, "./data/ga.json")
+    path.resolve(__dirname, "./data/ga_output.json")
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);

@@ -1,0 +1,16 @@
+[
+  {
+    "endpoint": "https://api.amplitude.com/httpapi",
+    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
+    "header": {},
+    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "payload": { "api_key": undefined, "event": [Object] }
+  },
+  {
+    "endpoint": "https://api.amplitude.com/httpapi",
+    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
+    "header": {},
+    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "payload": { "api_key": undefined, "event": [Object] }
+  }
+]

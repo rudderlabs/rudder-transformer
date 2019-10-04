@@ -182,6 +182,7 @@ function process(events) {
   const respList = [];
 
   events.forEach(event => {
+    const { message, destination } = event;
     const messageType = message.type.toLowerCase();
     const eventType = message.event.toLowerCase();
     const toSendEvents = [];
@@ -190,7 +191,7 @@ function process(events) {
       (eventType === Event.PRODUCT_LIST_VIEWED.name ||
         eventType === Event.PRODUCT_LIST_CLICKED)
     ) {
-      toSendEvents.push(processProductListAction(event.message));
+      toSendEvents.push(processProductListAction(message));
     } else if (
       messageType === EventType.TRACK &&
       (eventType == Event.CHECKOUT_STARTED.name ||
@@ -198,13 +199,13 @@ function process(events) {
         eventType == Event.ORDER_COMPLETED.name ||
         eventType == Event.ORDER_CANCELLED.name)
     ) {
-      toSendEvents.push(processTransaction(event.message));
+      toSendEvents.push(processTransaction(message));
     } else {
-      toSendEvents.push(event.message);
+      toSendEvents.push(message);
     }
 
     toSendEvents.forEach(sendEvent => {
-      respList.push(processSingleMessage(sendEvent, event.destination));
+      respList.push(processSingleMessage(sendEvent, destination));
     });
   });
 

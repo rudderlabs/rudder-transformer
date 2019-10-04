@@ -5,10 +5,10 @@ const ConfigCategory = {
     name: "AmplitudeIdentifyConfig"
   },
   PAGE: {
-    name: "AmplitudePageViewConfig"
+    name: "AmplitudePageConfig"
   },
   SCREEN: {
-    name: "AmplitudeScreenViewConfig"
+    name: "AmplitudeScreenConfig"
   },
   PROMOTION_VIEWED: {
     name: "AmplitudePromotionViewedConfig"

@@ -1,7 +1,7 @@
 {
-    "rl_properties.price":"af_price",
-    "rl_properties.category":"af_content_type",
-    "rl_properties.product_id":"af_content_id",
-    "rl_properties.currency":"af_currency",
-    "rl_properties.quantity":"af_quantity"
+  "properties.price": "af_price",
+  "properties.category": "af_content_type",
+  "properties.product_id": "af_content_id",
+  "properties.currency": "af_currency",
+  "properties.quantity": "af_quantity"
 }

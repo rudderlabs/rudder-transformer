@@ -3,7 +3,7 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultGetRequestConfig } = require("../util");
 const {
   Event,
   ENDPOINT,
@@ -38,8 +38,8 @@ function responseBuilderSimple(
 ) {
   const rawPayload = {};
 
-  set(rawPayload, "event_proprties", get(message, "properties"));
-  set(rawPayload, "user_proprties", get(message, "user_properties"));
+  set(rawPayload, "event_proprties", message.properties);
+  set(rawPayload, "user_proprties", message.user_properties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -55,7 +55,7 @@ function responseBuilderSimple(
 
   const response = {
     endpoint,
-    requestConfig: defaultRequestConfig,
+    requestConfig: defaultGetRequestConfig,
     header: {},
     user_id: message.anonymous_id,
     payload: {

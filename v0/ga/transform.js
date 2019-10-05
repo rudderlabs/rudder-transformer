@@ -12,7 +12,7 @@ const {
 const {
   removeUndefinedValues,
   toStringValues,
-  defaultRequestConfig
+  defaultGetRequestConfig
 } = require("../util");
 
 // Basic response builder
@@ -42,7 +42,7 @@ function responseBuilderSimple(
 
   const response = {
     endpoint: GA_ENDPOINT,
-    requestConfig: defaultRequestConfig,
+    requestConfig: defaultGetRequestConfig,
     header: {},
     user_id: message.anonymous_id,
     payload: { ...params, ...payload }

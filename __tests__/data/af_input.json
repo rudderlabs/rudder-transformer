@@ -3,6 +3,9 @@
     "message": {
       "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
+        "app": {
+          "namespace": "ns"
+        },
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
@@ -67,7 +70,11 @@
         "tournament_id": "T1561970819",
         "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
-        "win_amount": 0
+        "win_amount": 0,
+        "price": 10,
+        "category": "test",
+        "product_id": "pid",
+        "quantity": 5
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
@@ -90,11 +97,17 @@
         "total_payments": 0,
         "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2
+      },
+      "destination_props": {
+        "AF": {
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde"
+        "apiKey": "abcde",
+        "appsFlyerId": "xyz"
       }
     }
   },
@@ -103,6 +116,9 @@
     "message": {
       "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
+        "app": {
+          "namespace": "ns"
+        },
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
@@ -167,7 +183,11 @@
         "tournament_id": "T1561970819",
         "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
-        "win_amount": 0
+        "win_amount": 0,
+        "price": 10,
+        "category": "test",
+        "product_id": "pid",
+        "quantity": 5
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen",
@@ -190,11 +210,17 @@
         "total_payments": 0,
         "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2
+      },
+      "destination_props": {
+        "AF": {
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde"
+        "apiKey": "abcde",
+        "appsFlyerId": "xyz"
       }
     }
   }

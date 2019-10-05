@@ -1,7 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../constants");
-const { defaultRequestConfig, removeUndefinedValues } = require("../util");
+const { defaultGetRequestConfig, removeUndefinedValues } = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -38,7 +38,7 @@ function processIdentify(message) {
 
 function responseBuilderSimple(payload, message, eventType, destination) {
   let endpoint = "https://track.hubspot.com/v1/event/";
-  let requestConfig = defaultRequestConfig;
+  let requestConfig = defaultGetRequestConfig;
 
   if (eventType !== EventType.TRACK) {
     const { email } = message.context.traits;

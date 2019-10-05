@@ -30,14 +30,20 @@ const toStringValues = obj => {
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
-const defaultRequestConfig = {
+const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
   requestMethod: "GET"
+};
+
+const defaultPostRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "POST"
 };
 
 module.exports = {
   getMappingConfig,
   toStringValues,
   removeUndefinedValues,
-  defaultRequestConfig
+  defaultGetRequestConfig,
+  defaultPostRequestConfig
 };

@@ -1,5 +1,5 @@
-const integration = "ga";
-const name = "Google Analytics";
+const integration = "af";
+const name = "AppsFlyer";
 
 const fs = require("fs");
 const path = require("path");

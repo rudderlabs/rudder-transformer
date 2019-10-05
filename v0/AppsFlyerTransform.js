@@ -86,13 +86,9 @@ function getEventValueMapFromMappingJson(
 
   // Adding mapping for free flowing rl_properties to appsFlyer.
   jsonQobj.find("rl_properties").each(function(index, path, value) {
-    console.log("=============");
-    console.log(value);
     var mappingJsonQObj = jsonQ(mappingJson);
     jsonQ.each(value, function(key, val) {
-      console.log("==key==:: ", key);
       if (mappingJsonQObj.find("rl_properties." + key).length == 0) {
-        console.log("===adding extra mapping===");
         moreMappedJson["rl_properties." + key] = key;
       }
     });
@@ -180,87 +176,6 @@ function processEventTypeTrack(parameterMap, jsonQobj) {
       eventName = eventType.toLowerCase();
       isUnIdentifiedEvent = true;
       break;
-    /* case 'level achieved':
-            eventName = 'af_level_achieved';
-            jsonConfig = aFLevelAchievedConfigJson;
-            break;
-        case 'payment info entered':
-            eventName = 'af_add_payment_info';
-            jsonConfig = aFAddPaymentInfoConfigJson;
-            break;
-        case 'complete registration':
-            eventName = 'af_complete_registration';
-            jsonConfig = aFCompleteRegistrationConfigJson;
-            break;
-        case 'tutorial completion':
-            eventName = 'af_tutorial_completion';
-            jsonConfig = aFTutorialCompletionConfigJson;
-            isMultiSupport = true;
-			break;
-		case 'subscription':
-            eventName = 'af_subscribe';
-            jsonConfig = aFSubscriptionConfigJson;
-            break;
-        case 'start trial':
-            eventName = 'af_start_trial';
-            jsonConfig = aFStartTrialConfigJson;
-            break;
-        case 'rate':
-            eventName = 'af_rate';
-            jsonConfig = aFRateConfigJson;
-            isMultiSupport = true;
-            break;
-        case 'spent credits':
-            eventName = 'af_spent_credits';
-            jsonConfig = aFSpentCreditConfigJson;
-            isMultiSupport = true;
-            break;
-        case 'achievement unlocked':
-            eventName = 'af_achievement_unlocked';
-            jsonConfig = aFDescriptionConfigJson;
-            break;
-        case 'list view':
-            eventName = 'af_list_view';
-            jsonConfig = aFListViewConfigJson;
-            break;
-        case 'ad click':
-            eventName = 'af_ad_click';
-            jsonConfig = aFAdClickOrAdViewConfigJson;
-            break;
-        case 'ad view':
-            eventName = 'af_ad_view';
-            jsonConfig = aFAdClickOrAdViewConfigJson;
-            break;
-        case 'travel booking':
-            eventName = 'af_travel_booking';
-            jsonConfig = aFTravelBookingConfigJson;
-            isMultiSupport = true;
-            break;
-        case 'share':
-            eventName = 'af_share';
-            jsonConfig = aFDescriptionConfigJson;
-            break;
-        case 'invite':
-            eventName = 'af_invite';
-            jsonConfig = aFDescriptionConfigJson;
-            break;
-        case 'login':
-            eventName = 'af_login';
-            jsonConfig = '';
-            break;
-        case 're-engage':
-            eventName = 'af_re_engage';
-            jsonConfig = aFDescriptionConfigJson;
-            break;
-        case 'opened from push notification':
-            eventName = 'af_opened_from_push_notification';
-            jsonConfig = '';
-            break;
-        case 'update':
-            eventName = 'af_update';
-            jsonConfig = aFUpdateConfigJson;
-            isMultiSupport = true;
-            break; */
   }
   parameterMap.set("eventName", eventName);
   if (isUnIdentifiedEvent) {

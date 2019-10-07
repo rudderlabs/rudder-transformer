@@ -1,31 +1,33 @@
+var jsonQ = require("jsonq");
+var warehouseT = require("./warehouseTransform.js");
+
 module.exports = {
-
-  get: async function (req, res, body) {
-    console.log("s3:get() starting");
+  async get(req, res, body) {
+    console.log("warehouse:get() starting");
 
     var requestJson = JSON.parse(body);
-    return body
-
+    return warehouseT.process(jsonQ(requestJson));
   },
-  post: async function (req, res, body) {
-    console.log("s3:post() starting");
+  async post(req, res, body) {
+    console.log("warehouse:post() starting");
 
     var requestJson = JSON.parse(body);
-    return body
-
+    var x = warehouseT.process(jsonQ(requestJson))
+    console.log('_________');
+    console.log(x);
+    console.log('_________');
+    return x;
   },
-  put: async function (req, res, body) {
-    console.log("s3:put() starting");
+  async put(req, res, body) {
+    console.log("warehouse:put() starting");
 
     var requestJson = JSON.parse(body);
-    return body
-
+    return warehouseT.process(jsonQ(requestJson));
   },
-  delete: async function (req, res, body) {
-    console.log("s3:delete() starting");
+  async delete(req, res, body) {
+    console.log("warehouse:delete() starting");
 
     var requestJson = JSON.parse(body);
-    return body
-
+    return warehouseT.process(jsonQ(requestJson));
   }
 };

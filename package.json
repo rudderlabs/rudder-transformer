@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "get-value": "^3.0.1",
     "jsonq": "^1.2.0"
   },
   "devDependencies": {

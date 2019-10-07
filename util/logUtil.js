@@ -1,5 +1,5 @@
 //Conditional enable/disable of logging
-const DEBUG = true;
+const DEBUG = false;
 if (!DEBUG){
 	console.log = function (){};
 }

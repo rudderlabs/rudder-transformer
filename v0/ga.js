@@ -12,7 +12,8 @@ module.exports = {
     console.log("ga:post() starting");
 
     var requestJson = JSON.parse(body);
-    return gat.process(jsonQ(requestJson));
+    let x = gat.process(jsonQ(requestJson))
+    return x;
   },
   async put(req, res, body) {
     console.log("ga:put() starting");

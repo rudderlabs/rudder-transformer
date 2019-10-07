@@ -5,7 +5,7 @@ var url = require("url");
 var jsonQ = require("jsonq");
 
 function start(port, route) {
-  if (cluster.isMaster) {
+  if (false) {
     console.log(`Master ${process.pid} is running`);
 
     // Fork workers.

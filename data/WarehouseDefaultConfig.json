@@ -1,0 +1,9 @@
+{
+  "rl_message_id": "id",
+  "rl_sent_at": "sent_at",
+  "rl_anonymous_id": "anonymous_id",
+  "rl_request_ip": "context_ip",
+  "rl_context.rl_library.rl_name": "context_library_name",
+  "rl_context.rl_library.rl_version": "context_library_version",
+  "rl_timestamp": "timestamp"
+}

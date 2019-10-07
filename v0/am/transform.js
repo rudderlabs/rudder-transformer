@@ -3,7 +3,7 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultGetRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
 const {
   Event,
   ENDPOINT,
@@ -38,8 +38,8 @@ function responseBuilderSimple(
 ) {
   const rawPayload = {};
 
-  set(rawPayload, "event_proprties", message.properties);
-  set(rawPayload, "user_proprties", message.user_properties);
+  set(rawPayload, "event_properties", message.properties);
+  set(rawPayload, "user_properties", message.user_properties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -55,8 +55,10 @@ function responseBuilderSimple(
 
   const response = {
     endpoint,
-    requestConfig: defaultGetRequestConfig,
-    header: {},
+    requestConfig: defaultPostRequestConfig,
+    header: {
+      "Content-Type": "application/json"
+    },
     user_id: message.anonymous_id,
     payload: {
       api_key: destination.Config.apiKey,
@@ -81,7 +83,7 @@ const isRevenueEvent = product => {
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  let payloadObjectName = "event";
+  let payloadObjectName = "events";
   let evType;
   let category = ConfigCategory.DEFAULT;
 

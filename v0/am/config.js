@@ -98,7 +98,7 @@ const Event = {
   }
 };
 
-const ENDPOINT = "https://api.amplitude.com/httpapi";
+const ENDPOINT = "https://api.amplitude.com/2/httpapi";
 const IDENTIFY_ENDPOINT = "https://api.amplitude.com/identify";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

@@ -4,9 +4,7 @@
   "description": "",
   "main": "GATransform.js",
   "scripts": {
-    "start": "node transformerIndex.js",
-    "start-ut": "node aggregatorServer.js",
-    "start-et": "node echoServer.js",
+    "start": "node destTransformer.js",
     "test": "jest"
   },
   "repository": {

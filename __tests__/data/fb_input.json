@@ -1,7 +1,7 @@
 [
   {
     "message": {
-      "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "destination_props": {
         "Fb": {
           "app_id": "RudderFbApp",
@@ -27,7 +27,7 @@
             "city": "Dhaka",
             "country": "Bangladesh"
           },
-          "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
       "event": "spin_result",
@@ -107,7 +107,7 @@
 
   {
     "message": {
-      "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "destination_props": {
         "Fb": {
           "app_id": "RudderFbApp",
@@ -133,7 +133,7 @@
             "city": "Dhaka",
             "country": "Bangladesh"
           },
-          "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
       "event": "spin_result",

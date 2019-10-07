@@ -42,7 +42,7 @@
         "rl_type": "track",
         "message_id": "bd4102cb-6fec-4140-aa18-dc52a874879b",
         "timestamp": "2019-07-18 05:37:47+0000",
-        "anonymous_id": "93ee010f-5ff4-441e-a23a-0e4ff3c1d4e4",
+        "anonymousId": "93ee010f-5ff4-441e-a23a-0e4ff3c1d4e4",
         "rl_event": "Checkout Started",
         "rl_properties": {
           "order_id": "50314b8e9bcf000000000000",

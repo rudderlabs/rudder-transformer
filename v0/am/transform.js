@@ -20,7 +20,7 @@ function createSingleMessageBasicStructure(message) {
     "type",
     "event",
     "context",
-    "anonymous_id",
+    "anonymousId",
     "timestamp",
     "integrations"
   ]);
@@ -50,7 +50,7 @@ function responseBuilderSimple(
 
   rawPayload["time"] = new Date(message.timestamp).getTime();
   rawPayload["event_type"] = evType;
-  rawPayload["user_id"] = message.anonymous_id;
+  rawPayload["user_id"] = message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
   const response = {
@@ -59,7 +59,7 @@ function responseBuilderSimple(
     header: {
       "Content-Type": "application/json"
     },
-    userId: message.anonymous_id,
+    userId: message.anonymousId,
     payload: {
       api_key: destination.Config.apiKey,
       [rootElementName]: payload

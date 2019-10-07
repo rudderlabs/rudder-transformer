@@ -21,7 +21,7 @@ function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.apiKey,
-    distinct_id: message.anonymous_id,
+    distinct_id: message.anonymousId,
     time: message.timestamp
   };
 
@@ -42,7 +42,7 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.apiKey,
-    $distinct_id: message.anonymous_id
+    $distinct_id: message.anonymousId
   };
 
   return responseBuilderSimple(parameters, message, "revenue");
@@ -60,7 +60,7 @@ function responseBuilderSimple(parameters, message, eventType) {
 
   return {
     endpoint,
-    userId: message.anonymous_id,
+    userId: message.anonymousId,
     requestConfig: {
       requestFormat: "PARAMS",
       requestMethod: "POST"
@@ -87,7 +87,7 @@ function processIdentifyEvents(message, eventName, destination) {
   const parameters = {
     $set: properties,
     token: destination.Config.apiKey,
-    distinct_id: message.anonymous_id
+    distinct_id: message.anonymousId
   };
   return responseBuilderSimple(parameters, message, eventName);
 }
@@ -96,7 +96,7 @@ function processPageOrScreenEvents(message, eventName, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.apiKey,
-    distinct_id: message.anonymous_id,
+    distinct_id: message.anonymousId,
     time: message.timestamp
   };
 

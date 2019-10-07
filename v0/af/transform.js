@@ -32,7 +32,7 @@ function responseBuilderSimple(payload, message, destination) {
       authentication: destination.Config.apiKey
     },
     requestConfig: defaultPostRequestConfig,
-    userId: message.anonymous_id,
+    userId: message.anonymousId,
     payload: removeUndefinedValues(updatedPayload)
   };
 }

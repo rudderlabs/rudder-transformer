@@ -73,7 +73,7 @@ function responseBuilderSimple(message, payload) {
   return {
     endpoint,
     requestConfig,
-    userId: message.anonymous_id,
+    userId: message.anonymousId,
     header: {},
     payload: removeUndefinedValues(payload)
   };

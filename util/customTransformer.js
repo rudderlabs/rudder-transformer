@@ -1,4 +1,3 @@
-var jsonQ = require("jsonq");
 const ivm = require("isolated-vm");
 var { getTransformationCode } = require("../util/customTransforrmationsStore");
 
@@ -19,18 +18,18 @@ async function runUserTransform(events, code) {
   return res;
 }
 
-async function userTransformHandler(jsonQobj) {
-  const rl_destination = jsonQobj.find("rl_message").value()[0].rl_destination;
+async function userTransformHandler(events) {
+  const destination = events[0].destination;
   const versionId =
-    rl_destination.Transformations &&
-    rl_destination.Transformations[0] &&
-    rl_destination.Transformations[0].VersionID;
+    destination.Transformations &&
+    destination.Transformations[0] &&
+    destination.Transformations[0].VersionID;
   if (versionId) {
     try {
       const res = await getTransformationCode(versionId);
       if (res) {
-        const tr = await runUserTransform(jsonQobj.value()[0], res.code);
-        return jsonQ(tr);
+        const tr = await runUserTransform(events, res.code);
+        return JSON.parse(tr);
       }
     } catch (error) {
       // TODO: Handle error cases: Throw error or send unmodified events
@@ -38,7 +37,7 @@ async function userTransformHandler(jsonQobj) {
       throw error;
     }
   }
-  return jsonQobj;
+  return events;
 }
 
 exports.userTransformHandler = userTransformHandler;

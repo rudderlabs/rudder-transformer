@@ -59,7 +59,7 @@ function responseBuilderSimple(
     header: {
       "Content-Type": "application/json"
     },
-    user_id: message.anonymous_id,
+    userId: message.anonymous_id,
     payload: {
       api_key: destination.Config.apiKey,
       [rootElementName]: payload

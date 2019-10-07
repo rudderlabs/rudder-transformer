@@ -60,7 +60,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   return {
     endpoint,
     header: {},
-    user_id: message.anonymous_id,
+    userId: message.anonymous_id,
     requestConfig,
     payload: removeUndefinedValues(payload)
   };

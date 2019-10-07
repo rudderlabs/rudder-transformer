@@ -60,7 +60,7 @@ function responseBuilderSimple(parameters, message, eventType) {
 
   return {
     endpoint,
-    user_id: message.anonymous_id,
+    userId: message.anonymous_id,
     requestConfig: {
       requestFormat: "PARAMS",
       requestMethod: "POST"

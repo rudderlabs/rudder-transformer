@@ -58,7 +58,6 @@ function responseBuilderSimple(message, payload) {
     requestMethod: "POST"
   };
 
-  const user_id = message.anonymous_id;
   const { app_id, app_secret } = message.destination_props.Fb;
 
   //"https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
@@ -74,7 +73,7 @@ function responseBuilderSimple(message, payload) {
   return {
     endpoint,
     requestConfig,
-    user_id,
+    userId: message.anonymous_id,
     header: {},
     payload: removeUndefinedValues(payload)
   };

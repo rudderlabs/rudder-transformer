@@ -1,0 +1,7 @@
+{
+  "context.traits.anonymous_id": "cid",
+  "properties.promotion_id": "promo1id",
+  "properties.creative": "promo1cr",
+  "properties.position": "promo1ps",
+  "properties.name": "promo1nm"
+}

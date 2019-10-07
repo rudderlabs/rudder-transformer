@@ -1,0 +1,62 @@
+[
+  {
+    "endpoint": "https://track.hubspot.com/v1/event/",
+    "header": {},
+    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
+    "payload": {
+      "_a": "xyz",
+      "_n": "spin_result",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "coin_balance": 9466052,
+      "current_module_name": "CasinoGameModule",
+      "fb_profile": "0",
+      "game_fps": 30,
+      "game_name": "FireEagleSlots",
+      "gem_balance": 0,
+      "graphicsQuality": "HD",
+      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+      "internetReachability": "ReachableViaLocalAreaNetwork",
+      "isLowEndDevice": false,
+      "level": 6,
+      "lifetime_gem_balance": 0,
+      "player_total_battles": 0,
+      "player_total_shields": 0,
+      "start_date": "2019-08-01",
+      "total_payments": 0,
+      "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "versionSessionCount": 2
+    }
+  },
+  {
+    "endpoint": "https://track.hubspot.com/v1/event/",
+    "header": {},
+    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
+    "payload": {
+      "_a": "xyz",
+      "_n": "spin_result",
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "coin_balance": 9466052,
+      "current_module_name": "CasinoGameModule",
+      "fb_profile": "0",
+      "game_fps": 30,
+      "game_name": "FireEagleSlots",
+      "gem_balance": 0,
+      "graphicsQuality": "HD",
+      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+      "internetReachability": "ReachableViaLocalAreaNetwork",
+      "isLowEndDevice": false,
+      "level": 6,
+      "lifetime_gem_balance": 0,
+      "player_total_battles": 0,
+      "player_total_shields": 0,
+      "start_date": "2019-08-01",
+      "total_payments": 0,
+      "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "versionSessionCount": 2
+    }
+  }
+]

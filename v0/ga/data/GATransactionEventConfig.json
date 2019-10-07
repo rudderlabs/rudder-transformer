@@ -1,0 +1,9 @@
+{
+  "context.traits.anonymous_id": "cid",
+  "properties.order_id": "ti",
+  "properties.affiliation": "ta",
+  "properties.shipping": "ts",
+  "properties.tax": "tt",
+  "properties.coupon": "tcc",
+  "properties.currency": "cu"
+}

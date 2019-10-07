@@ -1,0 +1,19 @@
+{
+  "context.os.name": "os_name",
+  "context.os.version": "os_version",
+  "context.device.model": "device_model",
+  "context.device.manufacturer": "device_manufacturer",
+  "context.device.name": "device_brand",
+  "context.device.id": "device_id",
+  "context.network.carrier": "carrier",
+  "context.app.name": "app_name",
+  "context.app.version": "app_version",
+  "context.platform": "platform",
+  "context.locale": "language",
+  "properties.productId": "productId",
+  "properties.price": "price",
+  "properties.quantity": "quantity",
+  "properties.revenue": "revenue",
+  "properties.revenueType": "revenueType",
+  "properties.category": "event_type"
+}

@@ -44,7 +44,7 @@ function responseBuilderSimple(
     endpoint: GA_ENDPOINT,
     requestConfig: defaultGetRequestConfig,
     header: {},
-    user_id: message.anonymous_id,
+    userId: message.anonymousId,
     payload: { ...params, ...payload }
   };
   return response;

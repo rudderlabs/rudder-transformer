@@ -3,7 +3,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
     "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "v": "1",
       "t": "event",
@@ -28,7 +28,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
     "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "v": "1",
       "t": "event",

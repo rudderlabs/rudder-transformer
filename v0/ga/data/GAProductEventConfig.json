@@ -1,5 +1,5 @@
 {
-  "context.traits.anonymous_id": "cid",
+  "context.traits.anonymousId": "cid",
   "properties.name": "pr1nm",
   "properties.category": "pr1ca",
   "properties.brand": "pr1br",

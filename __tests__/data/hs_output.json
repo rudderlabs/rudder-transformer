@@ -2,7 +2,7 @@
   {
     "endpoint": "https://track.hubspot.com/v1/event/",
     "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
     "payload": {
       "_a": "xyz",
@@ -25,14 +25,14 @@
       "player_total_shields": 0,
       "start_date": "2019-08-01",
       "total_payments": 0,
-      "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "versionSessionCount": 2
     }
   },
   {
     "endpoint": "https://track.hubspot.com/v1/event/",
     "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
     "payload": {
       "_a": "xyz",
@@ -55,7 +55,7 @@
       "player_total_shields": 0,
       "start_date": "2019-08-01",
       "total_payments": 0,
-      "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "versionSessionCount": 2
     }
   }

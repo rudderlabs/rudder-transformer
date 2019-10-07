@@ -3,7 +3,7 @@
     "endpoint": "https://api2.appsflyer.com/inappevent/ns",
     "header": { "Content-Type": "application/json", "authentication": "abcde" },
     "requestConfig": { "requestFormat": "JSON", "requestMethod": "POST" },
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "properties": {
         "additional_bet_index": 0,
@@ -39,7 +39,7 @@
         "start_date": "2019-08-01",
         "total_payments": 0,
         "tournament_id": "T1561970819",
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
         "win_amount": 0,
         "price": 10,
@@ -61,7 +61,7 @@
     "endpoint": "https://api2.appsflyer.com/inappevent/ns",
     "header": { "Content-Type": "application/json", "authentication": "abcde" },
     "requestConfig": { "requestFormat": "JSON", "requestMethod": "POST" },
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "eventValue": {
         "additional_bet_index": 0,
@@ -97,7 +97,7 @@
         "start_date": "2019-08-01",
         "total_payments": 0,
         "tournament_id": "T1561970819",
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
         "win_amount": 0,
         "price": 10,

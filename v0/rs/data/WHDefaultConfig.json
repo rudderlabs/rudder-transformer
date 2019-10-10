@@ -1,0 +1,9 @@
+{
+  "message_id": "id",
+  "sent_at": "sent_at",
+  "anonymous_id": "anonymous_id",
+  "request_ip": "context_ip",
+  "context.library.name": "context_library_name",
+  "context.library.version": "context_library_version",
+  "timestamp": "timestamp"
+}

@@ -4,9 +4,7 @@
   "description": "",
   "main": "GATransform.js",
   "scripts": {
-    "start": "node transformerIndex.js",
-    "start-ut": "node aggregatorServer.js",
-    "start-et": "node echoServer.js",
+    "start": "node destTransformer.js",
     "test": "jest"
   },
   "repository": {
@@ -20,8 +18,13 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "json-query": "^2.2.2",
     "get-value": "^3.0.1",
-    "jsonq": "^1.2.0"
+    "koa": "^2.8.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.15",
+    "set-value": "^3.0.1"
   },
   "devDependencies": {
     "jest": "^24.9.0",

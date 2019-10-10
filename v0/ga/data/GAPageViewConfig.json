@@ -1,0 +1,7 @@
+{
+	"anonymousId":"cid",	
+	"properties.title":"dt",
+	"properties.url":"dl",
+	"properties.path":"dp",
+	"properties.referrer":"dr"	
+}

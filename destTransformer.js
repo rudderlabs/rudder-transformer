@@ -15,10 +15,6 @@ app.use(
   })
 );
 
-// app.use(async ctx => {
-//   console.log(ctx.URL);
-// });
-
 app.use(router.routes()).use(router.allowedMethods());
 
 if (clusterEnabled) {

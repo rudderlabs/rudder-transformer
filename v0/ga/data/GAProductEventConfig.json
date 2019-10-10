@@ -1,0 +1,12 @@
+{
+  "context.traits.anonymousId": "cid",
+  "properties.name": "pr1nm",
+  "properties.category": "pr1ca",
+  "properties.brand": "pr1br",
+  "properties.variant": "pr1va",
+  "properties.coupon": "pr1cc",
+  "properties.currency": "cu",
+  "properties.position": "pr1ps",
+  "properties.price": "pr1pr",
+  "properties.quantity": "pr1qt"
+}

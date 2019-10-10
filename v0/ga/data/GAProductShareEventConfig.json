@@ -1,0 +1,6 @@
+{
+  "context.traits.anonymousId": "cid",
+  "properties.share_via": "sn",
+  "properties.share_message": "sa",
+  "properties.url": "st"
+}

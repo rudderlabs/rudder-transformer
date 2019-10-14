@@ -2,16 +2,26 @@ const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
 
-const { EventType } = require("../../constants");
+const { EventType, SpecedTraits, TraitsMapping } = require("../../constants");
 const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
 const {
   Event,
   ENDPOINT,
-  IDENTIFY_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap
 } = require("./config");
+
+// Get the spec'd traits, for now only address needs treatment as 2 layers.
+const populateSpecedTraits = (payload, message) => {
+  SpecedTraits.forEach(trait => {
+    const mapping = TraitsMapping[trait];
+    const keys = Object.keys(mapping);
+    keys.forEach(key => {
+      set(payload, "user_properties." + key, get(message, mapping[key]));
+    });
+  });
+};
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
@@ -46,23 +56,27 @@ function responseBuilderSimple(
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  const endpoint = evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT;
+  const endpoint = ENDPOINT; // evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT; // identify on same endpoint also works
 
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
+    populateSpecedTraits(rawPayload, message);
     const traits = Object.keys(message.context.traits);
     traits.forEach(trait => {
-      set(
-        rawPayload,
-        "user_properties." + trait,
-        get(message, "context.traits." + trait)
-      );
+      if (!SpecedTraits.includes(trait)) {
+        set(
+          rawPayload,
+          "user_properties." + trait,
+          get(message, "context.traits." + trait)
+        );
+      }
     });
+    rawPayload.event_type = EventType.IDENTIFY_AM;
   } else {
-    rawPayload.time = new Date(message.originalTimestamp).getTime();
     rawPayload.event_type = evType;
   }
 
+  rawPayload.time = new Date(message.originalTimestamp).getTime();
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
@@ -96,14 +110,14 @@ const isRevenueEvent = product => {
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  let payloadObjectName = "events";
+  const payloadObjectName = "events";
   let evType;
   let category = ConfigCategory.DEFAULT;
 
   var messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      payloadObjectName = "identification";
+      // payloadObjectName = "identification"; // identify same as events
       evType = "identify";
       category = ConfigCategory.IDENTIFY;
       break;

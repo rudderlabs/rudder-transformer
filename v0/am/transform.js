@@ -48,9 +48,9 @@ function responseBuilderSimple(
 
   const endpoint = evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT;
 
-  rawPayload["time"] = new Date(message.timestamp).getTime();
-  rawPayload["event_type"] = evType;
-  rawPayload["user_id"] = message.anonymousId;
+  rawPayload.time = new Date(message.timestamp).getTime();
+  rawPayload.event_type = evType;
+  rawPayload.user_id = message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
   const response = {
@@ -106,7 +106,7 @@ function processSingleMessage(message, destination) {
       evType = message.event;
 
       if (message.products && message.products.length > 0) {
-        const isRevenue = false;
+        let isRevenue = false;
         message.products.forEach(product => {
           if (isRevenueEvent(product)) {
             isRevenue = true;
@@ -138,7 +138,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type");
-      return [{ error: "message type not supported" }];
+      throw new Error("message type not supported");
   }
 
   return responseBuilderSimple(
@@ -208,7 +208,12 @@ function process(events) {
     }
 
     toSendEvents.forEach(sendEvent => {
-      respList.push(processSingleMessage(sendEvent, destination));
+      try {
+        const resp = processSingleMessage(sendEvent, destination);
+        respList.push(resp);
+      } catch (error) {
+        console.error("AM: ", error);
+      }
     });
   });
 

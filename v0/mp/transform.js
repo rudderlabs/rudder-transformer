@@ -10,44 +10,6 @@ function getEventTime(message) {
   return new Date(message.timestamp).toISOString();
 }
 
-function processTrack(message, destination) {
-  if (message.properties.revenue) {
-    return processRevenueEvents(message, destination);
-  }
-  return getEventValueForTrackEvent(message, destination);
-}
-
-function getEventValueForTrackEvent(message, destination) {
-  const properties = {
-    ...message.properties,
-    token: destination.Config.apiKey,
-    distinct_id: message.anonymousId,
-    time: message.timestamp
-  };
-
-  const parameters = {
-    event: message.event,
-    properties
-  };
-
-  return responseBuilderSimple(parameters, message, "track");
-}
-
-function processRevenueEvents(message, destination) {
-  const revenueValue = message.properties.revenue;
-  const transactions = {
-    $time: getEventTime(message),
-    $amount: revenueValue
-  };
-  const parameters = {
-    $append: { $transactions: transactions },
-    $token: destination.Config.apiKey,
-    $distinct_id: message.anonymousId
-  };
-
-  return responseBuilderSimple(parameters, message, "revenue");
-}
-
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "http://api.mixpanel.com/engage/";
   if (eventType === EventType.TRACK) {
@@ -70,6 +32,44 @@ function responseBuilderSimple(parameters, message, eventType) {
       data: encodedData
     }
   };
+}
+
+function processRevenueEvents(message, destination) {
+  const revenueValue = message.properties.revenue;
+  const transactions = {
+    $time: getEventTime(message),
+    $amount: revenueValue
+  };
+  const parameters = {
+    $append: { $transactions: transactions },
+    $token: destination.Config.apiKey,
+    $distinct_id: message.anonymousId
+  };
+
+  return responseBuilderSimple(parameters, message, "revenue");
+}
+
+function getEventValueForTrackEvent(message, destination) {
+  const properties = {
+    ...message.properties,
+    token: destination.Config.apiKey,
+    distinct_id: message.anonymousId,
+    time: message.timestamp
+  };
+
+  const parameters = {
+    event: message.event,
+    properties
+  };
+
+  return responseBuilderSimple(parameters, message, "track");
+}
+
+function processTrack(message, destination) {
+  if (message.properties.revenue) {
+    return processRevenueEvents(message, destination);
+  }
+  return getEventValueForTrackEvent(message, destination);
 }
 
 function getTransformedJSON(message, mappingJson) {
@@ -108,24 +108,31 @@ function processPageOrScreenEvents(message, eventName, destination) {
 }
 
 function processSingleMessage(message, destination) {
-  const eventName = message.event;
-  var response = [];
   switch (message.type) {
     case EventType.TRACK:
       return processTrack(message, destination);
     case EventType.SCREEN:
-    case EventType.PAGE:
-      eventName = message.type;
-      return processPageOrScreenEvents(message, eventName, destination);
+    case EventType.PAGE: {
+      const name = message.type;
+      return processPageOrScreenEvents(message, name, destination);
+    }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
+    default:
+      throw new Error("unkown message type");
   }
-  return response;
 }
 
 function process(events) {
-  return events.map(event => {
-    return processSingleMessage(event.message, event.destination);
+  const respList = [];
+  events.forEach(event => {
+    try {
+      const resp = processSingleMessage(event.message, event.destination);
+      respList.push(resp);
+    } catch (error) {
+      console.error("MP: ", error);
+    }
   });
+  return respList;
 }
 exports.process = process;

@@ -13,38 +13,36 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const updatedEvent = { ...baseEvent };
   set(updatedEvent, "CUSTOM_EVENTS.0._eventName", fbEventName);
 
-  for (var k in message.properties) {
-    if (message.properties.hasOwnProperty(k)) {
-      if (eventPropsToPathMapping[k]) {
-        var rudderEventPath = eventPropsToPathMapping[k];
-        var fbEventPath = eventPropsMapping[rudderEventPath];
+  Object.keys(message.properties).forEach(k => {
+    if (eventPropsToPathMapping[k]) {
+      var rudderEventPath = eventPropsToPathMapping[k];
+      var fbEventPath = eventPropsMapping[rudderEventPath];
 
-        if (rudderEventPath.indexOf("sub") > -1) {
-          const [prefixSlice, suffixSlice] = rudderEventPath.split(".sub");
-          const parentArray = get(message, prefixSlice);
+      if (rudderEventPath.indexOf("sub") > -1) {
+        const [prefixSlice, suffixSlice] = rudderEventPath.split(".sub");
+        const parentArray = get(message, prefixSlice);
 
-          var length = 0;
-          var count = parentArray.length;
-          while (count > 0) {
-            const intendValue = get(
-              message,
-              prefixSlice + "." + length + suffixSlice
-            );
-            set(updatedEvent, fbEventPath + length, intendValue || "");
-            length++;
-            count--;
-          }
-        } else {
-          const rudderEventPath = eventPropsToPathMapping[k];
-          const fbEventPath = eventPropsMapping[rudderEventPath];
-          const intendValue = get(message, rudderEventPath);
-          set(updatedEvent, fbEventPath, intendValue || "");
+        var length = 0;
+        var count = parentArray.length;
+        while (count > 0) {
+          const intendValue = get(
+            message,
+            prefixSlice + "." + length + suffixSlice
+          );
+          set(updatedEvent, fbEventPath + length, intendValue || "");
+          length++;
+          count--;
         }
       } else {
-        set(updatedEvent, "CUSTOM_EVENTS.0." + k, message.properties[k]);
+        rudderEventPath = eventPropsToPathMapping[k];
+        fbEventPath = eventPropsMapping[rudderEventPath];
+        const intendValue = get(message, rudderEventPath);
+        set(updatedEvent, fbEventPath, intendValue || "");
       }
+    } else {
+      set(updatedEvent, "CUSTOM_EVENTS.0." + k, message.properties[k]);
     }
-  }
+  });
 
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent, "CUSTOM_EVENTS.0._logTime"));
@@ -60,7 +58,7 @@ function responseBuilderSimple(message, payload) {
 
   const { app_id, app_secret } = message.destination_props.Fb;
 
-  //"https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
+  // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
 
   const endpoint =
     "https://graph.facebook.com/v3.3/" +
@@ -83,12 +81,10 @@ function buildBaseEvent(message) {
   const baseEvent = {};
   set(baseEvent, "extinfo.0", "a2");
 
-  for (var k in baseMapping) {
-    if (baseMapping.hasOwnProperty(k)) {
-      const inputVal = get(message, k);
-      set(baseEvent, baseMapping[k], inputVal || "");
-    }
-  }
+  Object.keys(baseMapping).forEach(k => {
+    const inputVal = get(message, k);
+    set(baseEvent, baseMapping[k], inputVal || "");
+  });
   return baseEvent;
 }
 
@@ -103,7 +99,7 @@ function processSingleMessage(message) {
       fbEventName = eventNameMapping[eventName] || eventName;
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
-    case EventType.SCREEN:
+    case EventType.SCREEN: {
       const { name } = message.properties;
       if (!name) {
         fbEventName = "Viewed Screen";
@@ -112,14 +108,13 @@ function processSingleMessage(message) {
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
+    }
     case EventType.PAGE:
       fbEventName = "Viewed Page";
-      updatedEvent = processEventTypeGeneric(
-        requestMsg,
-        baseEvent,
-        fbEventName
-      );
+      updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
+    default:
+      throw new Error("message type not supported");
   }
 
   return responseBuilderSimple(message, updatedEvent);

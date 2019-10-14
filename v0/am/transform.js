@@ -20,8 +20,8 @@ function createSingleMessageBasicStructure(message) {
     "type",
     "event",
     "context",
-    "anonymousId",
-    "timestamp",
+    "userId",
+    "originalTimestamp",
     "integrations"
   ]);
 }
@@ -48,9 +48,22 @@ function responseBuilderSimple(
 
   const endpoint = evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT;
 
-  rawPayload.time = new Date(message.timestamp).getTime();
-  rawPayload.event_type = evType;
-  rawPayload.user_id = message.anonymousId;
+  // in case of identify, populate user_properties from traits as well, don't need to send evType
+  if (evType === EventType.IDENTIFY) {
+    const traits = Object.keys(message.context.traits);
+    traits.forEach(trait => {
+      set(
+        rawPayload,
+        "user_properties." + trait,
+        get(message, "context.traits." + trait)
+      );
+    });
+  } else {
+    rawPayload.time = new Date(message.originalTimestamp).getTime();
+    rawPayload.event_type = evType;
+  }
+
+  rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
   const response = {
@@ -59,7 +72,7 @@ function responseBuilderSimple(
     header: {
       "Content-Type": "application/json"
     },
-    userId: message.anonymousId,
+    userId: message.userId ? message.userId : message.anonymousId,
     payload: {
       api_key: destination.Config.apiKey,
       [rootElementName]: payload

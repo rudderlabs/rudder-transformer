@@ -138,7 +138,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type");
-      throw new Error("message type not supported");
+      return { statusCode: 400, error: "message type not supported" };
   }
 
   return responseBuilderSimple(
@@ -187,7 +187,7 @@ function process(events) {
   events.forEach(event => {
     const { message, destination } = event;
     const messageType = message.type.toLowerCase();
-    const eventType = message.event.toLowerCase();
+    const eventType = message.event ? message.event.toLowerCase() : undefined;
     const toSendEvents = [];
     if (
       messageType === EventType.TRACK &&
@@ -208,12 +208,11 @@ function process(events) {
     }
 
     toSendEvents.forEach(sendEvent => {
-      try {
-        const resp = processSingleMessage(sendEvent, destination);
-        respList.push(resp);
-      } catch (error) {
-        console.error("AM: ", error);
+      const result = processSingleMessage(sendEvent, destination);
+      if (!result.statusCode) {
+        result.statusCode = 200;
       }
+      respList.push(result);
     });
   });
 

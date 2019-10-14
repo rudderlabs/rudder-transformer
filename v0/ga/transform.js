@@ -377,7 +377,7 @@ function processSingleMessage(message, destination) {
     default:
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
-      throw new Error("message type not supported");
+      return { statusCode: 400, error: "message type not supported" };
   }
 
   return responseBuilderSimple(
@@ -393,13 +393,14 @@ function processSingleMessage(message, destination) {
 function process(events) {
   const respList = [];
 
+  console.log(events);
+
   events.forEach(event => {
-    try {
-      const resp = processSingleMessage(event.message, event.destination);
-      respList.push(resp);
-    } catch (error) {
-      console.error("GA: ", error);
+    const result = processSingleMessage(event.message, event.destination);
+    if (!result.statusCode) {
+      result.statusCode = 200;
     }
+    respList.push(result);
   });
   return respList;
 }

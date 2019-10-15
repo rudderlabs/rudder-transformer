@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "isolated-vm": "^2.0.1",
+    "node-cache": "^4.2.1",
+    "node-fetch": "^2.6.0",
     "json-query": "^2.2.2",
     "get-value": "^3.0.1",
     "koa": "^2.8.2",

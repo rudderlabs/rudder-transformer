@@ -1,5 +1,7 @@
 FROM node:10.16.0-alpine
 
+RUN apk add python make g++
+
 # Create app directory
 WORKDIR /app
 

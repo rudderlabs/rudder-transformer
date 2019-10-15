@@ -22,8 +22,8 @@ versions.forEach(version => {
   const versionDestinations = getDirectories(version);
   versionDestinations.forEach(versionedDestination => {
     const handler = getHandler(versionedDestination);
-    router.post(`/${versionedDestination}`, (ctx, next) => {
-      ctx.body = handler.process(ctx.request.body);
+    router.post(`/${versionedDestination}`, async (ctx, next) => {
+      ctx.body = await handler.process(ctx.request.body);
     });
   });
 });

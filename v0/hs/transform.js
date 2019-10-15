@@ -1,7 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../constants");
-const { defaultGetRequestConfig, removeUndefinedValues } = require("../util");
+const { defaultGetRequestConfig, defaultPostRequestConfig, removeUndefinedValues } = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -11,7 +11,9 @@ function getTransformedJSON(message, mappingJson) {
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    if (get(message, sourceKey)) {
+      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    }
   });
   return { ...rawPayload, ...message.user_properties };
 }
@@ -24,7 +26,7 @@ function getPropertyValueForIdentify(propMap) {
 
 function responseBuilderSimple(payload, message, eventType, destination) {
   let endpoint = "https://track.hubspot.com/v1/event/";
-  const requestConfig = defaultGetRequestConfig;
+  let requestConfig = defaultGetRequestConfig;
 
   if (eventType !== EventType.TRACK) {
     const { email } = message.context.traits;
@@ -39,8 +41,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
       endpoint =
         "https://api.hubapi.com/contacts/v1/contact/?hapikey=" + apiKey;
     }
-    requestConfig.requestMethod = "POST";
-    requestConfig.requestFormat = "JSON";
+    requestConfig = defaultPostRequestConfig;
   }
 
   return {
@@ -93,7 +94,11 @@ function processSingleMessage(message, destination) {
       response = processIdentify(message, destination);
       break;
     default:
-      throw new Error("message type not supported");
+      console.log("could not determine type");
+      response = {
+        statusCode: 400,
+        error: "message type " + message.type + " is not supported"
+      };
   }
   return response;
 }
@@ -103,6 +108,9 @@ function process(events) {
   events.forEach(event => {
     try {
       const resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
       respList.push(resp);
     } catch (error) {
       console.error("HS: ", error);

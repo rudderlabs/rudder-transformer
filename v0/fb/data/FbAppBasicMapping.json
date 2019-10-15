@@ -1,5 +1,5 @@
 {
-  "anonymous_id": "app_user_id",
+  "anonymousId": "app_user_id",
   "destination_props.Fb.advertiser_tracking_enabled": "advertiser_tracking_enabled",
   "destination_props.Fb.application_tracking_enabled": "application_tracking_enabled",
   "context.device.advertiser_id": "advertiser_id",

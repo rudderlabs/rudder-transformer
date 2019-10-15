@@ -3,7 +3,7 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultGetRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
 const {
   Event,
   ENDPOINT,
@@ -20,7 +20,7 @@ function createSingleMessageBasicStructure(message) {
     "type",
     "event",
     "context",
-    "anonymous_id",
+    "anonymousId",
     "timestamp",
     "integrations"
   ]);
@@ -38,8 +38,8 @@ function responseBuilderSimple(
 ) {
   const rawPayload = {};
 
-  set(rawPayload, "event_proprties", message.properties);
-  set(rawPayload, "user_proprties", message.user_properties);
+  set(rawPayload, "event_properties", message.properties);
+  set(rawPayload, "user_properties", message.user_properties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -50,14 +50,16 @@ function responseBuilderSimple(
 
   rawPayload["time"] = new Date(message.timestamp).getTime();
   rawPayload["event_type"] = evType;
-  rawPayload["user_id"] = message.anonymous_id;
+  rawPayload["user_id"] = message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
   const response = {
     endpoint,
-    requestConfig: defaultGetRequestConfig,
-    header: {},
-    user_id: message.anonymous_id,
+    requestConfig: defaultPostRequestConfig,
+    header: {
+      "Content-Type": "application/json"
+    },
+    userId: message.anonymousId,
     payload: {
       api_key: destination.Config.apiKey,
       [rootElementName]: payload
@@ -81,7 +83,7 @@ const isRevenueEvent = product => {
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  let payloadObjectName = "event";
+  let payloadObjectName = "events";
   let evType;
   let category = ConfigCategory.DEFAULT;
 

@@ -1,13 +1,13 @@
 [
   {
-    "endpoint": "https://api.amplitude.com/httpapi",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
-    "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "requestConfig": { "requestFormat": "JSON", "requestMethod": "POST" },
+    "header": { "Content-Type": "application/json" },
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "api_key": "abcde",
-      "event": {
-        "event_proprties": {
+      "events": {
+        "event_properties": {
           "additional_bet_index": 0,
           "battle_id": "N/A",
           "bet_amount": 9,
@@ -41,11 +41,11 @@
           "start_date": "2019-08-01",
           "total_payments": 0,
           "tournament_id": "T1561970819",
-          "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+          "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
           "versionSessionCount": 2,
           "win_amount": 0
         },
-        "user_proprties": {
+        "user_properties": {
           "coin_balance": 9466052,
           "current_module_name": "CasinoGameModule",
           "fb_profile": "0",
@@ -62,7 +62,7 @@
           "player_total_shields": 0,
           "start_date": "2019-08-01",
           "total_payments": 0,
-          "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+          "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
           "versionSessionCount": 2
         },
         "os_name": "android",
@@ -79,14 +79,14 @@
     }
   },
   {
-    "endpoint": "https://api.amplitude.com/httpapi",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
-    "header": {},
-    "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "requestConfig": { "requestFormat": "JSON", "requestMethod": "POST" },
+    "header": { "Content-Type": "application/json" },
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "payload": {
       "api_key": "abcde",
-      "event": {
-        "event_proprties": {
+      "events": {
+        "event_properties": {
           "additional_bet_index": 0,
           "battle_id": "N/A",
           "bet_amount": 9,
@@ -120,11 +120,11 @@
           "start_date": "2019-08-01",
           "total_payments": 0,
           "tournament_id": "T1561970819",
-          "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+          "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
           "versionSessionCount": 2,
           "win_amount": 0
         },
-        "user_proprties": {
+        "user_properties": {
           "coin_balance": 9466052,
           "current_module_name": "CasinoGameModule",
           "fb_profile": "0",
@@ -141,7 +141,7 @@
           "player_total_shields": 0,
           "start_date": "2019-08-01",
           "total_payments": 0,
-          "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+          "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
           "versionSessionCount": 2
         },
         "os_name": "android",

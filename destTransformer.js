@@ -9,7 +9,11 @@ const clusterEnabled = false;
 const PORT = 9090;
 const app = new Koa();
 
-app.use(bodyParser());
+app.use(
+  bodyParser({
+    jsonLimit: "100mb"
+  })
+);
 app.use(router.routes()).use(router.allowedMethods());
 
 if (clusterEnabled) {

@@ -1,7 +1,7 @@
 [
   {
     "message": {
-      "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -21,7 +21,7 @@
             "city": "Dhaka",
             "country": "Bangladesh"
           },
-          "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
       "event": "spin_result",
@@ -65,7 +65,7 @@
         "start_date": "2019-08-01",
         "total_payments": 0,
         "tournament_id": "T1561970819",
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
         "win_amount": 0
       },
@@ -88,7 +88,7 @@
         "player_total_shields": 0,
         "start_date": "2019-08-01",
         "total_payments": 0,
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2
       }
     },
@@ -102,7 +102,7 @@
 
   {
     "message": {
-      "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -122,7 +122,7 @@
             "city": "Dhaka",
             "country": "Bangladesh"
           },
-          "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
       "event": "spin_result",
@@ -166,7 +166,7 @@
         "start_date": "2019-08-01",
         "total_payments": 0,
         "tournament_id": "T1561970819",
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
         "win_amount": 0
       },
@@ -189,7 +189,7 @@
         "player_total_shields": 0,
         "start_date": "2019-08-01",
         "total_payments": 0,
-        "user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2
       }
     },

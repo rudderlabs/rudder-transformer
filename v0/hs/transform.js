@@ -1,7 +1,11 @@
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../constants");
-const { defaultGetRequestConfig, defaultPostRequestConfig, removeUndefinedValues } = require("../util");
+const {
+  defaultGetRequestConfig,
+  defaultPostRequestConfig,
+  removeUndefinedValues
+} = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];

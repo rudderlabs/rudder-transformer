@@ -12,7 +12,7 @@ function getEventTime(message) {
 
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "http://api.mixpanel.com/engage/";
-  if (eventType === EventType.TRACK) {
+  if (eventType !== EventType.IDENTIFY) {
     endpoint = "http://api.mixpanel.com/track/";
   }
 
@@ -43,7 +43,7 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.apiKey,
-    $distinct_id: message.anonymousId
+    $distinct_id: message.userId ? message.userId : message.anonymousId
   };
 
   return responseBuilderSimple(parameters, message, "revenue");
@@ -53,7 +53,7 @@ function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.apiKey,
-    distinct_id: message.anonymousId,
+    distinct_id: message.userId ? message.userId : message.anonymousId,
     time: message.timestamp
   };
 
@@ -86,8 +86,8 @@ function processIdentifyEvents(message, eventName, destination) {
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const parameters = {
     $set: properties,
-    token: destination.Config.apiKey,
-    distinct_id: message.anonymousId
+    $token: destination.Config.apiKey,
+    $distinct_id: message.userId ? message.userId : message.anonymousId
   };
   return responseBuilderSimple(parameters, message, eventName);
 }
@@ -96,7 +96,7 @@ function processPageOrScreenEvents(message, eventName, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.apiKey,
-    distinct_id: message.anonymousId,
+    distinct_id: message.userId ? message.userId : message.anonymousId,
     time: message.timestamp
   };
 
@@ -119,7 +119,11 @@ function processSingleMessage(message, destination) {
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     default:
-      throw new Error("unkown message type");
+      console.log("could not determine type");
+      return {
+        statusCode: 400,
+        error: "message type " + message.type + " is not supported"
+      };
   }
 }
 
@@ -128,6 +132,9 @@ function process(events) {
   events.forEach(event => {
     try {
       const resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
       respList.push(resp);
     } catch (error) {
       console.error("MP: ", error);

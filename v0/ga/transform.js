@@ -393,8 +393,6 @@ function processSingleMessage(message, destination) {
 function process(events) {
   const respList = [];
 
-  console.log(events);
-
   events.forEach(event => {
     const result = processSingleMessage(event.message, event.destination);
     if (!result.statusCode) {

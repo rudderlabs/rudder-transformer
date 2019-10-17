@@ -32,7 +32,8 @@ function createSingleMessageBasicStructure(message) {
     "context",
     "userId",
     "originalTimestamp",
-    "integrations"
+    "integrations",
+    "session_id"
   ]);
 }
 
@@ -80,6 +81,8 @@ function responseBuilderSimple(
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
+  //console.log(payload);
+
   const response = {
     endpoint,
     requestConfig: defaultPostRequestConfig,
@@ -92,6 +95,7 @@ function responseBuilderSimple(
       [rootElementName]: payload
     }
   };
+  //console.log(response);
   return response;
 }
 
@@ -243,6 +247,7 @@ function process(events) {
     });
   });
 
+  //console.log(JSON.stringify(respList));
   return respList;
 }
 

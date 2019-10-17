@@ -15,5 +15,6 @@
   "properties.path": "event_properties.path",
   "properties.referrer": "event_properties.referrer",
   "properties.search": "event_properties.search",
-  "properties.keywords": "event_properties.keywords"
+  "properties.keywords": "event_properties.keywords",
+  "session_id": "session_id"
 }

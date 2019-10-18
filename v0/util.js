@@ -28,6 +28,17 @@ const toStringValues = obj => {
   return obj;
 };
 
+const getDateInFormat = date => {
+  var x = new Date(date);
+  var y = x.getFullYear().toString();
+  var m = (x.getMonth() + 1).toString();
+  var d = x.getDate().toString();
+  d.length == 1 && (d = "0" + d);
+  m.length == 1 && (m = "0" + m);
+  var yyyymmdd = y + m + d;
+  return yyyymmdd;
+};
+
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
 const defaultGetRequestConfig = {
@@ -43,6 +54,7 @@ const defaultPostRequestConfig = {
 module.exports = {
   getMappingConfig,
   toStringValues,
+  getDateInFormat,
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultPostRequestConfig

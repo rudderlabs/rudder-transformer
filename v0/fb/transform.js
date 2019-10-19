@@ -170,9 +170,9 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   set(updatedEvent.CUSTOM_EVENTS[0], "_logTime", dateTime.getTime());
 
   var num = Number(updatedEvent.advertiser_tracking_enabled);
-  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? 0 : num;
+  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : "" + num;
   num = Number(updatedEvent.application_tracking_enabled);
-  updatedEvent.application_tracking_enabled = isNaN(num) ? 0 : num;
+  updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : "" + num;
 
   userProps.forEach(prop => {
     switch (prop) {

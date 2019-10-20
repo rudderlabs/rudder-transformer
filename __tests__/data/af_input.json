@@ -1,103 +1,53 @@
 [
   {
     "message": {
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "channel": "web",
       "context": {
         "app": {
-          "namespace": "ns"
-        },
-        "device": {
-          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
-          "manufacturer": "Xiaomi",
-          "model": "Redmi 6",
-          "name": "xiaomi"
-        },
-        "network": {
-          "carrier": "Banglalink"
-        },
-        "os": {
-          "name": "android",
-          "version": "8.1.0"
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
         },
         "traits": {
-          "address": {
-            "city": "Dhaka",
-            "country": "Bangladesh"
-          },
-          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "email": "testhubspot2@email.com",
+          "name": "Test Hubspot",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
         }
       },
-      "event": "wishlist product added to cart",
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "user_properties":{
+      	"test_key":"test value"
+      },
       "integrations": {
-        "AM": true,
-        "All": false,
-        "GA": true
+        "All": true
       },
-      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
-      "properties": {
-        "additional_bet_index": 0,
-        "battle_id": "N/A",
-        "bet_amount": 9,
-        "bet_level": 1,
-        "bet_multiplier": 1,
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "days_in_game": 0,
-        "extra_param": "N/A",
-        "fb_profile": "0",
-        "featureGameType": "N/A",
-        "game_fps": 30,
-        "game_id": "fireEagleBase",
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": "False",
-        "is_auto_spin": "False",
-        "is_turbo": "False",
-        "isf": "False",
-        "ishighroller": "False",
-        "jackpot_win_amount": 90,
-        "jackpot_win_type": "Silver",
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "no_of_spin": 1,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "tournament_id": "T1561970819",
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2,
-        "win_amount": 0,
-        "price": 10,
-        "category": "test",
-        "product_id": "pid",
-        "quantity": 5
-      },
-      "timestamp": "2019-09-01T15:46:51.693229+05:30",
-      "type": "track",
-      "user_properties": {
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "fb_profile": "0",
-        "game_fps": 30,
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": false,
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2
-      },
+      "sentAt": "2019-10-14T09:03:22.563Z",
       "destination_props": {
         "AF": {
           "af_uid": "afUid"
@@ -106,111 +56,111 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
-        "appsFlyerId": "xyz"
-      }
+        "apiKey": "ef1d42390426e3f7c90ac78272e74344"
+      },
+      "Enabled": true
     }
   },
-
   {
     "message": {
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+       "channel": "web",
+	      "context": {
+	        "app": {
+	          "build": "1.0.0",
+	          "name": "RudderLabs JavaScript SDK",
+	          "namespace": "com.rudderlabs.javascript",
+	          "version": "1.0.0"
+	        },
+	        "traits": {
+	          "email": "testhubspot2@email.com",
+	          "name": "Test Hubspot",
+	          "anonymousId": "12345"
+	        },
+	        "library": {
+	          "name": "RudderLabs JavaScript SDK",
+	          "version": "1.0.0"
+	        },
+	        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+	        "locale": "en-GB",
+	        "ip": "0.0.0.0",
+	        "os": {
+	          "name": "",
+	          "version": ""
+	        },
+	        "screen": {
+	          "density": 2
+	        }
+	      },
+	      "type": "page",
+	      "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+	      "originalTimestamp": "2019-10-15T09:35:31.289Z",
+	      "anonymousId": "00000000000000000000000000",
+	      "userId": "12345",
+	      "properties": {
+	        "path": "",
+	        "referrer": "",
+	        "search": "",
+	        "title": "",
+	        "url": ""
+	      },
+       "integrations": {
+         "All": true
+       },
+       "name": "ApplicationLoaded",
+       "sentAt": "2019-10-14T11:15:53.296Z",
+       "destination_props": {
+        "AF": {
+          "af_uid": "afUid"
+        }
+      }
+     },
+     "destination": {
+       "Config": {
+         "apiKey": "ef1d42390426e3f7c90ac78272e74344"
+       },
+       "Enabled": true
+     }
+  },
+  {
+    "message": {
+      "channel": "web",
       "context": {
         "app": {
-          "namespace": "ns"
-        },
-        "device": {
-          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
-          "manufacturer": "Xiaomi",
-          "model": "Redmi 6",
-          "name": "xiaomi"
-        },
-        "network": {
-          "carrier": "Banglalink"
-        },
-        "os": {
-          "name": "android",
-          "version": "8.1.0"
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
         },
         "traits": {
-          "address": {
-            "city": "Dhaka",
-            "country": "Bangladesh"
-          },
-          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "email": "testhubspot2@email.com",
+          "name": "Test Hubspot"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
         }
       },
-      "event": "wishlist product added to cart",
-      "integrations": {
-        "AM": true,
-        "All": false,
-        "GA": true
-      },
-      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "test track event HS",
       "properties": {
-        "additional_bet_index": 0,
-        "battle_id": "N/A",
-        "bet_amount": 9,
-        "bet_level": 1,
-        "bet_multiplier": 1,
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "days_in_game": 0,
-        "extra_param": "N/A",
-        "fb_profile": "0",
-        "featureGameType": "N/A",
-        "game_fps": 30,
-        "game_id": "fireEagleBase",
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": "False",
-        "is_auto_spin": "False",
-        "is_turbo": "False",
-        "isf": "False",
-        "ishighroller": "False",
-        "jackpot_win_amount": 90,
-        "jackpot_win_type": "Silver",
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "no_of_spin": 1,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "tournament_id": "T1561970819",
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2,
-        "win_amount": 0,
-        "price": 10,
-        "category": "test",
-        "product_id": "pid",
-        "quantity": 5
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345
       },
-      "timestamp": "2019-09-01T15:46:51.693229+05:30",
-      "type": "screen",
-      "user_properties": {
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "fb_profile": "0",
-        "game_fps": 30,
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": false,
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2
-      },
+      "sentAt": "2019-10-14T11:15:53.296Z",
       "destination_props": {
         "AF": {
           "af_uid": "afUid"
@@ -219,9 +169,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
-        "appsFlyerId": "xyz"
-      }
+      	"apiKey": "ef1d42390426e3f7c90ac78272e74344"
+      },
+      "Enabled": true
     }
   }
 ]

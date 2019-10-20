@@ -133,7 +133,8 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
-      throw new Error("message type not supported");
+      // throw new Error("message type not supported");
+      return { statusCode: 400, error: "message type not supported" };
   }
   return responseBuilderSimple(payload, message, destination);
 }
@@ -143,6 +144,9 @@ function process(events) {
   events.forEach(event => {
     try {
       const resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
       respList.push(resp);
     } catch (error) {
       console.error("AF: ", error);

@@ -221,9 +221,24 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 }
 
 function process(events) {
-  return events.map(event => {
-    return processSingleMessage(event.message, event.destination);
+  const respList = [];
+  let resp;
+  events.forEach(event => {
+    try {
+      resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
+    } catch (e) {
+      console.log("error occurred while processing payload for FB: ", e);
+      resp = {
+        statusCode: 400,
+        error: "error occurred while processing payload."
+      };
+    }
+    respList.push(resp);
   });
+  return respList;
 }
 
 exports.process = process;

@@ -109,16 +109,21 @@ function processSingleMessage(message, destination) {
 
 function process(events) {
   const respList = [];
+  let resp;
   events.forEach(event => {
     try {
-      const resp = processSingleMessage(event.message, event.destination);
+      resp = processSingleMessage(event.message, event.destination);
       if (!resp.statusCode) {
         resp.statusCode = 200;
       }
-      respList.push(resp);
-    } catch (error) {
-      console.error("HS: ", error);
+    } catch (e) {
+      console.log("error occurred while processing payload for HS: ", e);
+      resp = {
+        statusCode: 400,
+        error: "error occurred while processing payload."
+      };
     }
+    respList.push(resp);
   });
   return respList;
 }

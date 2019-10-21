@@ -5,6 +5,7 @@
   "rl_properties.category": "ec",
   "rl_properties.label": "el",
   "rl_properties.value": "ev",
+  "rl_request_ip": "uip",
   "rl_properties.jackpot_win_type": "cd1",
   "rl_properties.ishighroller": "cd2",
   "rl_properties.tournament_id": "cd3",

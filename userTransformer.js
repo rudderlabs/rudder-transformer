@@ -138,6 +138,7 @@ function start(port) {
                   .find("rl_event")
                   .value()[0];
 
+                // find user_id from rl_user_properties
                 var userId;
                 jsonQ(value)
                   .find("rl_user_properties")
@@ -158,7 +159,7 @@ function start(port) {
                   GA: true
                 };
 
-                //Add rl_anonymous_id
+                //Add rl_anonymous_id same as user_id if present, else anonymous_id
                 messageObj["rl_message"]["rl_anonymous_id"] = userId
                   ? userId
                   : anonymousId;
@@ -181,14 +182,9 @@ function start(port) {
                 //Add the GA message
                 messageList.push(messageObj);
 
-                //Send only non-spin events to Amplitude
+                //Send only unfiltered events to Amplitude
 
-                if (
-                  !(
-                    eventName &&
-                    filterEventNames.includes(eventName.toLowerCase())
-                  )
-                ) {
+                if (!(eventName && filterEventNames.includes(eventName))) {
                   //non-spin event
                   //Repeat construction
                   var messageObjAM = new Object();

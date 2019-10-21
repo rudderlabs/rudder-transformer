@@ -169,7 +169,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type");
-      return { statusCode: 400, error: "message type not supported" };
+      throw new Error("message type not supported");
   }
 
   return responseBuilderSimple(
@@ -216,35 +216,39 @@ function process(events) {
   const respList = [];
 
   events.forEach(event => {
-    const { message, destination } = event;
-    const messageType = message.type.toLowerCase();
-    const eventType = message.event ? message.event.toLowerCase() : undefined;
-    const toSendEvents = [];
-    if (
-      messageType === EventType.TRACK &&
-      (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-        eventType === Event.PRODUCT_LIST_CLICKED)
-    ) {
-      toSendEvents.push(processProductListAction(message));
-    } else if (
-      messageType === EventType.TRACK &&
-      (eventType == Event.CHECKOUT_STARTED.name ||
-        eventType == Event.ORDER_UPDATED.name ||
-        eventType == Event.ORDER_COMPLETED.name ||
-        eventType == Event.ORDER_CANCELLED.name)
-    ) {
-      toSendEvents.push(processTransaction(message));
-    } else {
-      toSendEvents.push(message);
-    }
-
-    toSendEvents.forEach(sendEvent => {
-      const result = processSingleMessage(sendEvent, destination);
-      if (!result.statusCode) {
-        result.statusCode = 200;
+    try {
+      const { message, destination } = event;
+      const messageType = message.type.toLowerCase();
+      const eventType = message.event ? message.event.toLowerCase() : undefined;
+      const toSendEvents = [];
+      if (
+        messageType === EventType.TRACK &&
+        (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+          eventType === Event.PRODUCT_LIST_CLICKED)
+      ) {
+        toSendEvents.push(processProductListAction(message));
+      } else if (
+        messageType === EventType.TRACK &&
+        (eventType == Event.CHECKOUT_STARTED.name ||
+          eventType == Event.ORDER_UPDATED.name ||
+          eventType == Event.ORDER_COMPLETED.name ||
+          eventType == Event.ORDER_CANCELLED.name)
+      ) {
+        toSendEvents.push(processTransaction(message));
+      } else {
+        toSendEvents.push(message);
       }
-      respList.push(result);
-    });
+
+      toSendEvents.forEach(sendEvent => {
+        const result = processSingleMessage(sendEvent, destination);
+        if (!result.statusCode) {
+          result.statusCode = 200;
+        }
+        respList.push(result);
+      });
+    } catch (error) {
+      respList.push({ statusCode: 400, error: error.message });
+    }
   });
 
   //console.log(JSON.stringify(respList));

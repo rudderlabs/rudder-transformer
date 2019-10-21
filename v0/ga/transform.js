@@ -382,7 +382,8 @@ function processSingleMessage(message, destination) {
     default:
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
-      return { statusCode: 400, error: "message type not supported" };
+      throw new Error("message type not supported");
+      return;
   }
 
   return responseBuilderSimple(
@@ -397,14 +398,27 @@ function processSingleMessage(message, destination) {
 // Iterate over input batch and generate response for each message
 async function process(events) {
   const respList = [];
-  const userTransformedEvents = await userTransformHandler(events);
-  userTransformedEvents.forEach(event => {
-    const result = processSingleMessage(event.message, event.destination);
-    if (!result.statusCode) {
-      result.statusCode = 200;
-    }
-    respList.push(result);
-  });
+  let userTransformedEvents;
+  try {
+    userTransformedEvents = await userTransformHandler(events);
+
+    userTransformedEvents.forEach(event => {
+      try {
+        const result = processSingleMessage(event.message, event.destination);
+        if (!result.statusCode) {
+          result.statusCode = 200;
+        }
+        respList.push(result);
+      } catch (error) {
+        respList.push({ statusCode: 400, error: error.message });
+      }
+    });
+  } catch (error) {
+    events.forEach(event => {
+      respList.push({ statusCode: 400, error: error.message });
+    });
+  }
+
   return respList;
 }
 

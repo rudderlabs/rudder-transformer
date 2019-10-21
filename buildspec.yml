@@ -7,5 +7,4 @@ phases:
   build:
     commands:
       - npm install
-      # TODO: Re-enable next line before merging with master
-      # - npm test
+      - npm test

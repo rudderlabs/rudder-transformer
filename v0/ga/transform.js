@@ -40,14 +40,36 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   const params = removeUndefinedValues(parameters);
 
+  //Get custom params from destination config
+  let customParams = getParamsFromConfig(message, destination);
+  customParams = removeUndefinedValues(customParams);
+
   const response = {
     endpoint: GA_ENDPOINT,
     requestConfig: defaultGetRequestConfig,
     header: {},
     userId: message.anonymousId,
-    payload: { ...params, ...payload }
+    payload: { ...params, ...customParams, ...payload }
   };
+  //console.log("response ", response);
   return response;
+}
+
+function getParamsFromConfig(message, destination) {
+  let params = {};
+
+  var obj = {};
+  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
+  destination.Config.customMappings.forEach(mapping => {
+    obj[mapping.from] = mapping.to;
+  });
+  // console.log(obj);
+  let keys = Object.keys(obj);
+  keys.forEach(key => {
+    params[obj[key]] = get(message.properties, key);
+  });
+  //console.log(params);
+  return params;
 }
 
 // Function for processing pageviews
@@ -403,6 +425,7 @@ async function process(events) {
     userTransformedEvents = await userTransformHandler(events);
 
     userTransformedEvents.forEach(event => {
+      console.log(JSON.stringify(event));
       try {
         const result = processSingleMessage(event.message, event.destination);
         if (!result.statusCode) {

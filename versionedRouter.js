@@ -14,16 +14,47 @@ const getDirectories = source =>
     .map(name => join(source, name))
     .filter(isDirectory);
 
-const getHandler = versionedDestination => {
+const getDestHandler = versionedDestination => {
   return require(`./${versionedDestination}/transform`);
+};
+
+let areFunctionsEnabled = -1;
+const functionsEnabled = () => {
+  if (areFunctionsEnabled === -1) {
+    areFunctionsEnabled = process.env.ENABLE_FUNCTIONS === "true" ? 1 : 0;
+  }
+  return areFunctionsEnabled === 1;
+};
+
+const userTransformHandler = () => {
+  if (functionsEnabled()) {
+    return require("./util/customTransformer").userTransformHandler;
+  }
+  throw new Error("Functions are not enabled");
 };
 
 versions.forEach(version => {
   const versionDestinations = getDirectories(version);
   versionDestinations.forEach(versionedDestination => {
-    const handler = getHandler(versionedDestination);
+    const destHandler = getDestHandler(versionedDestination);
     router.post(`/${versionedDestination}`, async (ctx, next) => {
-      ctx.body = await handler.process(ctx.request.body);
+      let events = ctx.request.body;
+
+      if (functionsEnabled()) {
+        try {
+          events = await userTransformHandler()(events);
+        } catch (error) {
+          const respList = [];
+          events.forEach(event => {
+            respList.push({ statusCode: 400, error: error.message });
+          });
+          ctx.body = respList;
+          return;
+        }
+      }
+
+      // No errors should be returned in Destination Handler
+      ctx.body = await destHandler.process(events);
     });
   });
 });

@@ -21,13 +21,14 @@
     "isolated-vm": "^2.0.1",
     "node-cache": "^4.2.1",
     "node-fetch": "^2.6.0",
-    "json-query": "^2.2.2",
     "get-value": "^3.0.1",
+    "json-query": "^2.2.2",
     "koa": "^2.8.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.15",
-    "set-value": "^3.0.1"
+    "set-value": "^3.0.1",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",

@@ -1,39 +1,31 @@
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../constants");
-const { defaultGetRequestConfig, removeUndefinedValues } = require("../util");
+const {
+  defaultGetRequestConfig,
+  defaultPostRequestConfig,
+  removeUndefinedValues
+} = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
-function processTrack(message, destination) {
-  const parameters = {
-    _a: destination.Config.hubId,
-    _n: message.event
-  };
+function getTransformedJSON(message, mappingJson) {
+  const rawPayload = {};
 
-  if (message.properties.revenue) {
-    parameters["_m"] = revenue;
-  }
-  const userProperties = getTransformedJSON(message, hSIdentifyConfigJson);
-
-  return responseBuilderSimple(
-    { ...parameters, ...userProperties },
-    message,
-    EventType.TRACK,
-    destination
-  );
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    if (get(message, sourceKey)) {
+      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    }
+  });
+  return { ...rawPayload, ...message.user_properties };
 }
 
-function processIdentify(message) {
-  const userProperties = getTransformedJSON(message, hSIdentifyConfigJson);
-  const properties = getPropertyValueForIdentify(userProperties);
-  return responseBuilderSimple(
-    { properties },
-    message,
-    EventType.IDENTIFY,
-    destination
-  );
+function getPropertyValueForIdentify(propMap) {
+  return Object.keys(propMap).map(key => {
+    return { property: key, value: propMap[key] };
+  });
 }
 
 function responseBuilderSimple(payload, message, eventType, destination) {
@@ -53,8 +45,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
       endpoint =
         "https://api.hubapi.com/contacts/v1/contact/?hapikey=" + apiKey;
     }
-    requestConfig["requestMethod"] = "POST";
-    requestConfig["requestFormat"] = "JSON";
+    requestConfig = defaultPostRequestConfig;
   }
 
   return {
@@ -66,20 +57,35 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   };
 }
 
-function getPropertyValueForIdentify(propMap) {
-  return Object.keys(propMap).map(key => {
-    return { property: key, value: propMap[key] };
-  });
+function processTrack(message, destination) {
+  const parameters = {
+    _a: destination.Config.hubId,
+    _n: message.event
+  };
+
+  if (message.properties.revenue) {
+    // eslint-disable-next-line dot-notation
+    parameters["_m"] = message.properties.revenue;
+  }
+  const userProperties = getTransformedJSON(message, hSIdentifyConfigJson);
+
+  return responseBuilderSimple(
+    { ...parameters, ...userProperties },
+    message,
+    EventType.TRACK,
+    destination
+  );
 }
 
-function getTransformedJSON(message, mappingJson) {
-  const rawPayload = {};
-
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-  });
-  return { ...rawPayload, ...message.user_properties };
+function processIdentify(message, destination) {
+  const userProperties = getTransformedJSON(message, hSIdentifyConfigJson);
+  const properties = getPropertyValueForIdentify(userProperties);
+  return responseBuilderSimple(
+    { properties },
+    message,
+    EventType.IDENTIFY,
+    destination
+  );
 }
 
 function processSingleMessage(message, destination) {
@@ -91,13 +97,34 @@ function processSingleMessage(message, destination) {
     case EventType.IDENTIFY:
       response = processIdentify(message, destination);
       break;
+    default:
+      console.log("could not determine type");
+      response = {
+        statusCode: 400,
+        error: "message type " + message.type + " is not supported"
+      };
   }
   return response;
 }
 
 function process(events) {
-  return events.map(event => {
-    return processSingleMessage(event.message, event.destination);
+  const respList = [];
+  let resp;
+  events.forEach(event => {
+    try {
+      resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
+    } catch (e) {
+      console.log("error occurred while processing payload for HS: ", e);
+      resp = {
+        statusCode: 400,
+        error: "error occurred while processing payload."
+      };
+    }
+    respList.push(resp);
   });
+  return respList;
 }
 exports.process = process;

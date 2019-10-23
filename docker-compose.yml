@@ -6,11 +6,11 @@ services:
       dockerfile: build/Dockerfile-no-func
     ports:
       - "9091:9090"
+    environment:
+      - ENABLE_FUNCTIONS=false
 
   transformer:
     build:
       context: .
     ports:
       - "9090:9090"
-    environment:
-      - ENABLE_FUNCTIONS=true

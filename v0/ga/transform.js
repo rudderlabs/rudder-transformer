@@ -60,9 +60,11 @@ function getParamsFromConfig(message, destination) {
 
   var obj = {};
   // customMapping: [{from:<>, to: <>}] , structure of custom mapping
-  destination.Config.customMappings.forEach(mapping => {
-    obj[mapping.from] = mapping.to;
-  });
+  if (destination.Config.customMappings) {
+    destination.Config.customMappings.forEach(mapping => {
+      obj[mapping.from] = mapping.to;
+    });
+  }
   // console.log(obj);
   let keys = Object.keys(obj);
   keys.forEach(key => {
@@ -425,7 +427,6 @@ async function process(events) {
     userTransformedEvents = await userTransformHandler(events);
 
     userTransformedEvents.forEach(event => {
-      console.log(JSON.stringify(event));
       try {
         const result = processSingleMessage(event.message, event.destination);
         if (!result.statusCode) {

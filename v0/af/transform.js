@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
 
@@ -44,7 +43,7 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
 }
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
-  let rawPayload = {};
+  const rawPayload = {};
   set(rawPayload, "properties", message.properties);
 
   const sourceKeys = Object.keys(mappingJson);
@@ -58,8 +57,8 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
     const prices = [];
     message.products.forEach(product => {
       contentIds.push(product.product_id);
-      quantityArray.push(product.quantity);
-      priceArray.push(product.price);
+      quantities.push(product.quantity);
+      prices.push(product.price);
     });
     rawPayload.eventValue = {
       af_content_id: contentIds,
@@ -81,6 +80,7 @@ function processEventTypeTrack(message, destination) {
   let isUnIdentifiedEvent = false;
   const evType = message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
+  const eventName = evType.toLowerCase();
 
   switch (evType) {
     case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
@@ -92,11 +92,12 @@ function processEventTypeTrack(message, destination) {
     case Event.PRODUCT_VIEWED.name:
       category = nameToEventMap[evType].category;
       break;
-    default:
-      eventName = evType.toLowerCase();
+    default: {
+      // eventName = evType.toLowerCase();
       isMultiSupport = false;
       isUnIdentifiedEvent = true;
       break;
+    }
   }
   let payload;
   if (isUnIdentifiedEvent) {
@@ -117,34 +118,46 @@ function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let payload;
   switch (messageType) {
-    case EventType.TRACK:
-      eventName = EventType.TRACK;
-      evType = message.event;
+    case EventType.TRACK: {
       payload = processEventTypeTrack(message, destination);
       break;
-
-    case EventType.SCREEN:
-      eventName = EventType.SCREEN;
-      evType = message.event;
-      payload = processNonTrackEvents(message, destination, eventName);
-
-      break;
-    case EventType.PAGE:
-      eventName = EventType.PAGE;
-      evType = message.event;
+    }
+    case EventType.SCREEN: {
+      const eventName = EventType.SCREEN;
       payload = processNonTrackEvents(message, destination, eventName);
       break;
-
+    }
+    case EventType.PAGE: {
+      const eventName = EventType.PAGE;
+      payload = processNonTrackEvents(message, destination, eventName);
+      break;
+    }
     default:
-      break;
+      // throw new Error("message type not supported");
+      return { statusCode: 400, error: "message type not supported" };
   }
   return responseBuilderSimple(payload, message, destination);
 }
 
 function process(events) {
-  return events.map(event => {
-    return processSingleMessage(event.message, event.destination);
+  const respList = [];
+  let resp;
+  events.forEach(event => {
+    try {
+      resp = processSingleMessage(event.message, event.destination);
+      if (!resp.statusCode) {
+        resp.statusCode = 200;
+      }
+    } catch (e) {
+      console.log("error occurred while processing payload for AF: ", e);
+      resp = {
+        statusCode: 400,
+        error: "error occurred while processing payload."
+      };
+    }
+    respList.push(resp);
   });
+  return respList;
 }
 
 exports.process = process;

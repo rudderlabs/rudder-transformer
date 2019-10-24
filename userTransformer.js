@@ -59,6 +59,12 @@ const filterEventNames = [
 ];
 require("./util/logUtil");
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
 function start(port) {
   if (!port) {
     port = 9393;
@@ -126,6 +132,10 @@ function start(port) {
               //And finally a counter for catching every n-th message
               var messageCounter = 0;
 
+              var batchLength = requestJson.length;
+              var GAbatchLengthToSend = Math.ceil(batchLength / 4);
+              var GAmessageList = [];
+
               jsonQobj.find("rl_message").each(function(index, path, value) {
                 //Extract the rl_anonymous_id for direct inclusion under
                 //rl_message
@@ -177,10 +187,18 @@ function start(port) {
                   "category"
                 ] = eventName;
 
+                // fix UA, as Torpedo ios sdk is using older version
+                var userAgent =
+                  messageObj["rl_message"]["rl_context"]["rl_user_agent"];
+                messageObj["rl_message"]["rl_context"]["rl_user_agent"] =
+                  userAgent == "ios"
+                    ? "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
+                    : userAgent;
+
                 console.log(messageObj);
 
                 //Add the GA message
-                messageList.push(messageObj);
+                GAmessageList.push(messageObj);
 
                 //Send only unfiltered events to Amplitude
 
@@ -205,6 +223,11 @@ function start(port) {
                   messageList.push(messageObjAM);
                 }
               });
+
+              for (var i = 0; i < GAbatchLengthToSend; i++) {
+                var idx = getRandomInt(0, batchLength);
+                messageList.push(GAmessageList[idx]);
+              }
 
               //Construct overall payload
               var responseObj = {};

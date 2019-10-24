@@ -1,5 +1,6 @@
 {
   "context.traits.anonymous_id": "cid",
+  "rl_context.rl_user_agent": "ua",
   "rl_properties.checkout_id": "ti",
   "rl_properties.step": "cos",
   "rl_properties.payment_method": "col",

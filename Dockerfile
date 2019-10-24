@@ -6,8 +6,9 @@ RUN apk add python make g++
 WORKDIR /app
 
 COPY package*.json ./
+COPY build.js ./
 
-RUN npm install
+RUN npm install --unsafe-perm
 
 COPY . .
 

@@ -3,7 +3,7 @@ services:
   transformer-no-func:
     build:
       context: .
-      dockerfile: build/Dockerfile-no-func
+      dockerfile: Dockerfile-no-func
     ports:
       - "9091:9090"
     environment:

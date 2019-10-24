@@ -57,8 +57,14 @@ const filterEventNames = [
   "store_open",
   "unverified_revenue"
 ];
+const IOS_USER_AGENT =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+
+const IOS_PRESENT_UA = "ios";
+
 require("./util/logUtil");
 
+//source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -191,9 +197,7 @@ function start(port) {
                 var userAgent =
                   messageObj["rl_message"]["rl_context"]["rl_user_agent"];
                 messageObj["rl_message"]["rl_context"]["rl_user_agent"] =
-                  userAgent == "ios"
-                    ? "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
-                    : userAgent;
+                  userAgent == IOS_PRESENT_UA ? IOS_USER_AGENT : userAgent;
 
                 console.log(messageObj);
 
@@ -224,9 +228,17 @@ function start(port) {
                 }
               });
 
+              //modifying the logic to safeguard duplicates,
+              //since idxArray will always have unique elements
+              var idxArray = [];
+              for (var i = 0; i < batchLength; i++) {
+                idxArray[i] = i;
+              }
               for (var i = 0; i < GAbatchLengthToSend; i++) {
-                var idx = getRandomInt(0, batchLength);
-                messageList.push(GAmessageList[idx]);
+                var idx = getRandomInt(0, idxArray.length);
+                var randomNumber = idxArray[idx];
+                messageList.push(GAmessageList[randomNumber]);
+                idxArray.splice(idx, 1);
               }
 
               //Construct overall payload

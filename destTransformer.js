@@ -11,7 +11,7 @@ const app = new Koa();
 
 app.use(
   bodyParser({
-    jsonLimit: "100mb"
+    jsonLimit: "200mb"
   })
 );
 app.use(router.routes()).use(router.allowedMethods());

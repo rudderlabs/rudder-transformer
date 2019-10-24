@@ -13,7 +13,6 @@ const {
   toStringValues,
   defaultGetRequestConfig
 } = require("../util");
-const { userTransformHandler } = require("../../util/customTransformer");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -422,26 +421,17 @@ function processSingleMessage(message, destination) {
 // Iterate over input batch and generate response for each message
 async function process(events) {
   const respList = [];
-  let userTransformedEvents;
-  try {
-    userTransformedEvents = await userTransformHandler(events);
-
-    userTransformedEvents.forEach(event => {
-      try {
-        const result = processSingleMessage(event.message, event.destination);
-        if (!result.statusCode) {
-          result.statusCode = 200;
-        }
-        respList.push(result);
-      } catch (error) {
-        respList.push({ statusCode: 400, error: error.message });
+  events.forEach(event => {
+    try {
+      const result = processSingleMessage(event.message, event.destination);
+      if (!result.statusCode) {
+        result.statusCode = 200;
       }
-    });
-  } catch (error) {
-    events.forEach(event => {
+      respList.push(result);
+    } catch (error) {
       respList.push({ statusCode: 400, error: error.message });
-    });
-  }
+    }
+  });
 
   return respList;
 }

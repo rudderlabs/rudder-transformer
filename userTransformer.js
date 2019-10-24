@@ -64,13 +64,6 @@ const IOS_PRESENT_UA = "ios";
 
 require("./util/logUtil");
 
-//source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-
 function start(port) {
   if (!port) {
     port = 9393;
@@ -228,18 +221,11 @@ function start(port) {
                 }
               });
 
-              //modifying the logic to safeguard duplicates,
-              //since idxArray will always have unique elements
-              var idxArray = [];
-              for (var i = 0; i < batchLength; i++) {
-                idxArray[i] = i;
-              }
-              for (var i = 0; i < GAbatchLengthToSend; i++) {
-                var idx = getRandomInt(0, idxArray.length);
-                var randomNumber = idxArray[idx];
-                messageList.push(GAmessageList[randomNumber]);
-                idxArray.splice(idx, 1);
-              }
+              const shuffledList = GAmessageList.sort(
+                () => 0.5 - Math.random()
+              );
+              const listToSend = shuffledList.splice(0, GAbatchLengthToSend);
+              messageList.push(...listToSend);
 
               //Construct overall payload
               var responseObj = {};

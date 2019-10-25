@@ -189,8 +189,11 @@ function start(port) {
                 // fix UA, as Torpedo ios sdk is using older version
                 var userAgent =
                   messageObj["rl_message"]["rl_context"]["rl_user_agent"];
-                messageObj["rl_message"]["rl_context"]["rl_user_agent"] =
-                  userAgent == IOS_PRESENT_UA ? IOS_USER_AGENT : userAgent;
+                messageObj["rl_message"]["rl_context"][
+                  "rl_user_agent"
+                ] = userAgent.includes(IOS_PRESENT_UA)
+                  ? IOS_USER_AGENT
+                  : userAgent;
 
                 console.log(messageObj);
 

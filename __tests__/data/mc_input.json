@@ -1,0 +1,66 @@
+[
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "firstName": "Bob",
+          "anonymousId": "userId12345",
+          "lastName": "Dylan",
+          "email": "bobdylan124@gmail.com",
+          "MergeFields": {
+            "name": "company",
+            "type": "text",
+            "tag": "taggi*()ng12678"
+          }
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "MailChimp": {
+          "listId": "df42a82d07"
+        }
+      },
+      "type": "identify",
+      "messageId": "51084974-517f-43c4-841f-5824bed5408a",
+      "originalTimestamp": "2019-10-24T09:37:12.331Z",
+      "anonymousId": "userId12345",
+      "userId": "userId12345",
+      "user_properties": {
+        "test_key": "test value"
+      },
+      "integrations": {
+        "MailChimp": {
+          "listId": "df42a82d7",
+          "subscriptionStatus": "unsubscribed"
+        }
+      },
+      "sentAt": "2019-10-24T09:37:17.319Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "94f71917datg522770c97449b0c90cac-us20",
+        "audienceId": "df4ywg82d07",
+        "dataCenterId": "us20"
+      },
+      "Enabled": true
+    }
+  }
+]

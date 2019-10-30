@@ -18,6 +18,7 @@ const {
 } = require("./config");
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
+// populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
   //console.log(message);
   SpecedTraits.forEach(trait => {

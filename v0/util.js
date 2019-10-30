@@ -17,6 +17,11 @@ const getMappingConfig = (config, dir) => {
   return mappingConfig;
 };
 
+const isPrimitive = arg => {
+  var type = typeof arg;
+  return arg == null || (type != "object" && type != "function");
+};
+
 const isDefined = x => !_.isUndefined(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
@@ -182,5 +187,6 @@ module.exports = {
   defaultDeleteRequestConfig,
   defaultPutRequestConfig,
   updatePayload,
-  defaultRequestConfig
+  defaultRequestConfig,
+  isPrimitive
 };

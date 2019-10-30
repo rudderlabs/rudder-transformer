@@ -1,0 +1,32 @@
+[
+  {
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/merge-fields",
+    "header": {
+      "auth": {
+        "username": "apiKey",
+        "password": "94f71917d8522770c97449b0c90caa4c-us20"
+      }
+    },
+    "userId": "userId12345",
+    "requestConfig": {
+      "requestFormat": "JSON",
+      "requestMethod": "POST"
+    },
+    "payload": {
+      "properties": [
+        {
+          "property": "name",
+          "value": "company"
+        },
+        {
+          "property": "type",
+          "value": "text"
+        },
+        {
+          "property": "tag",
+          "value": "tagging126"
+        }
+      ]
+    }
+  }
+]

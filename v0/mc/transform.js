@@ -79,9 +79,6 @@ async function responseBuilderSimple(payload, message, eventType, destination) {
     } else if (updateSubscription) {
       endpoint = getUpdateUserTraitsUrl(email);
       requestConfig = defaultPutRequestConfig;
-    } else {
-      endpoint = getUpdateUserTraitsUrl(email);
-      requestConfig = defaultPostRequestConfig;
     }
   } else {
     endpoint = getSubscribeUserUrl();

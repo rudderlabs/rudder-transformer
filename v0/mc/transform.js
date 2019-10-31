@@ -87,14 +87,12 @@ async function responseBuilderSimple(payload, message, eventType, destination) {
     endpoint = getSubscribeUserUrl();
     requestConfig = defaultPostRequestConfig;
   }
-
+  let basicAuth = new Buffer("apiKey" + ":" + `${apiKey}`).toString("base64");
   const response = {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      Authorization: `Basic ${new Buffer("apiKey" + ":" + `${apiKey}`).toString(
-        "base64"
-      )}`
+      Authorization: `Basic ${basicAuth}`
     },
     requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
@@ -121,6 +119,7 @@ function getPayload(
       } else {
         set(rawPayload, field, message.context.traits.MergeFields[field]);
       }
+      rawPayload.public = true;
     });
   } else if (updateSubscription && emailExists) {
     Object.keys(message.integrations.MailChimp).forEach(field => {
@@ -136,11 +135,13 @@ function getPayload(
       }
     });
   } else if (traits && message.context.traits.email) {
+    rawPayload.merge_fields = {};
     Object.keys(message.context.traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = message.context.traits[trait];
       } else {
-        set(rawPayload, trait, message.context.traits[trait]);
+        rawPayload.merge_fields[trait.toUpperCase()] =
+          message.context.traits[trait];
       }
     });
     if (!emailExists) {

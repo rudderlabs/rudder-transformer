@@ -1,0 +1,71 @@
+[
+  {
+    "endpoint": "https://track.customer.io/api/v1/customers/123456",
+    "requestConfig": {
+      "requestFormat": "JSON",
+      "requestMethod": "PUT"
+    },
+    "header": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "payload": {
+      "city": "kolkata",
+      "country": "India",
+      "postalCode": 712136,
+      "state": "WB",
+      "street": "",
+      "anonymousId": "123456",
+      "email": "sayan@gmail.com",
+      "ip": "0.0.0.0",
+      "age": 26,
+      "prop1": "val1",
+      "prop2": "val2"
+    },
+    "statusCode": 200
+  },
+  {
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "requestConfig": {
+      "requestFormat": "JSON",
+      "requestMethod": "POST"
+    },
+    "header": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "payload": {
+      "data": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "name": "page",
+      "type": "page"
+    },
+    "statusCode": 200
+  },
+  {
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "requestConfig": {
+      "requestFormat": "JSON",
+      "requestMethod": "POST"
+    },
+    "header": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "payload": {
+      "data": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "name": "test track event",
+      "type": "event"
+    },
+    "statusCode": 200
+  }
+]

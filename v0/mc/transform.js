@@ -12,7 +12,11 @@ let audienceId;
 let dataCenterId;
 let apiKey;
 let mergeFields;
-const { defaultPostRequestConfig, removeUndefinedValues } = require("../util");
+let updateSubscription;
+const {
+  defaultPostRequestConfig,
+  defaultPutRequestConfig
+} = require("../util");
 
 function filterTagValue(tag) {
   const maxLength = 10;
@@ -62,16 +66,19 @@ function getCustomMergeFieldsUrl() {
 //   const url = `${endpoint}/merge-fields/${mergeId}`;
 // }
 
-function responseBuilderSimple(payload, message, eventType, destination) {
+async function responseBuilderSimple(payload, message, eventType, destination) {
   let endpoint;
   let requestConfig;
   const email = message.context.traits.email;
-  const emailExists = checkIfMailExists(email);
+  const emailExists = await checkIfMailExists(email);
 
   if (emailExists) {
     if (mergeFields) {
       endpoint = getCustomMergeFieldsUrl();
       requestConfig = defaultPostRequestConfig;
+    } else if (updateSubscription) {
+      endpoint = getUpdateUserTraitsUrl(email);
+      requestConfig = defaultPutRequestConfig;
     } else {
       endpoint = getUpdateUserTraitsUrl(email);
       requestConfig = defaultPostRequestConfig;
@@ -81,26 +88,20 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     requestConfig = defaultPostRequestConfig;
   }
 
-  const headerPayload = {
-    auth: {
-      username: "apiKey",
-      password: `${apiKey}`
-    }
-  };
-
-  return {
+  const response = {
     endpoint,
-    header: headerPayload,
-    userId: message.anonymousId,
+    header: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${new Buffer("apiKey" + ":" + `${apiKey}`).toString(
+        "base64"
+      )}`
+    },
     requestConfig,
-    payload: removeUndefinedValues(payload)
+    userId: message.userId ? message.userId : message.anonymousId,
+    payload
   };
-}
 
-function getPropertyValueForIdentify(propMap) {
-  return Object.keys(propMap).map(key => {
-    return { property: key, value: propMap[key] };
-  });
+  return response;
 }
 
 function getPayload(
@@ -130,11 +131,17 @@ function getPayload(
       }
     });
     Object.keys(message.context.traits).forEach(trait => {
-      set(rawPayload, trait, message.context.traits[trait]);
+      if (trait === "email") {
+        rawPayload.email_address = message.context.traits[trait];
+      }
     });
   } else if (traits && message.context.traits.email) {
     Object.keys(message.context.traits).forEach(trait => {
-      set(rawPayload, trait, message.context.traits[trait]);
+      if (trait === "email") {
+        rawPayload.email_address = message.context.traits[trait];
+      } else {
+        set(rawPayload, trait, message.context.traits[trait]);
+      }
     });
     if (!emailExists) {
       rawPayload.status = subscriptionStatus.subscribed;
@@ -149,13 +156,13 @@ async function getTransformedJSON(message) {
   const traits = get(message, "context.traits");
   const customMergeFields = get(message, "context.traits.MergeFields");
   const modifyAudienceId = get(message, "context.MailChimp");
-  updateSubscription = get(message, "integrations");
+  updateSubscription = get(message, "integrations.MailChimp");
+
   const emailExists = await checkIfMailExists(message.context.traits.email);
 
   if (modifyAudienceId) {
     modifyAudienceId ? (audienceId = message.context.MailChimp.listId) : null;
   }
-
   const rawPayload = getPayload(
     customMergeFields,
     traits,
@@ -163,7 +170,8 @@ async function getTransformedJSON(message) {
     message,
     emailExists
   );
-  return { ...rawPayload, ...message.user_properties };
+
+  return { ...rawPayload };
 }
 
 function setDestinationKeys(destination) {
@@ -187,22 +195,20 @@ function setDestinationKeys(destination) {
 
 async function processIdentify(message, destination) {
   setDestinationKeys(destination);
-  const userProperties = await getTransformedJSON(message);
-  const properties = getPropertyValueForIdentify(userProperties);
+  const properties = await getTransformedJSON(message);
   return responseBuilderSimple(
-    { properties },
+    properties,
     message,
     EventType.IDENTIFY,
     destination
   );
 }
 
-function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = processIdentify(message, destination);
+    response = await processIdentify(message, destination);
   } else {
-    console.log("could not determine type");
     response = {
       statusCode: 400,
       error: "message type " + message.type + " is not supported"
@@ -211,24 +217,12 @@ function processSingleMessage(message, destination) {
   return response;
 }
 
-function process(events) {
-  const respList = [];
-  let resp;
-  events.forEach(event => {
-    try {
-      resp = processSingleMessage(event.message, event.destination);
-      // console.log(resp);
-      if (!resp.statusCode) {
-        resp.statusCode = 200;
-      }
-    } catch (e) {
-      console.log("error occurred while processing payload for MailChimp: ", e);
-      resp = {
-        statusCode: 400,
-        error: "error occurred while processing payload."
-      };
-    }
-    respList.push(resp);
-  });
+async function process(events) {
+  let respList = [];
+  respList = await Promise.all(
+    events.map(event => processSingleMessage(event.message, event.destination))
+  );
   return respList;
 }
+
+exports.process = process;

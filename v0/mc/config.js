@@ -7,7 +7,7 @@ const getEndpoint = (dataCenterId, audienceId) => {
 destinationConfigKeys = {
   apiKey: "apiKey",
   audienceId: "audienceId",
-  dataCenterId: "dataCenterId"
+  dataCenterId: "datacenterId"
 };
 
 subscriptionStatus = {

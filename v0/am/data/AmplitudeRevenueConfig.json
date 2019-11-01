@@ -15,5 +15,6 @@
   "properties.quantity": "quantity",
   "properties.revenue": "revenue",
   "properties.revenueType": "revenueType",
-  "properties.category": "event_type"
+  "properties.category": "event_type",
+  "request_ip": "ip"
 }

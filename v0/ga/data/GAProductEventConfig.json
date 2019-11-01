@@ -8,5 +8,7 @@
   "properties.currency": "cu",
   "properties.position": "pr1ps",
   "properties.price": "pr1pr",
-  "properties.quantity": "pr1qt"
+  "properties.quantity": "pr1qt",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

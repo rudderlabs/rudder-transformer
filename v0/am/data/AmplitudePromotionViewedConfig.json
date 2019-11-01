@@ -12,5 +12,6 @@
   "context.locale": "language",
   "properties.category": "event_type",
   "properties.name": "event_properties.promo_name",
-  "properties.position": "event_properties.promo_position"
+  "properties.position": "event_properties.promo_position",
+  "request_ip": "ip"
 }

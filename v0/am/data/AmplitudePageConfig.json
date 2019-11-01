@@ -16,5 +16,6 @@
   "properties.referrer": "event_properties.referrer",
   "properties.search": "event_properties.search",
   "properties.keywords": "event_properties.keywords",
-  "session_id": "session_id"
+  "session_id": "session_id",
+  "request_ip": "ip"
 }

@@ -13,5 +13,6 @@
   "properties.category": "event_type",
   "properties.product_id": "productId",
   "properties.price": "price",
-  "properties.quantity": "quantity"
+  "properties.quantity": "quantity",
+  "request_ip": "ip"
 }

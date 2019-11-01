@@ -38,7 +38,7 @@ async function runUserTransform(events, code) {
     })
   );
 
-  let bootstrap = await isolate.compileScript(
+  const bootstrap = await isolate.compileScript(
     "new " +
       `
     function() {

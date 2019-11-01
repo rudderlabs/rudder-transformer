@@ -14,5 +14,6 @@
   "properties.name": "event_properties.promo_name",
   "properties.position": "event_properties.promo_position",
   "properties.promotion_id": "event_properties.promo_id",
-  "properties.creative": "event_properties.promo_creative"
+  "properties.creative": "event_properties.promo_creative",
+  "request_ip": "ip"
 }

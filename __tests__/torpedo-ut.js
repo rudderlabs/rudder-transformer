@@ -124,9 +124,20 @@ async function runUserTransform() {
         let userId
         userId = get(event.message, "userProperties.user_id")
 
+        if(!userId) {
+            userId = get(event.message, "userId")
+        }
+
         event.message.anonymousId = userId || anonymousId
         event.message.context.traits.anonymousId = userId || anonymousId
         event.message.userId =  userId || anonymousId
+
+        let platform
+        platform = get(event.message, "context.library.name")
+
+        platform = platform.indexOf("android") > 0 ? "Android" : "iOS"
+
+        event.message.context.platform = platform
 
         //log(JSON.stringify(event))
 

@@ -50,7 +50,7 @@ function responseBuilderSimple(
   const rawPayload = {};
 
   set(rawPayload, "event_properties", message.properties);
-  set(rawPayload, "user_properties", message.user_properties);
+  set(rawPayload, "user_properties", message.userProperties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -81,7 +81,7 @@ function responseBuilderSimple(
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
 
-  //console.log(payload);
+  // console.log(payload);
 
   const response = {
     endpoint,
@@ -95,7 +95,7 @@ function responseBuilderSimple(
       [rootElementName]: payload
     }
   };
-  //console.log(response);
+  // console.log(response);
   return response;
 }
 
@@ -251,7 +251,7 @@ function process(events) {
     }
   });
 
-  //console.log(JSON.stringify(respList));
+  // console.log(JSON.stringify(respList));
   return respList;
 }
 

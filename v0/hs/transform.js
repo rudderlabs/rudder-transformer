@@ -19,7 +19,7 @@ function getTransformedJSON(message, mappingJson) {
       set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
     }
   });
-  return { ...rawPayload, ...message.user_properties };
+  return { ...rawPayload, ...message.userProperties };
 }
 
 function getPropertyValueForIdentify(propMap) {

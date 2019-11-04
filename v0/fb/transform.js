@@ -28,6 +28,65 @@ const userProps = [
   "ud[zp]"
 ];
 
+function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
+  // Conversion required fields
+  const dateTime = new Date(get(updatedEvent.CUSTOM_EVENTS[0], "_logTime"));
+  set(updatedEvent.CUSTOM_EVENTS[0], "_logTime", dateTime.getTime());
+
+  var num = Number(updatedEvent.advertiser_tracking_enabled);
+  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : "" + num;
+  num = Number(updatedEvent.application_tracking_enabled);
+  updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : "" + num;
+
+  userProps.forEach(prop => {
+    switch (prop) {
+      case "ud[em]":
+      case "ud[fn]":
+      case "ud[ln]":
+      case "ud[st]":
+      case "ud[zp]":
+        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
+        }
+        break;
+      case "ud[ph]":
+        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          updatedEvent[prop] = sha256(updatedEvent[prop]);
+        }
+        break;
+      case "ud[ge]":
+        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          updatedEvent[prop] = sha256(
+            updatedEvent[prop] === "Female" ? "f" : "m"
+          );
+        }
+        break;
+      case "ud[db]":
+        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          updatedEvent[prop] = sha256(getDateInFormat(updatedEvent[prop]));
+        }
+        break;
+      case "ud[ct]":
+        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          updatedEvent[prop] = sha256(
+            updatedEvent[prop].toLowerCase().replace(/ /g, "")
+          );
+        }
+        break;
+      default:
+        break;
+    }
+  });
+
+  if (updatedEvent.CUSTOM_EVENTS) {
+    updatedEvent.CUSTOM_EVENTS = JSON.stringify(updatedEvent.CUSTOM_EVENTS);
+  }
+
+  if (updatedEvent.extinfo) {
+    updatedEvent.extinfo = JSON.stringify(updatedEvent.extinfo);
+  }
+}
+
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const updatedEvent = { ...baseEvent };
   set(updatedEvent.CUSTOM_EVENTS[0], "_eventName", fbEventName);
@@ -93,7 +152,7 @@ function buildBaseEvent(message) {
   baseEvent.extinfo = extInfoArray;
   baseEvent.CUSTOM_EVENTS = [{}];
 
-  baseEvent.extinfo[0] = "a2"; //keeping it fixed to android for now
+  baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
   var extInfoIdx;
   Object.keys(baseMapping).forEach(k => {
     const inputVal = get(message, k);
@@ -104,7 +163,7 @@ function buildBaseEvent(message) {
       switch (typeof extInfoArray[extInfoIdx]) {
         case "number":
           if (extInfoIdx === 11) {
-            //density
+            // density
             outputVal = parseFloat(inputVal);
             outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
           } else {
@@ -117,11 +176,10 @@ function buildBaseEvent(message) {
           outputVal = inputVal;
           break;
       }
-      baseEvent.extinfo[extInfoIdx] = outputVal
-        ? outputVal
-        : baseEvent.extinfo[extInfoIdx];
+      baseEvent.extinfo[extInfoIdx] =
+        outputVal || baseEvent.extinfo[extInfoIdx];
     } else if (splits.length === 3) {
-      //custom event key
+      // custom event key
       set(baseEvent.CUSTOM_EVENTS[0], splits[2], inputVal || "");
     } else {
       set(baseEvent, baseMapping[k], inputVal || "");
@@ -162,62 +220,6 @@ function processSingleMessage(message) {
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);
   return responseBuilderSimple(message, updatedEvent);
-}
-
-function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
-  // Conversion required fields
-  const dateTime = new Date(get(updatedEvent.CUSTOM_EVENTS[0], "_logTime"));
-  set(updatedEvent.CUSTOM_EVENTS[0], "_logTime", dateTime.getTime());
-
-  var num = Number(updatedEvent.advertiser_tracking_enabled);
-  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : "" + num;
-  num = Number(updatedEvent.application_tracking_enabled);
-  updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : "" + num;
-
-  userProps.forEach(prop => {
-    switch (prop) {
-      case "ud[em]":
-      case "ud[fn]":
-      case "ud[ln]":
-      case "ud[st]":
-      case "ud[zp]":
-        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
-          updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
-        }
-        break;
-      case "ud[ph]":
-        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
-          updatedEvent[prop] = sha256(updatedEvent[prop]);
-        }
-        break;
-      case "ud[ge]":
-        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
-          updatedEvent[prop] = sha256(
-            updatedEvent[prop] === "Female" ? "f" : "m"
-          );
-        }
-        break;
-      case "ud[db]":
-        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
-          updatedEvent[prop] = sha256(getDateInFormat(updatedEvent[prop]));
-        }
-        break;
-      case "ud[ct]":
-        if (updatedEvent[prop] && updatedEvent[prop] !== "") {
-          updatedEvent[prop] = sha256(
-            updatedEvent[prop].toLowerCase().replace(/ /g, "")
-          );
-        }
-    }
-  });
-
-  if (updatedEvent.CUSTOM_EVENTS) {
-    updatedEvent.CUSTOM_EVENTS = JSON.stringify(updatedEvent.CUSTOM_EVENTS);
-  }
-
-  if (updatedEvent.extinfo) {
-    updatedEvent.extinfo = JSON.stringify(updatedEvent.extinfo);
-  }
 }
 
 function process(events) {

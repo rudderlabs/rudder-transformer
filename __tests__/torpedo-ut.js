@@ -39,7 +39,7 @@ async function runUserTransform() {
         ? IOS_USER_AGENT
         : userAgent;
 
-        //log(JSON.stringify(event))
+        log(JSON.stringify(event))
         return event
 
     })
@@ -200,7 +200,7 @@ async function runUserTransform() {
 
   bootstrap.runSync(context);
 
-  const customScript = await isolate.compileScript(codeAM + "");
+  const customScript = await isolate.compileScript(codeGA + "");
   customScript.run(context).catch(err => console.log(err));
 
   const fnRef = await context.global.get("transform");

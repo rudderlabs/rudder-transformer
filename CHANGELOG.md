@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2019-11-05
+### Added
+- Hubspot integration
+- AppsFlyer integration
+- Facebook Ads integration
+
 ## [0.1.0] - 2019-10-24
 ### Added
 - User Functions

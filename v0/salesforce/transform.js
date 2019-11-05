@@ -17,7 +17,7 @@ const {
   defaultGetRequestConfig
 } = require("../util");
 
-
+var authorizationHeader;
 
 //Utility method to construct the header to be used for SFDC API calls
 //The "Authorization: Bearer <token>" header element needs to be passed for 
@@ -47,7 +47,9 @@ async function responseBuilderSimple(
 
   //Need to get the authorization header element
   //Need this to be async 
-  var authorizationHeader = await getSFDCHeader(destination);
+   if (!authorizationHeader) {
+     authorizationHeader = await getSFDCHeader(destination);
+   }
   const rawPayload = {
     v: "1",
     t: hitType,
@@ -372,7 +374,12 @@ function processEComGenericEvent(message) {
 }
 
 //Function for handling identify events
-function processIdentify(message) {
+async function processIdentify(message,destination) {
+
+  if (!authorizationHeader) {
+    authorizationHeader = await getSFDCHeader(destination);
+  }
+  
   //dummy code for now
   const eventString = message.event;
   const parameters = {
@@ -393,7 +400,7 @@ async function processSingleMessage(message, destination) {
   let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      customParams = processIdentify(message);
+      customParams = await processIdentify(message, destination);
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:

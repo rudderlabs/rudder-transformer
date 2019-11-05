@@ -1,25 +1,25 @@
-var ghRelease = require('gh-release')
+const ghRelease = require("gh-release");
+const homedir = require("os").homedir();
+const fs = require("fs");
 
 // all options have defaults and can be omitted
-var options = {
-  tag_name: 'v0.1.1',
-  target_commitish: 'master',
-  name: 'v0.1.1',
+const options = {
+  tag_name: "v0.1.1",
+  target_commitish: "master",
+  name: "v0.1.1",
   draft: false,
   prerelease: false,
-  repo: 'rudder-transformer',
-  owner: 'RudderLabs',
-  endpoint: 'https://api.github.com' // for GitHub enterprise, use http(s)://hostname/api/v3
-}
+  repo: "rudder-transformer",
+  owner: "RudderLabs",
+  endpoint: "https://api.github.com" // for GitHub enterprise, use http(s)://hostname/api/v3
+};
 
+const token = fs.readFileSync(homedir + "/.gh_token", "utf8");
+options.auth = {
+  token
+};
 
-// or an API token
-options.auth = {  
-  token: process.env.GH_TOKEN
-}
-
-ghRelease(options, function (err, result) {
-  if (err) throw err
-  console.log(result) // create release response: https://developer.github.com/v3/repos/releases/#response-4
-})
-
+ghRelease(options, function(err, result) {
+  if (err) throw err;
+  console.log(result); // create release response: https://developer.github.com/v3/repos/releases/#response-4
+});

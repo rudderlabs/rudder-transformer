@@ -1,10 +1,13 @@
 const get = require("get-value");
-
+const axios = require("axios");
 const { EventType } = require("../../constants");
 const {
   Event,
-  GA_ENDPOINT,
   ConfigCategory,
+  SF_TOKEN_REQUEST_HOST,
+  SF_TOKEN_REQUEST_PORT,
+  SF_TOKEN_REQUEST_PATH,
+  SF_TOKEN_REQUEST_URL,
   mappingConfig,
   nameToEventMap
 } = require("./config");
@@ -14,17 +17,44 @@ const {
   defaultGetRequestConfig
 } = require("../util");
 
+
+
+//Utility method to construct the header to be used for SFDC API calls
+//The "Authorization: Bearer <token>" header element needs to be passed for 
+//authentication for all SFDC REST API calls
+function getSFDCHeader(destination){
+  axios.post(SF_TOKEN_REQUEST_URL
+    +"?username="+destination.Config.username
+    +"&password="+destination.Config.password+destination.Config.initialAccessToken
+    +"&client_id="+destination.Config.consumerKey
+    +"&client_secret="+destination.Config.consumerSecret
+    +"&grant_type=password",{})
+    .then(function (response){
+      return response.data.access_token;
+    })
+    .catch(function (error){
+      console.log(error);
+    });
+
+    
+}
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
-function responseBuilderSimple(
+async function responseBuilderSimple(
   parameters,
   message,
   hitType,
   mappingJson,
   destination
 ) {
+
+  //Need to get the authorization header element
+  //Need this to be async 
+  var authorizationHeader = await getSFDCHeader(destination);
+  console.log("Header " + authorizationHeader);
   const rawPayload = {
     v: "1",
     t: hitType,
@@ -44,9 +74,9 @@ function responseBuilderSimple(
   customParams = removeUndefinedValues(customParams);
 
   const response = {
-    endpoint: GA_ENDPOINT,
+    endpoint: "https://" + destination.Config.instanceName + ".salesforce.com",
     requestConfig: defaultGetRequestConfig,
-    header: {},
+    header: {authorizationHeader},
     userId: message.anonymousId,
     payload: { ...params, ...customParams, ...payload }
   };
@@ -348,15 +378,31 @@ function processEComGenericEvent(message) {
   return parameters;
 }
 
+//Function for handling identify events
+function processIdentify(message) {
+  //dummy code for now
+  const eventString = message.event;
+  const parameters = {
+    ea: eventString,
+    ec: eventString
+  };
+
+  return parameters;
+  
+}
+
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type.toLowerCase();
   let customParams = {};
   let category;
-
   switch (messageType) {
+    case EventType.IDENTIFY:
+      customParams = processIdentify(message);
+      category = ConfigCategory.IDENTIFY;
+      break;
     case EventType.PAGE:
       customParams = processPageViews(message);
       category = ConfigCategory.PAGE;
@@ -409,7 +455,7 @@ function processSingleMessage(message, destination) {
       return;
   }
 
-  return responseBuilderSimple(
+  return await responseBuilderSimple(
     customParams,
     message,
     category.hitType,
@@ -420,7 +466,8 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(events) {
-	console.log("testing GA");	
+
+  /*()
   const respList = [];
   events.forEach(event => {
     try {
@@ -433,6 +480,12 @@ async function process(events) {
       respList.push({ statusCode: 400, error: error.message });
     }
   });
+  */
+
+  let respList = [];
+  respList = await Promise.all(
+    events.map(event => processSingleMessage(event.message, event.destination))
+  );
 
   return respList;
 }

@@ -22,21 +22,15 @@ const {
 //Utility method to construct the header to be used for SFDC API calls
 //The "Authorization: Bearer <token>" header element needs to be passed for 
 //authentication for all SFDC REST API calls
-function getSFDCHeader(destination){
-  axios.post(SF_TOKEN_REQUEST_URL
+async function getSFDCHeader(destination){
+  const response = await axios.post(SF_TOKEN_REQUEST_URL
     +"?username="+destination.Config.username
     +"&password="+destination.Config.password+destination.Config.initialAccessToken
     +"&client_id="+destination.Config.consumerKey
     +"&client_secret="+destination.Config.consumerSecret
-    +"&grant_type=password",{})
-    .then(function (response){
-      return response.data.access_token;
-    })
-    .catch(function (error){
-      console.log(error);
-    });
-
-    
+    +"&grant_type=password",{});
+ 
+    return "Bearer " + response.data.access_token;
 }
 
 // Basic response builder
@@ -54,7 +48,6 @@ async function responseBuilderSimple(
   //Need to get the authorization header element
   //Need this to be async 
   var authorizationHeader = await getSFDCHeader(destination);
-  console.log("Header " + authorizationHeader);
   const rawPayload = {
     v: "1",
     t: hitType,
@@ -466,22 +459,7 @@ async function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(events) {
-
-  /*()
-  const respList = [];
-  events.forEach(event => {
-    try {
-      const result = processSingleMessage(event.message, event.destination);
-      if (!result.statusCode) {
-        result.statusCode = 200;
-      }
-      respList.push(result);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
-    }
-  });
-  */
-
+  
   let respList = [];
   respList = await Promise.all(
     events.map(event => processSingleMessage(event.message, event.destination))

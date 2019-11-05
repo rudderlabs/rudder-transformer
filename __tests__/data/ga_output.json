@@ -38,6 +38,7 @@
       "tid": "UA-149602794-1",
       "cid": "00000000000000000000000000",
       "ea": "test track event GA3",
+      "ec": "test-category",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
     },
     "statusCode": 200

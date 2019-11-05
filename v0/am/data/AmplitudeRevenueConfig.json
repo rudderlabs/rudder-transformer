@@ -6,7 +6,7 @@
   "context.device.id": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
-  "context.app.version": "app_version",
+  "context.app.build": "app_version",
   "context.platform": "platform",
   "context.locale": "language",
   "properties.productId": "productId",

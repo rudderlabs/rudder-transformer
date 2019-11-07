@@ -17,13 +17,20 @@ async function runUserTransform(events, code) {
   await jail.set(
     "_fetch",
     new ivm.Reference(async function(resolve, ...args) {
-      const res = await fetch(...args);
-      const data = await res.json();
-      setTimeout(() => {
+      try {
+        const res = await fetch(...args);
+        const data = await res.json();
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);
-      }, 1000);
+      } catch (error) {
+        console.log("ERROR");
+        //TODO: How to handle errors
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy("ERROR").copyInto()
+        ]);
+      }
+      console.log("In Fetch Isolate");
     })
   );
 
@@ -81,7 +88,6 @@ async function runUserTransform(events, code) {
           events
         ) {
           const derefMainFunc = fnRef.deref();
-
           derefMainFunc(events).then(value => {
             resolve.applyIgnored(undefined, [
               new ivm.ExternalCopy(value).copyInto()
@@ -90,7 +96,6 @@ async function runUserTransform(events, code) {
         });
       }
   );
-  // console.log(await fetch("http://localhost:8000").then(res => res.text()));
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
@@ -102,7 +107,6 @@ async function runUserTransform(events, code) {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
       transferIn: true
     });
-    console.log(resolve, "Resolve..");
     await bootstrapScriptResult.apply(undefined, [
       fnRef,
       new ivm.Reference(resolve),
@@ -110,8 +114,12 @@ async function runUserTransform(events, code) {
     ]);
   });
 
-  const result = await executionPromise;
-
+  let result = "[]";
+  try {
+    result = await executionPromise;
+  } catch (error) {
+    console.log("ERROR in user transformation", error);
+  }
   isolate.dispose();
   return result;
 }

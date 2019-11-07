@@ -10,7 +10,6 @@ const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionI
 // Stores the transformation object in memory with time to live after which it expires.
 // VersionId is updated any time user changes the code in transformation, so there wont be any stale code issues.
 async function getTransformationCode(versionId) {
-  // return code;
   const transformation = myCache.get(versionId);
   if (transformation) return transformation;
   try {

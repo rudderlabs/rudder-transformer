@@ -4,7 +4,7 @@ var { getTransformationCode } = require("../util/customTransforrmationsStore");
 
 async function runUserTransform(events, code) {
   // TODO: Decide on the right value for memory limit
-  const isolate = new ivm.Isolate({ memoryLimit: 8 });
+  const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
   const jail = context.global;
   // This make the global object available in the context as `global`. We use `derefInto()` here
@@ -16,15 +16,21 @@ async function runUserTransform(events, code) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async function(...args) {
-      return fetch(...args);
+    new ivm.Reference(async function(resolve, ...args) {
+      const res = await fetch(...args);
+      const data = await res.json();
+      setTimeout(() => {
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      }, 1000);
     })
   );
 
   jail.setSync(
     "_log",
     new ivm.Reference(function(...args) {
-      console.log(...args);
+      console.log("Log: ", ...args);
     })
   );
 
@@ -41,15 +47,17 @@ async function runUserTransform(events, code) {
         // argument, create an external copy of it and pass it along to the log function above.
         let fetch = _fetch;
         delete _fetch;
-        global.fetch = async function(...args) {
+        global.fetch = function(...args) {
           // We use `copyInto()` here so that on the other side we don't have to call `copy()`. It
           // doesn't make a difference who requests the copy, the result is the same.
           // `applyIgnored` calls `log` asynchronously but doesn't return a promise-- it ignores the
           // return value or thrown exception from `log`.
-          return fetch.apply(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          );
+          return new Promise(resolve => {
+            fetch.applyIgnored(undefined, [
+              new ivm.Reference(resolve),
+              ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+            ]);
+          });
         };
 
         // Now we create the other half of the `log` function in this isolate. We'll just take every
@@ -66,25 +74,46 @@ async function runUserTransform(events, code) {
             args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           );
         };
+
+        return new ivm.Reference(function forwardMainPromise(
+          fnRef,
+          resolve,
+          events
+        ) {
+          const derefMainFunc = fnRef.deref();
+
+          derefMainFunc(events).then(value => {
+            resolve.applyIgnored(undefined, [
+              new ivm.ExternalCopy(value).copyInto()
+            ]);
+          });
+        });
       }
   );
   // console.log(await fetch("http://localhost:8000").then(res => res.text()));
 
   // Now we can execute the script we just compiled:
-  await bootstrap.run(context);
+  const bootstrapScriptResult = await bootstrap.run(context);
 
-  isolate.compileScriptSync('log("hello world")').runSync(context);
   const customScript = await isolate.compileScript(code + "");
   await customScript.run(context);
-  const fnRef = await context.global.get("transform");
-  const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-    transferIn: true
+  const fnRef = await jail.get("transform");
+  const executionPromise = new Promise(async resolve => {
+    const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
+      transferIn: true
+    });
+    console.log(resolve, "Resolve..");
+    await bootstrapScriptResult.apply(undefined, [
+      fnRef,
+      new ivm.Reference(resolve),
+      sharedMessagesList
+    ]);
   });
-  const res = await fnRef.applySync(context.global.derefInto(), [
-    sharedMessagesList
-  ]);
+
+  const result = await executionPromise;
+
   isolate.dispose();
-  return res;
+  return result;
 }
 
 async function userTransformHandler(events) {

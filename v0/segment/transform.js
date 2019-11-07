@@ -1,6 +1,6 @@
 const get = require("get-value");
 let { destinationConfigKeys, batchEndpoint } = require("./config");
-const { defaultPostRequestConfig, removeUndefinedValues } = require("../util");
+const { defaultPostRequestConfig } = require("../util");
 let writeKey;
 
 function responseBuilderSimple(payload) {
@@ -13,11 +13,22 @@ function responseBuilderSimple(payload) {
       Authorization: `Basic ${basicAuth}`
     },
     requestConfig: defaultPostRequestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedValues(payload)
+    userId: message.anonymousId,
+    payload
   };
-
   return response;
+}
+
+function removeNullValues(payload) {
+  let newPayload = {};
+  var vals = Object.keys(payload);
+  for (var i = 0; i < vals.length; i++) {
+    let currentVal = vals[i];
+    if (payload[currentVal] != (null || undefined)) {
+      newPayload[currentVal] = payload[currentVal];
+    }
+  }
+  return newPayload;
 }
 
 function makePayload(type, userId, event, traits, properties, timeStamp) {
@@ -28,22 +39,23 @@ function makePayload(type, userId, event, traits, properties, timeStamp) {
   eventPayload.traits = traits;
   eventPayload.properties = properties;
   eventPayload.timeStamp = timeStamp;
-  return eventPayload;
+  return removeNullValues(eventPayload);
 }
 
 function getTransformedJSON(message) {
   const type = message.type;
   const userId = message.userId ? message.userId : message.anonymousId;
-  const traits = get(message, "message.context.traits")
+  const traits = get(message, "context.traits")
     ? message.context.traits
-    : null;
-  const properties = get(message, "message.context.properties")
+    : undefined;
+  delete traits.anonymousId;
+  const properties = get(message, "context.properties")
     ? message.context.properties
-    : null;
-  const event = get(message, "message.event") ? message.event : null;
+    : undefined;
+  const event = get(message, "event") ? message.event : undefined;
   const timeStamp = message.originalTimestamp;
 
-  makePayload(type, userId, event, traits, properties, timeStamp);
+  return makePayload(type, userId, event, traits, properties, timeStamp);
 }
 
 function setDestinationKeys(destination) {
@@ -75,7 +87,7 @@ function process(events) {
       respObj.batch.push({ statusCode: 400, error: error.message });
     }
   });
-  return responseBuilderSimple(respObj);
+  return responseBuilderSimple(respObj, message);
 }
 
 exports.process = process;

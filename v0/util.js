@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
+const set = require("set-value");
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -41,6 +42,15 @@ const getDateInFormat = date => {
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
+const mapConditionalKeys = (currentKey, replaceKeysArr, value, newPayload) => {
+  replaceKeysArr.map(obj => {
+    obj.rudderKey === currentKey
+      ? set(newPayload, obj.expectedKey, value)
+      : set(newPayload, obj.currentKey, value);
+  });
+  return newPayload;
+};
+
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
   requestMethod: "GET"
@@ -57,5 +67,6 @@ module.exports = {
   getDateInFormat,
   removeUndefinedValues,
   defaultGetRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  mapConditionalKeys
 };

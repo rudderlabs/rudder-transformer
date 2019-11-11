@@ -3,6 +3,7 @@ const EventType = {
   SCREEN: "screen",
   TRACK: "track",
   IDENTIFY: "identify",
+  GROUP: "group",
   IDENTIFY_AM: "$identify"
 };
 

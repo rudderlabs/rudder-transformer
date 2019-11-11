@@ -36,7 +36,8 @@ async function getSFDCHeader(destination){
 async function responseBuilderSimple(
   message,
   mappingJson,
-  destination
+  destination,
+  targetEndpoint
 ) {
 
   //Need to get the authorization header element
@@ -76,12 +77,7 @@ async function responseBuilderSimple(
   customParams = removeUndefinedValues(customParams);
 
   const response = {
-    endpoint: "https://" 
-              + destination.Config.instanceName 
-              + ".salesforce.com"
-              + "/services/data/v"
-              + SF_API_VERSION
-              + "/sobjects/Lead",
+    endpoint: targetEndpoint,
     requestConfig: defaultPostRequestConfig,
     header: {
       "Content-Type" : "application/json",
@@ -119,6 +115,13 @@ function getParamsFromConfig(message, destination) {
 //Function for handling identify events
 async function processIdentify(message,destination) {
 
+  var targetEndpoint = "https://" 
+                      + destination.Config.instanceName 
+                      + ".salesforce.com"
+                      + "/services/data/v"
+                      + SF_API_VERSION
+                      + "/sobjects/Lead";
+
   //Get the authorization header if not available
   if (!authorizationHeader) {
     authorizationHeader = await getSFDCHeader(destination);
@@ -135,7 +138,7 @@ async function processIdentify(message,destination) {
                       + SF_API_VERSION
                       + "/parameterizedSearch/?q="
                       + email
-                      + "&sobject=Lead&Lead.fields=id"
+                      + "&sobject=User&User.fields=id"
 
 
   var leadQueryResponse = await axios.get(leadQueryUrl, 
@@ -146,18 +149,14 @@ async function processIdentify(message,destination) {
 
   var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
   
-  //if count is zero, then Lead does not exist, create the same
-
-  console.log(retrievedLeadCount);                                        
-
-  //dummy code for now
-  const eventString = message.event;
-  const parameters = {
-    ea: eventString,
-    ec: eventString
-  };
-
-  return parameters;
+  //if count is zero, then Lead does not exist, create the same 
+  if(retrievedLeadCount > 0) {
+    console.log(leadQueryResponse.data.searchRecords[0].Id);
+    targetEndpoint += "/"+leadQueryResponse.data.searchRecords[0].Id;
+  }                                      
+  
+  return targetEndpoint;
+  
   
 }
 
@@ -166,11 +165,11 @@ async function processIdentify(message,destination) {
 async function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type.toLowerCase();
-  let customParams = {};
+  var targetEndpoint = "";
   let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      customParams = await processIdentify(message, destination);
+      targetEndpoint = await processIdentify(message, destination);
       category = ConfigCategory.IDENTIFY;
       break;
     default:
@@ -183,7 +182,8 @@ async function processSingleMessage(message, destination) {
   return await responseBuilderSimple(
     message,
     mappingConfig[category.name],
-    destination
+    destination,
+    targetEndpoint
   );
 }
 

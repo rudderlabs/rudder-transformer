@@ -1,15 +1,15 @@
 {
-  "context.os.name": "os_name",
-  "context.os.version": "os_version",
-  "context.device.model": "device_model",
-  "context.device.manufacturer": "device_manufacturer",
-  "context.device.name": "device_brand",
-  "context.device.id": "device_id",
-  "context.network.carrier": "carrier",
-  "context.app.name": "app_name",
-  "context.app.version": "app_version",
-  "context.platform": "platform",
-  "context.locale": "language",
-  "properties.category": "event_type",
-  "session_id": "session_id"
+    "context.traits.address.city":"City",
+    "context.traits.company.name":"Company",
+    "context.traits.address.country":"Country",
+    "context.traits.email":"Email",
+    "context.traits.phone":"Phone",
+    "context.traits.address.postalCode":"PostalCode",
+    "context.traits.rating":"Rating",
+    "context.traits.address.state":"State",
+    "context.traits.address.street":"Street",
+    "context.traits.title":"Title",
+    "context.traits.firstName":"FirstName",
+    "context.traits.lastName":"LastName"
+
 }

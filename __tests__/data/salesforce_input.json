@@ -10,8 +10,21 @@
           "version": "1.0.0"
         },
         "traits": {
-          "anonymousId": "123456"
-        },
+          "anonymousId": "123456",
+          "name": "Peter Gibbons",
+          "title": "VP of Derp",
+          "email": "peter.gibbons@initech.com",
+          "company": {"id": 666, "name": "Initech"},
+          "phone": "570-690-4150",
+          "state": "California",
+          "rating": "Hot",
+          "address": {
+              "city": "east greenwich",
+              "postalCode": "94115",
+              "country": "USA",
+              "street": "19123 forest lane",
+              "state": "California"
+          }        },
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"

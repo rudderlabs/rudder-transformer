@@ -2,19 +2,15 @@ const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../constants");
 const {
-  Event,
   ConfigCategory,
-  SF_TOKEN_REQUEST_HOST,
-  SF_TOKEN_REQUEST_PORT,
-  SF_TOKEN_REQUEST_PATH,
+  SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
   mappingConfig,
-  nameToEventMap
 } = require("./config");
 const {
   removeUndefinedValues,
   toStringValues,
-  defaultGetRequestConfig
+  defaultPostRequestConfig
 } = require("../util");
 
 var authorizationHeader;
@@ -38,9 +34,7 @@ async function getSFDCHeader(destination){
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
 async function responseBuilderSimple(
-  parameters,
   message,
-  hitType,
   mappingJson,
   destination
 ) {
@@ -50,30 +44,51 @@ async function responseBuilderSimple(
    if (!authorizationHeader) {
      authorizationHeader = await getSFDCHeader(destination);
    }
-  const rawPayload = {
-    v: "1",
-    t: hitType,
-    tid: destination.Config.trackingID
-  };
+ 
+  const rawPayload =  {};
 
+  //First name and last name need to be extracted from the name field
+  //and inserted into the message
+  
+  var firstName = "";
+  var lastName = "";
+  if(message.context.traits.name){
+    //Split by space and then take first and last elements
+    var nameComponents = message.context.traits.name.split(" ");
+    firstName = nameComponents[0]; //first element
+    lastName = nameComponents[nameComponents.length - 1]; //last element
+    
+  }
+
+  //Insert first and last names separately into message
+  message.context.traits.firstName = firstName;
+  message.context.traits.lastName = lastName;
+  
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
-  const params = removeUndefinedValues(parameters);
 
   //Get custom params from destination config
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
   const response = {
-    endpoint: "https://" + destination.Config.instanceName + ".salesforce.com",
-    requestConfig: defaultGetRequestConfig,
-    header: {authorizationHeader},
+    endpoint: "https://" 
+              + destination.Config.instanceName 
+              + ".salesforce.com"
+              + "/services/data/v"
+              + SF_API_VERSION
+              + "/sobjects/Lead",
+    requestConfig: defaultPostRequestConfig,
+    header: {
+      "Content-Type" : "application/json",
+      "Authorization" : authorizationHeader
+    },
     userId: message.anonymousId,
-    payload: { ...params, ...customParams, ...payload }
+    payload: { ...customParams, ...payload }
   };
   //console.log("response ", response);
   return response;
@@ -98,288 +113,43 @@ function getParamsFromConfig(message, destination) {
   return params;
 }
 
-// Function for processing pageviews
-function processPageViews(message) {
-  return {};
-}
 
-// Function for processing screenviews
-function processScreenViews(message) {
-  return {};
-}
 
-// Function for processing non-ecom generic track events
-function processNonEComGenericEvent(message) {
-  return {};
-}
-
-// Function for processing promotion viewed or clicked event
-function processPromotionEvent(message) {
-  const eventString = message.event;
-
-  // Future releases will have additional logic for below elements allowing for
-  // customer-side overriding of event category and event action values
-  const parameters = {
-    ea: eventString,
-    ec: eventString
-  };
-
-  switch (eventString.toLowerCase()) {
-    case Event.PROMOTION_VIEWED:
-      parameters.promoa = "view";
-      break;
-    case Event.PROMOTION_CLICKED:
-      parameters.promoa = "promo_click";
-      break;
-    default:
-      break;
-  }
-
-  return parameters;
-}
-
-// Function for processing payment-related events
-function processPaymentRelatedEvent(message) {
-  const parameters = { pa: "checkout" };
-  return parameters;
-}
-
-// Function for processing order refund events
-function processRefundEvent(message) {
-  const parameters = { pa: "refund" };
-
-  const { products } = message.properties;
-  if (products.length > 0) {
-    // partial refund
-    // Now iterate through the products and add parameters accordingly
-    for (let i = 0; i < products.length; i++) {
-      const value = products[i];
-      const prodIndex = i + 1;
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters["pr" + prodIndex + "id"] = value.sku;
-      } else {
-        parameters["pr" + prodIndex + "id"] = value.product_id;
-      }
-
-      parameters["pr" + prodIndex + "nm"] = value.name;
-      parameters["pr" + prodIndex + "ca"] = value.category;
-      parameters["pr" + prodIndex + "br"] = value.brand;
-      parameters["pr" + prodIndex + "va"] = value.variant;
-      parameters["pr" + prodIndex + "cc"] = value.coupon;
-      parameters["pr" + prodIndex + "ps"] = value.position;
-      parameters["pr" + prodIndex + "pr"] = value.price;
-      parameters["pr" + prodIndex + "qt"] = value.quantity;
-    }
-  } else {
-    // full refund, only populate order_id
-    parameters.ti = message.order_id;
-  }
-  // Finally fill up with mandatory and directly mapped fields
-  return parameters;
-}
-
-// Function for processing product and cart shared events
-function processSharingEvent(message) {
-  const parameters = {};
-  // URL will be there for Product Shared event, hence that can be used as share target
-  // For Cart Shared, the list of product ids can be shared
-  const eventTypeString = message.event;
-  switch (eventTypeString.toLowerCase()) {
-    case Event.PRODUCT_SHARED:
-      parameters.st = message.properties.url;
-      break;
-    case Event.CART_SHARED: {
-      const products = message.properties.products;
-      let shareTargetString = ""; // all product ids will be concatenated with separation
-      products.forEach(product => {
-        shareTargetString += " " + product.product_id;
-      });
-      parameters.st = shareTargetString;
-      break;
-    }
-    default:
-      parameters.st = "empty";
-  }
-  return parameters;
-}
-
-// Function for processing product list view event
-function processProductListEvent(message) {
-  const eventString = message.event;
-  const parameters = {
-    ea: eventString,
-    ec: eventString
-  };
-
-  // Set action depending on Product List Action
-  switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_LIST_VIEWED:
-    case Event.PRODUCT_LIST_FILTERED:
-      parameters.pa = "detail";
-      break;
-    case Event.PRODUCT_LIST_CLICKED:
-      parameters.pa = "click";
-      break;
-    default:
-      throw new Error("unknown ProductListEvent type");
-  }
-
-  const { products } = message.properties;
-  if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
-      const value = products[i];
-      const prodIndex = i + 1;
-
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters["il1pi" + prodIndex + "id"] = value.sku;
-      } else {
-        parameters["il1pi" + prodIndex + "id"] = value.product_id;
-      }
-      parameters["il1pi" + prodIndex + "nm"] = value.name;
-      parameters["il1pi" + prodIndex + "ca"] = value.category;
-      parameters["il1pi" + prodIndex + "br"] = value.brand;
-      parameters["il1pi" + prodIndex + "va"] = value.variant;
-      parameters["il1pi" + prodIndex + "cc"] = value.coupon;
-      parameters["il1pi" + prodIndex + "ps"] = value.position;
-      parameters["il1pi" + prodIndex + "pr"] = value.price;
-    }
-  } else {
-    // throw error, empty Product List in Product List Viewed event payload
-    throw new Error(
-      "Empty Product List provided for Product List Viewed Event"
-    );
-  }
-  return parameters;
-}
-
-// Function for processing product viewed or clicked events
-function processProductEvent(message) {
-  const eventString = message.event;
-
-  // Future releases will have additional logic for below elements allowing for
-  // customer-side overriding of event category and event action values
-
-  const parameters = {
-    ea: eventString,
-    ec: eventString
-  };
-
-  // Set product action to click or detail depending on event
-  switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_CLICKED:
-      parameters.pa = "click";
-      break;
-    case Event.PRODUCT_VIEWED:
-      parameters.pa = "detail";
-      break;
-    case Event.PRODUCT_ADDED:
-    case Event.WISHLIST_PRODUCT_ADDED_TO_CART:
-    case Event.PRODUCT_ADDED_TO_WISHLIST:
-      parameters.pa = "add";
-      break;
-    case Event.PRODUCT_REMOVED:
-    case Event.PRODUCT_REMOVED_FROM_WISHLIST:
-      parameters.pa = "remove";
-      break;
-    default:
-      throw new Error("unknown ProductEvent type");
-  }
-
-  const { sku, product_id } = message.properties;
-
-  if (!product_id || product_id.length === 0) {
-    parameters.pr1id = sku;
-  } else {
-    parameters.pr1id = product_id;
-  }
-
-  return parameters;
-}
-
-// Function for processing transaction event
-function processTransactionEvent(message) {
-  const eventString = message.event;
-  const parameters = {};
-
-  // Set product action as per event
-  switch (eventString.toLowerCase()) {
-    case Event.CHECKOUT_STARTED:
-    case Event.ORDER_UPDATED:
-      parameters.pa = "checkout";
-      break;
-    case Event.ORDER_COMPLETED:
-      parameters.pa = "purchase";
-      break;
-    case Event.ORDER_CANCELLED:
-      parameters.pa = "refund";
-      break;
-    default:
-      throw new Error("unknown TransactionEvent type");
-  }
-
-  // One of total/revenue/value should be there
-  const { revenue, value, total } = message.properties;
-
-  if (!revenue || revenue.length === 0) {
-    // revenue field is null or empty, cannot be used
-    if (!value || value.length === 0) {
-      // value field is null or empty, cannot be used
-      if (!(!total || total.length === 0)) {
-        // last option - total field
-        parameters.tr = total;
-      }
-    } else {
-      parameters.tr = value; // value field is populated, usable
-    }
-  } else {
-    parameters.tr = revenue; // revenue field is populated, usable
-  }
-
-  const { products } = message.properties;
-
-  if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      const prodIndex = i + 1;
-      // If product_id is not provided, then SKU will be used in place of id
-      if (!product.product_id || product.product_id.length === 0) {
-        parameters["pr" + prodIndex + "id"] = product.sku;
-      } else {
-        parameters["pr" + prodIndex + "id"] = product.product_id;
-      }
-      parameters["pr" + prodIndex + "nm"] = product.name;
-      parameters["pr" + prodIndex + "ca"] = product.category;
-      parameters["pr" + prodIndex + "br"] = product.brand;
-      parameters["pr" + prodIndex + "va"] = product.variant;
-      parameters["pr" + prodIndex + "cc"] = product.coupon;
-      parameters["pr" + prodIndex + "ps"] = product.position;
-      parameters["pr" + prodIndex + "pr"] = product.price;
-    }
-  } else {
-    // throw error, empty Product List in Product List Viewed event payload
-    throw new Error("No product information supplied for transaction event");
-  }
-  return parameters;
-}
-
-// Function for handling generic e-commerce events
-function processEComGenericEvent(message) {
-  const eventString = message.event;
-  const parameters = {
-    ea: eventString,
-    ec: eventString
-  };
-
-  return parameters;
-}
 
 //Function for handling identify events
 async function processIdentify(message,destination) {
 
+  //Get the authorization header if not available
   if (!authorizationHeader) {
     authorizationHeader = await getSFDCHeader(destination);
   }
   
+  //check if the lead exists
+  //need to perform a parameterized search for this using email
+  var email = message.context.traits.email;
+  
+  var leadQueryUrl = "https://" 
+                      + destination.Config.instanceName 
+                      + ".salesforce.com"
+                      + "/services/data/v"
+                      + SF_API_VERSION
+                      + "/parameterizedSearch/?q="
+                      + email
+                      + "&sobject=Lead&Lead.fields=id"
+
+
+  var leadQueryResponse = await axios.get(leadQueryUrl, 
+                                        {headers: {
+                                          "Authorization" : authorizationHeader  
+                                          }
+                                        });
+
+  var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
+  
+  //if count is zero, then Lead does not exist, create the same
+
+  console.log(retrievedLeadCount);                                        
+
   //dummy code for now
   const eventString = message.event;
   const parameters = {
@@ -403,51 +173,6 @@ async function processSingleMessage(message, destination) {
       customParams = await processIdentify(message, destination);
       category = ConfigCategory.IDENTIFY;
       break;
-    case EventType.PAGE:
-      customParams = processPageViews(message);
-      category = ConfigCategory.PAGE;
-      break;
-    case EventType.SCREEN:
-      customParams = processScreenViews(message);
-      category = ConfigCategory.SCREEN;
-      break;
-    case EventType.TRACK: {
-      const eventName = message.event.toLowerCase();
-      category = Event[nameToEventMap[eventName]]
-        ? Event[nameToEventMap[eventName]].category
-        : ConfigCategory.NON_ECOM;
-
-      switch (category.name) {
-        case ConfigCategory.PRODUCT_LIST.name:
-          customParams = processProductListEvent(message);
-          break;
-        case ConfigCategory.PROMOTION.name:
-          customParams = processPromotionEvent(message);
-          break;
-        case ConfigCategory.PRODUCT.name:
-          customParams = processProductEvent(message);
-          break;
-        case ConfigCategory.TRANSACTION.name:
-          customParams = processTransactionEvent(message);
-          break;
-        case ConfigCategory.PAYMENT.name:
-          customParams = processPaymentRelatedEvent(message);
-          break;
-        case ConfigCategory.REFUND.name:
-          customParams = processRefundEvent(message);
-          break;
-        case ConfigCategory.SHARING.name:
-          customParams = processSharingEvent(message);
-          break;
-        case ConfigCategory.ECOM_GENERIC.name:
-          customParams = processEComGenericEvent(message);
-          break;
-        default:
-          customParams = processNonEComGenericEvent(message);
-          break;
-      }
-      break;
-    }
     default:
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
@@ -456,9 +181,7 @@ async function processSingleMessage(message, destination) {
   }
 
   return await responseBuilderSimple(
-    customParams,
     message,
-    category.hitType,
     mappingConfig[category.name],
     destination
   );

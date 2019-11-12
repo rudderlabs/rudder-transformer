@@ -49,7 +49,8 @@ function responseBuilderSimple(payload, message) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
+      Authorization: `Bearer ${apiKey}`,
+      Accept: "application/json"
     },
     requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
@@ -89,9 +90,10 @@ function getIdentifyPayload(message) {
         let value = message.context.traits[field][companyTrait];
         let replaceKeys = mapPayload.identify.sub;
         mapConditionalKeys(companyTrait, replaceKeys, value, company);
+        company[companyTrait] = value;
       });
       if (!companyFields.includes("id")) {
-        set(company, company_id, md5(company.name));
+        set(company, "company_id", md5(company.name));
       }
       companies.push(company);
       set(rawPayload, "companies", companies);

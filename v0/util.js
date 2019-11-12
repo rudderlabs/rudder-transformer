@@ -42,7 +42,7 @@ const getDateInFormat = date => {
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
-const mapConditionalKeys = (currentKey, replaceKeysArr, value, newPayload) => {
+const mapKeys = (currentKey, replaceKeysArr, value, newPayload) => {
   replaceKeysArr.map(obj => {
     obj.rudderKey === currentKey
       ? set(newPayload, obj.expectedKey, value)
@@ -61,6 +61,11 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultDeleteRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "DELETE"
+};
+
 module.exports = {
   getMappingConfig,
   toStringValues,
@@ -68,5 +73,6 @@ module.exports = {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
-  mapConditionalKeys
+  defaultDeleteRequestConfig,
+  mapKeys
 };

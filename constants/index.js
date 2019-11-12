@@ -4,6 +4,7 @@ const EventType = {
   TRACK: "track",
   IDENTIFY: "identify",
   GROUP: "group",
+  RESET: "reset",
   IDENTIFY_AM: "$identify"
 };
 

@@ -8,7 +8,11 @@ let appId;
 let mobileApiKey;
 let collectContext;
 
-const { defaultPostRequestConfig, mapConditionalKeys } = require("../util");
+const {
+  defaultPostRequestConfig,
+  mapKeys,
+  defaultDeleteRequestConfig
+} = require("../util");
 
 function removeNullValues(payload) {
   let newPayload = {};
@@ -42,6 +46,13 @@ function responseBuilderSimple(payload, message) {
       requestConfig = defaultPostRequestConfig;
       endpoint = endpoints.companyUrl;
       break;
+    case EventType.RESET:
+      // Not Tested
+      const email = get(message.context.traits.email);
+      const userId = get(message.context.traits.userId);
+      const params = email ? `email=${email}` : `user_id=${userId}`;
+      requestConfig = defaultDeleteRequestConfig;
+      endpoint = `${endpoints.userUrl}?${params}`;
     default:
       break;
   }
@@ -75,18 +86,18 @@ function addContext(payload, message) {
     if (key != "id") {
       let deviceKeysMapping = mapPayload.collectContext.device;
       let value = message.context.device[key];
-      mapConditionalKeys(key, deviceKeysMapping, value, customPayload);
+      mapKeys(key, deviceKeysMapping, value, customPayload);
     }
   });
   osKeys.forEach(key => {
     let osKeysMapping = mapPayload.collectContext.os;
     let value = message.context.os[key];
-    mapConditionalKeys(key, osKeysMapping, value, customPayload);
+    mapKeys(key, osKeysMapping, value, customPayload);
   });
   appKeys.forEach(key => {
     let appKeysMapping = mapPayload.collectContext.app;
     let value = message.context.app[key];
-    mapConditionalKeys(key, appKeysMapping, value, customPayload);
+    mapKeys(key, appKeysMapping, value, customPayload);
   });
   payload.custom_attributes = customPayload;
   return payload;
@@ -98,7 +109,7 @@ function getGroupPayload(message) {
   let companyFields = Object.keys(message.context.traits);
   companyFields.forEach(field => {
     let value = message.context.traits[field];
-    mapConditionalKeys(field, mapPayload.group.main, value, rawPayload);
+    mapKeys(field, mapPayload.group.main, value, rawPayload);
   });
   if (!companyFields.includes("id")) {
     set(rawPayload, company_id, md5(company.name));
@@ -122,7 +133,7 @@ function getIdentifyPayload(message) {
       companyFields.forEach(companyTrait => {
         let value = message.context.traits[field][companyTrait];
         let replaceKeys = mapPayload.identify.sub;
-        mapConditionalKeys(companyTrait, replaceKeys, value, company);
+        mapKeys(companyTrait, replaceKeys, value, company);
         company[companyTrait] = value;
       });
       if (!companyFields.includes("id")) {
@@ -132,7 +143,7 @@ function getIdentifyPayload(message) {
       set(rawPayload, "companies", companies);
     } else if (field === "anonymousId") {
       let replaceKeys = mapPayload.identify.main;
-      mapConditionalKeys(field, replaceKeys, value, rawPayload);
+      mapKeys(field, replaceKeys, value, rawPayload);
     } else {
       set(rawPayload, field, message.context.traits[field]);
     }
@@ -149,7 +160,7 @@ function getTrackPayload(message) {
     let value = message.context.traits[field];
 
     if (field === ("price" || "currency")) {
-      mapConditionalKeys(field, mapPayload.track.sub, value, price);
+      mapKeys(field, mapPayload.track.sub, value, price);
       rawPayload.price.amount *= 100;
     } else {
       set(rawPayload, field, message.context.traits[field]);
@@ -175,6 +186,9 @@ function getTransformedJSON(message) {
       break;
     case EventType.GROUP:
       rawPayload = getGroupPayload(message);
+      break;
+    case EventType.RESET:
+      rawPayload = {};
       break;
     default:
       break;

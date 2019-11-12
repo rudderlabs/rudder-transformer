@@ -9,7 +9,20 @@ let mobileApiKey;
 
 const { defaultPostRequestConfig, mapConditionalKeys } = require("../util");
 
+function removeNullValues(payload) {
+  let newPayload = {};
+  var vals = Object.keys(payload);
+  for (var i = 0; i < vals.length; i++) {
+    let currentVal = vals[i];
+    if (payload[currentVal] != (null || undefined)) {
+      newPayload[currentVal] = payload[currentVal];
+    }
+  }
+  return newPayload;
+}
+
 function responseBuilderSimple(payload, message) {
+  let newPayload = removeNullValues(payload);
   let endpoint;
   let requestConfig;
 
@@ -40,7 +53,7 @@ function responseBuilderSimple(payload, message) {
     },
     requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
-    payload
+    payload: newPayload
   };
   return response;
 }
@@ -66,22 +79,25 @@ function getIdentifyPayload(message) {
   let rawPayload = {};
   let traits = Object.keys(message.context.traits);
   // let chatWidget = get(message, "context.traits");
-
   traits.forEach(field => {
+    let value = message.context.traits[field];
     if (field === "company") {
       let companies = [];
       let company = {};
-      let companyFields = Object.keys(field);
+      let companyFields = Object.keys(message.context.traits[field]);
       companyFields.forEach(companyTrait => {
         let value = message.context.traits[field][companyTrait];
-        let mapPayload = mapPayload.identify.sub;
-        mapConditionalKeys(companyTrait, mapPayload, value, company);
+        let replaceKeys = mapPayload.identify.sub;
+        mapConditionalKeys(companyTrait, replaceKeys, value, company);
       });
       if (!companyFields.includes("id")) {
         set(company, company_id, md5(company.name));
       }
       companies.push(company);
       set(rawPayload, "companies", companies);
+    } else if (field === "anonymousId") {
+      let replaceKeys = mapPayload.identify.main;
+      mapConditionalKeys(field, replaceKeys, value, rawPayload);
     } else {
       set(rawPayload, field, message.context.traits[field]);
     }
@@ -116,13 +132,13 @@ function getTransformedJSON(message) {
       rawPayload = getPagePayload(message);
       break;
     case EventType.TRACK:
-      rawPayload = getTrackPayload(messge);
+      rawPayload = getTrackPayload(message);
       break;
     case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(messge);
+      rawPayload = getIdentifyPayload(message);
       break;
     case EventType.GROUP:
-      rawPayload = getGroupPayload(messge);
+      rawPayload = getGroupPayload(message);
       break;
     default:
       break;

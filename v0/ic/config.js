@@ -4,14 +4,18 @@ const destinationConfigKeys = {
   mobileApiKey: "mobileAppId"
 };
 
+const baseEndpoint = "https://api.intercom.io";
 const endpoints = {
-  userUrl: "https://api.intercom.io/users", //Create, Update a user with a company | Identify
-  eventsUrl: "https://api.intercom.io/events", //track events | Track
-  companyUrl: "https://api.intercom.io/companies" //create, update, delete a company | Group
+  userUrl: `${baseEndpoint}/users`, //Create, Update a user with a company | Identify
+  eventsUrl: `${baseEndpoint}/events`, //track events | Track
+  companyUrl: `${baseEndpoint}/companies` //create, update, delete a company | Group
 };
 
 const trackSubPayload = [{ rudderKey: "price", expectedKey: "amount" }];
 const identifySubPayload = [{ rudderKey: "id", expectedKey: "company_id" }];
+const identifyMainPayload = [
+  { rudderKey: "anonymousId", expectedKey: "user_id" }
+];
 const groupMainPayload = [
   { rudderKey: "traits", expectedKey: "custom_attributes" }
 ];
@@ -21,7 +25,8 @@ const mapPayload = {
     sub: trackSubPayload
   },
   identify: {
-    sub: identifySubPayload
+    sub: identifySubPayload,
+    main: identifyMainPayload
   },
   group: {
     main: groupMainPayload

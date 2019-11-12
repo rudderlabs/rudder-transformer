@@ -19,13 +19,21 @@ var authorizationHeader;
 //The "Authorization: Bearer <token>" header element needs to be passed for 
 //authentication for all SFDC REST API calls
 async function getSFDCHeader(destination){
+   
+  console.log(SF_TOKEN_REQUEST_URL
+    +"?username="+destination.Config.userName
+    +"&password="+destination.Config.password+destination.Config.initialAccessToken
+    +"&client_id="+destination.Config.consumerKey
+    +"&client_secret="+destination.Config.consumerSecret
+    +"&grant_type=password");
   const response = await axios.post(SF_TOKEN_REQUEST_URL
-    +"?username="+destination.Config.username
+    +"?username="+destination.Config.userName
     +"&password="+destination.Config.password+destination.Config.initialAccessToken
     +"&client_id="+destination.Config.consumerKey
     +"&client_secret="+destination.Config.consumerSecret
     +"&grant_type=password",{});
- 
+    
+    console.log(response);
     return "Bearer " + response.data.access_token;
 }
 
@@ -86,7 +94,6 @@ async function responseBuilderSimple(
     userId: message.anonymousId,
     payload: { ...customParams, ...payload }
   };
-  //console.log("response ", response);
   return response;
 }
 
@@ -100,12 +107,10 @@ function getParamsFromConfig(message, destination) {
       obj[mapping.from] = mapping.to;
     });
   }
-  // console.log(obj);
   let keys = Object.keys(obj);
   keys.forEach(key => {
     params[obj[key]] = get(message.properties, key);
   });
-  //console.log(params);
   return params;
 }
 
@@ -126,6 +131,8 @@ async function processIdentify(message,destination) {
   if (!authorizationHeader) {
     authorizationHeader = await getSFDCHeader(destination);
   }
+
+  console.log("Header " + authorizationHeader);
   
   //check if the lead exists
   //need to perform a parameterized search for this using email
@@ -155,36 +162,27 @@ async function processIdentify(message,destination) {
     targetEndpoint += "/"+leadQueryResponse.data.searchRecords[0].Id;
   }                                      
   
-  return targetEndpoint;
-  
-  
-}
-
-// Generic process function which invokes specific handler functions depending on message type
-// and event type where applicable
-async function processSingleMessage(message, destination) {
-  // Route to appropriate process depending on type of message received
-  const messageType = message.type.toLowerCase();
-  var targetEndpoint = "";
-  let category;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      targetEndpoint = await processIdentify(message, destination);
-      category = ConfigCategory.IDENTIFY;
-      break;
-    default:
-      console.log("could not determine type");
-      // throw new RangeError('Unexpected value in type field');
-      throw new Error("message type not supported");
-      return;
-  }
-
-  return await responseBuilderSimple(
+  return responseBuilderSimple(
     message,
     mappingConfig[category.name],
     destination,
     targetEndpoint
   );
+}
+
+// Generic process function which invokes specific handler functions depending on message type
+// and event type where applicable
+async function processSingleMessage(message, destination) {
+  let response;
+  if (message.type === EventType.IDENTIFY) {
+    response = await processIdentify(message, destination);
+  } else {
+    response = {
+      statusCode: 400,
+      error: "message type " + message.type + " is not supported"
+    };
+  }
+  return response;
 }
 
 // Iterate over input batch and generate response for each message
@@ -193,8 +191,7 @@ async function process(events) {
   let respList = [];
   respList = await Promise.all(
     events.map(event => processSingleMessage(event.message, event.destination))
-  );
-
+  );  
   return respList;
 }
 

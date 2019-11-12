@@ -19,6 +19,19 @@ const identifyMainPayload = [
 const groupMainPayload = [
   { rudderKey: "traits", expectedKey: "custom_attributes" }
 ];
+const deviceContextKeys = [
+  { rudderKey: "manufacturer", expectedKey: "device_manufacturer" },
+  { rudderKey: "model", expectedKey: "device_model" },
+  { rudderKey: "name", expectedKey: "device_name" }
+];
+const osContextkeys = [
+  { rudderKey: "name", expectedKey: "os_name" },
+  { rudderKey: "version", expectedKey: "os_version" }
+];
+const appContextkeys = [
+  { rudderKey: "name", expectedKey: "app_name" },
+  { rudderKey: "version", expectedKey: "app_version" }
+];
 
 const mapPayload = {
   track: {
@@ -30,6 +43,11 @@ const mapPayload = {
   },
   group: {
     main: groupMainPayload
+  },
+  collectContext: {
+    device: deviceContextKeys,
+    os: osContextkeys,
+    app: appContextkeys
   }
 };
 

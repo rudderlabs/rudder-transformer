@@ -6,6 +6,7 @@ let { destinationConfigKeys, endpoints, mapPayload } = require("./config");
 let apiKey;
 let appId;
 let mobileApiKey;
+let collectContext;
 
 const { defaultPostRequestConfig, mapConditionalKeys } = require("../util");
 
@@ -59,6 +60,38 @@ function responseBuilderSimple(payload, message) {
   return response;
 }
 
+function addContext(payload, message) {
+  const deviceExists = get(message.context.device);
+  const osExists = get(message.context.os);
+  const appExists = get(message.context.app);
+
+  const deviceKeys = deviceExists ? Object.keys(deviceExists) : [];
+  const osKeys = osExists ? Object.keys(osExists) : [];
+  const appKeys = appExists ? Object.keys(appExists) : [];
+
+  let customPayload = {};
+
+  deviceKeys.forEach(key => {
+    if (key != "id") {
+      let deviceKeysMapping = mapPayload.collectContext.device;
+      let value = message.context.device[key];
+      mapConditionalKeys(key, deviceKeysMapping, value, customPayload);
+    }
+  });
+  osKeys.forEach(key => {
+    let osKeysMapping = mapPayload.collectContext.os;
+    let value = message.context.os[key];
+    mapConditionalKeys(key, osKeysMapping, value, customPayload);
+  });
+  appKeys.forEach(key => {
+    let appKeysMapping = mapPayload.collectContext.app;
+    let value = message.context.app[key];
+    mapConditionalKeys(key, appKeysMapping, value, customPayload);
+  });
+  payload.custom_attributes = customPayload;
+  return payload;
+}
+
 function getGroupPayload(message) {
   let rawPayload = {};
   let companyId = message.event;
@@ -103,6 +136,7 @@ function getIdentifyPayload(message) {
     } else {
       set(rawPayload, field, message.context.traits[field]);
     }
+    collectContext ? addContext(rawPayload) : null;
   });
   return rawPayload;
 }
@@ -160,6 +194,9 @@ function setDestinationKeys(destination) {
         break;
       case destinationConfigKeys.mobileApiKey:
         mobileApiKey = `${destination.Config[key]}`;
+        break;
+      case destinationConfigKeys.collectContext:
+        collectContext = `${destination.Config[key]}`;
         break;
       default:
         break;

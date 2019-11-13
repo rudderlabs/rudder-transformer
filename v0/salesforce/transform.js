@@ -20,12 +20,6 @@ var authorizationHeader;
 //authentication for all SFDC REST API calls
 async function getSFDCHeader(destination){
    
-  console.log(SF_TOKEN_REQUEST_URL
-    +"?username="+destination.Config.userName
-    +"&password="+destination.Config.password+destination.Config.initialAccessToken
-    +"&client_id="+destination.Config.consumerKey
-    +"&client_secret="+destination.Config.consumerSecret
-    +"&grant_type=password");
   const response = await axios.post(SF_TOKEN_REQUEST_URL
     +"?username="+destination.Config.userName
     +"&password="+destination.Config.password+destination.Config.initialAccessToken
@@ -33,7 +27,6 @@ async function getSFDCHeader(destination){
     +"&client_secret="+destination.Config.consumerSecret
     +"&grant_type=password",{});
     
-    console.log(response);
     return "Bearer " + response.data.access_token;
 }
 
@@ -83,6 +76,8 @@ async function responseBuilderSimple(
   //Get custom params from destination config
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
+  //request configuration will be conditional
+  //POST for create, PATCH for update
 
   const response = {
     endpoint: targetEndpoint,
@@ -95,7 +90,7 @@ async function responseBuilderSimple(
     payload: { ...customParams, ...payload }
   };
   return response;
-}
+};
 
 function getParamsFromConfig(message, destination) {
   let params = {};
@@ -120,6 +115,7 @@ function getParamsFromConfig(message, destination) {
 //Function for handling identify events
 async function processIdentify(message,destination) {
 
+  //start with creation endpoint, update only if Lead does not exist
   var targetEndpoint = "https://" 
                       + destination.Config.instanceName 
                       + ".salesforce.com"
@@ -131,8 +127,6 @@ async function processIdentify(message,destination) {
   if (!authorizationHeader) {
     authorizationHeader = await getSFDCHeader(destination);
   }
-
-  console.log("Header " + authorizationHeader);
   
   //check if the lead exists
   //need to perform a parameterized search for this using email
@@ -145,7 +139,7 @@ async function processIdentify(message,destination) {
                       + SF_API_VERSION
                       + "/parameterizedSearch/?q="
                       + email
-                      + "&sobject=User&User.fields=id"
+                      + "&sobject=Lead&Lead.fields=id"
 
 
   var leadQueryResponse = await axios.get(leadQueryUrl, 
@@ -155,16 +149,15 @@ async function processIdentify(message,destination) {
                                         });
 
   var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
-  
-  //if count is zero, then Lead does not exist, create the same 
+  //if count is greater than zero, it means that lead exists, then only update it
+  //else the original endpoint, which is the one for creation - can be used 
   if(retrievedLeadCount > 0) {
-    console.log(leadQueryResponse.data.searchRecords[0].Id);
-    targetEndpoint += "/"+leadQueryResponse.data.searchRecords[0].Id;
+    targetEndpoint += "/"+leadQueryResponse.data.searchRecords[0].Id+"?_HttpMethod=PATCH";
   }                                      
-  
+
   return responseBuilderSimple(
     message,
-    mappingConfig[category.name],
+    mappingConfig[ConfigCategory.IDENTIFY.name],
     destination,
     targetEndpoint
   );
@@ -176,6 +169,7 @@ async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, destination);
+    console.log(response);
   } else {
     response = {
       statusCode: 400,
@@ -187,7 +181,6 @@ async function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(events) {
-  
   let respList = [];
   respList = await Promise.all(
     events.map(event => processSingleMessage(event.message, event.destination))

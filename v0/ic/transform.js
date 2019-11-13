@@ -2,17 +2,17 @@ const get = require("get-value");
 const set = require("set-value");
 const md5 = require("md5");
 const { EventType } = require("../../constants");
-let { destinationConfigKeys, endpoints, mapPayload } = require("./config");
+const { destinationConfigKeys, endpoints, mapPayload } = require("./config");
+const {
+  defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+  defaultGetRequestConfig,
+  mapKeys
+} = require("../util");
 let apiKey;
 let appId;
 let mobileApiKey;
 let collectContext;
-
-const {
-  defaultPostRequestConfig,
-  mapKeys,
-  defaultDeleteRequestConfig
-} = require("../util");
 
 function removeNullValues(payload) {
   let newPayload = {};
@@ -41,6 +41,8 @@ function responseBuilderSimple(payload, message) {
       endpoint = endpoints.eventsUrl;
       break;
     case EventType.PAGE:
+      requestConfig = defaultGetRequestConfig;
+      endpoint = endpoints.conversationsUrl;
       break;
     case EventType.GROUP:
       requestConfig = defaultPostRequestConfig;
@@ -118,12 +120,12 @@ function getGroupPayload(message) {
   return rawPayload;
 }
 
-function getPagePayload(message) {}
-
 function getIdentifyPayload(message) {
   let rawPayload = {};
-  let traits = Object.keys(message.context.traits);
+  const traits = Object.keys(message.context.traits);
   // let chatWidget = get(message, "context.traits");
+
+  // const integrations = get(message.integrations.Intercom);
   traits.forEach(field => {
     let value = message.context.traits[field];
     if (field === "company") {
@@ -175,8 +177,7 @@ function getTransformedJSON(message) {
   let rawPayload;
   switch (message.type) {
     case EventType.PAGE:
-      // The endpoint for returning all the new messages
-      rawPayload = getPagePayload(message);
+      rawPayload = {};
       break;
     case EventType.TRACK:
       rawPayload = getTrackPayload(message);

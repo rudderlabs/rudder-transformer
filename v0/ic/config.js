@@ -8,7 +8,9 @@ const baseEndpoint = "https://api.intercom.io";
 const endpoints = {
   userUrl: `${baseEndpoint}/users`, //Create, Update a user with a company | Identify
   eventsUrl: `${baseEndpoint}/events`, //track events | Track
-  companyUrl: `${baseEndpoint}/companies` //create, update, delete a company | Group
+  companyUrl: `${baseEndpoint}/companies`, //create, update, delete a company | Group
+  conversationsUrl: `${baseEndpoint}/conversations` // get all conversations | Page
+  // identityVerificationUrl: `${baseEndpoint}`
 };
 
 const trackSubPayload = [{ rudderKey: "price", expectedKey: "amount" }];

@@ -88,11 +88,17 @@ async function runUserTransform(events, code) {
           events
         ) {
           const derefMainFunc = fnRef.deref();
-          derefMainFunc(events).then(value => {
-            resolve.applyIgnored(undefined, [
-              new ivm.ExternalCopy(value).copyInto()
-            ]);
-          });
+          Promise.resolve(derefMainFunc(events))
+            .then(value => {
+              resolve.applyIgnored(undefined, [
+                new ivm.ExternalCopy(value).copyInto()
+              ]);
+            })
+            .catch(error => {
+              resolve.applyIgnored(undefined, [
+                new ivm.ExternalCopy(error.message).copyInto()
+              ]);
+            });
         });
       }
   );
@@ -103,43 +109,49 @@ async function runUserTransform(events, code) {
   const customScript = await isolate.compileScript(code + "");
   await customScript.run(context);
   const fnRef = await jail.get("transform");
-  const executionPromise = new Promise(async resolve => {
+  const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
       transferIn: true
     });
-    await bootstrapScriptResult.apply(undefined, [
-      fnRef,
-      new ivm.Reference(resolve),
-      sharedMessagesList
-    ]);
+    try {
+      await bootstrapScriptResult.apply(undefined, [
+        fnRef,
+        new ivm.Reference(resolve),
+        sharedMessagesList
+      ]);
+    } catch (error) {
+      reject(error.message);
+    }
   });
-
-  let result = "[]";
   try {
     result = await executionPromise;
   } catch (error) {
     console.log("ERROR in user transformation", error);
   }
+  // TODO: Dispose in case of error??
   isolate.dispose();
   return result;
 }
 
-async function userTransformHandler(events) {
-  const destination = events[0].destination;
-  const versionId =
-    destination.Transformations &&
-    destination.Transformations[0] &&
-    destination.Transformations[0].VersionID;
+async function userTransformHandler(events, versionId) {
+  console.log(versionId);
   if (versionId) {
     try {
       const res = await getTransformationCode(versionId);
       if (res) {
-        const tr = await runUserTransform(events, res.code);
-        return JSON.parse(tr);
+        // Events contain message and destination. We take the message part of event and run transformation on it.
+        // And put back the destination after transforrmation
+        const { destination } = events && events[0];
+        const eventMessages = events.map(event => event.message);
+        const tr = await runUserTransform(eventMessages, res.code);
+        const transformedEvents = JSON.parse(tr).map(e => ({
+          message: e,
+          destination
+        }));
+        return transformedEvents;
       }
     } catch (error) {
-      // TODO: Handle error cases: Throw error or send unmodified events
-      console.error(error);
+      console.log(error);
       throw error;
     }
   }

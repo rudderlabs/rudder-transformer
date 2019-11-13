@@ -1,4 +1,5 @@
 const Router = require("koa-router");
+const _ = require("lodash");
 
 const { lstatSync, readdirSync } = require("fs");
 const { join } = require("path");
@@ -42,7 +43,31 @@ versions.forEach(version => {
 
       if (functionsEnabled()) {
         try {
-          events = await userTransformHandler()(events);
+          const groupedEvents = _.groupBy(
+            events,
+            event => event.destination.ID
+          );
+          const transformedEvents = [];
+          await Promise.all(
+            Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+              const transformationVersionId =
+                destEvents[0] &&
+                destEvents[0].destination &&
+                destEvents[0].destination.Transformations &&
+                destEvents[0].destination.Transformations[0] &&
+                destEvents[0].destination.Transformations[0].VersionID;
+              if (transformationVersionId) {
+                const destTransformedEvents = await userTransformHandler()(
+                  destEvents,
+                  transformationVersionId
+                );
+                transformedEvents.push(...destTransformedEvents);
+              } else {
+                transformedEvents.push(...destEvents);
+              }
+            })
+          );
+          events = transformedEvents;
         } catch (error) {
           const respList = [];
           events.forEach(event => {

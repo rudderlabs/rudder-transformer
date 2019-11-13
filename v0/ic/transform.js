@@ -123,9 +123,9 @@ function getGroupPayload(message) {
 function getIdentifyPayload(message) {
   let rawPayload = {};
   const traits = Object.keys(message.context.traits);
+  // TODO
   // let chatWidget = get(message, "context.traits");
-
-  // const integrations = get(message.integrations.Intercom);
+  // const user_hash = get(message.integrations.Intercom.user_hash);
   traits.forEach(field => {
     let value = message.context.traits[field];
     if (field === "company") {
@@ -149,8 +149,8 @@ function getIdentifyPayload(message) {
     } else {
       set(rawPayload, field, message.context.traits[field]);
     }
-    collectContext ? addContext(rawPayload) : null;
   });
+  collectContext ? addContext(rawPayload) : null;
   return rawPayload;
 }
 

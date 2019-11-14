@@ -125,7 +125,25 @@ function getIdentifyPayload(message) {
   const traits = Object.keys(message.context.traits);
   // TODO
   // let chatWidget = get(message, "context.traits");
-  // const user_hash = get(message.integrations.Intercom.user_hash);
+  // console.log(JSON.stringify(message));
+
+  if (get(message.context.Intercom)) {
+    // const widget = get(message.context.Intercom.hideDefaultLauncher);
+    const userHash = get(message.context.Intercom.user_hash);
+    userHash
+      ? set(rawPayload, "user_hash", userHash)
+      : // : set(rawPayload, "hide_default_launcher", widget); To test
+        null;
+  }
+
+  if (get(message.context.traits.context)) {
+    const context = get(message.context.traits.context);
+    const unsubscribe = get(context.Intercom.unsubscribedFromEmails);
+    unsubscribe
+      ? set(rawPayload, "unsubscribed_from_emails", unsubscribe)
+      : null;
+  }
+
   traits.forEach(field => {
     let value = message.context.traits[field];
     if (field === "company") {

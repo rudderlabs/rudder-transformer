@@ -38,6 +38,7 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
         "trackingID": "abcd"
       },

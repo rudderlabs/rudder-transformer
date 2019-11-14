@@ -7,8 +7,8 @@ async function runUserTransform(events, code) {
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
   const jail = context.global;
-  // This make the global object available in the context as `global`. We use `derefInto()` here
-  // because otherwise `global` would actually be a Reference{} object in the new isolate.
+  // This make the global object available in the context as 'global'. We use 'derefInto()' here
+  // because otherwise 'global' would actually be a Reference{} object in the new isolate.
   await jail.set("global", jail.derefInto());
 
   // The entire ivm module is transferable! We transfer the module to the new isolate so that we
@@ -40,52 +40,53 @@ async function runUserTransform(events, code) {
 
   let bootstrap = await isolate.compileScript(
     "new " +
-      function() {
-        // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
-        // only place in the context with a reference to the module. The `ivm` module is very powerful
-        // so you should not put it in the hands of untrusted code.
-        let ivm = _ivm;
-        delete _ivm;
-
-        // Now we create the other half of the `log` function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to the log function above.
-        let fetch = _fetch;
-        delete _fetch;
-        global.fetch = function(...args) {
-          // We use `copyInto()` here so that on the other side we don't have to call `copy()`. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // `applyIgnored` calls `log` asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from `log`.
-          return new Promise(resolve => {
-            fetch.applyIgnored(undefined, [
-              new ivm.Reference(resolve),
-              ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-            ]);
-          });
-        };
-
-        // Now we create the other half of the `log` function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to the log function above.
-        let log = _log;
-        delete _log;
-        global.log = function(...args) {
-          // We use `copyInto()` here so that on the other side we don't have to call `copy()`. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // `applyIgnored` calls `log` asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from `log`.
-          log.applyIgnored(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+      `
+    function() {
+      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
+      // only place in the context with a reference to the module. The 'ivm' module is very powerful
+      // so you should not put it in the hands of untrusted code.
+      let ivm = _ivm;
+      delete _ivm;
+      
+      // Now we create the other half of the 'log' function in this isolate. We'll just take every
+      // argument, create an external copy of it and pass it along to the log function above.
+      let fetch = _fetch;
+      delete _fetch;
+      global.fetch = function(...args) {
+        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
+        // doesn't make a difference who requests the copy, the result is the same.
+        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
+        // return value or thrown exception from 'log'.
+        return new Promise(resolve => {
+          fetch.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+      
+      // Now we create the other half of the 'log' function in this isolate. We'll just take every
+      // argument, create an external copy of it and pass it along to the log function above.
+      let log = _log;
+      delete _log;
+      global.log = function(...args) {
+        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
+        // doesn't make a difference who requests the copy, the result is the same.
+        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
+        // return value or thrown exception from 'log'.
+        log.applyIgnored(
+          undefined,
+          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           );
         };
-
+        
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
           events
-        ) {
-          const derefMainFunc = fnRef.deref();
-          Promise.resolve(derefMainFunc(events))
+          ) {
+            const derefMainFunc = fnRef.deref();
+            Promise.resolve(derefMainFunc(events))
             .then(value => {
               resolve.applyIgnored(undefined, [
                 new ivm.ExternalCopy(value).copyInto()
@@ -96,8 +97,9 @@ async function runUserTransform(events, code) {
                 new ivm.ExternalCopy(error.message).copyInto()
               ]);
             });
-        });
-      }
+          });
+        }
+        `
   );
 
   // Now we can execute the script we just compiled:

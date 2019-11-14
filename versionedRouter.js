@@ -69,10 +69,12 @@ versions.forEach(version => {
           );
           events = transformedEvents;
         } catch (error) {
+          // Is not exoected to happen, since errors are caught in userTransformHandler
           const respList = [];
           events.forEach(event => {
             respList.push({ statusCode: 400, error: error.message });
           });
+          console.log("ERROR: ", error);
           ctx.body = respList;
           return;
         }

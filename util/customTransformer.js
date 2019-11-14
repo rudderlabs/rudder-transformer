@@ -24,13 +24,10 @@ async function runUserTransform(events, code) {
           new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
-        console.log("ERROR");
-        //TODO: How to handle errors
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy("ERROR").copyInto()
         ]);
       }
-      console.log("In Fetch Isolate");
     })
   );
 
@@ -126,15 +123,14 @@ async function runUserTransform(events, code) {
   try {
     result = await executionPromise;
   } catch (error) {
-    console.log("ERROR in user transformation", error);
+    isolate.dispose();
+    throw error;
   }
-  // TODO: Dispose in case of error??
   isolate.dispose();
   return result;
 }
 
 async function userTransformHandler(events, versionId) {
-  console.log(versionId);
   if (versionId) {
     try {
       const res = await getTransformationCode(versionId);
@@ -155,7 +151,7 @@ async function userTransformHandler(events, versionId) {
       }
     } catch (error) {
       console.log(error);
-      throw error;
+      return events.map(event => ({ statusCode: 400, error: error.message }));
     }
   }
   return events;

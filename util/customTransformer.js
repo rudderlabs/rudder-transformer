@@ -143,12 +143,15 @@ async function userTransformHandler(events, versionId) {
         // And put back the destination after transforrmation
         const { destination } = events && events[0];
         const eventMessages = events.map(event => event.message);
-        const tr = await runUserTransform(eventMessages, res.code);
-        const transformedEvents = JSON.parse(tr).map(e => ({
+        const userTransformedEvents = await runUserTransform(
+          eventMessages,
+          res.code
+        );
+        const formattedEvents = userTransformedEvents.map(e => ({
           message: e,
           destination
         }));
-        return transformedEvents;
+        return formattedEvents;
       }
     } catch (error) {
       console.log(error);

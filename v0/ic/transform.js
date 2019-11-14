@@ -123,10 +123,13 @@ function getGroupPayload(message) {
 
 function getIdentifyPayload(message) {
   let rawPayload = {};
-  const traits = Object.keys(message.context.traits);
+
+  const traits = get(message.context.traits.traits)
+    ? message.context.traits.traits
+    : message.context.traits;
+
   // TODO
   // let chatWidget = get(message, "context.traits");
-  // console.log(JSON.stringify(message));
 
   if (get(message.context.Intercom)) {
     // const widget = get(message.context.Intercom.hideDefaultLauncher);
@@ -145,14 +148,15 @@ function getIdentifyPayload(message) {
       : null;
   }
 
-  traits.forEach(field => {
-    let value = message.context.traits[field];
+  const traitsList = Object.keys(traits);
+  traitsList.forEach(field => {
+    let value = traits[field];
     if (field === "company") {
       let companies = [];
       let company = {};
-      let companyFields = Object.keys(message.context.traits[field]);
+      let companyFields = Object.keys(traits[field]);
       companyFields.forEach(companyTrait => {
-        let value = message.context.traits[field][companyTrait];
+        let value = traits[field][companyTrait];
         let replaceKeys = mapPayload.identify.sub;
         mapKeys(companyTrait, replaceKeys, value, company);
         company[companyTrait] = value;
@@ -167,6 +171,7 @@ function getIdentifyPayload(message) {
       mapKeys(field, replaceKeys, value, rawPayload);
     }
   });
+  rawPayload.plan ? delete rawPayload.plan : null;
   collectContext ? addContext(rawPayload) : null;
   return rawPayload;
 }

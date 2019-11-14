@@ -43,10 +43,16 @@ const getDateInFormat = date => {
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
 const mapKeys = (currentKey, replaceKeysArr, value, newPayload) => {
+  const rudderKeys = [];
+  replaceKeysArr.map(obj => {
+    rudderKeys.push(obj.rudderKey);
+  });
   replaceKeysArr.map(obj => {
     obj.rudderKey === currentKey
       ? set(newPayload, obj.expectedKey, value)
-      : set(newPayload, obj.currentKey, value);
+      : rudderKeys.indexOf(currentKey) > -1
+      ? set(newPayload, obj.currentKey, value)
+      : set(newPayload, currentKey, value);
   });
   return newPayload;
 };

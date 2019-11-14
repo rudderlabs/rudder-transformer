@@ -21,7 +21,9 @@ const trackOrderPayload = [{ rudderKey: "order_ID", expectedKey: "value" }];
 const identifySubPayload = [{ rudderKey: "id", expectedKey: "company_id" }];
 const identifyMainPayload = [
   { rudderKey: "anonymousId", expectedKey: "user_id" },
-  { rudderKey: "createdAt", expectedKey: "created_at" }
+  { rudderKey: "createdAt", expectedKey: "created_at" },
+  { rudderKey: "firstName", expectedKey: null },
+  { rudderKey: "lastName", expectedKey: null }
 ];
 const groupMainPayload = [
   { rudderKey: "traits", expectedKey: "custom_attributes" }

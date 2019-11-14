@@ -45,6 +45,7 @@ function responseBuilderSimple(payload, message) {
       endpoint = endpoints.conversationsUrl;
       break;
     case EventType.GROUP:
+      // Not Tested
       requestConfig = defaultPostRequestConfig;
       endpoint = endpoints.companyUrl;
       break;
@@ -161,11 +162,9 @@ function getIdentifyPayload(message) {
       }
       companies.push(company);
       set(rawPayload, "companies", companies);
-    } else if (field === "anonymousId") {
+    } else {
       let replaceKeys = mapPayload.identify.main;
       mapKeys(field, replaceKeys, value, rawPayload);
-    } else {
-      set(rawPayload, field, message.context.traits[field]);
     }
   });
   collectContext ? addContext(rawPayload) : null;
@@ -174,20 +173,30 @@ function getIdentifyPayload(message) {
 
 function getTrackPayload(message) {
   let rawPayload = {};
+  let metadata = {};
   let price = {};
-  let traits = Object.keys(message.context.traits);
-  traits.forEach(field => {
-    let value = message.context.traits[field];
+  let order_number = {};
+  let properties = Object.keys(message.properties);
 
-    if (field === ("price" || "currency")) {
-      mapKeys(field, mapPayload.track.sub, value, price);
-      rawPayload.price.amount *= 100;
+  properties.forEach(prop => {
+    let value = message.properties[prop];
+    if (prop === "price" || prop === "currency") {
+      mapKeys(prop, mapPayload.track.price, value, price);
+      price.amount *= 100;
+    } else if (prop === "order_ID" || prop === "order_url") {
+      mapKeys(prop, mapPayload.track.order, value, order_number);
     } else {
-      set(rawPayload, field, message.context.traits[field]);
+      metadata[prop] = value;
     }
   });
-  rawPayload.price = price;
+
+  metadata.price = price;
+  metadata.order_number = order_number;
+
+  rawPayload.metadata = metadata;
   rawPayload.event_name = message.event;
+  rawPayload.user_id = message.userId;
+  rawPayload.created_at = Math.floor(new Date().getTime() / 1000);
   return rawPayload;
 }
 
@@ -253,6 +262,8 @@ function process(events) {
       respList.push({ statusCode: 400, error: error.message });
     }
   });
+  // console.log(JSON.stringify(respList));
+
   return respList;
 }
 

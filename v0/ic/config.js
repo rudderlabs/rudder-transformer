@@ -13,10 +13,15 @@ const endpoints = {
   // identityVerificationUrl: `${baseEndpoint}`
 };
 
-const trackSubPayload = [{ rudderKey: "price", expectedKey: "amount" }];
+const trackPricePayload = [
+  { rudderKey: "price", expectedKey: "amount" },
+  { rudderKey: "currency", expectedKey: "currency" }
+];
+const trackOrderPayload = [{ rudderKey: "order_ID", expectedKey: "value" }];
 const identifySubPayload = [{ rudderKey: "id", expectedKey: "company_id" }];
 const identifyMainPayload = [
-  { rudderKey: "anonymousId", expectedKey: "user_id" }
+  { rudderKey: "anonymousId", expectedKey: "user_id" },
+  { rudderKey: "createdAt", expectedKey: "created_at" }
 ];
 const groupMainPayload = [
   { rudderKey: "traits", expectedKey: "custom_attributes" }
@@ -37,7 +42,8 @@ const appContextkeys = [
 
 const mapPayload = {
   track: {
-    sub: trackSubPayload
+    price: trackPricePayload,
+    order: trackOrderPayload
   },
   identify: {
     sub: identifySubPayload,

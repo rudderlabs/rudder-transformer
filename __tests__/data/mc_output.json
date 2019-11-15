@@ -1,32 +1,38 @@
 [
   {
-    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/merge-fields",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
     "header": {
-      "auth": {
-        "username": "apiKey",
-        "password": "94f71917d8522770c97449b0c90caa4c-us20"
-      }
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
     },
-    "userId": "userId12345",
     "requestConfig": {
       "requestFormat": "JSON",
-      "requestMethod": "POST"
+      "requestMethod": "PUT"
     },
+    "userId": "userId12345",
     "payload": {
-      "properties": [
-        {
-          "property": "name",
-          "value": "company"
-        },
-        {
-          "property": "type",
-          "value": "text"
-        },
-        {
-          "property": "tag",
-          "value": "tagging126"
-        }
-      ]
+      "merge_fields": {
+        "ANONYMOUSID": "userId12345",
+        "FNAME": "Bob",
+        "LNAME": "Dole"
+      },
+      "email_address": "bob.dole@initech.com"
+    }
+  },
+  {
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "header": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "requestConfig": {
+      "requestFormat": "JSON",
+      "requestMethod": "PUT"
+    },
+    "userId": "userId12345",
+    "payload": {
+      "status": "unsubscribed",
+      "email_address": "bob.dole@initech.com"
     }
   }
 ]

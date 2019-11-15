@@ -44,6 +44,19 @@ async function checkIfMailExists(email) {
   return check;
 }
 
+async function checkIfDoubleOptIn(listId) {
+  const url = `${getEndpoint(dataCenterId, audienceId)}`;
+  const response = await axios.get(url, {
+    auth: {
+      username: "apiKey",
+      password: `${apiKey}`
+    }
+  });
+  let check = false;
+  response.data.double_optin ? (check = true) : null;
+  return check;
+}
+
 // New User - make a post request to create the user with the userObj and api key
 function getSubscribeUserUrl() {
   return `${getEndpoint(dataCenterId, audienceId)}/members`;
@@ -76,7 +89,7 @@ async function responseBuilderSimple(payload, message, eventType, destination) {
     if (mergeFields) {
       endpoint = getCustomMergeFieldsUrl();
       requestConfig = defaultPostRequestConfig;
-    } else if (updateSubscription) {
+    } else {
       endpoint = getUpdateUserTraitsUrl(email);
       requestConfig = defaultPutRequestConfig;
     }
@@ -99,7 +112,7 @@ async function responseBuilderSimple(payload, message, eventType, destination) {
   return response;
 }
 
-function getPayload(
+async function getPayload(
   customMergeFields,
   traits,
   updateSubscription,
@@ -142,7 +155,9 @@ function getPayload(
       }
     });
     if (!emailExists) {
-      rawPayload.status = subscriptionStatus.subscribed;
+      (await checkIfDoubleOptIn(dataCenterId, audienceId))
+        ? (rawPayload.status = subscriptionStatus.pending)
+        : (rawPayload.status = subscriptionStatus.subscribed);
     }
   } else {
     throw "Error";
@@ -161,14 +176,13 @@ async function getTransformedJSON(message) {
   if (modifyAudienceId) {
     modifyAudienceId ? (audienceId = message.context.MailChimp.listId) : null;
   }
-  const rawPayload = getPayload(
+  const rawPayload = await getPayload(
     customMergeFields,
     traits,
     updateSubscription,
     message,
     emailExists
   );
-
   return { ...rawPayload };
 }
 

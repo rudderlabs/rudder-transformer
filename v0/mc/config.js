@@ -11,7 +11,8 @@ destinationConfigKeys = {
 };
 
 subscriptionStatus = {
-  subscribed: "subscribed"
+  subscribed: "subscribed",
+  pending: "pending"
 };
 
 module.exports = {

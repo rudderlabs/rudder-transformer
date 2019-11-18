@@ -8,11 +8,6 @@ let {
   destinationConfigKeys,
   subscriptionStatus
 } = require("./config");
-let audienceId;
-let dataCenterId;
-let apiKey;
-let mergeFields;
-let updateSubscription;
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig
@@ -27,77 +22,82 @@ function filterTagValue(tag) {
   return newTag;
 }
 
-async function checkIfMailExists(email) {
-  const url = `${getEndpoint(dataCenterId, audienceId)}/members`;
-  const response = await axios.get(url, {
-    auth: {
-      username: "apiKey",
-      password: `${apiKey}`
-    }
-  });
-  let check = false;
-  response.data.members.forEach(member => {
-    if (member.email_address === email) {
-      check = true;
-    }
-  });
-  return check;
+async function checkIfMailExists(keysObj, email) {
+  const hash = md5(email);
+  const url = `${getEndpoint(
+    keysObj.dataCenterId,
+    keysObj.audienceId
+  )}/members/${hash}`;
+
+  let status;
+  try {
+    await axios.get(url, {
+      auth: {
+        username: "apiKey",
+        password: `${keysObj.apiKey}`
+      }
+    });
+    status = true;
+  } catch (error) {
+    status = false;
+  }
+  return status;
 }
 
-async function checkIfDoubleOptIn(listId) {
-  const url = `${getEndpoint(dataCenterId, audienceId)}`;
+async function checkIfDoubleOptIn(keysObj) {
+  const url = `${getEndpoint(keysObj.dataCenterId, keysObj.audienceId)}`;
   const response = await axios.get(url, {
     auth: {
       username: "apiKey",
-      password: `${apiKey}`
+      password: `${keysObj.apiKey}`
     }
   });
-  let check = false;
-  response.data.double_optin ? (check = true) : null;
-  return check;
+  return response.data.double_optin ? true : false;
 }
 
 // New User - make a post request to create the user with the userObj and api key
-function getSubscribeUserUrl() {
-  return `${getEndpoint(dataCenterId, audienceId)}/members`;
+function getSubscribeUserUrl(keysObj) {
+  return `${getEndpoint(keysObj.dataCenterId, keysObj.audienceId)}/members`;
 }
 
 // Existing user - make a put request to create the user with the userObj and api key
-function getUpdateUserTraitsUrl(email) {
+function getUpdateUserTraitsUrl(keysObj, email) {
   const hash = md5(email);
-  return `${getEndpoint(dataCenterId, audienceId)}/members/${hash}`;
+  return `${getEndpoint(
+    keysObj.dataCenterId,
+    keysObj.audienceId
+  )}/members/${hash}`;
 }
 
 // Create Merge Field - make a post request to create a merge field. If tag is not provided, Use from name. Must be without numbers.
-function getCustomMergeFieldsUrl() {
-  return `${getEndpoint(dataCenterId, audienceId)}/merge-fields`;
+function getCustomMergeFieldsUrl(keysObj) {
+  return `${getEndpoint(
+    keysObj.dataCenterId,
+    keysObj.audienceId
+  )}/merge-fields`;
 }
 
-// // Modify Merge Field
-// function modifyCustomMergeFields(userObj, audienceId, dataCenterId) {
-//   // Get all merge fields
-//   const url = `${endpoint}/merge-fields/${mergeId}`;
-// }
-
-async function responseBuilderSimple(payload, message, eventType, destination) {
+async function responseBuilderSimple(payload, message, keysObj) {
   let endpoint;
   let requestConfig;
   const email = message.context.traits.email;
-  const emailExists = await checkIfMailExists(email);
+  const emailExists = await checkIfMailExists(keysObj, email);
 
   if (emailExists) {
-    if (mergeFields) {
-      endpoint = getCustomMergeFieldsUrl();
+    if (keysObj.mergeFields) {
+      endpoint = getCustomMergeFieldsUrl(keysObj);
       requestConfig = defaultPostRequestConfig;
     } else {
-      endpoint = getUpdateUserTraitsUrl(email);
+      endpoint = getUpdateUserTraitsUrl(keysObj, email);
       requestConfig = defaultPutRequestConfig;
     }
   } else {
-    endpoint = getSubscribeUserUrl();
+    endpoint = getSubscribeUserUrl(keysObj);
     requestConfig = defaultPostRequestConfig;
   }
-  let basicAuth = new Buffer("apiKey" + ":" + `${apiKey}`).toString("base64");
+  let basicAuth = new Buffer("apiKey" + ":" + `${keysObj.apiKey}`).toString(
+    "base64"
+  );
   const response = {
     endpoint,
     header: {
@@ -117,11 +117,12 @@ async function getPayload(
   traits,
   updateSubscription,
   message,
-  emailExists
+  emailExists,
+  keysObj
 ) {
   let rawPayload = {};
   if (customMergeFields) {
-    mergeFields = true;
+    keysObj.mergeFields = true;
     Object.keys(message.context.traits.MergeFields).forEach(field => {
       if (field === "tag") {
         fieldValue = message.context.traits.MergeFields[field];
@@ -155,65 +156,66 @@ async function getPayload(
       }
     });
     if (!emailExists) {
-      (await checkIfDoubleOptIn(dataCenterId, audienceId))
+      (await checkIfDoubleOptIn(keysObj))
         ? (rawPayload.status = subscriptionStatus.pending)
         : (rawPayload.status = subscriptionStatus.subscribed);
     }
   } else {
-    throw "Error";
+    throw "Not a valid object";
   }
   return rawPayload;
 }
 
-async function getTransformedJSON(message) {
+async function getTransformedJSON(message, keysObj) {
   const traits = get(message, "context.traits");
   const customMergeFields = get(message, "context.traits.MergeFields");
   const modifyAudienceId = get(message, "context.MailChimp");
-  updateSubscription = get(message, "integrations.MailChimp");
+  keysObj.updateSubscription = get(message, "integrations.MailChimp");
 
-  const emailExists = await checkIfMailExists(message.context.traits.email);
+  const emailExists = await checkIfMailExists(
+    keysObj,
+    message.context.traits.email
+  );
 
-  if (modifyAudienceId) {
-    modifyAudienceId ? (audienceId = message.context.MailChimp.listId) : null;
-  }
+  modifyAudienceId
+    ? (keysObj.audienceId = message.context.MailChimp.listId)
+    : null;
   const rawPayload = await getPayload(
     customMergeFields,
     traits,
-    updateSubscription,
+    keysObj.updateSubscription,
     message,
-    emailExists
+    emailExists,
+    keysObj
   );
   return { ...rawPayload };
 }
 
 function setDestinationKeys(destination) {
   const keys = Object.keys(destination.Config);
+  let keysObj = {};
   keys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.apiKey:
-        apiKey = `${destination.Config[key]}`;
+        keysObj.apiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.audienceId:
-        audienceId = `${destination.Config[key]}`;
+        keysObj.audienceId = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.dataCenterId:
-        dataCenterId = `${destination.Config[key]}`;
+        keysObj.dataCenterId = `${destination.Config[key]}`;
         break;
       default:
         break;
     }
   });
+  return keysObj;
 }
 
 async function processIdentify(message, destination) {
-  setDestinationKeys(destination);
-  const properties = await getTransformedJSON(message);
-  return responseBuilderSimple(
-    properties,
-    message,
-    EventType.IDENTIFY,
-    destination
-  );
+  const keysObj = setDestinationKeys(destination);
+  const properties = await getTransformedJSON(message, keysObj);
+  return responseBuilderSimple(properties, message, keysObj);
 }
 
 async function processSingleMessage(message, destination) {

@@ -1,16 +1,16 @@
 const getEndpoint = (dataCenterId, audienceId) => {
-  const mc_api = "api.mailchimp.com";
-  const lists_url = `https://${dataCenterId}.${mc_api}/3.0/lists`;
-  return `${lists_url}/${audienceId}`;
+  const mailChimpApi = "api.mailchimp.com";
+  const listsUrl = `https://${dataCenterId}.${mailChimpApi}/3.0/lists`;
+  return `${listsUrl}/${audienceId}`;
 };
 
-destinationConfigKeys = {
+const destinationConfigKeys = {
   apiKey: "apiKey",
   audienceId: "audienceId",
   dataCenterId: "datacenterId"
 };
 
-subscriptionStatus = {
+const subscriptionStatus = {
   subscribed: "subscribed",
   pending: "pending"
 };

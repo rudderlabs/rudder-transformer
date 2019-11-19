@@ -1,10 +1,11 @@
 const get = require("get-value");
 let { destinationConfigKeys, batchEndpoint } = require("./config");
 const { defaultPostRequestConfig } = require("../util");
-let writeKey;
 
-function responseBuilderSimple(payload) {
-  let basicAuth = new Buffer(`${writeKey}` + ":" + ``).toString("base64");
+function responseBuilderSimple(payload, keysObj) {
+  let basicAuth = new Buffer(`${keysObj.writeKey}` + ":" + ``).toString(
+    "base64"
+  );
 
   const response = {
     endpoint: batchEndpoint,
@@ -13,7 +14,7 @@ function responseBuilderSimple(payload) {
       Authorization: `Basic ${basicAuth}`
     },
     requestConfig: defaultPostRequestConfig,
-    userId: message.anonymousId,
+    userId: "123",
     payload
   };
   return response;
@@ -31,7 +32,15 @@ function removeNullValues(payload) {
   return newPayload;
 }
 
-function makePayload(type, userId, event, traits, properties, timeStamp) {
+function makePayload(
+  type,
+  userId,
+  event,
+  traits,
+  properties,
+  timeStamp,
+  keysObj
+) {
   let eventPayload = {};
   eventPayload.type = type;
   eventPayload.userId = userId;
@@ -39,10 +48,13 @@ function makePayload(type, userId, event, traits, properties, timeStamp) {
   eventPayload.traits = traits;
   eventPayload.properties = properties;
   eventPayload.timeStamp = timeStamp;
-  return removeNullValues(eventPayload);
+  return {
+    payload: removeNullValues(eventPayload),
+    keys: keysObj
+  };
 }
 
-function getTransformedJSON(message) {
+function getTransformedJSON(message, keysObj) {
   const type = message.type;
   const userId = message.userId ? message.userId : message.anonymousId;
   const traits = get(message, "context.traits")
@@ -55,39 +67,51 @@ function getTransformedJSON(message) {
   const event = get(message, "event") ? message.event : undefined;
   const timeStamp = message.originalTimestamp;
 
-  return makePayload(type, userId, event, traits, properties, timeStamp);
+  return makePayload(
+    type,
+    userId,
+    event,
+    traits,
+    properties,
+    timeStamp,
+    keysObj
+  );
 }
 
 function setDestinationKeys(destination) {
+  let keysObj = {};
   const keys = Object.keys(destination.Config);
   keys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.writeKey:
-        writeKey = `${destination.Config[key]}`;
+        keysObj.writeKey = `${destination.Config[key]}`;
         break;
       default:
         break;
     }
   });
+  return keysObj;
 }
 
 function processSingleMessage(message, destination) {
-  setDestinationKeys(destination);
-  return getTransformedJSON(message, destination);
+  const keysObj = setDestinationKeys(destination);
+  return getTransformedJSON(message, keysObj);
 }
 
 function process(events) {
   let respObj = {};
   respObj.batch = [];
+  let keys;
   events.forEach(event => {
     try {
-      response = processSingleMessage(event.message, event.destination);
-      respObj.batch.push(response);
+      responseObj = processSingleMessage(event.message, event.destination);
+      respObj.payload.batch.push(response);
+      keys = responseObj.keys;
     } catch (error) {
       respObj.batch.push({ statusCode: 400, error: error.message });
     }
   });
-  return responseBuilderSimple(respObj, message);
+  return responseBuilderSimple(respObj, keys);
 }
 
 exports.process = process;

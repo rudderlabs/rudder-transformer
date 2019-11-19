@@ -105,7 +105,7 @@ function process(events) {
   events.forEach(event => {
     try {
       responseObj = processSingleMessage(event.message, event.destination);
-      respObj.payload.batch.push(response);
+      respObj.batch.push(responseObj.payload);
       keys = responseObj.keys;
     } catch (error) {
       respObj.batch.push({ statusCode: 400, error: error.message });

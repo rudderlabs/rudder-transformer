@@ -149,7 +149,7 @@ async function getTransformedJSON(message, mailChimpConfig) {
   const traits = get(message, "context.traits");
 
   const updateSubscription = get(message, "integrations.MailChimp")
-    ? get(message, "integrations.MailChimp")
+    ? message.integrations.MailChimp
     : undefined;
 
   const emailExists = await checkIfMailExists(

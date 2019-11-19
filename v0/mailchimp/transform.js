@@ -116,7 +116,6 @@ async function getPayload(
         rawPayload["email_address"] = message.context.traits[trait];
       }
     });
-    console.log("updateSubscription", rawPayload);
     return rawPayload;
   }
 
@@ -138,7 +137,6 @@ async function getPayload(
         ? subscriptionStatus.pending
         : subscriptionStatus.subscribed;
     }
-    console.log("traits", rawPayload);
     return rawPayload;
   }
 

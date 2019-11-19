@@ -19,85 +19,68 @@ function filterTagValue(tag) {
   if (newTag.length > maxLength) {
     return newTag.slice(0, 10);
   }
-  return newTag;
+  return newTag.toUpperCase();
 }
 
-async function checkIfMailExists(keysObj, email) {
-  const hash = md5(email);
-  const url = `${getEndpoint(
-    keysObj.dataCenterId,
-    keysObj.audienceId
-  )}/members/${hash}`;
+function getMailChimpEndpoint(mailChimpConfig) {
+  return getEndpoint(mailChimpConfig.dataCenterId, mailChimpConfig.audienceId);
+}
 
-  let status;
+async function checkIfMailExists(mailChimpConfig, email) {
+  const hash = md5(email);
+  const url = `${getMailChimpEndpoint(mailChimpConfig)}/members/${hash}`;
+
+  let status = false;
   try {
     await axios.get(url, {
       auth: {
         username: "apiKey",
-        password: `${keysObj.apiKey}`
+        password: `${mailChimpConfig.apiKey}`
       }
     });
     status = true;
-  } catch (error) {
-    status = false;
-  }
+  } catch (error) {}
   return status;
 }
 
-async function checkIfDoubleOptIn(keysObj) {
-  const url = `${getEndpoint(keysObj.dataCenterId, keysObj.audienceId)}`;
+async function checkIfDoubleOptIn(mailChimpConfig) {
+  const url = `${getMailChimpEndpoint(mailChimpConfig)}`;
   const response = await axios.get(url, {
     auth: {
       username: "apiKey",
-      password: `${keysObj.apiKey}`
+      password: `${mailChimpConfig.apiKey}`
     }
   });
   return response.data.double_optin ? true : false;
 }
 
 // New User - make a post request to create the user with the userObj and api key
-function getSubscribeUserUrl(keysObj) {
-  return `${getEndpoint(keysObj.dataCenterId, keysObj.audienceId)}/members`;
+function getSubscribeUserUrl(mailChimpConfig) {
+  return `${getMailChimpEndpoint(mailChimpConfig)}/members`;
 }
 
 // Existing user - make a put request to create the user with the userObj and api key
-function getUpdateUserTraitsUrl(keysObj, email) {
+function getUpdateUserTraitsUrl(mailChimpConfig, email) {
   const hash = md5(email);
-  return `${getEndpoint(
-    keysObj.dataCenterId,
-    keysObj.audienceId
-  )}/members/${hash}`;
+  return `${getMailChimpEndpoint(mailChimpConfig)}/members/${hash}`;
 }
 
-// Create Merge Field - make a post request to create a merge field. If tag is not provided, Use from name. Must be without numbers.
-function getCustomMergeFieldsUrl(keysObj) {
-  return `${getEndpoint(
-    keysObj.dataCenterId,
-    keysObj.audienceId
-  )}/merge-fields`;
-}
-
-async function responseBuilderSimple(payload, message, keysObj) {
+async function responseBuilderSimple(payload, message, mailChimpConfig) {
   let endpoint;
   let requestConfig;
   const email = message.context.traits.email;
-  const emailExists = await checkIfMailExists(keysObj, email);
+  const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
   if (emailExists) {
-    if (keysObj.mergeFields) {
-      endpoint = getCustomMergeFieldsUrl(keysObj);
-      requestConfig = defaultPostRequestConfig;
-    } else {
-      endpoint = getUpdateUserTraitsUrl(keysObj, email);
-      requestConfig = defaultPutRequestConfig;
-    }
+    endpoint = getUpdateUserTraitsUrl(mailChimpConfig, email);
+    requestConfig = defaultPutRequestConfig;
   } else {
-    endpoint = getSubscribeUserUrl(keysObj);
+    endpoint = getSubscribeUserUrl(mailChimpConfig);
     requestConfig = defaultPostRequestConfig;
   }
-  let basicAuth = new Buffer("apiKey" + ":" + `${keysObj.apiKey}`).toString(
-    "base64"
-  );
+  const basicAuth = new Buffer(
+    "apiKey" + ":" + `${mailChimpConfig.apiKey}`
+  ).toString("base64");
   const response = {
     endpoint,
     header: {
@@ -113,122 +96,119 @@ async function responseBuilderSimple(payload, message, keysObj) {
 }
 
 async function getPayload(
-  customMergeFields,
   traits,
   updateSubscription,
   message,
   emailExists,
-  keysObj
+  mailChimpConfig
 ) {
-  let rawPayload = {};
-  if (customMergeFields) {
-    keysObj.mergeFields = true;
-    Object.keys(message.context.traits.MergeFields).forEach(field => {
-      if (field === "tag") {
-        fieldValue = message.context.traits.MergeFields[field];
-        set(rawPayload, field, filterTagValue(fieldValue));
-      } else {
-        set(rawPayload, field, message.context.traits.MergeFields[field]);
-      }
-      rawPayload.public = true;
-    });
-  } else if (updateSubscription && emailExists) {
+  if (updateSubscription != undefined && emailExists) {
+    let rawPayload = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
-        rawPayload.status = message.integrations.MailChimp[field];
+        rawPayload["status"] = message.integrations.MailChimp[field];
       } else {
         rawPayload[field] = message.integrations.MailChimp[field];
       }
     });
     Object.keys(message.context.traits).forEach(trait => {
       if (trait === "email") {
-        rawPayload.email_address = message.context.traits[trait];
+        rawPayload["email_address"] = message.context.traits[trait];
       }
     });
-  } else if (traits && message.context.traits.email) {
-    rawPayload.merge_fields = {};
+    console.log("updateSubscription", rawPayload);
+    return rawPayload;
+  }
+
+  if (traits && message.context.traits.email) {
+    let rawPayload = {};
+    rawPayload["merge_fields"] = {};
+
     Object.keys(message.context.traits).forEach(trait => {
       if (trait === "email") {
-        rawPayload.email_address = message.context.traits[trait];
+        rawPayload["email_address"] = message.context.traits[trait];
       } else {
-        rawPayload.merge_fields[trait.toUpperCase()] =
-          message.context.traits[trait];
+        let tag = filterTagValue(field);
+        rawPayload["merge_fields"][tag] = message.context.traits[trait];
       }
     });
     if (!emailExists) {
-      (await checkIfDoubleOptIn(keysObj))
-        ? (rawPayload.status = subscriptionStatus.pending)
-        : (rawPayload.status = subscriptionStatus.subscribed);
+      const isDoubleOptin = await checkIfDoubleOptIn(mailChimpConfig);
+      rawPayload.status = isDoubleOptin
+        ? subscriptionStatus.pending
+        : subscriptionStatus.subscribed;
     }
-  } else {
-    throw "Not a valid object";
+    console.log("traits", rawPayload);
+    return rawPayload;
   }
-  return rawPayload;
+
+  throw "Not a valid object";
 }
 
-async function getTransformedJSON(message, keysObj) {
+async function getTransformedJSON(message, mailChimpConfig) {
   const traits = get(message, "context.traits");
-  const customMergeFields = get(message, "context.traits.MergeFields");
-  const modifyAudienceId = get(message, "context.MailChimp");
-  keysObj.updateSubscription = get(message, "integrations.MailChimp");
+
+  const updateSubscription = get(message, "integrations.MailChimp")
+    ? get(message, "integrations.MailChimp")
+    : undefined;
 
   const emailExists = await checkIfMailExists(
-    keysObj,
+    mailChimpConfig,
     message.context.traits.email
   );
 
-  modifyAudienceId
-    ? (keysObj.audienceId = message.context.MailChimp.listId)
-    : null;
   const rawPayload = await getPayload(
-    customMergeFields,
     traits,
-    keysObj.updateSubscription,
+    updateSubscription,
     message,
     emailExists,
-    keysObj
+    mailChimpConfig
   );
   return { ...rawPayload };
 }
 
-function setDestinationKeys(destination) {
-  const keys = Object.keys(destination.Config);
-  let keysObj = {};
-  keys.forEach(key => {
+function getMailChimpConfig(message, destination) {
+  const configKeys = Object.keys(destination.Config);
+  let mailChimpConfig = {};
+  configKeys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.apiKey:
-        keysObj.apiKey = `${destination.Config[key]}`;
+        mailChimpConfig.apiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.audienceId:
-        keysObj.audienceId = `${destination.Config[key]}`;
+        mailChimpConfig.audienceId = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.dataCenterId:
-        keysObj.dataCenterId = `${destination.Config[key]}`;
+        mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
         break;
       default:
+        console.log("MailChimp: Unknown key type: ", key);
         break;
     }
   });
-  return keysObj;
+
+  const modifyAudienceId = get(message, "context.MailChimp");
+  if (modifyAudienceId) {
+    mailChimpConfig.audienceId = message.context.MailChimp.listId;
+  }
+  return mailChimpConfig;
 }
 
 async function processIdentify(message, destination) {
-  const keysObj = setDestinationKeys(destination);
-  const properties = await getTransformedJSON(message, keysObj);
-  return responseBuilderSimple(properties, message, keysObj);
+  const mailChimpConfig = getMailChimpConfig(message, destination);
+  const properties = await getTransformedJSON(message, mailChimpConfig);
+  return responseBuilderSimple(properties, message, mailChimpConfig);
 }
 
 async function processSingleMessage(message, destination) {
-  let response;
-  if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, destination);
-  } else {
-    response = {
+  if (message.type !== EventType.IDENTIFY) {
+    return {
       statusCode: 400,
       error: "message type " + message.type + " is not supported"
     };
   }
-  return response;
+
+  return processIdentify(message, destination);
 }
 
 async function process(events) {

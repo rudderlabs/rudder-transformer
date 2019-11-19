@@ -9,10 +9,6 @@ const {
   defaultGetRequestConfig,
   mapKeys
 } = require("../util");
-let apiKey;
-let appId;
-let mobileApiKey;
-let collectContext;
 
 function removeNullValues(payload) {
   let newPayload = {};
@@ -26,7 +22,7 @@ function removeNullValues(payload) {
   return newPayload;
 }
 
-function responseBuilderSimple(payload, message) {
+function responseBuilderSimple(payload, message, keysObj) {
   let newPayload = removeNullValues(payload);
   let endpoint;
   let requestConfig;
@@ -64,7 +60,7 @@ function responseBuilderSimple(payload, message) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${keysObj.apiKey}`,
       Accept: "application/json"
     },
     requestConfig,
@@ -106,7 +102,7 @@ function addContext(payload, message) {
   return payload;
 }
 
-function getGroupPayload(message) {
+function getGroupPayload(message, keysObj) {
   let rawPayload = {};
   let companyId = message.event;
   let companyFields = Object.keys(message.context.traits);
@@ -121,7 +117,7 @@ function getGroupPayload(message) {
   return rawPayload;
 }
 
-function getIdentifyPayload(message) {
+function getIdentifyPayload(message, keysObj) {
   let rawPayload = {};
 
   const traits = get(message.context.traits.traits)
@@ -172,11 +168,11 @@ function getIdentifyPayload(message) {
     }
   });
   rawPayload.plan ? delete rawPayload.plan : null;
-  collectContext ? addContext(rawPayload) : null;
+  keysObj.collectContext ? addContext(rawPayload) : null;
   return rawPayload;
 }
 
-function getTrackPayload(message) {
+function getTrackPayload(message, keysObj) {
   let rawPayload = {};
   let metadata = {};
   let price = {};
@@ -205,20 +201,20 @@ function getTrackPayload(message) {
   return rawPayload;
 }
 
-function getTransformedJSON(message) {
+function getTransformedJSON(message, keysObj) {
   let rawPayload;
   switch (message.type) {
     case EventType.PAGE:
       rawPayload = {};
       break;
     case EventType.TRACK:
-      rawPayload = getTrackPayload(message);
+      rawPayload = getTrackPayload(message, keysObj);
       break;
     case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(message);
+      rawPayload = getIdentifyPayload(message, keysObj);
       break;
     case EventType.GROUP:
-      rawPayload = getGroupPayload(message);
+      rawPayload = getGroupPayload(message, keysObj);
       break;
     case EventType.RESET:
       rawPayload = {};
@@ -230,31 +226,33 @@ function getTransformedJSON(message) {
 }
 
 function setDestinationKeys(destination) {
+  let keysObj = {};
   const keys = Object.keys(destination.Config);
   keys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.apiKey:
-        apiKey = `${destination.Config[key]}`;
+        keysObj.apiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.appId:
-        appId = `${destination.Config[key]}`;
+        keysObj.appId = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.mobileApiKey:
-        mobileApiKey = `${destination.Config[key]}`;
+        keysObj.mobileApiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.collectContext:
-        collectContext = `${destination.Config[key]}`;
+        keysObj.collectContext = `${destination.Config[key]}`;
         break;
       default:
         break;
     }
   });
+  return keysObj;
 }
 
 function processSingleMessage(message, destination) {
-  setDestinationKeys(destination);
-  const properties = getTransformedJSON(message);
-  return responseBuilderSimple(properties, message);
+  const keysObj = setDestinationKeys(destination);
+  const properties = getTransformedJSON(message, keysObj);
+  return responseBuilderSimple(properties, message, keysObj);
 }
 
 function process(events) {
@@ -267,8 +265,6 @@ function process(events) {
       respList.push({ statusCode: 400, error: error.message });
     }
   });
-  // console.log(JSON.stringify(respList));
-
   return respList;
 }
 

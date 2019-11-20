@@ -9,7 +9,7 @@ const endpoints = {
   userUrl: `${baseEndpoint}/users`, //Create, Update a user with a company | Identify
   eventsUrl: `${baseEndpoint}/events`, //track events | Track
   companyUrl: `${baseEndpoint}/companies`, //create, update, delete a company | Group
-  conversationsUrl: `${baseEndpoint}/conversations` // get all conversations | Page
+  conversationsUrl: `${baseEndpoint}/conversations?open=true` // get all conversations | Page
   // identityVerificationUrl: `${baseEndpoint}`
 };
 
@@ -18,15 +18,26 @@ const trackPricePayload = [
   { rudderKey: "currency", expectedKey: "currency" }
 ];
 const trackOrderPayload = [{ rudderKey: "order_ID", expectedKey: "value" }];
-const identifySubPayload = [{ rudderKey: "id", expectedKey: "company_id" }];
+const identifyCompanyPayload = [
+  { rudderKey: "id", expectedKey: "company_id" },
+  { rudderKey: "remove", expectedKey: "remove" }
+];
 const identifyMainPayload = [
   { rudderKey: "anonymousId", expectedKey: "user_id" },
   { rudderKey: "createdAt", expectedKey: "created_at" },
   { rudderKey: "firstName", expectedKey: null },
-  { rudderKey: "lastName", expectedKey: null }
+  { rudderKey: "lastName", expectedKey: null },
+  { rudderKey: "name", expectedKey: "name" },
+  { rudderKey: "email", expectedKey: "email" },
+  { rudderKey: "plan", expectedKey: null }
 ];
 const groupMainPayload = [
-  { rudderKey: "traits", expectedKey: "custom_attributes" }
+  { rudderKey: "traits", expectedKey: "custom_attributes" },
+  { rudderKey: "company", expectedKey: "company" },
+  { rudderKey: "monthly_spend", expectedKey: "monthly_spend" },
+  { rudderKey: "plan", expectedKey: "plan" },
+  { rudderKey: "name", expectedKey: "name" },
+  { rudderKey: "createdAt", expectedKey: "created_at" }
 ];
 const deviceContextKeys = [
   { rudderKey: "manufacturer", expectedKey: "device_manufacturer" },
@@ -48,7 +59,7 @@ const mapPayload = {
     order: trackOrderPayload
   },
   identify: {
-    sub: identifySubPayload,
+    company: identifyCompanyPayload,
     main: identifyMainPayload
   },
   group: {

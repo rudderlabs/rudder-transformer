@@ -2,7 +2,8 @@ const get = require("get-value");
 const set = require("set-value");
 const md5 = require("md5");
 const { EventType } = require("../../constants");
-const { destinationConfigKeys, endpoints, mapPayload } = require("./config");
+const { destinationConfigKeys, endpoints } = require("./config");
+const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -57,7 +58,6 @@ function responseBuilderSimple(payload, message, intercomConfig) {
       endpoint = endpoints.companyUrl;
       break;
     case EventType.RESET:
-      // Not Tested
       const email = get(message.context.traits.email);
       const userId = get(message.context.traits.userId);
       const params = email ? `email=${email}` : `user_id=${userId}`;
@@ -138,8 +138,6 @@ function getGroupPayload(message, intercomConfig) {
 function getIdentifyPayload(message, intercomConfig) {
   let rawPayload = {};
 
-  console.log(JSON.stringify(message));
-
   const traits = get(message.context.traits.traits)
     ? message.context.traits.traits
     : message.context.traits;
@@ -157,7 +155,7 @@ function getIdentifyPayload(message, intercomConfig) {
     }
   }
 
-  // unsubscribe
+  // unsubscribe user from mail
   if (get(message.context.traits.context)) {
     const context = get(message.context.traits.context);
     const unsubscribe = get(context.Intercom.unsubscribedFromEmails);
@@ -231,6 +229,7 @@ function getTransformedJSON(message, intercomConfig) {
   let rawPayload;
   switch (message.type) {
     case EventType.PAGE:
+      // Not Tested
       rawPayload = {};
       break;
     case EventType.TRACK:
@@ -243,6 +242,7 @@ function getTransformedJSON(message, intercomConfig) {
       rawPayload = getGroupPayload(message, intercomConfig);
       break;
     case EventType.RESET:
+      // Not Tested
       rawPayload = {};
       break;
     default:

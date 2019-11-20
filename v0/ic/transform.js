@@ -7,7 +7,7 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
-  mapKeys
+  updatePayload
 } = require("../util");
 
 function removeNullValues(payload) {
@@ -22,7 +22,19 @@ function removeNullValues(payload) {
   return newPayload;
 }
 
-function responseBuilderSimple(payload, message, keysObj) {
+// function getNewMessages(intercomConfig) {
+//   const response = await axios.get(endpoints.conversationsUrl, {
+//     "Content-Type": "application/json",
+//     Authorization: `Bearer ${intercomConfig.apiKey}`,
+//     Accept: "application/json"
+//   });
+//   const conversationsArr = response.data.conversations;
+//   conversationsArr.map(conversation =>{
+
+//   })
+// }
+
+function responseBuilderSimple(payload, message, intercomConfig) {
   let newPayload = removeNullValues(payload);
   let endpoint;
   let requestConfig;
@@ -41,7 +53,6 @@ function responseBuilderSimple(payload, message, keysObj) {
       endpoint = endpoints.conversationsUrl;
       break;
     case EventType.GROUP:
-      // Not Tested
       requestConfig = defaultPostRequestConfig;
       endpoint = endpoints.companyUrl;
       break;
@@ -60,7 +71,7 @@ function responseBuilderSimple(payload, message, keysObj) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${keysObj.apiKey}`,
+      Authorization: `Bearer ${intercomConfig.apiKey}`,
       Accept: "application/json"
     },
     requestConfig,
@@ -71,9 +82,11 @@ function responseBuilderSimple(payload, message, keysObj) {
 }
 
 function addContext(payload, message) {
-  const deviceExists = get(message.context.device);
-  const osExists = get(message.context.os);
-  const appExists = get(message.context.app);
+  console.log(JSON.stringify(message));
+
+  const deviceExists = get(message, "context.device");
+  const osExists = get(message, "context.os");
+  const appExists = get(message, "context.app");
 
   const deviceKeys = deviceExists ? Object.keys(deviceExists) : [];
   const osKeys = osExists ? Object.keys(osExists) : [];
@@ -83,79 +96,87 @@ function addContext(payload, message) {
 
   deviceKeys.forEach(key => {
     if (key != "id") {
-      let deviceKeysMapping = mapPayload.collectContext.device;
-      let value = message.context.device[key];
-      mapKeys(key, deviceKeysMapping, value, customPayload);
+      const deviceKeysMapping = mapPayload.collectContext.device;
+      const value = message.context.device[key];
+      updatePayload(key, deviceKeysMapping, value, customPayload);
     }
   });
   osKeys.forEach(key => {
-    let osKeysMapping = mapPayload.collectContext.os;
-    let value = message.context.os[key];
-    mapKeys(key, osKeysMapping, value, customPayload);
+    const osKeysMapping = mapPayload.collectContext.os;
+    const value = message.context.os[key];
+    updatePayload(key, osKeysMapping, value, customPayload);
   });
   appKeys.forEach(key => {
-    let appKeysMapping = mapPayload.collectContext.app;
-    let value = message.context.app[key];
-    mapKeys(key, appKeysMapping, value, customPayload);
+    const appKeysMapping = mapPayload.collectContext.app;
+    const value = message.context.app[key];
+    updatePayload(key, appKeysMapping, value, customPayload);
   });
   payload.custom_attributes = customPayload;
   return payload;
 }
 
-function getGroupPayload(message, keysObj) {
+function getGroupPayload(message, intercomConfig) {
   let rawPayload = {};
-  let companyId = message.event;
-  let companyFields = Object.keys(message.context.traits);
-  companyFields.forEach(field => {
-    let value = message.context.traits[field];
-    mapKeys(field, mapPayload.group.main, value, rawPayload);
-  });
-  if (!companyFields.includes("id")) {
-    set(rawPayload, company_id, md5(company.name));
+
+  const companyFields = get(message, "context.traits")
+    ? Object.keys(message.context.traits)
+    : undefined;
+
+  if (companyFields) {
+    companyFields.forEach(field => {
+      const value = message.context.traits[field];
+      updatePayload(field, mapPayload.group.main, value, rawPayload);
+    });
+
+    const companyId = message.event ? message.event : undefined;
+    rawPayload["company_id"] = companyId ? companyId : md5(rawPayload["name"]);
   }
-  rawPayload[company_id] = companyId;
+
   return rawPayload;
 }
 
-function getIdentifyPayload(message, keysObj) {
+function getIdentifyPayload(message, intercomConfig) {
   let rawPayload = {};
+
+  console.log(JSON.stringify(message));
 
   const traits = get(message.context.traits.traits)
     ? message.context.traits.traits
     : message.context.traits;
 
-  // TODO
-  // let chatWidget = get(message, "context.traits");
-
+  // userhash and widget
   if (get(message.context.Intercom)) {
-    // const widget = get(message.context.Intercom.hideDefaultLauncher);
     const userHash = get(message.context.Intercom.user_hash);
-    userHash
-      ? set(rawPayload, "user_hash", userHash)
-      : // : set(rawPayload, "hide_default_launcher", widget); To test
-        null;
+    const widget = get(message.context.Intercom.hideDefaultLauncher);
+    if (userHash) {
+      set(rawPayload, "user_hash", userHash);
+    }
+
+    if (widget) {
+      //  set(rawPayload, "hide_default_launcher", widget); To test
+    }
   }
 
+  // unsubscribe
   if (get(message.context.traits.context)) {
     const context = get(message.context.traits.context);
     const unsubscribe = get(context.Intercom.unsubscribedFromEmails);
-    unsubscribe
-      ? set(rawPayload, "unsubscribed_from_emails", unsubscribe)
-      : null;
+    if (unsubscribe) {
+      set(rawPayload, "unsubscribed_from_emails", unsubscribe);
+    }
   }
 
-  const traitsList = Object.keys(traits);
-  traitsList.forEach(field => {
-    let value = traits[field];
+  Object.keys(traits).forEach(field => {
+    const value = traits[field];
+
     if (field === "company") {
       let companies = [];
       let company = {};
-      let companyFields = Object.keys(traits[field]);
+      const companyFields = Object.keys(traits[field]);
       companyFields.forEach(companyTrait => {
-        let value = traits[field][companyTrait];
-        let replaceKeys = mapPayload.identify.sub;
-        mapKeys(companyTrait, replaceKeys, value, company);
-        company[companyTrait] = value;
+        const companyValue = traits[field][companyTrait];
+        const replaceKeys = mapPayload.identify.company;
+        updatePayload(companyTrait, replaceKeys, companyValue, company);
       });
       if (!companyFields.includes("id")) {
         set(company, "company_id", md5(company.name));
@@ -164,57 +185,62 @@ function getIdentifyPayload(message, keysObj) {
       set(rawPayload, "companies", companies);
     } else {
       let replaceKeys = mapPayload.identify.main;
-      mapKeys(field, replaceKeys, value, rawPayload);
+      updatePayload(field, replaceKeys, value, rawPayload);
     }
   });
-  rawPayload.plan ? delete rawPayload.plan : null;
-  keysObj.collectContext ? addContext(rawPayload) : null;
+
+  intercomConfig.collectContext ? addContext(rawPayload, message) : null;
   return rawPayload;
 }
 
-function getTrackPayload(message, keysObj) {
+function getTrackPayload(message, intercomConfig) {
   let rawPayload = {};
-  let metadata = {};
-  let price = {};
-  let order_number = {};
-  let properties = Object.keys(message.properties);
+  const properties = get(message, "properties")
+    ? Object.keys(message.properties)
+    : undefined;
 
-  properties.forEach(prop => {
-    let value = message.properties[prop];
-    if (prop === "price" || prop === "currency") {
-      mapKeys(prop, mapPayload.track.price, value, price);
-      price.amount *= 100;
-    } else if (prop === "order_ID" || prop === "order_url") {
-      mapKeys(prop, mapPayload.track.order, value, order_number);
-    } else {
-      metadata[prop] = value;
-    }
-  });
+  if (properties) {
+    let metadata = {};
+    let price = {};
+    let order_number = {};
 
-  metadata.price = price;
-  metadata.order_number = order_number;
+    properties.forEach(prop => {
+      let value = message.properties[prop];
+      if (prop === "price" || prop === "currency") {
+        updatePayload(prop, mapPayload.track.price, value, price);
+        price.amount *= 100;
+      } else if (prop === "order_ID" || prop === "order_url") {
+        updatePayload(prop, mapPayload.track.order, value, order_number);
+      } else {
+        metadata[prop] = value;
+      }
+    });
+    metadata.price = price;
+    metadata.order_number = order_number;
+    rawPayload.metadata = metadata;
+  }
 
-  rawPayload.metadata = metadata;
-  rawPayload.event_name = message.event;
-  rawPayload.user_id = message.userId;
+  rawPayload.event_name = message.event ? message.event : undefined;
+  rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   rawPayload.created_at = Math.floor(new Date().getTime() / 1000);
+
   return rawPayload;
 }
 
-function getTransformedJSON(message, keysObj) {
+function getTransformedJSON(message, intercomConfig) {
   let rawPayload;
   switch (message.type) {
     case EventType.PAGE:
       rawPayload = {};
       break;
     case EventType.TRACK:
-      rawPayload = getTrackPayload(message, keysObj);
+      rawPayload = getTrackPayload(message, intercomConfig);
       break;
     case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(message, keysObj);
+      rawPayload = getIdentifyPayload(message, intercomConfig);
       break;
     case EventType.GROUP:
-      rawPayload = getGroupPayload(message, keysObj);
+      rawPayload = getGroupPayload(message, intercomConfig);
       break;
     case EventType.RESET:
       rawPayload = {};
@@ -226,33 +252,33 @@ function getTransformedJSON(message, keysObj) {
 }
 
 function setDestinationKeys(destination) {
-  let keysObj = {};
-  const keys = Object.keys(destination.Config);
-  keys.forEach(key => {
+  let intercomConfig = {};
+  const configKeys = Object.keys(destination.Config);
+  configKeys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.apiKey:
-        keysObj.apiKey = `${destination.Config[key]}`;
+        intercomConfig.apiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.appId:
-        keysObj.appId = `${destination.Config[key]}`;
+        intercomConfig.appId = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.mobileApiKey:
-        keysObj.mobileApiKey = `${destination.Config[key]}`;
+        intercomConfig.mobileApiKey = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.collectContext:
-        keysObj.collectContext = `${destination.Config[key]}`;
+        intercomConfig.collectContext = `${destination.Config[key]}`;
         break;
       default:
         break;
     }
   });
-  return keysObj;
+  return intercomConfig;
 }
 
 function processSingleMessage(message, destination) {
-  const keysObj = setDestinationKeys(destination);
-  const properties = getTransformedJSON(message, keysObj);
-  return responseBuilderSimple(properties, message, keysObj);
+  const intercomConfig = setDestinationKeys(destination);
+  const properties = getTransformedJSON(message, intercomConfig);
+  return responseBuilderSimple(properties, message, intercomConfig);
 }
 
 function process(events) {

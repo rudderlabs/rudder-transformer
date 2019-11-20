@@ -42,17 +42,11 @@ const getDateInFormat = date => {
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 
-const mapKeys = (currentKey, replaceKeysArr, value, newPayload) => {
-  const rudderKeys = [];
+const updatePayload = (currentKey, replaceKeysArr, value, newPayload) => {
   replaceKeysArr.map(obj => {
-    rudderKeys.push(obj.rudderKey);
-  });
-  replaceKeysArr.map(obj => {
-    obj.rudderKey === currentKey
-      ? set(newPayload, obj.expectedKey, value)
-      : rudderKeys.indexOf(currentKey) > -1
-      ? set(newPayload, obj.currentKey, value)
-      : set(newPayload, currentKey, value);
+    if (obj.rudderKey === currentKey) {
+      set(newPayload, obj.expectedKey, value);
+    }
   });
   return newPayload;
 };
@@ -80,5 +74,5 @@ module.exports = {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
-  mapKeys
+  updatePayload
 };

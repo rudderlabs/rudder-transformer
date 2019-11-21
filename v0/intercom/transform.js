@@ -8,35 +8,11 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
-  updatePayload
+  updatePayload,
+  removeUndefinedAndNullValues
 } = require("../util");
 
-function removeNullValues(payload) {
-  let newPayload = {};
-  var vals = Object.keys(payload);
-  for (var i = 0; i < vals.length; i++) {
-    let currentVal = vals[i];
-    if (payload[currentVal] != (null || undefined)) {
-      newPayload[currentVal] = payload[currentVal];
-    }
-  }
-  return newPayload;
-}
-
-// function getNewMessages(intercomConfig) {
-//   const response = await axios.get(endpoints.conversationsUrl, {
-//     "Content-Type": "application/json",
-//     Authorization: `Bearer ${intercomConfig.apiKey}`,
-//     Accept: "application/json"
-//   });
-//   const conversationsArr = response.data.conversations;
-//   conversationsArr.map(conversation =>{
-
-//   })
-// }
-
 function responseBuilderSimple(payload, message, intercomConfig) {
-  let newPayload = removeNullValues(payload);
   let endpoint;
   let requestConfig;
 
@@ -76,14 +52,12 @@ function responseBuilderSimple(payload, message, intercomConfig) {
     },
     requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
-    payload: newPayload
+    payload: removeUndefinedAndNullValues(payload)
   };
   return response;
 }
 
 function addContext(payload, message) {
-  console.log(JSON.stringify(message));
-
   const deviceExists = get(message, "context.device");
   const osExists = get(message, "context.os");
   const appExists = get(message, "context.app");
@@ -112,7 +86,7 @@ function addContext(payload, message) {
     updatePayload(key, appKeysMapping, value, customPayload);
   });
   payload.custom_attributes = customPayload;
-  return payload;
+  return removeUndefinedAndNullValues(payload);
 }
 
 function getGroupPayload(message, intercomConfig) {
@@ -142,16 +116,10 @@ function getIdentifyPayload(message, intercomConfig) {
     ? message.context.traits.traits
     : message.context.traits;
 
-  // userhash and widget
   if (get(message.context.Intercom)) {
     const userHash = get(message.context.Intercom.user_hash);
-    const widget = get(message.context.Intercom.hideDefaultLauncher);
     if (userHash) {
       set(rawPayload, "user_hash", userHash);
-    }
-
-    if (widget) {
-      //  set(rawPayload, "hide_default_launcher", widget); To test
     }
   }
 
@@ -171,20 +139,23 @@ function getIdentifyPayload(message, intercomConfig) {
       let companies = [];
       let company = {};
       const companyFields = Object.keys(traits[field]);
+
       companyFields.forEach(companyTrait => {
         const companyValue = traits[field][companyTrait];
         const replaceKeys = mapPayload.identify.company;
         updatePayload(companyTrait, replaceKeys, companyValue, company);
       });
+
       if (!companyFields.includes("id")) {
         set(company, "company_id", md5(company.name));
       }
+
       companies.push(company);
       set(rawPayload, "companies", companies);
-    } else {
-      let replaceKeys = mapPayload.identify.main;
-      updatePayload(field, replaceKeys, value, rawPayload);
     }
+
+    const replaceKeys = mapPayload.identify.main;
+    updatePayload(field, replaceKeys, value, rawPayload);
   });
 
   intercomConfig.collectContext ? addContext(rawPayload, message) : null;
@@ -202,16 +173,19 @@ function getTrackPayload(message, intercomConfig) {
     let price = {};
     let order_number = {};
 
-    properties.forEach(prop => {
-      let value = message.properties[prop];
-      if (prop === "price" || prop === "currency") {
-        updatePayload(prop, mapPayload.track.price, value, price);
+    properties.forEach(property => {
+      const value = message.properties[property];
+
+      if (property === "price" || property === "currency") {
+        updatePayload(property, mapPayload.track.price, value, price);
         price.amount *= 100;
-      } else if (prop === "order_ID" || prop === "order_url") {
-        updatePayload(prop, mapPayload.track.order, value, order_number);
-      } else {
-        metadata[prop] = value;
       }
+
+      if (property === "order_ID" || property === "order_url") {
+        updatePayload(property, mapPayload.track.order, value, order_number);
+      }
+
+      metadata[property] = value;
     });
     metadata.price = price;
     metadata.order_number = order_number;
@@ -251,7 +225,7 @@ function getTransformedJSON(message, intercomConfig) {
   return { ...rawPayload };
 }
 
-function setDestinationKeys(destination) {
+function getDestinationKeys(destination) {
   let intercomConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
@@ -276,7 +250,7 @@ function setDestinationKeys(destination) {
 }
 
 function processSingleMessage(message, destination) {
-  const intercomConfig = setDestinationKeys(destination);
+  const intercomConfig = getDestinationKeys(destination);
   const properties = getTransformedJSON(message, intercomConfig);
   return responseBuilderSimple(properties, message, intercomConfig);
 }

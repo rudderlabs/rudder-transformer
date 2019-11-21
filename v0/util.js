@@ -16,6 +16,8 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isDefined = x => !_.isUndefined(x);
+const removeNullValues = obj => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const toStringValues = obj => {
   Object.keys(obj).forEach(key => {
@@ -41,6 +43,8 @@ const getDateInFormat = date => {
 };
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
+const removeNullValues = obj => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const updatePayload = (currentKey, replaceKeysArr, value, newPayload) => {
   replaceKeysArr.map(obj => {
@@ -71,6 +75,8 @@ module.exports = {
   toStringValues,
   getDateInFormat,
   removeUndefinedValues,
+  removeNullValues,
+  removeUndefinedAndNullValues,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,

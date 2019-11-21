@@ -1,5 +1,6 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
+const _ = require("lodash");
 var { getTransformationCode } = require("../util/customTransforrmationsStore");
 
 async function runUserTransform(events, code) {
@@ -122,8 +123,18 @@ async function runUserTransform(events, code) {
       reject(error.message);
     }
   });
+  let result;
   try {
-    result = await executionPromise;
+    const timeoutPromise = new Promise((resolve, reject) => {
+      const wait = setTimeout(() => {
+        clearTimeout(wait);
+        resolve("Timedout");
+      }, 4000);
+    });
+    result = await Promise.race([executionPromise, timeoutPromise]);
+    if (result === "Timedout") {
+      throw new Error("Timed out");
+    }
   } catch (error) {
     isolate.dispose();
     throw error;
@@ -140,16 +151,26 @@ async function userTransformHandler(events, versionId) {
         // Events contain message and destination. We take the message part of event and run transformation on it.
         // And put back the destination after transforrmation
         const { destination } = events && events[0];
-        const eventMessages = events.map(event => event.message);
-        const userTransformedEvents = await runUserTransform(
-          eventMessages,
-          res.code
+        const userGroupedEvents = _.groupBy(
+          events,
+          event => event.message.anonymousId
         );
-        const formattedEvents = userTransformedEvents.map(e => ({
-          message: e,
-          destination
-        }));
-        return formattedEvents;
+        const transformedEvents = [];
+        await Promise.all(
+          Object.entries(userGroupedEvents).map(async ([user, userEvents]) => {
+            const eventMessages = userEvents.map(event => event.message);
+            const userTransformedEvents = await runUserTransform(
+              eventMessages,
+              res.code
+            );
+            const formattedEvents = userTransformedEvents.map(e => ({
+              message: e,
+              destination
+            }));
+            transformedEvents.push(...formattedEvents);
+          })
+        );
+        return transformedEvents;
       }
     } catch (error) {
       console.log(error);

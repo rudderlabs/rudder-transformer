@@ -185,9 +185,12 @@ function getMailChimpConfig(message, destination) {
     }
   });
 
-  const modifyAudienceId = get(message, "context.MailChimp");
-  if (modifyAudienceId) {
-    mailChimpConfig.audienceId = message.context.MailChimp.listId;
+  const mailChimpExists = get(message, "context.MailChimp");
+  if (mailChimpExists) {
+    const listIdExists = get(message, "context.MailChimp.listId");
+    if (listIdExists) {
+      mailChimpConfig.audienceId = message.context.MailChimp.listId;
+    }
   }
   return mailChimpConfig;
 }

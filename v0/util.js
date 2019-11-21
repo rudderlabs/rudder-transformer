@@ -15,6 +15,8 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isDefined = x => !_.isUndefined(x);
+const isNotNull = x => x != null;
+const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 
 const toStringValues = obj => {
   Object.keys(obj).forEach(key => {
@@ -40,6 +42,8 @@ const getDateInFormat = date => {
 };
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
+const removeNullValues = obj => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
@@ -56,6 +60,8 @@ module.exports = {
   toStringValues,
   getDateInFormat,
   removeUndefinedValues,
+  removeNullValues,
+  removeUndefinedAndNullValues,
   defaultGetRequestConfig,
   defaultPostRequestConfig
 };

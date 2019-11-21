@@ -1,9 +1,12 @@
 const get = require("get-value");
-let { destinationConfigKeys, batchEndpoint } = require("./config");
-const { defaultPostRequestConfig } = require("../util");
+const { destinationConfigKeys, batchEndpoint } = require("./config");
+const {
+  defaultPostRequestConfig,
+  removeUndefinedAndNullValues
+} = require("../util");
 
 function responseBuilderSimple(payload, segmentConfig) {
-  let basicAuth = new Buffer(`${segmentConfig.writeKey}:`).toString("base64");
+  const basicAuth = new Buffer(`${segmentConfig.writeKey}:`).toString("base64");
 
   const response = {
     endpoint: batchEndpoint,
@@ -18,18 +21,6 @@ function responseBuilderSimple(payload, segmentConfig) {
   return response;
 }
 
-function removeNullValues(payload) {
-  let newPayload = {};
-  const payloadKeysArr = Object.keys(payload);
-  for (let i = 0; i < payloadKeysArr.length; i++) {
-    let currentVal = payloadKeysArr[i];
-    if (payload[currentVal] != (null || undefined)) {
-      newPayload[currentVal] = payload[currentVal];
-    }
-  }
-  return newPayload;
-}
-
 function makePayload(
   type,
   userId,
@@ -39,14 +30,15 @@ function makePayload(
   timeStamp,
   segmentConfig
 ) {
-  let eventPayload = {};
-  eventPayload.type = type;
-  eventPayload.userId = userId;
-  eventPayload.event = event;
-  eventPayload.traits = traits;
-  eventPayload.properties = properties;
-  eventPayload.timeStamp = timeStamp;
-  return removeNullValues(eventPayload);
+  const eventPayload = {
+    type,
+    userId,
+    event,
+    traits,
+    properties,
+    timeStamp
+  };
+  return removeUndefinedAndNullValues(eventPayload);
 }
 
 function getTransformedJSON(message, segmentConfig) {
@@ -73,7 +65,7 @@ function getTransformedJSON(message, segmentConfig) {
   );
 }
 
-function setSegmentConfig(destination, message) {
+function getSegmentConfig(destination, message) {
   let segmentConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
@@ -91,7 +83,7 @@ function setSegmentConfig(destination, message) {
 }
 
 function processSingleMessage(message, destination) {
-  const segmentConfig = setSegmentConfig(destination, message);
+  const segmentConfig = getSegmentConfig(destination, message);
   const properties = getTransformedJSON(message, segmentConfig);
   let respObj = {
     batch: []

@@ -39,8 +39,7 @@ versions.forEach(version => {
   versionDestinations.forEach(versionedDestination => {
     const destHandler = getDestHandler(versionedDestination);
     router.post(`/${versionedDestination}`, async (ctx, next) => {
-      let events = ctx.request.body;
-
+      const events = ctx.request.body;
       // No errors should be returned in Destination Handler
       ctx.body = await destHandler.process(events);
     });
@@ -50,38 +49,42 @@ versions.forEach(version => {
 if (functionsEnabled()) {
   router.post("/customTransform", async (ctx, next) => {
     const events = ctx.request.body;
-    try {
-      const groupedEvents = _.groupBy(events, event => event.destination.ID);
-      const transformedEvents = [];
-      await Promise.all(
-        Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-          const transformationVersionId =
-            destEvents[0] &&
-            destEvents[0].destination &&
-            destEvents[0].destination.Transformations &&
-            destEvents[0].destination.Transformations[0] &&
-            destEvents[0].destination.Transformations[0].VersionID;
-          if (transformationVersionId) {
-            const destTransformedEvents = await userTransformHandler()(
+    const groupedEvents = _.groupBy(
+      events,
+      event => `${event.destination.ID}_${event.message.anonymousId}`
+    );
+    const transformedEvents = [];
+    await Promise.all(
+      Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+        const transformationVersionId =
+          destEvents[0] &&
+          destEvents[0].destination &&
+          destEvents[0].destination.Transformations &&
+          destEvents[0].destination.Transformations[0] &&
+          destEvents[0].destination.Transformations[0].VersionID;
+        if (transformationVersionId) {
+          let destTransformedEvents;
+          try {
+            destTransformedEvents = await userTransformHandler()(
               destEvents,
               transformationVersionId
             );
-            transformedEvents.push(...destTransformedEvents);
-          } else {
-            transformedEvents.push(...destEvents);
+          } catch (error) {
+            destTransformedEvents = [
+              {
+                statusCode: 400,
+                error: error.message,
+                metadata: events[0].metadata
+              }
+            ];
           }
-        })
-      );
-      ctx.body = transformedEvents;
-    } catch (error) {
-      // Is not expected to happen, since errors are caught in userTransformHandler
-      const respList = [];
-      events.forEach(event => {
-        respList.push({ statusCode: 400, error: error.message });
-      });
-      console.log("ERROR: ", error);
-      ctx.body = respList;
-    }
+          transformedEvents.push(...destTransformedEvents);
+        } else {
+          transformedEvents.push(...destEvents);
+        }
+      })
+    );
+    ctx.body = transformedEvents;
   });
 }
 

@@ -151,37 +151,16 @@ async function userTransformHandler(events, versionId) {
         // Events contain message and destination. We take the message part of event and run transformation on it.
         // And put back the destination after transforrmation
         const { destination } = events && events[0];
-        const userGroupedEvents = _.groupBy(
-          events,
-          event => event.message.anonymousId
+        const eventMessages = events.map(event => event.message);
+        const userTransformedEvents = await runUserTransform(
+          eventMessages,
+          res.code
         );
-        const transformedEvents = [];
-        await Promise.all(
-          Object.entries(userGroupedEvents).map(async ([user, userEvents]) => {
-            const eventMessages = userEvents.map(event => event.message);
-            let userTransformedEvents = [];
-            try {
-              userTransformedEvents = await runUserTransform(
-                eventMessages,
-                res.code
-              );
-              const formattedEvents = userTransformedEvents.map(e => ({
-                message: e,
-                destination
-              }));
-              transformedEvents.push(...formattedEvents);
-            } catch (error) {
-              // TODO: Modify this to make handling errors on go backend easier
-              // userTransformedEvents = eventMessages.map(event => ({
-              //   statusCode: 400,
-              //   error: error.message
-              // }));
-              console.log("Handle error");
-              // transformedEvents.push(userTransformedEvents);
-            }
-          })
-        );
-        return transformedEvents;
+        const formattedEvents = userTransformedEvents.map(e => ({
+          message: e,
+          destination
+        }));
+        return formattedEvents;
       }
     } catch (error) {
       console.log(error);

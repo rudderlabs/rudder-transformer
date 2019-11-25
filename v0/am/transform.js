@@ -37,6 +37,25 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
+//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+function stringToHash(string) {
+  var hash = 0;
+
+  if (string.length == 0) return hash;
+
+  for (i = 0; i < string.length; i++) {
+    char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+
+  return Math.abs(hash);
+}
+
+function fixSessionId(payload) {
+  payload.session_id = stringToHash(payload.session_id);
+}
+
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
 
@@ -80,6 +99,7 @@ function responseBuilderSimple(
   rawPayload.time = new Date(message.originalTimestamp).getTime();
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
+  fixSessionId(payload);
 
   // console.log(payload);
 
@@ -251,7 +271,7 @@ function process(events) {
     }
   });
 
-  // console.log(JSON.stringify(respList));
+  //console.log(JSON.stringify(respList));
   return respList;
 }
 

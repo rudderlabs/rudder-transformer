@@ -10,6 +10,11 @@ const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
+function getKey(key){
+  var re = /\s/g;
+  return key.toLowerCase().replace(re, "_");
+}
+
 function getTransformedJSON(message, mappingJson) {
   const rawPayload = {};
 
@@ -19,7 +24,13 @@ function getTransformedJSON(message, mappingJson) {
       set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
     }
   });
-  return { ...rawPayload, ...message.user_properties };
+  const traitsKeys = Object.keys(message.context.traits);
+  traitsKeys.forEach(traitsKey => {
+    if (!rawPayload[traitsKey]) {
+      rawPayload[getKey(traitsKey)] = message.context.traits[traitsKey];
+    }
+  });
+  return { ...rawPayload };
 }
 
 function getPropertyValueForIdentify(propMap) {

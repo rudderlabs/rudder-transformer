@@ -127,7 +127,7 @@ async function getPayload(
       if (trait === "email") {
         rawPayload["email_address"] = message.context.traits[trait];
       } else {
-        let tag = filterTagValue(field);
+        let tag = filterTagValue(trait);
         rawPayload["merge_fields"][tag] = message.context.traits[trait];
       }
     });
@@ -213,10 +213,15 @@ async function processSingleMessage(message, destination) {
 }
 
 async function process(events) {
+  console.log(events);
+
   let respList = [];
   respList = await Promise.all(
     events.map(event => processSingleMessage(event.message, event.destination))
   );
+  console.log("returbing badk reponse");
+  console.log(respList);
+
   return respList;
 }
 

@@ -21,26 +21,6 @@ function responseBuilderSimple(payload, segmentConfig) {
   return response;
 }
 
-function makePayload(
-  type,
-  userId,
-  event,
-  traits,
-  properties,
-  timeStamp,
-  segmentConfig
-) {
-  const eventPayload = {
-    type,
-    userId,
-    event,
-    traits,
-    properties,
-    timeStamp
-  };
-  return removeUndefinedAndNullValues(eventPayload);
-}
-
 function getTransformedJSON(message, segmentConfig) {
   const type = message.type;
   const userId = get(message, "userId") ? message.userId : message.anonymousId;
@@ -54,15 +34,14 @@ function getTransformedJSON(message, segmentConfig) {
   const event = get(message, "event") ? message.event : undefined;
   const timeStamp = message.originalTimestamp;
 
-  return makePayload(
+  return removeUndefinedAndNullValues({
     type,
     userId,
     event,
     traits,
     properties,
-    timeStamp,
-    segmentConfig
-  );
+    timeStamp
+  });
 }
 
 function getSegmentConfig(destination, message) {

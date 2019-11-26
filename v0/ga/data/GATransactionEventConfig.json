@@ -5,5 +5,7 @@
   "properties.shipping": "ts",
   "properties.tax": "tt",
   "properties.coupon": "tcc",
-  "properties.currency": "cu"
+  "properties.currency": "cu",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

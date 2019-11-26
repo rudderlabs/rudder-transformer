@@ -55,6 +55,11 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultPutRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PUT"
+};
+
 module.exports = {
   getMappingConfig,
   toStringValues,
@@ -63,5 +68,6 @@ module.exports = {
   removeNullValues,
   removeUndefinedAndNullValues,
   defaultGetRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  defaultPutRequestConfig
 };

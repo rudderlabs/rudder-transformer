@@ -1,4 +1,5 @@
 const Router = require("koa-router");
+const _ = require("lodash");
 
 const { lstatSync, readdirSync } = require("fs");
 const { join } = require("path");
@@ -38,25 +39,52 @@ versions.forEach(version => {
   versionDestinations.forEach(versionedDestination => {
     const destHandler = getDestHandler(versionedDestination);
     router.post(`/${versionedDestination}`, async (ctx, next) => {
-      let events = ctx.request.body;
-
-      if (functionsEnabled()) {
-        try {
-          events = await userTransformHandler()(events);
-        } catch (error) {
-          const respList = [];
-          events.forEach(event => {
-            respList.push({ statusCode: 400, error: error.message });
-          });
-          ctx.body = respList;
-          return;
-        }
-      }
-
+      const events = ctx.request.body;
       // No errors should be returned in Destination Handler
       ctx.body = await destHandler.process(events);
     });
   });
 });
+
+if (functionsEnabled()) {
+  router.post("/customTransform", async (ctx, next) => {
+    const events = ctx.request.body;
+    const groupedEvents = _.groupBy(
+      events,
+      event => `${event.destination.ID}_${event.message.anonymousId}`
+    );
+    const transformedEvents = [];
+    await Promise.all(
+      Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+        const transformationVersionId =
+          destEvents[0] &&
+          destEvents[0].destination &&
+          destEvents[0].destination.Transformations &&
+          destEvents[0].destination.Transformations[0] &&
+          destEvents[0].destination.Transformations[0].VersionID;
+        if (transformationVersionId) {
+          let destTransformedEvents;
+          try {
+            destTransformedEvents = await userTransformHandler()(
+              destEvents,
+              transformationVersionId
+            );
+          } catch (error) {
+            destTransformedEvents = [
+              {
+                statusCode: 400,
+                error: error.message
+              }
+            ];
+          }
+          transformedEvents.push(...destTransformedEvents);
+        } else {
+          transformedEvents.push(...destEvents);
+        }
+      })
+    );
+    ctx.body = transformedEvents;
+  });
+}
 
 module.exports = router;

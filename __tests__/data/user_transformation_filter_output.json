@@ -44,10 +44,16 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
-        "trackingID": "UA-149602794-1"
+        "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "24"
+        }
+      ]
     }
   }
 ]

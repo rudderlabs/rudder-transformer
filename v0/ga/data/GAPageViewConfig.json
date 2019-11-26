@@ -3,5 +3,7 @@
   "properties.title": "dt",
   "properties.url": "dl",
   "properties.path": "dp",
-  "properties.referrer": "dr"
+  "properties.referrer": "dr",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

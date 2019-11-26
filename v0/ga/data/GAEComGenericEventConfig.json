@@ -1,3 +1,5 @@
 {
-  "context.traits.anonymousId": "cid"
+  "context.traits.anonymousId": "cid",
+  "context.userAgent": "ua",
+  "request_ip": "uip"
 }

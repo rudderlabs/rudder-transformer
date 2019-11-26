@@ -7,6 +7,7 @@ const name = "User Transformations";
 
 const fs = require("fs");
 const path = require("path");
+
 describe("User transformation", () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -21,7 +22,7 @@ describe("User transformation", () => {
     const { userTransformHandler } = require("../util/customTransformer");
     const respBody = {
       code: `function transform(events) {
-            return JSON.stringify(events);
+            return events;
           }
           `
     };
@@ -31,7 +32,7 @@ describe("User transformation", () => {
 
     const inputData = JSON.parse(inputDataFile);
     const expectedData = JSON.parse(outputDataFile);
-    const output = await userTransformHandler(inputData);
+    const output = await userTransformHandler(inputData, 23);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
@@ -52,10 +53,10 @@ describe("User transformation", () => {
     const respBody = {
       code: `function transform(events) {
                         const filteredEvents = events.filter(event => {
-                          const eventType = event.message.type;
+                          const eventType = event.type;
                           return eventType && eventType.match(/track/g);
                         });
-                        return JSON.stringify(filteredEvents);
+                        return filteredEvents;
                       }
                       `
     };
@@ -64,7 +65,7 @@ describe("User transformation", () => {
     );
     const inputData = JSON.parse(inputDataFile);
     const expectedData = JSON.parse(outputDataFile);
-    const output = await userTransformHandler(inputData);
+    const output = await userTransformHandler(inputData, 24);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(

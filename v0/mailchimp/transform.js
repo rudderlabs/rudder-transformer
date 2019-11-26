@@ -213,15 +213,10 @@ async function processSingleMessage(message, destination) {
 }
 
 async function process(events) {
-  console.log(events);
-
   let respList = [];
   respList = await Promise.all(
     events.map(event => processSingleMessage(event.message, event.destination))
   );
-  console.log("returbing badk reponse");
-  console.log(respList);
-
   return respList;
 }
 

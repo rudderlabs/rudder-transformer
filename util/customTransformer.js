@@ -1,5 +1,6 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
+const _ = require("lodash");
 var { getTransformationCode } = require("../util/customTransforrmationsStore");
 
 async function runUserTransform(events, code) {
@@ -122,8 +123,18 @@ async function runUserTransform(events, code) {
       reject(error.message);
     }
   });
+  let result;
   try {
-    result = await executionPromise;
+    const timeoutPromise = new Promise((resolve, reject) => {
+      const wait = setTimeout(() => {
+        clearTimeout(wait);
+        resolve("Timedout");
+      }, 4000);
+    });
+    result = await Promise.race([executionPromise, timeoutPromise]);
+    if (result === "Timedout") {
+      throw new Error("Timed out");
+    }
   } catch (error) {
     isolate.dispose();
     throw error;

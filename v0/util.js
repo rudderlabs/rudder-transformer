@@ -16,8 +16,8 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isDefined = x => !_.isUndefined(x);
-const removeNullValues = obj => _.pickBy(obj, isNotNull);
-const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const isNotNull = x => x != null;
+const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 
 const toStringValues = obj => {
   Object.keys(obj).forEach(key => {
@@ -46,13 +46,13 @@ const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
-const updatePayload = (currentKey, replaceKeysArr, value, newPayload) => {
-  replaceKeysArr.map(obj => {
+const updatePayload = (currentKey, eventMappingArr, value, payload) => {
+  eventMappingArr.map(obj => {
     if (obj.rudderKey === currentKey) {
-      set(newPayload, obj.expectedKey, value);
+      set(payload, obj.expectedKey, value);
     }
   });
-  return newPayload;
+  return payload;
 };
 
 const defaultGetRequestConfig = {

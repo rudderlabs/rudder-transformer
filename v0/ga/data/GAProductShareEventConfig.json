@@ -2,5 +2,7 @@
   "context.traits.anonymousId": "cid",
   "properties.share_via": "sn",
   "properties.share_message": "sa",
-  "properties.url": "st"
+  "properties.url": "st",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

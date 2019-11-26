@@ -1,43 +1,46 @@
 [
   {
-      "statusCode": 400,
-      "error": "message type not supported"
+    "statusCode": 400,
+    "error": "message type not supported"
   },
   {
-      "endpoint": "https://www.google-analytics.com/collect",
-      "requestConfig": {
-          "requestFormat": "PARAMS",
-          "requestMethod": "GET"
-      },
-      "header": {},
-      "userId": "00000000000000000000000000",
-      "payload": {
-          "v": "1",
-          "t": "pageview",
-          "tid": "abcd",
-          "cid": "00000000000000000000000000",
-          "dt": "",
-          "dl": "",
-          "dp": "/abc",
-          "dr": ""
-      },
-      "statusCode": 200
+    "endpoint": "https://www.google-analytics.com/collect",
+    "requestConfig": {
+      "requestFormat": "PARAMS",
+      "requestMethod": "GET"
+    },
+    "header": {},
+    "userId": "00000000000000000000000000",
+    "payload": {
+      "v": "1",
+      "t": "pageview",
+      "tid": "abcd",
+      "cid": "00000000000000000000000000",
+      "dt": "",
+      "dl": "",
+      "dp": "/abc",
+      "dr": "",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+    },
+    "statusCode": 200
   },
   {
-      "endpoint": "https://www.google-analytics.com/collect",
-      "requestConfig": {
-          "requestFormat": "PARAMS",
-          "requestMethod": "GET"
-      },
-      "header": {},
-      "userId": "00000000000000000000000000",
-      "payload": {
-          "v": "1",
-          "t": "event",
-          "tid": "UA-149602794-1",
-          "cid": "00000000000000000000000000",
-          "ea": "test track event GA3"
-      },
-      "statusCode": 200
+    "endpoint": "https://www.google-analytics.com/collect",
+    "requestConfig": {
+      "requestFormat": "PARAMS",
+      "requestMethod": "GET"
+    },
+    "header": {},
+    "userId": "00000000000000000000000000",
+    "payload": {
+      "v": "1",
+      "t": "event",
+      "tid": "UA-149602794-1",
+      "cid": "00000000000000000000000000",
+      "ea": "test track event GA3",
+      "ec": "test-category",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+    },
+    "statusCode": 200
   }
 ]

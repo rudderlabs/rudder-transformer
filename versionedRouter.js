@@ -73,8 +73,7 @@ if (functionsEnabled()) {
             destTransformedEvents = [
               {
                 statusCode: 400,
-                error: error.message,
-                metadata: events[0].metadata
+                error: error.message
               }
             ];
           }

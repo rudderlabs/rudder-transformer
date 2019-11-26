@@ -74,9 +74,9 @@ function processTrack(message, destination) {
     _n: message.event
   };
 
-  if (message.properties.revenue) {
+  if (message.properties.revenue || message.properties.value) {
     // eslint-disable-next-line dot-notation
-    parameters["_m"] = message.properties.revenue;
+    parameters["_m"] = message.properties.revenue || message.properties.value;
   }
   const userProperties = getTransformedJSON(message, hSIdentifyConfigJson);
 
@@ -136,6 +136,7 @@ function process(events) {
     }
     respList.push(resp);
   });
+  console.log(JSON.stringify(respList));
   return respList;
 }
 exports.process = process;

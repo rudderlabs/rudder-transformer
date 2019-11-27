@@ -40,8 +40,25 @@ versions.forEach(version => {
     const destHandler = getDestHandler(versionedDestination);
     router.post(`/${versionedDestination}`, async (ctx, next) => {
       const events = ctx.request.body;
-      // No errors should be returned in Destination Handler
-      ctx.body = await destHandler.process(events);
+      const respList = [];
+      events.forEach(async event => {
+        try {
+          const { metadata } = event;
+          const respEvents = await destHandler.process(event);
+          respList.push(
+            ...respEvents.map(ev => {
+              return { output: ev, metadata };
+            })
+          );
+        } catch (error) {
+          respList.push({
+            statusCode: 400,
+            error: error.message || "Error occurred while processing payload.",
+            metadata: event.metadata
+          });
+        }
+      });
+      ctx.body = respList;
     });
   });
 });
@@ -73,12 +90,16 @@ if (functionsEnabled()) {
             destTransformedEvents = [
               {
                 statusCode: 400,
-                error: error.message
+                error: error.message,
+                metadata: destEvents[0].metadata
               }
             ];
           }
           transformedEvents.push(...destTransformedEvents);
         } else {
+          destEvents.forEach(e => {
+            e.metadata.untouched = true;
+          });
           transformedEvents.push(...destEvents);
         }
       })

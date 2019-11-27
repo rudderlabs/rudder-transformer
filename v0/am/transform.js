@@ -101,8 +101,6 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
 
-  // console.log(payload);
-
   const response = {
     endpoint,
     requestConfig: defaultPostRequestConfig,
@@ -115,7 +113,6 @@ function responseBuilderSimple(
       [rootElementName]: payload
     }
   };
-  // console.log(response);
   return response;
 }
 
@@ -232,46 +229,37 @@ function processTransaction(message) {
   return [];
 }
 
-function process(events) {
+function process(event) {
   const respList = [];
+  const { message, destination } = event;
+  const messageType = message.type.toLowerCase();
+  const eventType = message.event ? message.event.toLowerCase() : undefined;
+  const toSendEvents = [];
+  if (
+    messageType === EventType.TRACK &&
+    (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+      eventType === Event.PRODUCT_LIST_CLICKED)
+  ) {
+    toSendEvents.push(processProductListAction(message));
+  } else if (
+    messageType === EventType.TRACK &&
+    (eventType == Event.CHECKOUT_STARTED.name ||
+      eventType == Event.ORDER_UPDATED.name ||
+      eventType == Event.ORDER_COMPLETED.name ||
+      eventType == Event.ORDER_CANCELLED.name)
+  ) {
+    toSendEvents.push(processTransaction(message));
+  } else {
+    toSendEvents.push(message);
+  }
 
-  events.forEach(event => {
-    try {
-      const { message, destination } = event;
-      const messageType = message.type.toLowerCase();
-      const eventType = message.event ? message.event.toLowerCase() : undefined;
-      const toSendEvents = [];
-      if (
-        messageType === EventType.TRACK &&
-        (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-          eventType === Event.PRODUCT_LIST_CLICKED)
-      ) {
-        toSendEvents.push(processProductListAction(message));
-      } else if (
-        messageType === EventType.TRACK &&
-        (eventType == Event.CHECKOUT_STARTED.name ||
-          eventType == Event.ORDER_UPDATED.name ||
-          eventType == Event.ORDER_COMPLETED.name ||
-          eventType == Event.ORDER_CANCELLED.name)
-      ) {
-        toSendEvents.push(processTransaction(message));
-      } else {
-        toSendEvents.push(message);
-      }
-
-      toSendEvents.forEach(sendEvent => {
-        const result = processSingleMessage(sendEvent, destination);
-        if (!result.statusCode) {
-          result.statusCode = 200;
-        }
-        respList.push(result);
-      });
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
+  toSendEvents.forEach(sendEvent => {
+    const result = processSingleMessage(sendEvent, destination);
+    if (!result.statusCode) {
+      result.statusCode = 200;
     }
+    respList.push(result);
   });
-
-  //console.log(JSON.stringify(respList));
   return respList;
 }
 

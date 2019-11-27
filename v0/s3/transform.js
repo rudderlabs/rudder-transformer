@@ -1,5 +1,5 @@
-function process(events) {
-  return events.map(event => event.message);
+function process(event) {
+  return [event.message];
 }
 
 exports.process = process;

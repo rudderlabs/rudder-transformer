@@ -145,6 +145,7 @@ async function runUserTransform(events, code) {
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
+    const { metadata } = events && events[0];
     try {
       const res = await getTransformationCode(versionId);
       if (res) {
@@ -158,13 +159,20 @@ async function userTransformHandler(events, versionId) {
         );
         const formattedEvents = userTransformedEvents.map(e => ({
           message: e,
-          destination
+          destination,
+          metadata
         }));
         return formattedEvents;
       }
     } catch (error) {
       console.log(error);
-      return events.map(event => ({ statusCode: 400, error: error.message }));
+      return [
+        {
+          statusCode: 400,
+          error: error.message,
+          metadata
+        }
+      ];
     }
   }
   return events;

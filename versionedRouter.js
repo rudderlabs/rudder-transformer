@@ -41,13 +41,13 @@ versions.forEach(version => {
     router.post(`/${versionedDestination}`, async (ctx, next) => {
       const events = ctx.request.body;
       const respList = [];
-      events.forEach(async event => {
+      await events.forEach(async event => {
         try {
-          const { metadata } = event;
           const respEvents = await destHandler.process(event);
+          console.log(respEvents);
           respList.push(
             ...respEvents.map(ev => {
-              return { output: ev, metadata };
+              return { output: ev, metadata: event.metadata };
             })
           );
         } catch (error) {

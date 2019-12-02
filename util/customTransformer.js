@@ -146,6 +146,7 @@ async function runUserTransform(events, code) {
 async function userTransformHandler(events, versionId) {
   if (versionId) {
     const { metadata } = events && events[0];
+    metadata.custom_transformed = true;
     try {
       const res = await getTransformationCode(versionId);
       if (res) {

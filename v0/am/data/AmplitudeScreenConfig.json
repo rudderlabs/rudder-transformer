@@ -3,13 +3,13 @@
   "context.os.version": "os_version",
   "context.device.model": "device_model",
   "context.device.manufacturer": "device_manufacturer",
-  "context.device.name": "device_brand",
   "context.device.id": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
-  "context.app.version": "app_version",
+  "context.app.build": "app_version",
   "context.platform": "platform",
   "context.locale": "language",
   "properties.category": "event_type",
-  "properties.name": "event_properties.screen_name"
+  "properties.name": "event_properties.screen_name",
+  "request_ip": "ip"
 }

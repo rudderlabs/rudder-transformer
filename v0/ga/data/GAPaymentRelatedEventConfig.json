@@ -2,5 +2,7 @@
   "context.traits.anonymousId": "cid",
   "properties.checkout_id": "ti",
   "properties.step": "cos",
-  "properties.payment_method": "col"
+  "properties.payment_method": "col",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

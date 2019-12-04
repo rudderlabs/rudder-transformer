@@ -1,11 +1,12 @@
 {
   "name": "rudder-transformer",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "",
   "main": "GATransform.js",
   "scripts": {
     "start": "node destTransformer.js",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "node build.js"
   },
   "repository": {
     "type": "git",
@@ -18,13 +19,16 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
-    "json-query": "^2.2.2",
+    "dotenv": "^8.2.0",
     "get-value": "^3.0.1",
+    "gh-release": "^3.5.0",
+    "json-query": "^2.2.2",
     "koa": "^2.8.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.15",
-    "set-value": "^3.0.1"
+    "set-value": "^3.0.1",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "jest": "^24.9.0",

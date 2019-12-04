@@ -16,7 +16,6 @@ test(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
   const output = transformer.process(inputData);
-  console.log(JSON.stringify(output));
 
   expect(output).toEqual(expectedData);
 });

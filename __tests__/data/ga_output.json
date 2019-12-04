@@ -1,52 +1,46 @@
 [
   {
-    "endpoint": "https://www.google-analytics.com/collect",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
-    "header": {},
-    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "payload": {
-      "v": "1",
-      "t": "event",
-      "tid": "abcde",
-      "cid": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "ea": "spin_result",
-      "cd1": "CasinoGameModule",
-      "cd4": "FireEagleSlots",
-      "cd5": "ReachableViaLocalAreaNetwork",
-      "cd6": "fireEagleBase",
-      "cm2": 9466052,
-      "cm4": 9,
-      "cm5": 1,
-      "cm6": 0,
-      "cm7": 0,
-      "cm8": 6,
-      "cm9": 0,
-      "cm10": 1
-    }
+    "statusCode": 400,
+    "error": "message type not supported"
   },
   {
     "endpoint": "https://www.google-analytics.com/collect",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "GET" },
+    "requestConfig": {
+      "requestFormat": "PARAMS",
+      "requestMethod": "GET"
+    },
     "header": {},
-    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "userId": "00000000000000000000000000",
+    "payload": {
+      "v": "1",
+      "t": "pageview",
+      "tid": "abcd",
+      "cid": "00000000000000000000000000",
+      "dt": "",
+      "dl": "",
+      "dp": "/abc",
+      "dr": "",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+    },
+    "statusCode": 200
+  },
+  {
+    "endpoint": "https://www.google-analytics.com/collect",
+    "requestConfig": {
+      "requestFormat": "PARAMS",
+      "requestMethod": "GET"
+    },
+    "header": {},
+    "userId": "00000000000000000000000000",
     "payload": {
       "v": "1",
       "t": "event",
-      "tid": "abcde",
-      "cid": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "ea": "spin_result",
-      "cd1": "CasinoGameModule",
-      "cd4": "FireEagleSlots",
-      "cd5": "ReachableViaLocalAreaNetwork",
-      "cd6": "fireEagleBase",
-      "cm2": 9466052,
-      "cm4": 9,
-      "cm5": 1,
-      "cm6": 0,
-      "cm7": 0,
-      "cm8": 6,
-      "cm9": 0,
-      "cm10": 1
-    }
+      "tid": "UA-149602794-1",
+      "cid": "00000000000000000000000000",
+      "ea": "test track event GA3",
+      "ec": "test-category",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+    },
+    "statusCode": 200
   }
 ]

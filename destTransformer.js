@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
+require("dotenv").config();
 
 const router = require("./versionedRouter");
 const cluster = require("./util/cluster");
@@ -11,7 +12,7 @@ const app = new Koa();
 
 app.use(
   bodyParser({
-    jsonLimit: "100mb"
+    jsonLimit: "200mb"
   })
 );
 

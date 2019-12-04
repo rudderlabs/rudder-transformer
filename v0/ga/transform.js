@@ -1,5 +1,4 @@
 const get = require("get-value");
-const _ = require("lodash");
 
 const { EventType } = require("../../constants");
 const {
@@ -40,14 +39,38 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   const params = removeUndefinedValues(parameters);
 
+  //Get custom params from destination config
+  let customParams = getParamsFromConfig(message, destination);
+  customParams = removeUndefinedValues(customParams);
+
   const response = {
     endpoint: GA_ENDPOINT,
     requestConfig: defaultGetRequestConfig,
     header: {},
     userId: message.anonymousId,
-    payload: { ...params, ...payload }
+    payload: { ...params, ...customParams, ...payload }
   };
+  //console.log("response ", response);
   return response;
+}
+
+function getParamsFromConfig(message, destination) {
+  let params = {};
+
+  var obj = {};
+  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
+  if (destination.Config.customMappings) {
+    destination.Config.customMappings.forEach(mapping => {
+      obj[mapping.from] = mapping.to;
+    });
+  }
+  // console.log(obj);
+  let keys = Object.keys(obj);
+  keys.forEach(key => {
+    params[obj[key]] = get(message.properties, key);
+  });
+  //console.log(params);
+  return params;
 }
 
 // Function for processing pageviews
@@ -78,10 +101,12 @@ function processPromotionEvent(message) {
 
   switch (eventString.toLowerCase()) {
     case Event.PROMOTION_VIEWED:
-      parameters["promoa"] = "view";
+      parameters.promoa = "view";
       break;
     case Event.PROMOTION_CLICKED:
-      parameters["promoa"] = "promo_click";
+      parameters.promoa = "promo_click";
+      break;
+    default:
       break;
   }
 
@@ -102,7 +127,7 @@ function processRefundEvent(message) {
   if (products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
-    for (i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i++) {
       const value = products[i];
       const prodIndex = i + 1;
       if (!value.product_id || value.product_id.length === 0) {
@@ -122,7 +147,7 @@ function processRefundEvent(message) {
     }
   } else {
     // full refund, only populate order_id
-    parameters["ti"] = message.order_id;
+    parameters.ti = message.order_id;
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -136,18 +161,19 @@ function processSharingEvent(message) {
   const eventTypeString = message.event;
   switch (eventTypeString.toLowerCase()) {
     case Event.PRODUCT_SHARED:
-      parameters[st] = message.properties.url;
+      parameters.st = message.properties.url;
       break;
-    case Event.CART_SHARED:
+    case Event.CART_SHARED: {
       const products = message.properties.products;
       let shareTargetString = ""; // all product ids will be concatenated with separation
       products.forEach(product => {
         shareTargetString += " " + product.product_id;
       });
-      parameters["st"] = shareTargetString;
+      parameters.st = shareTargetString;
       break;
+    }
     default:
-      parameterMap.set("st", "empty");
+      parameters.st = "empty";
   }
   return parameters;
 }
@@ -164,16 +190,18 @@ function processProductListEvent(message) {
   switch (eventString.toLowerCase()) {
     case Event.PRODUCT_LIST_VIEWED:
     case Event.PRODUCT_LIST_FILTERED:
-      parameters["pa"] = "detail";
+      parameters.pa = "detail";
       break;
     case Event.PRODUCT_LIST_CLICKED:
-      parameters["pa"] = "click";
+      parameters.pa = "click";
       break;
+    default:
+      throw new Error("unknown ProductListEvent type");
   }
 
   const { products } = message.properties;
   if (products.length > 0) {
-    for (i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i++) {
       const value = products[i];
       const prodIndex = i + 1;
 
@@ -214,28 +242,30 @@ function processProductEvent(message) {
   // Set product action to click or detail depending on event
   switch (eventString.toLowerCase()) {
     case Event.PRODUCT_CLICKED:
-      parameters["pa"] = "click";
+      parameters.pa = "click";
       break;
     case Event.PRODUCT_VIEWED:
-      parameters["pa"] = "detail";
+      parameters.pa = "detail";
       break;
     case Event.PRODUCT_ADDED:
     case Event.WISHLIST_PRODUCT_ADDED_TO_CART:
     case Event.PRODUCT_ADDED_TO_WISHLIST:
-      parameters["pa"] = "add";
+      parameters.pa = "add";
       break;
     case Event.PRODUCT_REMOVED:
     case Event.PRODUCT_REMOVED_FROM_WISHLIST:
-      parameters["pa"] = "remove";
+      parameters.pa = "remove";
       break;
+    default:
+      throw new Error("unknown ProductEvent type");
   }
 
   const { sku, product_id } = message.properties;
 
   if (!product_id || product_id.length === 0) {
-    parameters["pr1id"] = sku;
+    parameters.pr1id = sku;
   } else {
-    parameters["pr1id"] = product_id;
+    parameters.pr1id = product_id;
   }
 
   return parameters;
@@ -250,14 +280,16 @@ function processTransactionEvent(message) {
   switch (eventString.toLowerCase()) {
     case Event.CHECKOUT_STARTED:
     case Event.ORDER_UPDATED:
-      parameters["pa"] = "checkout";
+      parameters.pa = "checkout";
       break;
     case Event.ORDER_COMPLETED:
-      parameters["pa"] = "purchase";
+      parameters.pa = "purchase";
       break;
     case Event.ORDER_CANCELLED:
-      parameters["pa"] = "refund";
+      parameters.pa = "refund";
       break;
+    default:
+      throw new Error("unknown TransactionEvent type");
   }
 
   // One of total/revenue/value should be there
@@ -269,34 +301,34 @@ function processTransactionEvent(message) {
       // value field is null or empty, cannot be used
       if (!(!total || total.length === 0)) {
         // last option - total field
-        parameters["tr"] = total;
+        parameters.tr = total;
       }
     } else {
-      parameters["tr"] = value; // value field is populated, usable
+      parameters.tr = value; // value field is populated, usable
     }
   } else {
-    parameters["tr"] = revenue; // revenue field is populated, usable
+    parameters.tr = revenue; // revenue field is populated, usable
   }
 
   const { products } = message.properties;
 
   if (products.length > 0) {
-    for (i = 0; i < products.length; i++) {
-      const value = products[i];
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
       const prodIndex = i + 1;
       // If product_id is not provided, then SKU will be used in place of id
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters["pr" + prodIndex + "id"] = value.sku;
+      if (!product.product_id || product.product_id.length === 0) {
+        parameters["pr" + prodIndex + "id"] = product.sku;
       } else {
-        parameters["pr" + prodIndex + "id"] = value.product_id;
+        parameters["pr" + prodIndex + "id"] = product.product_id;
       }
-      parameters["pr" + prodIndex + "nm"] = value.name;
-      parameters["pr" + prodIndex + "ca"] = value.category;
-      parameters["pr" + prodIndex + "br"] = value.brand;
-      parameters["pr" + prodIndex + "va"] = value.variant;
-      parameters["pr" + prodIndex + "cc"] = value.coupon;
-      parameters["pr" + prodIndex + "ps"] = value.position;
-      parameters["pr" + prodIndex + "pr"] = value.price;
+      parameters["pr" + prodIndex + "nm"] = product.name;
+      parameters["pr" + prodIndex + "ca"] = product.category;
+      parameters["pr" + prodIndex + "br"] = product.brand;
+      parameters["pr" + prodIndex + "va"] = product.variant;
+      parameters["pr" + prodIndex + "cc"] = product.coupon;
+      parameters["pr" + prodIndex + "ps"] = product.position;
+      parameters["pr" + prodIndex + "pr"] = product.price;
     }
   } else {
     // throw error, empty Product List in Product List Viewed event payload
@@ -333,7 +365,7 @@ function processSingleMessage(message, destination) {
       customParams = processScreenViews(message);
       category = ConfigCategory.SCREEN;
       break;
-    case EventType.TRACK:
+    case EventType.TRACK: {
       const eventName = message.event.toLowerCase();
       category = Event[nameToEventMap[eventName]]
         ? Event[nameToEventMap[eventName]].category
@@ -369,10 +401,12 @@ function processSingleMessage(message, destination) {
           break;
       }
       break;
+    }
     default:
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
-      return { error: "message type not supported" };
+      throw new Error("message type not supported");
+      return;
   }
 
   return responseBuilderSimple(
@@ -385,12 +419,18 @@ function processSingleMessage(message, destination) {
 }
 
 // Iterate over input batch and generate response for each message
-function process(events) {
+async function process(events) {
   const respList = [];
-
   events.forEach(event => {
-    const result = processSingleMessage(event.message, event.destination);
-    respList.push(result);
+    try {
+      const result = processSingleMessage(event.message, event.destination);
+      if (!result.statusCode) {
+        result.statusCode = 200;
+      }
+      respList.push(result);
+    } catch (error) {
+      respList.push({ statusCode: 400, error: error.message });
+    }
   });
 
   return respList;

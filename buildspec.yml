@@ -6,5 +6,5 @@ phases:
       nodejs: 10
   build:
     commands:
-      - npm install
+      - npm install --unsafe-perm
       - npm test

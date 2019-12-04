@@ -38,10 +38,16 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
         "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "23"
+        }
+      ]
     }
   },
   {
@@ -92,10 +98,16 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
         "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "23"
+        }
+      ]
     }
   },
   {
@@ -134,7 +146,6 @@
       "userId": "12345",
       "event": "test track event GA3",
       "properties": {
-        "category": "test-category",
         "user_actual_role": "system_admin, system_user",
         "user_actual_id": 12345
       },
@@ -144,10 +155,16 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
-        "trackingID": "UA-149602794-1"
+        "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "23"
+        }
+      ]
     }
   }
 ]

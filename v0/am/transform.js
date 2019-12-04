@@ -2,16 +2,26 @@ const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
 
-const { EventType } = require("../../constants");
+const { EventType, SpecedTraits, TraitsMapping } = require("../../constants");
 const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
 const {
   Event,
   ENDPOINT,
-  IDENTIFY_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap
 } = require("./config");
+
+// Get the spec'd traits, for now only address needs treatment as 2 layers.
+const populateSpecedTraits = (payload, message) => {
+  SpecedTraits.forEach(trait => {
+    const mapping = TraitsMapping[trait];
+    const keys = Object.keys(mapping);
+    keys.forEach(key => {
+      set(payload, "user_properties." + key, get(message, mapping[key]));
+    });
+  });
+};
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
@@ -20,10 +30,30 @@ function createSingleMessageBasicStructure(message) {
     "type",
     "event",
     "context",
-    "anonymousId",
-    "timestamp",
-    "integrations"
+    "userId",
+    "originalTimestamp",
+    "integrations",
+    "session_id"
   ]);
+}
+
+//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+function stringToHash(string) {
+  var hash = 0;
+
+  if (string.length == 0) return hash;
+
+  for (i = 0; i < string.length; i++) {
+    char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+
+  return Math.abs(hash);
+}
+
+function fixSessionId(payload) {
+  payload.session_id = stringToHash(payload.session_id);
 }
 
 // Build response for Amplitude. In this case, endpoint will be different depending
@@ -39,19 +69,39 @@ function responseBuilderSimple(
   const rawPayload = {};
 
   set(rawPayload, "event_properties", message.properties);
-  set(rawPayload, "user_properties", message.user_properties);
+  set(rawPayload, "user_properties", message.userProperties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  const endpoint = evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT;
+  const endpoint = ENDPOINT; // evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT; // identify on same endpoint also works
 
-  rawPayload["time"] = new Date(message.timestamp).getTime();
-  rawPayload["event_type"] = evType;
-  rawPayload["user_id"] = message.anonymousId;
+  // in case of identify, populate user_properties from traits as well, don't need to send evType
+  if (evType === EventType.IDENTIFY) {
+    populateSpecedTraits(rawPayload, message);
+    const traits = Object.keys(message.context.traits);
+    traits.forEach(trait => {
+      if (!SpecedTraits.includes(trait)) {
+        set(
+          rawPayload,
+          "user_properties." + trait,
+          get(message, "context.traits." + trait)
+        );
+      }
+    });
+    rawPayload.event_type = EventType.IDENTIFY_AM;
+  } else {
+    rawPayload.event_type = evType;
+  }
+
+  rawPayload.time = new Date(message.originalTimestamp).getTime();
+  rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
+  fixSessionId(payload);
+
+  // console.log(payload);
 
   const response = {
     endpoint,
@@ -59,12 +109,13 @@ function responseBuilderSimple(
     header: {
       "Content-Type": "application/json"
     },
-    userId: message.anonymousId,
+    userId: message.userId ? message.userId : message.anonymousId,
     payload: {
       api_key: destination.Config.apiKey,
       [rootElementName]: payload
     }
   };
+  // console.log(response);
   return response;
 }
 
@@ -83,14 +134,14 @@ const isRevenueEvent = product => {
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  let payloadObjectName = "events";
+  const payloadObjectName = "events";
   let evType;
   let category = ConfigCategory.DEFAULT;
 
   var messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      payloadObjectName = "identification";
+      // payloadObjectName = "identification"; // identify same as events
       evType = "identify";
       category = ConfigCategory.IDENTIFY;
       break;
@@ -106,7 +157,7 @@ function processSingleMessage(message, destination) {
       evType = message.event;
 
       if (message.products && message.products.length > 0) {
-        const isRevenue = false;
+        let isRevenue = false;
         message.products.forEach(product => {
           if (isRevenueEvent(product)) {
             isRevenue = true;
@@ -138,7 +189,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type");
-      return [{ error: "message type not supported" }];
+      throw new Error("message type not supported");
   }
 
   return responseBuilderSimple(
@@ -185,33 +236,42 @@ function process(events) {
   const respList = [];
 
   events.forEach(event => {
-    const { message, destination } = event;
-    const messageType = message.type.toLowerCase();
-    const eventType = message.event.toLowerCase();
-    const toSendEvents = [];
-    if (
-      messageType === EventType.TRACK &&
-      (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-        eventType === Event.PRODUCT_LIST_CLICKED)
-    ) {
-      toSendEvents.push(processProductListAction(message));
-    } else if (
-      messageType === EventType.TRACK &&
-      (eventType == Event.CHECKOUT_STARTED.name ||
-        eventType == Event.ORDER_UPDATED.name ||
-        eventType == Event.ORDER_COMPLETED.name ||
-        eventType == Event.ORDER_CANCELLED.name)
-    ) {
-      toSendEvents.push(processTransaction(message));
-    } else {
-      toSendEvents.push(message);
-    }
+    try {
+      const { message, destination } = event;
+      const messageType = message.type.toLowerCase();
+      const eventType = message.event ? message.event.toLowerCase() : undefined;
+      const toSendEvents = [];
+      if (
+        messageType === EventType.TRACK &&
+        (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+          eventType === Event.PRODUCT_LIST_CLICKED)
+      ) {
+        toSendEvents.push(processProductListAction(message));
+      } else if (
+        messageType === EventType.TRACK &&
+        (eventType == Event.CHECKOUT_STARTED.name ||
+          eventType == Event.ORDER_UPDATED.name ||
+          eventType == Event.ORDER_COMPLETED.name ||
+          eventType == Event.ORDER_CANCELLED.name)
+      ) {
+        toSendEvents.push(processTransaction(message));
+      } else {
+        toSendEvents.push(message);
+      }
 
-    toSendEvents.forEach(sendEvent => {
-      respList.push(processSingleMessage(sendEvent, destination));
-    });
+      toSendEvents.forEach(sendEvent => {
+        const result = processSingleMessage(sendEvent, destination);
+        if (!result.statusCode) {
+          result.statusCode = 200;
+        }
+        respList.push(result);
+      });
+    } catch (error) {
+      respList.push({ statusCode: 400, error: error.message });
+    }
   });
 
+  //console.log(JSON.stringify(respList));
   return respList;
 }
 

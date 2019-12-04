@@ -1,9 +1,9 @@
 {
-  "properties.revenue": "CUSTOM_EVENTS.0._valueToSum",
-  "properties.currency": "CUSTOM_EVENTS.0.fb_currency",
-  "properties.name": "CUSTOM_EVENTS.0.fb_description",
-  "properties.products.sub.product_id": "CUSTOM_EVENTS.0.fb_content_id.",
-  "properties.category": "CUSTOM_EVENTS.0.fb_content_type",
-  "properties.query": "CUSTOM_EVENTS.0.fb_search_string",
-  "properties.quantity": "CUSTOM_EVENTS.0.fb_num_items"
+  "properties.revenue": "_valueToSum",
+  "properties.currency": "fb_currency",
+  "properties.name": "fb_description",
+  "properties.products.sub.product_id": "fb_content_id",
+  "properties.category": "fb_content_type",
+  "properties.query": "fb_search_string",
+  "properties.quantity": "fb_num_items"
 }

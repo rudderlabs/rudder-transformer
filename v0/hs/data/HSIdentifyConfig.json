@@ -1,9 +1,7 @@
 {
   "context.traits.email": "email",
-  "context.traits.firstname": "firstName",
-  "context.traits.lastname": "lastName",
-  "context.traits.name": "name",
-  "context.traits.username": "username",
+  "context.traits.name": "firstname",
+  "context.traits.lastname": "lastname",
   "context.traits.phone": "phone",
   "context.traits.address.street": "address",
   "context.traits.address.city": "city",

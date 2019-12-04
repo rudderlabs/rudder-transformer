@@ -1,20 +1,41 @@
 [
   {
-    "endpoint": "http://api.mixpanel.com/track/",
-    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "POST" },
-    "header": {},
-    "payload": {
-      "data": "eyJldmVudCI6InNwaW5fcmVzdWx0IiwicHJvcGVydGllcyI6eyJhZGRpdGlvbmFsX2JldF9pbmRleCI6MCwiYmF0dGxlX2lkIjoiTi9BIiwiYmV0X2Ftb3VudCI6OSwiYmV0X2xldmVsIjoxLCJiZXRfbXVsdGlwbGllciI6MSwiY29pbl9iYWxhbmNlIjo5NDY2MDUyLCJjdXJyZW50X21vZHVsZV9uYW1lIjoiQ2FzaW5vR2FtZU1vZHVsZSIsImRheXNfaW5fZ2FtZSI6MCwiZXh0cmFfcGFyYW0iOiJOL0EiLCJmYl9wcm9maWxlIjoiMCIsImZlYXR1cmVHYW1lVHlwZSI6Ik4vQSIsImdhbWVfZnBzIjozMCwiZ2FtZV9pZCI6ImZpcmVFYWdsZUJhc2UiLCJnYW1lX25hbWUiOiJGaXJlRWFnbGVTbG90cyIsImdlbV9iYWxhbmNlIjowLCJncmFwaGljc1F1YWxpdHkiOiJIRCIsImlkZmEiOiIyYmY5OTc4Ny0zM2QyLTRhZTItYTc2YS1jNDk2NzJmOTcyNTIiLCJpbnRlcm5ldFJlYWNoYWJpbGl0eSI6IlJlYWNoYWJsZVZpYUxvY2FsQXJlYU5ldHdvcmsiLCJpc0xvd0VuZERldmljZSI6IkZhbHNlIiwiaXNfYXV0b19zcGluIjoiRmFsc2UiLCJpc190dXJibyI6IkZhbHNlIiwiaXNmIjoiRmFsc2UiLCJpc2hpZ2hyb2xsZXIiOiJGYWxzZSIsImphY2twb3Rfd2luX2Ftb3VudCI6OTAsImphY2twb3Rfd2luX3R5cGUiOiJTaWx2ZXIiLCJsZXZlbCI6NiwibGlmZXRpbWVfZ2VtX2JhbGFuY2UiOjAsIm5vX29mX3NwaW4iOjEsInBsYXllcl90b3RhbF9iYXR0bGVzIjowLCJwbGF5ZXJfdG90YWxfc2hpZWxkcyI6MCwic3RhcnRfZGF0ZSI6IjIwMTktMDgtMDEiLCJ0b3RhbF9wYXltZW50cyI6MCwidG91cm5hbWVudF9pZCI6IlQxNTYxOTcwODE5IiwidXNlcklkIjoiYzgyY2JkZmYtZTViZS00MDA5LWFjNzgtY2RlZWEwOWFiNGIxIiwidmVyc2lvblNlc3Npb25Db3VudCI6Miwid2luX2Ftb3VudCI6MCwidG9rZW4iOiJhYmNkZSIsImRpc3RpbmN0X2lkIjoiYzgyY2JkZmYtZTViZS00MDA5LWFjNzgtY2RlZWEwOWFiNGIxIiwidGltZSI6IjIwMTktMDktMDFUMTU6NDY6NTEuNjkzMjI5KzA1OjMwIn19"
-    }
+      "endpoint": "http://api.mixpanel.com/engage/",
+      "userId": "00000000000000000000000000",
+      "requestConfig": {
+          "requestFormat": "PARAMS",
+          "requestMethod": "POST"
+      },
+      "header": {},
+      "payload": {
+          "data": "eyIkc2V0Ijp7IiRlbWFpbCI6InRlc3RodWJzcG90MkBlbWFpbC5jb20iLCIkbmFtZSI6IlRlc3QgSHVic3BvdCJ9LCIkdG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsIiRkaXN0aW5jdF9pZCI6IjEyMzQ1In0="
+      },
+      "statusCode": 200
   },
   {
-    "endpoint": "http://api.mixpanel.com/track/",
-    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "requestConfig": { "requestFormat": "PARAMS", "requestMethod": "POST" },
-    "header": {},
-    "payload": {
-      "data": "eyJldmVudCI6InNwaW5fcmVzdWx0IiwicHJvcGVydGllcyI6eyJhZGRpdGlvbmFsX2JldF9pbmRleCI6MCwiYmF0dGxlX2lkIjoiTi9BIiwiYmV0X2Ftb3VudCI6OSwiYmV0X2xldmVsIjoxLCJiZXRfbXVsdGlwbGllciI6MSwiY29pbl9iYWxhbmNlIjo5NDY2MDUyLCJjdXJyZW50X21vZHVsZV9uYW1lIjoiQ2FzaW5vR2FtZU1vZHVsZSIsImRheXNfaW5fZ2FtZSI6MCwiZXh0cmFfcGFyYW0iOiJOL0EiLCJmYl9wcm9maWxlIjoiMCIsImZlYXR1cmVHYW1lVHlwZSI6Ik4vQSIsImdhbWVfZnBzIjozMCwiZ2FtZV9pZCI6ImZpcmVFYWdsZUJhc2UiLCJnYW1lX25hbWUiOiJGaXJlRWFnbGVTbG90cyIsImdlbV9iYWxhbmNlIjowLCJncmFwaGljc1F1YWxpdHkiOiJIRCIsImlkZmEiOiIyYmY5OTc4Ny0zM2QyLTRhZTItYTc2YS1jNDk2NzJmOTcyNTIiLCJpbnRlcm5ldFJlYWNoYWJpbGl0eSI6IlJlYWNoYWJsZVZpYUxvY2FsQXJlYU5ldHdvcmsiLCJpc0xvd0VuZERldmljZSI6IkZhbHNlIiwiaXNfYXV0b19zcGluIjoiRmFsc2UiLCJpc190dXJibyI6IkZhbHNlIiwiaXNmIjoiRmFsc2UiLCJpc2hpZ2hyb2xsZXIiOiJGYWxzZSIsImphY2twb3Rfd2luX2Ftb3VudCI6OTAsImphY2twb3Rfd2luX3R5cGUiOiJTaWx2ZXIiLCJsZXZlbCI6NiwibGlmZXRpbWVfZ2VtX2JhbGFuY2UiOjAsIm5vX29mX3NwaW4iOjEsInBsYXllcl90b3RhbF9iYXR0bGVzIjowLCJwbGF5ZXJfdG90YWxfc2hpZWxkcyI6MCwic3RhcnRfZGF0ZSI6IjIwMTktMDgtMDEiLCJ0b3RhbF9wYXltZW50cyI6MCwidG91cm5hbWVudF9pZCI6IlQxNTYxOTcwODE5IiwidXNlcklkIjoiYzgyY2JkZmYtZTViZS00MDA5LWFjNzgtY2RlZWEwOWFiNGIxIiwidmVyc2lvblNlc3Npb25Db3VudCI6Miwid2luX2Ftb3VudCI6MCwidG9rZW4iOiJhYmNkZSIsImRpc3RpbmN0X2lkIjoiYzgyY2JkZmYtZTViZS00MDA5LWFjNzgtY2RlZWEwOWFiNGIxIiwidGltZSI6IjIwMTktMDktMDFUMTU6NDY6NTEuNjkzMjI5KzA1OjMwIn19"
-    }
+      "endpoint": "http://api.mixpanel.com/track/",
+      "userId": "00000000000000000000000000",
+      "requestConfig": {
+          "requestFormat": "PARAMS",
+          "requestMethod": "POST"
+      },
+      "header": {},
+      "payload": {
+          "data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7InBhdGgiOiIiLCJyZWZlcnJlciI6IiIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiIiwidG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsImRpc3RpbmN0X2lkIjoiMTIzNDUifX0="
+      },
+      "statusCode": 200
+  },
+  {
+      "endpoint": "http://api.mixpanel.com/track/",
+      "userId": "00000000000000000000000000",
+      "requestConfig": {
+          "requestFormat": "PARAMS",
+          "requestMethod": "POST"
+      },
+      "header": {},
+      "payload": {
+          "data": "eyJldmVudCI6InRlc3QgdHJhY2sgZXZlbnQgSFMiLCJwcm9wZXJ0aWVzIjp7InVzZXJfYWN0dWFsX3JvbGUiOiJzeXN0ZW1fYWRtaW4sIHN5c3RlbV91c2VyIiwidXNlcl9hY3R1YWxfaWQiOjEyMzQ1LCJ0b2tlbiI6ImVmMWQ0MjM5MDQyNmUzZjdjOTBhYzc4MjcyZTc0MzQ0IiwiZGlzdGluY3RfaWQiOiIxMjM0NSJ9fQ=="
+      },
+      "statusCode": 200
   }
 ]

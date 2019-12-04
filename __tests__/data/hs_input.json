@@ -52,7 +52,7 @@
     "destination": {
       "Config": {
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
-        "hubId": "6405167"
+        "hubID": "6405167"
       },
       "Enabled": true
     }
@@ -108,7 +108,7 @@
     "destination": {
       "Config": {
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
-        "hubId": "6405167"
+        "hubID": "6405167"
       },
       "Enabled": true
     }
@@ -157,7 +157,7 @@
     "destination": {
       "Config": {
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
-        "hubId": "6405167"
+        "hubID": "6405167"
       },
       "Enabled": true
     }

@@ -28,7 +28,7 @@ function responseBuilderSimple(payload, message, destination) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      authentication: destination.Config.apiKey
+      authentication: destination.Config.devKey
     },
     requestConfig: defaultPostRequestConfig,
     userId: message.anonymousId,

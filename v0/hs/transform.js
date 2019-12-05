@@ -59,7 +59,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
 
 function processTrack(message, destination) {
   const parameters = {
-    _a: destination.Config.hubId,
+    _a: destination.Config.hubID,
     _n: message.event
   };
 

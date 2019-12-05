@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "axios": "^0.19.0",
     "dotenv": "^8.2.0",
     "get-value": "^3.0.1",
     "gh-release": "^3.5.0",

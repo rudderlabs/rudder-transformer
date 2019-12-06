@@ -10,7 +10,7 @@
       "requestMethod": "GET"
     },
     "header": {},
-    "userId": "00000000000000000000000000",
+    "userId": "12345",
     "payload": {
       "v": "1",
       "t": "pageview",
@@ -31,7 +31,7 @@
       "requestMethod": "GET"
     },
     "header": {},
-    "userId": "00000000000000000000000000",
+    "userId": "12345",
     "payload": {
       "v": "1",
       "t": "event",

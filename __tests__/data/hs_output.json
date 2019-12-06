@@ -1,25 +1,25 @@
 [
   {
-    "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com/?hapikey=e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
-    "header": {},
-    "userId": "00000000000000000000000000",
-    "requestConfig": {
-      "requestFormat": "JSON",
-      "requestMethod": "POST"
-    },
-    "payload": {
-      "properties": [
-        {
-          "property": "email",
-          "value": "testhubspot2@email.com"
-        },
-        {
-          "property": "firstname",
-          "value": "Test Hubspot"
-        }
-      ]
-    },
-    "statusCode": 200
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com/?hapikey=e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
+      "header": {},
+      "userId": "00000000000000000000000000",
+      "requestConfig": {
+          "requestFormat": "JSON",
+          "requestMethod": "POST"
+      },
+      "payload": {
+          "properties": [
+              {
+                  "property": "email",
+                  "value": "testhubspot2@email.com"
+              },
+              {
+                  "property": "firstname",
+                  "value": "Test Hubspot"
+              }
+          ]
+      },
+      "statusCode": 200
   },
   {
     "statusCode": 400,

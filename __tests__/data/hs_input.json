@@ -41,9 +41,6 @@
       "originalTimestamp": "2019-10-15T09:35:31.288Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "userProperties": {
-        "test_key": "test value"
-      },
       "integrations": {
         "All": true
       },

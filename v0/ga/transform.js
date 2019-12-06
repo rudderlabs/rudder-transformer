@@ -54,7 +54,10 @@ function responseBuilderSimple(
     endpoint: GA_ENDPOINT,
     requestConfig: defaultGetRequestConfig,
     header: {},
-    userId: message.anonymousId,
+    userId:
+      message.userId && message.userId.length > 0
+        ? message.userId
+        : message.anonymousId,
     payload: finalPayload
   };
   //console.log("response ", response);

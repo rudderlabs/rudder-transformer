@@ -30,8 +30,8 @@ const userProps = [
 
 function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   // Conversion required fields
-  const dateTime = new Date(get(updatedEvent.CUSTOM_EVENTS[0], "_logTime"));
-  set(updatedEvent.CUSTOM_EVENTS[0], "_logTime", dateTime.getTime());
+  const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
+  set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
 
   var num = Number(updatedEvent.advertiser_tracking_enabled);
   updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : "" + num;
@@ -78,18 +78,21 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
     }
   });
 
-  if (updatedEvent.CUSTOM_EVENTS) {
-    updatedEvent.CUSTOM_EVENTS = JSON.stringify(updatedEvent.CUSTOM_EVENTS);
+  if (updatedEvent.custom_events) {
+    updatedEvent.custom_events = JSON.stringify(updatedEvent.custom_events);
   }
 
   if (updatedEvent.extinfo) {
     updatedEvent.extinfo = JSON.stringify(updatedEvent.extinfo);
   }
+
+  // Event type required by fb
+  updatedEvent.event = "CUSTOM_APP_EVENTS";
 }
 
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const updatedEvent = { ...baseEvent };
-  set(updatedEvent.CUSTOM_EVENTS[0], "_eventName", fbEventName);
+  set(updatedEvent.custom_events[0], "_eventName", fbEventName);
 
   Object.keys(message.properties).forEach(k => {
     if (eventPropsToPathMapping[k]) {
@@ -99,13 +102,13 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
       if (rudderEventPath.indexOf("sub") > -1) {
         const [prefixSlice, suffixSlice] = rudderEventPath.split(".sub.");
         const parentArray = get(message, prefixSlice);
-        updatedEvent.CUSTOM_EVENTS[0][fbEventPath] = [];
+        updatedEvent.custom_events[0][fbEventPath] = [];
 
         var length = 0;
         var count = parentArray.length;
         while (count > 0) {
           const intendValue = get(parentArray[length], suffixSlice);
-          updatedEvent.CUSTOM_EVENTS[0][fbEventPath][length] =
+          updatedEvent.custom_events[0][fbEventPath][length] =
             intendValue || "";
 
           length++;
@@ -115,10 +118,10 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
         rudderEventPath = eventPropsToPathMapping[k];
         fbEventPath = eventPropsMapping[rudderEventPath];
         const intendValue = get(message, rudderEventPath);
-        set(updatedEvent.CUSTOM_EVENTS[0], fbEventPath, intendValue || "");
+        set(updatedEvent.custom_events[0], fbEventPath, intendValue || "");
       }
     } else {
-      set(updatedEvent.CUSTOM_EVENTS[0], k, message.properties[k]);
+      set(updatedEvent.custom_events[0], k, message.properties[k]);
     }
   });
 
@@ -150,7 +153,7 @@ function responseBuilderSimple(message, payload, destination) {
 function buildBaseEvent(message) {
   const baseEvent = {};
   baseEvent.extinfo = extInfoArray;
-  baseEvent.CUSTOM_EVENTS = [{}];
+  baseEvent.custom_events = [{}];
 
   baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
   var extInfoIdx;
@@ -180,7 +183,7 @@ function buildBaseEvent(message) {
         outputVal || baseEvent.extinfo[extInfoIdx];
     } else if (splits.length === 3) {
       // custom event key
-      set(baseEvent.CUSTOM_EVENTS[0], splits[2], inputVal || "");
+      set(baseEvent.custom_events[0], splits[2], inputVal || "");
     } else {
       set(baseEvent, baseMapping[k], inputVal || "");
     }

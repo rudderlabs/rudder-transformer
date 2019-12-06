@@ -53,7 +53,9 @@ function stringToHash(string) {
 }
 
 function fixSessionId(payload) {
-  payload.session_id = stringToHash(payload.session_id);
+  payload.session_id = payload.session_id
+    ? stringToHash(payload.session_id)
+    : -1;
 }
 
 // Build response for Amplitude. In this case, endpoint will be different depending

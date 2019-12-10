@@ -11,7 +11,8 @@ const {
 const {
   removeUndefinedValues,
   toStringValues,
-  defaultGetRequestConfig
+  defaultGetRequestConfig,
+  defaultRequestConfig
 } = require("../util");
 
 // Basic response builder
@@ -50,17 +51,15 @@ function responseBuilderSimple(
     finalPayload["cid"] = message.userId;
   }
 
-  const response = {
-    endpoint: GA_ENDPOINT,
-    requestConfig: defaultGetRequestConfig,
-    header: {},
-    userId:
-      message.userId && message.userId.length > 0
-        ? message.userId
-        : message.anonymousId,
-    payload: finalPayload
-  };
-  //console.log("response ", response);
+  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  response.method = defaultGetRequestConfig.requestMethod;
+  response.endpoint = GA_ENDPOINT;
+  response.userId =
+    message.userId && message.userId.length > 0
+      ? message.userId
+      : message.anonymousId;
+  response.params = finalPayload;
+
   return response;
 }
 

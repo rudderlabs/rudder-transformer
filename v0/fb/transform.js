@@ -2,7 +2,12 @@ const get = require("get-value");
 const set = require("set-value");
 const sha256 = require("sha256");
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, getDateInFormat } = require("../util");
+const {
+  removeUndefinedValues,
+  getDateInFormat,
+  defaultRequestConfig,
+  defaultPostRequestConfig
+} = require("../util");
 const {
   baseMapping,
   eventNameMapping,
@@ -91,7 +96,9 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 }
 
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
-  const updatedEvent = { ...baseEvent };
+  const updatedEvent = {
+    ...baseEvent
+  };
   set(updatedEvent.custom_events[0], "_eventName", fbEventName);
 
   Object.keys(message.properties).forEach(k => {
@@ -134,20 +141,20 @@ function responseBuilderSimple(message, payload, destination) {
     requestMethod: "POST"
   };
 
-  const { appID, app_secret } = destination.Config;
+  const { appID } = destination.Config;
 
   // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
 
   const endpoint = "https://graph.facebook.com/v3.3/" + appID + "/activities";
 
-  return {
-    endpoint,
-    requestConfig,
-    userId: message.anonymousId,
-    header: {},
-    payload: removeUndefinedValues(payload),
-    statusCode: 200
-  };
+  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.FORM = removeUndefinedValues(payload);
+  response.statusCode = 200;
+
+  return response;
 }
 
 function buildBaseEvent(message) {
@@ -218,7 +225,10 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type");
-      return { statusCode: 400, error: "message type not supported" };
+      return {
+        statusCode: 400,
+        error: "message type not supported"
+      };
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);

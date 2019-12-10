@@ -4,14 +4,13 @@
     "error": "message type not supported"
   },
   {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
     "endpoint": "https://www.google-analytics.com/collect",
-    "requestConfig": {
-      "requestFormat": "PARAMS",
-      "requestMethod": "GET"
-    },
-    "header": {},
+    "headers": {},
     "userId": "12345",
-    "payload": {
+    "params": {
       "v": "1",
       "t": "pageview",
       "tid": "abcd",
@@ -22,17 +21,22 @@
       "dr": "",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
     },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
     "statusCode": 200
   },
   {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
     "endpoint": "https://www.google-analytics.com/collect",
-    "requestConfig": {
-      "requestFormat": "PARAMS",
-      "requestMethod": "GET"
-    },
-    "header": {},
+    "headers": {},
     "userId": "12345",
-    "payload": {
+    "params": {
       "v": "1",
       "t": "event",
       "tid": "UA-149602794-1",
@@ -41,6 +45,12 @@
       "ec": "test-category",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
     },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
     "statusCode": 200
   }
 ]

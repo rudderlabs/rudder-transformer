@@ -1,30 +1,35 @@
 [
   {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
     "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
-    "requestConfig": {
-      "requestFormat": "FORM",
-      "requestMethod": "POST"
-    },
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "header": {},
-    "payload": {
-      "event": "CUSTOM_APP_EVENTS",
-      "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
-      "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"spin_result\",\"_valueToSum\":400,\"additional_bet_index\":0,\"battle_id\":\"N/A\",\"bet_amount\":9,\"bet_level\":1,\"bet_multiplier\":1,\"coin_balance\":9466052,\"current_module_name\":\"CasinoGameModule\",\"days_in_game\":0,\"extra_param\":\"N/A\",\"fb_profile\":\"0\",\"featureGameType\":\"N/A\",\"game_fps\":30,\"game_id\":\"fireEagleBase\",\"game_name\":\"FireEagleSlots\",\"gem_balance\":0,\"graphicsQuality\":\"HD\",\"idfa\":\"2bf99787-33d2-4ae2-a76a-c49672f97252\",\"internetReachability\":\"ReachableViaLocalAreaNetwork\",\"isLowEndDevice\":\"False\",\"is_auto_spin\":\"False\",\"is_turbo\":\"False\",\"isf\":\"False\",\"ishighroller\":\"False\",\"jackpot_win_amount\":90,\"jackpot_win_type\":\"Silver\",\"level\":6,\"lifetime_gem_balance\":0,\"no_of_spin\":1,\"player_total_battles\":0,\"player_total_shields\":0,\"start_date\":\"2019-08-01\",\"total_payments\":0,\"tournament_id\":\"T1561970819\",\"userId\":\"c82cbdff-e5be-4009-ac78-cdeea09ab4b1\",\"versionSessionCount\":2,\"win_amount\":0,\"fb_content_id\":[123,345,567]}]",
-      "app_user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "advertiser_tracking_enabled": "0",
-      "application_tracking_enabled": "0",
-      "advertiser_id": "",
-      "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
-      "ud[fn]": "",
-      "ud[ln]": "",
-      "ud[ph]": "",
-      "ud[ge]": "",
-      "ud[db]": "",
-      "ud[ct]": "",
-      "ud[st]": "",
-      "ud[zp]": ""
+    "headers": {},
+    "body": {
+      "FORM": {
+        "event": "CUSTOM_APP_EVENTS",
+        "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
+        "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"spin_result\",\"_valueToSum\":400,\"additional_bet_index\":0,\"battle_id\":\"N/A\",\"bet_amount\":9,\"bet_level\":1,\"bet_multiplier\":1,\"coin_balance\":9466052,\"current_module_name\":\"CasinoGameModule\",\"days_in_game\":0,\"extra_param\":\"N/A\",\"fb_profile\":\"0\",\"featureGameType\":\"N/A\",\"game_fps\":30,\"game_id\":\"fireEagleBase\",\"game_name\":\"FireEagleSlots\",\"gem_balance\":0,\"graphicsQuality\":\"HD\",\"idfa\":\"2bf99787-33d2-4ae2-a76a-c49672f97252\",\"internetReachability\":\"ReachableViaLocalAreaNetwork\",\"isLowEndDevice\":\"False\",\"is_auto_spin\":\"False\",\"is_turbo\":\"False\",\"isf\":\"False\",\"ishighroller\":\"False\",\"jackpot_win_amount\":90,\"jackpot_win_type\":\"Silver\",\"level\":6,\"lifetime_gem_balance\":0,\"no_of_spin\":1,\"player_total_battles\":0,\"player_total_shields\":0,\"start_date\":\"2019-08-01\",\"total_payments\":0,\"tournament_id\":\"T1561970819\",\"userId\":\"c82cbdff-e5be-4009-ac78-cdeea09ab4b1\",\"versionSessionCount\":2,\"win_amount\":0,\"fb_content_id\":[123,345,567]}]",
+        "app_user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "advertiser_id": "",
+        "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
+        "ud[fn]": "",
+        "ud[ln]": "",
+        "ud[ph]": "",
+        "ud[ge]": "",
+        "ud[db]": "",
+        "ud[ct]": "",
+        "ud[st]": "",
+        "ud[zp]": ""
+      },
+      "XML": {},
+      "JSON": {}
     },
+    "params": {},
+    "files": {},
     "statusCode": 200
   }
 ]

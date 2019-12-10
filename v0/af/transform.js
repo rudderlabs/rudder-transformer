@@ -2,7 +2,7 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
 const {
   Event,
@@ -31,16 +31,16 @@ function responseBuilderSimple(payload, message, destination) {
     appsflyer_id: appsflyer_id
   };
 
-  return {
-    endpoint,
-    header: {
-      "Content-Type": "application/json",
-      authentication: destination.Config.devKey
-    },
-    requestConfig: defaultPostRequestConfig,
-    userId: message.anonymousId,
-    payload: removeUndefinedValues(updatedPayload)
+  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  response.endpoint = endpoint;
+  response.headers = {
+    "Content-Type": "application/json",
+    authentication: destination.Config.devKey
   };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.userId = message.anonymousId;
+  response.body.JSON = removeUndefinedValues(updatedPayload);
+  return response;
 }
 
 function getEventValueForUnIdentifiedTrackEvent(message) {

@@ -1,7 +1,11 @@
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../constants");
-const { removeUndefinedValues } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultRequestConfig,
+  defaultPostRequestConfig
+} = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -20,18 +24,13 @@ function responseBuilderSimple(parameters, message, eventType) {
     JSON.stringify(removeUndefinedValues(parameters))
   ).toString("base64");
 
-  return {
-    endpoint,
-    userId: message.anonymousId,
-    requestConfig: {
-      requestFormat: "PARAMS",
-      requestMethod: "POST"
-    },
-    header: {},
-    payload: {
-      data: encodedData
-    }
-  };
+  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = endpoint;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.params = { data: encodedData };
+
+  return response;
 }
 
 function processRevenueEvents(message, destination) {

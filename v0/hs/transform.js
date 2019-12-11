@@ -94,6 +94,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   response.endpoint = endpoint;
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.params = params;
+  response.statusCode = 200;
 
   return response;
 }
@@ -122,7 +123,21 @@ async function processTrack(message, destination) {
   );
 }
 
+function handleError(message) {
+  console.log(message);
+  const response = {
+    statusCode: 400,
+    error: message
+  };
+  return response;
+}
+
 async function processIdentify(message, destination) {
+  if (
+    !(message.context && message.context.traits && message.context.traits.email)
+  ) {
+    return handleError("Identify without email is not supported.");
+  }
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
@@ -143,11 +158,9 @@ async function processSingleMessage(message, destination) {
     switch (message.type) {
       case EventType.TRACK:
         response = await processTrack(message, destination);
-        response.statusCode = 200;
         break;
       case EventType.IDENTIFY:
         response = await processIdentify(message, destination);
-        response.statusCode = 200;
         break;
       default:
         console.log("message type " + message.type + " is not supported");

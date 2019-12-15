@@ -43,12 +43,19 @@ function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
+  let finalPayload = { ...params, ...customParams, ...payload };
+
+  //check if userId is there and populate
+  if (message.userId && message.userId.length > 0) {
+    finalPayload["cid"] = message.userId;
+  }
+
   const response = {
     endpoint: GA_ENDPOINT,
     requestConfig: defaultGetRequestConfig,
     header: {},
     userId: message.anonymousId,
-    payload: { ...params, ...customParams, ...payload }
+    payload: finalPayload
   };
   //console.log("response ", response);
   return response;
@@ -424,7 +431,7 @@ async function process(event) {
   if (!result.statusCode) {
     result.statusCode = 200;
   }
-  return [result];
+  return result;
 }
 
 exports.process = process;

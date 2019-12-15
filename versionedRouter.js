@@ -43,8 +43,10 @@ versions.forEach(version => {
       const respList = [];
       await events.forEach(async event => {
         try {
-          const respEvents = await destHandler.process(event);
-          console.log(respEvents);
+          let respEvents = await destHandler.process(event);
+          if (Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
           respList.push(
             ...respEvents.map(ev => {
               return { output: ev, metadata: event.metadata };

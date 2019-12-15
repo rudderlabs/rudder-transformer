@@ -1,5 +1,5 @@
 function process(event) {
-  return [event.message];
+  return event.message;
 }
 
 exports.process = process;

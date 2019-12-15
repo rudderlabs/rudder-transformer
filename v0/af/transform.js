@@ -28,7 +28,7 @@ function responseBuilderSimple(payload, message, destination) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      authentication: destination.Config.apiKey
+      authentication: destination.Config.devKey
     },
     requestConfig: defaultPostRequestConfig,
     userId: message.anonymousId,
@@ -144,7 +144,7 @@ function process(event) {
   if (!resp.statusCode) {
     resp.statusCode = 200;
   }
-  return [resp];
+  return resp;
 }
 
 exports.process = process;

@@ -1,5 +1,6 @@
 const Router = require("koa-router");
 const _ = require("lodash");
+const util = require("util");
 
 const { lstatSync, readdirSync } = require("fs");
 const { join } = require("path");
@@ -44,7 +45,7 @@ versions.forEach(version => {
       await events.forEach(async event => {
         try {
           let respEvents = await destHandler.process(event);
-          if (Array.isArray(respEvents)) {
+          if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
           respList.push(

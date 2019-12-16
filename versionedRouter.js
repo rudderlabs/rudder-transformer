@@ -1,6 +1,5 @@
 const Router = require("koa-router");
 const _ = require("lodash");
-const util = require("util");
 
 const { lstatSync, readdirSync } = require("fs");
 const { join } = require("path");
@@ -91,6 +90,8 @@ if (functionsEnabled()) {
             );
           } catch (error) {
             destTransformedEvents = [
+              // add metadata from first event since all events will have same session_id
+              // and session_id along with dest_id, dest_type are used to handle failures in case of custom transformations
               {
                 statusCode: 400,
                 error: error.message,
@@ -100,9 +101,6 @@ if (functionsEnabled()) {
           }
           transformedEvents.push(...destTransformedEvents);
         } else {
-          destEvents.forEach(e => {
-            e.metadata.untouched = true;
-          });
           transformedEvents.push(...destEvents);
         }
       })

@@ -1,5 +1,5 @@
 {
-  "context.traits.anonymousId": "cid",
+  "anonymousId": "cid",
   "properties.name": "cd",
   "context.app.name": "an",
   "context.app.build": "av",

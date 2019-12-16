@@ -56,7 +56,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "ef1d42390426e3f7c90ac78272e74344"
+        "devKey": "ef1d42390426e3f7c90ac78272e74344"
       },
       "Enabled": true
     }
@@ -116,7 +116,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "ef1d42390426e3f7c90ac78272e74344"
+        "devKey": "ef1d42390426e3f7c90ac78272e74344"
       },
       "Enabled": true
     }
@@ -169,7 +169,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "ef1d42390426e3f7c90ac78272e74344"
+        "devKey": "ef1d42390426e3f7c90ac78272e74344"
       },
       "Enabled": true
     }

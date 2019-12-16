@@ -105,7 +105,6 @@ function processSingleMessage(message, destination) {
 function process(events) {
   return events
     .map(event => {
-      console.log(event.message);
       return processSingleMessage(event.message, event.destination);
     })
     .flat();

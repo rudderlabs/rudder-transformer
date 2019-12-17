@@ -145,6 +145,10 @@ async function runUserTransform(events, code) {
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
+    // add metadata from first event to all custom transformed events since all events will have same session_id
+    // and job_id is not applicable after events are custom_transformed
+    const { metadata } = events && events[0];
+    metadata.custom_transformed = true;
     try {
       const res = await getTransformationCode(versionId);
       if (res) {
@@ -158,13 +162,20 @@ async function userTransformHandler(events, versionId) {
         );
         const formattedEvents = userTransformedEvents.map(e => ({
           message: e,
-          destination
+          destination,
+          metadata
         }));
         return formattedEvents;
       }
     } catch (error) {
       console.log(error);
-      return events.map(event => ({ statusCode: 400, error: error.message }));
+      return [
+        {
+          statusCode: 400,
+          error: error.message,
+          metadata
+        }
+      ];
     }
   }
   return events;

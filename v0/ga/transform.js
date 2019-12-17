@@ -426,21 +426,12 @@ function processSingleMessage(message, destination) {
 }
 
 // Iterate over input batch and generate response for each message
-async function process(events) {
-  const respList = [];
-  events.forEach(event => {
-    try {
-      const result = processSingleMessage(event.message, event.destination);
-      if (!result.statusCode) {
-        result.statusCode = 200;
-      }
-      respList.push(result);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
-    }
-  });
-
-  return respList;
+async function process(event) {
+  const result = processSingleMessage(event.message, event.destination);
+  if (!result.statusCode) {
+    result.statusCode = 200;
+  }
+  return result;
 }
 
 exports.process = process;

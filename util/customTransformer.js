@@ -148,7 +148,7 @@ async function userTransformHandler(events, versionId) {
     // add metadata from first event to all custom transformed events since all events will have same session_id
     // and job_id is not applicable after events are custom_transformed
     const { metadata } = events && events[0];
-    metadata.custom_transformed = true;
+    if (metadata) metadata.custom_transformed = true;
     try {
       const res = await getTransformationCode(versionId);
       if (res) {

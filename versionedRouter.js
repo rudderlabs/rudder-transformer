@@ -87,4 +87,12 @@ if (functionsEnabled()) {
   });
 }
 
+router.get("/version", (ctx, next) => {
+  ctx.body = process.env.npm_package_version || "Version Info not found";
+});
+
+router.get("/health", (ctx, next) => {
+  ctx.body = "OK";
+});
+
 module.exports = router;

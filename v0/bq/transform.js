@@ -146,12 +146,8 @@ function processSingleMessage(message, destination) {
   return responses;
 }
 
-function process(events) {
-  return events
-    .map(event => {
-      return processSingleMessage(event.message, event.destination);
-    })
-    .flat();
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

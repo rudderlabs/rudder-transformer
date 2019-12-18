@@ -8,7 +8,7 @@ const {
   removeUndefinedAndNullValues
 } = require("../util");
 
-function responseBuilderSimple(payload, message, autoPilotConfig) {
+function responseBuilder(payload, message, autoPilotConfig) {
   let endpoint;
   let requestConfig;
 
@@ -114,23 +114,10 @@ function getDestinationKeys(destination) {
   return autoPilotConfig;
 }
 
-function processSingleMessage(message, destination) {
-  const autoPilotConfig = getDestinationKeys(destination);
-  const properties = getTransformedJSON(message, autoPilotConfig);
-  return responseBuilderSimple(properties, message, autoPilotConfig);
-}
-
-function process(events) {
-  let respList = [];
-  events.forEach(event => {
-    try {
-      response = processSingleMessage(event.message, event.destination);
-      respList.push(response);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
-    }
-  });
-  return respList;
+function process(event) {
+  const autoPilotConfig = getDestinationKeys(event.destination);
+  const properties = getTransformedJSON(event.message, autoPilotConfig);
+  return responseBuilder(properties, event.message, autoPilotConfig);
 }
 
 exports.process = process;

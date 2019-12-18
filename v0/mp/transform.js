@@ -24,7 +24,7 @@ function responseBuilderSimple(parameters, message, eventType) {
     JSON.stringify(removeUndefinedValues(parameters))
   ).toString("base64");
 
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
   response.userId = message.userId ? message.userId : message.anonymousId;

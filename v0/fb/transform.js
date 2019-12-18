@@ -147,7 +147,7 @@ function responseBuilderSimple(message, payload, destination) {
 
   const endpoint = "https://graph.facebook.com/v3.3/" + appID + "/activities";
 
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId ? message.userId : message.anonymousId;

@@ -31,7 +31,7 @@ function responseBuilderSimple(payload, message, destination) {
     appsflyer_id: appsflyer_id
   };
 
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.headers = {
     "Content-Type": "application/json",

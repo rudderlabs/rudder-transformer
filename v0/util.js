@@ -51,19 +51,21 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
-const defaultRequestConfig = {
-  version: "1",
-  type: "REST",
-  method: "POST",
-  endpoint: "",
-  headers: {},
-  params: {},
-  body: {
-    JSON: {},
-    XML: {},
-    FORM: {}
-  },
-  files: {}
+const defaultRequestConfig = () => {
+  return {
+    version: "1",
+    type: "REST",
+    method: "POST",
+    endpoint: "",
+    headers: {},
+    params: {},
+    body: {
+      JSON: {},
+      XML: {},
+      FORM: {}
+    },
+    files: {}
+  };
 };
 
 module.exports = {

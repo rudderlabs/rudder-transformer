@@ -72,7 +72,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   let endpoint = "https://track.hubspot.com/v1/event";
   let params = {};
 
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
 
   if (eventType !== EventType.TRACK) {

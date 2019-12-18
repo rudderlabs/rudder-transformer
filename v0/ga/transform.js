@@ -51,7 +51,7 @@ function responseBuilderSimple(
     finalPayload["cid"] = message.userId;
   }
 
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
   response.userId =

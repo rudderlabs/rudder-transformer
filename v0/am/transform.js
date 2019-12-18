@@ -108,7 +108,7 @@ function responseBuilderSimple(
   fixSessionId(payload);
 
   // console.log(payload);
-  const response = JSON.parse(JSON.stringify(defaultRequestConfig));
+  const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {

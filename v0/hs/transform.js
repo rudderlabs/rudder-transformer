@@ -164,11 +164,11 @@ async function processSingleMessage(message, destination) {
   return response;
 }
 
-async function process(events) {
-  let respList = [];
-  respList = await Promise.all(
-    events.map(event => processSingleMessage(event.message, event.destination))
-  );
-  return respList;
+function process(event) {
+  const resp = processSingleMessage(event.message, event.destination);
+  if (!resp.statusCode) {
+    resp.statusCode = 200;
+  }
+  return resp;
 }
 exports.process = process;

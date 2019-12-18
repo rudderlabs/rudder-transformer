@@ -19,7 +19,7 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
     case EventType.TRACK:
       requestConfig = defaultPostRequestConfig;
-      endpoint = `${endpoints.triggerJourneyUrl}/${autoPilotConfig.triggerId}`;
+      endpoint = `${endpoints.triggerJourneyUrl}/${autoPilotConfig.triggerId}/contact/${message.context.traits.email}`;
       break;
     default:
       break;
@@ -28,7 +28,9 @@ function responseBuilder(payload, message, autoPilotConfig) {
   const response = {
     endpoint,
     header: {
-      autopilotapikey: `${autoPilotConfig.apiKey}`
+      autopilotapikey: `${autoPilotConfig.apiKey}`,
+      "Content-Type": "application/json",
+      Accept: "application/json"
     },
     requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
@@ -58,26 +60,18 @@ function getIdentifyPayload(message) {
 function getTrackPayload(message) {
   let rawPayload = {};
   let propertiesObj = {};
-  let contactObj = {};
-  const properties = get(message, "properties")
+
+  const properties = get(message.properties)
     ? Object.keys(message.properties)
     : null;
 
-  const contextFields = get(message.context)
-    ? Object.keys(message.context)
-    : null;
-
-  if (properties != null && context != null) {
+  if (properties != null) {
     properties.forEach(property => {
-      propertiesObj[property] = properties[property];
-    });
-    contextFields.forEach(field => {
-      contactObj[field] = contextFields[field];
+      propertiesObj[property] = message.properties[property];
     });
   }
 
   rawPayload.property = propertiesObj;
-  rawPayload.contact = contactObj;
   return rawPayload;
 }
 

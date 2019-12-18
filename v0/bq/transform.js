@@ -15,29 +15,24 @@ function dataType(val) {
   // TODO: find a better way to check for valid datetime
   // const datetimeRegex = /[0-9]{4}\-(?:0[1-9]|1[0-2])\-(?:0[1-9]|[1-2][0-9]|3[0-1])\s+(?:2[0-3]|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]/;
 
-  if (
-    validTimestamp(val) ||
-    moment(val, "YYYY-MM-DD hh:mm:ss z", true).isValid()
-  ) {
+  if (validTimestamp(val)) {
     return "datetime";
   }
 
   const type = typeof val;
   switch (type) {
-    case "string":
-    case "boolean":
-      if (Number.isNaN(Number(val))) {
-        return type;
-      }
-      return Number.isInteger(val) ? "int" : "float";
     case "number":
       return Number.isInteger(val) ? "int" : "float";
+    case "string":
+    case "boolean":
+      return type;
     default:
       return "string";
   }
 }
 
-function setFromConfig(output, input, configJson) {
+function setFromConfig(input, configJson) {
+  const output = {};
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
@@ -49,13 +44,18 @@ function setFromConfig(output, input, configJson) {
       output[configJson[key]] = val;
     }
   });
+  return output;
 }
 
-function setFromProperties(output, input, prefix = "") {
-  if (!input) return;
+function setFromProperties(input, prefix = "") {
+  let output = {};
+  if (!input) return output;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setFromProperties(output, input[key], `${key}_`);
+      output = {
+        ...output,
+        ...setFromProperties(output, input[key], `${key}_`)
+      };
     } else {
       let val = input[key];
       if (dataType(val) === "datetime") {
@@ -66,6 +66,7 @@ function setFromProperties(output, input, prefix = "") {
       output[toSafeDBString(prefix + key)] = input[key];
     }
   });
+  return output;
 }
 
 function getColumns(obj) {
@@ -77,27 +78,70 @@ function getColumns(obj) {
 }
 
 function processSingleMessage(message, destination) {
-  var responses = [];
-  const result = {};
-  setFromConfig(result, message, whDefaultConfigJson);
-  if (message.type.toLowerCase() == "track") {
-    setFromConfig(result, message, whTrackConfigJson);
-    result.event = toSnakeCase(result.event_text);
+  const responses = [];
+  const eventType = message.type.toLowerCase();
+  switch (eventType) {
+    case "track": {
+      let result = setFromConfig(message, whDefaultConfigJson);
+      result = { ...result, ...setFromConfig(message, whTrackConfigJson) };
+      result.event = toSnakeCase(result.event_text);
 
-    const trackEvent = { ...result };
-    setFromProperties(trackEvent, message.properties);
+      const trackEvent = {
+        ...result,
+        ...setFromProperties(message.properties)
+      };
 
-    result.metadata = {
-      table: "tracks",
-      columns: getColumns(result)
-    };
-    responses.push(result);
+      result.metadata = {
+        table: "tracks",
+        columns: getColumns(result)
+      };
+      responses.push(result);
 
-    trackEvent.metadata = {
-      table: toSafeDBString(trackEvent.event),
-      columns: getColumns(trackEvent)
-    };
-    responses.push(trackEvent);
+      trackEvent.metadata = {
+        table: toSafeDBString(trackEvent.event),
+        columns: getColumns(trackEvent)
+      };
+      responses.push(trackEvent);
+      break;
+    }
+    case "identify": {
+      const event = setFromProperties(message.context.traits);
+      const usersEvent = { ...event };
+      const identifiesEvent = { ...event };
+
+      usersEvent.id = message.userId;
+      identifiesEvent.user_id = message.userId;
+      identifiesEvent.anonymous_id = message.anonymousId;
+
+      identifiesEvent.metadata = {
+        table: "identifies",
+        columns: getColumns(identifiesEvent)
+      };
+      responses.push(identifiesEvent);
+
+      usersEvent.metadata = {
+        table: "users",
+        columns: getColumns(usersEvent)
+      };
+      responses.push(usersEvent);
+      break;
+    }
+    case "page":
+    case "screen": {
+      const defaultEvent = setFromConfig(message, whDefaultConfigJson);
+      const event = {
+        ...defaultEvent,
+        ...setFromProperties(message.properties)
+      };
+      event.metadata = {
+        table: `${eventType}s`,
+        columns: getColumns(event)
+      };
+      responses.push(event);
+      break;
+    }
+    default:
+      throw new Error("Unknown event type", eventType);
   }
   return responses;
 }

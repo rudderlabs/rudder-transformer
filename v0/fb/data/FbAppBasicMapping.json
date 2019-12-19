@@ -26,6 +26,6 @@
   "context.traits.city": "ud[ct]",
   "context.traits.state": "ud[st]",
   "context.traits.zip": "ud[zp]",
-  "timestamp": "CUSTOM_EVENTS.0._logTime",
-  "event": "CUSTOM_EVENTS.0._eventName"
+  "timestamp": "custom_events.0._logTime",
+  "event": "custom_events.0._eventName"
 }

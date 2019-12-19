@@ -1,41 +1,56 @@
 [
   {
+      "version": "1",
+      "type": "REST",
       "endpoint": "http://api.mixpanel.com/engage/",
-      "userId": "00000000000000000000000000",
-      "requestConfig": {
-          "requestFormat": "PARAMS",
-          "requestMethod": "POST"
-      },
-      "header": {},
-      "payload": {
+      "userId": "12345",
+      "method": "POST",
+      "headers": {},
+      "params": {
           "data": "eyIkc2V0Ijp7IiRlbWFpbCI6InRlc3RodWJzcG90MkBlbWFpbC5jb20iLCIkbmFtZSI6IlRlc3QgSHVic3BvdCJ9LCIkdG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsIiRkaXN0aW5jdF9pZCI6IjEyMzQ1In0="
       },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
       "statusCode": 200
   },
   {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
       "endpoint": "http://api.mixpanel.com/track/",
-      "userId": "00000000000000000000000000",
-      "requestConfig": {
-          "requestFormat": "PARAMS",
-          "requestMethod": "POST"
-      },
-      "header": {},
-      "payload": {
+      "userId": "12345",
+      "headers": {},
+      "params": {
           "data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7InBhdGgiOiIiLCJyZWZlcnJlciI6IiIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiIiwidG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsImRpc3RpbmN0X2lkIjoiMTIzNDUifX0="
       },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
       "statusCode": 200
   },
   {
       "endpoint": "http://api.mixpanel.com/track/",
-      "userId": "00000000000000000000000000",
-      "requestConfig": {
-          "requestFormat": "PARAMS",
-          "requestMethod": "POST"
-      },
-      "header": {},
-      "payload": {
+      "userId": "12345",
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "headers": {},
+      "params": {
           "data": "eyJldmVudCI6InRlc3QgdHJhY2sgZXZlbnQgSFMiLCJwcm9wZXJ0aWVzIjp7InVzZXJfYWN0dWFsX3JvbGUiOiJzeXN0ZW1fYWRtaW4sIHN5c3RlbV91c2VyIiwidXNlcl9hY3R1YWxfaWQiOjEyMzQ1LCJ0b2tlbiI6ImVmMWQ0MjM5MDQyNmUzZjdjOTBhYzc4MjcyZTc0MzQ0IiwiZGlzdGluY3RfaWQiOiIxMjM0NSJ9fQ=="
       },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
       "statusCode": 200
   }
 ]

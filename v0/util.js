@@ -78,6 +78,23 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultRequestConfig = () => {
+  return {
+    version: "1",
+    type: "REST",
+    method: "POST",
+    endpoint: "",
+    headers: {},
+    params: {},
+    body: {
+      JSON: {},
+      XML: {},
+      FORM: {}
+    },
+    files: {}
+  };
+};
+
 module.exports = {
   getMappingConfig,
   toStringValues,
@@ -88,5 +105,6 @@ module.exports = {
   toSafeDBString,
   validTimestamp,
   defaultGetRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  defaultRequestConfig
 };

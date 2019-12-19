@@ -5,6 +5,7 @@ const { EventType } = require("../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
+  defaultRequestConfig,
   removeUndefinedValues
 } = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
@@ -68,32 +69,34 @@ function getPropertyValueForIdentify(propMap) {
 }
 
 function responseBuilderSimple(payload, message, eventType, destination) {
-  let endpoint = "https://track.hubspot.com/v1/event/";
-  let requestConfig = defaultGetRequestConfig;
+  let endpoint = "https://track.hubspot.com/v1/event";
+  let params = {};
+
+  const response = defaultRequestConfig();
+  response.method = defaultGetRequestConfig.requestMethod;
 
   if (eventType !== EventType.TRACK) {
     const { email } = message.context.traits;
     const { apiKey } = destination.Config;
+    params = { hapikey: apiKey };
     if (email) {
       endpoint =
         "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/" +
-        email +
-        "/?hapikey=" +
-        apiKey;
+        email;
     } else {
-      endpoint =
-        "https://api.hubapi.com/contacts/v1/contact/?hapikey=" + apiKey;
+      endpoint = "https://api.hubapi.com/contacts/v1/contact";
     }
-    requestConfig = defaultPostRequestConfig;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = removeUndefinedValues(payload);
+  } else {
+    params = removeUndefinedValues(payload);
   }
+  response.endpoint = endpoint;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.params = params;
+  response.statusCode = 200;
 
-  return {
-    endpoint,
-    header: {},
-    userId: message.anonymousId,
-    requestConfig,
-    payload: removeUndefinedValues(payload)
-  };
+  return response;
 }
 
 async function processTrack(message, destination) {
@@ -120,7 +123,21 @@ async function processTrack(message, destination) {
   );
 }
 
+function handleError(message) {
+  console.log(message);
+  const response = {
+    statusCode: 400,
+    error: message
+  };
+  return response;
+}
+
 async function processIdentify(message, destination) {
+  if (
+    !(message.context && message.context.traits && message.context.traits.email)
+  ) {
+    return handleError("Identify without email is not supported.");
+  }
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
@@ -141,11 +158,9 @@ async function processSingleMessage(message, destination) {
     switch (message.type) {
       case EventType.TRACK:
         response = await processTrack(message, destination);
-        response.statusCode = 200;
         break;
       case EventType.IDENTIFY:
         response = await processIdentify(message, destination);
-        response.statusCode = 200;
         break;
       default:
         console.log("message type " + message.type + " is not supported");

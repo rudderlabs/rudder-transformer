@@ -41,9 +41,6 @@
       "originalTimestamp": "2019-10-15T09:35:31.288Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "userProperties": {
-        "test_key": "test value"
-      },
       "integrations": {
         "All": true
       },
@@ -51,7 +48,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167"
       },
       "Enabled": true
@@ -107,7 +104,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167"
       },
       "Enabled": true
@@ -156,7 +153,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167"
       },
       "Enabled": true

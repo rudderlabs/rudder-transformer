@@ -1,44 +1,56 @@
 [
   {
-    "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com/?hapikey=e7a09623-7a0a-4529-9158-3a7c7c96ffe2",
-    "header": {},
-    "userId": "00000000000000000000000000",
-    "requestConfig": {
-      "requestFormat": "JSON",
-      "requestMethod": "POST"
-    },
-    "payload": {
-      "properties": [
-        {
-          "property": "email",
-          "value": "testhubspot2@email.com"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "headers": {},
+      "userId": "12345",
+      "params": {
+          "hapikey" : "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+            "properties": [
+                {
+                    "property": "email",
+                    "value": "testhubspot2@email.com"
+                },
+                {
+                    "property": "firstname",
+                    "value": "Test Hubspot"
+                }
+            ]
         },
-        {
-          "property": "firstname",
-          "value": "Test Hubspot"
-        }
-      ]
-    },
-    "statusCode": 200
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
   },
   {
     "statusCode": 400,
     "error": "message type page is not supported"
   },
   {
-    "endpoint": "https://track.hubspot.com/v1/event/",
-    "header": {},
-    "userId": "00000000000000000000000000",
-    "requestConfig": {
-      "requestFormat": "PARAMS",
-      "requestMethod": "GET"
-    },
-    "payload": {
-      "_a": "6405167",
-      "_n": "test track event HS",
-      "email": "testhubspot2@email.com",
-      "firstname": "Test Hubspot"
-    },
-    "statusCode": 200
+      "version": "1",
+      "type": "REST",
+      "method": "GET",
+      "endpoint": "https://track.hubspot.com/v1/event",
+      "headers": {},
+      "userId": "12345",
+      "params": {
+          "_a": "6405167",
+          "_n": "test track event HS",
+          "email": "testhubspot2@email.com",
+          "firstname": "Test Hubspot"
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
   }
 ]

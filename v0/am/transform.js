@@ -3,7 +3,11 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType, SpecedTraits, TraitsMapping } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultPostRequestConfig,
+  defaultRequestConfig
+} = require("../util");
 const {
   Event,
   ENDPOINT,
@@ -53,7 +57,9 @@ function stringToHash(string) {
 }
 
 function fixSessionId(payload) {
-  payload.session_id = stringToHash(payload.session_id);
+  payload.session_id = payload.session_id
+    ? stringToHash(payload.session_id)
+    : -1;
 }
 
 // Build response for Amplitude. In this case, endpoint will be different depending
@@ -101,17 +107,17 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
 
-  const response = {
-    endpoint,
-    requestConfig: defaultPostRequestConfig,
-    header: {
-      "Content-Type": "application/json"
-    },
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: {
-      api_key: destination.Config.apiKey,
-      [rootElementName]: payload
-    }
+  // console.log(payload);
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = {
+    api_key: destination.Config.apiKey,
+    [rootElementName]: payload
   };
   return response;
 }

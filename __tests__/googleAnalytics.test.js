@@ -15,7 +15,8 @@ test(`${name} Tests`, async () => {
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  const output = await transformer.process(inputData);
-
-  expect(output).toEqual(expectedData);
+  inputData.forEach(async (input, index) => {
+    const output = await transformer.process(input);
+    expect(output).toEqual(expectedData[index]);
+  });
 });

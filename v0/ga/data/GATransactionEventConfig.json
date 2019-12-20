@@ -1,5 +1,5 @@
 {
-  "context.traits.anonymousId": "cid",
+  "anonymousId": "cid",
   "properties.order_id": "ti",
   "properties.affiliation": "ta",
   "properties.shipping": "ts",

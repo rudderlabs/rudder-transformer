@@ -125,17 +125,17 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   return updatedEvent;
 }
 
-function responseBuilderSimple(message, payload) {
+function responseBuilderSimple(message, payload, destination) {
   const requestConfig = {
     requestFormat: "FORM",
     requestMethod: "POST"
   };
 
-  const { app_id, app_secret } = message.destination_props.Fb;
+  const { appID, app_secret } = destination.Config;
 
   // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
 
-  const endpoint = "https://graph.facebook.com/v3.3/" + app_id + "/activities";
+  const endpoint = "https://graph.facebook.com/v3.3/" + appID + "/activities";
 
   return {
     endpoint,
@@ -188,7 +188,7 @@ function buildBaseEvent(message) {
   return baseEvent;
 }
 
-function processSingleMessage(message) {
+function processSingleMessage(message, destination) {
   let fbEventName;
   const baseEvent = buildBaseEvent(message);
   var eventName = message.event;
@@ -219,28 +219,15 @@ function processSingleMessage(message) {
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);
-  return responseBuilderSimple(message, updatedEvent);
+  return responseBuilderSimple(message, updatedEvent, destination);
 }
 
-function process(events) {
-  const respList = [];
-  let resp;
-  events.forEach(event => {
-    try {
-      resp = processSingleMessage(event.message, event.destination);
-      if (!resp.statusCode) {
-        resp.statusCode = 200;
-      }
-    } catch (e) {
-      console.log("error occurred while processing payload for FB: ", e);
-      resp = {
-        statusCode: 400,
-        error: "error occurred while processing payload."
-      };
-    }
-    respList.push(resp);
-  });
-  return respList;
+function process(event) {
+  const resp = processSingleMessage(event.message, event.destination);
+  if (!resp.statusCode) {
+    resp.statusCode = 200;
+  }
+  return resp;
 }
 
 exports.process = process;

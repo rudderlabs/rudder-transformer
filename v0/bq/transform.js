@@ -91,17 +91,17 @@ function processSingleMessage(message, destination) {
         ...setFromProperties(message.properties)
       };
 
-      result.metadata = {
+      const tracksMetadata = {
         table: "tracks",
         columns: getColumns(result)
       };
-      responses.push(result);
+      responses.push({ metadata: tracksMetadata, data: result });
 
-      trackEvent.metadata = {
+      const trackEventMetadata = {
         table: toSafeDBString(trackEvent.event),
         columns: getColumns(trackEvent)
       };
-      responses.push(trackEvent);
+      responses.push({ metadata: trackEventMetadata, data: trackEvent });
       break;
     }
     case "identify": {
@@ -113,17 +113,17 @@ function processSingleMessage(message, destination) {
       identifiesEvent.user_id = message.userId;
       identifiesEvent.anonymous_id = message.anonymousId;
 
-      identifiesEvent.metadata = {
+      const identifiesMetadata = {
         table: "identifies",
         columns: getColumns(identifiesEvent)
       };
-      responses.push(identifiesEvent);
+      responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
-      usersEvent.metadata = {
+      const usersMetadata = {
         table: "users",
         columns: getColumns(usersEvent)
       };
-      responses.push(usersEvent);
+      responses.push({ metadata: usersMetadata, data: usersEvent });
       break;
     }
     case "page":
@@ -133,11 +133,11 @@ function processSingleMessage(message, destination) {
         ...defaultEvent,
         ...setFromProperties(message.properties)
       };
-      event.metadata = {
+      const metadata = {
         table: `${eventType}s`,
         columns: getColumns(event)
       };
-      responses.push(event);
+      responses.push({ metadata, data: event });
       break;
     }
     default:

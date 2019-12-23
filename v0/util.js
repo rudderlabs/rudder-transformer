@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
@@ -54,6 +55,31 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   });
   return payload;
 };
+const isObject = value => {
+  var type = typeof value;
+  return value != null && (type == "object" || type == "function");
+};
+
+const toSnakeCase = str => {
+  if (!str) return "";
+  return String(str)
+    .replace(/^[^A-Za-z0-9]*|[^A-Za-z0-9]*$/g, "")
+    .replace(/([a-z])([A-Z])/g, (m, a, b) => a + "_" + b.toLowerCase())
+    .replace(/[^A-Za-z0-9]+|_+/g, "_")
+    .toLowerCase();
+};
+
+const toSafeDBString = str => {
+  if (parseInt(str[0]) > 0) str = `_${str}`;
+  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
+  return str.substr(0, 127);
+};
+
+function validTimestamp(input) {
+  // eslint-disable-next-line no-restricted-globals
+  if (!isNaN(input)) return false;
+  return new Date(input).getTime() > 0;
+}
 
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
@@ -69,6 +95,10 @@ const defaultDeleteRequestConfig = {
   requestFormat: "JSON",
   requestMethod: "DELETE"
 };
+const defaultPutRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PUT"
+};
 
 module.exports = {
   getMappingConfig,
@@ -77,8 +107,13 @@ module.exports = {
   removeUndefinedValues,
   removeNullValues,
   removeUndefinedAndNullValues,
+  isObject,
+  toSnakeCase,
+  toSafeDBString,
+  validTimestamp,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
+  defaultPutRequestConfig,
   defaultDeleteRequestConfig,
   updatePayload
 };

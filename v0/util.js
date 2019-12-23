@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
+const set = require("set-value");
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -15,6 +16,8 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isDefined = x => !_.isUndefined(x);
+const isNotNull = x => x != null;
+const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 
 const toStringValues = obj => {
   Object.keys(obj).forEach(key => {
@@ -40,6 +43,17 @@ const getDateInFormat = date => {
 };
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
+const removeNullValues = obj => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+
+const updatePayload = (currentKey, eventMappingArr, value, payload) => {
+  eventMappingArr.map(obj => {
+    if (obj.rudderKey === currentKey) {
+      set(payload, obj.expectedKey, value);
+    }
+  });
+  return payload;
+};
 
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
@@ -51,11 +65,20 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultDeleteRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "DELETE"
+};
+
 module.exports = {
   getMappingConfig,
   toStringValues,
   getDateInFormat,
   removeUndefinedValues,
+  removeNullValues,
+  removeUndefinedAndNullValues,
   defaultGetRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+  updatePayload
 };

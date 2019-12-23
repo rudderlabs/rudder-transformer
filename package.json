@@ -28,6 +28,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "set-value": "^3.0.1",
     "sha256": "^0.2.0"
   },

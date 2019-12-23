@@ -110,6 +110,7 @@ function getDestinationKeys(destination) {
 
 function process(event) {
   const autoPilotConfig = getDestinationKeys(event.destination);
+  // TODO: Implement to accept multiple triggerId's.
   const properties = getTransformedJSON(event.message, autoPilotConfig);
   return responseBuilder(properties, event.message, autoPilotConfig);
 }

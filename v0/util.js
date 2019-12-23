@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
+const set = require("set-value");
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -46,6 +47,14 @@ const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
+const updatePayload = (currentKey, eventMappingArr, value, payload) => {
+  eventMappingArr.map(obj => {
+    if (obj.rudderKey === currentKey) {
+      set(payload, obj.expectedKey, value);
+    }
+  });
+  return payload;
+};
 const isObject = value => {
   var type = typeof value;
   return value != null && (type == "object" || type == "function");
@@ -82,6 +91,10 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultDeleteRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "DELETE"
+};
 const defaultPutRequestConfig = {
   requestFormat: "JSON",
   requestMethod: "PUT"
@@ -100,5 +113,7 @@ module.exports = {
   validTimestamp,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  defaultDeleteRequestConfig,
+  updatePayload
 };

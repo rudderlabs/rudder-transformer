@@ -48,6 +48,7 @@ function dataType(val) {
   const type = typeof val;
   switch (type) {
     case "number":
+      if (val > 2 ** 31 || val < -(2 ** 31)) return "string";
       return Number.isInteger(val) ? "int" : "float";
     case "string":
     case "boolean":
@@ -58,7 +59,7 @@ function dataType(val) {
 }
 
 function getColumns(obj) {
-  const columns = {};
+  const columns = { uuid_ts: "datetime" };
   Object.keys(obj).forEach(key => {
     columns[toSafeDBString(key)] = dataType(obj[key]);
   });

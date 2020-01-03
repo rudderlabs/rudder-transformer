@@ -99,6 +99,7 @@ function processSingleMessage(message, destination) {
       const identifiesEvent = { ...event };
 
       usersEvent.id = message.userId;
+      usersEvent.user_id = message.userId;
       identifiesEvent.user_id = message.userId;
       identifiesEvent.anonymous_id = message.anonymousId;
 

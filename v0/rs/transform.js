@@ -48,8 +48,7 @@ function dataType(val) {
   const type = typeof val;
   switch (type) {
     case "number":
-      if (val > 2 ** 31 || val < -(2 ** 31)) return "string";
-      return Number.isInteger(val) ? "int" : "float";
+      return Number.isInteger(val) ? "bigint" : "float";
     case "string":
     case "boolean":
       return type;

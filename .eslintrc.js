@@ -12,6 +12,7 @@ module.exports = {
     "prefer-destructuring": "off",
     camelcase: "off",
     eqeqeq: "off",
+    "no-undef": "off",
     "no-param-reassign": "off",
     "block-scoped-var": "off",
     "prefer-template": "off",

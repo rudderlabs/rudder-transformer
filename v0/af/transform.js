@@ -28,7 +28,7 @@ function responseBuilderSimple(payload, message, destination) {
     endpoint,
     header: {
       "Content-Type": "application/json",
-      authentication: destination.Config.apiKey
+      authentication: destination.Config.devKey
     },
     requestConfig: defaultPostRequestConfig,
     userId: message.anonymousId,
@@ -139,25 +139,12 @@ function processSingleMessage(message, destination) {
   return responseBuilderSimple(payload, message, destination);
 }
 
-function process(events) {
-  const respList = [];
-  let resp;
-  events.forEach(event => {
-    try {
-      resp = processSingleMessage(event.message, event.destination);
-      if (!resp.statusCode) {
-        resp.statusCode = 200;
-      }
-    } catch (e) {
-      console.log("error occurred while processing payload for AF: ", e);
-      resp = {
-        statusCode: 400,
-        error: "error occurred while processing payload."
-      };
-    }
-    respList.push(resp);
-  });
-  return respList;
+function process(event) {
+  const resp = processSingleMessage(event.message, event.destination);
+  if (!resp.statusCode) {
+    resp.statusCode = 200;
+  }
+  return resp;
 }
 
 exports.process = process;

@@ -38,6 +38,7 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
         "trackingID": "abcd"
       },
@@ -97,10 +98,16 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
         "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "24"
+        }
+      ]
     }
   },
   {
@@ -148,10 +155,16 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "ID": 2,
       "Config": {
-        "trackingID": "UA-149602794-1"
+        "trackingID": "abcd"
       },
-      "Enabled": true
+      "Enabled": true,
+      "Transformations": [
+        {
+          "VersionID": "24"
+        }
+      ]
     }
   }
 ]

@@ -37,6 +37,25 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
+//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+function stringToHash(string) {
+  var hash = 0;
+
+  if (string.length == 0) return hash;
+
+  for (i = 0; i < string.length; i++) {
+    char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+
+  return Math.abs(hash);
+}
+
+function fixSessionId(payload) {
+  payload.session_id = stringToHash(payload.session_id);
+}
+
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
 
@@ -50,7 +69,7 @@ function responseBuilderSimple(
   const rawPayload = {};
 
   set(rawPayload, "event_properties", message.properties);
-  set(rawPayload, "user_properties", message.user_properties);
+  set(rawPayload, "user_properties", message.userProperties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -80,8 +99,7 @@ function responseBuilderSimple(
   rawPayload.time = new Date(message.originalTimestamp).getTime();
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
-
-  //console.log(payload);
+  fixSessionId(payload);
 
   const response = {
     endpoint,
@@ -95,7 +113,6 @@ function responseBuilderSimple(
       [rootElementName]: payload
     }
   };
-  //console.log(response);
   return response;
 }
 
@@ -212,46 +229,37 @@ function processTransaction(message) {
   return [];
 }
 
-function process(events) {
+function process(event) {
   const respList = [];
+  const { message, destination } = event;
+  const messageType = message.type.toLowerCase();
+  const eventType = message.event ? message.event.toLowerCase() : undefined;
+  const toSendEvents = [];
+  if (
+    messageType === EventType.TRACK &&
+    (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+      eventType === Event.PRODUCT_LIST_CLICKED)
+  ) {
+    toSendEvents.push(processProductListAction(message));
+  } else if (
+    messageType === EventType.TRACK &&
+    (eventType == Event.CHECKOUT_STARTED.name ||
+      eventType == Event.ORDER_UPDATED.name ||
+      eventType == Event.ORDER_COMPLETED.name ||
+      eventType == Event.ORDER_CANCELLED.name)
+  ) {
+    toSendEvents.push(processTransaction(message));
+  } else {
+    toSendEvents.push(message);
+  }
 
-  events.forEach(event => {
-    try {
-      const { message, destination } = event;
-      const messageType = message.type.toLowerCase();
-      const eventType = message.event ? message.event.toLowerCase() : undefined;
-      const toSendEvents = [];
-      if (
-        messageType === EventType.TRACK &&
-        (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-          eventType === Event.PRODUCT_LIST_CLICKED)
-      ) {
-        toSendEvents.push(processProductListAction(message));
-      } else if (
-        messageType === EventType.TRACK &&
-        (eventType == Event.CHECKOUT_STARTED.name ||
-          eventType == Event.ORDER_UPDATED.name ||
-          eventType == Event.ORDER_COMPLETED.name ||
-          eventType == Event.ORDER_CANCELLED.name)
-      ) {
-        toSendEvents.push(processTransaction(message));
-      } else {
-        toSendEvents.push(message);
-      }
-
-      toSendEvents.forEach(sendEvent => {
-        const result = processSingleMessage(sendEvent, destination);
-        if (!result.statusCode) {
-          result.statusCode = 200;
-        }
-        respList.push(result);
-      });
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
+  toSendEvents.forEach(sendEvent => {
+    const result = processSingleMessage(sendEvent, destination);
+    if (!result.statusCode) {
+      result.statusCode = 200;
     }
+    respList.push(result);
   });
-
-  //console.log(JSON.stringify(respList));
   return respList;
 }
 

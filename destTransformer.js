@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
+require("dotenv").config();
 
 const router = require("./versionedRouter");
 const cluster = require("./util/cluster");
@@ -14,6 +15,7 @@ app.use(
     jsonLimit: "200mb"
   })
 );
+
 app.use(router.routes()).use(router.allowedMethods());
 
 if (clusterEnabled) {

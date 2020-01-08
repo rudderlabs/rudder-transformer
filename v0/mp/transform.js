@@ -42,7 +42,7 @@ function processRevenueEvents(message, destination) {
   };
   const parameters = {
     $append: { $transactions: transactions },
-    $token: destination.Config.apiKey,
+    $token: destination.Config.token,
     $distinct_id: message.userId ? message.userId : message.anonymousId
   };
 
@@ -52,7 +52,7 @@ function processRevenueEvents(message, destination) {
 function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
-    token: destination.Config.apiKey,
+    token: destination.Config.token,
     distinct_id: message.userId ? message.userId : message.anonymousId,
     time: message.timestamp
   };
@@ -86,7 +86,7 @@ function processIdentifyEvents(message, eventName, destination) {
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const parameters = {
     $set: properties,
-    $token: destination.Config.apiKey,
+    $token: destination.Config.token,
     $distinct_id: message.userId ? message.userId : message.anonymousId
   };
   return responseBuilderSimple(parameters, message, eventName);
@@ -95,7 +95,7 @@ function processIdentifyEvents(message, eventName, destination) {
 function processPageOrScreenEvents(message, eventName, destination) {
   const properties = {
     ...message.properties,
-    token: destination.Config.apiKey,
+    token: destination.Config.token,
     distinct_id: message.userId ? message.userId : message.anonymousId,
     time: message.timestamp
   };
@@ -127,24 +127,11 @@ function processSingleMessage(message, destination) {
   }
 }
 
-function process(events) {
-  const respList = [];
-  let resp;
-  events.forEach(event => {
-    try {
-      resp = processSingleMessage(event.message, event.destination);
-      if (!resp.statusCode) {
-        resp.statusCode = 200;
-      }
-    } catch (e) {
-      console.log("error occurred while processing payload for MP: ", e);
-      resp = {
-        statusCode: 400,
-        error: "error occurred while processing payload."
-      };
-    }
-    respList.push(resp);
-  });
-  return respList;
+function process(event) {
+  const resp = processSingleMessage(event.message, event.destination);
+  if (!resp.statusCode) {
+    resp.statusCode = 200;
+  }
+  return resp;
 }
 exports.process = process;

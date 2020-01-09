@@ -113,6 +113,7 @@ function processSingleMessage(message, destination) {
       usersEvent.user_id = message.userId;
       identifiesEvent.user_id = message.userId;
       identifiesEvent.anonymous_id = message.anonymousId;
+      identifiesEvent.id = message.messageId;
 
       const identifiesMetadata = {
         table: "identifies",

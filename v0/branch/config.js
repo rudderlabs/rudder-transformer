@@ -138,13 +138,6 @@ const Event = {
   }
 };
 
-// const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-// const nameToEventMap = {};
-// const events = Object.keys(Event);
-// events.forEach(event => {
-//   nameToEventMap[Event[event].name] = Event[event];
-// });
-
 module.exports = {
   Event,
   ConfigCategory,

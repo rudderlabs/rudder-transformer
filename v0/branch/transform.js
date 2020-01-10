@@ -6,7 +6,7 @@ const {
   destinationConfigKeys,
   endpoints
 } = require("./config");
-const { EventConfig, mapPayload } = require("./data/eventMapping");
+const { EventConfig, payloadMapping } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues
@@ -165,7 +165,7 @@ function getIdentifyPayload(message, branchConfig) {
     name: updateNameValue(
       rawPayload,
       message.userId,
-      mapPayload.common.acceptedNames
+      payloadMapping.common.acceptedNames
     )
   };
   return commonPayload(message, rawPayload, message.type);
@@ -177,7 +177,7 @@ function getTrackPayload(message, branchConfig) {
     name: updateNameValue(
       rawPayload,
       message.event,
-      mapPayload.common.acceptedNames
+      payloadMapping.common.acceptedNames
     )
   };
   return commonPayload(message, rawPayload, message.type);

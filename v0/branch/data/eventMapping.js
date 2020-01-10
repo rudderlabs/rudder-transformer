@@ -19,7 +19,7 @@ const acceptedNames = [
   { rudderKey: "SHARE_CONTENT_ITEM", expectedKey: "SHARE_CONTENT_ITEM" }
 ];
 
-const mapPayload = {
+const payloadMapping = {
   common: {
     acceptedNames
   }
@@ -125,5 +125,5 @@ module.exports = {
     PaymentRelatedEventConfig,
     EComGenericEventConfig
   },
-  mapPayload
+  payloadMapping
 };

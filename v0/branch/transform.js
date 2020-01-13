@@ -6,7 +6,7 @@ const {
   destinationConfigKeys,
   endpoints
 } = require("./config");
-const { EventConfig, mapPayload } = require("./data/eventMapping");
+const eventMapping = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues
@@ -39,7 +39,7 @@ function responseBuilder(payload, message, branchConfig) {
 function getUserData(message) {
   let context = message.context;
 
-  return {
+  return removeUndefinedAndNullValues({
     os: context.os.name,
     os_version: context.os.version,
     app_version: context.app.version,
@@ -49,7 +49,7 @@ function getUserData(message) {
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
     developer_identity: message.anonymousId
-  };
+  });
 }
 
 function mapPayload(rudderPropetiesArr, rudderPropertiesObj, config) {
@@ -58,10 +58,12 @@ function mapPayload(rudderPropetiesArr, rudderPropertiesObj, config) {
   let event_data = {};
 
   rudderPropetiesArr.map(rudderKey => {
-    const filteredKey = Object.keys(EventConfig[config]).find(key => {
-      return key === rudderKey;
-    });
-    const desiredKey = EventConfig[config][filteredKey];
+    const filteredKey = Object.keys(eventMapping.EventConfig[config]).find(
+      key => {
+        return key === rudderKey;
+      }
+    );
+    const desiredKey = eventMapping.EventConfig[config][filteredKey];
 
     switch (config) {
       case "TransactionEventConfig":
@@ -159,27 +161,31 @@ function commonPayload(message, rawPayload, type) {
   return rawPayload;
 }
 
+function updateNameValue(eventName, acceptedNames) {
+  return acceptedNames.find(obj => {
+    return obj.rudderValue.toLowerCase() === eventName.toLowerCase();
+  }).expectedValue;
+}
+
 function getIdentifyPayload(message, branchConfig) {
   let rawPayload = {
-    branch_key: branchConfig.BRANCH_KEY,
-    name: updateNameValue(
-      rawPayload,
-      message.userId,
-      mapPayload.common.acceptedNames
-    )
+    branch_key: branchConfig.BRANCH_KEY
   };
+  rawPayload.name = updateNameValue(
+    message.userId,
+    eventMapping.mapPayload.common.acceptedNames
+  );
   return commonPayload(message, rawPayload, message.type);
 }
 
 function getTrackPayload(message, branchConfig) {
   let rawPayload = {
-    branch_key: branchConfig.BRANCH_KEY,
-    name: updateNameValue(
-      rawPayload,
-      message.event,
-      mapPayload.common.acceptedNames
-    )
+    branch_key: branchConfig.BRANCH_KEY
   };
+  rawPayload.name = updateNameValue(
+    message.event,
+    eventMapping.mapPayload.common.acceptedNames
+  );
   return commonPayload(message, rawPayload, message.type);
 }
 

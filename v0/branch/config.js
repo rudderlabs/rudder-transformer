@@ -1,50 +1,9 @@
-// List of events -
-const CommerceEvents = {
-  name: [
-    "ADD_TO_CART",
-    "ADD_TO_WISHLIST",
-    "VIEW_CART",
-    "INITIATE_PURCHASE",
-    "ADD_PAYMENT_INFO",
-    "PURCHASE",
-    "SPEND_CREDITS"
-  ],
-  contentItems: []
-};
-const ContentEvents = ["SEARCH", "VIEW_ITEM", "VIEW_ITEMS", "RATE", "SHARE"];
-const UserLifeCycleEvents = {
-  name: [
-    "SEARCH",
-    "VIEW_CONTENT",
-    "VIEW_CONTENT_LIST",
-    "RATE",
-    "SHARE_CONTENT_ITEM"
-  ]
-};
-const SupportedEvents = [
-  "ADD_TO_CART",
-  "ADD_TO_WISHLIST",
-  "VIEW_CART",
-  "INITIATE_PURCHASE",
-  "ADD_PAYMENT_INFO",
-  "PURCHASE",
-  "SPEND_CREDITS",
-  "SEARCH",
-  "VIEW_ITEM",
-  "VIEW_ITEMS",
-  "RATE",
-  "SHARE",
-  "VIEW_CONTENT",
-  "VIEW_CONTENT_LIST",
-  "SHARE_CONTENT_ITEM"
-];
-
 const destinationConfigKeys = {
   BRANCH_KEY: "branchKey",
   BRANCH_SECRET: "branchSecret"
 };
 
-const baseEndpoint = " https://api2.branch.io";
+const baseEndpoint = "https://api2.branch.io";
 const endpoints = {
   standardEventUrl: `${baseEndpoint}/v2/event/standard`,
   customEventUrl: `${baseEndpoint}/v2/event/custom`

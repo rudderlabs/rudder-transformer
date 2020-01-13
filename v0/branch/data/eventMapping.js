@@ -14,9 +14,9 @@ const acceptedNames = [
   { rudderValue: "Product List Viewed", expectedValue: "VIEW_ITE,MS" },
   { rudderValue: "Product Reviewed", expectedValue: "RATE" },
   { rudderValue: "Product Shared", expectedValue: "SHARE" },
-  { rudderKey: "VIEW_CONTENT", expectedKey: "VIEW_CONTENT" },
-  { rudderKey: "VIEW_CONTENT_LIST", expectedKey: "VIEW_CONTENT_LIST" },
-  { rudderKey: "SHARE_CONTENT_ITEM", expectedKey: "SHARE_CONTENT_ITEM" }
+  { rudderKey: "View Content", expectedKey: "VIEW_CONTENT" },
+  { rudderKey: "View Content List", expectedKey: "VIEW_CONTENT_LIST" },
+  { rudderKey: "Share Content Item", expectedKey: "SHARE_CONTENT_ITEM" }
 ];
 
 const mapPayload = {

@@ -55,10 +55,6 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   });
   return payload;
 };
-const isObject = value => {
-  var type = typeof value;
-  return value != null && (type == "object" || type == "function");
-};
 
 const toSnakeCase = str => {
   if (!str) return "";
@@ -81,6 +77,11 @@ function validTimestamp(input) {
   return new Date(input).getTime() > 0;
 }
 
+const isObject = value => {
+  var type = typeof value;
+  return value != null && (type == "object" || type == "function");
+};
+
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
   requestMethod: "GET"
@@ -91,13 +92,21 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
-const defaultDeleteRequestConfig = {
-  requestFormat: "JSON",
-  requestMethod: "DELETE"
-};
-const defaultPutRequestConfig = {
-  requestFormat: "JSON",
-  requestMethod: "PUT"
+const defaultRequestConfig = () => {
+  return {
+    version: "1",
+    type: "REST",
+    method: "POST",
+    endpoint: "",
+    headers: {},
+    params: {},
+    body: {
+      JSON: {},
+      XML: {},
+      FORM: {}
+    },
+    files: {}
+  };
 };
 
 module.exports = {
@@ -113,7 +122,6 @@ module.exports = {
   validTimestamp,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
-  defaultPutRequestConfig,
-  defaultDeleteRequestConfig,
-  updatePayload
+  updatePayload,
+  defaultRequestConfig
 };

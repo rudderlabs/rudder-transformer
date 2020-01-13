@@ -1,5 +1,6 @@
 const Router = require("koa-router");
 const _ = require("lodash");
+const logger = require("./logger");
 
 const { lstatSync, readdirSync } = require("fs");
 const { join } = require("path");
@@ -38,8 +39,9 @@ versions.forEach(version => {
   const versionDestinations = getDirectories(version);
   versionDestinations.forEach(versionedDestination => {
     const destHandler = getDestHandler(versionedDestination);
-    router.post(`/${versionedDestination}`, async (ctx, next) => {
+    router.post(`/${versionedDestination}`, async ctx => {
       const events = ctx.request.body;
+      logger.debug("[DT] Input events: " + JSON.stringify(events));
       const respList = [];
       await events.forEach(async event => {
         try {
@@ -53,6 +55,8 @@ versions.forEach(version => {
             })
           );
         } catch (error) {
+          logger.error(error);
+
           respList.push({
             statusCode: 400,
             error: error.message || "Error occurred while processing payload.",
@@ -60,6 +64,8 @@ versions.forEach(version => {
           });
         }
       });
+      logger.debug("[DT] Output events: " + JSON.stringify(respList));
+
       ctx.body = respList;
     });
   });
@@ -68,6 +74,7 @@ versions.forEach(version => {
 if (functionsEnabled()) {
   router.post("/customTransform", async (ctx, next) => {
     const events = ctx.request.body;
+    logger.debug("[CT] Input events: " + JSON.stringify(events));
     const groupedEvents = _.groupBy(
       events,
       event => `${event.destination.ID}_${event.message.anonymousId}`
@@ -89,6 +96,7 @@ if (functionsEnabled()) {
               transformationVersionId
             );
           } catch (error) {
+            logger.error(error);
             destTransformedEvents = [
               // add metadata from first event since all events will have same session_id
               // and session_id along with dest_id, dest_type are used to handle failures in case of custom transformations
@@ -105,8 +113,17 @@ if (functionsEnabled()) {
         }
       })
     );
+    logger.debug("[CT] Output events: " + JSON.stringify(transformedEvents));
     ctx.body = transformedEvents;
   });
 }
+
+router.get("/version", (ctx, next) => {
+  ctx.body = process.env.npm_package_version || "Version Info not found";
+});
+
+router.get("/health", (ctx, next) => {
+  ctx.body = "OK";
+});
 
 module.exports = router;

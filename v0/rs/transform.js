@@ -48,7 +48,7 @@ function dataType(val) {
   const type = typeof val;
   switch (type) {
     case "number":
-      return Number.isInteger(val) ? "int" : "float";
+      return Number.isInteger(val) ? "bigint" : "float";
     case "string":
     case "boolean":
       return type;
@@ -58,7 +58,7 @@ function dataType(val) {
 }
 
 function getColumns(obj) {
-  const columns = {};
+  const columns = { uuid_ts: "datetime" };
   Object.keys(obj).forEach(key => {
     columns[toSafeDBString(key)] = dataType(obj[key]);
   });
@@ -99,8 +99,10 @@ function processSingleMessage(message, destination) {
       const identifiesEvent = { ...event };
 
       usersEvent.id = message.userId;
+      usersEvent.user_id = message.userId;
       identifiesEvent.user_id = message.userId;
       identifiesEvent.anonymous_id = message.anonymousId;
+      identifiesEvent.id = message.messageId;
 
       const identifiesMetadata = {
         table: "identifies",

@@ -70,7 +70,7 @@ function setFromProperties(input, prefix = "") {
 }
 
 function getColumns(obj) {
-  const columns = {};
+  const columns = { uuid_ts: "datetime" };
   Object.keys(obj).forEach(key => {
     columns[toSafeDBString(key)] = dataType(obj[key]);
   });
@@ -110,8 +110,10 @@ function processSingleMessage(message, destination) {
       const identifiesEvent = { ...event };
 
       usersEvent.id = message.userId;
+      usersEvent.user_id = message.userId;
       identifiesEvent.user_id = message.userId;
       identifiesEvent.anonymous_id = message.anonymousId;
+      identifiesEvent.id = message.messageId;
 
       const identifiesMetadata = {
         table: "identifies",

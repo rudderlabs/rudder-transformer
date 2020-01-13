@@ -8,7 +8,7 @@ const acceptedNames = [
   { rudderValue: "Checkout Started", expectedValue: "INITIATE_PURCHASE" },
   { rudderValue: "Payment Info Entered", expectedValue: "ADD_PAYMENT_INFO" },
   { rudderValue: "Order Completed", expectedValue: "PURCHASE" },
-  { rudderValue: "SPEND_CREDITS", expectedValue: "SPEND_CREDITS" },
+  { rudderValue: "Spend Credits", expectedValue: "SPEND_CREDITS" },
   { rudderValue: "Products Searched", expectedValue: "SEARCH" },
   { rudderValue: "Product Viewed", expectedValue: "VIEW_ITEM" },
   { rudderValue: "Product List Viewed", expectedValue: "VIEW_ITE,MS" },

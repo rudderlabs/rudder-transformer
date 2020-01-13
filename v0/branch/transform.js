@@ -131,6 +131,7 @@ function getConfig(rudderEvent) {
 function commonPayload(message, rawPayload, type) {
   let rudderPropetiesArr;
   let rudderPropertiesObj;
+  let rudderEvent;
 
   switch (type) {
     case EventType.TRACK:
@@ -138,16 +139,17 @@ function commonPayload(message, rawPayload, type) {
         ? Object.keys(message.properties)
         : null;
       rudderPropertiesObj = message.properties;
+      rudderEvent = message.event.toLowerCase();
       break;
     case EventType.IDENTIFY:
       rudderPropetiesArr = get(message.context, "traits")
         ? Object.keys(message.context.traits)
         : null;
       rudderPropertiesObj = message.context.traits;
+      rudderEvent = message.userId.toLowerCase();
       break;
   }
 
-  const rudderEvent = message.event.toLowerCase();
   const payload = mapPayload(
     rudderPropetiesArr,
     rudderPropertiesObj,

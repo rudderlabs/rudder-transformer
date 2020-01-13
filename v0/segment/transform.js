@@ -71,17 +71,8 @@ function processSingleMessage(message, destination) {
   return responseBuilderSimple(respObj, segmentConfig);
 }
 
-function process(events) {
-  let respList = [];
-  events.forEach(event => {
-    try {
-      response = processSingleMessage(event.message, event.destination);
-      respList.push(response);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error });
-    }
-  });
-  return respList;
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

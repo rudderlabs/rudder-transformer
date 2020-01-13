@@ -212,12 +212,8 @@ async function processSingleMessage(message, destination) {
   return processIdentify(message, destination);
 }
 
-async function process(events) {
-  let respList = [];
-  respList = await Promise.all(
-    events.map(event => processSingleMessage(event.message, event.destination))
-  );
-  return respList;
+async function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

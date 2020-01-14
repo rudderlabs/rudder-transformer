@@ -63,11 +63,10 @@ const ContentEventConfig = {
 
 const LifecycleEventConfig = {
   name: {
-    Search: "SEARCH",
-    "View Content": "VIEW_CONTENT",
-    "View Content List": "VIEW_CONTENT_LIST",
-    Rate: "RATE",
-    "Share Content Item": "SHARE_CONTENT_ITEM"
+    "Complete Registration": "COMPLETE_REGISTRATION",
+    "Complete Tutorial": "COMPLETE_TUTORIAL",
+    "Achieve Level": "ACHIEVE_LEVEL",
+    "Unlock Achievement": "UNLOCK_ACHIEVEMENT"
   },
   event_data: ["description"]
 };

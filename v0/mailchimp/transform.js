@@ -203,13 +203,8 @@ async function processIdentify(message, destination) {
 }
 
 async function processSingleMessage(message, destination) {
-  console.log(message);
-  console.log(message.type);
   if (message.type !== EventType.IDENTIFY) {
-    return {
-      statusCode: 400,
-      error: "message type " + message.type + " is not supported"
-    };
+    throw new Error("message type " + message.type + " is not supported");
   }
 
   return processIdentify(message, destination);

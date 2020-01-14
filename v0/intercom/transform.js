@@ -194,7 +194,9 @@ function getTrackPayload(message, intercomConfig) {
 
   rawPayload.event_name = message.event ? message.event : undefined;
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
-  rawPayload.created_at = Math.floor(new Date().getTime() / 1000);
+  rawPayload.created_at = Math.floor(
+    new Date(message.originalTimestamp).getTime() / 1000
+  );
 
   return rawPayload;
 }

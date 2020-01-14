@@ -1,0 +1,45 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": { "JSON": { "email": "sayan@gmail.com" }, "XML": {}, "FORM": {} },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "metadata": {
+          "category": "test-category",
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin, system_user"
+        },
+        "event_name": "test track event GA3",
+        "user_id": "12345",
+        "created_at": 1571051718
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345"
+  }
+]

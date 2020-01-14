@@ -9,10 +9,12 @@ let {
   subscriptionStatus
 } = require("./config");
 const {
+  defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig
 } = require("../util");
 
+// Converts to upper case and removes spaces
 function filterTagValue(tag) {
   const maxLength = 10;
   let newTag = tag.replace(/[^\w\s]/gi, "");
@@ -27,6 +29,9 @@ function getMailChimpEndpoint(mailChimpConfig) {
 }
 
 async function checkIfMailExists(mailChimpConfig, email) {
+  if (!email) {
+    return false;
+  }
   const hash = md5(email);
   const url = `${getMailChimpEndpoint(mailChimpConfig)}/members/${hash}`;
 
@@ -66,33 +71,29 @@ function getUpdateUserTraitsUrl(mailChimpConfig, email) {
 }
 
 async function responseBuilderSimple(payload, message, mailChimpConfig) {
-  let endpoint;
-  let requestConfig;
   const email = message.context.traits.email;
   const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
+  let response = defaultRequestConfig();
   if (emailExists) {
-    endpoint = getUpdateUserTraitsUrl(mailChimpConfig, email);
-    requestConfig = defaultPutRequestConfig;
+    response.endpoint = getUpdateUserTraitsUrl(mailChimpConfig, email);
+    response.method = defaultPutRequestConfig.requestMethod;
   } else {
-    endpoint = getSubscribeUserUrl(mailChimpConfig);
-    requestConfig = defaultPostRequestConfig;
+    response.endpoint = getSubscribeUserUrl(mailChimpConfig);
+    response.method = defaultPostRequestConfig.requestMethod;
   }
+  response.body.JSON = payload;
   const basicAuth = new Buffer(
     "apiKey" + ":" + `${mailChimpConfig.apiKey}`
   ).toString("base64");
-  const response = {
-    endpoint,
-    header: {
+  return {
+    ...response,
+    headers: {
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload
+    userId: message.userId ? message.userId : message.anonymousId
   };
-
-  return response;
 }
 
 async function getPayload(
@@ -202,6 +203,8 @@ async function processIdentify(message, destination) {
 }
 
 async function processSingleMessage(message, destination) {
+  console.log(message);
+  console.log(message.type);
   if (message.type !== EventType.IDENTIFY) {
     return {
       statusCode: 400,

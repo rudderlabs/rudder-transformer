@@ -177,19 +177,18 @@ function getTrackPayload(message, intercomConfig) {
     properties.forEach(property => {
       const value = message.properties[property];
 
+      metadata[property] = value;
       if (property === "price" || property === "currency") {
         updatePayload(property, mapPayload.track.price, value, price);
         price.amount *= 100;
+        metadata.price = price;
       }
 
       if (property === "order_ID" || property === "order_url") {
         updatePayload(property, mapPayload.track.order, value, order_number);
+        metadata.order_number = order_number;
       }
-
-      metadata[property] = value;
     });
-    metadata.price = price;
-    metadata.order_number = order_number;
     rawPayload.metadata = metadata;
   }
 

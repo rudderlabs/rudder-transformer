@@ -6,6 +6,7 @@ const path = require("path");
 
 const transformer = require(`../v0/${integration}/transform`);
 
+// TODO: Add cases for group, reset, etc. Also for events with order_id, etc.
 test(`${name} Tests`, async () => {
   const inputDataFile = fs.readFileSync(
     path.resolve(__dirname, `./data/${integration}_input.json`)

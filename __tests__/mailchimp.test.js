@@ -1,4 +1,4 @@
-const integration = "mc";
+const integration = "mailchimp";
 const name = "Mailchimp";
 
 const fs = require("fs");
@@ -6,7 +6,7 @@ const path = require("path");
 const transformer = require(`../v0/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
-test(`${name} Tests`, () => {
+test(`${name} Tests`, async () => {
   const inputDataFile = fs.readFileSync(
     path.resolve(__dirname, `./data/${integration}_input.json`)
   );
@@ -15,6 +15,10 @@ test(`${name} Tests`, () => {
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  const output = transformer.process(inputData);
-  expect(output).toEqual(expectedData);
+  await Promise.all(
+    inputData.map(async (input, index) => {
+      const output = await transformer.process(input);
+      expect(output).toEqual(expectedData[index]);
+    })
+  );
 });

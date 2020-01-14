@@ -8,18 +8,18 @@ const acceptedNames = [
   { rudderValue: "Checkout Started", expectedValue: "INITIATE_PURCHASE" },
   { rudderValue: "Payment Info Entered", expectedValue: "ADD_PAYMENT_INFO" },
   { rudderValue: "Order Completed", expectedValue: "PURCHASE" },
-  { rudderValue: "SPEND_CREDITS", expectedValue: "SPEND_CREDITS" },
+  { rudderValue: "Spend Credits", expectedValue: "SPEND_CREDITS" },
   { rudderValue: "Products Searched", expectedValue: "SEARCH" },
   { rudderValue: "Product Viewed", expectedValue: "VIEW_ITEM" },
   { rudderValue: "Product List Viewed", expectedValue: "VIEW_ITE,MS" },
   { rudderValue: "Product Reviewed", expectedValue: "RATE" },
   { rudderValue: "Product Shared", expectedValue: "SHARE" },
-  { rudderKey: "VIEW_CONTENT", expectedKey: "VIEW_CONTENT" },
-  { rudderKey: "VIEW_CONTENT_LIST", expectedKey: "VIEW_CONTENT_LIST" },
-  { rudderKey: "SHARE_CONTENT_ITEM", expectedKey: "SHARE_CONTENT_ITEM" }
+  { rudderKey: "View Content", expectedKey: "VIEW_CONTENT" },
+  { rudderKey: "View Content List", expectedKey: "VIEW_CONTENT_LIST" },
+  { rudderKey: "Share Content Item", expectedKey: "SHARE_CONTENT_ITEM" }
 ];
 
-const payloadMapping = {
+const mapPayload = {
   common: {
     acceptedNames
   }
@@ -125,5 +125,5 @@ module.exports = {
     PaymentRelatedEventConfig,
     EComGenericEventConfig
   },
-  payloadMapping
+  mapPayload
 };

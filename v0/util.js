@@ -92,6 +92,15 @@ const defaultPostRequestConfig = {
   requestMethod: "POST"
 };
 
+const defaultDeleteRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "DELETE"
+};
+const defaultPutRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PUT"
+};
+
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -122,6 +131,8 @@ module.exports = {
   validTimestamp,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
+  defaultDeleteRequestConfig,
+  defaultPutRequestConfig,
   updatePayload,
   defaultRequestConfig
 };

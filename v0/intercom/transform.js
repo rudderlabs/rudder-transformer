@@ -8,51 +8,54 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
+  defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
 } = require("../util");
 
 function responseBuilderSimple(payload, message, intercomConfig) {
-  let endpoint;
-  let requestConfig;
+  let response = defaultRequestConfig();
 
   switch (message.type) {
     case EventType.IDENTIFY:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = endpoints.userUrl;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = endpoints.userUrl;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
     case EventType.TRACK:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = endpoints.eventsUrl;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = endpoints.eventsUrl;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
     case EventType.PAGE:
-      requestConfig = defaultGetRequestConfig;
-      endpoint = endpoints.conversationsUrl;
+      response.method = defaultGetRequestConfig.requestMethod;
+      response.endpoint = endpoints.conversationsUrl;
       break;
     case EventType.GROUP:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = endpoints.companyUrl;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = endpoints.companyUrl;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
     case EventType.RESET:
       const email = get(message.context.traits.email);
       const userId = get(message.context.traits.userId);
       const params = email ? `email=${email}` : `user_id=${userId}`;
-      requestConfig = defaultDeleteRequestConfig;
-      endpoint = `${endpoints.userUrl}?${params}`;
+      response.method = defaultDeleteRequestConfig.requestMethod;
+      response.endpoint = `${endpoints.userUrl}?${params}`;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+      break;
     default:
       break;
   }
 
-  const response = {
-    endpoint,
-    header: {
+  response = {
+    ...response,
+    headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${intercomConfig.apiKey}`,
       Accept: "application/json"
     },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
+    userId: message.userId ? message.userId : message.anonymousId
   };
   return response;
 }
@@ -112,9 +115,7 @@ function getGroupPayload(message, intercomConfig) {
 function getIdentifyPayload(message, intercomConfig) {
   let rawPayload = {};
 
-  const traits = get(message.context.traits.traits)
-    ? message.context.traits.traits
-    : message.context.traits;
+  const traits = get(message.context.traits);
 
   if (get(message.context.Intercom)) {
     const userHash = get(message.context.Intercom.user_hash);

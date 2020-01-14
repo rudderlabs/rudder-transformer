@@ -6,7 +6,9 @@ const {
 } = require("../util");
 
 function responseBuilderSimple(payload, segmentConfig) {
-  const basicAuth = new Buffer(`${segmentConfig.writeKey}:`).toString("base64");
+  const basicAuth = Buffer.from(`${segmentConfig.writeKey}:`).toString(
+    "base64"
+  );
 
   const response = {
     endpoint: batchEndpoint,

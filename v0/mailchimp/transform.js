@@ -83,7 +83,7 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
     response.method = defaultPostRequestConfig.requestMethod;
   }
   response.body.JSON = payload;
-  const basicAuth = new Buffer(
+  const basicAuth = Buffer.from(
     "apiKey" + ":" + `${mailChimpConfig.apiKey}`
   ).toString("base64");
   return {

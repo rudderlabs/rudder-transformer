@@ -88,7 +88,8 @@ function processSingleMessage(message, destination) {
 
       const trackEvent = {
         ...result,
-        ...setFromProperties(message.properties)
+        ...setFromProperties(message.properties),
+        ...setFromProperties(message.userProperties)
       };
 
       const tracksMetadata = {

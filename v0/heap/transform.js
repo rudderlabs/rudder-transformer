@@ -106,7 +106,7 @@ function getTransformedJSON(message, heapConfig) {
 }
 
 function getDestinationKeys(destination) {
-  let heapConfig = {};
+  const heapConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {

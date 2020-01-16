@@ -10,10 +10,28 @@ const {
 } = require("./config");
 const {
   removeUndefinedValues,
-  toStringValues,
   defaultGetRequestConfig,
   defaultRequestConfig
 } = require("../util");
+
+function getParamsFromConfig(message, destination) {
+  const params = {};
+
+  var obj = {};
+  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
+  if (destination.Config.customMappings) {
+    destination.Config.customMappings.forEach(mapping => {
+      obj[mapping.from] = mapping.to;
+    });
+  }
+  // console.log(obj);
+  const keys = Object.keys(obj);
+  keys.forEach(key => {
+    params[obj[key]] = get(message.properties, key);
+  });
+  // console.log(params);
+  return params;
+}
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -40,15 +58,15 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   const params = removeUndefinedValues(parameters);
 
-  //Get custom params from destination config
+  // Get custom params from destination config
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  let finalPayload = { ...params, ...customParams, ...payload };
+  const finalPayload = { ...params, ...customParams, ...payload };
 
-  //check if userId is there and populate
+  // check if userId is there and populate
   if (message.userId && message.userId.length > 0) {
-    finalPayload["cid"] = message.userId;
+    finalPayload.cid = message.userId;
   }
 
   const response = defaultRequestConfig();
@@ -61,25 +79,6 @@ function responseBuilderSimple(
   response.params = finalPayload;
 
   return response;
-}
-
-function getParamsFromConfig(message, destination) {
-  let params = {};
-
-  var obj = {};
-  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
-  if (destination.Config.customMappings) {
-    destination.Config.customMappings.forEach(mapping => {
-      obj[mapping.from] = mapping.to;
-    });
-  }
-  // console.log(obj);
-  let keys = Object.keys(obj);
-  keys.forEach(key => {
-    params[obj[key]] = get(message.properties, key);
-  });
-  //console.log(params);
-  return params;
 }
 
 // Function for processing pageviews
@@ -415,7 +414,6 @@ function processSingleMessage(message, destination) {
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
       throw new Error("message type not supported");
-      return;
   }
 
   return responseBuilderSimple(

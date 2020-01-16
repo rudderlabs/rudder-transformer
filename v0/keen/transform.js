@@ -1,10 +1,12 @@
+const isIp = require("is-ip");
+var validUrl = require("valid-url");
 const { EventType } = require("../../constants");
 const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 const { ENDPOINT } = require("./config");
 
 function addAddons(properties, config) {
   const addons = [];
-  if (config.ipAddon && properties.request_ip) {
+  if (config.ipAddon && properties.request_ip && isIp(properties.request_ip)) {
     addons.push({
       name: "keen:ip_to_geo",
       input: { ip: "request_ip" },
@@ -18,14 +20,20 @@ function addAddons(properties, config) {
       output: "parsed_user_agent"
     });
   }
-  if (config.urlAddon && properties.url) {
+  if (config.urlAddon && properties.url && validUrl.isUri(properties.url)) {
     addons.push({
       name: "keen:url_parser",
       input: { url: "url" },
       output: "parsed_page_url"
     });
   }
-  if (config.referrerAddon && properties.referrer && properties.url) {
+  // should check referrer ?
+  if (
+    config.referrerAddon &&
+    properties.referrer &&
+    properties.url &&
+    validUrl.isUri(properties.url)
+  ) {
     addons.push({
       name: "keen:referrer_parser",
       input: {

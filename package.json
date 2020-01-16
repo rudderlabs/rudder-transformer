@@ -23,6 +23,7 @@
     "dotenv": "^8.2.0",
     "get-value": "^3.0.1",
     "gh-release": "^3.5.0",
+    "is-ip": "^3.1.0",
     "json-query": "^2.2.2",
     "koa": "^2.8.2",
     "koa-bodyparser": "^4.2.1",
@@ -30,7 +31,8 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "set-value": "^3.0.1",
-    "sha256": "^0.2.0"
+    "sha256": "^0.2.0",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "jest": "^24.9.0",

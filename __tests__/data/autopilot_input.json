@@ -1,0 +1,128 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "1d6287b196d34de28a7f57bfbeee3b0c",
+        "customMappings": [
+          { "from": "0009", "to": "mail me" },
+          { "from": "0007", "to": "signup" }
+        ],
+        "triggerId": "0003"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Autopilot",
+        "ID": "1WTGqsgvxPPK3hq2E1o2DKQughe",
+        "Name": "AUTOPILOT"
+      },
+      "Enabled": true,
+      "ID": "1WTHtOuPiBjPiZGwb7qxwdKDUsh",
+      "Name": "au test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "tom",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 },
+        "traits": {
+          "anonymousId": "tom",
+          "email": "tom@gmail.com",
+          "name": "tom"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "integrations": { "All": true },
+      "messageId": "78e1fde1-b8bb-496d-b9e4-1d766e71e051",
+      "originalTimestamp": "2020-01-16T10:47:08.4Z",
+      "receivedAt": "2020-01-16T16:17:11.699+05:30",
+      "request_ip": "[::1]:60238",
+      "sentAt": "2020-01-16T10:47:11.682Z",
+      "session_id": "de6159a5-0323-4225-95e1-c069dfd9539f",
+      "timestamp": "2020-01-16T16:17:08.417+05:30",
+      "type": "identify",
+      "userId": "tom"
+    },
+    "metadata": {
+      "anonymousId": "tom",
+      "destinationId": "1WTHtOuPiBjPiZGwb7qxwdKDUsh",
+      "destinationType": "AUTOPILOT",
+      "jobId": 25,
+      "messageId": "78e1fde1-b8bb-496d-b9e4-1d766e71e051",
+      "sourceId": "1WTGuYZ1UQW3Pli1BON7etgb9Z1"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "1d6287b196d34de28a7f57bfbeee3b0c",
+        "customMappings": [
+          { "from": "0009", "to": "mail me" },
+          { "from": "0007", "to": "signup" }
+        ],
+        "triggerId": "0003"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Autopilot",
+        "ID": "1WTGqsgvxPPK3hq2E1o2DKQughe",
+        "Name": "AUTOPILOT"
+      },
+      "Enabled": true,
+      "ID": "1WTHtOuPiBjPiZGwb7qxwdKDUsh",
+      "Name": "au test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "tom",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 },
+        "traits": {
+          "anonymousId": "tom",
+          "email": "tom@gmail.com",
+          "name": "tom"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "tom",
+      "integrations": { "All": true },
+      "messageId": "dcc71470-6365-43f6-b0c3-6e25c58d5d91",
+      "originalTimestamp": "2020-01-16T10:57:24.732Z",
+      "properties": { "test": "tst" },
+      "receivedAt": "2020-01-16T16:27:28.378+05:30",
+      "request_ip": "[::1]:60534",
+      "sentAt": "2020-01-16T10:57:28.363Z",
+      "session_id": "55cac2c7-8142-4c63-979e-bdd530a0cbb8",
+      "timestamp": "2020-01-16T16:27:24.747+05:30",
+      "type": "track",
+      "userId": "tom"
+    },
+    "metadata": {
+      "anonymousId": "tom",
+      "destinationId": "1WTHtOuPiBjPiZGwb7qxwdKDUsh",
+      "destinationType": "AUTOPILOT",
+      "jobId": 1,
+      "messageId": "dcc71470-6365-43f6-b0c3-6e25c58d5d91",
+      "sourceId": "1WTGuYZ1UQW3Pli1BON7etgb9Z1"
+    }
+  }
+]

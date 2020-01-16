@@ -5,7 +5,8 @@ const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   updatePayload,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  defaultRequestConfig
 } = require("../util");
 
 function getTriggerId(message, autoPilotConfig) {
@@ -23,35 +24,31 @@ function getTriggerId(message, autoPilotConfig) {
 }
 
 function responseBuilder(payload, message, autoPilotConfig) {
-  let endpoint;
-  let requestConfig;
-
+  let response = defaultRequestConfig();
   switch (message.type) {
     case EventType.IDENTIFY:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = endpoints.addContactUrl;
+      response.endpoint = endpoints.addContactUrl;
+      response.method = defaultPostRequestConfig.requestMethod;
       break;
     case EventType.TRACK:
-      requestConfig = defaultPostRequestConfig;
       const triggerId = getTriggerId(message, autoPilotConfig);
-      endpoint = `${endpoints.triggerJourneyUrl}/${triggerId}/contact/${message.context.traits.email}`;
+      response.endpoint = `${endpoints.triggerJourneyUrl}/${triggerId}/contact/${message.context.traits.email}`;
+      response.method = defaultPostRequestConfig.requestMethod;
       break;
     default:
       break;
   }
 
-  const response = {
-    endpoint,
+  return {
+    ...response,
     header: {
       autopilotapikey: `${autoPilotConfig.apiKey}`,
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    requestConfig,
     userId: message.userId ? message.userId : message.anonymousId,
     payload: removeUndefinedAndNullValues(payload)
   };
-  return response;
 }
 
 function getIdentifyPayload(message) {

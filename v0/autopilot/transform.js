@@ -8,6 +8,20 @@ const {
   removeUndefinedAndNullValues
 } = require("../util");
 
+function getTriggerId(message, autoPilotConfig) {
+  let triggerId = null;
+  const eventName = message.event;
+  Object.keys(autoPilotConfig).map(configKey => {
+    if (eventName.toLowerCase() === configKey.toLowerCase()) {
+      triggerId = autoPilotConfig[configKey];
+    }
+  });
+  if (triggerId === null) {
+    triggerId = autoPilotConfig.triggerId;
+  }
+  return triggerId;
+}
+
 function responseBuilder(payload, message, autoPilotConfig) {
   let endpoint;
   let requestConfig;
@@ -19,7 +33,8 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
     case EventType.TRACK:
       requestConfig = defaultPostRequestConfig;
-      endpoint = `${endpoints.triggerJourneyUrl}/${autoPilotConfig.triggerId}/contact/${message.context.traits.email}`;
+      const triggerId = getTriggerId(message, autoPilotConfig);
+      endpoint = `${endpoints.triggerJourneyUrl}/${triggerId}/contact/${message.context.traits.email}`;
       break;
     default:
       break;
@@ -101,8 +116,12 @@ function getDestinationKeys(destination) {
       case destinationConfigKeys.triggerId:
         autoPilotConfig.triggerId = `${destination.Config[key]}`;
         break;
-      default:
-        break;
+      case destinationConfigKeys.customMappings:
+        destination.Config.customMappings.map(obj => {
+          const key = obj.to;
+          const value = obj.from;
+          autoPilotConfig[key] = value;
+        });
     }
   });
   return autoPilotConfig;
@@ -110,7 +129,6 @@ function getDestinationKeys(destination) {
 
 function process(event) {
   const autoPilotConfig = getDestinationKeys(event.destination);
-  // TODO: Implement to accept multiple triggerId's.
   const properties = getTransformedJSON(event.message, autoPilotConfig);
   return responseBuilder(properties, event.message, autoPilotConfig);
 }

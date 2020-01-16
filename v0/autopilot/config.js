@@ -1,6 +1,7 @@
 const destinationConfigKeys = {
   apiKey: "apiKey",
-  triggerId: "triggerId"
+  triggerId: "triggerId",
+  customMappings: "customMappings"
 };
 
 const baseEndpoint = "https://api2.autopilothq.com/v1";

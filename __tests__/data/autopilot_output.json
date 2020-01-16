@@ -4,15 +4,14 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api2.autopilothq.com/v1/contact",
-    "headers": {},
-    "params": {},
-    "body": { "JSON": {}, "XML": {}, "FORM": {} },
-    "files": {},
-    "header": {
-      "autopilotapikey": "1d6287b196d34de28a7f57bfbeee3b0c",
+    "headers": {
+      "autopilotapikey": "autopilotapikey",
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
+    "params": {},
+    "body": { "JSON": {}, "XML": {}, "FORM": {} },
+    "files": {},
     "userId": "tom",
     "payload": { "contact": { "Email": "tom@gmail.com", "Name": "tom" } }
   },
@@ -21,15 +20,14 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api2.autopilothq.com/v1/trigger/0003/contact/tom@gmail.com",
-    "headers": {},
-    "params": {},
-    "body": { "JSON": {}, "XML": {}, "FORM": {} },
-    "files": {},
-    "header": {
-      "autopilotapikey": "1d6287b196d34de28a7f57bfbeee3b0c",
+    "headers": {
+      "autopilotapikey": "autopilotapikey",
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
+    "params": {},
+    "body": { "JSON": {}, "XML": {}, "FORM": {} },
+    "files": {},
     "userId": "tom",
     "payload": { "property": { "test": "tst" } }
   }

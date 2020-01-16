@@ -41,7 +41,7 @@ function responseBuilder(payload, message, autoPilotConfig) {
 
   return {
     ...response,
-    header: {
+    headers: {
       autopilotapikey: `${autoPilotConfig.apiKey}`,
       "Content-Type": "application/json",
       Accept: "application/json"

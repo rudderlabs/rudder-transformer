@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "1d6287b196d34de28a7f57bfbeee3b0c",
+        "apiKey": "autopilotapikey",
         "customMappings": [
           { "from": "0009", "to": "mail me" },
           { "from": "0007", "to": "signup" }
@@ -64,7 +64,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "1d6287b196d34de28a7f57bfbeee3b0c",
+        "apiKey": "autopilotapikey",
         "customMappings": [
           { "from": "0009", "to": "mail me" },
           { "from": "0007", "to": "signup" }

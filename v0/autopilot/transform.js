@@ -39,6 +39,8 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
   }
 
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+
   return {
     ...response,
     headers: {
@@ -46,8 +48,7 @@ function responseBuilder(payload, message, autoPilotConfig) {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
+    userId: message.userId ? message.userId : message.anonymousId
   };
 }
 

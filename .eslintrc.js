@@ -17,6 +17,7 @@ module.exports = {
     "block-scoped-var": "off",
     "prefer-template": "off",
     "import/no-dynamic-require": "off",
-    "global-require": "off"
+    "global-require": "off",
+    "no-nested-ternary": "off"
   }
 };

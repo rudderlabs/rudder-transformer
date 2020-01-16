@@ -68,7 +68,18 @@ function buildResponse(eventName, message, destination) {
 
 function processTrack(message, destination) {
   const eventName = message.event;
-  const properties = message.properties;
+  let properties = message.properties;
+  const user = {};
+  user.userId = message.userId
+    ? message.userId != ""
+      ? message.userId
+      : message.anonymousId
+    : message.anonymousId;
+  user.traits = message.context.traits;
+  properties = {
+    ...properties,
+    user
+  };
   // add userid/anonymousid
   properties.userId = message.userId;
   properties.anonymousId = message.anonymousId;

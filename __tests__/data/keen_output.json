@@ -20,6 +20,13 @@
         "search": "abc",
         "title": "Test Page",
         "url": "www.rudderlabs.com",
+        "user": {
+          "userId": "12345",
+          "traits": {
+            "email": "sayan@gmail.com",
+            "anonymousId": "12345"
+          }
+        },
         "userId": "12345",
         "anonymousId": "00000000000000000000000000",
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
@@ -31,21 +38,6 @@
                 "ua_string": "user_agent"
               },
               "output": "parsed_user_agent"
-            },
-            {
-              "name": "keen:url_parser",
-              "input": {
-                "url": "url"
-              },
-              "output": "parsed_page_url"
-            },
-            {
-              "name": "keen:referrer_parser",
-              "input": {
-                "referrer_url": "referrer",
-                "page_url": "url"
-              },
-              "output": "referrer_info"
             }
           ]
         }
@@ -72,6 +64,13 @@
         "user_actual_role": "system_admin",
         "user_actual_id": 12345,
         "user_time_spent": 50000,
+        "user": {
+          "userId": "12345",
+          "traits": {
+            "email": "sayan@gmail.com",
+            "anonymousId": "12345"
+          }
+        },
         "userId": "12345",
         "anonymousId": "00000000000000000000000000",
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",

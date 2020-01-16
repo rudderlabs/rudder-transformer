@@ -1,0 +1,47 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/add_user_properties",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "app_id": "<app id>",
+        "identity": "sampath@gmail.com",
+        "properties": { "anonymousId": "sampath" }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "app_id": "<app id>",
+        "event": "Send Transactional Email",
+        "identity": "sampath@gmail.com",
+        "properties": { "subject": "Welcome to My App!", "variation": "A" }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  }
+]

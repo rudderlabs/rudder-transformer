@@ -57,7 +57,9 @@ function getUserData(message) {
     idfa: get(context, "idfa") ? context.android_id : null,
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: message.anonymousId
+    developer_identity: get(message, "anonymousId")
+      ? message.anonymousId
+      : message.userId
   };
 }
 
@@ -97,9 +99,10 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
 
 function commonPayload(message, rawPayload, category) {
   let rudderPropertiesObj;
-  let content_items = [{}];
+  let content_items = [];
   let event_data = {};
   let custom_data = {};
+  let productObj = {};
 
   switch (message.type) {
     case EventType.TRACK:
@@ -115,22 +118,42 @@ function commonPayload(message, rawPayload, category) {
   }
 
   Object.keys(rudderPropertiesObj).map(rudderProperty => {
-    const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
-      category,
-      rudderProperty,
-      rudderPropertiesObj
-    );
-    Object.assign(content_items[0], content_itemsObj);
-    Object.assign(event_data, event_dataObj);
-    Object.assign(custom_data, custom_dataObj);
+    if (rudderProperty === "products") {
+      productObj = {};
+      for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
+        const product = rudderPropertiesObj.products[i];
+        Object.keys(product).map(productProp => {
+          const {
+            content_itemsObj,
+            event_dataObj,
+            custom_dataObj
+          } = mapPayload(category, productProp, product);
+          Object.assign(productObj, content_itemsObj);
+          Object.assign(event_data, event_dataObj);
+          Object.assign(custom_data, custom_dataObj);
+        });
+        content_items.push(productObj);
+        productObj = {};
+      }
+    } else {
+      const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
+        category,
+        rudderProperty,
+        rudderPropertiesObj
+      );
+      Object.assign(productObj, content_itemsObj);
+      Object.assign(event_data, event_dataObj);
+      Object.assign(custom_data, custom_dataObj);
+    }
   });
+  content_items.push(productObj);
   rawPayload.custom_data = custom_data;
   rawPayload.content_items = content_items;
   rawPayload.event_data = event_data;
   rawPayload.user_data = getUserData(message);
 
   Object.keys(rawPayload).map(key => {
-    if (rawPayload[key] === {}) {
+    if (rawPayload[key] == {}) {
       rawPayload[key] = null;
     }
   });

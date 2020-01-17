@@ -68,13 +68,13 @@ function processMessage(message, destination) {
   switch (messageType) {
     case EventType.SCREEN:
       // `screen` event is not supported
-      break;
+      throw new Error("message type not supported");
     case EventType.PAGE:
       // `page` event is not supported
-      break;
+      throw new Error("message type not supported");
     case EventType.IDENTIFY:
       // process `identify` event
-      break;
+      throw new Error("message type not supported");
     case EventType.TRACK:
       // process `track` event
       customParams = processTrackEvents(message);
@@ -97,7 +97,6 @@ async function process(event) {
   if (!result.statusCode) {
     result.statusCode = 200;
   }
-  console.log("result: ", result);
   return result;
 }
 

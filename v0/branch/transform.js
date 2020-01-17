@@ -2,7 +2,11 @@ const get = require("get-value");
 const { EventType } = require("../../constants");
 const { destinationConfigKeys, endpoints } = require("./config");
 const { categoriesList } = require("./data/eventMapping");
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const {
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+  removeUndefinedAndNullValues
+} = require("../util");
 
 function responseBuilder(payload, message, branchConfig) {
   let response = defaultRequestConfig();
@@ -46,7 +50,7 @@ function getCategoryAndName(rudderEventName) {
 function getUserData(message) {
   let context = message.context;
 
-  return {
+  return removeUndefinedAndNullValues({
     os: context.os.name,
     os_version: context.os.version,
     app_version: context.app.version,
@@ -58,7 +62,7 @@ function getUserData(message) {
     developer_identity: get(message, "anonymousId")
       ? message.anonymousId
       : message.userId
-  };
+  });
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
@@ -155,7 +159,7 @@ function commonPayload(message, rawPayload, category) {
       rawPayload[key] = null;
     }
   });
-  return rawPayload;
+  return removeUndefinedAndNullValues(rawPayload);
 }
 
 function getIdentifyPayload(message, branchConfig) {
@@ -195,8 +199,7 @@ function getTransformedJSON(message, branchConfig) {
 
 function getDestinationKeys(message, destination) {
   let branchConfig = {};
-  const configKeys = Object.keys(destination.Config);
-  configKeys.forEach(key => {
+  Object.keys(destination.Config).forEach(key => {
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;

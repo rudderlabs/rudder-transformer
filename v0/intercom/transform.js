@@ -37,8 +37,8 @@ function responseBuilderSimple(payload, message, intercomConfig) {
       response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
     case EventType.RESET:
-      const email = get(message.context.traits.email);
-      const userId = get(message.context.traits.userId);
+      const email = get(message, "context.traits.email");
+      const userId = get(message, "context.traits.userId");
       const params = email ? `email=${email}` : `user_id=${userId}`;
       response.method = defaultDeleteRequestConfig.requestMethod;
       response.endpoint = `${endpoints.userUrl}?${params}`;
@@ -48,7 +48,7 @@ function responseBuilderSimple(payload, message, intercomConfig) {
       break;
   }
 
-  response = {
+  return {
     ...response,
     headers: {
       "Content-Type": "application/json",
@@ -57,7 +57,6 @@ function responseBuilderSimple(payload, message, intercomConfig) {
     },
     userId: message.userId ? message.userId : message.anonymousId
   };
-  return response;
 }
 
 function addContext(payload, message) {
@@ -115,19 +114,19 @@ function getGroupPayload(message, intercomConfig) {
 function getIdentifyPayload(message, intercomConfig) {
   let rawPayload = {};
 
-  const traits = get(message.context.traits);
+  const traits = get(message.context, "traits");
 
-  if (get(message.context.Intercom)) {
-    const userHash = get(message.context.Intercom.user_hash);
+  if (get(message.context, "Intercom")) {
+    const userHash = get(message.context, "Intercom.user_hash");
     if (userHash) {
       set(rawPayload, "user_hash", userHash);
     }
   }
 
   // unsubscribe user from mail
-  if (get(message.context.traits.context)) {
-    const context = get(message.context.traits.context);
-    const unsubscribe = get(context.Intercom.unsubscribedFromEmails);
+  if (get(message.context, "traits.context")) {
+    const context = get(message.context, "traits.context");
+    const unsubscribe = get(context, "Intercom.unsubscribedFromEmails");
     if (unsubscribe) {
       set(rawPayload, "unsubscribed_from_emails", unsubscribe);
     }
@@ -251,14 +250,10 @@ function getDestinationKeys(destination) {
   return intercomConfig;
 }
 
-function processSingleMessage(message, destination) {
-  const intercomConfig = getDestinationKeys(destination);
-  const properties = getTransformedJSON(message, intercomConfig);
-  return responseBuilderSimple(properties, message, intercomConfig);
-}
-
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  const intercomConfig = getDestinationKeys(event.destination);
+  const properties = getTransformedJSON(event.message, intercomConfig);
+  return responseBuilderSimple(properties, event.message, intercomConfig);
 }
 
 exports.process = process;

@@ -19,7 +19,7 @@ function responseBuilder(payload, message, branchConfig) {
     response.endpoint = endpoints.standardEventUrl;
   }
 
-  response.body.JSON = payload;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   return {
     ...response,
     headers: {
@@ -159,7 +159,7 @@ function commonPayload(message, rawPayload, category) {
       rawPayload[key] = null;
     }
   });
-  return removeUndefinedAndNullValues(rawPayload);
+  return rawPayload;
 }
 
 function getIdentifyPayload(message, branchConfig) {

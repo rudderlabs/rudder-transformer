@@ -31,9 +31,11 @@ function responseBuilder(eventData, message, mappingJson, destination) {
   });
 
   // modify the supported event names for standard events in kochava
-  const eventName = data.event_name.toLowerCase();
-  if (eventNameMapping[eventName] != undefined) {
-    data.event_name = eventNameMapping[eventName];
+  if (data.event_name) {
+    const eventName = data.event_name.toLowerCase();
+    if (eventNameMapping[eventName] != undefined) {
+      data.event_name = eventNameMapping[eventName];
+    }
   }
 
   // remove undefined values

@@ -18,6 +18,8 @@ test(`${name} Tests`, async () => {
   await Promise.all(
     inputData.map(async (input, index) => {
       const output = await transformer.process(input);
+      console.log("output", JSON.stringify(output));
+      console.log("expectedData[index]", JSON.stringify(expectedData[index]));
       expect(output).toEqual(expectedData[index]);
     })
   );

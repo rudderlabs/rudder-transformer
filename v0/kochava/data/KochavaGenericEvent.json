@@ -1,6 +1,6 @@
 {
   "event": "event_name",
-  "requestIp": "origination_ip",
+  "request_ip": "origination_ip",
   "context.network.carrier": "carrier_name",
   "context.device.model": "device",
   "context.userAgent": "device_ua",

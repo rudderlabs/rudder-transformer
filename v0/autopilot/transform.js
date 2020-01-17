@@ -56,7 +56,7 @@ function getIdentifyPayload(message) {
   let rawPayload = {};
   let contact = {};
 
-  const traits = get(message.context.traits) ? message.context.traits : null;
+  const traits = get(message.context, "traits") ? message.context.traits : null;
 
   if (traits != null) {
     Object.keys(traits).forEach(trait => {
@@ -74,7 +74,7 @@ function getTrackPayload(message) {
   let rawPayload = {};
   let propertiesObj = {};
 
-  const properties = get(message.properties)
+  const properties = get(message, "properties")
     ? Object.keys(message.properties)
     : null;
 

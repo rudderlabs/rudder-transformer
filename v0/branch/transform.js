@@ -2,30 +2,28 @@ const get = require("get-value");
 const { EventType } = require("../../constants");
 const { destinationConfigKeys, endpoints } = require("./config");
 const { categoriesList } = require("./data/eventMapping");
-const { defaultPostRequestConfig } = require("../util");
+const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
 function responseBuilder(payload, message, branchConfig) {
-  let endpoint;
-  let requestConfig;
+  let response = defaultRequestConfig();
+
   if (payload.event_data === null && payload.content_items === null) {
-    requestConfig = defaultPostRequestConfig;
-    endpoint = endpoints.customEventUrl;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = endpoints.customEventUrl;
   } else {
-    requestConfig = defaultPostRequestConfig;
-    endpoint = endpoints.standardEventUrl;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = endpoints.standardEventUrl;
   }
 
-  const response = {
-    endpoint,
-    header: {
+  response.body.JSON = payload;
+  return {
+    ...response,
+    headers: {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload
+    userId: message.userId ? message.userId : message.anonymousId
   };
-  return response;
 }
 
 function getCategoryAndName(rudderEventName) {

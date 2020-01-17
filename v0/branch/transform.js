@@ -155,7 +155,7 @@ function commonPayload(message, rawPayload, category) {
   rawPayload.user_data = getUserData(message);
 
   Object.keys(rawPayload).map(key => {
-    if (rawPayload[key] == {}) {
+    if (Object.keys(rawPayload[key]).length == 0) {
       rawPayload[key] = null;
     }
   });

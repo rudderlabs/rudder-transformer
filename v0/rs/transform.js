@@ -1,4 +1,5 @@
 const get = require("get-value");
+const moment = require("moment");
 const {
   toSnakeCase,
   toSafeDBString,
@@ -21,26 +22,7 @@ function setFromConfig(input, configJson) {
   return output;
 }
 
-function setFromProperties(input, prefix = "") {
-  let output = {};
-  if (!input) return output;
-  Object.keys(input).forEach(key => {
-    if (isObject(input[key])) {
-      output = {
-        ...output,
-        ...setFromProperties(output, input[key], `${key}_`)
-      };
-    } else {
-      output[toSafeDBString(prefix + key)] = input[key];
-    }
-  });
-  return output;
-}
-
 function dataType(val) {
-  // TODO: find a better way to check for valid datetime
-  // const datetimeRegex = /[0-9]{4}\-(?:0[1-9]|1[0-2])\-(?:0[1-9]|[1-2][0-9]|3[0-1])\s+(?:2[0-3]|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]/;
-
   if (validTimestamp(val)) {
     return "datetime";
   }
@@ -55,6 +37,28 @@ function dataType(val) {
     default:
       return "string";
   }
+}
+
+function setFromProperties(input, prefix = "") {
+  let output = {};
+  if (!input) return output;
+  Object.keys(input).forEach(key => {
+    if (isObject(input[key])) {
+      output = {
+        ...output,
+        ...setFromProperties(output, input[key], `${key}_`)
+      };
+    } else {
+      let val = input[key];
+      if (dataType(val) === "datetime") {
+        val = moment(val)
+          .utc()
+          .format("YYYY-MM-DD hh:mm:ss.SSS Z"); // supported format in redshift
+      }
+      output[toSafeDBString(prefix + key)] = input[key];
+    }
+  });
+  return output;
 }
 
 function getColumns(obj) {

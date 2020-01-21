@@ -1,5 +1,6 @@
 const get = require("get-value");
 const moment = require("moment");
+const util = require("util");
 const {
   toSnakeCase,
   toSafeDBString,
@@ -51,12 +52,11 @@ function setFromProperties(input, prefix = "") {
     if (isObject(input[key])) {
       output = {
         ...output,
-        ...setFromProperties(output, input[key], `${key}_`)
+        ...setFromProperties(input[key], `${prefix + key}_`)
       };
     } else {
       let val = input[key];
       if (dataType(val) === "datetime") {
-        console.log(val);
         val = moment(val)
           .utc()
           .format("YYYY-MM-DD hh:mm:ss.SSS Z"); // supported format in bigquery
@@ -80,7 +80,10 @@ function processSingleMessage(message, destination) {
   const eventType = message.type.toLowerCase();
   switch (eventType) {
     case "track": {
-      let result = setFromConfig(message, whDefaultConfigJson);
+      let result = {
+        ...setFromConfig(message, whDefaultConfigJson),
+        ...setFromProperties(message.context, "context_")
+      };
       result = { ...result, ...setFromConfig(message, whTrackConfigJson) };
       result.event = toSnakeCase(result.event_text);
 
@@ -104,7 +107,10 @@ function processSingleMessage(message, destination) {
       break;
     }
     case "identify": {
-      const event = setFromProperties(message.context.traits);
+      const event = {
+        ...setFromProperties(message.context.traits),
+        ...setFromProperties(message.context, "context_")
+      };
       const usersEvent = { ...event };
       const identifiesEvent = { ...event };
 
@@ -129,7 +135,10 @@ function processSingleMessage(message, destination) {
     }
     case "page":
     case "screen": {
-      const defaultEvent = setFromConfig(message, whDefaultConfigJson);
+      const defaultEvent = {
+        ...setFromConfig(message, whDefaultConfigJson),
+        ...setFromProperties(message.context, "context_")
+      };
       const event = {
         ...defaultEvent,
         ...setFromProperties(message.properties)

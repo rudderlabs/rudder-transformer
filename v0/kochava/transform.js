@@ -24,7 +24,7 @@ function responseBuilder(
   // set the mandatory fields for kochava
   const rawPayload = {
     action: "event",
-    kochava_app_id: destination.Config.guid,
+    kochava_app_id: destination.Config.apiKey,
     kochava_device_id: message.anonymousId,
     send_date: message.originalTimestamp
   };

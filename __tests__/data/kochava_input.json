@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "guid": "<kochava guid goes here>"
+        "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
         "DisplayName": "Kochava",
@@ -82,7 +82,7 @@
     },
     "destination": {
       "Config": {
-        "guid": "<kochava guid goes here>"
+        "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
         "DisplayName": "Kochava",

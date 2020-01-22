@@ -1,7 +1,7 @@
 const { getMappingConfig } = require("../util");
 
 const eventNameMapping = {
-  "add to cart": "Add to Cart",
+  "product added": "Add to Cart",
   "add to wishlist": "Add to Wishlist",
   "checkout started": "Checkout Start",
   "order completed": "Purchase",

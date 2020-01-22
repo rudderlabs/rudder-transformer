@@ -1,5 +1,4 @@
 {
-  "event": "event_name",
   "request_ip": "origination_ip",
   "context.network.carrier": "carrier_name",
   "context.device.model": "device",

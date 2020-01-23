@@ -73,11 +73,11 @@ const toSafeDBString = str => {
 };
 
 // older implementation with fallback to new Date()
-// function validTimestamp(input) {
-//   // eslint-disable-next-line no-restricted-globals
-//   if (!isNaN(input)) return false;
-//   return new Date(input).getTime() > 0;
-// }
+function validTimestamp(input) {
+  // eslint-disable-next-line no-restricted-globals
+  if (!isNaN(input)) return false;
+  return new Date(input).getTime() > 0;
+}
 
 const timestampFuncFormats = [moment.ISO_8601, moment.RFC_2822];
 
@@ -105,25 +105,25 @@ const timestampStringFormats = [
   moment.HTML5_FMT.MONTH
 ];
 
-function validTimestamp(input) {
-  try {
-    if (moment(input, timestampStringFormats, true).isValid()) {
-      return true;
-    }
-    for (let index = 0; index < timestampFuncFormats.length; index++) {
-      var x;
-      try {
-        x = moment(input, timestampFuncFormats[index], true).isValid();
-      } catch (error) {
-        // ignoring error here;
-      }
-      if (x) return true;
-    }
-  } catch (error) {
-    return false;
-  }
-  return false;
-}
+// function validTimestamp(input) {
+//   try {
+//     if (moment(input, timestampStringFormats, true).isValid()) {
+//       return true;
+//     }
+//     for (let index = 0; index < timestampFuncFormats.length; index++) {
+//       var x;
+//       try {
+//         x = moment(input, timestampFuncFormats[index], true).isValid();
+//       } catch (error) {
+//         // ignoring error here;
+//       }
+//       if (x) return true;
+//     }
+//   } catch (error) {
+//     return false;
+//   }
+//   return false;
+// }
 
 const isObject = value => {
   var type = typeof value;

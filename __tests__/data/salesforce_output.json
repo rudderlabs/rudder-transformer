@@ -1,0 +1,28 @@
+[
+  {
+      "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+      "requestConfig": {
+          "requestFormat": "JSON",
+          "requestMethod": "POST"
+      },
+      "header": {
+          "Authorization": "Bearer 00D2v000002I5xU!AQkAQOkoa5b.hpyW1x0BP0xRDS10fV4zDfUrxwNrh3THmXaK3.QWfNSNHpigEjAfHmBASsVZ_fzedM8m868JHwHDwzOyA_z0",
+          "Content-Type": "application/json"
+      },
+      "userId": "123456",
+      "payload": {
+          "Company": "Initech",
+          "LastName": "Gibbons",
+          "City": "east greenwich",
+          "Email": "peter.gibbons@initech.com",
+          "Phone": "570-690-4150",
+          "State": "California",
+          "Title": "VP of Derp",
+          "Rating": "Hot",
+          "Street": "19123 forest lane",
+          "Country": "USA",
+          "FirstName": "Peter",
+          "PostalCode": "94115"
+      }
+  }
+]

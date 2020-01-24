@@ -420,7 +420,6 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(events) {
-	console.log("testing GA");	
   const respList = [];
   events.forEach(event => {
     try {

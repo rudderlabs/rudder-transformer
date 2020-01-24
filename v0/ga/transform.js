@@ -10,9 +10,28 @@ const {
 } = require("./config");
 const {
   removeUndefinedValues,
-  toStringValues,
-  defaultGetRequestConfig
+  defaultGetRequestConfig,
+  defaultRequestConfig
 } = require("../util");
+
+function getParamsFromConfig(message, destination) {
+  const params = {};
+
+  var obj = {};
+  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
+  if (destination.Config.customMappings) {
+    destination.Config.customMappings.forEach(mapping => {
+      obj[mapping.from] = mapping.to;
+    });
+  }
+  // console.log(obj);
+  const keys = Object.keys(obj);
+  keys.forEach(key => {
+    params[obj[key]] = get(message.properties, key);
+  });
+  // console.log(params);
+  return params;
+}
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -39,38 +58,27 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   const params = removeUndefinedValues(parameters);
 
-  //Get custom params from destination config
+  // Get custom params from destination config
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  const response = {
-    endpoint: GA_ENDPOINT,
-    requestConfig: defaultGetRequestConfig,
-    header: {},
-    userId: message.anonymousId,
-    payload: { ...params, ...customParams, ...payload }
-  };
-  //console.log("response ", response);
-  return response;
-}
+  const finalPayload = { ...params, ...customParams, ...payload };
 
-function getParamsFromConfig(message, destination) {
-  let params = {};
-
-  var obj = {};
-  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
-  if (destination.Config.customMappings) {
-    destination.Config.customMappings.forEach(mapping => {
-      obj[mapping.from] = mapping.to;
-    });
+  // check if userId is there and populate
+  if (message.userId && message.userId.length > 0) {
+    finalPayload.cid = message.userId;
   }
-  // console.log(obj);
-  let keys = Object.keys(obj);
-  keys.forEach(key => {
-    params[obj[key]] = get(message.properties, key);
-  });
-  //console.log(params);
-  return params;
+
+  const response = defaultRequestConfig();
+  response.method = defaultGetRequestConfig.requestMethod;
+  response.endpoint = GA_ENDPOINT;
+  response.userId =
+    message.userId && message.userId.length > 0
+      ? message.userId
+      : message.anonymousId;
+  response.params = finalPayload;
+
+  return response;
 }
 
 // Function for processing pageviews
@@ -406,7 +414,6 @@ function processSingleMessage(message, destination) {
       console.log("could not determine type");
       // throw new RangeError('Unexpected value in type field');
       throw new Error("message type not supported");
-      return;
   }
 
   return responseBuilderSimple(
@@ -419,21 +426,12 @@ function processSingleMessage(message, destination) {
 }
 
 // Iterate over input batch and generate response for each message
-async function process(events) {
-  const respList = [];
-  events.forEach(event => {
-    try {
-      const result = processSingleMessage(event.message, event.destination);
-      if (!result.statusCode) {
-        result.statusCode = 200;
-      }
-      respList.push(result);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
-    }
-  });
-
-  return respList;
+async function process(event) {
+  const result = processSingleMessage(event.message, event.destination);
+  if (!result.statusCode) {
+    result.statusCode = 200;
+  }
+  return result;
 }
 
 exports.process = process;

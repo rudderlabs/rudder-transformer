@@ -3,7 +3,11 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType, SpecedTraits, TraitsMapping } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultPostRequestConfig,
+  defaultRequestConfig
+} = require("../util");
 const {
   Event,
   ENDPOINT,
@@ -37,6 +41,27 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
+//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+function stringToHash(string) {
+  var hash = 0;
+
+  if (string.length == 0) return hash;
+
+  for (i = 0; i < string.length; i++) {
+    char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+
+  return Math.abs(hash);
+}
+
+function fixSessionId(payload) {
+  payload.session_id = payload.session_id
+    ? stringToHash(payload.session_id)
+    : -1;
+}
+
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
 
@@ -50,7 +75,7 @@ function responseBuilderSimple(
   const rawPayload = {};
 
   set(rawPayload, "event_properties", message.properties);
-  set(rawPayload, "user_properties", message.user_properties);
+  set(rawPayload, "user_properties", message.userProperties);
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -80,22 +105,20 @@ function responseBuilderSimple(
   rawPayload.time = new Date(message.originalTimestamp).getTime();
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
+  fixSessionId(payload);
 
-  //console.log(payload);
-
-  const response = {
-    endpoint,
-    requestConfig: defaultPostRequestConfig,
-    header: {
-      "Content-Type": "application/json"
-    },
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: {
-      api_key: destination.Config.apiKey,
-      [rootElementName]: payload
-    }
+  // console.log(payload);
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
   };
-  //console.log(response);
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = {
+    api_key: destination.Config.apiKey,
+    [rootElementName]: payload
+  };
   return response;
 }
 
@@ -212,46 +235,37 @@ function processTransaction(message) {
   return [];
 }
 
-function process(events) {
+function process(event) {
   const respList = [];
+  const { message, destination } = event;
+  const messageType = message.type.toLowerCase();
+  const eventType = message.event ? message.event.toLowerCase() : undefined;
+  const toSendEvents = [];
+  if (
+    messageType === EventType.TRACK &&
+    (eventType === Event.PRODUCT_LIST_VIEWED.name ||
+      eventType === Event.PRODUCT_LIST_CLICKED)
+  ) {
+    toSendEvents.push(processProductListAction(message));
+  } else if (
+    messageType === EventType.TRACK &&
+    (eventType == Event.CHECKOUT_STARTED.name ||
+      eventType == Event.ORDER_UPDATED.name ||
+      eventType == Event.ORDER_COMPLETED.name ||
+      eventType == Event.ORDER_CANCELLED.name)
+  ) {
+    toSendEvents.push(processTransaction(message));
+  } else {
+    toSendEvents.push(message);
+  }
 
-  events.forEach(event => {
-    try {
-      const { message, destination } = event;
-      const messageType = message.type.toLowerCase();
-      const eventType = message.event ? message.event.toLowerCase() : undefined;
-      const toSendEvents = [];
-      if (
-        messageType === EventType.TRACK &&
-        (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-          eventType === Event.PRODUCT_LIST_CLICKED)
-      ) {
-        toSendEvents.push(processProductListAction(message));
-      } else if (
-        messageType === EventType.TRACK &&
-        (eventType == Event.CHECKOUT_STARTED.name ||
-          eventType == Event.ORDER_UPDATED.name ||
-          eventType == Event.ORDER_COMPLETED.name ||
-          eventType == Event.ORDER_CANCELLED.name)
-      ) {
-        toSendEvents.push(processTransaction(message));
-      } else {
-        toSendEvents.push(message);
-      }
-
-      toSendEvents.forEach(sendEvent => {
-        const result = processSingleMessage(sendEvent, destination);
-        if (!result.statusCode) {
-          result.statusCode = 200;
-        }
-        respList.push(result);
-      });
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
+  toSendEvents.forEach(sendEvent => {
+    const result = processSingleMessage(sendEvent, destination);
+    if (!result.statusCode) {
+      result.statusCode = 200;
     }
+    respList.push(result);
   });
-
-  //console.log(JSON.stringify(respList));
   return respList;
 }
 

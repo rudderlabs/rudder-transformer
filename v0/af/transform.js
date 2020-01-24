@@ -2,7 +2,7 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
 const {
   Event,
@@ -15,25 +15,32 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const endpoint = ENDPOINT + message.context.app.namespace;
 
+  let appsflyer_id = message.destination_props
+    ? message.destination_props.AF
+      ? message.destination_props.AF.af_uid
+      : undefined
+    : undefined;
+
+  appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
+
   const updatedPayload = {
     ...payload,
     af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
-    appsflyer_id:
-      message.destination_props.AF.af_uid || destination.Config.appsFlyerId
+    appsflyer_id: appsflyer_id
   };
 
-  return {
-    endpoint,
-    header: {
-      "Content-Type": "application/json",
-      authentication: destination.Config.apiKey
-    },
-    requestConfig: defaultPostRequestConfig,
-    userId: message.anonymousId,
-    payload: removeUndefinedValues(updatedPayload)
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.headers = {
+    "Content-Type": "application/json",
+    authentication: destination.Config.devKey
   };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.userId = message.anonymousId;
+  response.body.JSON = removeUndefinedValues(updatedPayload);
+  return response;
 }
 
 function getEventValueForUnIdentifiedTrackEvent(message) {
@@ -139,25 +146,12 @@ function processSingleMessage(message, destination) {
   return responseBuilderSimple(payload, message, destination);
 }
 
-function process(events) {
-  const respList = [];
-  let resp;
-  events.forEach(event => {
-    try {
-      resp = processSingleMessage(event.message, event.destination);
-      if (!resp.statusCode) {
-        resp.statusCode = 200;
-      }
-    } catch (e) {
-      console.log("error occurred while processing payload for AF: ", e);
-      resp = {
-        statusCode: 400,
-        error: "error occurred while processing payload."
-      };
-    }
-    respList.push(resp);
-  });
-  return respList;
+function process(event) {
+  const resp = processSingleMessage(event.message, event.destination);
+  if (!resp.statusCode) {
+    resp.statusCode = 200;
+  }
+  return resp;
 }
 
 exports.process = process;

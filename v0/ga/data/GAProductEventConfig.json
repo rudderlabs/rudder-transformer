@@ -1,5 +1,5 @@
 {
-  "context.traits.anonymousId": "cid",
+  "anonymousId": "cid",
   "properties.name": "pr1nm",
   "properties.category": "pr1ca",
   "properties.brand": "pr1br",
@@ -8,5 +8,7 @@
   "properties.currency": "cu",
   "properties.position": "pr1ps",
   "properties.price": "pr1pr",
-  "properties.quantity": "pr1qt"
+  "properties.quantity": "pr1qt",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

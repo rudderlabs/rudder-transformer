@@ -1,9 +1,11 @@
 {
-  "context.traits.anonymousId": "cid",
+  "anonymousId": "cid",
   "properties.order_id": "ti",
   "properties.affiliation": "ta",
   "properties.shipping": "ts",
   "properties.tax": "tt",
   "properties.coupon": "tcc",
-  "properties.currency": "cu"
+  "properties.currency": "cu",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

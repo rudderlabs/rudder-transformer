@@ -12,10 +12,12 @@ module.exports = {
     "prefer-destructuring": "off",
     camelcase: "off",
     eqeqeq: "off",
+    "no-undef": "off",
     "no-param-reassign": "off",
     "block-scoped-var": "off",
     "prefer-template": "off",
     "import/no-dynamic-require": "off",
-    "global-require": "off"
+    "global-require": "off",
+    "no-nested-ternary": "off"
   }
 };

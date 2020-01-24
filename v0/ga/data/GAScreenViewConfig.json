@@ -1,6 +1,8 @@
 {
-  "context.traits.anonymousId": "cid",
+  "anonymousId": "cid",
   "properties.name": "cd",
   "context.app.name": "an",
-  "context.app.version": "av"
+  "context.app.build": "av",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
 }

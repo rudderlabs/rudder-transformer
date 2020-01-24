@@ -1,7 +1,8 @@
 const destinationConfigKeys = {
   apiKey: "apiKey",
   appId: "appId",
-  mobileApiKey: "mobileAppId"
+  mobileApiKey: "mobileAppId",
+  collectContext: "collectContext"
 };
 
 const baseEndpoint = "https://api.intercom.io";

@@ -6,14 +6,12 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
-  defaultGetRequestConfig,
   defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
 } = require("../util");
 
-function responseBuilderSimple(payload, message, intercomConfig) {
+function responseBuilder(payload, message, intercomConfig) {
   let response = defaultRequestConfig();
 
   switch (message.type) {
@@ -27,21 +25,9 @@ function responseBuilderSimple(payload, message, intercomConfig) {
       response.endpoint = endpoints.eventsUrl;
       response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
-    case EventType.PAGE:
-      response.method = defaultGetRequestConfig.requestMethod;
-      response.endpoint = endpoints.conversationsUrl;
-      break;
     case EventType.GROUP:
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = endpoints.companyUrl;
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      break;
-    case EventType.RESET:
-      const email = get(message, "context.traits.email");
-      const userId = get(message, "context.traits.userId");
-      const params = email ? `email=${email}` : `user_id=${userId}`;
-      response.method = defaultDeleteRequestConfig.requestMethod;
-      response.endpoint = `${endpoints.userUrl}?${params}`;
       response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
     default:
@@ -203,10 +189,6 @@ function getTrackPayload(message, intercomConfig) {
 function getTransformedJSON(message, intercomConfig) {
   let rawPayload;
   switch (message.type) {
-    case EventType.PAGE:
-      // Not Tested
-      rawPayload = {};
-      break;
     case EventType.TRACK:
       rawPayload = getTrackPayload(message, intercomConfig);
       break;
@@ -215,10 +197,6 @@ function getTransformedJSON(message, intercomConfig) {
       break;
     case EventType.GROUP:
       rawPayload = getGroupPayload(message, intercomConfig);
-      break;
-    case EventType.RESET:
-      // Not Tested
-      rawPayload = {};
       break;
     default:
       break;
@@ -253,7 +231,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const intercomConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, intercomConfig);
-  return responseBuilderSimple(properties, event.message, intercomConfig);
+  return responseBuilder(properties, event.message, intercomConfig);
 }
 
 exports.process = process;

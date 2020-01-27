@@ -12,13 +12,26 @@ const {
   toStringValues,
   defaultPostRequestConfig
 } = require("../util");
-
-var authorizationHeader;
+ 
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
+
+  console.log(SF_TOKEN_REQUEST_URL +
+      "?username=" +
+      destination.Config.userName +
+      "&password=" +
+      destination.Config.password +
+      destination.Config.initialAccessToken +
+      "&client_id=" +
+      //destination.Config.consumerKey +
+      '3MVG9G9pzCUSkzZtwZE5N1o0HSnEQUXy7m4Nv1WoGn9yTKnTytGz6cwlh2HOOamuS6tMuzoMxYY1KDTr25UrH'+
+      "&client_secret=" +
+      //destination.Config.consumerSecret +
+      '3DD6EBE86348FE7F2262FB8B231C452BDB94EA9269170C4FCD6ADB0265ED5809' +
+      "&grant_type=password");
   const response = await axios.post(
     SF_TOKEN_REQUEST_URL +
       "?username=" +
@@ -27,14 +40,17 @@ async function getSFDCHeader(destination) {
       destination.Config.password +
       destination.Config.initialAccessToken +
       "&client_id=" +
-      destination.Config.consumerKey +
+      //destination.Config.consumerKey +
+      '3MVG9G9pzCUSkzZtwZE5N1o0HSnEQUXy7m4Nv1WoGn9yTKnTytGz6cwlh2HOOamuS6tMuzoMxYY1KDTr25UrH'+
       "&client_secret=" +
-      destination.Config.consumerSecret +
+      //destination.Config.consumerSecret +
+      '3DD6EBE86348FE7F2262F8B231C452BDB94EA9269170C4FCD6ADB0265ED5809' +
       "&grant_type=password",
     {}
   );
 
-  return "Bearer " + response.data.access_token;
+  console.log(response);
+  return ["Bearer " + response.data.access_token, response.data.instance_url];
 }
 
 function getParamsFromConfig(message, destination) {
@@ -63,13 +79,9 @@ async function responseBuilderSimple(
   message,
   mappingJson,
   destination,
-  targetEndpoint
+  targetEndpoint,
+  authorizationData
 ) {
-  // Need to get the authorization header element
-  // Need this to be async
-  if (!authorizationHeader) {
-    authorizationHeader = await getSFDCHeader(destination);
-  }
 
   const rawPayload = {};
 
@@ -107,39 +119,37 @@ async function responseBuilderSimple(
     requestConfig: defaultPostRequestConfig,
     header: {
       "Content-Type": "application/json",
-      Authorization: authorizationHeader
+      Authorization: authorizationData[0]
     },
     userId: message.anonymousId,
     payload: { ...customParams, ...payload }
   };
+  console.log(response);
   return response;
 }
 
 
 // Function for handling identify events
 async function processIdentify(message, destination) {
-  // start with creation endpoint, update only if Lead does not exist
-  var targetEndpoint =
-    "https://" +
-    destination.Config.instanceName +
-    ".salesforce.com" +
+
+
+  // Get the authorization header if not available
+  //if (!authorizationData) {
+    var authorizationData = await getSFDCHeader(destination);
+  //}
+    // start with creation endpoint, update only if Lead does not exist
+    var targetEndpoint = 
+    authorizationData[1] +
     "/services/data/v" +
     SF_API_VERSION +
     "/sobjects/Lead";
-
-  // Get the authorization header if not available
-  if (!authorizationHeader) {
-    authorizationHeader = await getSFDCHeader(destination);
-  }
 
   // check if the lead exists
   // need to perform a parameterized search for this using email
   var email = message.context.traits.email;
 
-  var leadQueryUrl =
-    "https://" +
-    destination.Config.instanceName +
-    ".salesforce.com" +
+  var leadQueryUrl = 
+    authorizationData[1] +
     "/services/data/v" +
     SF_API_VERSION +
     "/parameterizedSearch/?q=" +
@@ -148,7 +158,7 @@ async function processIdentify(message, destination) {
 
   var leadQueryResponse = await axios.get(leadQueryUrl, {
     headers: {
-      Authorization: authorizationHeader
+      Authorization: authorizationData[0]
     }
   });
 
@@ -164,7 +174,8 @@ async function processIdentify(message, destination) {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name],
     destination,
-    targetEndpoint
+    targetEndpoint,
+    authorizationData
   );
 }
 
@@ -184,13 +195,11 @@ async function processSingleMessage(message, destination) {
   return response;
 }
 
-// Iterate over input batch and generate response for each message
-async function process(events) {
-  let respList = [];
-  respList = await Promise.all(
-    events.map(event => processSingleMessage(event.message, event.destination))
-  );
-  return respList;
+async function process(event) { 
+  console.log(JSON.stringify(event));
+console.log('==')
+  console.log(processSingleMessage(event.message, event.destination))
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

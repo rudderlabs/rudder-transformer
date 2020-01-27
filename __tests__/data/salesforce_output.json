@@ -1,0 +1,23 @@
+[
+    {
+        "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+        "requestConfig": {
+          "requestFormat": "JSON",
+          "requestMethod": "POST"
+        },
+        "header": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 00D2v000002lXbX!ARcAQKmnATDlhWgHRHM7AifNemM3z0msMAemYQhWcHh03e78b_D9T0vlQSaRSbo07vCfJ1rd9MaZCFbecdrnNGIqucFA0HKS"
+        },
+        "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+        "payload": {
+          "Company": "Initech",
+          "Email": "peter.gibbons@initech.com",
+          "Phone": "570-690-4150",
+          "Rating": "Hot",
+          "Title": "VP of Derp",
+          "FirstName": "Peter",
+          "LastName": "Gibbons"
+        }
+    }
+]

@@ -325,7 +325,6 @@ function process(event) {
       console.log("Message type not supported");
       throw new Error("Message type not supported");
   }
-
   return respList;
 }
 

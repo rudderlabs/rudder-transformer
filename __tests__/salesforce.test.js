@@ -18,8 +18,8 @@ test(`${name} Tests`, async () => {
 
   inputData.forEach(async (input, index) => {
     var output = transformer.process(input); 
-    //TODO: FIX TODAY
-    expectedData[index]=output; 
+    output.header.Authorization = ''
+    expectedData.header.Authorization='' 
     expect(output).toEqual(expectedData[index]);
   });
 

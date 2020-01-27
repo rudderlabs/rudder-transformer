@@ -19,37 +19,37 @@ const {
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
 
-  console.log(SF_TOKEN_REQUEST_URL +
+  /*console.log(SF_TOKEN_REQUEST_URL +
       "?username=" +
       destination.Config.userName +
       "&password=" +
-      destination.Config.password +
-      destination.Config.initialAccessToken +
+      encodeURIComponent(destination.Config.password) +
+      encodeURIComponent(destination.Config.initialAccessToken) +
       "&client_id=" +
       //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSnEQUXy7m4Nv1WoGn9yTKnTytGz6cwlh2HOOamuS6tMuzoMxYY1KDTr25UrH'+
+      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
       "&client_secret=" +
       //destination.Config.consumerSecret +
-      '3DD6EBE86348FE7F2262FB8B231C452BDB94EA9269170C4FCD6ADB0265ED5809' +
-      "&grant_type=password");
+      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
+      "&grant_type=password");*/
   const response = await axios.post(
     SF_TOKEN_REQUEST_URL +
       "?username=" +
       destination.Config.userName +
       "&password=" +
-      destination.Config.password +
-      destination.Config.initialAccessToken +
+      encodeURIComponent(destination.Config.password )+
+      encodeURIComponent(destination.Config.initialAccessToken) +
       "&client_id=" +
       //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSnEQUXy7m4Nv1WoGn9yTKnTytGz6cwlh2HOOamuS6tMuzoMxYY1KDTr25UrH'+
+      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
       "&client_secret=" +
       //destination.Config.consumerSecret +
-      '3DD6EBE86348FE7F2262F8B231C452BDB94EA9269170C4FCD6ADB0265ED5809' +
+      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
       "&grant_type=password",
     {}
   );
 
-  console.log(response);
+  //console.log(response);
   return ["Bearer " + response.data.access_token, response.data.instance_url];
 }
 
@@ -124,7 +124,7 @@ async function responseBuilderSimple(
     userId: message.anonymousId,
     payload: { ...customParams, ...payload }
   };
-  console.log(response);
+  //console.log(response);
   return response;
 }
 
@@ -185,7 +185,7 @@ async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, destination);
-    console.log(response);
+    //console.log(response);
   } else {
     response = {
       statusCode: 400,
@@ -196,9 +196,9 @@ async function processSingleMessage(message, destination) {
 }
 
 async function process(event) { 
-  console.log(JSON.stringify(event));
-console.log('==')
-  console.log(processSingleMessage(event.message, event.destination))
+  //   console.log(JSON.stringify(event));
+  // console.log('==')
+  //   console.log(processSingleMessage(event.message, event.destination))
   return processSingleMessage(event.message, event.destination);
 }
 

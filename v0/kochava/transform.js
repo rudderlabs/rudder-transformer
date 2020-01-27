@@ -14,11 +14,17 @@ const { removeUndefinedValues, defaultRequestConfig } = require("../util");
 // 2. raw message from rudder
 // 3. mapping json for context properties
 // 4. destination object for keys
-function responseBuilder(eventData, message, mappingJson, destination) {
+function responseBuilder(
+  eventName,
+  eventData,
+  message,
+  mappingJson,
+  destination
+) {
   // set the mandatory fields for kochava
   const rawPayload = {
     action: "event",
-    kochava_app_id: destination.Config.guid,
+    kochava_app_id: destination.Config.apiKey,
     kochava_device_id: message.anonymousId,
     send_date: message.originalTimestamp
   };
@@ -30,12 +36,8 @@ function responseBuilder(eventData, message, mappingJson, destination) {
     data[mappingJson[sourceKey]] = get(message, sourceKey);
   });
 
-  // modify the supported event names for standard events in kochava
-  if (data.event_name) {
-    const eventName = data.event_name.toLowerCase();
-    if (eventNameMapping[eventName] != undefined) {
-      data.event_name = eventNameMapping[eventName];
-    }
+  if (eventName) {
+    data.event_name = eventName;
   }
 
   // remove undefined values
@@ -62,15 +64,20 @@ function processTrackEvents(message) {
   return message.properties;
 }
 
-// process only `track` and `identify` events
+// process only `track` and `screen` events
 function processMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let customParams = {};
+  let eventName = message.event;
 
   switch (messageType) {
     case EventType.SCREEN:
-      // `screen` event is not supported
-      throw new Error("message type not supported");
+      eventName = "screen view";
+      if (message.properties && message.properties.name){
+        eventName += " " + message.properties.name;
+      }
+      customParams = processTrackEvents(message);
+      break;
     case EventType.PAGE:
       // `page` event is not supported
       throw new Error("message type not supported");
@@ -79,6 +86,12 @@ function processMessage(message, destination) {
       throw new Error("message type not supported");
     case EventType.TRACK:
       // process `track` event
+      if (eventName) {
+        const evName = eventName.toLowerCase();
+        if (eventNameMapping[evName] != undefined) {
+          eventName = eventNameMapping[evName];
+        }
+      }
       customParams = processTrackEvents(message);
       break;
     default:
@@ -86,6 +99,7 @@ function processMessage(message, destination) {
   }
 
   return responseBuilder(
+    eventName,
     customParams,
     message,
     mappingConfig.KochavaGenericEvent,

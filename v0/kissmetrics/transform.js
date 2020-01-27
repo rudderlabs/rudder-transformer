@@ -278,7 +278,7 @@ function processPage(message, destination) {
   return processTrack(message, destination)[0];
 }
 
-function processAlias(message, destination){
+function processAlias(message, destination) {
   const previousId = message.previousId;
   const userId = message.userId;
   const apiKey = destination.Config.apiKey;
@@ -325,7 +325,6 @@ function process(event) {
       console.log("Message type not supported");
       throw new Error("Message type not supported");
   }
-
   return respList;
 }
 

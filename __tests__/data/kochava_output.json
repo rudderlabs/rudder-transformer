@@ -13,7 +13,6 @@
         "kochava_device_id": "sampath",
         "send_date": "2020-01-17T04:53:51.185Z",
         "data": {
-          "event_name": "product added",
           "origination_ip": "0.0.0.0",
           "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
           "app_name": "RudderLabs JavaScript SDK",
@@ -22,6 +21,7 @@
           "os_version": "",
           "screen_dpi": 2,
           "locale": "en-US",
+          "event_name": "Add to Cart",
           "event_data": { "name": "sampath" }
         }
       },
@@ -32,8 +32,5 @@
     "userId": "sampath",
     "statusCode": 200
   },
-  {
-    "statusCode": 400,
-    "error": "message type not supported"
-  }
+  { "statusCode": 400, "error": "message type not supported" }
 ]

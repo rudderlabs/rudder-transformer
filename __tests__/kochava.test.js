@@ -17,10 +17,12 @@ test(`${name} Tests`, async () => {
   const expectedData = JSON.parse(outputDataFile);
   await Promise.all(
     inputData.map(async (input, index) => {
-      const output = await transformer.process(input);
-      console.log("output", JSON.stringify(output));
-      console.log("expectedData[index]", JSON.stringify(expectedData[index]));
-      expect(output).toEqual(expectedData[index]);
+      try {
+        const output = await transformer.process(input);
+        expect(output).toEqual(expectedData[index]);
+      } catch (error) {
+        expect(error.message).toEqual("message type not supported");
+      }
     })
   );
 });

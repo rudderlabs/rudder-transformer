@@ -8,14 +8,24 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
+  defaultRequestConfig,
   isPrimitive
 } = require("../util");
 
 const {
   IDENTITY_ENDPOINT,
   USER_EVENT_ENDPOINT,
-  ANON_EVENT_ENDPOINT
+  ANON_EVENT_ENDPOINT,
+  DEVICE_REGISTER_ENDPOINT,
+  DEVICE_DELETE_ENDPOINT
 } = require("./config");
+
+const deviceRelatedEventNames = [
+  "Application Installed",
+  "Application Opened",
+  "Application Uninstalled"
+];
+const deviceDeleteRelatedEventName = "Application Uninstalled";
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // populate the list of spec'd traits in constants.js
@@ -35,8 +45,10 @@ function responseBuilder(message, evType, evName, destination) {
   let endpoint;
   let requestConfig = defaultPostRequestConfig;
   //console.log(message);
-  let userId = message.userId ? message.userId : message.anonymousId;
+  let userId =
+    message.userId && message.userId != "" ? message.userId : undefined;
 
+  const response = defaultRequestConfig();
   if (evType === EventType.IDENTIFY) {
     // populate speced traits
     populateSpecedTraits(rawPayload, message);
@@ -59,6 +71,12 @@ function responseBuilder(message, evType, evName, destination) {
           set(rawPayload, prop, val);
         }
       });
+
+      set(
+        rawPayload,
+        "created_at",
+        new Date(message.originalTimestamp).getTime()
+      );
     }
 
     //console.log(rawPayload);
@@ -71,8 +89,6 @@ function responseBuilder(message, evType, evName, destination) {
     requestConfig = defaultPutRequestConfig;
   } else {
     if (message.properties) {
-      rawPayload.data = {};
-
       // use this if only top level keys are to be sent
 
       /* const eventProps = Object.keys(message.properties);
@@ -83,31 +99,75 @@ function responseBuilder(message, evType, evName, destination) {
         }
       }); */
 
-      set(rawPayload, "data", message.properties);
+      if (deviceDeleteRelatedEventName == evName) {
+        const token = get(message, "context.device.token");
+        if (userId && token) {
+          endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
+            ":device_id",
+            token
+          );
+
+          response.endpoint = endpoint;
+          response.method = "DELETE";
+          response.headers = {
+            Authorization:
+              "Basic " +
+              btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
+          };
+
+          return response;
+        } else {
+          return {
+            statusCode: 400,
+            error: "userId or device_token not present"
+          };
+        }
+      }
+
+      if (deviceRelatedEventNames.includes(evName)) {
+        let devProps = message.properties;
+        set(devProps, "device_id", get(message, "context.device.token"));
+        set(devProps, "platform", get(message, "context.device.type"));
+        set(
+          devProps,
+          "last_used",
+          new Date(message.originalTimestamp).getTime()
+        );
+        set(rawPayload, "device", devProps);
+        requestConfig = defaultPutRequestConfig;
+      } else {
+        rawPayload.data = {};
+        set(rawPayload, "data", message.properties);
+      }
     }
 
-    set(rawPayload, "name", evName);
-    set(rawPayload, "type", evType);
+    if (!deviceRelatedEventNames.includes(evName)) {
+      set(rawPayload, "name", evName);
+      set(rawPayload, "type", evType);
+    }
 
     if (userId) {
-      endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);
+      if (deviceRelatedEventNames.includes(evName)) {
+        endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
+      } else {
+        endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);
+      }
     } else {
-      return { statusCode: 400, error: "userId not present" };
+      endpoint = ANON_EVENT_ENDPOINT;
     }
   }
   const payload = removeUndefinedValues(rawPayload);
   //console.log(payload);
-  const response = {
-    endpoint: endpoint,
-    requestConfig: requestConfig,
-    header: {
-      "Content-Type": "application/json",
-      Authorization:
-        "Basic " +
-        btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
-    },
-    payload: payload
+  response.endpoint = endpoint;
+  response.method = requestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json",
+    Authorization:
+      "Basic " +
+      btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
   };
+  response.body.JSON = payload;
+
   //console.log(response);
   return response;
 }

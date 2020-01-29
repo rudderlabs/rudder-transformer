@@ -41,10 +41,10 @@ async function getSFDCHeader(destination) {
       encodeURIComponent(destination.Config.initialAccessToken) +
       "&client_id=" +
       //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
+      '3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
       "&client_secret=" +
       //destination.Config.consumerSecret +
-      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
+      'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
       "&grant_type=password",
     {}
   );

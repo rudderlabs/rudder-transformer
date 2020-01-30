@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
+const moment = require("moment");
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -71,11 +72,58 @@ const toSafeDBString = str => {
   return str.substr(0, 127);
 };
 
+// older implementation with fallback to new Date()
 function validTimestamp(input) {
   // eslint-disable-next-line no-restricted-globals
   if (!isNaN(input)) return false;
   return new Date(input).getTime() > 0;
 }
+
+const timestampFuncFormats = [moment.ISO_8601, moment.RFC_2822];
+
+const timestampStringFormats = [
+  "YYYY-MM-DD HH:mm:ss",
+  "YYYY-MM-DD HH:mm:ss Z",
+  "YYYY-MM-DD HH:mm:ss.SSS Z",
+  "YYYY-MM-DDTHH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ssZ",
+  "YYYY-MM-DDTHH:mm:ss.SSZ",
+  "YYYY-MM-DDTHH:mm:ss.SSSZ",
+  "YYYY-MM-DD",
+  "MM-DD-YYYY",
+  "YYYY-MM-DD HH:mm",
+  "YYYY-MM-DD HH:mm Z",
+  // ISO_8061 v2.20.0 HTML5 formats
+  moment.HTML5_FMT.DATETIME_LOCAL,
+  moment.HTML5_FMT.DATETIME_LOCAL_SECONDS,
+  moment.HTML5_FMT.DATETIME_LOCAL_MS,
+  moment.HTML5_FMT.DATE,
+  moment.HTML5_FMT.TIME,
+  moment.HTML5_FMT.TIME_SECONDS,
+  moment.HTML5_FMT.TIME_MS,
+  moment.HTML5_FMT.WEEK,
+  moment.HTML5_FMT.MONTH
+];
+
+// function validTimestamp(input) {
+//   try {
+//     if (moment(input, timestampStringFormats, true).isValid()) {
+//       return true;
+//     }
+//     for (let index = 0; index < timestampFuncFormats.length; index++) {
+//       var x;
+//       try {
+//         x = moment(input, timestampFuncFormats[index], true).isValid();
+//       } catch (error) {
+//         // ignoring error here;
+//       }
+//       if (x) return true;
+//     }
+//   } catch (error) {
+//     return false;
+//   }
+//   return false;
+// }
 
 const isObject = value => {
   var type = typeof value;

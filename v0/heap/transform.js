@@ -1,42 +1,38 @@
 const get = require("get-value");
 const { EventType } = require("../../constants");
 const { destinationConfigKeys, endpoints } = require("./config");
-const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
-  updatePayload,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  defaultRequestConfig
 } = require("../util");
 
 function responseBuilder(payload, message, heapConfig) {
-  let endpoint;
-  let requestConfig;
+  let response = defaultRequestConfig();
 
   switch (message.type) {
     case EventType.IDENTIFY:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = endpoints.identifyUrl;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = endpoints.identifyUrl;
       break;
     case EventType.TRACK:
-      requestConfig = defaultPostRequestConfig;
-      endpoint = `${endpoints.trackUrl}`;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = `${endpoints.trackUrl}`;
       break;
     default:
       break;
   }
 
-  const response = {
-    endpoint,
-    header: {
-      autopilotapikey: `${heapConfig.apiKey}`,
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+
+  return {
+    ...response,
+    headers: {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
+    userId: message.userId ? message.userId : message.anonymousId
   };
-  return response;
 }
 
 function commonPayload(message, rawPayload, type) {
@@ -49,27 +45,22 @@ function commonPayload(message, rawPayload, type) {
         ? Object.keys(message.properties)
         : null;
       rudderPropertiesObj = message.properties;
+      rawPayload.identity = message.context.traits.email;
       break;
     case EventType.IDENTIFY:
       propsArray = get(message.context, "traits")
         ? Object.keys(message.context.traits)
         : null;
       rudderPropertiesObj = message.context.traits;
-
+      rawPayload.identity = message.context.traits.email;
       break;
   }
 
-  if (propsArray.includes("email")) {
-    propsArray.forEach(property => {
-      if (property != "email") {
-        propertiesObj[property] = rudderPropertiesObj[property];
-      } else {
-        const value = rudderPropertiesObj[property];
-        const replaceKeys = mapPayload.common.emailMapping;
-        updatePayload(property, replaceKeys, value, rawPayload);
-      }
-    });
-  }
+  propsArray.forEach(property => {
+    if (property != "email") {
+      propertiesObj[property] = rudderPropertiesObj[property];
+    }
+  });
 
   rawPayload.properties = propertiesObj;
   return rawPayload;
@@ -106,7 +97,7 @@ function getTransformedJSON(message, heapConfig) {
 }
 
 function getDestinationKeys(destination) {
-  let heapConfig = {};
+  const heapConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {

@@ -4,9 +4,13 @@
   "description": "",
   "main": "GATransform.js",
   "scripts": {
+    "dependency": "npm install",
     "start": "node destTransformer.js",
     "test": "jest",
     "postinstall": "node build.js"
+  },
+  "precommit": {
+    "run": "dependency,test"
   },
   "repository": {
     "type": "git",
@@ -19,10 +23,14 @@
   },
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
+    "@ndhoule/extend": "^2.0.0",
     "axios": "^0.19.0",
+    "component-each": "^0.2.6",
     "dotenv": "^8.2.0",
     "get-value": "^3.0.1",
     "gh-release": "^3.5.0",
+    "is": "^3.1.0",
+    "is-ip": "^3.1.0",
     "json-query": "^2.2.2",
     "koa": "^2.8.2",
     "koa-bodyparser": "^4.2.1",
@@ -31,10 +39,10 @@
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "set-value": "^3.0.1",
-    "sha256": "^0.2.0"
+    "sha256": "^0.2.0",
+    "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.2.0",
@@ -43,6 +51,8 @@
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
+    "jest": "^24.9.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.18.2"
   }
 }

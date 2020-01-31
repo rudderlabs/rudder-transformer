@@ -1,0 +1,164 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/123456",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {
+        "city": "kolkata",
+        "country": "India",
+        "postalCode": 712136,
+        "state": "WB",
+        "street": "",
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "ip": "0.0.0.0",
+        "age": 26,
+        "prop1": "val1",
+        "prop2": "val2",
+        "created_at": 1571043797
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "123456",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {
+        "data": {
+          "path": "/test",
+          "referrer": "Rudder",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "www.rudderlabs.com"
+        },
+        "name": "ApplicationLoaded",
+        "type": "page"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "12345",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50000
+        },
+        "name": "test track event",
+        "type": "event"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "12345",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50000
+        },
+        "name": "test track event",
+        "type": "event"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "00000000000000000000000000",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {
+        "device": {
+          "id": "abcxyz",
+          "platform": "android",
+          "last_used": 1578564113,
+          "review_id": "some_review_id",
+          "product_id": "some_product_id_a",
+          "rating": 2.0,
+          "review_body": "Some Review Body"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "12345",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "DELETE",
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/abcxyz",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "userId": "12345",
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  }
+]

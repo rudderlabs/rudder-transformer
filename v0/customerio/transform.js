@@ -49,6 +49,8 @@ function responseBuilder(message, evType, evName, destination) {
     message.userId && message.userId != "" ? message.userId : undefined;
 
   const response = defaultRequestConfig();
+  response.userId = message.userId ? message.userId : message.anonymousId;
+
   if (evType === EventType.IDENTIFY) {
     // populate speced traits
     populateSpecedTraits(rawPayload, message);
@@ -71,14 +73,13 @@ function responseBuilder(message, evType, evName, destination) {
           set(rawPayload, prop, val);
         }
       });
-
-      set(
-        rawPayload,
-        "created_at",
-        new Date(message.originalTimestamp).getTime()
-      );
     }
 
+    set(
+      rawPayload,
+      "created_at",
+      Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+    );
     //console.log(rawPayload);
 
     if (userId) {
@@ -126,12 +127,12 @@ function responseBuilder(message, evType, evName, destination) {
 
       if (deviceRelatedEventNames.includes(evName)) {
         let devProps = message.properties;
-        set(devProps, "device_id", get(message, "context.device.token"));
+        set(devProps, "id", get(message, "context.device.token"));
         set(devProps, "platform", get(message, "context.device.type"));
         set(
           devProps,
           "last_used",
-          new Date(message.originalTimestamp).getTime()
+          Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
         );
         set(rawPayload, "device", devProps);
         requestConfig = defaultPutRequestConfig;
@@ -183,18 +184,21 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = "page"; // customerio mandates sending 'page' for pageview events
-      evName = "page";
+      evName = message.name ? message.name : message.properties.url;
       break;
     case EventType.SCREEN:
-      evType = "screenview";
-      evName = "Viewed " + message.properties.name + " Screen";
+      evType = "event";
+      evName =
+        "Viewed " + message.name
+          ? message.name
+          : message.properties.name + " Screen";
       break;
     case EventType.TRACK:
       evType = "event";
       evName = message.event;
       break;
     default:
-      console.log("could not determine type");
+      console.log("could not determine type " + messageType);
       throw new Error("message type not supported");
   }
   //console.log(message);
@@ -202,21 +206,15 @@ function processSingleMessage(message, destination) {
   return response;
 }
 
-function process(events) {
+function process(event) {
   const respList = [];
-  events.forEach(event => {
-    try {
-      const { message, destination } = event;
-      //console.log("processSingleMessage");
-      const result = processSingleMessage(message, destination);
-      if (!result.statusCode) {
-        result.statusCode = 200;
-      }
-      respList.push(result);
-    } catch (error) {
-      respList.push({ statusCode: 400, error: error.message });
-    }
-  });
+  const { message, destination } = event;
+  //console.log("processSingleMessage");
+  const result = processSingleMessage(message, destination);
+  if (!result.statusCode) {
+    result.statusCode = 200;
+  }
+  respList.push(result);
 
   return respList;
 }

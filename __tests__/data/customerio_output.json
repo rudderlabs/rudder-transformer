@@ -21,11 +21,12 @@
         "age": 26,
         "prop1": "val1",
         "prop2": "val2",
-        "created_at": 1571043797562
+        "created_at": 1571043797
       },
       "XML": {},
       "FORM": {}
     },
+    "userId": "123456",
     "params": {},
     "files": {},
     "statusCode": 200
@@ -48,12 +49,13 @@
           "title": "Test Page",
           "url": "www.rudderlabs.com"
         },
-        "name": "page",
+        "name": "ApplicationLoaded",
         "type": "page"
       },
       "XML": {},
       "FORM": {}
     },
+    "userId": "12345",
     "params": {},
     "files": {},
     "statusCode": 200
@@ -80,6 +82,7 @@
       "XML": {},
       "FORM": {}
     },
+    "userId": "12345",
     "params": {},
     "files": {},
     "statusCode": 200
@@ -106,6 +109,7 @@
       "XML": {},
       "FORM": {}
     },
+    "userId": "00000000000000000000000000",
     "params": {},
     "files": {},
     "statusCode": 200
@@ -122,9 +126,9 @@
     "body": {
       "JSON": {
         "device": {
-          "device_id": "abcxyz",
+          "id": "abcxyz",
           "platform": "android",
-          "last_used": 1578564113558,
+          "last_used": 1578564113,
           "review_id": "some_review_id",
           "product_id": "some_product_id_a",
           "rating": 2.0,
@@ -134,6 +138,7 @@
       "XML": {},
       "FORM": {}
     },
+    "userId": "12345",
     "params": {},
     "files": {},
     "statusCode": 200
@@ -151,6 +156,7 @@
       "XML": {},
       "FORM": {}
     },
+    "userId": "12345",
     "params": {},
     "files": {},
     "statusCode": 200

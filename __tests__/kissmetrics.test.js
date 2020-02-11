@@ -1,12 +1,13 @@
-const integration = "kochava";
-const name = "Kochava";
+const integration = "kissmetrics";
+const name = "kissmetrics";
 
 const fs = require("fs");
 const path = require("path");
 
 const transformer = require(`../v0/${integration}/transform`);
+// const { compareJSON } = require("./util");
 
-test(`${name} Tests`, async () => {
+test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(
     path.resolve(__dirname, `./data/${integration}_input.json`)
   );
@@ -15,14 +16,11 @@ test(`${name} Tests`, async () => {
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  await Promise.all(
-    inputData.map(async (input, index) => {
-      try {
-        const output = await transformer.process(input);
-        expect(output).toEqual(expectedData[index]);
-      } catch (error) {
-        expect(error.message).toEqual("message type not supported");
-      }
-    })
-  );
+  inputData.forEach(async (input, index) => {
+    const output = transformer.process(input);
+    const outputLength = output.length;
+    for (var i = 0; i < outputLength; i++) {
+      expect(output[i]).toEqual(expectedData[index + i]);
+    }
+  });
 });

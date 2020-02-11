@@ -4,8 +4,6 @@
   "anonymousId": "anonymous_id",
   "userId": "user_id",
   "request_ip": "context_ip",
-  "context.library.name": "context_library_name",
-  "context.library.version": "context_library_version",
   "timestamp": "timestamp",
   "receivedAt": "received_at"
 }

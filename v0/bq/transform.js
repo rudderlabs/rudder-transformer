@@ -1,5 +1,6 @@
 const get = require("get-value");
 const moment = require("moment");
+const util = require("util");
 const {
   toSnakeCase,
   toSafeDBString,
@@ -12,9 +13,6 @@ const whDefaultConfigJson = mappingConfig[ConfigCategory.DEFAULT.name];
 const whTrackConfigJson = mappingConfig[ConfigCategory.TRACK.name];
 
 function dataType(val) {
-  // TODO: find a better way to check for valid datetime
-  // const datetimeRegex = /[0-9]{4}\-(?:0[1-9]|1[0-2])\-(?:0[1-9]|[1-2][0-9]|3[0-1])\s+(?:2[0-3]|[0-1][0-9]):[0-5][0-9]:[0-5][0-9]/;
-
   if (validTimestamp(val)) {
     return "datetime";
   }
@@ -39,7 +37,7 @@ function setFromConfig(input, configJson) {
       if (dataType(val) === "datetime") {
         val = moment(val)
           .utc()
-          .format("YYYY-MM-DD hh:mm:ss z");
+          .format("YYYY-MM-DD hh:mm:ss.SSS Z");
       }
       output[configJson[key]] = val;
     }
@@ -54,14 +52,14 @@ function setFromProperties(input, prefix = "") {
     if (isObject(input[key])) {
       output = {
         ...output,
-        ...setFromProperties(output, input[key], `${key}_`)
+        ...setFromProperties(input[key], `${prefix + key}_`)
       };
     } else {
       let val = input[key];
       if (dataType(val) === "datetime") {
         val = moment(val)
           .utc()
-          .format("YYYY-MM-DD hh:mm:ss z");
+          .format("YYYY-MM-DD hh:mm:ss.SSS Z"); // supported format in bigquery
       }
       output[toSafeDBString(prefix + key)] = input[key];
     }
@@ -82,13 +80,17 @@ function processSingleMessage(message, destination) {
   const eventType = message.type.toLowerCase();
   switch (eventType) {
     case "track": {
-      let result = setFromConfig(message, whDefaultConfigJson);
+      let result = {
+        ...setFromConfig(message, whDefaultConfigJson),
+        ...setFromProperties(message.context, "context_")
+      };
       result = { ...result, ...setFromConfig(message, whTrackConfigJson) };
       result.event = toSnakeCase(result.event_text);
 
       const trackEvent = {
         ...result,
-        ...setFromProperties(message.properties)
+        ...setFromProperties(message.properties),
+        ...setFromProperties(message.userProperties)
       };
 
       const tracksMetadata = {
@@ -105,7 +107,10 @@ function processSingleMessage(message, destination) {
       break;
     }
     case "identify": {
-      const event = setFromProperties(message.context.traits);
+      const event = {
+        ...setFromProperties(message.context.traits),
+        ...setFromProperties(message.context, "context_")
+      };
       const usersEvent = { ...event };
       const identifiesEvent = { ...event };
 
@@ -130,7 +135,10 @@ function processSingleMessage(message, destination) {
     }
     case "page":
     case "screen": {
-      const defaultEvent = setFromConfig(message, whDefaultConfigJson);
+      const defaultEvent = {
+        ...setFromConfig(message, whDefaultConfigJson),
+        ...setFromProperties(message.context, "context_")
+      };
       const event = {
         ...defaultEvent,
         ...setFromProperties(message.properties)

@@ -1,0 +1,185 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/e",
+    "headers": {},
+    "params": {
+      "Page-path": "/tests/html/index2.html",
+      "Page-referrer": "",
+      "Page-search": "",
+      "Page-title": "",
+      "Page-url": "http://localhost/tests/html/index2.html",
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_n": "Loaded a Page",
+      "_t": "1579847342",
+      "_d": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/s",
+    "headers": {},
+    "params": {
+      "city": "Disney",
+      "country": "USA",
+      "email": "mickey@disney.com",
+      "firstname": "Mickey",
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_t": "1579847342",
+      "_d": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/e",
+    "headers": {},
+    "params": {
+      "test revenue kissmetrics-currency": "USD",
+      "test revenue kissmetrics - revenue": 50,
+      "Billing Amount": 50,
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_n": "test revenue kissmetrics",
+      "_t": "1579847342",
+      "_d": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/a",
+    "headers": {},
+    "params": {
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_n": "1234abc"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "1234abc",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/e",
+    "headers": {},
+    "params": {
+      "KM Order Completed-affiliation": "Google Store",
+      "KM Order Completed-checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+      "KM Order Completed-coupon": "hasbros",
+      "KM Order Completed-currency": "USD",
+      "KM Order Completed-discount": 2.5,
+      "KM Order Completed-order_id": "50314b8e9bcf000000000000",
+      "KM Order Completed - revenue": 25,
+      "Billing Amount": 25,
+      "KM Order Completed-shipping": 3,
+      "KM Order Completed-subtotal": 22.5,
+      "KM Order Completed-tax": 2,
+      "KM Order Completed-total": 27.5,
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_n": "KM Order Completed",
+      "_t": "1579847342",
+      "_d": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/s",
+    "headers": {},
+    "params": {
+      "category": "Games",
+      "image_url": "https:///www.example.com/product/path.jpg",
+      "name": "Monopoly: 3rd Edition",
+      "price": 19,
+      "product_id": "507f1f77bcf86cd799439011",
+      "quantity": 1,
+      "sku": "45790-32",
+      "url": "https://www.example.com/product/path",
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "http://trk.kissmetrics.com/s",
+    "headers": {},
+    "params": {
+      "category": "Games",
+      "name": "Uno Card Game",
+      "price": 3,
+      "product_id": "505bd76785ebb509fc183733",
+      "quantity": 2,
+      "sku": "46493-32",
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  }
+]

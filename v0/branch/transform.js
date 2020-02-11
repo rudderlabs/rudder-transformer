@@ -1,43 +1,56 @@
 const get = require("get-value");
 const { EventType } = require("../../constants");
-const {
-  Event,
-  ConfigCategory,
-  destinationConfigKeys,
-  endpoints
-} = require("./config");
-const eventMapping = require("./data/eventMapping");
+const { destinationConfigKeys, endpoints } = require("./config");
+const { categoriesList } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
+  defaultRequestConfig,
   removeUndefinedAndNullValues
 } = require("../util");
 
 function responseBuilder(payload, message, branchConfig) {
-  let endpoint;
-  let requestConfig;
+  const response = defaultRequestConfig();
+
   if (payload.event_data === null && payload.content_items === null) {
-    requestConfig = defaultPostRequestConfig;
-    endpoint = endpoints.customEventUrl;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = endpoints.customEventUrl;
   } else {
-    requestConfig = defaultPostRequestConfig;
-    endpoint = endpoints.standardEventUrl;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = endpoints.standardEventUrl;
   }
 
-  const response = {
-    endpoint,
-    header: {
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return {
+    ...response,
+    headers: {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
+    userId: message.userId ? message.userId : message.anonymousId
   };
-  return response;
+}
+
+function getCategoryAndName(rudderEventName) {
+  for (let i = 0; i < categoriesList.length; i++) {
+    const category = categoriesList[i];
+    let requiredName = null;
+    let requiredCategory = null;
+    // eslint-disable-next-line array-callback-return
+    Object.keys(category.name).find(branchKey => {
+      if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
+        requiredName = category.name[branchKey];
+        requiredCategory = category;
+      }
+    });
+    if (requiredName != null && requiredCategory != null) {
+      return { name: requiredName, category: requiredCategory };
+    }
+  }
+  return { name: rudderEventName, category: "custom" };
 }
 
 function getUserData(message) {
-  let context = message.context;
+  const context = message.context;
 
   return removeUndefinedAndNullValues({
     os: context.os.name,
@@ -48,147 +61,132 @@ function getUserData(message) {
     idfa: get(context, "idfa") ? context.android_id : null,
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: message.anonymousId
+    developer_identity: get(message, "anonymousId")
+      ? message.anonymousId
+      : message.userId
   });
 }
 
-function mapPayload(rudderPropetiesArr, rudderPropertiesObj, config) {
-  let custom_data = {};
-  let content_item = {};
-  let event_data = {};
+function mapPayload(category, rudderProperty, rudderPropertiesObj) {
+  const content_items = {};
+  const event_data = {};
+  const custom_data = {};
 
-  rudderPropetiesArr.map(rudderKey => {
-    const filteredKey = Object.keys(eventMapping.EventConfig[config]).find(
-      key => {
-        return key === rudderKey;
-      }
-    );
-    const desiredKey = eventMapping.EventConfig[config][filteredKey];
-
-    switch (config) {
-      case "TransactionEventConfig":
-        if (!desiredKey || desiredKey === undefined) {
-          custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        } else {
-          event_data[desiredKey] = rudderPropertiesObj[rudderKey];
-        }
-        break;
-      case "SharingEventConfig":
-        if (!desiredKey || desiredKey === undefined) {
-          custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        } else {
-          content_item[desiredKey] = rudderPropertiesObj[rudderKey];
-        }
-        break;
-      case "ProductEventConfig":
-        if (!desiredKey || desiredKey === undefined) {
-          custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        } else {
-          content_item[desiredKey] = rudderPropertiesObj[rudderKey];
-        }
-        break;
-      case "PaymentRelatedEventConfig":
-        if (!desiredKey || desiredKey === undefined) {
-          custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        } else {
-          content_item[desiredKey] = rudderPropertiesObj[rudderKey];
-        }
-        break;
-      case "EComGenericEventConfig":
-        if (!desiredKey || desiredKey === undefined) {
-          custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        } else {
-          content_item[desiredKey] = rudderPropertiesObj[rudderKey];
-        }
-        break;
-
-      default:
-        custom_data[rudderKey] = rudderPropertiesObj[rudderKey];
-        break;
+  let valFound = false;
+  Object.keys(category.content_items).find(branchMappingProperty => {
+    if (branchMappingProperty === rudderProperty) {
+      const tmpKeyName = category.content_items[branchMappingProperty];
+      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+      valFound = true;
     }
   });
-  if (content_item == {} && event_data == {}) {
-    content_item = null;
-    event_data = null;
+
+  if (!valFound) {
+    category.event_data.find(branchMappingProperty => {
+      if (branchMappingProperty === rudderProperty) {
+        const tmpKeyName = category.content_items[branchMappingProperty];
+        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        valFound = true;
+      }
+    });
+  }
+
+  if (!valFound) {
+    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
   return {
-    custom_data,
-    content_item,
-    event_data
+    content_itemsObj: content_items,
+    event_dataObj: event_data,
+    custom_dataObj: custom_data
   };
 }
 
-function getConfig(rudderEvent) {
-  let requiredConfig;
-  Object.keys(Event).map(obj => {
-    if (Event[obj].name === rudderEvent) {
-      requiredConfig = Event[obj].category.name;
-    }
-  });
-  return requiredConfig;
-}
-
-function commonPayload(message, rawPayload, type) {
-  let rudderPropetiesArr;
+function commonPayload(message, rawPayload, category) {
   let rudderPropertiesObj;
-  let rudderEvent;
+  const content_items = [];
+  const event_data = {};
+  const custom_data = {};
+  let productObj = {};
 
-  switch (type) {
+  // eslint-disable-next-line default-case
+  switch (message.type) {
     case EventType.TRACK:
-      rudderPropetiesArr = get(message, "properties")
-        ? Object.keys(message.properties)
+      rudderPropertiesObj = get(message, "properties")
+        ? message.properties
         : null;
-      rudderPropertiesObj = message.properties;
-      rudderEvent = message.event.toLowerCase();
       break;
     case EventType.IDENTIFY:
-      rudderPropetiesArr = get(message.context, "traits")
-        ? Object.keys(message.context.traits)
+      rudderPropertiesObj = get(message.context, "traits")
+        ? message.context.traits
         : null;
-      rudderPropertiesObj = message.context.traits;
-      rudderEvent = message.userId.toLowerCase();
       break;
   }
 
-  const payload = mapPayload(
-    rudderPropetiesArr,
-    rudderPropertiesObj,
-    getConfig(rudderEvent)
-  );
-  rawPayload.custom_data = payload.custom_data;
-  rawPayload.content_items = [payload.content_item];
-  rawPayload.event_data = payload.event_data;
-  rawPayload.user_data = getUserData(message);
+  if (rudderPropertiesObj != null) {
+    Object.keys(rudderPropertiesObj).map(rudderProperty => {
+      if (rudderProperty === "products") {
+        productObj = {};
+        for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
+          const product = rudderPropertiesObj.products[i];
+          // eslint-disable-next-line no-loop-func
+          Object.keys(product).map(productProp => {
+            const {
+              content_itemsObj,
+              event_dataObj,
+              custom_dataObj
+            } = mapPayload(category, productProp, product);
+            Object.assign(productObj, content_itemsObj);
+            Object.assign(event_data, event_dataObj);
+            Object.assign(custom_data, custom_dataObj);
+          });
+          content_items.push(productObj);
+          productObj = {};
+        }
+      } else {
+        const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
+          category,
+          rudderProperty,
+          rudderPropertiesObj
+        );
+        Object.assign(productObj, content_itemsObj);
+        Object.assign(event_data, event_dataObj);
+        Object.assign(custom_data, custom_dataObj);
+      }
+    });
+    content_items.push(productObj);
+    rawPayload.custom_data = custom_data;
+    rawPayload.content_items = content_items;
+    rawPayload.event_data = event_data;
+    rawPayload.user_data = getUserData(message);
+
+    Object.keys(rawPayload).map(key => {
+      if (Object.keys(rawPayload[key]).length == 0) {
+        rawPayload[key] = null;
+      }
+    });
+  }
 
   return rawPayload;
 }
 
-function updateNameValue(eventName, acceptedNames) {
-  return acceptedNames.find(obj => {
-    return obj.rudderValue.toLowerCase() === eventName.toLowerCase();
-  }).expectedValue;
-}
-
 function getIdentifyPayload(message, branchConfig) {
-  let rawPayload = {
+  const rawPayload = {
     branch_key: branchConfig.BRANCH_KEY
   };
-  rawPayload.name = updateNameValue(
-    message.userId,
-    eventMapping.mapPayload.common.acceptedNames
-  );
-  return commonPayload(message, rawPayload, message.type);
+  const { name, category } = getCategoryAndName(message.userId);
+  rawPayload.name = name;
+
+  return commonPayload(message, rawPayload, category);
 }
 
 function getTrackPayload(message, branchConfig) {
-  let rawPayload = {
+  const rawPayload = {
     branch_key: branchConfig.BRANCH_KEY
   };
-  rawPayload.name = updateNameValue(
-    message.event,
-    eventMapping.mapPayload.common.acceptedNames
-  );
-  return commonPayload(message, rawPayload, message.type);
+  const { name, category } = getCategoryAndName(message.event);
+  rawPayload.name = name;
+
+  return commonPayload(message, rawPayload, category);
 }
 
 function getTransformedJSON(message, branchConfig) {
@@ -206,16 +204,13 @@ function getTransformedJSON(message, branchConfig) {
   return { ...rawPayload };
 }
 
-function getDestinationKeys(message, destination) {
-  let branchConfig = {};
-  const configKeys = Object.keys(destination.Config);
-  configKeys.forEach(key => {
+function getDestinationKeys(destination) {
+  const branchConfig = {};
+  Object.keys(destination.Config).forEach(key => {
+    // eslint-disable-next-line default-case
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
-        break;
-      case destinationConfigKeys.BRANCH_SECRET:
-        branchConfig.BRANCH_SECRET = `${destination.Config[key]}`;
         break;
     }
   });
@@ -223,7 +218,7 @@ function getDestinationKeys(message, destination) {
 }
 
 function process(event) {
-  const branchConfig = getDestinationKeys(event.message, event.destination);
+  const branchConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, branchConfig);
   return responseBuilder(properties, event.message, branchConfig);
 }

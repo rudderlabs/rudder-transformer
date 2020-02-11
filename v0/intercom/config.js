@@ -1,7 +1,7 @@
 const destinationConfigKeys = {
-  apiKey: "apiKey",
+  accessToken: "accessToken",
   appId: "appId",
-  mobileApiKey: "mobileAppId",
+  mobileApiKey: "mobileApiKey",
   collectContext: "collectContext"
 };
 

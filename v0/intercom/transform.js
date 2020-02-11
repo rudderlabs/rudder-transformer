@@ -209,8 +209,8 @@ function getDestinationKeys(destination) {
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {
-      case destinationConfigKeys.apiKey:
-        intercomConfig.apiKey = `${destination.Config[key]}`;
+      case destinationConfigKeys.accessToken:
+        intercomConfig.accessToken = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.appId:
         intercomConfig.appId = `${destination.Config[key]}`;

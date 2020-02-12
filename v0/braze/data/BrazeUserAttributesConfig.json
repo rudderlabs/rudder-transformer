@@ -1,0 +1,11 @@
+{  
+  "context.traits.birthday": "dob",
+  "context.traits.email": "email", 
+  "context.traits.firstName": "first_name", 
+  "context.traits.lastName": "last_name", 
+  "context.traits.gender": "gender", 
+  "context.traits.avatar": "image_url", 
+  "context.traits.phone": "phone", 
+  "context.traits.address.country": "country", 
+  "context.traits.address.city": "home_city"
+}

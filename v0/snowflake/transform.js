@@ -49,12 +49,6 @@ function setFromProperties(input, prefix = "") {
         ...setFromProperties(input[key], `${prefix + key}_`)
       };
     } else {
-      let val = input[key];
-      if (dataType(val) === "datetime") {
-        val = moment(val)
-          .utc()
-          .format("YYYY-MM-DD hh:mm:ss.SSS Z"); // supported format in redshift
-      }
       output[toSafeDBString(prefix + key)] = input[key];
     }
   });

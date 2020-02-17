@@ -72,38 +72,49 @@ const toSafeDBString = str => {
   return str.substr(0, 127);
 };
 
-// older implementation with fallback to new Date()
+// https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
+// make sure to disable prettier for regex expression
+// prettier-ignore
+const timestampRegex = new RegExp(
+  /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/
+);
+
 function validTimestamp(input) {
-  // eslint-disable-next-line no-restricted-globals
-  if (!isNaN(input)) return false;
-  return new Date(input).getTime() > 0;
+  return timestampRegex.test(input);
 }
 
-const timestampFuncFormats = [moment.ISO_8601, moment.RFC_2822];
+// // older implementation with fallback to new Date()
+// function validTimestamp(input) {
+//   // eslint-disable-next-line no-restricted-globals
+//   if (!isNaN(input)) return false;
+//   return new Date(input).getTime() > 0;
+// }
 
-const timestampStringFormats = [
-  "YYYY-MM-DD HH:mm:ss",
-  "YYYY-MM-DD HH:mm:ss Z",
-  "YYYY-MM-DD HH:mm:ss.SSS Z",
-  "YYYY-MM-DDTHH:mm:ss",
-  "YYYY-MM-DDTHH:mm:ssZ",
-  "YYYY-MM-DDTHH:mm:ss.SSZ",
-  "YYYY-MM-DDTHH:mm:ss.SSSZ",
-  "YYYY-MM-DD",
-  "MM-DD-YYYY",
-  "YYYY-MM-DD HH:mm",
-  "YYYY-MM-DD HH:mm Z",
-  // ISO_8061 v2.20.0 HTML5 formats
-  moment.HTML5_FMT.DATETIME_LOCAL,
-  moment.HTML5_FMT.DATETIME_LOCAL_SECONDS,
-  moment.HTML5_FMT.DATETIME_LOCAL_MS,
-  moment.HTML5_FMT.DATE,
-  moment.HTML5_FMT.TIME,
-  moment.HTML5_FMT.TIME_SECONDS,
-  moment.HTML5_FMT.TIME_MS,
-  moment.HTML5_FMT.WEEK,
-  moment.HTML5_FMT.MONTH
-];
+// const timestampFuncFormats = [moment.ISO_8601, moment.RFC_2822];
+
+// const timestampStringFormats = [
+//   "YYYY-MM-DD HH:mm:ss",
+//   "YYYY-MM-DD HH:mm:ss Z",
+//   "YYYY-MM-DD HH:mm:ss.SSS Z",
+//   "YYYY-MM-DDTHH:mm:ss",
+//   "YYYY-MM-DDTHH:mm:ssZ",
+//   "YYYY-MM-DDTHH:mm:ss.SSZ",
+//   "YYYY-MM-DDTHH:mm:ss.SSSZ",
+//   "YYYY-MM-DD",
+//   "MM-DD-YYYY",
+//   "YYYY-MM-DD HH:mm",
+//   "YYYY-MM-DD HH:mm Z",
+//   // ISO_8061 v2.20.0 HTML5 formats
+//   moment.HTML5_FMT.DATETIME_LOCAL,
+//   moment.HTML5_FMT.DATETIME_LOCAL_SECONDS,
+//   moment.HTML5_FMT.DATETIME_LOCAL_MS,
+//   moment.HTML5_FMT.DATE,
+//   moment.HTML5_FMT.TIME,
+//   moment.HTML5_FMT.TIME_SECONDS,
+//   moment.HTML5_FMT.TIME_MS,
+//   moment.HTML5_FMT.WEEK,
+//   moment.HTML5_FMT.MONTH
+// ];
 
 // function validTimestamp(input) {
 //   try {

@@ -57,11 +57,9 @@ function setFromProperties(input, prefix = "") {
     } else {
       let val = input[key];
       if (dataType(val) === "datetime") {
-        val = moment(val)
-          .utc()
-          .format("YYYY-MM-DD hh:mm:ss.SSS Z"); // supported format in bigquery
+        val = moment(val).format("YYYY-MM-DD hh:mm:ss.SSS"); // supported format in bigquery
       }
-      output[toSafeDBString(prefix + key)] = input[key];
+      output[toSafeDBString(prefix + key)] = val;
     }
   });
   return output;

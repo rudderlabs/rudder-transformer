@@ -49,7 +49,11 @@ function setFromProperties(input, prefix = "") {
         ...setFromProperties(input[key], `${prefix + key}_`)
       };
     } else {
-      output[toSafeDBString(prefix + key)] = input[key];
+      let val = input[key];
+      if (dataType(val) === "datetime") {
+        val = moment(val).format("YYYY-MM-DD hh:mm:ss.SSS"); // supported format in bigquery
+      }
+      output[toSafeDBString(prefix + key)] = val;
     }
   });
   return output;

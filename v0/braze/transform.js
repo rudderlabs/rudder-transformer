@@ -170,9 +170,12 @@ function getPurchaseObjs(message){
   return purchaseObjs;
 }
 
-function processTrackEvent(messageType, message, destination) { 
+function processTrackEvent(messageType, message, destination,mappingJson) { 
   var eventName = message.event;
   var properties = message.properties; 
+
+  let attributePayload = getUserAttributesObject(message, mappingJson);
+  attributePayload = setExternalIdOrAliasObject(attributePayload,message); 
 
   if(messageType == EventType.TRACK && eventName.toLowerCase() === 'order completed')
   {
@@ -187,7 +190,7 @@ function processTrackEvent(messageType, message, destination) {
 
     payload = setExternalIdOrAliasObject(payload,message); 
     return buildResponse(message, 
-      appendApiKey({"purchases" : purchaseObjs} , destination), 
+      appendApiKey({"attributes" : [attributePayload], "purchases" : purchaseObjs} , destination), 
       getTrackEndPoint(destination.Config.endPoint));
       
   }
@@ -202,7 +205,7 @@ function processTrackEvent(messageType, message, destination) {
 
     payload = setExternalIdOrAliasObject(payload,message); 
     return buildResponse(message, 
-      appendApiKey({"events" : [payload]} , destination), 
+      appendApiKey({"attributes" : [attributePayload],"events" : [payload]} , destination), 
       getTrackEndPoint(destination.Config.endPoint));
   }
 }
@@ -214,6 +217,9 @@ function process(event) {
   const messageType = message.type.toLowerCase(); 
 
 
+  //Init -- mostly for test cases
+  destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
+  
   if(destination.Config.dataCenter){
     let dataCenterArr =  destination.Config.dataCenter.trim().split('-');
     if(dataCenterArr[0].toLowerCase() === 'eu'){
@@ -228,12 +234,12 @@ function process(event) {
   let category = ConfigCategory.DEFAULT; 
   switch (messageType) { 
     case EventType.TRACK:
-      response = processTrackEvent(messageType,message, destination); 
+      response = processTrackEvent(messageType,message, destination,mappingConfig[category.name]); 
       respList.push(response); 
       break;
     case EventType.PAGE:
       message.event = message.name;
-      response = processTrackEvent(messageType,message, destination); 
+      response = processTrackEvent(messageType,message, destination,mappingConfig[category.name]); 
       respList.push(response); 
       break;
     case EventType.IDENTIFY:

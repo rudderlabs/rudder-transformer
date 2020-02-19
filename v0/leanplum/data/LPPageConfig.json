@@ -1,0 +1,9 @@
+{
+    "userId":"userId",
+    "name": "state",
+    "properties.path": "params.path",
+    "properties.referrer": "params.referrer",
+    "properties.search": "params.search",
+    "properties.title": "params.title",
+    "properties.url": "params.url"
+}

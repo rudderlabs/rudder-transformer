@@ -1,0 +1,6 @@
+{   
+    "userId": "userId",
+    "context.device.id": "deviceId",
+    "event": "event",
+    "properties": "params"
+}

@@ -1,0 +1,6 @@
+{
+    "anonymousId":"userId",
+    "userId":"newUserId",
+    "context.device.id":"deviceId",
+    "properties":"userAttributes"
+}

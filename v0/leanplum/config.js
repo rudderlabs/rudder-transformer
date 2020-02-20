@@ -4,6 +4,14 @@ const ConfigCategory = {
     PAGE: {
         name: "LPPageConfig",
         action: "advance"
+    },
+    IDENTIFY: {
+        name: "LPIdentifyConfig",
+        action: "setUserAttributes"
+    },
+    TRACK: {
+        name: "LPTrackConfig",
+        action: "track"
     }
 };
 

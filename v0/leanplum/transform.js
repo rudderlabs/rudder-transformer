@@ -50,6 +50,12 @@ function processSingleMessage(message, destination) {
         case EventType.PAGE:
             category = ConfigCategory.PAGE;
             break;
+        case EventType.IDENTIFY:
+            category = ConfigCategory.IDENTIFY;
+            break;
+        case EventType.TRACK:
+            category = ConfigCategory.TRACK;
+            break;
         default:
             throw new Error("Message type not supported");
     }

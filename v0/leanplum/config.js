@@ -2,7 +2,8 @@ const { getMappingConfig } = require("../util");
 
 const ConfigCategory = {
     PAGE: {
-        name: "LPPageConfig"
+        name: "LPPageConfig",
+        action: "advance"
     }
 };
 

@@ -1,11 +1,44 @@
+const get = require("get-value");
+const set = require("set-value");
+
 const { EventType } = require("../../constants");
 const {ConfigCategory, mappingConfig, ENDPOINT} = require("./config");
+const {
+    removeUndefinedValues,
+    defaultPostRequestConfig,
+    defaultRequestConfig
+  } = require("../util");
 
 function responseBuilderSimple(message, category, destination) {
     mappingJson = mappingConfig[category.name];
-    const rawpayload = {};
+    const rawPayload = {
+        appId: destination.Config.appId,
+        clientKey: destination.Config.clientKey,
+        apiVersion: destination.Config.apiVersion
+    };
     
-    return [];
+    const sourceKeys = Object.keys(mappingJson);
+    sourceKeys.forEach(sourceKey => {
+        set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    });
+    // sending anonymousId if userId is not present
+    rawPayload.userId = rawPayload.userId ? rawPayload.userId : message.anonymousId;
+    const payload = removeUndefinedValues(rawPayload);
+    
+    const response = defaultRequestConfig();
+    response.endpoint = ENDPOINT;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+        "Content-Type": "application/json"
+    };
+    //check userId
+    response.userId = message.userId ? message.userId : message.anonymousId;
+    response.body.JSON = payload;
+    response.params = {
+        action: category.action
+    };
+
+    return response;
 }
 
 function processSingleMessage(message, destination) {

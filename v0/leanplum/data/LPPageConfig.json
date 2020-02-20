@@ -1,5 +1,6 @@
 {
     "userId":"userId",
+    "context.device.id":"deviceId",
     "name": "state",
     "properties.path": "params.path",
     "properties.referrer": "params.referrer",

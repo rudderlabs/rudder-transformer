@@ -4,7 +4,6 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
-const moment = require("moment");
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -151,42 +150,37 @@ const getDataType = val => {
   return "string";
 };
 
-function setFromConfig(input, configJson, columnTypes) {
-  const output = {};
+function setFromConfig(resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
       datatype = getDataType(val);
       if (datatype === "datetime") {
-        val = moment(val).format("YYYY-MM-DD hh:mm:ss.SSS"); // supported format in bigquery
+        val = new Date(val).toISOString();
       }
-      output[configJson[key]] = val;
-      columnTypes[configJson[key]] = datatype;
+      const prop = configJson[key];
+      resp[prop] = val;
+      columnTypes[prop] = datatype;
     }
   });
-  return output;
 }
 
-function setFromProperties(input, columnTypes, prefix = "") {
-  let output = {};
-  if (!input) return output;
+function setFromProperties(resp, input, columnTypes, prefix = "") {
+  if (!input) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      output = {
-        ...output,
-        ...setFromProperties(input[key], columnTypes, `${prefix + key}_`)
-      };
+      setFromProperties(resp, input[key], columnTypes, `${prefix + key}_`);
     } else {
       let val = input[key];
       datatype = getDataType(val);
       if (datatype === "datetime") {
-        val = moment(val).format("YYYY-MM-DD hh:mm:ss.SSS"); // supported format in bigquery
+        val = new Date(val).toISOString();
       }
-      output[toSafeDBString(prefix + key)] = val;
-      columnTypes[toSafeDBString(prefix + key)] = datatype;
+      const safeKey = toSafeDBString(prefix + key);
+      resp[safeKey] = val;
+      columnTypes[safeKey] = datatype;
     }
   });
-  return output;
 }
 
 function getColumns(obj, columnTypes) {
@@ -209,30 +203,23 @@ function processWarehouseMessage(
   const columnTypes = {};
   switch (eventType) {
     case "track": {
-      let result = {
-        ...setFromConfig(message, whDefaultConfigJson, columnTypes),
-        ...setFromProperties(message.context, columnTypes, "context_")
-      };
-      result = {
-        ...result,
-        ...setFromConfig(message, whTrackConfigJson, columnTypes)
-      };
+      tracksEvent = {};
+      setFromConfig(tracksEvent, message, whDefaultConfigJson, columnTypes);
+      setFromProperties(tracksEvent, message.context, columnTypes, "context_");
+      setFromConfig(tracksEvent, message, whTrackConfigJson, columnTypes);
 
-      // set event name
-      result.event = toSnakeCase(result.event_text);
+      tracksEvent.event = toSnakeCase(tracksEvent.event_text);
       columnTypes.event = "string";
 
-      const trackEvent = {
-        ...result,
-        ...setFromProperties(message.properties, columnTypes, ""),
-        ...setFromProperties(message.userProperties, columnTypes, "")
-      };
+      trackEvent = { ...tracksEvent };
+      setFromProperties(trackEvent, message.properties, columnTypes, "");
+      setFromProperties(trackEvent, message.userProperties, columnTypes, "");
 
       const tracksMetadata = {
         table: "tracks",
-        columns: getColumns(result, columnTypes)
+        columns: getColumns(tracksEvent, columnTypes)
       };
-      responses.push({ metadata: tracksMetadata, data: result });
+      responses.push({ metadata: tracksMetadata, data: tracksEvent });
 
       const trackEventMetadata = {
         table: toSafeDBString(trackEvent.event),
@@ -242,10 +229,9 @@ function processWarehouseMessage(
       break;
     }
     case "identify": {
-      const event = {
-        ...setFromProperties(message.context.traits, columnTypes, ""),
-        ...setFromProperties(message.context, columnTypes, "context_")
-      };
+      const event = {};
+      setFromProperties(event, message.context.traits, columnTypes, "");
+      setFromProperties(event, message.context, columnTypes, "context_");
       const usersEvent = { ...event };
       const identifiesEvent = { ...event };
 
@@ -274,14 +260,10 @@ function processWarehouseMessage(
     }
     case "page":
     case "screen": {
-      const defaultEvent = {
-        ...setFromConfig(message, whDefaultConfigJson, columnTypes),
-        ...setFromProperties(message.context, columnTypes, "context_")
-      };
-      const event = {
-        ...defaultEvent,
-        ...setFromProperties(message.properties, columnTypes, columnTypes)
-      };
+      const event = {};
+      setFromConfig(event, message, whDefaultConfigJson, columnTypes);
+      setFromProperties(event, message.context, columnTypes, "context_");
+      setFromProperties(event, message.properties, columnTypes, columnTypes);
       const metadata = {
         table: `${eventType}s`,
         columns: getColumns(event, columnTypes)
@@ -306,6 +288,9 @@ module.exports = {
   removeUndefinedAndNullValues,
   isObject,
   toSnakeCase,
+  setFromConfig,
+  setFromProperties,
+  getColumns,
   toSafeDBString,
   validTimestamp,
   getDataType,

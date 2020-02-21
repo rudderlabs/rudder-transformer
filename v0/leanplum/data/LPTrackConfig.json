@@ -1,5 +1,5 @@
 {
-  "userId": "userId",
+  "anonymousId": "userId",
   "context.device.id": "deviceId",
   "event": "event",
   "properties": "params"

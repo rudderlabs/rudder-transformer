@@ -13,6 +13,8 @@ const {
   defaultPostRequestConfig
 } = require("../util");
  
+//TODO Raj: Also map the rest of the traits of sg spec to salesforce , 
+//otherwise they will go as custom events & then not show up in salesforce
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -78,6 +80,7 @@ function getParamsFromConfig(message, destination) {
 async function responseBuilderSimple(
   message,
   mappingJson,
+  ignoreMapJson,
   destination,
   targetEndpoint,
   authorizationData
@@ -105,6 +108,17 @@ async function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
+
+  /*if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
+    rawPayload['FirstName'] = 'n/a'
+  */
+
+  if(! rawPayload['LastName'] || rawPayload['LastName'].trim() == "" )
+    rawPayload['LastName'] = 'n/a'
+
+  if(! rawPayload['Company'] || rawPayload['Company'].trim() == "" )
+    rawPayload['Company'] = 'n/a'
+
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 
@@ -113,6 +127,18 @@ async function responseBuilderSimple(
   customParams = removeUndefinedValues(customParams);
   // request configuration will be conditional
   // POST for create, PATCH for update
+
+  const customKeys = Object.keys(message.context.traits);
+  customKeys.forEach( key => { 
+    const keyPath = 'context.traits.'+key;
+    if(!( keyPath in mappingJson) && !(keyPath in ignoreMapJson))
+    {
+      const val = message.context.traits[key];
+      if(val)
+        payload["rudder_stack__"+key+"__c"] =  val;
+    }
+  }
+  );
 
   const response = {
     endpoint: targetEndpoint,
@@ -173,6 +199,7 @@ async function processIdentify(message, destination) {
   return responseBuilderSimple(
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name],
+    mappingConfig[ConfigCategory.IGNORE.name],
     destination,
     targetEndpoint,
     authorizationData
@@ -192,6 +219,7 @@ async function processSingleMessage(message, destination) {
       error: "message type " + message.type + " is not supported"
     };
   }
+  //console.log(response);
   return response;
 }
 

@@ -178,10 +178,34 @@ const mockData = [
   { name: "hs_predictivecontactscore", type: "number" }
 ];
 
+const salesForceAuthData=   {
+    access_token: '00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+    instance_url: 'https://ap15.salesforce.com',
+    id: 'https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI',
+    token_type: 'Bearer',
+    issued_at: '1582343657644',
+    signature: 'XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o='
+  } ;
+
 function get(url) {
   return new Promise((resolve, reject) => {
     resolve({ data: mockData });
   });
 }
+
+function post(url){
+  if(url.startsWith("https://login.salesforce.com/services/oauth2/token") ){
+    return new Promise((resolve, reject) => {
+      resolve({ data: salesForceAuthData });
+    });
+  }
+
+  else{
+    return new Promise((resolve, reject) => {
+      resolve({ data: mockData });
+    });
+  }
+}
 axios.get = get;
+axios.post = post;
 module.exports = axios;

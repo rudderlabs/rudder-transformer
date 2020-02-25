@@ -43,19 +43,18 @@
           },
           "traits":{ 
              "anonymousId":"1e7673da-9473-49c6-97f7-da848ecafa76",
-             "city":"east greenwich",
              "company":"Initech",
-             "country":"USA",
+             "address": {
+               "city":"east greenwich",
+               "country":"USA",
+               "state": "California",
+               "street":"19123 forest lane",
+               "postalCode":"94115"
+            },
              "email":"peter.gibbons@initech.com",
              "name":"Peter Gibbons",
              "phone":"570-690-4150",
-             "postalCode":"94115",
-             "rating":"Hot",
-             "state":[ 
-                "California",
-                "RI"
-             ],
-             "street":"19123 forest lane",
+             "rating":"Hot" ,
              "title":"VP of Derp"
           },
           "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"

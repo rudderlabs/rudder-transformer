@@ -11,9 +11,7 @@ const {
   removeUndefinedValues,
   toStringValues,
   defaultPostRequestConfig
-} = require("../util"); 
-//TODO Raj: Also map the rest of the traits of sg spec to salesforce , 
-//otherwise they will go as custom events & then not show up in salesforce
+} = require("../util");  
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -97,16 +95,24 @@ async function responseBuilderSimple(
     var nameComponents = message.context.traits.name.split(" ");
     firstName = nameComponents[0]; // first element
     lastName = nameComponents[nameComponents.length - 1]; // last element
-  }
-
-  // Insert first and last names separately into message
-  message.context.traits.firstName = firstName;
-  message.context.traits.lastName = lastName;
+    // Insert first and last names separately into message
+    message.context.traits.firstName = firstName;
+    message.context.traits.lastName = lastName;
+  } 
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
-  });
+    let val = get(message, sourceKey);
+    if(val){
+      if( typeof val === 'string' ){
+        if(val.trim().length >0) 
+          rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
+      }
+      else if(typeof val !== 'object'){
+        rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
+      }
+    }
+});
 
   /*if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
     rawPayload['FirstName'] = 'n/a'
@@ -124,17 +130,17 @@ async function responseBuilderSimple(
   // Get custom params from destination config
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
-  // request configuration will be conditional
-  // POST for create, PATCH for update
+
 
   const customKeys = Object.keys(message.context.traits);
   customKeys.forEach( key => { 
     const keyPath = 'context.traits.'+key;
-    if(!( keyPath in mappingJson) && !(keyPath in ignoreMapJson))
+    mappingJsonKeys = Object.keys(mappingJson);
+    if(! mappingJsonKeys.some(function(k){ return ~k.indexOf(keyPath) }) && !(keyPath in ignoreMapJson))
     {
       const val = message.context.traits[key];
       if(val)
-        payload["rudder_stack__"+key+"__c"] =  val;
+        payload[key+"__c"] =  val;
     }
   }
   );
@@ -181,11 +187,15 @@ async function processIdentify(message, destination) {
     email +
     "&sobject=Lead&Lead.fields=id";
 
+
+  // request configuration will be conditional
+  // POST for create, PATCH for update
   var leadQueryResponse = await axios.get(leadQueryUrl, {
     headers: {
       Authorization: authorizationData[0]
     }
   });
+  
 
   if(leadQueryResponse && leadQueryResponse.data.searchRecords)
   {

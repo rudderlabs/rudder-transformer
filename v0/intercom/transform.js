@@ -34,15 +34,21 @@ function responseBuilder(payload, message, intercomConfig) {
       break;
   }
   
-  return {
+  // console.log(intercomConfig);
+
+  const resp = {
     ...response,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${intercomConfig.apiKey}`,
+      Authorization: `Bearer ${intercomConfig.accessToken}`,
       Accept: "application/json"
     },
     userId: message.userId ? message.userId : message.anonymousId
   };
+
+  // console.log(resp);
+
+  return resp;
 }
 
 function addContext(payload, message) {
@@ -128,10 +134,13 @@ function getIdentifyPayload(message, intercomConfig) {
 
       companyFields.forEach(companyTrait => {
         const companyValue = traits[field][companyTrait];
+        // console.log(companyValue);
         const replaceKeys = mapPayload.identify.company;
+        // console.log(replaceKeys);
         updatePayload(companyTrait, replaceKeys, companyValue, company);
       });
 
+      // console.log(company);
       if (!companyFields.includes("id")) {
         set(company, "company_id", md5(company.name));
       }
@@ -145,7 +154,13 @@ function getIdentifyPayload(message, intercomConfig) {
   });
 
   intercomConfig.collectContext ? addContext(rawPayload, message) : null;
-  rawPayload.external_id = message.userId ? message.userId : message.anonymousId;
+  // // console.log(message.userId);
+  if (!rawPayload.user_id) {
+    rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
+  }
+  // console.log("============================");
+  // console.log(rawPayload);
+  // console.log("============================");
   return rawPayload;
 }
 

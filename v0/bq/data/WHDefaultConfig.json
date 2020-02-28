@@ -1,9 +1,10 @@
 {
   "messageId": "id",
-  "sentAt": "sent_at",
   "anonymousId": "anonymous_id",
   "userId": "user_id",
   "request_ip": "context_ip",
+  "sentAt": "sent_at",
   "timestamp": "timestamp",
-  "receivedAt": "received_at"
+  "receivedAt": "received_at",
+  "originalTimestamp": "original_timestamp"
 }

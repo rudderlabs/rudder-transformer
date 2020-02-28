@@ -47,7 +47,7 @@ function responseBuilderSimple(payload, message, intercomConfig) {
     default:
       break;
   }
-
+  
   return {
     ...response,
     headers: {
@@ -159,6 +159,7 @@ function getIdentifyPayload(message, intercomConfig) {
   });
 
   intercomConfig.collectContext ? addContext(rawPayload, message) : null;
+  rawPayload.external_id = message.userId ? message.userId : message.anonymousId;
   return rawPayload;
 }
 

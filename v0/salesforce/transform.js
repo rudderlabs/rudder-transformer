@@ -11,8 +11,9 @@ const {
   removeUndefinedValues,
   toStringValues,
   defaultPostRequestConfig
-} = require("../util");
- 
+} = require("../util"); 
+//TODO Raj: Also map the rest of the traits of sg spec to salesforce , 
+//otherwise they will go as custom events & then not show up in salesforce
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -32,6 +33,7 @@ async function getSFDCHeader(destination) {
       //destination.Config.consumerSecret +
       '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
       "&grant_type=password");*/
+
   const response = await axios.post(
     SF_TOKEN_REQUEST_URL +
       "?username=" +
@@ -48,10 +50,9 @@ async function getSFDCHeader(destination) {
       "&grant_type=password",
     {}
   );
-
-  //console.log(response);
+ 
   return ["Bearer " + response.data.access_token, response.data.instance_url];
-}
+}   
 
 function getParamsFromConfig(message, destination) {
   const params = {};
@@ -78,6 +79,7 @@ function getParamsFromConfig(message, destination) {
 async function responseBuilderSimple(
   message,
   mappingJson,
+  ignoreMapJson,
   destination,
   targetEndpoint,
   authorizationData
@@ -105,6 +107,17 @@ async function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
+
+  /*if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
+    rawPayload['FirstName'] = 'n/a'
+  */
+
+  if(! rawPayload['LastName'] || rawPayload['LastName'].trim() == "" )
+    rawPayload['LastName'] = 'n/a'
+
+  if(! rawPayload['Company'] || rawPayload['Company'].trim() == "" )
+    rawPayload['Company'] = 'n/a'
+
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 
@@ -113,6 +126,18 @@ async function responseBuilderSimple(
   customParams = removeUndefinedValues(customParams);
   // request configuration will be conditional
   // POST for create, PATCH for update
+
+  const customKeys = Object.keys(message.context.traits);
+  customKeys.forEach( key => { 
+    const keyPath = 'context.traits.'+key;
+    if(!( keyPath in mappingJson) && !(keyPath in ignoreMapJson))
+    {
+      const val = message.context.traits[key];
+      if(val)
+        payload["rudder_stack__"+key+"__c"] =  val;
+    }
+  }
+  );
 
   const response = {
     endpoint: targetEndpoint,
@@ -162,17 +187,21 @@ async function processIdentify(message, destination) {
     }
   });
 
-  var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
-  // if count is greater than zero, it means that lead exists, then only update it
-  // else the original endpoint, which is the one for creation - can be used
-  if (retrievedLeadCount > 0) {
-    targetEndpoint +=
-      "/" + leadQueryResponse.data.searchRecords[0].Id + "?_HttpMethod=PATCH";
+  if(leadQueryResponse && leadQueryResponse.data.searchRecords)
+  {
+    var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
+    // if count is greater than zero, it means that lead exists, then only update it
+    // else the original endpoint, which is the one for creation - can be used
+    if (retrievedLeadCount > 0) {
+      targetEndpoint +=
+        "/" + leadQueryResponse.data.searchRecords[0].Id + "?_HttpMethod=PATCH";
+    }
   }
 
   return responseBuilderSimple(
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name],
+    mappingConfig[ConfigCategory.IGNORE.name],
     destination,
     targetEndpoint,
     authorizationData
@@ -192,6 +221,7 @@ async function processSingleMessage(message, destination) {
       error: "message type " + message.type + " is not supported"
     };
   }
+  //console.log(response);
   return response;
 }
 
@@ -199,7 +229,7 @@ async function process(event) {
   //   console.log(JSON.stringify(event));
   // console.log('==')
   //   console.log(processSingleMessage(event.message, event.destination))
-  return processSingleMessage(event.message, event.destination);
+  return await processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

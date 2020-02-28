@@ -3,6 +3,9 @@ const { getMappingConfig } = require("../util");
 const ConfigCategory = {
   IDENTIFY: {
     name: "SFIdentifyConfig"
+  },
+  IGNORE: {
+    name: "SFIgnoreConfig"
   }
 };
 

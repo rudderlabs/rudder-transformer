@@ -5,7 +5,8 @@ const trackPricePayload = [
 const trackOrderPayload = [{ rudderKey: "order_ID", expectedKey: "value" }];
 const identifyCompanyPayload = [
   { rudderKey: "id", expectedKey: "company_id" },
-  { rudderKey: "remove", expectedKey: "remove" }
+  { rudderKey: "remove", expectedKey: "remove" },
+  { rudderKey: "name", expectedKey: "name" }
 ];
 const identifyMainPayload = [
   { rudderKey: "anonymousId", expectedKey: "user_id" },

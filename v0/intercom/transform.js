@@ -6,14 +6,12 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
-  defaultGetRequestConfig,
   defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
 } = require("../util");
 
-function responseBuilderSimple(payload, message, intercomConfig) {
+function responseBuilder(payload, message, intercomConfig) {
   let response = defaultRequestConfig();
 
   switch (message.type) {
@@ -27,36 +25,30 @@ function responseBuilderSimple(payload, message, intercomConfig) {
       response.endpoint = endpoints.eventsUrl;
       response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
-    case EventType.PAGE:
-      response.method = defaultGetRequestConfig.requestMethod;
-      response.endpoint = endpoints.conversationsUrl;
-      break;
     case EventType.GROUP:
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = endpoints.companyUrl;
       response.body.JSON = removeUndefinedAndNullValues(payload);
       break;
-    case EventType.RESET:
-      const email = get(message, "context.traits.email");
-      const userId = get(message, "context.traits.userId");
-      const params = email ? `email=${email}` : `user_id=${userId}`;
-      response.method = defaultDeleteRequestConfig.requestMethod;
-      response.endpoint = `${endpoints.userUrl}?${params}`;
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      break;
     default:
       break;
   }
+  
+  // console.log(intercomConfig);
 
-  return {
+  const resp = {
     ...response,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${intercomConfig.apiKey}`,
+      Authorization: `Bearer ${intercomConfig.accessToken}`,
       Accept: "application/json"
     },
     userId: message.userId ? message.userId : message.anonymousId
   };
+
+  // console.log(resp);
+
+  return resp;
 }
 
 function addContext(payload, message) {
@@ -142,10 +134,13 @@ function getIdentifyPayload(message, intercomConfig) {
 
       companyFields.forEach(companyTrait => {
         const companyValue = traits[field][companyTrait];
+        // console.log(companyValue);
         const replaceKeys = mapPayload.identify.company;
+        // console.log(replaceKeys);
         updatePayload(companyTrait, replaceKeys, companyValue, company);
       });
 
+      // console.log(company);
       if (!companyFields.includes("id")) {
         set(company, "company_id", md5(company.name));
       }
@@ -159,6 +154,13 @@ function getIdentifyPayload(message, intercomConfig) {
   });
 
   intercomConfig.collectContext ? addContext(rawPayload, message) : null;
+  // // console.log(message.userId);
+  if (!rawPayload.user_id) {
+    rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
+  }
+  // console.log("============================");
+  // console.log(rawPayload);
+  // console.log("============================");
   return rawPayload;
 }
 
@@ -203,10 +205,6 @@ function getTrackPayload(message, intercomConfig) {
 function getTransformedJSON(message, intercomConfig) {
   let rawPayload;
   switch (message.type) {
-    case EventType.PAGE:
-      // Not Tested
-      rawPayload = {};
-      break;
     case EventType.TRACK:
       rawPayload = getTrackPayload(message, intercomConfig);
       break;
@@ -215,10 +213,6 @@ function getTransformedJSON(message, intercomConfig) {
       break;
     case EventType.GROUP:
       rawPayload = getGroupPayload(message, intercomConfig);
-      break;
-    case EventType.RESET:
-      // Not Tested
-      rawPayload = {};
       break;
     default:
       break;
@@ -231,8 +225,8 @@ function getDestinationKeys(destination) {
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {
-      case destinationConfigKeys.apiKey:
-        intercomConfig.apiKey = `${destination.Config[key]}`;
+      case destinationConfigKeys.accessToken:
+        intercomConfig.accessToken = `${destination.Config[key]}`;
         break;
       case destinationConfigKeys.appId:
         intercomConfig.appId = `${destination.Config[key]}`;
@@ -253,7 +247,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const intercomConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, intercomConfig);
-  return responseBuilderSimple(properties, event.message, intercomConfig);
+  return responseBuilder(properties, event.message, intercomConfig);
 }
 
 exports.process = process;

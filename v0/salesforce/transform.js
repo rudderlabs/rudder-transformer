@@ -11,9 +11,7 @@ const {
   removeUndefinedValues,
   toStringValues,
   defaultPostRequestConfig
-} = require("../util"); 
-//TODO Raj: Also map the rest of the traits of sg spec to salesforce , 
-//otherwise they will go as custom events & then not show up in salesforce
+} = require("../util");  
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for

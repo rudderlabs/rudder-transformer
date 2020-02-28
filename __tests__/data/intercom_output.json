@@ -3,14 +3,14 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/users",
+    "endpoint": "https://api.intercom.io/contacts",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer undefined",
       "Accept": "application/json"
     },
     "params": {},
-    "body": { "JSON": { "email": "sayan@gmail.com" }, "XML": {}, "FORM": {} },
+    "body": { "JSON": { "email": "sayan@gmail.com", "external_id": "123456" }, "XML": {}, "FORM": {} },
     "files": {},
     "userId": "123456"
   },

@@ -236,14 +236,8 @@ function processWarehouseMessage(
       const identifiesEvent = { ...event };
 
       usersEvent.id = message.userId;
-      usersEvent.user_id = message.userId;
-      identifiesEvent.user_id = message.userId;
-      identifiesEvent.anonymous_id = message.anonymousId;
-      identifiesEvent.id = message.messageId;
-      // set columntypes
-      columnTypes.id = "string";
-      columnTypes.user_id = "string";
-      columnTypes.anonymous_id = "string";
+      usersEvent.received_at = message.receivedAt;
+      setFromConfig(identifiesEvent, message, whDefaultConfigJson, columnTypes);
 
       const identifiesMetadata = {
         table: "identifies",

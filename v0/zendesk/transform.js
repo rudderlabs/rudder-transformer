@@ -58,10 +58,13 @@ async function createUserFields(url, config, new_fields) {
     };
     try {
       let response = await axios.post(url, field_data, config);
+      if(response.status !== 201) {
+        console.log("Failed to create User Field : ", field);
+      }
     }
     catch(error) {
       if (error.response.status !== 422 && error.response.data.details.key.error !=="DuplicateValue") {
-        console.log("Cannot create User field ", error);
+        console.log("Cannot create User field ", field, error);
       }
     }
     }
@@ -70,7 +73,7 @@ async function createUserFields(url, config, new_fields) {
 }
 
 
-async function createNewUserFields(traits, headers, destination) {
+async function checkAndCreateUserFields(traits, headers, destination) {
   let new_fields = [];
   
   let url  = "https://" + destination.Config.domain + ENDPOINT + "user_fields.json";
@@ -105,7 +108,7 @@ async function processSingleMessage(message, destination) {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
-      await createNewUserFields(message.context.traits, headers, destination);
+      await checkAndCreateUserFields(message.context.traits, headers, destination);
       payload = getIdentifyPayload(message, category, destination);
       break;
     default:

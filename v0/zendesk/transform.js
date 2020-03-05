@@ -10,7 +10,7 @@ const {
   defaultRequestConfig
 } = require("../util");
 
-function responseBuilderSimple(message, category, destination) {
+function getIdentifyPayload(message, category, destination) {
   mappingJson = mappingConfig[category.name];
   const rawPayload = {};
 
@@ -18,14 +18,34 @@ function responseBuilderSimple(message, category, destination) {
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
+  
+  if (destination.Config.createUsersAsVerified) {
+    set(rawPayload, "user.verified", true);
+  }
+  rawPayload.user = removeUndefinedValues(rawPayload.user);
 
-  // console.log(rawPayload);
+  const trait_keys = Object.keys(message.context.traits);
+  const user_fields = trait_keys.filter(trait => !(sourceKeys.includes("context.traits."+trait)));
+  user_fields.forEach(field => {
+    set(rawPayload, "user.user_fields."+field, get(message, "context.traits."+field));
+  });
+
   return rawPayload;
 }
 
-async function createUserFields(new_fields, headers) {
-  let url = 'https://test1239568.zendesk.com/api/v2/user_fields.json';
-  let config = {'headers': headers};
+function responseBuilderSimple(message, category, destination, headers, payload) {
+  const response = defaultRequestConfig();
+  response.endpoint = "https://" + destination.Config.domain + ENDPOINT + category.action;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = headers;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = payload;
+  // console.log(response);
+
+  return response;
+}
+
+async function createUserFields(url, config, new_fields) {
   let field_data;
   new_fields.forEach(async (field) => {
     field_data = {
@@ -38,12 +58,10 @@ async function createUserFields(new_fields, headers) {
     };
     try {
       let response = await axios.post(url, field_data, config);
-      console.log(response.status);
     }
     catch(error) {
-      console.log(error.response.data.details.key[0].error);
-      if (error.response.status !== 422 && error.response.data.details.key.error !== "DuplicateValue") {
-        console.log(error);
+      if (error.response.status !== 422 && error.response.data.details.key.error !=="DuplicateValue") {
+        console.log("Cannot create User field ", error);
       }
     }
     }
@@ -52,10 +70,10 @@ async function createUserFields(new_fields, headers) {
 }
 
 
-async function createNewUserFields(traits, headers) {
+async function createNewUserFields(traits, headers, destination) {
   let new_fields = [];
   
-  let url  = 'https://test1239568.zendesk.com/api/v2/user_fields.json';
+  let url  = "https://" + destination.Config.domain + ENDPOINT + "user_fields.json";
   let config = {'headers': headers};
   
   try {
@@ -65,37 +83,40 @@ async function createNewUserFields(traits, headers) {
 
     const trait_keys = Object.keys(traits);
     new_fields = trait_keys.filter((key => !(existing_keys.includes(key))));
-    console.log(new_fields);
+
     if(new_fields.length > 0)
-      createUserFields(new_fields, headers);
+       await createUserFields(url, config, new_fields);
   }
   catch(error) {
     error.response ? console.log("Error :", error.response.data) : console.log("Error :",error);
   }
 }
 
-function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let category;
+  let payload;
+  let unencodedBase64Str = destination.Config.email+":"+destination.Config.password;
   let headers = {
-    Authorization: 'Basic c2FuZ2h2aS5kaGF3YWwxMDE0MzNAZ21haWwuY29tOkV5IWlAMnRuNlloU0RweA==',
+    Authorization: 'Basic ' + Buffer.from(unencodedBase64Str).toString("base64"),
     'Content-Type': 'application/json'
   };
 
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
-      createNewUserFields(message.context.traits, headers);
+      await createNewUserFields(message.context.traits, headers, destination);
+      payload = getIdentifyPayload(message, category, destination);
       break;
     default:
       throw new Error("Message type not supported");
   }
   
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(message, category, destination, headers, payload);
 }
 
-function process(event) {
-  let resp = processSingleMessage(event.message, event.destination);
+async function process(event) {
+  let resp = await processSingleMessage(event.message, event.destination);
   return resp;
 }
 

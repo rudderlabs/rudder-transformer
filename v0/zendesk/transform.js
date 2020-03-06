@@ -45,6 +45,29 @@ function responseBuilderSimple(message, category, destination, headers, payload)
   return response;
 }
 
+function getHeader(destination){
+  const email = destination.Config.email;
+  const password = destination.Config.password;
+  const headers = {
+    Authorization: 'Basic ' + Buffer.from(email+":"+password).toString("base64"),
+    'Content-Type': 'application/json'
+  };
+  return headers;
+
+}
+
+function responseBuilder(message, destination, payload, endPoint) {
+  const response = defaultRequestConfig();
+  response.endpoint = endPoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = getHeader(destination);
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = payload;
+  // console.log(response);
+
+  return response;
+}
+
 async function createUserFields(url, config, new_fields) {
   let field_data;
   new_fields.forEach(async (field) => {
@@ -100,10 +123,7 @@ async function processTrack(message, destination){
   if(!userId){
     throw new Error("user id is not present");
   }
-  let headers = {
-    Authorization: 'Basic ' + Buffer.from(unencodedBase64Str).toString("base64"),
-    'Content-Type': 'application/json'
-  };
+  const headers = getHeader(destination);
   let url = "https://" + destination.Config.domain + ENDPOINT + "users/search.json?external_id=" + userId;
   let config = {'headers': headers};
   let userResponse = await axios.get(url, config);
@@ -126,13 +146,7 @@ async function processTrack(message, destination){
   let eventPayload = {event: eventObject, profile: profileObject};
   url = "https://" + destination.Config.domain + ENDPOINT + "users/" + zendeskUserId + "events";
 
-  const response = defaultRequestConfig();
-  response.endpoint = url;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = headers;
-  response.userId = message.userId ? message.userId : message.anonymousId;
-  response.body.JSON = eventPayload;
-
+  const response = responseBuilder(message, destination, eventPayload, url);
   return response;
 
 }
@@ -153,6 +167,8 @@ async function processSingleMessage(message, destination) {
       await checkAndCreateUserFields(message.context.traits, headers, destination);
       payload = getIdentifyPayload(message, category, destination);
       break;
+    case EventType.TRACK:
+      return processTrack(message, destination);
     default:
       throw new Error("Message type not supported");
   }

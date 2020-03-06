@@ -1,0 +1,8 @@
+{
+    "properties.name": "organization.name",
+    "properties.domainNames": "organization.domain_names",
+    "properties.tags": "organization.tags",
+    "properties.groupId": "organization.external_id",
+    "properties.url": "organization.url",
+    "properties.deleted": "organization.deleted"
+}

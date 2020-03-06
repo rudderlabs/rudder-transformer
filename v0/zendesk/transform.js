@@ -95,6 +95,48 @@ async function checkAndCreateUserFields(traits, headers, destination) {
   }
 }
 
+async function processTrack(message, destination){
+  let userId = message.userId;
+  if(!userId){
+    throw new Error("user id is not present");
+  }
+  let headers = {
+    Authorization: 'Basic ' + Buffer.from(unencodedBase64Str).toString("base64"),
+    'Content-Type': 'application/json'
+  };
+  let url = "https://" + destination.Config.domain + ENDPOINT + "users/search.json?external_id=" + userId;
+  let config = {'headers': headers};
+  let userResponse = await axios.get(url, config);
+  if(!userResponse || !userResponse.data || userResponse.data.count == 0){
+    throw new Error("user not found");
+  }
+  let zendeskUserId = userResponse.data.users[0].id;
+  let userEmail = userResponse.data.users[0].email;
+
+  let eventObject = {};
+  eventObject.description = message.event;
+  eventObject.type = message.event;
+  eventObject.source = "Rudder";
+
+  let profileObject = {};
+  profileObject.type = message.event;
+  profileObject.source = "Rudder";
+  profileObject.identifiers = [{ type: "email", value: userEmail }];
+
+  let eventPayload = {event: eventObject, profile: profileObject};
+  url = "https://" + destination.Config.domain + ENDPOINT + "users/" + zendeskUserId + "events";
+
+  const response = defaultRequestConfig();
+  response.endpoint = url;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = headers;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = eventPayload;
+
+  return response;
+
+}
+
 async function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let category;

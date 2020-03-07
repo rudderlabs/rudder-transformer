@@ -7,6 +7,12 @@ const ConfigCategory = {
     name: "ZDIdentifyConfig",
     json_name: "user",
     action: "users/create_or_update.json"
+  },
+  GROUP: {
+      name: "ZDGroupConfig",
+      json_name: "organization",
+      action: "organizations/create_or_update.json",
+      createEndpoint: "organizations/create_or_update.json"
   }
 };
 

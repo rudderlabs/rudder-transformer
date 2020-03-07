@@ -95,6 +95,72 @@ async function checkAndCreateUserFields(traits, headers, destination) {
   }
 }
 
+async function associateOrganization(message, category, headers, destination, orgId) {
+  let userId = await getUserId(message.userId, destination, headers);
+  let config = {'headers': headers};
+  let url = `https://${destination.Config.domain}`+ ENDPOINT + "organization_memberships.json";
+  let payload = {
+    organization_membership: {
+      user_id: userId,
+      organization_id: orgId
+    }
+  };
+  try {
+    resp = await axios.post(url, payload, config);
+  }
+  catch(error) {
+    if(error.response.status !== 422 && error.response.data.details.user_id[0].error !== "DuplicateValue") {
+    console.log("Can't associate user  : ", error.response);
+    }
+  } 
+}
+
+async function getUserId(externalId, destination, headers) {
+  let url  = `https://${destination.Config.domain}`+ ENDPOINT + `users/show_many.json?external_ids=${externalId}`;
+  let config = {'headers': headers};
+  
+  try {
+    let resp = await axios.get(url, config);
+    let userId = resp.data.users[0].id;
+    return userId;
+  }
+  catch(error) {
+    console.log(`Cannot get userId for externalId : ${externalId}`, error.response);
+  }
+}
+
+
+async function createOrganization(message, category, headers, destination) {
+  console.log(destination);
+  mappingJson = mappingConfig[category.name];
+  const payload = {};
+
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    set(payload, mappingJson[sourceKey], get(message, sourceKey));
+  });
+
+  payload.organization = removeUndefinedValues(payload.organization);
+  
+  if ( destination.Config.sendGroupCallsWithoutUserId ) {
+    return payload;
+  }
+
+  let url  = "https://" + destination.Config.domain + ENDPOINT + category.createEndpoint;
+  let config = {'headers': headers};
+  
+  try {
+    let resp = await axios.post(url, payload, config);
+    let orgId = resp.data.organization.id;
+    return orgId;
+  }
+  catch(error) {
+    console.log(`Couldn't create Organization ${message.traits.name}\n
+    Error : ${error.response.data.details}`);
+    // console.log(error);
+  }
+}
+
 async function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let category;
@@ -111,6 +177,19 @@ async function processSingleMessage(message, destination) {
       await checkAndCreateUserFields(message.context.traits, headers, destination);
       payload = getIdentifyPayload(message, category, destination);
       break;
+    case EventType.GROUP:
+      category = ConfigCategory.GROUP;
+      if (destination.Config.sendGroupCallsWithoutUserId) {
+        payload = await createOrganization(message, category, headers, destination);
+        console.log(payload);
+        break;
+      }
+      let orgId = await createOrganization(message, category, headers, destination);
+      console.log(`org id : ${orgIdl}`);
+      if (orgId) {
+        await associateOrganization(message, category, headers, destination, orgId);
+      }
+      break;
     default:
       throw new Error("Message type not supported");
   }
@@ -120,6 +199,7 @@ async function processSingleMessage(message, destination) {
 
 async function process(event) {
   let resp = await processSingleMessage(event.message, event.destination);
+  // console.log(resp.body.JSON.user);
   return resp;
 }
 

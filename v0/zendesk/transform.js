@@ -45,6 +45,29 @@ function responseBuilderSimple(message, category, destination, headers, payload)
   return response;
 }
 
+function getHeader(destination){
+  const email = destination.Config.email;
+  const password = destination.Config.password;
+  const headers = {
+    Authorization: 'Basic ' + Buffer.from(email+":"+password).toString("base64"),
+    'Content-Type': 'application/json'
+  };
+  return headers;
+
+}
+
+function responseBuilder(message, destination, payload, endPoint) {
+  const response = defaultRequestConfig();
+  response.endpoint = endPoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = getHeader(destination);
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = payload;
+  // console.log(response);
+
+  return response;
+}
+
 async function createUserFields(url, config, new_fields) {
   let field_data;
   new_fields.forEach(async (field) => {
@@ -161,6 +184,39 @@ async function createOrganization(message, category, headers, destination) {
   }
 }
 
+async function processTrack(message, destination){
+  let userId = message.userId;
+  if(!userId){
+    throw new Error("user id is not present");
+  }
+  const headers = getHeader(destination);
+  let url = "https://" + destination.Config.domain + ENDPOINT + "users/search.json?external_id=" + userId;
+  let config = {'headers': headers};
+  let userResponse = await axios.get(url, config);
+  if(!userResponse || !userResponse.data || userResponse.data.count == 0){
+    throw new Error("user not found");
+  }
+  let zendeskUserId = userResponse.data.users[0].id;
+  let userEmail = userResponse.data.users[0].email;
+
+  let eventObject = {};
+  eventObject.description = message.event;
+  eventObject.type = message.event;
+  eventObject.source = "Rudder";
+
+  let profileObject = {};
+  profileObject.type = message.event;
+  profileObject.source = "Rudder";
+  profileObject.identifiers = [{ type: "email", value: userEmail }];
+
+  let eventPayload = {event: eventObject, profile: profileObject};
+  url = "https://" + destination.Config.domain + ENDPOINT + "users/" + zendeskUserId + "events";
+
+  const response = responseBuilder(message, destination, eventPayload, url);
+  return response;
+
+}
+
 async function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let category;
@@ -189,6 +245,9 @@ async function processSingleMessage(message, destination) {
       if (orgId) {
         await associateOrganization(message, category, headers, destination, orgId);
       }
+      break;
+    case EventType.TRACK:
+      return processTrack(message, destination);
       break;
     default:
       throw new Error("Message type not supported");

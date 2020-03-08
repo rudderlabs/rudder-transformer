@@ -1,28 +1,27 @@
 const { getMappingConfig } = require("../util");
 
-const defaultUserFields = ['email', 'name', 'organizationId', 'timezone', 'phone', 'userId'];
+const defaultFields = ['email', 'name', 'organizationId', 'timezone', 'phone', 'userId'];
 
 const ConfigCategory = {
   IDENTIFY: {
     name: "ZDIdentifyConfig",
     json_name: "user",
-    action: "users/create_or_update.json"
+    userFieldsEndpoint: "user_fields.json",
+    createOrUpdateUserEndpoint: "users/create_or_update.json"
   },
   GROUP: {
       name: "ZDGroupConfig",
       json_name: "organization",
-      action: "organizations/create_or_update.json",
+      userMembershipEndpoint: "organization_memberships.json",
       createEndpoint: "organizations/create_or_update.json"
   }
 };
 
-const ENDPOINT = ".zendesk.com/api/v2/";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
   ConfigCategory,
   mappingConfig,
-  ENDPOINT,
-  defaultUserFields
+  defaultFields
 };

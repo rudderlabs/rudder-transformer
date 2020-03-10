@@ -1,5 +1,6 @@
 const get = require("get-value");
 const set = require("set-value");
+const axios = require("axios");
 
 const { EventType } = require("../../constants");
 const { ConfigCategory, mappingConfig, ENDPOINT } = require("./config");
@@ -9,10 +10,34 @@ const {
   defaultRequestConfig
 } = require("../util");
 
+async function startSession(message, destination) {
+  const payload = {
+    appId: destination.Config.applicationId,
+    clientKey: destination.Config.clientKey,
+    apiVersion: destination.Config.apiVersion
+  };
+
+  if (destination.Config.isDevelop) {
+    payload.devMode = true;
+  }
+  
+  payload.time = Math.round((new Date()).getTime() / 1000);
+  payload.userId = message.userId ? message.userId : message.anonymousId;
+  let url = ENDPOINT + "?action=start";
+  try {
+    await axios.post(url, payload);
+  }
+  catch(error) {
+    if (error.response && error.response.data && error.response.data.response) {
+      console.log("Error in start API call: ", error.response.data.response[0].error.message);
+    }
+  }
+}
+
 function responseBuilderSimple(message, category, destination) {
   mappingJson = mappingConfig[category.name];
   const rawPayload = {
-    appId: destination.Config.appId,
+    appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: destination.Config.apiVersion
   };
@@ -21,10 +46,19 @@ function responseBuilderSimple(message, category, destination) {
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
+  if ( rawPayload.newUserId === ""){
+    delete rawPayload.newUserId;
+  }
   // sending anonymousId if userId is not present
   rawPayload.userId = rawPayload.userId
     ? rawPayload.userId
-    : message.anonymousId;
+    : (message.userId ? message.userId : message.anonymousId);
+
+  if (destination.Config.isDevelop) {
+    rawPayload.devMode = true;
+  }
+  
+  rawPayload.time = Math.round((new Date()).getTime() / 1000);
   const payload = removeUndefinedValues(rawPayload);
 
   const response = defaultRequestConfig();
@@ -33,7 +67,6 @@ function responseBuilderSimple(message, category, destination) {
   response.headers = {
     "Content-Type": "application/json"
   };
-  // check userId
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = payload;
   response.params = {
@@ -43,18 +76,20 @@ function responseBuilderSimple(message, category, destination) {
   return response;
 }
 
-function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let category;
 
   switch (messageType) {
     case EventType.PAGE:
+      await startSession(message, destination);
       category = ConfigCategory.PAGE;
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.TRACK:
+      await startSession(message, destination);
       category = ConfigCategory.TRACK;
       break;
     default:
@@ -64,8 +99,8 @@ function processSingleMessage(message, destination) {
   return responseBuilderSimple(message, category, destination);
 }
 
-function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
+async function process(event) {
+  const resp = await processSingleMessage(event.message, event.destination);
   return resp;
 }
 

@@ -1,5 +1,4 @@
 {
-  "anonymousId": "userId",
   "context.device.id": "deviceId",
   "name": "state",
   "properties.path": "params.path",

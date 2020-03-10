@@ -20,8 +20,10 @@ async function startSession(message, destination) {
   if (destination.Config.isDevelop) {
     payload.devMode = true;
   }
+  if (message.originalTimestamp) {
+    payload.time = Math.round((new Date(message.originalTimestamp)).getTime() / 1000);
+  }
   
-  payload.time = Math.round((new Date()).getTime() / 1000);
   payload.userId = message.userId ? message.userId : message.anonymousId;
   let url = ENDPOINT + "?action=start";
   try {

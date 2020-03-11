@@ -10,7 +10,14 @@
       "Accept": "application/json"
     },
     "params": {},
-    "body": { "JSON": { "email": "sayan@gmail.com", "external_id": "123456" }, "XML": {}, "FORM": {} },
+    "body": {
+      "JSON": {
+        "email": "sayan@gmail.com",
+        "user_id": "123456"
+      },
+      "XML": {},
+      "FORM": {}
+    },
     "files": {},
     "userId": "123456"
   },
@@ -29,8 +36,8 @@
       "JSON": {
         "metadata": {
           "category": "test-category",
-          "user_actual_id": 12345,
-          "user_actual_role": "system_admin, system_user"
+          "user_actual_role": "system_admin, system_user",
+          "user_actual_id": 12345
         },
         "event_name": "test track event GA3",
         "user_id": "12345",

@@ -58,9 +58,11 @@ versions.forEach(version => {
             logger.error(error);
 
             respList.push({
-              statusCode: 400,
-              error:
-                error.message || "Error occurred while processing payload.",
+              output: {
+                statusCode: 400,
+                error:
+                  error.message || "Error occurred while processing payload."
+              },
               metadata: event.metadata
             });
           }
@@ -108,9 +110,17 @@ if (functionsEnabled()) {
               }
             ];
           }
-          transformedEvents.push(...destTransformedEvents);
+          transformedEvents.push(
+            ...destTransformedEvents.map(ev => {
+              return { output: ev, metadata: destEvents[0].metadata };
+            })
+          );
         } else {
-          transformedEvents.push(...destEvents);
+          transformedEvents.push(
+            ...destEvents.map(ev => {
+              return { output: ev, metadata: destEvents[0].metadata };
+            })
+          );
         }
       })
     );

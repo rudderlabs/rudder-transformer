@@ -1,15 +1,32 @@
 {
-    "context.traits.address.city":"City",
-    "context.traits.company":"Company",
-    "context.traits.address.country":"Country",
     "context.traits.email":"Email",
     "context.traits.phone":"Phone",
-    "context.traits.address.postalCode":"PostalCode",
+
     "context.traits.rating":"Rating",
-    "context.traits.address.state":"State",
-    "context.traits.address.street":"Street",
     "context.traits.title":"Title",
     "context.traits.firstName":"FirstName",
-    "context.traits.lastName":"LastName"
+    "context.traits.lastName":"LastName",
 
+
+    "context.traits.address.postalCode":"PostalCode", 
+    "context.traits.address.city":"City",
+    "context.traits.address.country":"Country", 
+    "context.traits.address.state":"State",
+    "context.traits.address.street":"Street",
+
+
+    "context.traits.country":"Country", 
+    "context.traits.postalCode":"PostalCode", 
+    "context.traits.state":"State",
+    "context.traits.street":"Street",
+    "context.traits.city":"City",
+
+    "context.traits.company.industry":"Industry",  
+    "context.traits.company.employee_count":"NumberOfEmployees",
+    "context.traits.company.name":"Company",  
+    
+    "context.traits.company":"Company", 
+
+    "context.traits.description": "Description",
+    "context.traits.website": "Website"  
 }

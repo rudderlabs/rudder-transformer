@@ -34,13 +34,8 @@ function responseBuilder(payload, message, intercomConfig) {
       break;
   }
   
-<<<<<<< HEAD
-  // console.log(intercomConfig);
 
   const resp = {
-=======
-  return {
->>>>>>> origin/develop
     ...response,
     headers: {
       "Content-Type": "application/json",

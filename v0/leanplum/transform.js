@@ -21,17 +21,21 @@ async function startSession(message, destination) {
     payload.devMode = true;
   }
   if (message.originalTimestamp) {
-    payload.time = Math.round((new Date(message.originalTimestamp)).getTime() / 1000);
+    payload.time = Math.round(
+      new Date(message.originalTimestamp).getTime() / 1000
+    );
   }
-  
+
   payload.userId = message.userId ? message.userId : message.anonymousId;
-  let url = ENDPOINT + "?action=start";
+  const url = ENDPOINT + "?action=start";
   try {
     await axios.post(url, payload);
-  }
-  catch(error) {
+  } catch (error) {
     if (error.response && error.response.data && error.response.data.response) {
-      console.log("Error in start API call: ", error.response.data.response[0].error.message);
+      console.log(
+        "Error in start API call: ",
+        error.response.data.response[0].error.message
+      );
     }
   }
 }
@@ -48,19 +52,21 @@ function responseBuilderSimple(message, category, destination) {
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
-  if ( rawPayload.newUserId === ""){
+  if (rawPayload.newUserId === "") {
     delete rawPayload.newUserId;
   }
   // sending anonymousId if userId is not present
   rawPayload.userId = rawPayload.userId
     ? rawPayload.userId
-    : (message.userId ? message.userId : message.anonymousId);
+    : message.userId
+    ? message.userId
+    : message.anonymousId;
 
   if (destination.Config.isDevelop) {
     rawPayload.devMode = true;
   }
-  
-  rawPayload.time = Math.round((new Date()).getTime() / 1000);
+
+  rawPayload.time = Math.round(new Date().getTime() / 1000);
   const payload = removeUndefinedValues(rawPayload);
 
   const response = defaultRequestConfig();

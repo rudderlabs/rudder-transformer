@@ -2,5 +2,9 @@
   "fields": [
     { "destKey": "state", "sourceKeys": ["properties.name", "event"], "required": true },
     { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false }
+  ],
+  "new_fields":[
+    { "destKey": "createDisposition", "sourceKeys": [], "required": false },
+    { "destKey": "info", "sourceKeys": [], "required": false }
   ]
 }

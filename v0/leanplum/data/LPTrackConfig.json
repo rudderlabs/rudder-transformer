@@ -1,9 +1,7 @@
 {
-  "required": {
-    "event": ["event"]
-  },
-  "optional": {
-    "deviceId": ["context.device.id"],
-    "params": ["properties"]
-  }
+  "fields": [
+    { "destKey": "event", "sourceKeys": ["event"], "required": true },
+    { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false },
+    { "destKey": "params", "sourceKeys": ["properties"], "required": false }
+  ]
 }

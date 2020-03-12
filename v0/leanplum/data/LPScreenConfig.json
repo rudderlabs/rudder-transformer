@@ -1,8 +1,6 @@
 {
-  "required": {
-    "state": ["properties.name", "event"]
-  },
-  "optional": {
-    "deviceId": ["context.device.id"]
-  }
+  "fields": [
+    { "destKey": "state", "sourceKeys": ["properties.name", "event"], "required": true },
+    { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false }
+  ]
 }

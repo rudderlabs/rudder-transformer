@@ -1,6 +1,8 @@
 {
-    "anonymousId":"userId",
-    "userId":"newUserId",
-    "context.device.id":"deviceId",
-    "context.traits":"userAttributes"
-}
+    "fields":[
+      { "destKey": "userId", "sourceKeys": ["anonymousId"], "required": true },
+      { "destKey": "newUserId", "sourceKeys": ["userId"], "required": false },
+      { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false },
+      { "destKey": "userAttributes", "sourceKeys": ["context.traits"], "required": false }
+    ]
+  }

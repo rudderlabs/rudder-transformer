@@ -32,14 +32,3 @@ module.exports = {
   API_VERSION,
   RETRY_COUNT
 };
-
-
-// "optional": {
-//   "params.path": ["properties.path"],
-//   "params.referrer": ["properties.referrer"],
-//   "params.search": ["properties.search"],
-//   "params.title": ["properties.title"],
-//   "params.url": ["properties.url"],
-//   "deviceId": ["context.device.id"]
-// }
-// }

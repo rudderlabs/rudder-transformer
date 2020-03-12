@@ -1,0 +1,8 @@
+{
+  "required": {
+    "state": ["properties.name", "event"]
+  },
+  "optional": {
+    "deviceId": ["context.device.id"]
+  }
+}

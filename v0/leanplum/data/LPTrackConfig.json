@@ -1,5 +1,9 @@
 {
-  "context.device.id": "deviceId",
-  "event": "event",
-  "properties": "params"
+  "required": {
+    "event": ["event"]
+  },
+  "optional": {
+    "deviceId": ["context.device.id"],
+    "params": ["properties"]
+  }
 }

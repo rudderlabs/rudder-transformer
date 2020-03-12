@@ -1,9 +1,17 @@
+/* eslint-disable no-else-return */
+/* eslint-disable no-await-in-loop */
 const get = require("get-value");
 const set = require("set-value");
 const axios = require("axios");
 
 const { EventType } = require("../../constants");
-const { ConfigCategory, mappingConfig, ENDPOINT } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  ENDPOINT,
+  API_VERSION,
+  RETRY_COUNT
+} = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -11,10 +19,12 @@ const {
 } = require("../util");
 
 async function startSession(message, destination) {
+  let retryCount = 0;
+  let success = false;
   const payload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
-    apiVersion: destination.Config.apiVersion
+    apiVersion: API_VERSION
   };
 
   if (destination.Config.isDevelop) {
@@ -28,15 +38,31 @@ async function startSession(message, destination) {
 
   payload.userId = message.userId ? message.userId : message.anonymousId;
   const url = ENDPOINT + "?action=start";
-  try {
-    await axios.post(url, payload);
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.response) {
-      console.log(
-        "Error in start API call: ",
-        error.response.data.response[0].error.message
-      );
+
+  while (!success && retryCount < RETRY_COUNT) {
+    try {
+      const response = await axios.post(url, payload);
+      if (response.status === 200) {
+        success = true;
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.response
+      ) {
+        if (error.response.status === 429) {
+          // retry only for throttling
+          retryCount += 1;
+        } else {
+          break;
+        }
+      }
     }
+  }
+
+  if (!success) {
+    throw new Error("Start Session failed for LeanPlum");
   }
 }
 
@@ -45,13 +71,35 @@ function responseBuilderSimple(message, category, destination) {
   const rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
-    apiVersion: destination.Config.apiVersion
+    apiVersion: API_VERSION
   };
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+  const requiredKeys = Object.keys(mappingJson.required);
+  requiredKeys.forEach(key => {
+    const sourceKeyList = mappingJson.required[key];
+    let val;
+
+    for (let index = 0; index < sourceKeyList.length; index++) {
+      val = get(message, sourceKeyList[index]);
+      if (val) {
+        break;
+      }
+    }
+
+    if (val) {
+      set(rawPayload, key, val);
+    } else {
+      throw new Error(
+        `At least one of ${JSON.stringify(sourceKeyList)} is required`
+      );
+    }
   });
+
+  const optionalKeys = Object.keys(mappingJson.optional);
+  optionalKeys.forEach(key => {
+    set(rawPayload, mappingJson.optional[key], get(message, key));
+  });
+
   if (rawPayload.newUserId === "") {
     delete rawPayload.newUserId;
   }
@@ -85,26 +133,38 @@ function responseBuilderSimple(message, category, destination) {
 }
 
 async function processSingleMessage(message, destination) {
+  if (!message.type) {
+    throw Error("Message Type is not present. Aborting message.");
+  }
   const messageType = message.type.toLowerCase();
   let category;
 
   switch (messageType) {
     case EventType.PAGE:
-      await startSession(message, destination);
       category = ConfigCategory.PAGE;
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.TRACK:
-      await startSession(message, destination);
       category = ConfigCategory.TRACK;
+      break;
+    case EventType.SCREEN:
+      category = ConfigCategory.SCREEN;
       break;
     default:
       throw new Error("Message type not supported");
   }
 
-  return responseBuilderSimple(message, category, destination);
+  // build the response
+  const response = responseBuilderSimple(message, category, destination);
+
+  // all event types except idetify requires startSession
+  if (messageType !== EventType.IDENTIFY) {
+    await startSession(message, destination);
+  }
+
+  return response;
 }
 
 async function process(event) {

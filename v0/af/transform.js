@@ -13,14 +13,22 @@ const {
 } = require("./config");
 
 function responseBuilderSimple(payload, message, destination) {
-  const endpoint = ENDPOINT + message.context.app.namespace;
+  let appId ;
+  switch(message.context.os.name) {
+    case 'Android': appId = destination.Config.androidAppId;
+                break;
+    case 'iOs': appId = 'id'+destination.Config.appleAppId;
+                break;
+    default: appId = message.context.app.namespace;
+  }
+  
+  const endpoint = ENDPOINT + appId;
 
   let appsflyer_id = message.destination_props
     ? message.destination_props.AF
       ? message.destination_props.AF.af_uid
       : undefined
     : undefined;
-
   appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
 
   const updatedPayload = {

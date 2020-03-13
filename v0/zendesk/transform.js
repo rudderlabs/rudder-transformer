@@ -121,19 +121,60 @@ async function processGroup(message, destinationConfig, headers) {
       console.log(`Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`);
       // what to return in case of error?
     }
-    payload = await getUserMembershipPayload(message, headers, orgId);
+    payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
     url = endPoint + category.userMembershipEndpoint;
   }
 
   return responseBuilder(message, headers, payload, url);
 }
 
-async function getUserMembershipPayload(message, headers, orgId) {
-  let zendeskUserId = await getUserId(message.userId, headers);
+async function createUser(message, headers, destinationConfig){
+  const name = message.context.traits.name;
+  const userId = message.userId ? message.userId : message.anonymousId;
+  const email = message.context.traits.email;
+
+  const userObject = {"name" : name, "external_id": userId, "email": email};
+  if (destinationConfig.createUsersAsVerified) {
+    userObject.verified = true;
+  }
+  const category = ConfigCategory.IDENTIFY;
+  const url = endPoint + category.createOrUpdateUserEndpoint;
+  const config = {'headers': headers};
+  const payload = {'user': userObject};
+  
+  try {
+    let resp = await axios.post(url, payload, config);
+
+    if ( !resp.data || !resp.data.user || !resp.data.user.id){
+      console.log(`Couldn't create User: ${message.traits.name}`);
+      throw new Error("user not found");
+    }
+
+    let userId = resp.data.user.id;
+    let email = resp.data.user.email;
+    return {'zendeskUserId' : userId, 'email': email};
+  }
+  catch(error) {
+    console.log(error);
+    console.log(`Couldn't find user: ${message.context.traits.name}`);
+  }
+
+}
+
+async function getUserMembershipPayload(message, headers, orgId, destinationConfig) {
+  // let zendeskUserID = await getUserId(message.userId, headers);
+  let zendeskUserID = await getUserId(message, headers);
+
+  if(!zendeskUserID){
+    if(message.context.traits.name && message.context.traits.email){
+      const {zendeskUserId} = await createUser(message, headers, destinationConfig);
+      zendeskUserID = zendeskUserId;
+    }
+  }
   
   let payload = {
     organization_membership: {
-      user_id: zendeskUserId,
+      user_id: zendeskUserID,
       organization_id: orgId
     }
   };
@@ -141,8 +182,10 @@ async function getUserMembershipPayload(message, headers, orgId) {
   return payload;
 }
 
-async function getUserId(externalId,  headers) {
-  let url  = endPoint + `users/search.json?external_id=${externalId}`;
+async function getUserId(message, headers) {
+  const userEmail = message.context.traits.email;
+  let url  = endPoint + `users/search.json?query=${userEmail}`;
+  // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   let config = {'headers': headers};
   
   try {
@@ -197,17 +240,25 @@ async function createOrganization(message, category, headers, destinationConfig)
 
 async function processTrack(message, destinationConfig, headers){
   let userId = message.userId;
+  let userEmail = message.context.traits.email;
   if(!userId){
     throw new Error("user id is not present");
   }
-  let url = endPoint + "users/search.json?external_id=" + userId;
+  let zendeskUserID;
+  // let url = endPoint + "users/search.json?external_id=" + userId;
+  let url = endPoint + `users/search.json?query=${userEmail}`;
   let config = {'headers': headers};
   let userResponse = await axios.get(url, config);
   if(!userResponse || !userResponse.data || userResponse.data.count == 0){
-    throw new Error("user not found");
+    const {zendeskUserId, email} = await createUser(message, headers, destinationConfig);
+    if(!zendeskUserId){
+      throw new Error("user not found");
+    }
+    zendeskUserID = zendeskUserId;
+    userEmail = email;
   }
-  let zendeskUserId = userResponse.data.users[0].id;
-  let userEmail = userResponse.data.users[0].email;
+  zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
+  userEmail = userEmail || userResponse.data.users[0].email;
 
   let eventObject = {};
   eventObject.description = message.event;
@@ -221,7 +272,7 @@ async function processTrack(message, destinationConfig, headers){
   profileObject.identifiers = [{ type: "email", value: userEmail }];
 
   let eventPayload = {event: eventObject, profile: profileObject};
-  url = endPoint + "users/" + zendeskUserId + "/events";
+  url = endPoint + "users/" + zendeskUserID + "/events";
 
   const response = responseBuilder(message, headers, eventPayload, url);
   return response;
@@ -245,7 +296,7 @@ async function processSingleMessage(event) {
   let message = event.message;
   let destinationConfig = event.destination.Config;
   const messageType = message.type.toLowerCase();
-  let unencodedBase64Str = destinationConfig.email+":"+destinationConfig.password;
+  let unencodedBase64Str = destinationConfig.email+"/token:"+destinationConfig.apiToken;
   let headers = {
     Authorization: 'Basic ' + Buffer.from(unencodedBase64Str).toString("base64"),
     'Content-Type': 'application/json'

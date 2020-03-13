@@ -1,15 +1,15 @@
-{
-  "fields": [
-    { "destKey": "event", "sourceKeys": ["event"], "required": true },
-    { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false },
-    { "destKey": "params", "sourceKeys": ["properties"], "required": false }
-  ],
-  "new_fields": [
-    { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-    { "destKey": "value", "sourceKeys": [], "required": false },
-    { "destKey": "currencyCode", "sourceKeys": [], "required": false },
-    { "destKey": "info", "sourceKeys": [], "required": false },
-    { "destKey": "messageId", "sourceKeys": [], "required": false },
-    { "destKey": "disposition", "sourceKeys": [], "required": false }
-  ]
-}
+[
+  { "destKey": "event", "sourceKeys": ["event"], "required": true },
+  {
+    "destKey": "deviceId",
+    "sourceKeys": ["context.device.id"],
+    "required": false
+  },
+  { "destKey": "params", "sourceKeys": ["properties"], "required": false },
+  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
+  { "destKey": "value", "sourceKeys": [], "required": false },
+  { "destKey": "currencyCode", "sourceKeys": [], "required": false },
+  { "destKey": "info", "sourceKeys": [], "required": false },
+  { "destKey": "messageId", "sourceKeys": [], "required": false },
+  { "destKey": "disposition", "sourceKeys": [], "required": false }
+]

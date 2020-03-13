@@ -1,15 +1,35 @@
-{
-  "fields":[
-    { "destKey": "state", "sourceKeys": ["name"], "required": true },
-    { "destKey": "params.path", "sourceKeys": ["properties.path"], "required": false },
-    { "destKey": "params.referrer", "sourceKeys": ["properties.referrer"], "required": false },
-    { "destKey": "params.search", "sourceKeys": ["properties.search"], "required": false },
-    { "destKey": "params.title", "sourceKeys": ["properties.title"], "required": false },
-    { "destKey": "params.url", "sourceKeys": ["properties.url"], "required": false },
-    { "destKey": "deviceId", "sourceKeys": ["context.device.id"], "required": false }
-  ],
-  "new_fields":[
-    { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-    { "destKey": "info", "sourceKeys": [], "required": false }
-  ]
-}
+[
+  { "destKey": "state", "sourceKeys": ["name"], "required": true },
+  {
+    "destKey": "params.path",
+    "sourceKeys": ["properties.path"],
+    "required": false
+  },
+  {
+    "destKey": "params.referrer",
+    "sourceKeys": ["properties.referrer"],
+    "required": false
+  },
+  {
+    "destKey": "params.search",
+    "sourceKeys": ["properties.search"],
+    "required": false
+  },
+  {
+    "destKey": "params.title",
+    "sourceKeys": ["properties.title"],
+    "required": false
+  },
+  {
+    "destKey": "params.url",
+    "sourceKeys": ["properties.url"],
+    "required": false
+  },
+  {
+    "destKey": "deviceId",
+    "sourceKeys": ["context.device.id"],
+    "required": false
+  },
+  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
+  { "destKey": "info", "sourceKeys": [], "required": false }
+]

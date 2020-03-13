@@ -2,7 +2,11 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultPostRequestConfig,
+  defaultRequestConfig
+} = require("../util");
 
 const {
   Event,
@@ -12,24 +16,56 @@ const {
   nameToEventMap
 } = require("./config");
 
-function responseBuilderSimple(payload, message, destination) {
-  let appId ;
-  switch(message.context.os.name) {
-    case 'Android': appId = destination.Config.androidAppId;
-                break;
-    case 'iOs': appId = 'id'+destination.Config.appleAppId;
-                break;
-    default: appId = message.context.app.namespace;
-  }
-  
-  const endpoint = ENDPOINT + appId;
+function getAppId(message, destination) {
+  let appId;
+  let osName = message.context.os.name.toLowerCase();
 
+  switch (osName) {
+    case "android":
+      appId = destination.Config.androidAppId;
+      break;
+    case "ios":
+      appId = "id" + destination.Config.appleAppId;
+      break;
+  }
+
+  if (!appId) {
+    // fetching default value if appId is undefined
+    if (message.context.app && message.context.app.namespace) {
+      appId = message.context.app.namespace;
+    } else {
+      throw new Error(
+        "App ID must be present in either destination.Config or message.context.app.namespace"
+      );
+    }
+  }
+  return appId;
+}
+
+function getAppsflyerId(message, destination) {
   let appsflyer_id = message.destination_props
     ? message.destination_props.AF
       ? message.destination_props.AF.af_uid
       : undefined
     : undefined;
-  appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
+
+  if (!appsflyer_id) {
+    // fetching appsflyer id from destination config if it is undefined
+    if (destination.Config && destination.Config.appsFlyerId) {
+      appsflyer_id = destination.Config.appsFlyerId;
+    } else {
+      throw new Error(
+        "Appsflyer ID must be present in either message.destination_props or destination.Config"
+      );
+    }
+  }
+  return appsflyer_id;
+}
+
+function responseBuilderSimple(payload, message, destination) {
+  let appId = getAppId(message, destination);
+  const endpoint = ENDPOINT + appId;
+  let appsflyer_id = getAppsflyerId(message, destination);
 
   const updatedPayload = {
     ...payload,
@@ -93,10 +129,13 @@ function processNonTrackEvents(message, destination, eventName) {
 function processEventTypeTrack(message, destination) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
-  const evType = message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
-  const eventName = evType.toLowerCase();
 
+  if (!message.event) {
+    throw new Error("message.event is a required field");
+  }
+
+  const evType = message.event.toLowerCase();
   switch (evType) {
     case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
     case Event.PRODUCT_ADDED_TO_WISHLIST.name:
@@ -114,6 +153,7 @@ function processEventTypeTrack(message, destination) {
       break;
     }
   }
+
   let payload;
   if (isUnIdentifiedEvent) {
     payload = getEventValueForUnIdentifiedTrackEvent(message);
@@ -124,7 +164,7 @@ function processEventTypeTrack(message, destination) {
       isMultiSupport
     );
   }
-  payload.eventName = eventName;
+  payload.eventName = evType;
 
   return payload;
 }

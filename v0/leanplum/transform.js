@@ -66,39 +66,45 @@ async function startSession(message, destination) {
   }
 }
 
+function setValues(payload, message, mappingJson) {
+  if(Array.isArray(mappingJson)) {
+    let val;
+    let sourceKeys;
+    mappingJson.forEach( mapping => {
+      val = undefined;
+      sourceKeys = mapping.sourceKeys;
+      if(Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+        for (let index = 0; index < sourceKeys.length; index++) {
+          val = get(message, sourceKeys[index]);
+          if (val) {
+            break;
+          }
+        }
+
+        if(val) {
+          set(payload, mapping.destKey, val);
+        }
+        else {
+          if(mapping.required) {
+            throw new Error(`One of ${mapping.sourceKeys} is required`);
+          }
+        }
+      }
+    });
+  }
+  // console.log(payload);
+  return payload;
+}
+
 function responseBuilderSimple(message, category, destination) {
   mappingJson = mappingConfig[category.name];
-  const rawPayload = {
+  let rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: API_VERSION
   };
-
-  const requiredKeys = Object.keys(mappingJson.required);
-  requiredKeys.forEach(key => {
-    const sourceKeyList = mappingJson.required[key];
-    let val;
-
-    for (let index = 0; index < sourceKeyList.length; index++) {
-      val = get(message, sourceKeyList[index]);
-      if (val) {
-        break;
-      }
-    }
-
-    if (val) {
-      set(rawPayload, key, val);
-    } else {
-      throw new Error(
-        `At least one of ${JSON.stringify(sourceKeyList)} is required`
-      );
-    }
-  });
-
-  const optionalKeys = Object.keys(mappingJson.optional);
-  optionalKeys.forEach(key => {
-    set(rawPayload, mappingJson.optional[key], get(message, key));
-  });
+  
+  rawPayload = setValues(rawPayload, message, mappingJson);
 
   if (rawPayload.newUserId === "") {
     delete rawPayload.newUserId;

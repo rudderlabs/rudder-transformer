@@ -1,5 +1,15 @@
 [
   {
+    "destKey": "userId",
+    "sourceKeys": [
+      "userId",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
     "destKey": "deviceId",
     "sourceKeys": ["context.device.id"],
     "required": false
@@ -58,6 +68,11 @@
   {
     "destKey": "timezone",
     "sourceKeys": ["context.timezone"],
+    "required": false
+  },
+  {
+    "destKey": "time",
+    "sourceKeys": ["originalTimestamp"],
     "required": false
   }
 ]

@@ -103,9 +103,9 @@ async function startSession(message, destination) {
     ConfigCategory.START.name,
     destination
   );
-  console.log(payload);
+  // console.log(payload);
   const url = ENDPOINT + "?action=start";
-  console.log(url);
+  // console.log(url);
   while (!success && retryCount < RETRY_COUNT) {
     try {
       const response = await axios.post(url, payload);
@@ -113,7 +113,7 @@ async function startSession(message, destination) {
         success = true;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (
         error.response &&
         error.response.data &&

@@ -1,4 +1,14 @@
 [
+  {
+    "destKey": "userId",
+    "sourceKeys": [
+      "userId",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
   { "destKey": "event", "sourceKeys": ["event"], "required": true },
   {
     "destKey": "deviceId",
@@ -10,6 +20,11 @@
   {
     "destKey": "currencyCode",
     "sourceKeys": ["properties.currency"],
+    "required": false
+  },
+  {
+    "destKey": "time",
+    "sourceKeys": ["originalTimestamp"],
     "required": false
   }
 ]

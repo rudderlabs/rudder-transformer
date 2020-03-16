@@ -27,11 +27,17 @@
             "anonymousId": "12345"
           }
         },
+        "request_ip": "0.0.0.0",
         "userId": "12345",
         "anonymousId": "00000000000000000000000000",
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "keen": {
           "addons": [
+            {
+              "name": "keen:ip_to_geo",
+              "input": { "ip": "request_ip" },
+              "output": "ip_geo_info"
+            },
             {
               "name": "keen:ua_parser",
               "input": {
@@ -71,11 +77,17 @@
             "anonymousId": "12345"
           }
         },
+        "request_ip": "1.1.1.1",
         "userId": "12345",
         "anonymousId": "00000000000000000000000000",
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "keen": {
           "addons": [
+            {
+              "name": "keen:ip_to_geo",
+              "input": { "ip": "request_ip" },
+              "output": "ip_geo_info"
+            },
             {
               "name": "keen:ua_parser",
               "input": {

@@ -23,6 +23,7 @@
             "ip": "0.0.0.0",
             "age": 26
           },
+          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",
@@ -61,6 +62,7 @@
             "title": "Test Page",
             "url": "www.rudderlabs.com"
           },
+          "ip": "1.1.1.1",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",
@@ -97,6 +99,7 @@
             "user_actual_id": 12345,
             "user_time_spent": 50000
           },
+          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",

@@ -5,7 +5,11 @@ const {
   mappingConfig,
   eventNameMapping
 } = require("./config");
-const { removeUndefinedValues, defaultRequestConfig } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultRequestConfig,
+  fixIP
+} = require("../util");
 
 // build final response
 // --------------------
@@ -45,6 +49,7 @@ function responseBuilder(
   const eventPayload = removeUndefinedValues(eventData);
   // final data object to be passed to the payload
   const dataPayload = { ...finalData, event_data: eventPayload };
+  fixIP(dataPayload, message, "origination_ip");
   // final payload to be sent to kochava
   const payload = { ...rawPayload, data: dataPayload };
 
@@ -73,7 +78,7 @@ function processMessage(message, destination) {
   switch (messageType) {
     case EventType.SCREEN:
       eventName = "screen view";
-      if (message.properties && message.properties.name){
+      if (message.properties && message.properties.name) {
         eventName += " " + message.properties.name;
       }
       customParams = processTrackEvents(message);

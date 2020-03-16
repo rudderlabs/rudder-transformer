@@ -75,7 +75,6 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "ip": "0.0.0.0",
         "os": {
           "name": "",
           "version": ""
@@ -84,6 +83,7 @@
           "density": 2
         }
       },
+      "request_ip": "1.1.1.1",
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",

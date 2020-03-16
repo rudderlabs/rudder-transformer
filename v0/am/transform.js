@@ -6,7 +6,8 @@ const { EventType, SpecedTraits, TraitsMapping } = require("../../constants");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  fixIP
 } = require("../util");
 const {
   Event,
@@ -106,6 +107,7 @@ function responseBuilderSimple(
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
+  fixIP(payload, message, "ip");
 
   // console.log(payload);
   const response = defaultRequestConfig();

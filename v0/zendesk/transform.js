@@ -111,21 +111,42 @@ async function processGroup(message, destinationConfig, headers) {
   let payload;
   let url;
 
-  if (destinationConfig.sendGroupCallsWithoutUserId) {
+  if (destinationConfig.sendGroupCallsWithoutUserId && !message.userId) {
     payload = await createOrganization(message, category, headers, destinationConfig);
     url  = endPoint + category.createEndpoint;
   }
   else {
-    let orgId = await createOrganization(message, category, headers, destinationConfig);
+    const orgId = await createOrganization(message, category, headers, destinationConfig);
     if (!orgId) {
       console.log(`Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`);
+      throw new Error(`Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`);
       // what to return in case of error?
     }
-    payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
+    /* payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
     url = endPoint + category.userMembershipEndpoint;
+
+    const userId = payload.organization_membership.user_id;
+    if(isUserAlreadyAssociated(userId, orgId, headers)){
+      throw new Error("user is already associated with organization");
+    } */
+    category = ConfigCategory.IDENTIFY;
+    payload = getIdentifyPayload(message, category, destinationConfig);
+    url = endPoint + category.createOrUpdateUserEndpoint;
+    // return responseBuilder(message, headers, payload, url);
+
   }
 
   return responseBuilder(message, headers, payload, url);
+}
+
+async function isUserAlreadyAssociated(userId, orgId, headers) {
+  const url = `${endPoint}/users/${userId}/organization_memberships.json`;
+  const config = {'headers': headers};
+  let response = await axios.get(url, config);
+  if(response.data && response.data.organization_memberships.length > 0 && response.data.organization_memberships[0].id == orgId){
+    return true;
+  }
+  return false;
 }
 
 async function createUser(message, headers, destinationConfig){

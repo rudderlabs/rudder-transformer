@@ -1,7 +1,11 @@
 const isIp = require("is-ip");
 var validUrl = require("valid-url");
 const { EventType } = require("../../constants");
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const {
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+  fixIP
+} = require("../util");
 const { ENDPOINT } = require("./config");
 
 function addAddons(properties, config) {
@@ -85,11 +89,7 @@ function processTrack(message, destination) {
   properties.anonymousId = message.anonymousId;
 
   // add ip from the message
-  properties.request_ip = message.context
-    ? message.context.ip
-      ? message.context.ip
-      : message.request_ip
-    : message.request_ip;
+  fixIP(properties, message, "request_ip");
 
   // add user-agent
   properties.user_agent = message.context.userAgent;

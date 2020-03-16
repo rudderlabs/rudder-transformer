@@ -1,26 +1,63 @@
 [
-  { "destKey": "deviceId", "sourceKeys": [], "required": false },
-  { "destKey": "devMode", "sourceKeys": [], "required": false },
-  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-  { "destKey": "appVersion", "sourceKeys": [], "required": false },
-  { "destKey": "systemName", "sourceKeys": [], "required": false },
-  { "destKey": "systemVersion", "sourceKeys": [], "required": false },
-  { "destKey": "browserName", "sourceKeys": [], "required": false },
-  { "destKey": "browserVersion", "sourceKeys": [], "required": false },
-  { "destKey": "deviceName", "sourceKeys": [], "required": false },
-  { "destKey": "deviceModel", "sourceKeys": [], "required": false },
-  { "destKey": "iosPushToken", "sourceKeys": [], "required": false },
-  { "destKey": "gcmRegistrationId", "sourceKeys": [], "required": false },
-  { "destKey": "webPushSubscription", "sourceKeys": [], "required": false },
-  { "destKey": "userAttributes", "sourceKeys": [], "required": false },
-  { "destKey": "locale", "sourceKeys": [], "required": false },
-  { "destKey": "country", "sourceKeys": [], "required": false },
-  { "destKey": "region", "sourceKeys": [], "required": false },
-  { "destKey": "city", "sourceKeys": [], "required": false },
-  { "destKey": "location", "sourceKeys": [], "required": false },
-  { "destKey": "locationAccuracyType", "sourceKeys": [], "required": false },
-  { "destKey": "timezone", "sourceKeys": [], "required": false },
-  { "destKey": "timezoneOffsetSeconds", "sourceKeys": [], "required": false },
-  { "destKey": "background", "sourceKeys": [], "required": false },
-  { "destKey": "includeDefaults", "sourceKeys": [], "required": false }
+  {
+    "destKey": "deviceId",
+    "sourceKeys": ["context.device.id"],
+    "required": false
+  },
+  {
+    "destKey": "appVersion",
+    "sourceKeys": ["context.app.version", "context.app.build"],
+    "required": false
+  },
+  {
+    "destKey": "systemName",
+    "sourceKeys": ["context.os.name"],
+    "required": false
+  },
+  {
+    "destKey": "systemVersion",
+    "sourceKeys": ["context.os.version"],
+    "required": false
+  },
+  {
+    "destKey": "browserName",
+    "sourceKeys": ["context.browser.name"],
+    "required": false
+  },
+  {
+    "destKey": "browserVersion",
+    "sourceKeys": ["context.browser.version"],
+    "required": false
+  },
+  {
+    "destKey": "deviceName",
+    "sourceKeys": ["context.device.name"],
+    "required": false
+  },
+  {
+    "destKey": "deviceModel",
+    "sourceKeys": ["context.device.model"],
+    "required": false
+  },
+  {
+    "destKey": "userAttributes",
+    "sourceKeys": ["context.traits"],
+    "required": false
+  },
+  { "destKey": "locale", "sourceKeys": ["context.locale"], "required": false },
+  {
+    "destKey": "country",
+    "sourceKeys": ["context.traits.address.country", "context.traits.country"],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": ["context.traits.address.city", "context.traits.city"],
+    "required": false
+  },
+  {
+    "destKey": "timezone",
+    "sourceKeys": ["context.timezone"],
+    "required": false
+  }
 ]

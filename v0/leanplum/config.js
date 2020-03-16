@@ -16,6 +16,10 @@ const ConfigCategory = {
   SCREEN: {
     name: "LPScreenConfig",
     action: "advance"
+  },
+  START: {
+    name: "LPStartConfig",
+    action: "start"
   }
 };
 

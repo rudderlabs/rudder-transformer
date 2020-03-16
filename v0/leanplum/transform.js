@@ -18,27 +18,94 @@ const {
   defaultRequestConfig
 } = require("../util");
 
-async function startSession(message, destination) {
-  let retryCount = 0;
-  let success = false;
-  const payload = {
+function setValues(payload, message, mappingJson) {
+  if (Array.isArray(mappingJson)) {
+    let val;
+    let sourceKeys;
+    mappingJson.forEach(mapping => {
+      val = undefined;
+      sourceKeys = mapping.sourceKeys;
+      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+        for (let index = 0; index < sourceKeys.length; index++) {
+          val = get(message, sourceKeys[index]);
+          if (val) {
+            break;
+          }
+        }
+
+        if (val) {
+          set(payload, mapping.destKey, val);
+        } else if (mapping.required) {
+          throw new Error(
+            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+          );
+        }
+      }
+    });
+  }
+  // console.log(payload);
+  return payload;
+}
+
+function constructPayload(message, name, destination) {
+  mappingJson = mappingConfig[name];
+  let rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: API_VERSION
   };
 
+  rawPayload = setValues(rawPayload, message, mappingJson);
+
+  if (rawPayload.newUserId === "") {
+    delete rawPayload.newUserId;
+  }
+
   if (destination.Config.isDevelop) {
-    payload.devMode = true;
-  }
-  if (message.originalTimestamp) {
-    payload.time = Math.round(
-      new Date(message.originalTimestamp).getTime() / 1000
-    );
+    rawPayload.devMode = true;
   }
 
-  payload.userId = message.userId ? message.userId : message.anonymousId;
+  // special case for "created", "time"
+  // ideally we should add data type field in the json and handle it
+  if (rawPayload.created) {
+    const created = Math.round(new Date(rawPayload.created).getTime() / 1000);
+    rawPayload.created = created;
+  }
+  if (rawPayload.time) {
+    const time = Math.round(new Date(rawPayload.time).getTime() / 1000);
+    rawPayload.time = time;
+  }
+
+  return removeUndefinedValues(rawPayload);
+}
+
+function responseBuilderSimple(message, category, destination) {
+  const response = defaultRequestConfig();
+  response.endpoint = ENDPOINT;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.body.JSON = constructPayload(message, category.name, destination);
+  response.params = {
+    action: category.action
+  };
+
+  return response;
+}
+
+async function startSession(message, destination) {
+  let retryCount = 0;
+  let success = false;
+  const payload = constructPayload(
+    message,
+    ConfigCategory.START.name,
+    destination
+  );
+  console.log(payload);
   const url = ENDPOINT + "?action=start";
-
+  console.log(url);
   while (!success && retryCount < RETRY_COUNT) {
     try {
       const response = await axios.post(url, payload);
@@ -46,6 +113,7 @@ async function startSession(message, destination) {
         success = true;
       }
     } catch (error) {
+      console.log(error);
       if (
         error.response &&
         error.response.data &&
@@ -64,78 +132,6 @@ async function startSession(message, destination) {
   if (!success) {
     throw new Error("Start Session failed for LeanPlum");
   }
-}
-
-function setValues(payload, message, mappingJson) {
-  if(Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach( mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if(Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index++) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-
-        if(val) {
-          set(payload, mapping.destKey, val);
-        }
-        else {
-          if(mapping.required) {
-            throw new Error(`One of ${mapping.sourceKeys} is required`);
-          }
-        }
-      }
-    });
-  }
-  // console.log(payload);
-  return payload;
-}
-
-function responseBuilderSimple(message, category, destination) {
-  mappingJson = mappingConfig[category.name];
-  let rawPayload = {
-    appId: destination.Config.applicationId,
-    clientKey: destination.Config.clientKey,
-    apiVersion: API_VERSION
-  };
-  
-  rawPayload = setValues(rawPayload, message, mappingJson);
-
-  if (rawPayload.newUserId === "") {
-    delete rawPayload.newUserId;
-  }
-  // sending anonymousId if userId is not present
-  rawPayload.userId = rawPayload.userId
-    ? rawPayload.userId
-    : message.userId
-    ? message.userId
-    : message.anonymousId;
-
-  if (destination.Config.isDevelop) {
-    rawPayload.devMode = true;
-  }
-
-  rawPayload.time = Math.round(new Date().getTime() / 1000);
-  const payload = removeUndefinedValues(rawPayload);
-
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.userId = message.userId ? message.userId : message.anonymousId;
-  response.body.JSON = payload;
-  response.params = {
-    action: category.action
-  };
-
-  return response;
 }
 
 async function processSingleMessage(message, destination) {

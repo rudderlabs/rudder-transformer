@@ -1,5 +1,9 @@
 [
-  { "destKey": "state", "sourceKeys": ["name"], "required": true },
+  {
+    "destKey": "state",
+    "sourceKeys": ["name", "properties.name"],
+    "required": true
+  },
   {
     "destKey": "params.path",
     "sourceKeys": ["properties.path"],
@@ -29,7 +33,5 @@
     "destKey": "deviceId",
     "sourceKeys": ["context.device.id"],
     "required": false
-  },
-  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-  { "destKey": "info", "sourceKeys": [], "required": false }
+  }
 ]

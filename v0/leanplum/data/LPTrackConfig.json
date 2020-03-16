@@ -6,10 +6,10 @@
     "required": false
   },
   { "destKey": "params", "sourceKeys": ["properties"], "required": false },
-  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-  { "destKey": "value", "sourceKeys": [], "required": false },
-  { "destKey": "currencyCode", "sourceKeys": [], "required": false },
-  { "destKey": "info", "sourceKeys": [], "required": false },
-  { "destKey": "messageId", "sourceKeys": [], "required": false },
-  { "destKey": "disposition", "sourceKeys": [], "required": false }
+  { "destKey": "value", "sourceKeys": ["properties.total"], "required": false },
+  {
+    "destKey": "currencyCode",
+    "sourceKeys": ["properties.currency"],
+    "required": false
+  }
 ]

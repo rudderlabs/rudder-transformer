@@ -1,6 +1,14 @@
 [
-  { "destKey": "userId", "sourceKeys": ["anonymousId"], "required": true },
-  { "destKey": "newUserId", "sourceKeys": ["userId"], "required": false },
+  {
+    "destKey": "userId",
+    "sourceKeys": ["anonymousId"],
+    "required": true
+  },
+  {
+    "destKey": "newUserId",
+    "sourceKeys": ["userId", "context.traits.userId", "context.traits.id"],
+    "required": false
+  },
   {
     "destKey": "deviceId",
     "sourceKeys": ["context.device.id"],
@@ -11,54 +19,30 @@
     "sourceKeys": ["context.traits"],
     "required": false
   },
-  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
   {
-    "destKey": "userAttributeValuesToAdd",
-    "sourceKeys": [],
+    "destKey": "created",
+    "sourceKeys": ["context.traits.createAt"],
+    "required": false
+  },
+  { "destKey": "locale", "sourceKeys": ["context.locale"], "required": false },
+  {
+    "destKey": "country",
+    "sourceKeys": ["context.traits.address.country", "context.traits.country"],
     "required": false
   },
   {
-    "destKey": "userAttributeValuesToRemove",
-    "sourceKeys": [],
+    "destKey": "city",
+    "sourceKeys": ["context.traits.address.city", "context.traits.city"],
     "required": false
   },
   {
-    "destKey": "userAttributeValuesToIncrement",
-    "sourceKeys": [],
+    "destKey": "timezone",
+    "sourceKeys": ["context.timezone"],
     "required": false
   },
   {
-    "destKey": "unsubscribeCategoriesToAdd",
-    "sourceKeys": [],
+    "destKey": "time",
+    "sourceKeys": ["originalTimestamp"],
     "required": false
-  },
-  {
-    "destKey": "unsubscribeCategoriesToRemove",
-    "sourceKeys": [],
-    "required": false
-  },
-  {
-    "destKey": "unsubscribeChannelsToAdd",
-    "sourceKeys": [],
-    "required": false
-  },
-  {
-    "destKey": "unsubscribeChannelsToRemove",
-    "sourceKeys": [],
-    "required": false
-  },
-  { "destKey": "states", "sourceKeys": [], "required": false },
-  { "destKey": "created", "sourceKeys": [], "required": false },
-  { "destKey": "lastActive", "sourceKeys": [], "required": false },
-  { "destKey": "totalSessions", "sourceKeys": [], "required": false },
-  { "destKey": "timeSpentInApp", "sourceKeys": [], "required": false },
-  { "destKey": "locale", "sourceKeys": [], "required": false },
-  { "destKey": "country", "sourceKeys": [], "required": false },
-  { "destKey": "region", "sourceKeys": [], "required": false },
-  { "destKey": "city", "sourceKeys": [], "required": false },
-  { "destKey": "location", "sourceKeys": [], "required": false },
-  { "destKey": "locationAccuracyType", "sourceKeys": [], "required": false },
-  { "destKey": "timezone", "sourceKeys": [], "required": false },
-  { "destKey": "timezoneOffsetSeconds", "sourceKeys": [], "required": false },
-  { "destKey": "devices", "sourceKeys": [], "required": false }
+  }
 ]

@@ -8,7 +8,5 @@
     "destKey": "deviceId",
     "sourceKeys": ["context.device.id"],
     "required": false
-  },
-  { "destKey": "createDisposition", "sourceKeys": [], "required": false },
-  { "destKey": "info", "sourceKeys": [], "required": false }
+  }
 ]

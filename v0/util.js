@@ -5,6 +5,14 @@ const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
 
+const fixIP = (payload, message, key) => {
+  payload[key] = message.context
+    ? message.context.ip
+      ? message.context.ip
+      : message.request_ip
+    : message.request_ip;
+};
+
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
   const categoryKeys = Object.keys(config);
@@ -236,14 +244,8 @@ function processWarehouseMessage(
       const identifiesEvent = { ...event };
 
       usersEvent.id = message.userId;
-      usersEvent.user_id = message.userId;
-      identifiesEvent.user_id = message.userId;
-      identifiesEvent.anonymous_id = message.anonymousId;
-      identifiesEvent.id = message.messageId;
-      // set columntypes
-      columnTypes.id = "string";
-      columnTypes.user_id = "string";
-      columnTypes.anonymous_id = "string";
+      usersEvent.received_at = message.receivedAt;
+      setFromConfig(identifiesEvent, message, whDefaultConfigJson, columnTypes);
 
       const identifiesMetadata = {
         table: "identifies",
@@ -300,5 +302,6 @@ module.exports = {
   defaultDeleteRequestConfig,
   defaultPutRequestConfig,
   updatePayload,
-  defaultRequestConfig
+  defaultRequestConfig,
+  fixIP
 };

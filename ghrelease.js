@@ -4,8 +4,8 @@ const fs = require("fs");
 
 // all options have defaults and can be omitted
 const options = {
-  tag_name: "v0.1.4",
-  name: "v0.1.4",
+  tag_name: "v0.1.5-rc.0",
+  name: "v0.1.5-rc.0",
   draft: false,
   prerelease: false,
   repo: "rudder-transformer",

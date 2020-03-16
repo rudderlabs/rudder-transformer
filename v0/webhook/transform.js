@@ -2,7 +2,7 @@ const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
 function process(event) {
   const { message, destination } = event;
-  let response = defaultRequestConfig();
+  const response = defaultRequestConfig();
   response.endpoint = destination.Config.webhookUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   // add content-type by default as our payload is json

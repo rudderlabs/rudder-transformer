@@ -7,7 +7,7 @@ const options = {
   tag_name: "v0.1.5-rc.0",
   name: "v0.1.5-rc.0",
   draft: false,
-  prerelease: false,
+  prerelease: true,
   repo: "rudder-transformer",
   owner: "RudderLabs",
   endpoint: "https://api.github.com" // for GitHub enterprise, use http(s)://hostname/api/v3

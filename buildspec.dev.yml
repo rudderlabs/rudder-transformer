@@ -14,12 +14,12 @@ phases:
       - npm install --unsafe-perm
       - npm test
       - echo build Docker image on `date`
-      - docker build -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
+      - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
   post_build:
     commands:
       - echo build Docker image complete `date`
       - echo push latest Docker images to docker hub...
-      - docker push rudderlabs/rudder-transformer:$VERSION
+      - docker push rudderlabs/develop-rudder-transformer:$VERSION
 artifacts:
   files:
     - "**/*"

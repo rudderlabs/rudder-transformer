@@ -7,7 +7,8 @@ const { ConfigCategory, mappingConfig, defaultFields } = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  defaultDeleteRequestConfig
 } = require("../util");
 
 var endPoint;
@@ -66,10 +67,13 @@ async function checkAndCreateUserFields(traits, category, headers) {
 
       // check for new fields
       const trait_keys = Object.keys(traits);
-      new_fields = trait_keys.filter(key => !existing_keys.includes(key));
+      new_fields = trait_keys.filter(
+        key => !(existing_keys.includes(key) || typeof traits[key] === "object") // to handle traits.company.remove
+      );
 
-      if (new_fields.length > 0)
+      if (new_fields.length > 0) {
         await createUserFields(url, config, new_fields);
+      }
     }
   } catch (error) {
     console.log("Error :", error.response ? error.response.data : error);
@@ -88,7 +92,11 @@ function getIdentifyPayload(message, category, destinationConfig) {
   // send fields not in sourceKeys as user fields
   const trait_keys = Object.keys(message.context.traits);
   const user_fields = trait_keys.filter(
-    trait => !sourceKeys.includes("context.traits." + trait)
+    trait =>
+      !(
+        sourceKeys.includes("context.traits." + trait) ||
+        typeof message.context.traits[trait] == "object"
+      )
   );
   user_fields.forEach(field => {
     set(
@@ -224,7 +232,7 @@ async function createOrganization(
 
   payload.organization = removeUndefinedValues(payload.organization);
 
-  if (destinationConfig.sendGroupCallsWithoutUserId) {
+  if (destinationConfig.sendGroupCallsWithoutUserId && !message.userId) {
     return payload;
   }
 
@@ -254,7 +262,50 @@ async function processIdentify(message, destinationConfig, headers) {
 
   const payload = getIdentifyPayload(message, category, destinationConfig);
   const url = endPoint + category.createOrUpdateUserEndpoint;
-  return responseBuilder(message, headers, payload, url);
+  const returnList = [];
+
+  const traits = message.context.traits;
+  if (
+    traits.company &&
+    traits.company.remove &&
+    destinationConfig.removeUsersFromOrganization &&
+    traits.company.id
+  ) {
+    const orgId = traits.company.id;
+    const userId = await getUserId(message, headers);
+    if (userId) {
+      const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
+      try {
+        const config = { headers };
+        const response = await axios.get(membershipUrl, config);
+        if (
+          response.data &&
+          response.data.organization_memberships &&
+          response.data.organization_memberships.length > 0
+        ) {
+          if (
+            orgId == response.data.organization_memberships[0].organization_id
+          ) {
+            const membershipId = response.data.organization_memberships[0].id;
+            const deleteResponse = defaultRequestConfig();
+
+            deleteResponse.endpoint = `${endPoint}users/${userId}/organization_memberships/${membershipId}.json`;
+            deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
+            deleteResponse.headers = headers;
+            deleteResponse.userId = message.userId
+              ? message.userId
+              : message.anonymousId;
+            returnList.push(deleteResponse);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  returnList.push(responseBuilder(message, headers, payload, url));
+  return returnList;
 }
 
 async function processTrack(message, destinationConfig, headers) {
@@ -339,6 +390,7 @@ async function processGroup(message, destinationConfig, headers) {
     } */
     category = ConfigCategory.IDENTIFY;
     payload = getIdentifyPayload(message, category, destinationConfig);
+    payload.user.organization_id = orgId;
     url = endPoint + category.createOrUpdateUserEndpoint;
     // return responseBuilder(message, headers, payload, url);
   }

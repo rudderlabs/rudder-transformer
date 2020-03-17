@@ -33,7 +33,6 @@ function responseBuilder(payload, message, intercomConfig) {
     default:
       break;
   }
-  
 
   const resp = {
     ...response,

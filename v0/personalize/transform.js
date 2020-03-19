@@ -1,17 +1,4 @@
-// Config =
-//   {"accessKeyId":"AKIAWTVBJHCTAG52M2ZA",
-//   "secretAccessKey":"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",
-//   "region":"us-east-1",
-//   "trackingId":"12345",
-//   "eventName":"track",
-//   "customMappings":
-//   [
-//     {"from":"user_id","to":"anon_id"},
-//     {"from":"item_id","to":"game_id"},
-//     {"from":"timestamp","to":"date"},
-//     {"from":"item_desc","to":"desc"}
-//   ]
-// }
+
 
 async function process(event) {
   var payload = {};

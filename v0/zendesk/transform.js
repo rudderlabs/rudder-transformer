@@ -25,13 +25,14 @@ function responseBuilder(message, headers, payload, endpoint) {
   return response;
 }
 
-async function createUserFields(url, config, new_fields) {
+async function createUserFields(url, config, new_fields, fieldJson) {
   let field_data;
-
+  //removing trailing 's' from fieldJson
+  fieldJson = fieldJson.slice(0, -1);
   new_fields.forEach(async field => {
     // create payload for each new user field
     field_data = {
-      user_field: {
+      [fieldJson]: {
         title: field,
         active: true,
         key: field,
@@ -52,18 +53,19 @@ async function createUserFields(url, config, new_fields) {
   });
 }
 
-async function checkAndCreateUserFields(traits, category, headers) {
+async function checkAndCreateUserFields(traits, categoryEndpoint, fieldJson, headers) {
   let new_fields = [];
 
-  const url = endPoint + category.userFieldsEndpoint;
+  const url = endPoint + categoryEndpoint;
   const config = { headers };
 
   try {
     const response = await axios.get(url, config);
-    if (response.data && response.data.user_fields) {
+    let fields = get(response.data, fieldJson);
+    if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
-      let existing_keys = response.data.user_fields.map(field => field.key);
-      existing_keys = existing_keys.concat(defaultFields);
+      let existing_keys = fields.map(field => field.key);
+      existing_keys = existing_keys.concat(defaultFields[fieldJson]);
 
       // check for new fields
       const trait_keys = Object.keys(traits);
@@ -72,7 +74,7 @@ async function checkAndCreateUserFields(traits, category, headers) {
       );
 
       if (new_fields.length > 0) {
-        await createUserFields(url, config, new_fields);
+        await createUserFields(url, config, new_fields, fieldJson);
       }
     }
   } catch (error) {
@@ -89,6 +91,9 @@ function getIdentifyPayload(message, category, destinationConfig) {
     set(payload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
+  if(payload.user.external_id){
+    set(payload, "user.user_fields.id", payload.user.external_id);
+  }
   // send fields not in sourceKeys as user fields
   const trait_keys = Object.keys(message.context.traits);
   const user_fields = trait_keys.filter(
@@ -222,12 +227,32 @@ async function createOrganization(
   headers,
   destinationConfig
 ) {
+  await checkAndCreateUserFields(message.traits, category.organizationFieldsEndpoint, category.organizationFieldsJson, headers);
   mappingJson = mappingConfig[category.name];
   const payload = {};
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     set(payload, mappingJson[sourceKey], get(message, sourceKey));
+  });
+  // console.log(payload);
+  if(payload.organization.external_id){
+    set(payload, "organization.organization_fields.id", payload.organization.external_id);
+  }
+  const trait_keys = Object.keys(message.traits);
+  const organization_fields = trait_keys.filter(
+    trait =>
+      !(
+        sourceKeys.includes("traits." + trait) ||
+        typeof message.context.traits[trait] == "object"
+      )
+  );
+  organization_fields.forEach(field => {
+    set(
+      payload,
+      "organization.organization_fields." + field,
+      get(message, "traits." + field)
+    );
   });
 
   payload.organization = removeUndefinedValues(payload.organization);
@@ -238,7 +263,7 @@ async function createOrganization(
 
   const url = endPoint + category.createEndpoint;
   const config = { headers };
-
+  
   try {
     const resp = await axios.post(url, payload, config);
 
@@ -249,16 +274,25 @@ async function createOrganization(
 
     const orgId = resp.data.organization.id;
     return orgId;
+    
   } catch (error) {
     console.log(`Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }
 
+function validateUserId(message)
+{
+  if(!message.userId){
+    throw new Error(`Zendesk : UserId is a mandatory field for ${message.type}`);
+  }
+}
+
 async function processIdentify(message, destinationConfig, headers) {
+  validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
   // create user fields if required
-  await checkAndCreateUserFields(message.context.traits, category, headers);
+  await checkAndCreateUserFields(message.context.traits, category.userFieldsEndpoint, category.userFieldsJson, headers);
 
   const payload = getIdentifyPayload(message, category, destinationConfig);
   const url = endPoint + category.createOrUpdateUserEndpoint;
@@ -309,11 +343,8 @@ async function processIdentify(message, destinationConfig, headers) {
 }
 
 async function processTrack(message, destinationConfig, headers) {
-  const userId = message.userId;
+  validateUserId(message);
   let userEmail = message.context.traits.email;
-  if (!userId) {
-    throw new Error("user id is not present");
-  }
   let zendeskUserID;
   // let url = endPoint + "users/search.json?external_id=" + userId;
   let url = endPoint + `users/search.json?query=${userEmail}`;
@@ -353,6 +384,7 @@ async function processTrack(message, destinationConfig, headers) {
 }
 
 async function processGroup(message, destinationConfig, headers) {
+  validateUserId(message);
   let category = ConfigCategory.GROUP;
   let payload;
   let url;
@@ -373,13 +405,9 @@ async function processGroup(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!orgId) {
-      console.log(
-        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
-      );
       throw new Error(
         `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
       );
-      // what to return in case of error?
     }
     /* payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
     url = endPoint + category.userMembershipEndpoint;

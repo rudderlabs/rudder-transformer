@@ -6,6 +6,25 @@ const logger = require("../../logger");
 const { SLACK_RUDDER_IMAGE_URL, SLACK_USER_NAME } = require("./config");
 const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
+// to string json traits, not using JSON.stringify()
+// always first check for whitelisted traits
+function stringifyJSON(json, whiteListedTraits) {
+  var output = "";
+  Object.keys(json).forEach(key => {
+    if (json.hasOwnProperty(key)) {
+      if (whiteListedTraits && whiteListedTraits.length > 0) {
+        if (whiteListedTraits.includes(key)) {
+          output += key + ": " + json[key] + " ";
+        }
+      } else {
+        output += key + ": " + json[key] + " ";
+      }
+    }
+  });
+  logger.debug("traitsString:: ", output);
+  return output;
+}
+
 // get the name value from either traits.name/traits.firstName+traits.lastName/traits.username/
 // properties.email/traits.email/userId/anonymousId
 function getName(message) {
@@ -122,7 +141,11 @@ function processIdentify(message, destination) {
   const templateInput = {
     name: uName,
     ...message.context.traits,
-    traits: message.context ? message.context.traits : {}
+    traits: stringifyJSON(
+      message.context ? message.context.traits : {},
+      traitsList
+    ),
+    traitsList: message.context ? message.context.traits : {}
   };
   logger.debug("templateInputIdentify: ", templateInput);
 
@@ -255,6 +278,8 @@ function processTrack(message, destination) {
 }
 
 function process(event) {
+  logger.info("=====start=====");
+  logger.info(JSON.stringify(event));
   const respList = [];
   let response;
   const { message, destination } = event;
@@ -276,6 +301,8 @@ function process(event) {
       logger.debug("Message type not supported");
       throw new Error("Message type not supported");
   }
+  logger.info(JSON.stringify(respList));
+  logger.info("=====end======");
   return respList;
 }
 

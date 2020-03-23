@@ -27,7 +27,7 @@ function responseBuilder(message, headers, payload, endpoint) {
 
 async function createUserFields(url, config, new_fields, fieldJson) {
   let field_data;
-  //removing trailing 's' from fieldJson
+  // removing trailing 's' from fieldJson
   fieldJson = fieldJson.slice(0, -1);
   new_fields.forEach(async field => {
     // create payload for each new user field
@@ -53,7 +53,12 @@ async function createUserFields(url, config, new_fields, fieldJson) {
   });
 }
 
-async function checkAndCreateUserFields(traits, categoryEndpoint, fieldJson, headers) {
+async function checkAndCreateUserFields(
+  traits,
+  categoryEndpoint,
+  fieldJson,
+  headers
+) {
   let new_fields = [];
 
   const url = endPoint + categoryEndpoint;
@@ -61,7 +66,7 @@ async function checkAndCreateUserFields(traits, categoryEndpoint, fieldJson, hea
 
   try {
     const response = await axios.get(url, config);
-    let fields = get(response.data, fieldJson);
+    const fields = get(response.data, fieldJson);
     if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
       let existing_keys = fields.map(field => field.key);
@@ -91,7 +96,7 @@ function getIdentifyPayload(message, category, destinationConfig) {
     set(payload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  if(payload.user.external_id){
+  if (payload.user.external_id) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
   // send fields not in sourceKeys as user fields
@@ -227,7 +232,12 @@ async function createOrganization(
   headers,
   destinationConfig
 ) {
-  await checkAndCreateUserFields(message.traits, category.organizationFieldsEndpoint, category.organizationFieldsJson, headers);
+  await checkAndCreateUserFields(
+    message.traits,
+    category.organizationFieldsEndpoint,
+    category.organizationFieldsJson,
+    headers
+  );
   mappingJson = mappingConfig[category.name];
   const payload = {};
 
@@ -236,8 +246,12 @@ async function createOrganization(
     set(payload, mappingJson[sourceKey], get(message, sourceKey));
   });
   // console.log(payload);
-  if(payload.organization.external_id){
-    set(payload, "organization.organization_fields.id", payload.organization.external_id);
+  if (payload.organization.external_id) {
+    set(
+      payload,
+      "organization.organization_fields.id",
+      payload.organization.external_id
+    );
   }
   const trait_keys = Object.keys(message.traits);
   const organization_fields = trait_keys.filter(
@@ -263,7 +277,7 @@ async function createOrganization(
 
   const url = endPoint + category.createEndpoint;
   const config = { headers };
-  
+
   try {
     const resp = await axios.post(url, payload, config);
 
@@ -274,17 +288,17 @@ async function createOrganization(
 
     const orgId = resp.data.organization.id;
     return orgId;
-    
   } catch (error) {
     console.log(`Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }
 
-function validateUserId(message)
-{
-  if(!message.userId){
-    throw new Error(`Zendesk : UserId is a mandatory field for ${message.type}`);
+function validateUserId(message) {
+  if (!message.userId) {
+    throw new Error(
+      `Zendesk : UserId is a mandatory field for ${message.type}`
+    );
   }
 }
 
@@ -292,7 +306,12 @@ async function processIdentify(message, destinationConfig, headers) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
   // create user fields if required
-  await checkAndCreateUserFields(message.context.traits, category.userFieldsEndpoint, category.userFieldsJson, headers);
+  await checkAndCreateUserFields(
+    message.context.traits,
+    category.userFieldsEndpoint,
+    category.userFieldsJson,
+    headers
+  );
 
   const payload = getIdentifyPayload(message, category, destinationConfig);
   const url = endPoint + category.createOrUpdateUserEndpoint;

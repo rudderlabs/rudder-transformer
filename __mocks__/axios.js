@@ -1,6 +1,6 @@
 const axios = jest.genMockFromModule("axios");
 
-const mockData = [
+/* const mockData = [
   { name: "company_size", type: "string" },
   { name: "date_of_birth", type: "string" },
   { name: "days_to_close", type: "number" },
@@ -176,12 +176,43 @@ const mockData = [
   { name: "associatedcompanylastupdated", type: "number" },
   { name: "hs_predictivecontactscorebucket", type: "enumeration" },
   { name: "hs_predictivecontactscore", type: "number" }
-];
+]; */
+
+const urlDirectoryMap = {
+  "api.hubapi.com": "hs",
+  "zendesk.com": "zendesk"
+};
+
+const fs = require("fs");
+const path = require("path");
+
+function getData(url) {
+  let directory = "";
+  Object.keys(urlDirectoryMap).forEach(key => {
+    if (url.includes(key)) {
+      directory = urlDirectoryMap[key];
+    }
+  });
+  const dataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${directory}/response.json`)
+  );
+  const data = JSON.parse(dataFile);
+  return data[url];
+}
 
 function get(url) {
+  const mockData = getData(url);
+  return new Promise((resolve, reject) => {
+    resolve({ data: mockData });
+  });
+}
+
+function post(url, payload, config) {
+  const mockData = getData(url);
   return new Promise((resolve, reject) => {
     resolve({ data: mockData });
   });
 }
 axios.get = get;
+axios.post = post;
 module.exports = axios;

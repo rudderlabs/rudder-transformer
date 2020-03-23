@@ -1,0 +1,30 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": [
+      "userId",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  { "destKey": "event", "sourceKeys": ["event"], "required": true },
+  {
+    "destKey": "deviceId",
+    "sourceKeys": ["context.device.id"],
+    "required": false
+  },
+  { "destKey": "params", "sourceKeys": ["properties"], "required": false },
+  { "destKey": "value", "sourceKeys": ["properties.total"], "required": false },
+  {
+    "destKey": "currencyCode",
+    "sourceKeys": ["properties.currency"],
+    "required": false
+  },
+  {
+    "destKey": "time",
+    "sourceKeys": ["originalTimestamp"],
+    "required": false
+  }
+]

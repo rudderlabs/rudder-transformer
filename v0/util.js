@@ -5,6 +5,14 @@ const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
 
+const fixIP = (payload, message, key) => {
+  payload[key] = message.context
+    ? message.context.ip
+      ? message.context.ip
+      : message.request_ip
+    : message.request_ip;
+};
+
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
   const categoryKeys = Object.keys(config);
@@ -15,6 +23,11 @@ const getMappingConfig = (config, dir) => {
     );
   });
   return mappingConfig;
+};
+
+const isPrimitive = arg => {
+  var type = typeof arg;
+  return arg == null || (type != "object" && type != "function");
 };
 
 const isDefined = x => !_.isUndefined(x);
@@ -366,6 +379,20 @@ function processWarehouseMessage(
   return responses;
 }
 
+// ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
+function isURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return !!pattern.test(str);
+}
+
 // End of warehouse specific utils
 
 module.exports = {
@@ -389,5 +416,8 @@ module.exports = {
   defaultDeleteRequestConfig,
   defaultPutRequestConfig,
   updatePayload,
-  defaultRequestConfig
+  defaultRequestConfig,
+  isPrimitive,
+  fixIP,
+  isURL
 };

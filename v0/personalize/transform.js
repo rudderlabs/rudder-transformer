@@ -1,5 +1,3 @@
-
-
 async function process(event) {
   var payload = {};
   var noOfFields = event.destination.Config.customMappings.length;
@@ -18,19 +16,33 @@ async function process(event) {
   if (event.message.event == event.destination.Config.eventName) {
     var property = {};
     for (var k = 0; k < noOfFields; k++) {
-      var mappedFields = mappedField[k];
-      console.log(event.message[mappedFields]);
-
-      if (typeof event.message[mappedFields] !== "undefined") {
-        console.log("inside if");
-        property[keyField[k]] = event.message[mappedFields];
+      console.log(keyField[k].toUpperCase());
+      if (
+        keyField[k].toUpperCase() == "USER_ID" ||
+        keyField[k].toUpperCase() == "EVENT_TYPE" ||
+        keyField[k].toUpperCase() == "TIMESTAMP"
+      ) {
+      
+        keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
+          return g[1].toUpperCase();
+        });
+        console.log(keyField[k]);
       } else {
-        console.log("inside else");
-        payload = {
-          statusCode: 400,
-          error: "Mapped Field " + mappedFields + " not found"
-        };
-        return payload;
+        var mappedFields = mappedField[k];
+        console.log(event.message[mappedFields]);
+
+        if (typeof event.message[mappedFields] !== "undefined") {
+          keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
+            return g[1].toUpperCase();
+          });
+          property[keyField[k]] = event.message[mappedFields];
+        } else {
+          payload = {
+            statusCode: 400,
+            error: "Mapped Field " + mappedFields + " not found"
+          };
+          return payload;
+        }
       }
     }
     console.log(property);

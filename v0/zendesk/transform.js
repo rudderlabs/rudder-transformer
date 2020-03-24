@@ -25,13 +25,13 @@ function responseBuilder(message, headers, payload, endpoint) {
   return response;
 }
 
-async function createUserFields(url, config, new_fields, fieldJson) {
-  let field_data;
+async function createUserFields(url, config, newFields, fieldJson) {
+  let fieldData;
   // removing trailing 's' from fieldJson
   fieldJson = fieldJson.slice(0, -1);
-  new_fields.forEach(async field => {
+  newFields.forEach(async field => {
     // create payload for each new user field
-    field_data = {
+    fieldData = {
       [fieldJson]: {
         title: field,
         active: true,
@@ -41,7 +41,7 @@ async function createUserFields(url, config, new_fields, fieldJson) {
     };
 
     try {
-      const response = await axios.post(url, field_data, config);
+      const response = await axios.post(url, fieldData, config);
       if (response.status !== 201) {
         console.log("Failed to create User Field : ", field);
       }
@@ -59,7 +59,7 @@ async function checkAndCreateUserFields(
   fieldJson,
   headers
 ) {
-  let new_fields = [];
+  let newFields = [];
 
   const url = endPoint + categoryEndpoint;
   const config = { headers };
@@ -69,17 +69,17 @@ async function checkAndCreateUserFields(
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
-      let existing_keys = fields.map(field => field.key);
-      existing_keys = existing_keys.concat(defaultFields[fieldJson]);
+      let existingKeys = fields.map(field => field.key);
+      existingKeys = existingKeys.concat(defaultFields[fieldJson]);
 
       // check for new fields
-      const trait_keys = Object.keys(traits);
-      new_fields = trait_keys.filter(
-        key => !(existing_keys.includes(key) || typeof traits[key] === "object") // to handle traits.company.remove
+      const traitKeys = Object.keys(traits);
+      newFields = traitKeys.filter(
+        key => !(existingKeys.includes(key) || typeof traits[key] === "object") // to handle traits.company.remove
       );
 
-      if (new_fields.length > 0) {
-        await createUserFields(url, config, new_fields, fieldJson);
+      if (newFields.length > 0) {
+        await createUserFields(url, config, newFields, fieldJson);
       }
     }
   } catch (error) {
@@ -100,15 +100,15 @@ function getIdentifyPayload(message, category, destinationConfig) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
   // send fields not in sourceKeys as user fields
-  const trait_keys = Object.keys(message.context.traits);
-  const user_fields = trait_keys.filter(
+  const traitKeys = Object.keys(message.context.traits);
+  const userFields = traitKeys.filter(
     trait =>
       !(
         sourceKeys.includes("context.traits." + trait) ||
         typeof message.context.traits[trait] == "object"
       )
   );
-  user_fields.forEach(field => {
+  userFields.forEach(field => {
     set(
       payload,
       "user.user_fields." + field,
@@ -253,15 +253,15 @@ async function createOrganization(
       payload.organization.external_id
     );
   }
-  const trait_keys = Object.keys(message.traits);
-  const organization_fields = trait_keys.filter(
+  const traitKeys = Object.keys(message.traits);
+  const organizationFields = traitKeys.filter(
     trait =>
       !(
         sourceKeys.includes("traits." + trait) ||
         typeof message.context.traits[trait] == "object"
       )
   );
-  organization_fields.forEach(field => {
+  organizationFields.forEach(field => {
     set(
       payload,
       "organization.organization_fields." + field,
@@ -428,6 +428,7 @@ async function processGroup(message, destinationConfig, headers) {
         `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
       );
     }
+    // not removing this code - as it is a different implementation for group membership - may be needed later.
     /* payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
     url = endPoint + category.userMembershipEndpoint;
 

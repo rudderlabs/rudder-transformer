@@ -11,7 +11,7 @@ function process(event) {
       "Content-Type": "application/json"
     };
 
-    const configHeaders = destination.Config.header;
+    const configHeaders = destination.Config.headers;
     if (configHeaders) {
       configHeaders.forEach(header => {
         response.headers[header.from] = header.to;

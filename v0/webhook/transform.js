@@ -1,13 +1,9 @@
-const {
-  defaultPostRequestConfig,
-  defaultRequestConfig,
-  isURL
-} = require("../util");
+const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
 function process(event) {
   const { message, destination } = event;
   const response = defaultRequestConfig();
-  if (destination.Config.webhookUrl && isURL(destination.Config.webhookUrl)) {
+  if (destination.Config.webhookUrl) {
     response.endpoint = destination.Config.webhookUrl;
     response.method = defaultPostRequestConfig.requestMethod;
     // add content-type by default as our payload is json
@@ -22,12 +18,9 @@ function process(event) {
       });
     }
 
-    response.userId = message.userId ? message.userId : message.anonymousId;
+    response.userId = message.userId || message.anonymousId;
     response.body.JSON = { ...message };
-    if (!response.statusCode) {
-      response.statusCode = 200;
-    }
-    return [response];
+    return response;
   }
   throw new Error("Invalid Url in destination");
 }

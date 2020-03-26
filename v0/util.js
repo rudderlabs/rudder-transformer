@@ -1,5 +1,6 @@
 /* eslint-disable radix */
 const fs = require("fs");
+const util = require("util");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
@@ -311,22 +312,23 @@ function processWarehouseMessage(
       setFromProperties(
         provider,
         event,
-        message.context.traits,
+        message.userProperties,
         columnTypes,
         ""
       );
       setFromProperties(
         provider,
         event,
-        message.context,
+        message.context ? message.context.traits : {},
         columnTypes,
-        "context_"
+        ""
       );
+      setFromProperties(provider, event, message.traits, columnTypes, "");
       const usersEvent = { ...event };
       const identifiesEvent = { ...event };
 
-      usersEvent[safeColumnName("id")] = message.userId;
-      usersEvent[safeColumnName("received_at")] = message.receivedAt;
+      usersEvent[safeColumnName(provider, "id")] = message.userId;
+      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt;
       setFromConfig(
         provider,
         identifiesEvent,

@@ -170,23 +170,25 @@ const reservedANSINKeywordsMap = {
   bq: require("./bq/data/ReservedKeywords.json")
 };
 
-function safeTableName(provider, name) {
+function safeTableName(provider, name = "") {
   let tableName = name;
+  if (tableName === "") {
+    tableName = "STRINGEMPTY";
+  }
   if (provider === "snowflake") {
     tableName = name.toUpperCase();
   }
   if (reservedANSINKeywordsMap[provider][tableName.toUpperCase()]) {
     tableName = "_" + tableName;
   }
-
-  if(tableName === "") {
-    tableName = "STRINGEMPTY"
-  }
   return tableName;
 }
 
-function safeColumnName(provider, name) {
+function safeColumnName(provider, name = "") {
   let columnName = name;
+  if (columnName === "") {
+    columnName = "STRINGEMPTY";
+  }
   if (provider === "snowflake") {
     columnName = name.toUpperCase();
   }

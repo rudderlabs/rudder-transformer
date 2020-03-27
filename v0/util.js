@@ -312,6 +312,13 @@ function processWarehouseMessage(
       setFromProperties(
         provider,
         event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromProperties(
+        provider,
+        event,
         message.userProperties,
         columnTypes,
         ""

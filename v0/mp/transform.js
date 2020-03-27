@@ -11,12 +11,12 @@ const { ConfigCategory, mappingConfig } = require("./config");
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 function getEventTime(message) {
-  return new Date(message.timestamp).toISOString();
+  return new Date(message.originalTimestamp).toISOString();
 }
 
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "http://api.mixpanel.com/engage/";
-  if (eventType !== EventType.IDENTIFY) {
+  if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
     endpoint = "http://api.mixpanel.com/track/";
   }
 
@@ -29,6 +29,7 @@ function responseBuilderSimple(parameters, message, eventType) {
   response.endpoint = endpoint;
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.params = { data: encodedData };
+  response.statusCode = 200;
 
   return response;
 }
@@ -65,19 +66,30 @@ function getEventValueForTrackEvent(message, destination) {
 }
 
 function processTrack(message, destination) {
-  if (message.properties.revenue) {
-    return processRevenueEvents(message, destination);
+  const returnValue = [];
+  if (message.properties && message.properties.revenue) {
+    returnValue.push(processRevenueEvents(message, destination));
   }
-  return getEventValueForTrackEvent(message, destination);
+  returnValue.push(getEventValueForTrackEvent(message, destination));
+  return returnValue;
 }
 
 function getTransformedJSON(message, mappingJson) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-  });
+  if (message.context.traits) {
+    const traits = { ...message.context.traits };
+    const keys = Object.keys(traits);
+    keys.forEach(key => {
+      const traitsKey = `context.traits.${key}`;
+      if (sourceKeys.includes(traitsKey)) {
+        set(rawPayload, mappingJson[traitsKey], get(message, traitsKey));
+      } else {
+        set(rawPayload, key, get(message, traitsKey));
+      }
+    });
+  }
   return rawPayload;
 }
 
@@ -119,18 +131,12 @@ function processSingleMessage(message, destination) {
       return processIdentifyEvents(message, message.type, destination);
     default:
       console.log("could not determine type");
-      return {
-        statusCode: 400,
-        error: "message type " + message.type + " is not supported"
-      };
+      throw new Error("message type " + message.type + " is not supported");
   }
 }
 
 function process(event) {
   const resp = processSingleMessage(event.message, event.destination);
-  if (!resp.statusCode) {
-    resp.statusCode = 200;
-  }
   return resp;
 }
 exports.process = process;

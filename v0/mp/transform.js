@@ -27,7 +27,7 @@ function responseBuilderSimple(parameters, message, eventType) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.userId || message.anonymousId;
   response.params = { data: encodedData };
   response.statusCode = 200;
 
@@ -43,7 +43,7 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.token,
-    $distinct_id: message.userId ? message.userId : message.anonymousId
+    $distinct_id: message.userId || message.anonymousId
   };
 
   return responseBuilderSimple(parameters, message, "revenue");
@@ -53,7 +53,7 @@ function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.token,
-    distinct_id: message.userId ? message.userId : message.anonymousId,
+    distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
@@ -62,7 +62,7 @@ function getEventValueForTrackEvent(message, destination) {
     properties
   };
 
-  return responseBuilderSimple(parameters, message, "track");
+  return responseBuilderSimple(parameters, message, EventType.TRACK);
 }
 
 function processTrack(message, destination) {
@@ -93,29 +93,29 @@ function getTransformedJSON(message, mappingJson) {
   return rawPayload;
 }
 
-function processIdentifyEvents(message, eventName, destination) {
+function processIdentifyEvents(message, type, destination) {
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: message.userId ? message.userId : message.anonymousId
+    $distinct_id: message.userId || message.anonymousId
   };
-  return responseBuilderSimple(parameters, message, eventName);
+  return responseBuilderSimple(parameters, message, type);
 }
 
-function processPageOrScreenEvents(message, eventName, destination) {
+function processPageOrScreenEvents(message, type, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.token,
-    distinct_id: message.userId ? message.userId : message.anonymousId,
+    distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
   const parameters = {
-    event: eventName,
+    event: type,
     properties
   };
-  return responseBuilderSimple(parameters, message, eventName);
+  return responseBuilderSimple(parameters, message, type);
 }
 
 function processSingleMessage(message, destination) {
@@ -124,14 +124,14 @@ function processSingleMessage(message, destination) {
       return processTrack(message, destination);
     case EventType.SCREEN:
     case EventType.PAGE: {
-      const name = message.type;
-      return processPageOrScreenEvents(message, name, destination);
+      return processPageOrScreenEvents(message, message.type, destination);
     }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     default:
-      console.log("could not determine type");
-      throw new Error("message type " + message.type + " is not supported");
+      throw new Error(
+        "message type " + message.type + " is not supported for MP"
+      );
   }
 }
 

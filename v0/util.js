@@ -178,6 +178,10 @@ function safeTableName(provider, name) {
   if (reservedANSINKeywordsMap[provider][tableName.toUpperCase()]) {
     tableName = "_" + tableName;
   }
+
+  if(tableName === "") {
+    tableName = "_STRINGEMPTY_"
+  }
   return tableName;
 }
 

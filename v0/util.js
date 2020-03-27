@@ -180,7 +180,7 @@ function safeTableName(provider, name) {
   }
 
   if(tableName === "") {
-    tableName = "_STRINGEMPTY_"
+    tableName = "STRINGEMPTY"
   }
   return tableName;
 }

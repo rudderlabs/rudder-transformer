@@ -171,7 +171,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName = "Viewed " + message.name || message.properties.name + " Screen";
+      evName = "Viewed " + (message.name || message.properties.name) + " Screen";
       break;
     case EventType.TRACK:
       evType = "event";

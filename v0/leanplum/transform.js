@@ -91,11 +91,11 @@ function responseBuilderSimple(message, category, destination) {
   return response;
 }
 
-async function startSession(message, destination) {
+function startSession(message, destination) {
   return responseBuilderSimple(message, ConfigCategory.START, destination);
 }
 
-async function processSingleMessage(message, destination) {
+function processSingleMessage(message, destination) {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -126,15 +126,14 @@ async function processSingleMessage(message, destination) {
 
   // all event types except idetify requires startSession
   if (messageType !== EventType.IDENTIFY) {
-    respList = [await startSession(message, destination)];
+    respList = [startSession(message, destination)];
   }
 
   return [...respList, response];
 }
 
-async function process(event) {
-  const resp = await processSingleMessage(event.message, event.destination);
-  return resp;
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

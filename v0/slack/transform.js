@@ -48,7 +48,7 @@ function getName(message) {
   return uName;
 }
 
-//build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
+// build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
 // image currently served from prod CDN
 function buildResponse(payloadJSON, message, destination) {
@@ -90,7 +90,7 @@ function buildDefaultTraitTemplate(traitsList, traits) {
 }
 
 function processIdentify(message, destination) {
-  //logger.debug(JSON.stringify(destination));
+  // debug(JSON.stringify(destination));
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = [];
   destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
@@ -154,7 +154,7 @@ function processIdentify(message, destination) {
 }
 
 function processTrack(message, destination) {
-  //logger.debug(JSON.stringify(destination));
+  // logger.debug(JSON.stringify(destination));
   const eventChannelConfig = destination.Config.eventChannelSettings;
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
@@ -244,7 +244,7 @@ function processTrack(message, destination) {
   );
   logger.debug("channelListToSendThisEvent: ", channelListArray);
 
-  //track event default handlebar expression
+  // track event default handlebar expression
   const defaultTemplate = "{{name}} did {{event}}";
 
   const eventTemplate = Handlebars.compile(
@@ -272,9 +272,8 @@ function processTrack(message, destination) {
       message,
       destination
     );
-  } else {
-    return buildResponse({ text: resultText }, message, destination);
   }
+  return buildResponse({ text: resultText }, message, destination);
 }
 
 function process(event) {

@@ -197,15 +197,14 @@ function processTrack(message, destination) {
         ) {
           channelListToSendThisEvent.add(channelConfig.eventChannel);
         }
-      } else {
-        if (channelConfig.eventName == eventName) {
-          channelListToSendThisEvent.add(channelConfig.eventChannel);
-        }
+      }
+      if (channelConfig.eventName == eventName) {
+        channelListToSendThisEvent.add(channelConfig.eventChannel);
       }
     }
   });
 
-  let channelListArray = Array.from(channelListToSendThisEvent);
+  const channelListArray = Array.from(channelListToSendThisEvent);
 
   // building templatelist
   eventTemplateConfig.forEach(templateConfig => {
@@ -227,15 +226,13 @@ function processTrack(message, destination) {
         ) {
           templateListForThisEvent.add(templateConfig.eventTemplate);
         }
-      } else {
-        if (templateConfig.eventName == eventName) {
-          templateListForThisEvent.add(templateConfig.eventTemplate);
-        }
+      } else if (templateConfig.eventName == eventName) {
+        templateListForThisEvent.add(templateConfig.eventTemplate);
       }
     }
   });
 
-  let templateListArray = Array.from(templateListForThisEvent);
+  const templateListArray = Array.from(templateListForThisEvent);
 
   logger.debug(
     "templateListForThisEvent: ",

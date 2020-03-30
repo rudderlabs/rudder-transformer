@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/users",
+    "endpoint": "https://api.intercom.io/contacts",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer undefined",

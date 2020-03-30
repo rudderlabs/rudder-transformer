@@ -11,12 +11,12 @@ const { ConfigCategory, mappingConfig } = require("./config");
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 function getEventTime(message) {
-  return new Date(message.timestamp).toISOString();
+  return new Date(message.originalTimestamp).toISOString();
 }
 
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "http://api.mixpanel.com/engage/";
-  if (eventType !== EventType.IDENTIFY) {
+  if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
     endpoint = "http://api.mixpanel.com/track/";
   }
 
@@ -27,8 +27,9 @@ function responseBuilderSimple(parameters, message, eventType) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.userId || message.anonymousId;
   response.params = { data: encodedData };
+  response.statusCode = 200;
 
   return response;
 }
@@ -42,7 +43,7 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.token,
-    $distinct_id: message.userId ? message.userId : message.anonymousId
+    $distinct_id: message.userId || message.anonymousId
   };
 
   return responseBuilderSimple(parameters, message, "revenue");
@@ -52,7 +53,7 @@ function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.token,
-    distinct_id: message.userId ? message.userId : message.anonymousId,
+    distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
@@ -61,49 +62,60 @@ function getEventValueForTrackEvent(message, destination) {
     properties
   };
 
-  return responseBuilderSimple(parameters, message, "track");
+  return responseBuilderSimple(parameters, message, EventType.TRACK);
 }
 
 function processTrack(message, destination) {
-  if (message.properties.revenue) {
-    return processRevenueEvents(message, destination);
+  const returnValue = [];
+  if (message.properties && message.properties.revenue) {
+    returnValue.push(processRevenueEvents(message, destination));
   }
-  return getEventValueForTrackEvent(message, destination);
+  returnValue.push(getEventValueForTrackEvent(message, destination));
+  return returnValue;
 }
 
 function getTransformedJSON(message, mappingJson) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-  });
+  if (message.context.traits) {
+    const traits = { ...message.context.traits };
+    const keys = Object.keys(traits);
+    keys.forEach(key => {
+      const traitsKey = `context.traits.${key}`;
+      if (sourceKeys.includes(traitsKey)) {
+        set(rawPayload, mappingJson[traitsKey], get(message, traitsKey));
+      } else {
+        set(rawPayload, key, get(message, traitsKey));
+      }
+    });
+  }
   return rawPayload;
 }
 
-function processIdentifyEvents(message, eventName, destination) {
+function processIdentifyEvents(message, type, destination) {
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: message.userId ? message.userId : message.anonymousId
+    $distinct_id: message.userId || message.anonymousId
   };
-  return responseBuilderSimple(parameters, message, eventName);
+  return responseBuilderSimple(parameters, message, type);
 }
 
-function processPageOrScreenEvents(message, eventName, destination) {
+function processPageOrScreenEvents(message, type, destination) {
   const properties = {
     ...message.properties,
     token: destination.Config.token,
-    distinct_id: message.userId ? message.userId : message.anonymousId,
+    distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
   const parameters = {
-    event: eventName,
+    event: type,
     properties
   };
-  return responseBuilderSimple(parameters, message, eventName);
+  return responseBuilderSimple(parameters, message, type);
 }
 
 function processSingleMessage(message, destination) {
@@ -112,25 +124,19 @@ function processSingleMessage(message, destination) {
       return processTrack(message, destination);
     case EventType.SCREEN:
     case EventType.PAGE: {
-      const name = message.type;
-      return processPageOrScreenEvents(message, name, destination);
+      return processPageOrScreenEvents(message, message.type, destination);
     }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     default:
-      console.log("could not determine type");
-      return {
-        statusCode: 400,
-        error: "message type " + message.type + " is not supported"
-      };
+      throw new Error(
+        "message type " + message.type + " is not supported for MP"
+      );
   }
 }
 
 function process(event) {
   const resp = processSingleMessage(event.message, event.destination);
-  if (!resp.statusCode) {
-    resp.statusCode = 200;
-  }
   return resp;
 }
 exports.process = process;

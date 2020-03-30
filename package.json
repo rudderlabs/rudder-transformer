@@ -25,6 +25,7 @@
   "dependencies": {
     "@ndhoule/extend": "^2.0.0",
     "axios": "^0.19.0",
+    "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "dotenv": "^8.2.0",
     "get-value": "^3.0.1",

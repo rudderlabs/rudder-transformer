@@ -1,0 +1,211 @@
+{
+    "https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=example124@email.com" : {
+        "users": [
+            {
+                "id": 900113780483,
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483.json",
+                "name": "abcd124",
+                "email": "example124@email.com",
+                "created_at": "2020-03-17T10:21:15Z",
+                "updated_at": "2020-03-17T12:16:59Z",
+                "time_zone": "Eastern Time (US & Canada)",
+                "iana_time_zone": "America/New_York",
+                "phone": null,
+                "shared_phone_number": null,
+                "photo": null,
+                "locale_id": 1,
+                "locale": "en-US",
+                "organization_id": null,
+                "role": "end-user",
+                "verified": true,
+                "external_id": "abcd-124",
+                "tags": [],
+                "alias": null,
+                "active": true,
+                "shared": false,
+                "shared_agent": false,
+                "last_login_at": null,
+                "two_factor_auth_enabled": false,
+                "signature": null,
+                "details": null,
+                "notes": null,
+                "role_type": null,
+                "custom_role_id": null,
+                "moderator": false,
+                "ticket_restriction": "requested",
+                "only_private_comments": false,
+                "restricted_agent": true,
+                "suspended": false,
+                "chat_only": false,
+                "default_group_id": null,
+                "report_csv": false,
+                "user_fields": {
+                    "birthday": null
+                }
+            }
+        ],
+        "next_page": null,
+        "previous_page": null,
+        "count": 1
+    },
+    "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json" : {
+        "user": {
+            "id": 900113780483,
+            "url": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483.json",
+            "name": "abcd124",
+            "email": "example124@email.com",
+            "created_at": "2020-03-17T10:21:15Z",
+            "updated_at": "2020-03-23T15:56:56Z",
+            "time_zone": "Eastern Time (US & Canada)",
+            "iana_time_zone": "America/New_York",
+            "phone": null,
+            "shared_phone_number": null,
+            "photo": null,
+            "locale_id": 1,
+            "locale": "en-US",
+            "organization_id": 900001329943,
+            "role": "end-user",
+            "verified": true,
+            "external_id": "abcd-124",
+            "tags": [],
+            "alias": null,
+            "active": true,
+            "shared": false,
+            "shared_agent": false,
+            "last_login_at": null,
+            "two_factor_auth_enabled": false,
+            "signature": null,
+            "details": null,
+            "notes": null,
+            "role_type": null,
+            "custom_role_id": null,
+            "moderator": false,
+            "ticket_restriction": "requested",
+            "only_private_comments": false,
+            "restricted_agent": true,
+            "suspended": false,
+            "chat_only": false,
+            "default_group_id": null,
+            "report_csv": false,
+            "user_fields": {
+                "birthday": null
+            }
+        }
+    },
+    "https://rudderlabshelp.zendesk.com/api/v2/user_fields.json" : {
+        "user_fields": [
+            {
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/user_fields/900000013606.json",
+                "id": 900000013606,
+                "type": "text",
+                "key": "birthday",
+                "title": "birthday",
+                "description": "birthday",
+                "raw_title": "birthday",
+                "raw_description": "birthday",
+                "position": 0,
+                "active": true,
+                "system": false,
+                "regexp_for_validation": null,
+                "created_at": "2020-03-18T08:19:58Z",
+                "updated_at": "2020-03-18T08:19:58Z"
+            },
+            {
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/user_fields/900000014483.json",
+                "id": 900000014483,
+                "type": "text",
+                "key": "age",
+                "title": "age",
+                "description": "age",
+                "raw_title": "age",
+                "raw_description": "age",
+                "position": 1,
+                "active": true,
+                "system": false,
+                "regexp_for_validation": null,
+                "created_at": "2020-03-23T17:38:44Z",
+                "updated_at": "2020-03-23T17:38:44Z"
+            },
+            {
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/user_fields/900000015106.json",
+                "id": 900000015106,
+                "type": "text",
+                "key": "firstname",
+                "title": "firstname",
+                "description": "firstname",
+                "raw_title": "firstname",
+                "raw_description": "firstname",
+                "position": 2,
+                "active": true,
+                "system": false,
+                "regexp_for_validation": null,
+                "created_at": "2020-03-23T17:38:44Z",
+                "updated_at": "2020-03-23T17:38:44Z"
+            }
+        ],
+        "next_page": null,
+        "previous_page": null,
+        "count": 3
+    },
+    "https://rudderlabshelp.zendesk.com/api/v2/organization_fields.json" : {
+        "organization_fields": [
+            {
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/organization_fields/900000015126.json",
+                "id": 900000015126,
+                "type": "text",
+                "key": "email",
+                "title": "email",
+                "description": "email",
+                "raw_title": "email",
+                "raw_description": "email",
+                "position": 0,
+                "active": true,
+                "system": false,
+                "regexp_for_validation": null,
+                "created_at": "2020-03-23T18:14:35Z",
+                "updated_at": "2020-03-23T18:14:35Z"
+            }
+        ],
+        "next_page": null,
+        "previous_page": null,
+        "count": 1
+    },
+    "https://rudderlabshelp.zendesk.com/api/v2/organizations/create_or_update.json" : {
+        "organization": {
+            "url": "https://rudderlabshelp.zendesk.com/api/v2/organizations/900001329943.json",
+            "id": 900001329943,
+            "name": "test-org124",
+            "shared_tickets": false,
+            "shared_comments": false,
+            "external_id": "group-124",
+            "created_at": "2020-03-17T10:21:14Z",
+            "updated_at": "2020-03-23T19:33:08Z",
+            "domain_names": [
+                "cw124.com"
+            ],
+            "details": null,
+            "notes": null,
+            "group_id": null,
+            "tags": [],
+            "organization_fields": {
+                "email": "group_email_124@xyz.com"
+            }
+        }
+    },
+    "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/organization_memberships.json": {
+        "organization_memberships": [
+            {
+                "url": "https://rudderlabshelp.zendesk.com/api/v2/organization_memberships/900004877903.json",
+                "id": 900004877903,
+                "user_id": 900113780483,
+                "organization_id": 900001329943,
+                "default": true,
+                "created_at": "2020-03-23T15:56:56Z",
+                "updated_at": "2020-03-23T15:56:56Z"
+            }
+        ],
+        "next_page": null,
+        "previous_page": null,
+        "count": 1
+    }
+}

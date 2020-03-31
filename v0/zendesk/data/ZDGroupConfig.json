@@ -1,0 +1,8 @@
+{
+    "traits.name": "organization.name",
+    "traits.domainNames": "organization.domain_names",
+    "traits.tags": "organization.tags",
+    "groupId": "organization.external_id",
+    "traits.url": "organization.url",
+    "traits.deleted": "organization.deleted"
+}

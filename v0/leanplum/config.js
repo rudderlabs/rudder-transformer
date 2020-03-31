@@ -25,7 +25,6 @@ const ConfigCategory = {
 
 const ENDPOINT = "https://api.leanplum.com/api";
 const API_VERSION = "1.0.6";
-const RETRY_COUNT = 5;
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -33,6 +32,5 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   ENDPOINT,
-  API_VERSION,
-  RETRY_COUNT
+  API_VERSION
 };

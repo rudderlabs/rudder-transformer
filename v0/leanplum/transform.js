@@ -1,16 +1,12 @@
-/* eslint-disable no-else-return */
-/* eslint-disable no-await-in-loop */
 const get = require("get-value");
 const set = require("set-value");
-const axios = require("axios");
 
 const { EventType } = require("../../constants");
 const {
   ConfigCategory,
   mappingConfig,
   ENDPOINT,
-  API_VERSION,
-  RETRY_COUNT
+  API_VERSION
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -95,46 +91,11 @@ function responseBuilderSimple(message, category, destination) {
   return response;
 }
 
-async function startSession(message, destination) {
-  let retryCount = 0;
-  let success = false;
-  const payload = constructPayload(
-    message,
-    ConfigCategory.START.name,
-    destination
-  );
-  // console.log(payload);
-  const url = ENDPOINT + "?action=start";
-  // console.log(url);
-  while (!success && retryCount < RETRY_COUNT) {
-    try {
-      const response = await axios.post(url, payload);
-      if (response.status === 200) {
-        success = true;
-      }
-    } catch (error) {
-      // console.log(error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.response
-      ) {
-        if (error.response.status === 429) {
-          // retry only for throttling
-          retryCount += 1;
-        } else {
-          break;
-        }
-      }
-    }
-  }
-
-  if (!success) {
-    throw new Error("Start Session failed for LeanPlum");
-  }
+function startSession(message, destination) {
+  return responseBuilderSimple(message, ConfigCategory.START, destination);
 }
 
-async function processSingleMessage(message, destination) {
+function processSingleMessage(message, destination) {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -161,17 +122,18 @@ async function processSingleMessage(message, destination) {
   // build the response
   const response = responseBuilderSimple(message, category, destination);
 
+  let respList = [];
+
   // all event types except idetify requires startSession
   if (messageType !== EventType.IDENTIFY) {
-    await startSession(message, destination);
+    respList = [startSession(message, destination)];
   }
 
-  return response;
+  return [...respList, response];
 }
 
-async function process(event) {
-  const resp = await processSingleMessage(event.message, event.destination);
-  return resp;
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

@@ -164,7 +164,7 @@ const getDataType = val => {
   return "string";
 };
 
-const reservedANSINKeywordsMap = {
+const reservedANSIKeywordsMap = {
   snowflake: require("./snowflake/data/ReservedKeywords.json"),
   rs: require("./rs/data/ReservedKeywords.json"),
   bq: require("./bq/data/ReservedKeywords.json")
@@ -178,7 +178,7 @@ function safeTableName(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
-  if (reservedANSINKeywordsMap[provider][tableName.toUpperCase()]) {
+  if (reservedANSIKeywordsMap[provider][tableName.toUpperCase()]) {
     tableName = "_" + tableName;
   }
   return tableName;
@@ -192,7 +192,7 @@ function safeColumnName(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
-  if (reservedANSINKeywordsMap[provider][columnName.toUpperCase()]) {
+  if (reservedANSIKeywordsMap[provider][columnName.toUpperCase()]) {
     columnName = "_" + columnName;
   }
   return columnName;

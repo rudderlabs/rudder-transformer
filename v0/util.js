@@ -176,7 +176,7 @@ function safeTableName(provider, name = "") {
     tableName = "STRINGEMPTY";
   }
   if (provider === "snowflake") {
-    tableName = name.toUpperCase();
+    tableName = tableName.toUpperCase();
   }
   if (reservedANSINKeywordsMap[provider][tableName.toUpperCase()]) {
     tableName = "_" + tableName;
@@ -190,7 +190,7 @@ function safeColumnName(provider, name = "") {
     columnName = "STRINGEMPTY";
   }
   if (provider === "snowflake") {
-    columnName = name.toUpperCase();
+    columnName = columnName.toUpperCase();
   }
   if (reservedANSINKeywordsMap[provider][columnName.toUpperCase()]) {
     columnName = "_" + columnName;

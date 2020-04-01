@@ -1,5 +1,6 @@
 /* eslint-disable radix */
 const fs = require("fs");
+const util = require("util");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
@@ -163,7 +164,41 @@ const getDataType = val => {
   return "string";
 };
 
-function setFromConfig(resp, input, configJson, columnTypes) {
+const reservedANSIKeywordsMap = {
+  snowflake: require("./snowflake/data/ReservedKeywords.json"),
+  rs: require("./rs/data/ReservedKeywords.json"),
+  bq: require("./bq/data/ReservedKeywords.json")
+};
+
+function safeTableName(provider, name = "") {
+  let tableName = name;
+  if (tableName === "") {
+    tableName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    tableName = tableName.toUpperCase();
+  }
+  if (reservedANSIKeywordsMap[provider][tableName.toUpperCase()]) {
+    tableName = "_" + tableName;
+  }
+  return tableName;
+}
+
+function safeColumnName(provider, name = "") {
+  let columnName = name;
+  if (columnName === "") {
+    columnName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    columnName = columnName.toUpperCase();
+  }
+  if (reservedANSIKeywordsMap[provider][columnName.toUpperCase()]) {
+    columnName = "_" + columnName;
+  }
+  return columnName;
+}
+
+function setFromConfig(provider, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
@@ -172,24 +207,31 @@ function setFromConfig(resp, input, configJson, columnTypes) {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
-      resp[prop] = val;
-      columnTypes[prop] = datatype;
+      const columnName = safeColumnName(provider, prop);
+      resp[columnName] = val;
+      columnTypes[columnName] = datatype;
     }
   });
 }
 
-function setFromProperties(resp, input, columnTypes, prefix = "") {
+function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   if (!input) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setFromProperties(resp, input[key], columnTypes, `${prefix + key}_`);
+      setFromProperties(
+        provider,
+        resp,
+        input[key],
+        columnTypes,
+        `${prefix + key}_`
+      );
     } else {
       let val = input[key];
       datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      const safeKey = toSafeDBString(prefix + key);
+      const safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
       resp[safeKey] = val;
       columnTypes[safeKey] = datatype;
     }
@@ -206,6 +248,7 @@ function getColumns(obj, columnTypes) {
 }
 
 function processWarehouseMessage(
+  provider,
   message,
   whDefaultConfigJson,
   whTrackConfigJson
@@ -217,25 +260,54 @@ function processWarehouseMessage(
   switch (eventType) {
     case "track": {
       tracksEvent = {};
-      setFromConfig(tracksEvent, message, whDefaultConfigJson, columnTypes);
-      setFromProperties(tracksEvent, message.context, columnTypes, "context_");
-      setFromConfig(tracksEvent, message, whTrackConfigJson, columnTypes);
+      setFromConfig(
+        provider,
+        tracksEvent,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
+      setFromProperties(
+        provider,
+        tracksEvent,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(
+        provider,
+        tracksEvent,
+        message,
+        whTrackConfigJson,
+        columnTypes
+      );
 
-      tracksEvent.event = toSnakeCase(tracksEvent.event_text);
-      columnTypes.event = "string";
+      const eventColName = safeColumnName(provider, "event");
+      tracksEvent[eventColName] = toSnakeCase(
+        tracksEvent[safeColumnName(provider, "event_text")]
+      );
+      columnTypes[eventColName] = "string";
 
       trackEvent = { ...tracksEvent };
-      setFromProperties(trackEvent, message.properties, columnTypes, "");
-      setFromProperties(trackEvent, message.userProperties, columnTypes, "");
+      setFromProperties(provider, trackEvent, message.properties, columnTypes);
+      setFromProperties(
+        provider,
+        trackEvent,
+        message.userProperties,
+        columnTypes
+      );
 
       const tracksMetadata = {
-        table: "tracks",
+        table: safeTableName(provider, "tracks"),
         columns: getColumns(tracksEvent, columnTypes)
       };
       responses.push({ metadata: tracksMetadata, data: tracksEvent });
 
       const trackEventMetadata = {
-        table: toSafeDBString(trackEvent.event),
+        table: safeTableName(
+          provider,
+          toSafeDBString(trackEvent[eventColName])
+        ),
         columns: getColumns(trackEvent, columnTypes)
       };
       responses.push({ metadata: trackEventMetadata, data: trackEvent });
@@ -243,23 +315,49 @@ function processWarehouseMessage(
     }
     case "identify": {
       const event = {};
-      setFromProperties(event, message.context.traits, columnTypes, "");
-      setFromProperties(event, message.context, columnTypes, "context_");
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromProperties(
+        provider,
+        event,
+        message.userProperties,
+        columnTypes,
+        ""
+      );
+      setFromProperties(
+        provider,
+        event,
+        message.context ? message.context.traits : {},
+        columnTypes,
+        ""
+      );
+      setFromProperties(provider, event, message.traits, columnTypes, "");
       const usersEvent = { ...event };
       const identifiesEvent = { ...event };
 
-      usersEvent.id = message.userId;
-      usersEvent.received_at = message.receivedAt;
-      setFromConfig(identifiesEvent, message, whDefaultConfigJson, columnTypes);
+      usersEvent[safeColumnName(provider, "id")] = message.userId;
+      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt;
+      setFromConfig(
+        provider,
+        identifiesEvent,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
 
       const identifiesMetadata = {
-        table: "identifies",
+        table: safeTableName(provider, "identifies"),
         columns: getColumns(identifiesEvent, columnTypes)
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
       const usersMetadata = {
-        table: "users",
+        table: safeTableName(provider, "users"),
         columns: getColumns(usersEvent, columnTypes)
       };
       responses.push({ metadata: usersMetadata, data: usersEvent });
@@ -268,11 +366,23 @@ function processWarehouseMessage(
     case "page":
     case "screen": {
       const event = {};
-      setFromConfig(event, message, whDefaultConfigJson, columnTypes);
-      setFromProperties(event, message.context, columnTypes, "context_");
-      setFromProperties(event, message.properties, columnTypes, columnTypes);
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromProperties(
+        provider,
+        event,
+        message.properties,
+        columnTypes,
+        columnTypes
+      );
       const metadata = {
-        table: `${eventType}s`,
+        table: safeTableName(provider, `${eventType}s`),
         columns: getColumns(event, columnTypes)
       };
       responses.push({ metadata, data: event });

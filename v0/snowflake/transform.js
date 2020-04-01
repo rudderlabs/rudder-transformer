@@ -6,6 +6,7 @@ const whTrackConfigJson = mappingConfig[ConfigCategory.TRACK.name];
 
 function processSingleMessage(message, destination) {
   return processWarehouseMessage(
+    "snowflake",
     message,
     whDefaultConfigJson,
     whTrackConfigJson

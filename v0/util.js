@@ -1,7 +1,7 @@
 /* eslint-disable radix */
 const fs = require("fs");
-const util = require("util");
 const path = require("path");
+const util = require("util");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
@@ -198,6 +198,23 @@ function safeColumnName(provider, name = "") {
   return columnName;
 }
 
+const rudderCreatedTables = [
+  "tracks",
+  "users",
+  "identifies",
+  "pages",
+  "screens",
+  "aliases",
+  "groups",
+  "accounts"
+];
+function excludeRudderCreatedTableNames(name) {
+  if (rudderCreatedTables.includes(name.toLowerCase())) {
+    name = `_${name}`;
+  }
+  return name;
+}
+
 function setFromConfig(provider, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
@@ -304,9 +321,8 @@ function processWarehouseMessage(
       responses.push({ metadata: tracksMetadata, data: tracksEvent });
 
       const trackEventMetadata = {
-        table: safeTableName(
-          provider,
-          toSafeDBString(trackEvent[eventColName])
+        table: excludeRudderCreatedTableNames(
+          safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
         ),
         columns: getColumns(trackEvent, columnTypes)
       };

@@ -390,13 +390,18 @@ function processWarehouseMessage(
         columnTypes,
         "context_"
       );
-      setFromProperties(
-        provider,
-        event,
-        message.properties,
-        columnTypes,
-        columnTypes
-      );
+      setFromProperties(provider, event, message.properties, columnTypes);
+
+      if (eventType === "page") {
+        const pageName = safeColumnName(provider, "name");
+        event[pageName] = message.name;
+        columnTypes[pageName] = "string";
+      } else if (eventType === "screen") {
+        const screenEvent = safeColumnName(provider, "event");
+        event[screenEvent] = message.event;
+        columnTypes[screenEvent] = "string";
+      }
+
       const metadata = {
         table: safeTableName(provider, `${eventType}s`),
         columns: getColumns(event, columnTypes)

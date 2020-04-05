@@ -6,6 +6,7 @@
   "scripts": {
     "dependency": "npm install",
     "start": "node destTransformer.js",
+    "testDestination": "node destTestTransformer.js",
     "test": "jest",
     "postinstall": "node build.js"
   },

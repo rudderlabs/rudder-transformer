@@ -123,7 +123,7 @@ function responseBuilder(message, evType, evName, destination) {
         };
       }
 
-      if (deviceRelatedEventNames.includes(evName)) {
+      if (userId && deviceRelatedEventNames.includes(evName)) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
         set(devProps, "platform", get(message, "context.device.type"));
@@ -140,7 +140,7 @@ function responseBuilder(message, evType, evName, destination) {
       }
     }
 
-    if (!deviceRelatedEventNames.includes(evName)) {
+    if (!userId || !deviceRelatedEventNames.includes(evName)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
     }

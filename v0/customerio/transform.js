@@ -8,7 +8,6 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
-  isPrimitive
 } = require("../util");
 
 const {
@@ -16,13 +15,13 @@ const {
   USER_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
-  DEVICE_DELETE_ENDPOINT
+  DEVICE_DELETE_ENDPOINT,
 } = require("./config");
 
 const deviceRelatedEventNames = [
   "Application Installed",
   "Application Opened",
-  "Application Uninstalled"
+  "Application Uninstalled",
 ];
 const deviceDeleteRelatedEventName = "Application Uninstalled";
 
@@ -30,10 +29,10 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
   // console.log(message);
-  SpecedTraits.forEach(trait => {
+  SpecedTraits.forEach((trait) => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       set(payload, key, get(message, mapping[key]));
     });
   });
@@ -52,7 +51,7 @@ function responseBuilder(message, evType, evName, destination) {
   response.headers = {
     Authorization:
       "Basic " +
-      btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
+      btoa(destination.Config.siteID + ":" + destination.Config.apiKey),
   };
 
   if (evType === EventType.IDENTIFY) {
@@ -64,7 +63,7 @@ function responseBuilder(message, evType, evName, destination) {
     populateSpecedTraits(rawPayload, message);
     if (message.context.traits) {
       const traits = Object.keys(message.context.traits);
-      traits.forEach(trait => {
+      traits.forEach((trait) => {
         // populate keys other than speced traits
         if (!SpecedTraits.includes(trait)) {
           set(rawPayload, trait, get(message, "context.traits." + trait));
@@ -74,7 +73,7 @@ function responseBuilder(message, evType, evName, destination) {
 
     if (message.user_properties) {
       const userProps = Object.keys(message.user_properties);
-      userProps.forEach(prop => {
+      userProps.forEach((prop) => {
         const val = get(message, "user_properties." + prop);
         // send only top level keys
         if (isPrimitive(val)) {
@@ -82,11 +81,21 @@ function responseBuilder(message, evType, evName, destination) {
         }
       });
     }
-    set(
-      rawPayload,
-      "created_at",
-      Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
-    );
+
+    if (message.context.traits.createdAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(message.context.traits.createdAt).getTime() / 1000)
+      );
+    } else {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+      );
+    }
+
     // console.log(rawPayload);
 
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
@@ -110,7 +119,7 @@ function responseBuilder(message, evType, evName, destination) {
         }
         return {
           statusCode: 400,
-          error: "userId or device_token not present"
+          error: "userId or device_token not present",
         };
       }
 
@@ -172,7 +181,7 @@ function processSingleMessage(message, destination) {
     case EventType.SCREEN:
       evType = "event";
       evName =
-        "Viewed " + (message.name || message.properties.name) + " Screen";
+        "Viewed " + (message.event || message.properties.name) + " Screen";
       break;
     case EventType.TRACK:
       evType = "event";
@@ -180,7 +189,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type " + messageType);
-      throw new Error("message type not supported");
+      return { statusCode: 400, error: "userId not present" };
   }
   // console.log(message);
   const response = responseBuilder(message, evType, evName, destination);

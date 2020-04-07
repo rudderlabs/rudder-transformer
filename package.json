@@ -41,7 +41,9 @@
     "moment": "^2.24.0",
     "set-value": "^3.0.2",
     "sha256": "^0.2.0",
-    "valid-url": "^1.0.9"
+    "valid-url": "^1.0.9",
+    "minimist": ">=0.2.1",
+    "acorn": ">=5.7.4"
   },
   "devDependencies": {
     "eslint": "^6.1.0",
@@ -54,6 +56,8 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "minimist": ">=0.2.1",
+    "acorn": ">=5.7.4"
   }
 }

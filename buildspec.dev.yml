@@ -11,15 +11,13 @@ phases:
     commands:
       - VERSION=$(head -1 .version)
       - ls
-      - npm install --unsafe-perm
-      - npm test
       - echo build Docker image on `date`
-      - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
+      - docker build -t rudderlabs/develop-rudder-transformer:$GIT_BRANCH -f Dockerfile .
   post_build:
     commands:
       - echo build Docker image complete `date`
       - echo push latest Docker images to docker hub...
-      - docker push rudderlabs/develop-rudder-transformer:$VERSION
+      - docker push rudderlabs/develop-rudder-transformer:$GIT_BRANCH
 artifacts:
   files:
     - "**/*"

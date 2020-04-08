@@ -9,15 +9,15 @@ phases:
       - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
-      - VERSION=$(head -1 .version)
+      - VERSION=$(echo $GIT_BRANCH | tr "/" .)
       - ls
       - echo build Docker image on `date`
-      - docker build -t rudderlabs/develop-rudder-transformer:$GIT_BRANCH -f Dockerfile .
+      - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
   post_build:
     commands:
       - echo build Docker image complete `date`
       - echo push latest Docker images to docker hub...
-      - docker push rudderlabs/develop-rudder-transformer:$GIT_BRANCH
+      - docker push rudderlabs/develop-rudder-transformer:$VERSION
 artifacts:
   files:
     - "**/*"

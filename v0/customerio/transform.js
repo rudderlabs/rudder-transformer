@@ -124,7 +124,11 @@ function responseBuilder(message, evType, evName, destination) {
         };
       }
 
+<<<<<<< HEAD
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
+=======
+      if (userId && deviceRelatedEventNames.includes(evName)) {
+>>>>>>> origin/master
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
         set(devProps, "platform", get(message, "context.device.type"));
@@ -141,7 +145,11 @@ function responseBuilder(message, evType, evName, destination) {
       }
     }
 
+<<<<<<< HEAD
     if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
+=======
+    if (!userId || !deviceRelatedEventNames.includes(evName)) {
+>>>>>>> origin/master
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
     }

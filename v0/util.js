@@ -6,6 +6,12 @@ const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
 
+const whDefaultConfigJson = require("../util/warehouse/WHDefaultConfig.json");
+const whTrackConfigJson = require("../util/warehouse/WHTrackConfig.json");
+const whPageConfigJson = require("../util/warehouse/WHPageConfig.json");
+const whScreenConfigJson = require("../util/warehouse/WHScreenConfig.json");
+const reservedANSIKeywordsMap = require("../util/warehouse/ReservedKeywords.json");
+
 const fixIP = (payload, message, key) => {
   payload[key] = message.context
     ? message.context.ip
@@ -17,7 +23,7 @@ const fixIP = (payload, message, key) => {
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
   const categoryKeys = Object.keys(config);
-  categoryKeys.forEach(categoryKey => {
+  categoryKeys.forEach((categoryKey) => {
     const category = config[categoryKey];
     mappingConfig[category.name] = JSON.parse(
       fs.readFileSync(path.resolve(dir, `./data/${category.name}.json`))
@@ -26,17 +32,17 @@ const getMappingConfig = (config, dir) => {
   return mappingConfig;
 };
 
-const isPrimitive = arg => {
+const isPrimitive = (arg) => {
   var type = typeof arg;
   return arg == null || (type != "object" && type != "function");
 };
 
-const isDefined = x => !_.isUndefined(x);
-const isNotNull = x => x != null;
-const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
+const isDefined = (x) => !_.isUndefined(x);
+const isNotNull = (x) => x != null;
+const isDefinedAndNotNull = (x) => isDefined(x) && isNotNull(x);
 
-const toStringValues = obj => {
-  Object.keys(obj).forEach(key => {
+const toStringValues = (obj) => {
+  Object.keys(obj).forEach((key) => {
     if (typeof obj[key] === "object") {
       return toString(obj[key]);
     }
@@ -47,7 +53,7 @@ const toStringValues = obj => {
   return obj;
 };
 
-const getDateInFormat = date => {
+const getDateInFormat = (date) => {
   var x = new Date(date);
   var y = x.getFullYear().toString();
   var m = (x.getMonth() + 1).toString();
@@ -58,12 +64,13 @@ const getDateInFormat = date => {
   return yyyymmdd;
 };
 
-const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
-const removeNullValues = obj => _.pickBy(obj, isNotNull);
-const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const removeUndefinedValues = (obj) => _.pickBy(obj, isDefined);
+const removeNullValues = (obj) => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = (obj) =>
+  _.pickBy(obj, isDefinedAndNotNull);
 
 const updatePayload = (currentKey, eventMappingArr, value, payload) => {
-  eventMappingArr.map(obj => {
+  eventMappingArr.map((obj) => {
     if (obj.rudderKey === currentKey) {
       set(payload, obj.expectedKey, value);
     }
@@ -71,7 +78,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-const toSnakeCase = str => {
+const toSnakeCase = (str) => {
   if (!str) return "";
   return String(str)
     .replace(/^[^A-Za-z0-9]*|[^A-Za-z0-9]*$/g, "")
@@ -80,28 +87,28 @@ const toSnakeCase = str => {
     .toLowerCase();
 };
 
-const isObject = value => {
+const isObject = (value) => {
   var type = typeof value;
   return value != null && (type == "object" || type == "function");
 };
 
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
-  requestMethod: "GET"
+  requestMethod: "GET",
 };
 
 const defaultPostRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "POST"
+  requestMethod: "POST",
 };
 
 const defaultDeleteRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "DELETE"
+  requestMethod: "DELETE",
 };
 const defaultPutRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "PUT"
+  requestMethod: "PUT",
 };
 
 const defaultRequestConfig = () => {
@@ -115,15 +122,15 @@ const defaultRequestConfig = () => {
     body: {
       JSON: {},
       XML: {},
-      FORM: {}
+      FORM: {},
     },
-    files: {}
+    files: {},
   };
 };
 
 // Start of warehouse specific utils
 
-const toSafeDBString = str => {
+const toSafeDBString = (str) => {
   if (parseInt(str[0]) > 0) str = `_${str}`;
   str = str.replace(/[^a-zA-Z0-9_]+/g, "");
   return str.substr(0, 127);
@@ -148,7 +155,7 @@ function validTimestamp(input) {
 //   return new Date(input).getTime() > 0;
 // }
 
-const getDataType = val => {
+const getDataType = (val) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -164,11 +171,11 @@ const getDataType = val => {
   return "string";
 };
 
-const reservedANSIKeywordsMap = {
-  snowflake: require("./snowflake/data/ReservedKeywords.json"),
-  rs: require("./rs/data/ReservedKeywords.json"),
-  bq: require("./bq/data/ReservedKeywords.json")
-};
+// const reservedANSIKeywordsMap = {
+//   snowflake: require("./snowflake/data/ReservedKeywords.json"),
+//   rs: require("./rs/data/ReservedKeywords.json"),
+//   bq: require("./bq/data/ReservedKeywords.json"),
+// };
 
 function safeTableName(provider, name = "") {
   let tableName = name;
@@ -178,7 +185,9 @@ function safeTableName(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
-  if (reservedANSIKeywordsMap[provider][tableName.toUpperCase()]) {
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
+  ) {
     tableName = "_" + tableName;
   }
   return tableName;
@@ -192,7 +201,9 @@ function safeColumnName(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
-  if (reservedANSIKeywordsMap[provider][columnName.toUpperCase()]) {
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
+  ) {
     columnName = "_" + columnName;
   }
   return columnName;
@@ -206,7 +217,7 @@ const rudderCreatedTables = [
   "screens",
   "aliases",
   "groups",
-  "accounts"
+  "accounts",
 ];
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
@@ -216,7 +227,7 @@ function excludeRudderCreatedTableNames(name) {
 }
 
 function setFromConfig(provider, resp, input, configJson, columnTypes) {
-  Object.keys(configJson).forEach(key => {
+  Object.keys(configJson).forEach((key) => {
     let val = get(input, key);
     if (val !== undefined) {
       datatype = getDataType(val);
@@ -233,7 +244,7 @@ function setFromConfig(provider, resp, input, configJson, columnTypes) {
 
 function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   if (!input) return;
-  Object.keys(input).forEach(key => {
+  Object.keys(input).forEach((key) => {
     if (isObject(input[key])) {
       setFromProperties(
         provider,
@@ -255,109 +266,136 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   });
 }
 
+function setFromProperty(
+  provider,
+  resp,
+  input,
+  columnTypes,
+  propNameInInput,
+  propNameInOutput = propNameInInput,
+  propType = "string"
+) {
+  const pageName = safeColumnName(provider, propNameInOutput);
+  resp[pageName] = input[propNameInInput];
+  columnTypes[pageName] = propType;
+}
+
 function getColumns(obj, columnTypes) {
+  // TODO: capitalize for snowflake
   const columns = { uuid_ts: "datetime" };
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     columns[toSafeDBString(key)] =
       columnTypes[obj[key]] || getDataType(obj[key]);
   });
   return columns;
 }
 
-function processWarehouseMessage(
-  provider,
-  message,
-  whDefaultConfigJson,
-  whTrackConfigJson
-) {
+function processWarehouseMessage(provider, message) {
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
   const columnTypes = {};
   switch (eventType) {
     case "track": {
-      tracksEvent = {};
-      setFromConfig(
-        provider,
-        tracksEvent,
-        message,
-        whDefaultConfigJson,
-        columnTypes
-      );
+      const commonProps = {};
       setFromProperties(
         provider,
-        tracksEvent,
+        commonProps,
         message.context,
         columnTypes,
         "context_"
       );
       setFromConfig(
         provider,
-        tracksEvent,
+        commonProps,
         message,
         whTrackConfigJson,
         columnTypes
       );
+      setFromConfig(
+        provider,
+        commonProps,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
 
+      // set event and event_text columns in the tracks table
       const eventColName = safeColumnName(provider, "event");
-      tracksEvent[eventColName] = toSnakeCase(
-        tracksEvent[safeColumnName(provider, "event_text")]
+      commonProps[eventColName] = toSnakeCase(
+        commonProps[safeColumnName(provider, "event_text")]
       );
       columnTypes[eventColName] = "string";
 
-      trackEvent = { ...tracksEvent };
-      setFromProperties(provider, trackEvent, message.properties, columnTypes);
+      // shallow copy is sufficient since it does not containe nested objects
+      const tracksEvent = { ...commonProps };
+      const tracksMetadata = {
+        table: safeTableName(provider, "tracks"),
+        columns: getColumns(tracksEvent, columnTypes),
+      };
+      responses.push({
+        metadata: tracksMetadata,
+        data: tracksEvent,
+      });
+
+      const trackProps = {};
+      setFromProperties(provider, trackProps, message.properties, columnTypes);
       setFromProperties(
         provider,
-        trackEvent,
+        trackProps,
         message.userProperties,
         columnTypes
       );
 
-      const tracksMetadata = {
-        table: safeTableName(provider, "tracks"),
-        columns: getColumns(tracksEvent, columnTypes)
-      };
-      responses.push({ metadata: tracksMetadata, data: tracksEvent });
-
+      // always set commonProps last so that they are not overwritten
+      const trackEvent = { ...trackProps, ...commonProps };
       const trackEventMetadata = {
         table: excludeRudderCreatedTableNames(
           safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
         ),
-        columns: getColumns(trackEvent, columnTypes)
+        columns: getColumns(trackEvent, columnTypes),
       };
-      responses.push({ metadata: trackEventMetadata, data: trackEvent });
+      responses.push({
+        metadata: trackEventMetadata,
+        data: trackEvent,
+      });
       break;
     }
     case "identify": {
-      const event = {};
+      const commonProps = {};
       setFromProperties(
         provider,
-        event,
+        commonProps,
+        message.userProperties,
+        columnTypes
+      );
+      setFromProperties(
+        provider,
+        commonProps,
+        message.context ? message.context.traits : {},
+        columnTypes
+      );
+      setFromProperties(provider, commonProps, message.traits, columnTypes, "");
+
+      // set context props
+      setFromProperties(
+        provider,
+        commonProps,
         message.context,
         columnTypes,
         "context_"
       );
-      setFromProperties(
-        provider,
-        event,
-        message.userProperties,
-        columnTypes,
-        ""
-      );
-      setFromProperties(
-        provider,
-        event,
-        message.context ? message.context.traits : {},
-        columnTypes,
-        ""
-      );
-      setFromProperties(provider, event, message.traits, columnTypes, "");
-      const usersEvent = { ...event };
-      const identifiesEvent = { ...event };
 
+      const usersEvent = { ...commonProps };
       usersEvent[safeColumnName(provider, "id")] = message.userId;
       usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt;
+      const usersMetadata = {
+        table: safeTableName(provider, "users"),
+        columns: getColumns(usersEvent, columnTypes),
+      };
+      responses.push({ metadata: usersMetadata, data: usersEvent });
+
+      const identifiesEvent = { ...commonProps };
       setFromConfig(
         provider,
         identifiesEvent,
@@ -365,24 +403,19 @@ function processWarehouseMessage(
         whDefaultConfigJson,
         columnTypes
       );
-
       const identifiesMetadata = {
         table: safeTableName(provider, "identifies"),
-        columns: getColumns(identifiesEvent, columnTypes)
+        columns: getColumns(identifiesEvent, columnTypes),
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
-      const usersMetadata = {
-        table: safeTableName(provider, "users"),
-        columns: getColumns(usersEvent, columnTypes)
-      };
-      responses.push({ metadata: usersMetadata, data: usersEvent });
       break;
     }
     case "page":
     case "screen": {
       const event = {};
-      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+      setFromProperties(provider, event, message.properties, columnTypes);
+      // set rudder properties after user set properties to prevent overwriting
       setFromProperties(
         provider,
         event,
@@ -390,21 +423,23 @@ function processWarehouseMessage(
         columnTypes,
         "context_"
       );
-      setFromProperties(provider, event, message.properties, columnTypes);
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
 
       if (eventType === "page") {
-        const pageName = safeColumnName(provider, "name");
-        event[pageName] = message.name;
-        columnTypes[pageName] = "string";
+        setFromConfig(provider, event, message, whPageConfigJson, columnTypes);
       } else if (eventType === "screen") {
-        const screenEvent = safeColumnName(provider, "event");
-        event[screenEvent] = message.event;
-        columnTypes[screenEvent] = "string";
+        setFromConfig(
+          provider,
+          event,
+          message,
+          whScreenConfigJson,
+          columnTypes
+        );
       }
 
       const metadata = {
         table: safeTableName(provider, `${eventType}s`),
-        columns: getColumns(event, columnTypes)
+        columns: getColumns(event, columnTypes),
       };
       responses.push({ metadata, data: event });
       break;
@@ -455,5 +490,5 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   fixIP,
-  isURL
+  isURL,
 };

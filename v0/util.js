@@ -23,7 +23,7 @@ const fixIP = (payload, message, key) => {
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
   const categoryKeys = Object.keys(config);
-  categoryKeys.forEach((categoryKey) => {
+  categoryKeys.forEach(categoryKey => {
     const category = config[categoryKey];
     mappingConfig[category.name] = JSON.parse(
       fs.readFileSync(path.resolve(dir, `./data/${category.name}.json`))
@@ -32,17 +32,17 @@ const getMappingConfig = (config, dir) => {
   return mappingConfig;
 };
 
-const isPrimitive = (arg) => {
+const isPrimitive = arg => {
   var type = typeof arg;
   return arg == null || (type != "object" && type != "function");
 };
 
-const isDefined = (x) => !_.isUndefined(x);
-const isNotNull = (x) => x != null;
-const isDefinedAndNotNull = (x) => isDefined(x) && isNotNull(x);
+const isDefined = x => !_.isUndefined(x);
+const isNotNull = x => x != null;
+const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 
-const toStringValues = (obj) => {
-  Object.keys(obj).forEach((key) => {
+const toStringValues = obj => {
+  Object.keys(obj).forEach(key => {
     if (typeof obj[key] === "object") {
       return toString(obj[key]);
     }
@@ -53,7 +53,7 @@ const toStringValues = (obj) => {
   return obj;
 };
 
-const getDateInFormat = (date) => {
+const getDateInFormat = date => {
   var x = new Date(date);
   var y = x.getFullYear().toString();
   var m = (x.getMonth() + 1).toString();
@@ -64,13 +64,12 @@ const getDateInFormat = (date) => {
   return yyyymmdd;
 };
 
-const removeUndefinedValues = (obj) => _.pickBy(obj, isDefined);
-const removeNullValues = (obj) => _.pickBy(obj, isNotNull);
-const removeUndefinedAndNullValues = (obj) =>
-  _.pickBy(obj, isDefinedAndNotNull);
+const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
+const removeNullValues = obj => _.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const updatePayload = (currentKey, eventMappingArr, value, payload) => {
-  eventMappingArr.map((obj) => {
+  eventMappingArr.map(obj => {
     if (obj.rudderKey === currentKey) {
       set(payload, obj.expectedKey, value);
     }
@@ -78,7 +77,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-const toSnakeCase = (str) => {
+const toSnakeCase = str => {
   if (!str) return "";
   return String(str)
     .replace(/^[^A-Za-z0-9]*|[^A-Za-z0-9]*$/g, "")
@@ -87,28 +86,28 @@ const toSnakeCase = (str) => {
     .toLowerCase();
 };
 
-const isObject = (value) => {
+const isObject = value => {
   var type = typeof value;
   return value != null && (type == "object" || type == "function");
 };
 
 const defaultGetRequestConfig = {
   requestFormat: "PARAMS",
-  requestMethod: "GET",
+  requestMethod: "GET"
 };
 
 const defaultPostRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "POST",
+  requestMethod: "POST"
 };
 
 const defaultDeleteRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "DELETE",
+  requestMethod: "DELETE"
 };
 const defaultPutRequestConfig = {
   requestFormat: "JSON",
-  requestMethod: "PUT",
+  requestMethod: "PUT"
 };
 
 const defaultRequestConfig = () => {
@@ -122,15 +121,15 @@ const defaultRequestConfig = () => {
     body: {
       JSON: {},
       XML: {},
-      FORM: {},
+      FORM: {}
     },
-    files: {},
+    files: {}
   };
 };
 
 // Start of warehouse specific utils
 
-const toSafeDBString = (str) => {
+const toSafeDBString = str => {
   if (parseInt(str[0]) > 0) str = `_${str}`;
   str = str.replace(/[^a-zA-Z0-9_]+/g, "");
   return str.substr(0, 127);
@@ -155,7 +154,7 @@ function validTimestamp(input) {
 //   return new Date(input).getTime() > 0;
 // }
 
-const getDataType = (val) => {
+const getDataType = val => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -217,7 +216,7 @@ const rudderCreatedTables = [
   "screens",
   "aliases",
   "groups",
-  "accounts",
+  "accounts"
 ];
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
@@ -227,7 +226,7 @@ function excludeRudderCreatedTableNames(name) {
 }
 
 function setFromConfig(provider, resp, input, configJson, columnTypes) {
-  Object.keys(configJson).forEach((key) => {
+  Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
       datatype = getDataType(val);
@@ -244,7 +243,7 @@ function setFromConfig(provider, resp, input, configJson, columnTypes) {
 
 function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   if (!input) return;
-  Object.keys(input).forEach((key) => {
+  Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setFromProperties(
         provider,
@@ -280,10 +279,11 @@ function setFromProperty(
   columnTypes[pageName] = propType;
 }
 
-function getColumns(obj, columnTypes) {
-  // TODO: capitalize for snowflake
-  const columns = { uuid_ts: "datetime" };
-  Object.keys(obj).forEach((key) => {
+function getColumns(provider, obj, columnTypes) {
+  const columns = {};
+  const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
+  columns[uuidTS] = "datetime";
+  Object.keys(obj).forEach(key => {
     columns[toSafeDBString(key)] =
       columnTypes[obj[key]] || getDataType(obj[key]);
   });
@@ -331,11 +331,11 @@ function processWarehouseMessage(provider, message) {
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: safeTableName(provider, "tracks"),
-        columns: getColumns(tracksEvent, columnTypes),
+        columns: getColumns(provider, tracksEvent, columnTypes)
       };
       responses.push({
         metadata: tracksMetadata,
-        data: tracksEvent,
+        data: tracksEvent
       });
 
       const trackProps = {};
@@ -353,11 +353,11 @@ function processWarehouseMessage(provider, message) {
         table: excludeRudderCreatedTableNames(
           safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
         ),
-        columns: getColumns(trackEvent, columnTypes),
+        columns: getColumns(provider, trackEvent, columnTypes)
       };
       responses.push({
         metadata: trackEventMetadata,
-        data: trackEvent,
+        data: trackEvent
       });
       break;
     }
@@ -391,7 +391,7 @@ function processWarehouseMessage(provider, message) {
       usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt;
       const usersMetadata = {
         table: safeTableName(provider, "users"),
-        columns: getColumns(usersEvent, columnTypes),
+        columns: getColumns(provider, usersEvent, columnTypes)
       };
       responses.push({ metadata: usersMetadata, data: usersEvent });
 
@@ -405,7 +405,7 @@ function processWarehouseMessage(provider, message) {
       );
       const identifiesMetadata = {
         table: safeTableName(provider, "identifies"),
-        columns: getColumns(identifiesEvent, columnTypes),
+        columns: getColumns(provider, identifiesEvent, columnTypes)
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
@@ -439,7 +439,7 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, `${eventType}s`),
-        columns: getColumns(event, columnTypes),
+        columns: getColumns(provider, event, columnTypes)
       };
       responses.push({ metadata, data: event });
       break;
@@ -490,5 +490,5 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   fixIP,
-  isURL,
+  isURL
 };

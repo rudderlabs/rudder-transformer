@@ -388,7 +388,10 @@ function processWarehouseMessage(provider, message) {
 
       const usersEvent = { ...commonProps };
       usersEvent[safeColumnName(provider, "id")] = message.userId;
-      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt;
+      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt
+        ? new Date(message.receivedAt).toISOString()
+        : null;
+      columnTypes[safeColumnName(provider, "received_at")] = "datetime";
       const usersMetadata = {
         table: safeTableName(provider, "users"),
         columns: getColumns(provider, usersEvent, columnTypes)

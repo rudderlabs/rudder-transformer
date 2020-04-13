@@ -7,8 +7,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  defaultRequestConfig,
-  isPrimitive
+  defaultRequestConfig
 } = require("../util");
 
 const {
@@ -52,7 +51,7 @@ function responseBuilder(message, evType, evName, destination) {
   response.headers = {
     Authorization:
       "Basic " +
-      btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
+      btoa(destination.Config.siteID + ":" + destination.Config.apiKey),
   };
 
   if (evType === EventType.IDENTIFY) {
@@ -82,11 +81,21 @@ function responseBuilder(message, evType, evName, destination) {
         }
       });
     }
-    set(
-      rawPayload,
-      "created_at",
-      Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
-    );
+
+    if (message.context.traits.createdAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(message.context.traits.createdAt).getTime() / 1000)
+      );
+    } else {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+      );
+    }
+
     // console.log(rawPayload);
 
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
@@ -110,11 +119,11 @@ function responseBuilder(message, evType, evName, destination) {
         }
         return {
           statusCode: 400,
-          error: "userId or device_token not present"
+          error: "userId or device_token not present",
         };
       }
 
-      if (deviceRelatedEventNames.includes(evName)) {
+      if (userId && deviceRelatedEventNames.includes(evName)) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
         set(devProps, "platform", get(message, "context.device.type"));
@@ -131,7 +140,7 @@ function responseBuilder(message, evType, evName, destination) {
       }
     }
 
-    if (!deviceRelatedEventNames.includes(evName)) {
+    if (!userId || !deviceRelatedEventNames.includes(evName)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
     }
@@ -171,7 +180,8 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName = "Viewed " + (message.name || message.properties.name) + " Screen";
+      evName =
+        "Viewed " + (message.event || message.properties.name) + " Screen";
       break;
     case EventType.TRACK:
       evType = "event";
@@ -179,7 +189,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       console.log("could not determine type " + messageType);
-      throw new Error("message type not supported");
+      return { statusCode: 400, error: "userId not present" };
   }
   // console.log(message);
   const response = responseBuilder(message, evType, evName, destination);

@@ -6,5 +6,6 @@
   "sentAt": "sent_at",
   "timestamp": "timestamp",
   "receivedAt": "received_at",
-  "originalTimestamp": "original_timestamp"
+  "originalTimestamp": "original_timestamp",
+  "channel": "channel"
 }

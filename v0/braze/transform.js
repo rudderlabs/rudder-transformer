@@ -153,25 +153,31 @@ function getPurchaseObjs(message){
 
   let purchaseObjs = [];
 
-  // we have to make a separate call to appboy for each product
-  products .forEach(product => {    
-    var productId = product.product_id;
-    var price = product.price;
-    var quantity = product.quantity;
-    if(quantity && price && productId)
-    {
-      let purchaseObj = {};
-      purchaseObj = addMandatoryPurchaseProperties(purchaseObj,productId,price,currencyCode,quantity,message.timestamp );
-      purchaseObj = setExternalIdOrAliasObject(purchaseObj,message);  
-      purchaseObjs.push(purchaseObj);
-    }
-  }); 
+  if(products){
+    // we have to make a separate call to appboy for each product
+    products .forEach(product => {    
+      var productId = product.product_id;
+      var price = product.price;
+      var quantity = product.quantity;
+      if(quantity && price && productId)
+      {
+        let purchaseObj = {};
+        purchaseObj = addMandatoryPurchaseProperties(purchaseObj,productId,price,currencyCode,quantity,message.timestamp );
+        purchaseObj = setExternalIdOrAliasObject(purchaseObj,message);  
+        purchaseObjs.push(purchaseObj);
+      }
+    }); 
+  }
 
   return purchaseObjs;
 }
 
 function processTrackEvent(messageType, message, destination,mappingJson) { 
   var eventName = message.event;
+
+  if (!message.properties){
+    message.properties = {}
+  }
   var properties = message.properties; 
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
@@ -214,7 +220,8 @@ function process(event) {
 
   const respList = [];
   const { message, destination } = event;
-  const messageType = message.type.toLowerCase(); 
+  const messageType = message.type.toLowerCase();
+  //console.log(JSON.stringify(message, null, 4));
 
 
   //Init -- mostly for test cases

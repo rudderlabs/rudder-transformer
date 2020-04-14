@@ -62,6 +62,9 @@ function fixSessionId(payload) {
     ? stringToHash(payload.session_id)
     : -1;
 }
+ function addMinIdlength() {
+   return {"min_id_length":1}
+ }
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
@@ -74,6 +77,7 @@ function responseBuilderSimple(
   destination
 ) {
   const rawPayload = {};
+  const addOptions = "options"
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
@@ -119,7 +123,8 @@ function responseBuilderSimple(
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = {
     api_key: destination.Config.apiKey,
-    [rootElementName]: payload
+    [rootElementName]: payload,
+    [addOptions]: addMinIdlength()
   };
   return response;
 }

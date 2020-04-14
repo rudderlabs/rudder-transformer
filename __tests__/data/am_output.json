@@ -33,6 +33,9 @@
           "time": 1571043797562,
           "user_id": "123456",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},
@@ -72,6 +75,9 @@
           "time": 1571051718299,
           "user_id": "12345",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},
@@ -109,6 +115,9 @@
           "time": 1571051718300,
           "user_id": "12345",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},

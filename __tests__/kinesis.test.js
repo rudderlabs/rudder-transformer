@@ -1,5 +1,5 @@
-const integration = "s3";
-const name = "S3";
+const integration = "kinesis";
+const name = "Kinesis";
 
 const fs = require("fs");
 const path = require("path");

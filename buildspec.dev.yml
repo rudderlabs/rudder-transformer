@@ -9,10 +9,8 @@ phases:
       - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
-      - VERSION=$(head -1 .version)
+      - VERSION=$(echo $GIT_BRANCH | tr "/" .)
       - ls
-      - npm install --unsafe-perm
-      - npm test
       - echo build Docker image on `date`
       - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
   post_build:

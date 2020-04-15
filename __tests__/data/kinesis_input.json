@@ -13,8 +13,8 @@
         }
       },
       "Config": {
-        "accessKey": "zeGKFJFn+uK6+/dgR4T5xQISYZyCkPoLoKsPT1vT",
-        "accessKeyID": "AKIAWTVBJHCTBJYLQY4N",
+        "accessKey": "accessKey",
+        "accessKeyID": "accessKeyID",
         "region": "us-east-1",
         "stream": "test-kinesis-shard-1",
         "useMessageId": true
@@ -99,8 +99,8 @@
         }
       },
       "Config": {
-        "accessKey": "zeGKFJFn+uK6+/dgR4T5xQISYZyCkPoLoKsPT1vT",
-        "accessKeyID": "AKIAWTVBJHCTBJYLQY4N",
+        "accessKey": "accessKey",
+        "accessKeyID": "accessKeyID",
         "region": "us-east-1",
         "stream": "test-kinesis-shard-1",
         "useMessageId": true
@@ -188,8 +188,8 @@
         }
       },
       "Config": {
-        "accessKey": "zeGKFJFn+uK6+/dgR4T5xQISYZyCkPoLoKsPT1vT",
-        "accessKeyID": "AKIAWTVBJHCTBJYLQY4N",
+        "accessKey": "accessKey",
+        "accessKeyID": "accessKeyID",
         "region": "us-east-1",
         "stream": "test-kinesis-shard-1",
         "useMessageId": true
@@ -269,8 +269,8 @@
         }
       },
       "Config": {
-        "accessKey": "zeGKFJFn+uK6+/dgR4T5xQISYZyCkPoLoKsPT1vT",
-        "accessKeyID": "AKIAWTVBJHCTBJYLQY4N",
+        "accessKey": "accessKey",
+        "accessKeyID": "accessKeyID",
         "region": "us-east-1",
         "stream": "test-kinesis-shard-1",
         "useMessageId": true
@@ -352,8 +352,8 @@
         }
       },
       "Config": {
-        "accessKey": "zeGKFJFn+uK6+/dgR4T5xQISYZyCkPoLoKsPT1vT",
-        "accessKeyID": "AKIAWTVBJHCTBJYLQY4N",
+        "accessKey": "accessKey",
+        "accessKeyID": "accessKeyID",
         "region": "us-east-1",
         "stream": "test-kinesis-shard-1",
         "useMessageId": true

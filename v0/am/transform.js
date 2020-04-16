@@ -273,6 +273,7 @@ function process(event) {
     }
     respList.push(result);
   });
+  console.log(respList);
   return respList;
 }
 

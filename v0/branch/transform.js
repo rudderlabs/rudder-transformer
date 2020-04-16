@@ -41,6 +41,9 @@ function getCategoryAndName(rudderEventName) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
       }
+      else{
+        throw new Error("Applciation Life Cycle events not supported");
+      }
     });
     if (requiredName != null && requiredCategory != null) {
       return { name: requiredName, category: requiredCategory };
@@ -68,6 +71,7 @@ function getUserData(message) {
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
+  console.log("mappayload");
   const content_items = {};
   const event_data = {};
   const custom_data = {};
@@ -107,6 +111,8 @@ function commonPayload(message, rawPayload, category) {
   const event_data = {};
   const custom_data = {};
   let productObj = {};
+  console.log("category");
+  console.log(category);
 
   // eslint-disable-next-line default-case
   switch (message.type) {
@@ -125,6 +131,7 @@ function commonPayload(message, rawPayload, category) {
   if (rudderPropertiesObj != null) {
     Object.keys(rudderPropertiesObj).map(rudderProperty => {
       if (rudderProperty === "products") {
+        console.log("inside products");
         productObj = {};
         for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
           const product = rudderPropertiesObj.products[i];
@@ -143,21 +150,41 @@ function commonPayload(message, rawPayload, category) {
           productObj = {};
         }
       } else {
-        const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
-          category,
-          rudderProperty,
-          rudderPropertiesObj
-        );
+        console.log("check");
+        console.log(category);
+        console.log(rudderProperty);
+        console.log(rudderPropertiesObj);
+        if (category == "custom") {
+          Object.assign(productObj, get(message.context, "traits"));
+         
+        } else {
+          const {
+            content_itemsObj,
+            event_dataObj,
+            custom_dataObj
+          } = mapPayload(category, rudderProperty, rudderPropertiesObj);
+        
         Object.assign(productObj, content_itemsObj);
         Object.assign(event_data, event_dataObj);
         Object.assign(custom_data, custom_dataObj);
       }
+    }
     });
+    if(category == "custom"){
+      content_items.push(productObj);
+
+    rawPayload.custom_data = custom_data;
+    rawPayload.content_items = content_items;
+    rawPayload.event_data = event_data;
+    rawPayload.user_data = getUserData(message);
+
+    }else {
     content_items.push(productObj);
     rawPayload.custom_data = custom_data;
     rawPayload.content_items = content_items;
     rawPayload.event_data = event_data;
     rawPayload.user_data = getUserData(message);
+    }
 
     Object.keys(rawPayload).map(key => {
       if (Object.keys(rawPayload[key]).length == 0) {
@@ -173,6 +200,8 @@ function getIdentifyPayload(message, branchConfig) {
   const rawPayload = {
     branch_key: branchConfig.BRANCH_KEY
   };
+  console.log("userId");
+  console.log(message.userId);
   const { name, category } = getCategoryAndName(message.userId);
   rawPayload.name = name;
 
@@ -183,6 +212,8 @@ function getTrackPayload(message, branchConfig) {
   const rawPayload = {
     branch_key: branchConfig.BRANCH_KEY
   };
+  console.log("event");
+  console.log(message.event);
   const { name, category } = getCategoryAndName(message.event);
   rawPayload.name = name;
 
@@ -195,11 +226,12 @@ function getTransformedJSON(message, branchConfig) {
     case EventType.TRACK:
       rawPayload = getTrackPayload(message, branchConfig);
       break;
-    case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(message, branchConfig);
-      break;
+    // case EventType.IDENTIFY:
+    //   rawPayload = getIdentifyPayload(message, branchConfig);
+    //   break;
     default:
-      break;
+      console.log("could not determine type");
+      throw new Error("message type not supported");
   }
   return { ...rawPayload };
 }

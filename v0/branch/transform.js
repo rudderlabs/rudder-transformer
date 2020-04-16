@@ -41,15 +41,15 @@ function getCategoryAndName(rudderEventName) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
       }
-      else{
-        throw new Error("Applciation Life Cycle events not supported");
-      }
+      
     });
     if (requiredName != null && requiredCategory != null) {
       return { name: requiredName, category: requiredCategory };
     }
   }
-  return { name: rudderEventName, category: "custom" };
+  
+    throw new Error("Applciation Life Cycle events not supported");
+  
 }
 
 function getUserData(message) {
@@ -180,10 +180,20 @@ function commonPayload(message, rawPayload, category) {
 
     }else {
     content_items.push(productObj);
-    rawPayload.custom_data = custom_data;
-    rawPayload.content_items = content_items;
+    let content_item1=[];
+    for (var key in content_items){
+     content_item1.push(flatten(content_items[key]));
+    }
+    console.log(content_item1);
+    let custom_data1;
+    custom_data1 = flatten(custom_data);
+     console.log(custom_data1);
+    
+    rawPayload.custom_data = custom_data1;
+    rawPayload.content_items = content_item1;
     rawPayload.event_data = event_data;
     rawPayload.user_data = getUserData(message);
+    
     }
 
     Object.keys(rawPayload).map(key => {
@@ -234,6 +244,29 @@ function getTransformedJSON(message, branchConfig) {
       throw new Error("message type not supported");
   }
   return { ...rawPayload };
+}
+ function flatten (data) {
+  var result = {};
+  function recurse (cur, prop) {
+      if (Object(cur) !== cur) {
+          result[prop] = cur;
+      } else if (Array.isArray(cur)) {
+           for(var i=0, l=cur.length; i<l; i++)
+               recurse(cur[i], prop + "[" + i + "]");
+          if (l == 0)
+              result[prop] = [];
+      } else {
+          var isEmpty = true;
+          for (var p in cur) {
+              isEmpty = false;
+              recurse(cur[p], prop ? prop+"."+p : p);
+          }
+          if (isEmpty && prop)
+              result[prop] = {};
+      }
+  }
+  recurse(data, "");
+  return result;
 }
 
 function getDestinationKeys(destination) {

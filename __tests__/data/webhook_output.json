@@ -1,12 +1,12 @@
 [
   {
-    "output": {
+    
       "statusCode": 400,
       "error": "Invalid Url in destination"
-    }
+  
   },
   {
-    "output": {
+    
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -114,10 +114,10 @@
       "files": {},
       "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "statusCode": 200
-    }
+    
   },
   {
-    "output": {
+    
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -223,6 +223,6 @@
       "files": {},
       "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "statusCode": 200
-    }
+    
   }
 ]

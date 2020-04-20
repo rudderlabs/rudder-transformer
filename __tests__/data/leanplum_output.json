@@ -1,7 +1,7 @@
 [
   [
     {
-      "output": {
+
         "body": {
           "XML": {},
           "JSON": {
@@ -31,10 +31,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -57,12 +57,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -92,10 +92,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+
         "body": {
           "XML": {},
           "JSON": {
@@ -118,12 +118,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+    
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -153,10 +153,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+    
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -179,12 +179,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+    
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -214,10 +214,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -240,12 +240,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+   
         "body": {
           "XML": {},
           "JSON": {
@@ -275,10 +275,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+    
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -301,12 +301,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -336,10 +336,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+     
     },
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -362,12 +362,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -397,10 +397,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -423,20 +423,20 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+     
     }
   ],
   [
     {
-      "output": {
+ 
         "error": "One of [\"properties.name\",\"event\"] is required",
         "statusCode": 400
-      }
+      
     }
   ],
   [
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -469,12 +469,12 @@
         "params": { "action": "setUserAttributes" },
         "type": "REST",
         "method": "POST"
-      }
+    
     }
   ],
   [
     {
-      "output": {
+    
         "body": {
           "XML": {},
           "JSON": {
@@ -504,10 +504,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+    
     },
     {
-      "output": {
+     
         "body": {
           "XML": {},
           "JSON": {
@@ -530,12 +530,12 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -565,10 +565,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+    
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -591,20 +591,20 @@
         "params": { "action": "advance" },
         "type": "REST",
         "method": "POST"
-      }
+    
     }
   ],
   [
     {
-      "output": {
+      
         "error": "One of [\"properties.name\",\"event\"] is required",
         "statusCode": 400
-      }
+      
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -634,10 +634,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -661,12 +661,12 @@
         "params": { "action": "track" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ],
   [
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -696,10 +696,10 @@
         "params": { "action": "start" },
         "type": "REST",
         "method": "POST"
-      }
+      
     },
     {
-      "output": {
+      
         "body": {
           "XML": {},
           "JSON": {
@@ -730,7 +730,7 @@
         "params": { "action": "track" },
         "type": "REST",
         "method": "POST"
-      }
+      
     }
   ]
 ]

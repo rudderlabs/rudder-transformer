@@ -10,6 +10,8 @@ const whDefaultConfigJson = require("../util/warehouse/WHDefaultConfig.json");
 const whTrackConfigJson = require("../util/warehouse/WHTrackConfig.json");
 const whPageConfigJson = require("../util/warehouse/WHPageConfig.json");
 const whScreenConfigJson = require("../util/warehouse/WHScreenConfig.json");
+const whGroupConfigJson = require("../util/warehouse/WHGroupConfig.json");
+const whAliasConfigJson = require("../util/warehouse/WHAliasConfig.json");
 const reservedANSIKeywordsMap = require("../util/warehouse/ReservedKeywords.json");
 
 const fixIP = (payload, message, key) => {
@@ -458,11 +460,7 @@ function processWarehouseMessage(provider, message) {
         "context_"
       );
       setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
-
-      // add groupId from top level properties
-      const groupId = safeColumnName(provider, "group_id");
-      event[groupId] = message.groupId;
-      columnTypes[groupId] = "string";
+      setFromConfig(provider, event, message, whGroupConfigJson, columnTypes);
 
       const metadata = {
         table: safeTableName(provider, "groups"),
@@ -482,11 +480,7 @@ function processWarehouseMessage(provider, message) {
         "context_"
       );
       setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
-
-      // add groupId from top level properties
-      const previousId = safeColumnName(provider, "previous_id");
-      event[previousId] = message.previousId;
-      columnTypes[previousId] = "string";
+      setFromConfig(provider, event, message, whAliasConfigJson, columnTypes);
 
       const metadata = {
         table: safeTableName(provider, "aliases"),

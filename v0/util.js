@@ -409,6 +409,54 @@ function processWarehouseMessage(
       responses.push({ metadata, data: event });
       break;
     }
+    case "group": {
+      const event = {};
+      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+
+      // add groupId from top level properties
+      const groupId = safeColumnName(provider, "group_id");
+      event[groupId] = message.groupId;
+      columnTypes[groupId] = "string";
+
+      const metadata = {
+        table: safeTableName(provider, "groups"),
+        columns: getColumns(event, columnTypes)
+      };
+      responses.push({ metadata, data: event });
+      break;
+    }
+    case "alias": {
+      const event = {};
+      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+
+      // add groupId from top level properties
+      const previousId = safeColumnName(provider, "previous_id");
+      event[previousId] = message.previousId;
+      columnTypes[previousId] = "string";
+
+      const metadata = {
+        table: safeTableName(provider, "aliases"),
+        columns: getColumns(event, columnTypes)
+      };
+      responses.push({ metadata, data: event });
+      break;
+    }
     default:
       throw new Error("Unknown event type", eventType);
   }

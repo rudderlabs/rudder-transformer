@@ -75,10 +75,7 @@ function responseBuilder(message, evType, evName, destination) {
       const userProps = Object.keys(message.user_properties);
       userProps.forEach((prop) => {
         const val = get(message, "user_properties." + prop);
-        // send only top level keys
-        if (isPrimitive(val)) {
-          set(rawPayload, prop, val);
-        }
+        set(rawPayload, prop, val);
       });
     }
 

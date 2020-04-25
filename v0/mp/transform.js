@@ -9,124 +9,16 @@ const {
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-const is = require("is");
-const extend = require("@ndhoule/extend");
 
 function getEventTime(message) {
   return new Date(message.originalTimestamp).toISOString();
 }
 
-// source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
-function toUnixTimestamp(date) {
-  date = new Date(date);
-  return "" + Math.floor(date.getTime() / 1000);
-}
-
-  // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
-  function flatten(target, opts) {
-    opts = opts || {};
-  
-    var delimiter = opts.delimiter || ".";
-    var maxDepth = opts.maxDepth;
-    var currentDepth = 1;
-    var output = {};
-  
-    function step(object, prev) {
-      for (var key in object) {
-        if (object.hasOwnProperty(key)) {
-          var value = object[key];
-          var isarray = opts.safe && is.array(value);
-          var type = Object.prototype.toString.call(value);
-          var isobject = type === "[object Object]" || type === "[object Array]";
-          var arr = [];
-  
-          var newKey = prev ? prev + delimiter + key : key;
-  
-          if (!opts.maxDepth) {
-            maxDepth = currentDepth + 1;
-          }
-  
-          for (var keys in value) {
-            if (value.hasOwnProperty(keys)) {
-              arr.push(keys);
-            }
-          }
-  
-          if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
-            ++currentDepth;
-            return step(value, newKey);
-          }
-  
-          output[newKey] = value;
-        }
-      }
-    }
-  
-    step(target);
-  
-    return output;
-  }
-  
-  // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
-  function clean(obj) {
-    var ret = {};
-  
-    for (var k in obj) {
-      if (obj.hasOwnProperty(k)) {
-        var value = obj[k];
-        if (value === null || typeof value === "undefined") continue;
-  
-        // convert date to unix
-        if (is.date(value)) {
-          ret[k] = toUnixTimestamp(value);
-          continue;
-        }
-  
-        // leave boolean as is
-        if (is.bool(value)) {
-          ret[k] = value;
-          continue;
-        }
-  
-        // leave  numbers as is
-        if (is.number(value)) {
-          ret[k] = value;
-          continue;
-        }
-  
-        // convert non objects to strings
-        // console.log(value.toString());
-        if (value.toString() !== "[object Object]") {
-          ret[k] = value.toString();
-          continue;
-        }
-  
-        // json
-        // must flatten including the name of the original trait/property
-        var nestedObj = {};
-        nestedObj[k] = value;
-        var flattenedObj = flatten(nestedObj, { safe: true });
-  
-        // stringify arrays inside nested object to be consistent with top level behavior of arrays
-        for (var key in flattenedObj) {
-          if (is.array(flattenedObj[key])) {
-            flattenedObj[key] = flattenedObj[key].toString();
-          }
-        }
-  
-        ret = extend(ret, flattenedObj);
-        delete ret[k];
-      }
-    }
-    return ret;
-  }
-  
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "http://api.mixpanel.com/engage/";
   if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
     endpoint = "http://api.mixpanel.com/track/";
   }
-
 
   const encodedData = Buffer.from(
     JSON.stringify(removeUndefinedValues(parameters))
@@ -159,14 +51,14 @@ function processRevenueEvents(message, destination) {
 
 function getEventValueForTrackEvent(message, destination) {
   const properties = {
-    ...clean(message.properties),
+    ...message.properties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
   const parameters = {
-    event: message.event,   
+    event: message.event,
     properties
   };
 
@@ -187,7 +79,7 @@ function getTransformedJSON(message, mappingJson) {
 
   const sourceKeys = Object.keys(mappingJson);
   if (message.context.traits) {
-    const traits = {...message.context.traits};
+    const traits = { ...message.context.traits };
     const keys = Object.keys(traits);
     keys.forEach(key => {
       const traitsKey = `context.traits.${key}`;
@@ -213,7 +105,7 @@ function processIdentifyEvents(message, type, destination) {
 
 function processPageOrScreenEvents(message, type, destination) {
   const properties = {
-    ...clean(message.properties),
+    ...message.properties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp

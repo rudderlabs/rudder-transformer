@@ -51,7 +51,9 @@ versions.forEach(version => {
             }
             respList.push(
               ...respEvents.map(ev => {
-                ev.userId += "";
+                if (ev.statusCode !== 400 && ev.userId) {
+                  ev.userId += "";
+                }
                 return { output: ev, metadata: event.metadata };
               })
             );

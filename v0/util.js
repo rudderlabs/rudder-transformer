@@ -172,12 +172,6 @@ const getDataType = val => {
   return "string";
 };
 
-// const reservedANSIKeywordsMap = {
-//   snowflake: require("./snowflake/data/ReservedKeywords.json"),
-//   rs: require("./rs/data/ReservedKeywords.json"),
-//   bq: require("./bq/data/ReservedKeywords.json"),
-// };
-
 function safeTableName(provider, name = "") {
   let tableName = name;
   if (tableName === "") {

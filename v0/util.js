@@ -333,7 +333,8 @@ function processWarehouseMessage(provider, message) {
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: safeTableName(provider, "tracks"),
-        columns: getColumns(provider, tracksEvent, columnTypes)
+        columns: getColumns(provider, tracksEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({
         metadata: tracksMetadata,
@@ -355,7 +356,8 @@ function processWarehouseMessage(provider, message) {
         table: excludeRudderCreatedTableNames(
           safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
         ),
-        columns: getColumns(provider, trackEvent, columnTypes)
+        columns: getColumns(provider, trackEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({
         metadata: trackEventMetadata,
@@ -396,7 +398,8 @@ function processWarehouseMessage(provider, message) {
       columnTypes[safeColumnName(provider, "received_at")] = "datetime";
       const usersMetadata = {
         table: safeTableName(provider, "users"),
-        columns: getColumns(provider, usersEvent, columnTypes)
+        columns: getColumns(provider, usersEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata: usersMetadata, data: usersEvent });
 
@@ -410,7 +413,8 @@ function processWarehouseMessage(provider, message) {
       );
       const identifiesMetadata = {
         table: safeTableName(provider, "identifies"),
-        columns: getColumns(provider, identifiesEvent, columnTypes)
+        columns: getColumns(provider, identifiesEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
@@ -444,7 +448,8 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, `${eventType}s`),
-        columns: getColumns(provider, event, columnTypes)
+        columns: getColumns(provider, event, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
       break;
@@ -464,7 +469,8 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, "groups"),
-        columns: getColumns(event, columnTypes)
+        columns: getColumns(event, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
       break;
@@ -484,7 +490,8 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, "aliases"),
-        columns: getColumns(event, columnTypes)
+        columns: getColumns(event, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
       break;

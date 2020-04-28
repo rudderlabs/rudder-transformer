@@ -258,8 +258,7 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
 function getColumns(obj, columnTypes) {
   const columns = { uuid_ts: "datetime" };
   Object.keys(obj).forEach(key => {
-    columns[toSafeDBString(key)] =
-      columnTypes[obj[key]] || getDataType(obj[key]);
+    columns[toSafeDBString(key)] = columnTypes[key] || getDataType(obj[key]);
   });
   return columns;
 }

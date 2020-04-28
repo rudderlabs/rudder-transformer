@@ -75,10 +75,7 @@ function responseBuilder(message, evType, evName, destination) {
       const userProps = Object.keys(message.user_properties);
       userProps.forEach((prop) => {
         const val = get(message, "user_properties." + prop);
-        // send only top level keys
-        if (isPrimitive(val)) {
-          set(rawPayload, prop, val);
-        }
+        set(rawPayload, prop, val);
       });
     }
 
@@ -101,11 +98,12 @@ function responseBuilder(message, evType, evName, destination) {
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
+    const token = get(message, "context.device.token");
+
     if (message.properties) {
       // use this if only top level keys are to be sent
 
       if (deviceDeleteRelatedEventName == evName) {
-        const token = get(message, "context.device.token");
         if (userId && token) {
           endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
             ":device_id",
@@ -123,7 +121,7 @@ function responseBuilder(message, evType, evName, destination) {
         };
       }
 
-      if (userId && deviceRelatedEventNames.includes(evName)) {
+      if (userId && deviceRelatedEventNames.includes(evName) && token) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
         set(devProps, "platform", get(message, "context.device.type"));
@@ -140,13 +138,13 @@ function responseBuilder(message, evType, evName, destination) {
       }
     }
 
-    if (!userId || !deviceRelatedEventNames.includes(evName)) {
+    if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
     }
 
     if (userId) {
-      if (deviceRelatedEventNames.includes(evName)) {
+      if (deviceRelatedEventNames.includes(evName) && token) {
         endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
       } else {
         endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);

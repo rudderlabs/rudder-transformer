@@ -286,8 +286,7 @@ function getColumns(provider, obj, columnTypes) {
   const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
-    columns[toSafeDBString(key)] =
-      columnTypes[obj[key]] || getDataType(obj[key]);
+    columns[toSafeDBString(key)] = columnTypes[key] || getDataType(obj[key]);
   });
   return columns;
 }

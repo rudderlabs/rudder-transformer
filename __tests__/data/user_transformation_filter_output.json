@@ -41,7 +41,13 @@
       "integrations": {
         "All": true
       },
-      "sentAt": "2019-10-14T11:15:53.296Z"
+      "sentAt": "2019-10-14T11:15:53.296Z",
+      "sourceId": "s1"
+    },
+    "metadata": {
+      "custom_transformed": true,
+      "sourceId": "s1",
+      "destinationId": "d1"
     },
     "destination": {
       "ID": 2,

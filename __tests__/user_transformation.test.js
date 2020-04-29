@@ -24,7 +24,7 @@ describe("User transformation", () => {
       code: `function transform(events) {
             return events;
           }
-          `
+          `,
     };
     fetch.mockReturnValueOnce(
       Promise.resolve(new Response(JSON.stringify(respBody)))
@@ -52,13 +52,21 @@ describe("User transformation", () => {
     const { userTransformHandler } = require("../util/customTransformer");
     const respBody = {
       code: `function transform(events) {
-                        const filteredEvents = events.filter(event => {
+                        let filteredEvents = events.filter(event => {
                           const eventType = event.type;
                           return eventType && eventType.match(/track/g);
                         });
+
+                        filteredEvents = filteredEvents.map(event => {
+                          const eventMetadata = metadata(event);
+                          event.sourceId = eventMetadata.sourceId;
+                          return event;
+                        })
+                        log(" -- Returning filtered events --");
+                        log(filteredEvents);
                         return filteredEvents;
                       }
-                      `
+                      `,
     };
     fetch.mockReturnValue(
       Promise.resolve(new Response(JSON.stringify(respBody)))

@@ -462,7 +462,7 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, "groups"),
-        columns: getColumns(event, columnTypes),
+        columns: getColumns(provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
@@ -483,7 +483,7 @@ function processWarehouseMessage(provider, message) {
 
       const metadata = {
         table: safeTableName(provider, "aliases"),
-        columns: getColumns(event, columnTypes),
+        columns: getColumns(provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });

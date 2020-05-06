@@ -4,7 +4,22 @@ phases:
   install:
     runtime-versions:
       nodejs: 10
+  pre_build:
+    commands:
+      - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
+      - VERSION=$(head -1 .version)
+      - ls
       - npm install --unsafe-perm
       - npm test
+      - echo build Docker image on `date`
+      - docker build -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
+  post_build:
+    commands:
+      - echo build Docker image complete `date`
+      - echo push latest Docker images to docker hub...
+      - docker push rudderlabs/rudder-transformer:$VERSION
+artifacts:
+  files:
+    - "**/*"

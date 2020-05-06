@@ -23,6 +23,7 @@
             "ip": "0.0.0.0",
             "age": 26
           },
+          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",
@@ -32,6 +33,9 @@
           "time": 1571043797562,
           "user_id": "123456",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},
@@ -61,6 +65,7 @@
             "title": "Test Page",
             "url": "www.rudderlabs.com"
           },
+          "ip": "1.1.1.1",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",
@@ -70,6 +75,9 @@
           "time": 1571051718299,
           "user_id": "12345",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},
@@ -97,6 +105,7 @@
             "user_actual_id": 12345,
             "user_time_spent": 50000
           },
+          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
           "app_name": "RudderLabs JavaScript SDK",
@@ -106,6 +115,9 @@
           "time": 1571051718300,
           "user_id": "12345",
           "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
         }
       },
       "XML": {},

@@ -11,7 +11,8 @@ const {
 const {
   removeUndefinedValues,
   defaultGetRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  fixIP
 } = require("../util");
 
 function getParamsFromConfig(message, destination) {
@@ -68,6 +69,8 @@ function responseBuilderSimple(
   if (message.userId && message.userId.length > 0) {
     finalPayload.cid = message.userId;
   }
+
+  fixIP(finalPayload, message, "uip");
 
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;

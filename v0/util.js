@@ -1,9 +1,26 @@
 /* eslint-disable radix */
 const fs = require("fs");
 const path = require("path");
+const util = require("util");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+
+const whDefaultConfigJson = require("../util/warehouse/WHDefaultConfig.json");
+const whTrackConfigJson = require("../util/warehouse/WHTrackConfig.json");
+const whPageConfigJson = require("../util/warehouse/WHPageConfig.json");
+const whScreenConfigJson = require("../util/warehouse/WHScreenConfig.json");
+const whGroupConfigJson = require("../util/warehouse/WHGroupConfig.json");
+const whAliasConfigJson = require("../util/warehouse/WHAliasConfig.json");
+const reservedANSIKeywordsMap = require("../util/warehouse/ReservedKeywords.json");
+
+const fixIP = (payload, message, key) => {
+  payload[key] = message.context
+    ? message.context.ip
+      ? message.context.ip
+      : message.request_ip
+    : message.request_ip;
+};
 
 const getMappingConfig = (config, dir) => {
   const mappingConfig = {};
@@ -15,6 +32,11 @@ const getMappingConfig = (config, dir) => {
     );
   });
   return mappingConfig;
+};
+
+const isPrimitive = arg => {
+  var type = typeof arg;
+  return arg == null || (type != "object" && type != "function");
 };
 
 const isDefined = x => !_.isUndefined(x);
@@ -150,7 +172,56 @@ const getDataType = val => {
   return "string";
 };
 
-function setFromConfig(resp, input, configJson, columnTypes) {
+function safeTableName(provider, name = "") {
+  let tableName = name;
+  if (tableName === "") {
+    tableName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    tableName = tableName.toUpperCase();
+  }
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
+  ) {
+    tableName = "_" + tableName;
+  }
+  return tableName;
+}
+
+function safeColumnName(provider, name = "") {
+  let columnName = name;
+  if (columnName === "") {
+    columnName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    columnName = columnName.toUpperCase();
+  }
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
+  ) {
+    columnName = "_" + columnName;
+  }
+  return columnName;
+}
+
+const rudderCreatedTables = [
+  "tracks",
+  "users",
+  "identifies",
+  "pages",
+  "screens",
+  "aliases",
+  "groups",
+  "accounts"
+];
+function excludeRudderCreatedTableNames(name) {
+  if (rudderCreatedTables.includes(name.toLowerCase())) {
+    name = `_${name}`;
+  }
+  return name;
+}
+
+function setFromConfig(provider, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
@@ -159,108 +230,261 @@ function setFromConfig(resp, input, configJson, columnTypes) {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
-      resp[prop] = val;
-      columnTypes[prop] = datatype;
+      const columnName = safeColumnName(provider, prop);
+      resp[columnName] = val;
+      columnTypes[columnName] = datatype;
     }
   });
 }
 
-function setFromProperties(resp, input, columnTypes, prefix = "") {
+function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   if (!input) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setFromProperties(resp, input[key], columnTypes, `${prefix + key}_`);
+      setFromProperties(
+        provider,
+        resp,
+        input[key],
+        columnTypes,
+        `${prefix + key}_`
+      );
     } else {
       let val = input[key];
       datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      const safeKey = toSafeDBString(prefix + key);
+      const safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
       resp[safeKey] = val;
       columnTypes[safeKey] = datatype;
     }
   });
 }
 
-function getColumns(obj, columnTypes) {
-  const columns = { uuid_ts: "datetime" };
+function setFromProperty(
+  provider,
+  resp,
+  input,
+  columnTypes,
+  propNameInInput,
+  propNameInOutput = propNameInInput,
+  propType = "string"
+) {
+  const pageName = safeColumnName(provider, propNameInOutput);
+  resp[pageName] = input[propNameInInput];
+  columnTypes[pageName] = propType;
+}
+
+function getColumns(provider, obj, columnTypes) {
+  const columns = {};
+  const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
+  columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
-    columns[toSafeDBString(key)] =
-      columnTypes[obj[key]] || getDataType(obj[key]);
+    columns[toSafeDBString(key)] = columnTypes[key] || getDataType(obj[key]);
   });
   return columns;
 }
 
-function processWarehouseMessage(
-  message,
-  whDefaultConfigJson,
-  whTrackConfigJson
-) {
+function processWarehouseMessage(provider, message) {
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
   const columnTypes = {};
   switch (eventType) {
     case "track": {
-      tracksEvent = {};
-      setFromConfig(tracksEvent, message, whDefaultConfigJson, columnTypes);
-      setFromProperties(tracksEvent, message.context, columnTypes, "context_");
-      setFromConfig(tracksEvent, message, whTrackConfigJson, columnTypes);
+      const commonProps = {};
+      setFromProperties(
+        provider,
+        commonProps,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(
+        provider,
+        commonProps,
+        message,
+        whTrackConfigJson,
+        columnTypes
+      );
+      setFromConfig(
+        provider,
+        commonProps,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
 
-      tracksEvent.event = toSnakeCase(tracksEvent.event_text);
-      columnTypes.event = "string";
+      // set event and event_text columns in the tracks table
+      const eventColName = safeColumnName(provider, "event");
+      commonProps[eventColName] = toSnakeCase(
+        commonProps[safeColumnName(provider, "event_text")]
+      );
+      columnTypes[eventColName] = "string";
 
-      trackEvent = { ...tracksEvent };
-      setFromProperties(trackEvent, message.properties, columnTypes, "");
-      setFromProperties(trackEvent, message.userProperties, columnTypes, "");
-
+      // shallow copy is sufficient since it does not containe nested objects
+      const tracksEvent = { ...commonProps };
       const tracksMetadata = {
-        table: "tracks",
-        columns: getColumns(tracksEvent, columnTypes)
+        table: safeTableName(provider, "tracks"),
+        columns: getColumns(provider, tracksEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
-      responses.push({ metadata: tracksMetadata, data: tracksEvent });
+      responses.push({
+        metadata: tracksMetadata,
+        data: tracksEvent
+      });
 
+      const trackProps = {};
+      setFromProperties(provider, trackProps, message.properties, columnTypes);
+      setFromProperties(
+        provider,
+        trackProps,
+        message.userProperties,
+        columnTypes
+      );
+
+      // always set commonProps last so that they are not overwritten
+      const trackEvent = { ...trackProps, ...commonProps };
       const trackEventMetadata = {
-        table: toSafeDBString(trackEvent.event),
-        columns: getColumns(trackEvent, columnTypes)
+        table: excludeRudderCreatedTableNames(
+          safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
+        ),
+        columns: getColumns(provider, trackEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
-      responses.push({ metadata: trackEventMetadata, data: trackEvent });
+      responses.push({
+        metadata: trackEventMetadata,
+        data: trackEvent
+      });
       break;
     }
     case "identify": {
-      const event = {};
-      setFromProperties(event, message.context.traits, columnTypes, "");
-      setFromProperties(event, message.context, columnTypes, "context_");
-      const usersEvent = { ...event };
-      const identifiesEvent = { ...event };
+      const commonProps = {};
+      setFromProperties(
+        provider,
+        commonProps,
+        message.userProperties,
+        columnTypes
+      );
+      setFromProperties(
+        provider,
+        commonProps,
+        message.context ? message.context.traits : {},
+        columnTypes
+      );
+      setFromProperties(provider, commonProps, message.traits, columnTypes, "");
 
-      usersEvent.id = message.userId;
-      usersEvent.received_at = message.receivedAt;
-      setFromConfig(identifiesEvent, message, whDefaultConfigJson, columnTypes);
+      // set context props
+      setFromProperties(
+        provider,
+        commonProps,
+        message.context,
+        columnTypes,
+        "context_"
+      );
 
+      const usersEvent = { ...commonProps };
+      usersEvent[safeColumnName(provider, "id")] = message.userId;
+      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt
+        ? new Date(message.receivedAt).toISOString()
+        : null;
+      columnTypes[safeColumnName(provider, "received_at")] = "datetime";
+      const usersMetadata = {
+        table: safeTableName(provider, "users"),
+        columns: getColumns(provider, usersEvent, columnTypes),
+        receivedAt: message.receivedAt
+      };
+      responses.push({ metadata: usersMetadata, data: usersEvent });
+
+      const identifiesEvent = { ...commonProps };
+      setFromConfig(
+        provider,
+        identifiesEvent,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
       const identifiesMetadata = {
-        table: "identifies",
-        columns: getColumns(identifiesEvent, columnTypes)
+        table: safeTableName(provider, "identifies"),
+        columns: getColumns(provider, identifiesEvent, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
-      const usersMetadata = {
-        table: "users",
-        columns: getColumns(usersEvent, columnTypes)
-      };
-      responses.push({ metadata: usersMetadata, data: usersEvent });
       break;
     }
     case "page":
     case "screen": {
       const event = {};
-      setFromConfig(event, message, whDefaultConfigJson, columnTypes);
-      setFromProperties(event, message.context, columnTypes, "context_");
-      setFromProperties(event, message.properties, columnTypes, columnTypes);
+      setFromProperties(provider, event, message.properties, columnTypes);
+      // set rudder properties after user set properties to prevent overwriting
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+
+      if (eventType === "page") {
+        setFromConfig(provider, event, message, whPageConfigJson, columnTypes);
+      } else if (eventType === "screen") {
+        setFromConfig(
+          provider,
+          event,
+          message,
+          whScreenConfigJson,
+          columnTypes
+        );
+      }
+
       const metadata = {
-        table: `${eventType}s`,
-        columns: getColumns(event, columnTypes)
+        table: safeTableName(provider, `${eventType}s`),
+        columns: getColumns(provider, event, columnTypes),
+        receivedAt: message.receivedAt
+      };
+      responses.push({ metadata, data: event });
+      break;
+    }
+    case "group": {
+      const event = {};
+      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+      setFromConfig(provider, event, message, whGroupConfigJson, columnTypes);
+
+      const metadata = {
+        table: safeTableName(provider, "groups"),
+        columns: getColumns(event, columnTypes),
+        receivedAt: message.receivedAt
+      };
+      responses.push({ metadata, data: event });
+      break;
+    }
+    case "alias": {
+      const event = {};
+      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(
+        provider,
+        event,
+        message.context,
+        columnTypes,
+        "context_"
+      );
+      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+      setFromConfig(provider, event, message, whAliasConfigJson, columnTypes);
+
+      const metadata = {
+        table: safeTableName(provider, "aliases"),
+        columns: getColumns(event, columnTypes),
+        receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
       break;
@@ -269,6 +493,20 @@ function processWarehouseMessage(
       throw new Error("Unknown event type", eventType);
   }
   return responses;
+}
+
+// ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
+function isURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return !!pattern.test(str);
 }
 
 // End of warehouse specific utils
@@ -294,5 +532,8 @@ module.exports = {
   defaultDeleteRequestConfig,
   defaultPutRequestConfig,
   updatePayload,
-  defaultRequestConfig
+  defaultRequestConfig,
+  isPrimitive,
+  fixIP,
+  isURL
 };

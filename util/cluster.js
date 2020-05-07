@@ -2,6 +2,16 @@ const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 const util = require("util");
 
+function processInfo() {
+  return {
+    pid: process.pid,
+    ppid: process.ppid,
+    mem: process.memoryUsage(),
+    cpu: process.cpuUsage(),
+    cmd: `${process.argv0} ${process.argv.join(" ")}`
+  };
+}
+
 function start(port, app) {
   if (cluster.isMaster) {
     console.log(`Master ${process.pid} is running`);
@@ -16,16 +26,9 @@ function start(port, app) {
     });
     cluster.on("exit", (worker, code, signal) => {
       console.log(`worker ${worker.process.pid} died`);
-      const info = {
-        pid: process.pid,
-        ppid: process.ppid,
-        mem: process.memoryUsage(),
-        cpu: process.cpuUsage(),
-        cmd: `${process.argv0} ${process.argv.join(" ")}`
-      };
       console.log(
         `Killing Process to avoid any side effects of dead worker.\nProcess Info: `,
-        util.inspect(info, false, null, true)
+        util.inspect(processInfo(), false, null, true)
       );
       process.exit();
     });

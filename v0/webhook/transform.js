@@ -22,7 +22,7 @@ function process(event) {
     response.body.JSON = { ...message };
     return response;
   }
-  throw new Error("Invalid Url in destination");
+  return { statusCode: 400, error: "Invalid Url in destination" };
 }
 
 exports.process = process;

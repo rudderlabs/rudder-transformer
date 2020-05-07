@@ -1,7 +1,6 @@
 /* eslint-disable radix */
 const fs = require("fs");
 const path = require("path");
-const util = require("util");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
@@ -35,8 +34,8 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isPrimitive = arg => {
-  var type = typeof arg;
-  return arg == null || (type != "object" && type != "function");
+  const type = typeof arg;
+  return arg == null || (type !== "object" && type !== "function");
 };
 
 const isDefined = x => !_.isUndefined(x);
@@ -56,14 +55,13 @@ const toStringValues = obj => {
 };
 
 const getDateInFormat = date => {
-  var x = new Date(date);
-  var y = x.getFullYear().toString();
-  var m = (x.getMonth() + 1).toString();
-  var d = x.getDate().toString();
-  d.length == 1 && (d = "0" + d);
-  m.length == 1 && (m = "0" + m);
-  var yyyymmdd = y + m + d;
-  return yyyymmdd;
+  const x = new Date(date);
+  const y = x.getFullYear().toString();
+  let m = (x.getMonth() + 1).toString();
+  let d = x.getDate().toString();
+  d = d.length === 1 ? `0${d}` : d;
+  m = m.length === 1 ? `0${m}` : m;
+  return y + m + d;
 };
 
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
@@ -83,14 +81,14 @@ const toSnakeCase = str => {
   if (!str) return "";
   return String(str)
     .replace(/^[^A-Za-z0-9]*|[^A-Za-z0-9]*$/g, "")
-    .replace(/([a-z])([A-Z])/g, (m, a, b) => a + "_" + b.toLowerCase())
+    .replace(/([a-z])([A-Z])/g, (m, a, b) => `${a}_${b.toLowerCase()}`)
     .replace(/[^A-Za-z0-9]+|_+/g, "_")
     .toLowerCase();
 };
 
 const isObject = value => {
-  var type = typeof value;
-  return value != null && (type == "object" || type == "function");
+  const type = typeof value;
+  return value != null && (type === "object" || type === "function");
 };
 
 const defaultGetRequestConfig = {
@@ -132,9 +130,10 @@ const defaultRequestConfig = () => {
 // Start of warehouse specific utils
 
 const toSafeDBString = str => {
-  if (parseInt(str[0]) > 0) str = `_${str}`;
-  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
-  return str.substr(0, 127);
+  let safeStr = str;
+  if (parseInt(str[0]) > 0) safeStr = `_${str}`;
+  safeStr = str.replace(/[^a-zA-Z0-9_]+/g, "");
+  return safeStr.substr(0, 127);
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -183,7 +182,7 @@ function safeTableName(provider, name = "") {
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
-    tableName = "_" + tableName;
+    tableName = `_${tableName}`;
   }
   return tableName;
 }
@@ -199,7 +198,7 @@ function safeColumnName(provider, name = "") {
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
-    columnName = "_" + columnName;
+    columnName = `_${columnName}`;
   }
   return columnName;
 }
@@ -216,7 +215,7 @@ const rudderCreatedTables = [
 ];
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
-    name = `_${name}`;
+    return `_${name}`;
   }
   return name;
 }
@@ -225,13 +224,15 @@ function setFromConfig(provider, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined) {
-      datatype = getDataType(val);
+      const datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
       const columnName = safeColumnName(provider, prop);
+      // eslint-disable-next-line no-param-reassign
       resp[columnName] = val;
+      // eslint-disable-next-line no-param-reassign
       columnTypes[columnName] = datatype;
     }
   });
@@ -250,30 +251,32 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
       );
     } else {
       let val = input[key];
-      datatype = getDataType(val);
+      const datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
       const safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
+      // eslint-disable-next-line no-param-reassign
       resp[safeKey] = val;
+      // eslint-disable-next-line no-param-reassign
       columnTypes[safeKey] = datatype;
     }
   });
 }
 
-function setFromProperty(
-  provider,
-  resp,
-  input,
-  columnTypes,
-  propNameInInput,
-  propNameInOutput = propNameInInput,
-  propType = "string"
-) {
-  const pageName = safeColumnName(provider, propNameInOutput);
-  resp[pageName] = input[propNameInInput];
-  columnTypes[pageName] = propType;
-}
+// function setFromProperty(
+//   provider,
+//   resp,
+//   input,
+//   columnTypes,
+//   propNameInInput,
+//   propNameInOutput = propNameInInput,
+//   propType = "string"
+// ) {
+//   const pageName = safeColumnName(provider, propNameInOutput);
+//   resp[pageName] = input[propNameInInput];
+//   columnTypes[pageName] = propType;
+// }
 
 function getColumns(provider, obj, columnTypes) {
   const columns = {};
@@ -497,13 +500,8 @@ function processWarehouseMessage(provider, message) {
 
 // ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
 function isURL(str) {
-  var pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
+  const pattern = new RegExp(
+    `^(https?:\\\\/\\\\/)?((([a-z\\\\d]([a-z\\\\d-]*[a-z\\\\d])*)\\\\.)+[a-z]{2,}|((\\\\d{1,3}\\\\.){3}\\\\d{1,3}))(\\\\:\\\\d+)?(\\\\/[-a-z\\\\d%_.~+]*)*(\\\\?[;&a-z\\\\d%_.~+=-]*)?(\\\\#[-a-z\\\\d_]*)?$`,
     "i"
   ); // fragment locator
   return !!pattern.test(str);

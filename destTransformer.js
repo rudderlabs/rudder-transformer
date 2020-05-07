@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const router = require("./versionedRouter");
 const cluster = require("./util/cluster");
+const logger = require("./logger");
 
 const clusterEnabled = true;
 
@@ -22,5 +23,5 @@ if (clusterEnabled) {
   cluster.start(PORT, app);
 } else {
   app.listen(PORT);
-  console.log(`Listening on Port: ${PORT}`);
+  logger.log(`Listening on Port: ${PORT}`);
 }

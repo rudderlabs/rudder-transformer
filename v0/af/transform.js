@@ -2,7 +2,11 @@ const get = require("get-value");
 const set = require("set-value");
 
 const { EventType } = require("../../constants");
-const { removeUndefinedValues, defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const {
+  removeUndefinedValues,
+  defaultPostRequestConfig,
+  defaultRequestConfig
+} = require("../util");
 
 const {
   Event,
@@ -15,20 +19,16 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const endpoint = ENDPOINT + message.context.app.namespace;
 
-  let appsflyer_id = message.destination_props
-    ? message.destination_props.AF
-      ? message.destination_props.AF.af_uid
-      : undefined
-    : undefined;
+  let appsflyerId = message.destination_props; // check AF
 
-  appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
+  appsflyerId = appsflyerId || destination.Config.appsFlyerId;
 
   const updatedPayload = {
     ...payload,
     af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
-    appsflyer_id: appsflyer_id
+    appsflyerId
   };
 
   const response = defaultRequestConfig();
@@ -100,7 +100,6 @@ function processEventTypeTrack(message, destination) {
       category = nameToEventMap[evType].category;
       break;
     default: {
-      // eventName = evType.toLowerCase();
       isMultiSupport = false;
       isUnIdentifiedEvent = true;
       break;
@@ -140,7 +139,6 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
-      // throw new Error("message type not supported");
       return { statusCode: 400, error: "message type not supported" };
   }
   return responseBuilderSimple(payload, message, destination);

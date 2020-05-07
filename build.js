@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { exec } = require("child_process");
 
 if (process.env.ENABLE_FUNCTIONS !== "false") {

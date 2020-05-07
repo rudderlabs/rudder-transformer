@@ -23,7 +23,7 @@ const populateSpecedTraits = (payload, message) => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach(key => {
-      set(payload, "user_properties." + key, get(message, mapping[key]));
+      set(payload, `user_properties.${key}`, get(message, mapping[key]));
     });
   });
 };
@@ -42,29 +42,33 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
-//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 function stringToHash(string) {
-  var hash = 0;
+  let hash = 0;
 
-  if (string.length == 0) return hash;
+  if (string.length === 0) return hash;
 
-  for (i = 0; i < string.length; i++) {
-    char = string.charCodeAt(i);
+  for (let i = 0; i < string.length; i += 1) {
+    const char = string.charCodeAt(i);
+    // eslint-disable-next-line no-bitwise
     hash = (hash << 5) - hash + char;
-    hash = hash & hash;
+    // eslint-disable-next-line no-bitwise
+    hash &= hash;
   }
 
   return Math.abs(hash);
 }
 
 function fixSessionId(payload) {
-  payload.session_id = payload.session_id
-    ? stringToHash(payload.session_id)
-    : -1;
+  return {
+    ...payload,
+    session_id: payload.session_id ? stringToHash(payload.session_id) : -1
+  };
 }
- function addMinIdlength() {
-   return {"min_id_length":1}
- }
+
+function addMinIdlength() {
+  return { min_id_length: 1 };
+}
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
@@ -77,7 +81,7 @@ function responseBuilderSimple(
   destination
 ) {
   const rawPayload = {};
-  const addOptions = "options"
+  const addOptions = "options";
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
@@ -87,7 +91,7 @@ function responseBuilderSimple(
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  const endpoint = ENDPOINT; // evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT; // identify on same endpoint also works
+  const endpoint = ENDPOINT;
 
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
@@ -97,8 +101,8 @@ function responseBuilderSimple(
       if (!SpecedTraits.includes(trait)) {
         set(
           rawPayload,
-          "user_properties." + trait,
-          get(message, "context.traits." + trait)
+          `user_properties.${trait}`,
+          get(message, `context.traits.${trait}`)
         );
       }
     });
@@ -148,10 +152,9 @@ function processSingleMessage(message, destination) {
   let evType;
   let category = ConfigCategory.DEFAULT;
 
-  var messageType = message.type.toLowerCase();
+  const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      // payloadObjectName = "identification"; // identify same as events
       evType = "identify";
       category = ConfigCategory.IDENTIFY;
       break;
@@ -198,7 +201,6 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      console.log("could not determine type");
       throw new Error("message type not supported");
   }
 
@@ -214,7 +216,7 @@ function processSingleMessage(message, destination) {
 // Method for handling product list actions
 function processProductListAction(message) {
   const eventList = [];
-  const products = message.properties.products;
+  const { products } = message.properties;
 
   // Now construct complete payloads for each product and
   // get them processed through single message processing logic
@@ -256,10 +258,10 @@ function process(event) {
     toSendEvents.push(processProductListAction(message));
   } else if (
     messageType === EventType.TRACK &&
-    (eventType == Event.CHECKOUT_STARTED.name ||
-      eventType == Event.ORDER_UPDATED.name ||
-      eventType == Event.ORDER_COMPLETED.name ||
-      eventType == Event.ORDER_CANCELLED.name)
+    (eventType === Event.CHECKOUT_STARTED.name ||
+      eventType === Event.ORDER_UPDATED.name ||
+      eventType === Event.ORDER_COMPLETED.name ||
+      eventType === Event.ORDER_CANCELLED.name)
   ) {
     toSendEvents.push(processTransaction(message));
   } else {

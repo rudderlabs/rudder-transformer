@@ -19,8 +19,8 @@ test(`${name} Tests`,  async () => {
    
   for (let [index, value] of inputData.entries()) {
     var output = await transformer.process(value);  
-    output.header.Authorization = '' 
-    expectedData[index].header.Authorization='' 
+    output.headers.Authorization = '' 
+    expectedData[index].headers.Authorization='' 
     expect(output).toEqual(expectedData[index]);
   };  
 

@@ -1,1 +1,680 @@
-[[{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key__"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key__"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "Test Page Name", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"error": "One of [\"properties.name\",\"event\"] is required", "statusCode": 400}}], [{"output": {"body": {"XML": {}, "JSON": {"city": "NY", "newUserId": "some_developer_id", "created": 1571043798, "locale": "en-US", "country": "USA", "time": 1571043798, "userId": "00000000000000000000000000", "apiVersion": "1.0.6", "devMode": true, "userAttributes": {"country": "India", "createAt": "2019-10-14T09:03:17.562Z", "id": "some_developer_id", "address": {"country": "USA", "city": "NY"}, "city": "Delhi"}, "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "00000000000000000000000000", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "setUserAttributes"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}}], [{"output": {"error": "One of [\"properties.name\",\"event\"] is required", "statusCode": 400}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "params": {"automatic": true, "name": "MainActivity"}, "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key", "event": "account: logged out"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "track"}, "type": "REST", "method": "POST"}}], [{"output": {"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}}, {"output": {"body": {"XML": {}, "JSON": {"value": 2.45, "devMode": true, "currencyCode": "USD", "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "params": {"currency": "USD", "total": 2.45, "automatic": true, "name": "MainActivity"}, "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key", "event": "account: logged out"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "track"}, "type": "REST", "method": "POST"}}]]
+[
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key__"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key__"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "Test Page Name",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  {
+    "message": "One of [\"properties.name\",\"event\"] is required",
+    "statusCode": 400
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "city": "NY",
+        "newUserId": "some_developer_id",
+        "created": 1571043798,
+        "locale": "en-US",
+        "country": "USA",
+        "time": 1571043798,
+        "userId": "00000000000000000000000000",
+        "apiVersion": "1.0.6",
+        "devMode": true,
+        "userAttributes": {
+          "country": "India",
+          "createAt": "2019-10-14T09:03:17.562Z",
+          "id": "some_developer_id",
+          "address": { "country": "USA", "city": "NY" },
+          "city": "Delhi"
+        },
+        "appId": "leanplum_application_id",
+        "clientKey": "leanplum_client_key"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.leanplum.com/api",
+    "userId": "00000000000000000000000000",
+    "headers": { "Content-Type": "application/json" },
+    "version": "1",
+    "params": { "action": "setUserAttributes" },
+    "type": "REST",
+    "method": "POST"
+  },
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "advance" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  {
+    "message": "One of [\"properties.name\",\"event\"] is required",
+    "statusCode": 400
+  },
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "devMode": true,
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "params": { "automatic": true, "name": "MainActivity" },
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "event": "account: logged out"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "track" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "deviceName": "generic_x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "deviceModel": "Android SDK built for x86",
+          "devMode": true,
+          "locale": "en-US",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "apiVersion": "1.0.6",
+          "timezone": "Asia/Kolkata",
+          "systemName": "Android",
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "systemVersion": "8.1.0",
+          "clientKey": "leanplum_client_key"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "start" },
+      "type": "REST",
+      "method": "POST"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON": {
+          "value": 2.45,
+          "devMode": true,
+          "currencyCode": "USD",
+          "time": 1584003903,
+          "userId": "5094f5704b9cf2b3",
+          "apiVersion": "1.0.6",
+          "params": {
+            "currency": "USD",
+            "total": 2.45,
+            "automatic": true,
+            "name": "MainActivity"
+          },
+          "deviceId": "5094f5704b9cf2b3",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "event": "account: logged out"
+        },
+        "FORM": {}
+      },
+      "files": {},
+      "endpoint": "https://api.leanplum.com/api",
+      "userId": "5094f5704b9cf2b3",
+      "headers": { "Content-Type": "application/json" },
+      "version": "1",
+      "params": { "action": "track" },
+      "type": "REST",
+      "method": "POST"
+    }
+  ]
+]

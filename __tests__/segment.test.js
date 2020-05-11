@@ -1,10 +1,10 @@
-const integration = "webhook";
-const name = "Webhook";
+const integration = "segment";
+const name = "Segment";
 
 const fs = require("fs");
 const path = require("path");
+
 const transformer = require(`../v0/${integration}/transform`);
-// const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(

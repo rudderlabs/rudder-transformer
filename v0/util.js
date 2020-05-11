@@ -322,7 +322,7 @@ function processWarehouseMessage(provider, message) {
       );
       columnTypes[eventColName] = "string";
 
-      // shallow copy is sufficient since it does not containe nested objects
+      // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: safeTableName(provider, "tracks"),

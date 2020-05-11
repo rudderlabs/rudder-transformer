@@ -37,6 +37,10 @@
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
+    "metadata": {
+      "sourceId": "s1",
+      "destinationId": "d1"
+    },
     "destination": {
       "ID": 2,
       "Config": {
@@ -153,6 +157,10 @@
         "All": true
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "metadata": {
+      "sourceId": "s1",
+      "destinationId": "d1"
     },
     "destination": {
       "ID": 2,

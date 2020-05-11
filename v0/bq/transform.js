@@ -1,16 +1,7 @@
 const { processWarehouseMessage } = require("../util");
-const { ConfigCategory, mappingConfig } = require("./config");
-
-const whDefaultConfigJson = mappingConfig[ConfigCategory.DEFAULT.name];
-const whTrackConfigJson = mappingConfig[ConfigCategory.TRACK.name];
 
 function processSingleMessage(message, destination) {
-  return processWarehouseMessage(
-    "bq",
-    message,
-    whDefaultConfigJson,
-    whTrackConfigJson
-  );
+  return processWarehouseMessage("bq", message);
 }
 
 function process(event) {

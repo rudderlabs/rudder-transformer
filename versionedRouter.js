@@ -80,11 +80,18 @@ versions.forEach(version => {
 if (functionsEnabled()) {
   router.post("/customTransform", async (ctx, next) => {
     const events = ctx.request.body;
+    const { processSessions } = ctx.query;
     logger.debug("[CT] Input events: " + JSON.stringify(events));
-    const groupedEvents = _.groupBy(
-      events,
-      event => `${event.destination.ID}_${event.message.anonymousId}`
-    );
+    let groupedEvents;
+    if (processSessions) {
+      groupedEvents = _.groupBy(
+        events,
+        (event) => `${event.destination.ID}_${event.message.anonymousId}`
+      );
+    } else {
+      groupedEvents = _.groupBy(events, (event) => event.destination.ID);
+    }
+
     const transformedEvents = [];
     await Promise.all(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {

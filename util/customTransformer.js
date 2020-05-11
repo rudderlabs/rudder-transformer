@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const _ = require("lodash");
 var { getTransformationCode } = require("../util/customTransforrmationsStore");
 
-async function runUserTransform(events, code) {
+async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
@@ -22,11 +22,11 @@ async function runUserTransform(events, code) {
         const res = await fetch(...args);
         const data = await res.json();
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto()
+          new ivm.ExternalCopy(data).copyInto(),
         ]);
       } catch (error) {
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto()
+          new ivm.ExternalCopy("ERROR").copyInto(),
         ]);
       }
     })
@@ -36,6 +36,14 @@ async function runUserTransform(events, code) {
     "_log",
     new ivm.Reference(function(...args) {
       console.log("Log: ", ...args);
+    })
+  );
+
+  jail.setSync(
+    "_metadata",
+    new ivm.Reference(function(...args) {
+      const eventMetadata = eventsMetadata[args[0].messageId] || {};
+      return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
   );
 
@@ -80,6 +88,21 @@ async function runUserTransform(events, code) {
           args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           );
         };
+
+        // Now we create the other half of the 'metadata' function in this isolate. We'll just take every
+        // argument, create an external copy of it and pass it along to metadata log function above.
+        let metadata = _metadata;
+        delete _metadata;
+        global.metadata = function(...args) {
+          // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
+          // doesn't make a difference who requests the copy, the result is the same.
+          // 'applyIgnored' calls 'metadata' asynchronously but doesn't return a promise-- it ignores the
+          // return value or thrown exception from 'metadata'.
+          return metadata.applySync(
+            undefined,
+            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+            );
+          };
         
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
@@ -100,6 +123,7 @@ async function runUserTransform(events, code) {
             });
           });
         }
+         
         `
   );
 
@@ -111,13 +135,13 @@ async function runUserTransform(events, code) {
   const fnRef = await jail.get("transform");
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true
+      transferIn: true,
     });
     try {
       await bootstrapScriptResult.apply(undefined, [
         fnRef,
         new ivm.Reference(resolve),
-        sharedMessagesList
+        sharedMessagesList,
       ]);
     } catch (error) {
       reject(error.message);
@@ -155,15 +179,21 @@ async function userTransformHandler(events, versionId) {
         // Events contain message and destination. We take the message part of event and run transformation on it.
         // And put back the destination after transforrmation
         const { destination } = events && events[0];
-        const eventMessages = events.map(event => event.message);
+        const eventMessages = events.map((event) => event.message);
+        const eventsMetadata = {};
+        events.forEach(function(ev) {
+          eventsMetadata[ev.message.messageId] = ev.metadata;
+        });
+
         const userTransformedEvents = await runUserTransform(
           eventMessages,
-          res.code
+          res.code,
+          eventsMetadata
         );
-        const formattedEvents = userTransformedEvents.map(e => ({
+        const formattedEvents = userTransformedEvents.map((e) => ({
           message: e,
           destination,
-          metadata
+          metadata,
         }));
         return formattedEvents;
       }
@@ -173,8 +203,8 @@ async function userTransformHandler(events, versionId) {
         {
           statusCode: 400,
           error: error.message,
-          metadata
-        }
+          metadata,
+        },
       ];
     }
   }

@@ -82,7 +82,7 @@ function processNonTrackEvents(message, destination, eventName) {
   return payload;
 }
 
-function processEventTypeTrack(message, destination) {
+function processEventTypeTrack(message) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
   const evType = message.event.toLowerCase();
@@ -125,7 +125,7 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message, destination);
+      payload = processEventTypeTrack(message);
       break;
     }
     case EventType.SCREEN: {

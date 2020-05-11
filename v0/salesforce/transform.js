@@ -111,6 +111,7 @@ async function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
+  // TODO : check for the bitwise operator
   const customKeys = Object.keys(message.context.traits);
   customKeys.forEach(key => {
     const keyPath = `context.traits.${key}`;

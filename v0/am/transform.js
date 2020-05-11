@@ -42,7 +42,7 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
-// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+// Ref: https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 function stringToHash(string) {
   let hash = 0;
 
@@ -59,6 +59,7 @@ function stringToHash(string) {
   return Math.abs(hash);
 }
 
+// TODO : check the sessioId changes
 function fixSessionId(payload) {
   return {
     ...payload,
@@ -72,7 +73,6 @@ function addMinIdlength() {
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
-
 function responseBuilderSimple(
   rootElementName,
   message,
@@ -116,8 +116,6 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
   fixIP(payload, message, "ip");
-
-  // console.log(payload);
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;

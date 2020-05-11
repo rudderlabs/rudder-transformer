@@ -33,19 +33,19 @@ function responseBuilder(payload, message, autoPilotConfig) {
       Accept: "application/json"
     },
     requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
+    userId: message.userId || message.anonymousId,
     payload: removeUndefinedAndNullValues(payload)
   };
   return response;
 }
 
 function getIdentifyPayload(message) {
-  let rawPayload = {};
-  let contact = {};
+  const rawPayload = {};
+  const contact = {};
 
-  const traits = get(message.context.traits) ? message.context.traits : null;
+  const traits = get(message.context.traits) || message.context.traits;
 
-  if (traits != null) {
+  if (traits) {
     Object.keys(traits).forEach(trait => {
       const value = traits[trait];
       const replaceKeys = mapPayload.identify.addContact;
@@ -58,14 +58,12 @@ function getIdentifyPayload(message) {
 }
 
 function getTrackPayload(message) {
-  let rawPayload = {};
-  let propertiesObj = {};
+  const rawPayload = {};
+  const propertiesObj = {};
 
-  const properties = get(message.properties)
-    ? Object.keys(message.properties)
-    : null;
+  const properties = get(message.properties) || Object.keys(message.properties);
 
-  if (properties != null) {
+  if (properties) {
     properties.forEach(property => {
       propertiesObj[property] = message.properties[property];
     });
@@ -75,7 +73,7 @@ function getTrackPayload(message) {
   return rawPayload;
 }
 
-function getTransformedJSON(message, autoPilotConfig) {
+function getTransformedJSON(message) {
   let rawPayload;
   switch (message.type) {
     case EventType.TRACK:
@@ -91,7 +89,7 @@ function getTransformedJSON(message, autoPilotConfig) {
 }
 
 function getDestinationKeys(destination) {
-  let autoPilotConfig = {};
+  const autoPilotConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {
@@ -110,8 +108,8 @@ function getDestinationKeys(destination) {
 
 function process(event) {
   const autoPilotConfig = getDestinationKeys(event.destination);
-  // TODO: Implement to accept multiple triggerId's.
-  const properties = getTransformedJSON(event.message, autoPilotConfig);
+  // TODO : Implement to accept multiple triggerId's.
+  const properties = getTransformedJSON(event.message);
   return responseBuilder(properties, event.message, autoPilotConfig);
 }
 

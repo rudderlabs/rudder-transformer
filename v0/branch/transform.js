@@ -8,7 +8,7 @@ const {
   removeUndefinedAndNullValues
 } = require("../util");
 
-function responseBuilder(payload, message, branchConfig) {
+function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
   if (payload.event_data === null && payload.content_items === null) {
@@ -31,11 +31,11 @@ function responseBuilder(payload, message, branchConfig) {
 }
 
 function getCategoryAndName(rudderEventName) {
-  for (let i = 0; i < categoriesList.length; i++) {
+  for (let i = 0; i < categoriesList.length; i += 1) {
     const category = categoriesList[i];
     let requiredName = null;
     let requiredCategory = null;
-    // eslint-disable-next-line array-callback-return
+    // TODO : fix lint error
     Object.keys(category.name).find(branchKey => {
       if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
         requiredName = category.name[branchKey];
@@ -50,7 +50,7 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  const context = message.context;
+  const { context } = message;
 
   return removeUndefinedAndNullValues({
     os: context.os.name,
@@ -61,85 +61,79 @@ function getUserData(message) {
     idfa: get(context, "idfa") ? context.android_id : null,
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: get(message, "anonymousId")
-      ? message.anonymousId
-      : message.userId
+    developer_identity: message.userId || message.anonymousId
   });
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
-  const content_items = {};
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = {};
+  const eventData = {};
+  const customData = {};
 
   let valFound = false;
+  // TODO : fix lint
   Object.keys(category.content_items).find(branchMappingProperty => {
     if (branchMappingProperty === rudderProperty) {
       const tmpKeyName = category.content_items[branchMappingProperty];
-      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+      contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
       valFound = true;
     }
   });
 
   if (!valFound) {
+    // TODO : fix lint
     category.event_data.find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        eventData[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
       }
     });
   }
 
   if (!valFound) {
-    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+    customData[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
-  return {
-    content_itemsObj: content_items,
-    event_dataObj: event_data,
-    custom_dataObj: custom_data
-  };
+
+  return { contentItems, eventData, customData };
 }
 
 function commonPayload(message, rawPayload, category) {
   let rudderPropertiesObj;
-  const content_items = [];
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = [];
+  const eventData = {};
+  const customData = {};
   let productObj = {};
 
-  // eslint-disable-next-line default-case
   switch (message.type) {
     case EventType.TRACK:
-      rudderPropertiesObj = get(message, "properties")
-        ? message.properties
-        : null;
+      rudderPropertiesObj = message.properties;
       break;
     case EventType.IDENTIFY:
-      rudderPropertiesObj = get(message.context, "traits")
-        ? message.context.traits
-        : null;
+      rudderPropertiesObj = message.context.traits;
+      break;
+    default:
       break;
   }
 
   if (rudderPropertiesObj != null) {
+    // TODO : fix lint
     Object.keys(rudderPropertiesObj).map(rudderProperty => {
       if (rudderProperty === "products") {
         productObj = {};
-        for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
+        for (let i = 0; i < rudderPropertiesObj.products.length; i += 1) {
           const product = rudderPropertiesObj.products[i];
-          // eslint-disable-next-line no-loop-func
           Object.keys(product).map(productProp => {
-            const {
-              content_itemsObj,
-              event_dataObj,
-              custom_dataObj
-            } = mapPayload(category, productProp, product);
+            let { eventData, customData } = mapPayload(
+              category,
+              productProp,
+              product
+            );
             Object.assign(productObj, content_itemsObj);
-            Object.assign(event_data, event_dataObj);
-            Object.assign(custom_data, custom_dataObj);
+            Object.assign(eventData, event_dataObj);
+            Object.assign(customData, custom_dataObj);
           });
-          content_items.push(productObj);
+          contentItems.push(productObj);
           productObj = {};
         }
       } else {
@@ -149,14 +143,14 @@ function commonPayload(message, rawPayload, category) {
           rudderPropertiesObj
         );
         Object.assign(productObj, content_itemsObj);
-        Object.assign(event_data, event_dataObj);
-        Object.assign(custom_data, custom_dataObj);
+        Object.assign(eventData, event_dataObj);
+        Object.assign(customData, custom_dataObj);
       }
     });
-    content_items.push(productObj);
-    rawPayload.custom_data = custom_data;
-    rawPayload.content_items = content_items;
-    rawPayload.event_data = event_data;
+    contentItems.push(productObj);
+    rawPayload.custom_data = customData;
+    rawPayload.content_items = contentItems;
+    rawPayload.event_data = eventData;
     rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
@@ -207,7 +201,6 @@ function getTransformedJSON(message, branchConfig) {
 function getDestinationKeys(destination) {
   const branchConfig = {};
   Object.keys(destination.Config).forEach(key => {
-    // eslint-disable-next-line default-case
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
@@ -220,7 +213,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const branchConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, branchConfig);
-  return responseBuilder(properties, event.message, branchConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

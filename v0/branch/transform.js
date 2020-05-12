@@ -35,7 +35,7 @@ function getCategoryAndName(rudderEventName) {
     const category = categoriesList[i];
     let requiredName = null;
     let requiredCategory = null;
-    // TODO : fix lint error
+    // eslint-disable-next-line array-callback-return
     Object.keys(category.name).find(branchKey => {
       if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
         requiredName = category.name[branchKey];
@@ -61,79 +61,85 @@ function getUserData(message) {
     idfa: get(context, "idfa") ? context.android_id : null,
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: message.userId || message.anonymousId
+    developer_identity: get(message, "anonymousId")
+      ? message.anonymousId
+      : message.userId
   });
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
-  const contentItems = {};
-  const eventData = {};
-  const customData = {};
+  const content_items = {};
+  const event_data = {};
+  const custom_data = {};
 
   let valFound = false;
-  // TODO : fix lint
   Object.keys(category.content_items).find(branchMappingProperty => {
     if (branchMappingProperty === rudderProperty) {
       const tmpKeyName = category.content_items[branchMappingProperty];
-      contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
       valFound = true;
     }
   });
 
   if (!valFound) {
-    // TODO : fix lint
     category.event_data.find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        eventData[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
       }
     });
   }
 
   if (!valFound) {
-    customData[rudderProperty] = rudderPropertiesObj[rudderProperty];
+    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
-
-  return { contentItems, eventData, customData };
+  return {
+    content_itemsObj: content_items,
+    event_dataObj: event_data,
+    custom_dataObj: custom_data
+  };
 }
 
 function commonPayload(message, rawPayload, category) {
   let rudderPropertiesObj;
-  const contentItems = [];
-  const eventData = {};
-  const customData = {};
+  const content_items = [];
+  const event_data = {};
+  const custom_data = {};
   let productObj = {};
 
+  // eslint-disable-next-line default-case
   switch (message.type) {
     case EventType.TRACK:
-      rudderPropertiesObj = message.properties;
+      rudderPropertiesObj = get(message, "properties")
+        ? message.properties
+        : null;
       break;
     case EventType.IDENTIFY:
-      rudderPropertiesObj = message.context.traits;
-      break;
-    default:
+      rudderPropertiesObj = get(message.context, "traits")
+        ? message.context.traits
+        : null;
       break;
   }
 
   if (rudderPropertiesObj != null) {
-    // TODO : fix lint
     Object.keys(rudderPropertiesObj).map(rudderProperty => {
       if (rudderProperty === "products") {
         productObj = {};
-        for (let i = 0; i < rudderPropertiesObj.products.length; i += 1) {
+        for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
           const product = rudderPropertiesObj.products[i];
+          // eslint-disable-next-line no-loop-func
           Object.keys(product).map(productProp => {
-            const { eventData, customData } = mapPayload(
-              category,
-              productProp,
-              product
-            );
+            const {
+              content_itemsObj,
+              event_dataObj,
+              custom_dataObj
+            } = mapPayload(category, productProp, product);
             Object.assign(productObj, content_itemsObj);
-            Object.assign(eventData, event_dataObj);
-            Object.assign(customData, custom_dataObj);
+            Object.assign(event_data, event_dataObj);
+            Object.assign(custom_data, custom_dataObj);
           });
-          contentItems.push(productObj);
+          content_items.push(productObj);
           productObj = {};
         }
       } else {
@@ -143,14 +149,14 @@ function commonPayload(message, rawPayload, category) {
           rudderPropertiesObj
         );
         Object.assign(productObj, content_itemsObj);
-        Object.assign(eventData, event_dataObj);
-        Object.assign(customData, custom_dataObj);
+        Object.assign(event_data, event_dataObj);
+        Object.assign(custom_data, custom_dataObj);
       }
     });
-    contentItems.push(productObj);
-    rawPayload.custom_data = customData;
-    rawPayload.content_items = contentItems;
-    rawPayload.event_data = eventData;
+    content_items.push(productObj);
+    rawPayload.custom_data = custom_data;
+    rawPayload.content_items = content_items;
+    rawPayload.event_data = event_data;
     rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
@@ -201,11 +207,10 @@ function getTransformedJSON(message, branchConfig) {
 function getDestinationKeys(destination) {
   const branchConfig = {};
   Object.keys(destination.Config).forEach(key => {
+    // eslint-disable-next-line default-case
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
-        break;
-      default:
         break;
     }
   });

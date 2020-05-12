@@ -23,8 +23,8 @@ function responseBuilderSimple(payload, segmentConfig) {
   return response;
 }
 
-function getTransformedJSON(message, segmentConfig) {
-  const type = message.type;
+function getTransformedJSON(message) {
+  const { type } = message;
   const userId = get(message, "userId") ? message.userId : message.anonymousId;
   const traits = get(message, "context.traits")
     ? message.context.traits
@@ -47,12 +47,14 @@ function getTransformedJSON(message, segmentConfig) {
 }
 
 function getSegmentConfig(destination, message) {
-  let segmentConfig = {};
+  const segmentConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {
       case destinationConfigKeys.writeKey:
         segmentConfig.writeKey = `${destination.Config[key]}`;
+        break;
+      default:
         break;
     }
   });
@@ -65,8 +67,8 @@ function getSegmentConfig(destination, message) {
 
 function processSingleMessage(message, destination) {
   const segmentConfig = getSegmentConfig(destination, message);
-  const properties = getTransformedJSON(message, segmentConfig);
-  let respObj = {
+  const properties = getTransformedJSON(message);
+  const respObj = {
     batch: []
   };
   respObj.batch.push(properties);

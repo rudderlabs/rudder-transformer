@@ -11,42 +11,59 @@
   },
   {
     "destKey": "state",
-    "sourceKeys": ["name", "properties.name"],
+    "sourceKeys": [
+      "name",
+      "properties.name"
+    ],
     "required": true
   },
   {
     "destKey": "params.path",
-    "sourceKeys": ["properties.path"],
+    "sourceKeys": [
+      "properties.path"
+    ],
     "required": false
   },
   {
     "destKey": "params.referrer",
-    "sourceKeys": ["properties.referrer"],
+    "sourceKeys": [
+      "properties.referrer"
+    ],
     "required": false
   },
   {
     "destKey": "params.search",
-    "sourceKeys": ["properties.search"],
+    "sourceKeys": [
+      "properties.search"
+    ],
     "required": false
   },
   {
     "destKey": "params.title",
-    "sourceKeys": ["properties.title"],
+    "sourceKeys": [
+      "properties.title"
+    ],
     "required": false
   },
   {
     "destKey": "params.url",
-    "sourceKeys": ["properties.url"],
+    "sourceKeys": [
+      "properties.url"
+    ],
     "required": false
   },
   {
     "destKey": "deviceId",
-    "sourceKeys": ["context.device.id"],
+    "sourceKeys": [
+      "context.device.id"
+    ],
     "required": false
   },
   {
     "destKey": "time",
-    "sourceKeys": ["originalTimestamp"],
+    "sourceKeys": [
+      "originalTimestamp"
+    ],
     "required": false
   }
 ]

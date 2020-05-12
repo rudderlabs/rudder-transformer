@@ -18,19 +18,18 @@ const {
 function getParamsFromConfig(message, destination) {
   const params = {};
 
-  var obj = {};
-  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
+  const obj = {};
   if (destination.Config.customMappings) {
     destination.Config.customMappings.forEach(mapping => {
       obj[mapping.from] = mapping.to;
     });
   }
-  // console.log(obj);
+
   const keys = Object.keys(obj);
   keys.forEach(key => {
     params[obj[key]] = get(message.properties, key);
   });
-  // console.log(params);
+
   return params;
 }
 
@@ -84,21 +83,6 @@ function responseBuilderSimple(
   return response;
 }
 
-// Function for processing pageviews
-function processPageViews(message) {
-  return {};
-}
-
-// Function for processing screenviews
-function processScreenViews(message) {
-  return {};
-}
-
-// Function for processing non-ecom generic track events
-function processNonEComGenericEvent(message) {
-  return {};
-}
-
 // Function for processing promotion viewed or clicked event
 function processPromotionEvent(message) {
   const eventString = message.event;
@@ -125,7 +109,7 @@ function processPromotionEvent(message) {
 }
 
 // Function for processing payment-related events
-function processPaymentRelatedEvent(message) {
+function processPaymentRelatedEvent() {
   const parameters = { pa: "checkout" };
   return parameters;
 }
@@ -138,23 +122,23 @@ function processRefundEvent(message) {
   if (products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
       if (!value.product_id || value.product_id.length === 0) {
-        parameters["pr" + prodIndex + "id"] = value.sku;
+        parameters[`pr${prodIndex}id`] = value.sku;
       } else {
-        parameters["pr" + prodIndex + "id"] = value.product_id;
+        parameters[`pr${prodIndex}id`] = value.product_id;
       }
 
-      parameters["pr" + prodIndex + "nm"] = value.name;
-      parameters["pr" + prodIndex + "ca"] = value.category;
-      parameters["pr" + prodIndex + "br"] = value.brand;
-      parameters["pr" + prodIndex + "va"] = value.variant;
-      parameters["pr" + prodIndex + "cc"] = value.coupon;
-      parameters["pr" + prodIndex + "ps"] = value.position;
-      parameters["pr" + prodIndex + "pr"] = value.price;
-      parameters["pr" + prodIndex + "qt"] = value.quantity;
+      parameters[`pr${prodIndex}nm`] = value.name;
+      parameters[`pr${prodIndex}ca`] = value.category;
+      parameters[`pr${prodIndex}br`] = value.brand;
+      parameters[`pr${prodIndex}va`] = value.variant;
+      parameters[`pr${prodIndex}cc`] = value.coupon;
+      parameters[`pr${prodIndex}ps`] = value.position;
+      parameters[`pr${prodIndex}pr`] = value.price;
+      parameters[`pr${prodIndex}qt`] = value.quantity;
     }
   } else {
     // full refund, only populate order_id
@@ -175,10 +159,10 @@ function processSharingEvent(message) {
       parameters.st = message.properties.url;
       break;
     case Event.CART_SHARED: {
-      const products = message.properties.products;
+      const { products } = message.properties;
       let shareTargetString = ""; // all product ids will be concatenated with separation
       products.forEach(product => {
-        shareTargetString += " " + product.product_id;
+        shareTargetString += ` ${product.product_id}`;
       });
       parameters.st = shareTargetString;
       break;
@@ -212,22 +196,22 @@ function processProductListEvent(message) {
 
   const { products } = message.properties;
   if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
 
       if (!value.product_id || value.product_id.length === 0) {
-        parameters["il1pi" + prodIndex + "id"] = value.sku;
+        parameters[`il1pi${prodIndex}id`] = value.sku;
       } else {
-        parameters["il1pi" + prodIndex + "id"] = value.product_id;
+        parameters[`il1pi${prodIndex}id`] = value.product_id;
       }
-      parameters["il1pi" + prodIndex + "nm"] = value.name;
-      parameters["il1pi" + prodIndex + "ca"] = value.category;
-      parameters["il1pi" + prodIndex + "br"] = value.brand;
-      parameters["il1pi" + prodIndex + "va"] = value.variant;
-      parameters["il1pi" + prodIndex + "cc"] = value.coupon;
-      parameters["il1pi" + prodIndex + "ps"] = value.position;
-      parameters["il1pi" + prodIndex + "pr"] = value.price;
+      parameters[`il1pi${prodIndex}nm`] = value.name;
+      parameters[`il1pi${prodIndex}ca`] = value.category;
+      parameters[`il1pi${prodIndex}br`] = value.brand;
+      parameters[`il1pi${prodIndex}va`] = value.variant;
+      parameters[`il1pi${prodIndex}cc`] = value.coupon;
+      parameters[`il1pi${prodIndex}ps`] = value.position;
+      parameters[`il1pi${prodIndex}pr`] = value.price;
     }
   } else {
     // throw error, empty Product List in Product List Viewed event payload
@@ -271,12 +255,13 @@ function processProductEvent(message) {
       throw new Error("unknown ProductEvent type");
   }
 
-  const { sku, product_id } = message.properties;
+  const { sku } = message.properties;
+  const productId = message.properties.product_id;
 
-  if (!product_id || product_id.length === 0) {
+  if (!productId || productId.length === 0) {
     parameters.pr1id = sku;
   } else {
-    parameters.pr1id = product_id;
+    parameters.pr1id = productId;
   }
 
   return parameters;
@@ -324,22 +309,22 @@ function processTransactionEvent(message) {
   const { products } = message.properties;
 
   if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const product = products[i];
       const prodIndex = i + 1;
       // If product_id is not provided, then SKU will be used in place of id
       if (!product.product_id || product.product_id.length === 0) {
-        parameters["pr" + prodIndex + "id"] = product.sku;
+        parameters[`pr${prodIndex}id`] = product.sku;
       } else {
-        parameters["pr" + prodIndex + "id"] = product.product_id;
+        parameters[`pr${prodIndex}id`] = product.product_id;
       }
-      parameters["pr" + prodIndex + "nm"] = product.name;
-      parameters["pr" + prodIndex + "ca"] = product.category;
-      parameters["pr" + prodIndex + "br"] = product.brand;
-      parameters["pr" + prodIndex + "va"] = product.variant;
-      parameters["pr" + prodIndex + "cc"] = product.coupon;
-      parameters["pr" + prodIndex + "ps"] = product.position;
-      parameters["pr" + prodIndex + "pr"] = product.price;
+      parameters[`pr${prodIndex}nm`] = product.name;
+      parameters[`pr${prodIndex}ca`] = product.category;
+      parameters[`pr${prodIndex}br`] = product.brand;
+      parameters[`pr${prodIndex}va`] = product.variant;
+      parameters[`pr${prodIndex}cc`] = product.coupon;
+      parameters[`pr${prodIndex}ps`] = product.position;
+      parameters[`pr${prodIndex}pr`] = product.price;
     }
   } else {
     // throw error, empty Product List in Product List Viewed event payload
@@ -369,11 +354,11 @@ function processSingleMessage(message, destination) {
 
   switch (messageType) {
     case EventType.PAGE:
-      customParams = processPageViews(message);
+      customParams = {};
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      customParams = processScreenViews(message);
+      customParams = {};
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK: {
@@ -396,7 +381,7 @@ function processSingleMessage(message, destination) {
           customParams = processTransactionEvent(message);
           break;
         case ConfigCategory.PAYMENT.name:
-          customParams = processPaymentRelatedEvent(message);
+          customParams = processPaymentRelatedEvent();
           break;
         case ConfigCategory.REFUND.name:
           customParams = processRefundEvent(message);
@@ -408,15 +393,13 @@ function processSingleMessage(message, destination) {
           customParams = processEComGenericEvent(message);
           break;
         default:
-          customParams = processNonEComGenericEvent(message);
+          customParams = {};
           break;
       }
       break;
     }
     default:
-      console.log("could not determine type");
-      // throw new RangeError('Unexpected value in type field');
-      throw new Error("message type not supported");
+      return { statusCode: 400, error: "message type not supported" };
   }
 
   return responseBuilderSimple(

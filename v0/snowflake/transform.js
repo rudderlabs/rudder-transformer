@@ -1,11 +1,11 @@
 const { processWarehouseMessage } = require("../util");
 
-function processSingleMessage(message, destination) {
+function processSingleMessage(message) {
   return processWarehouseMessage("snowflake", message);
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  return processSingleMessage(event.message);
 }
 
 exports.process = process;

@@ -129,14 +129,14 @@ function processSingleMessage(message, destination) {
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     default:
-      throw new Error(
-        "message type " + message.type + " is not supported for MP"
-      );
+      return {
+        statusCode: 400,
+        error: `message type ${message.type} is not supported for MP`
+      };
   }
 }
 
 function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
-  return resp;
+  return processSingleMessage(event.message, event.destination);
 }
 exports.process = process;

@@ -22,7 +22,7 @@ function setValues(payload, message, mappingJson) {
       val = undefined;
       sourceKeys = mapping.sourceKeys;
       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index++) {
+        for (let index = 0; index < sourceKeys.length; index += 1) {
           val = get(message, sourceKeys[index]);
           if (val) {
             break;
@@ -44,7 +44,7 @@ function setValues(payload, message, mappingJson) {
 }
 
 function constructPayload(message, name, destination) {
-  mappingJson = mappingConfig[name];
+  const mappingJson = mappingConfig[name];
   let rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,

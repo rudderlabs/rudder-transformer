@@ -1,5 +1,5 @@
 const isIp = require("is-ip");
-var validUrl = require("valid-url");
+const validUrl = require("valid-url");
 const { EventType } = require("../../constants");
 const {
   defaultPostRequestConfig,
@@ -54,8 +54,7 @@ function addAddons(properties, config) {
 }
 
 function buildResponse(eventName, message, destination) {
-  const endpoint =
-    ENDPOINT + "/" + destination.Config.projectID + "/events/" + eventName;
+  const endpoint = `${ENDPOINT}/${destination.Config.projectID}/events/${eventName}`;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -72,18 +71,15 @@ function buildResponse(eventName, message, destination) {
 
 function processTrack(message, destination) {
   const eventName = message.event;
-  let properties = message.properties;
+  let { properties } = message;
   const user = {};
-  user.userId = message.userId
-    ? message.userId != ""
-      ? message.userId
-      : message.anonymousId
-    : message.anonymousId;
+  user.userId = message.userId || message.anonymousId;
   user.traits = message.context.traits;
   properties = {
     ...properties,
     user
   };
+
   // add userid/anonymousid
   properties.userId = message.userId;
   properties.anonymousId = message.anonymousId;
@@ -109,11 +105,11 @@ function processPage(message, destination) {
   let eventName = "Loaded a Page";
 
   if (pageName) {
-    eventName = "Viewed " + pageName + " page";
+    eventName = `Viewed ${pageName} page`;
   }
 
   if (pageCategory && pageName) {
-    eventName = "Viewed " + pageCategory + " " + pageName + " page";
+    eventName = `Viewed ${pageCategory} ${pageName} page`;
   }
 
   message.event = eventName;
@@ -139,8 +135,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      console.log("Message type not supported");
-      throw new Error("Message type not supported");
+      respList.push({ statusCode: 400, error: "Message type not supported" });
   }
 
   return respList;

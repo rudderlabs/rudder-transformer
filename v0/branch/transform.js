@@ -124,7 +124,7 @@ function commonPayload(message, rawPayload, category) {
         for (let i = 0; i < rudderPropertiesObj.products.length; i += 1) {
           const product = rudderPropertiesObj.products[i];
           Object.keys(product).map(productProp => {
-            let { eventData, customData } = mapPayload(
+            const { eventData, customData } = mapPayload(
               category,
               productProp,
               product
@@ -204,6 +204,8 @@ function getDestinationKeys(destination) {
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
+        break;
+      default:
         break;
     }
   });

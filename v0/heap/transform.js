@@ -7,8 +7,8 @@ const {
   defaultRequestConfig
 } = require("../util");
 
-function responseBuilder(payload, message, heapConfig) {
-  let response = defaultRequestConfig();
+function responseBuilder(payload, message) {
+  const response = defaultRequestConfig();
 
   switch (message.type) {
     case EventType.IDENTIFY:
@@ -36,7 +36,7 @@ function responseBuilder(payload, message, heapConfig) {
 }
 
 function commonPayload(message, rawPayload, type) {
-  let propertiesObj = {};
+  const propertiesObj = {};
   let propsArray;
   let rudderPropertiesObj;
   switch (type) {
@@ -54,10 +54,12 @@ function commonPayload(message, rawPayload, type) {
       rudderPropertiesObj = message.context.traits;
       rawPayload.identity = message.context.traits.email;
       break;
+    default:
+      break;
   }
 
   propsArray.forEach(property => {
-    if (property != "email") {
+    if (property !== "email") {
       propertiesObj[property] = rudderPropertiesObj[property];
     }
   });
@@ -67,14 +69,14 @@ function commonPayload(message, rawPayload, type) {
 }
 
 function getIdentifyPayload(message, heapConfig) {
-  let rawPayload = {
+  const rawPayload = {
     app_id: heapConfig.app_id
   };
   return commonPayload(message, rawPayload, message.type);
 }
 
 function getTrackPayload(message, heapConfig) {
-  let rawPayload = {
+  const rawPayload = {
     app_id: heapConfig.app_id,
     event: get(message.event) ? message.event : message.userId
   };
@@ -114,7 +116,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const heapConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, heapConfig);
-  return responseBuilder(properties, event.message, heapConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

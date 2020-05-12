@@ -79,7 +79,7 @@ function processMessage(message, destination) {
     case EventType.SCREEN:
       eventName = "screen view";
       if (message.properties && message.properties.name) {
-        eventName += " " + message.properties.name;
+        eventName += ` ${message.properties.name}`;
       }
       customParams = processTrackEvents(message);
       break;
@@ -93,7 +93,7 @@ function processMessage(message, destination) {
       // process `track` event
       if (eventName) {
         const evName = eventName.toLowerCase();
-        if (eventNameMapping[evName] != undefined) {
+        if (eventNameMapping[evName] !== undefined) {
           eventName = eventNameMapping[evName];
         }
       }

@@ -1,35 +1,42 @@
-const get = require("get-value"); 
+const get = require("get-value");
 
-const { EventType  } = require("../../constants");
-const { 
+const { EventType } = require("../../constants");
+const {
   defaultRequestConfig,
   removeUndefinedAndNullValues
 } = require("../util");
-const { 
+const {
   ConfigCategory,
-  mappingConfig, 
+  mappingConfig,
   getIdentifyEndpoint,
   getTrackEndPoint
 } = require("./config");
 
-function formatGender(gender) {
-  if (!gender) return;
-  if (typeof gender !== 'string') return;
+const formatGender = gender => {
+  if (!gender) return null;
+  if (typeof gender !== "string") return null;
 
-  var femaleGenders = ['woman', 'female', 'w', 'f'];
-  var maleGenders = ['man', 'male', 'm'];
-  var otherGenders = ['other', 'o'];
+  const femaleGenders = ["woman", "female", "w", "f"];
+  const maleGenders = ["man", "male", "m"];
+  const otherGenders = ["other", "o"];
 
-  if (femaleGenders.indexOf(gender.toLowerCase()) > -1) return 'F';
-  if (maleGenders.indexOf(gender.toLowerCase()) > -1) return 'M';
-  if (otherGenders.indexOf(gender.toLowerCase()) > -1) return 'O';
-}
+  if (femaleGenders.indexOf(gender.toLowerCase()) > -1) {
+    return "F";
+  }
+  if (maleGenders.indexOf(gender.toLowerCase()) > -1) {
+    return "M";
+  }
+  if (otherGenders.indexOf(gender.toLowerCase()) > -1) {
+    return "O";
+  }
+  return "O";
+};
 
-function buildResponse(message, properties, endpoint) {
+const buildResponse = (message, properties, endpoint) => {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId ? message.userId : message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(properties); 
+  response.body.JSON = removeUndefinedAndNullValues(properties);
   return {
     ...response,
     headers: {
@@ -38,230 +45,289 @@ function buildResponse(message, properties, endpoint) {
     },
     userId: message.userId ? message.userId : message.anonymousId
   };
-}
+};
 
-function setAliasObjectWithAnonId(payload,message){ 
-  payload[ "user_alias" ] = {
-      "alias_name" : message.anonymousId,
-      "alias_label" : 'rudder_id'
-    }
+const setAliasObjectWithAnonId = (payload, message) => {
+  payload.user_alias = {
+    alias_name: message.anonymousId,
+    alias_label: "rudder_id"
+  };
   return payload;
-} 
+};
 
-function setExternalId(payload,message){
-  if(message.userId)
-    payload['external_id'] = message.userId;
-  return payload;
-}
-
-
-function setExternalIdOrAliasObject(payload,message){
-  if(message.userId)
-    return setExternalId(payload,message);
-  else
-  {
-    payload['_update_existing_only'] = false;
-    return setAliasObjectWithAnonId(payload,message);
+const setExternalId = (payload, message) => {
+  if (message.userId) {
+    payload.external_id = message.userId;
   }
-}
+  return payload;
+};
 
-function getIdentifyPayload(message){
+const setExternalIdOrAliasObject = (payload, message) => {
+  if (message.userId) {
+    return setExternalId(payload, message);
+  }
+
+  payload._update_existing_only = false;
+  return setAliasObjectWithAnonId(payload, message);
+};
+
+const getIdentifyPayload = message => {
   let payload = {};
-  payload = setAliasObjectWithAnonId(payload,message);
-  payload = setExternalId(payload,message);
-  return {"aliases_to_identify" : [payload]};
-}
+  payload = setAliasObjectWithAnonId(payload, message);
+  payload = setExternalId(payload, message);
+  return { aliases_to_identify: [payload] };
+};
 
-function getUserAttributesObject(message,mappingJson){ 
+const getUserAttributesObject = (message, mappingJson) => {
   const sourceKeys = Object.keys(mappingJson);
   const data = {};
   sourceKeys.forEach(sourceKey => {
-    let value = get(message, sourceKey);
-    if(value){
-      if(mappingJson[sourceKey] === 'gender'){
-        data[mappingJson[sourceKey]] = formatGender(value); 
+    const value = get(message, sourceKey);
+    if (value) {
+      if (mappingJson[sourceKey] === "gender") {
+        data[mappingJson[sourceKey]] = formatGender(value);
+      } else {
+        data[mappingJson[sourceKey]] = value;
       }
-      else{
-        data[mappingJson[sourceKey]] = value; 
-      }
-   }
+    }
   });
 
-  var reserved = ['avatar', 'address', 'birthday', 'email', 'id', 'firstname', 'gender', 'lastname', 'phone', 'facebook', 'twitter', 'first_name', 'last_name', 'dob', 'external_id', 'country', 'home_city', 'bio', 'gender', 'phone', 'email_subscribe', 'push_subscribe'];
-   
+  const reserved = [
+    "avatar",
+    "address",
+    "birthday",
+    "email",
+    "id",
+    "firstname",
+    "gender",
+    "lastname",
+    "phone",
+    "facebook",
+    "twitter",
+    "first_name",
+    "last_name",
+    "dob",
+    "external_id",
+    "country",
+    "home_city",
+    "bio",
+    "gender",
+    "phone",
+    "email_subscribe",
+    "push_subscribe"
+  ];
+
   reserved.forEach(element => {
     delete message.context.traits[element];
-  }); 
+  });
 
-  Object.keys(message.context.traits).forEach( key => {  
-    data[key]=message.context.traits[key];
+  Object.keys(message.context.traits).forEach(key => {
+    data[key] = message.context.traits[key];
   });
   return data;
+};
 
-}
-
-function appendApiKey(payload,destination){
-  payload["api_key"] = destination.Config.restApiKey;
+const appendApiKey = (payload, destination) => {
+  payload.api_key = destination.Config.restApiKey;
   return payload;
-}
+};
 
-function processIdentify(message, destination) {
-  return buildResponse(message, 
-    appendApiKey(getIdentifyPayload(message),destination), 
-    getIdentifyEndpoint(destination.Config.endPoint)); 
-}
+const processIdentify = (message, destination) => {
+  return buildResponse(
+    message,
+    appendApiKey(getIdentifyPayload(message), destination),
+    getIdentifyEndpoint(destination.Config.endPoint)
+  );
+};
 
-function processTrackWithUserAttributes(message, destination, mappingJson){ 
+const processTrackWithUserAttributes = (message, destination, mappingJson) => {
   let payload = getUserAttributesObject(message, mappingJson);
-  payload = setExternalIdOrAliasObject(payload,message); 
-  return buildResponse(message, 
-    appendApiKey({"attributes" : [payload]} , destination), 
-    getTrackEndPoint(destination.Config.endPoint));  
-}
+  payload = setExternalIdOrAliasObject(payload, message);
+  return buildResponse(
+    message,
+    appendApiKey({ attributes: [payload] }, destination),
+    getTrackEndPoint(destination.Config.endPoint)
+  );
+};
 
-
-function handleReservedProperties(props){ 
+const handleReservedProperties = props => {
   // remove reserved keys from custom event properties
   // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  var reserved = ['time', 'product_id', 'quantity', 'event_name', 'price', 'currency'];
+  const reserved = [
+    "time",
+    "product_id",
+    "quantity",
+    "event_name",
+    "price",
+    "currency"
+  ];
 
   reserved.forEach(element => {
-    delete props[element]; 
-  });  
-  return props; 
-}
+    delete props[element];
+  });
+  return props;
+};
 
-function addMandatoryEventProperties(payload,message){
-  payload['name'] = message.event;
-  payload['time'] = message.timestamp;
+const addMandatoryEventProperties = (payload, message) => {
+  payload.name = message.event;
+  payload.time = message.timestamp;
   return payload;
-}
+};
 
-function addMandatoryPurchaseProperties(payload,productId, price, currencyCode, quantity,timestamp){
-  payload['price'] = price;
-  payload['product_id'] = productId;
-  payload['currency'] = currencyCode;
-  payload['quantity'] = quantity;
-  payload['time'] = timestamp;
+const addMandatoryPurchaseProperties = (
+  payload,
+  productId,
+  price,
+  currencyCode,
+  quantity,
+  timestamp
+) => {
+  payload.price = price;
+  payload.product_id = productId;
+  payload.currency = currencyCode;
+  payload.quantity = quantity;
+  payload.time = timestamp;
   return payload;
-}
+};
 
-function getPurchaseObjs(message){ 
-  var products = message.properties.products ;
-  var currencyCode = message.properties.currency; 
+const getPurchaseObjs = message => {
+  const { products } = message.properties;
+  const currencyCode = message.properties.currency;
 
+  const purchaseObjs = [];
 
-  let purchaseObjs = [];
-
-  if(products){
+  if (products) {
     // we have to make a separate call to appboy for each product
-    products .forEach(product => {    
-      var productId = product.product_id;
-      var price = product.price;
-      var quantity = product.quantity;
-      if(quantity && price && productId)
-      {
+    products.forEach(product => {
+      const productId = product.product_id;
+      const { price } = product;
+      const { quantity } = product;
+      if (quantity && price && productId) {
         let purchaseObj = {};
-        purchaseObj = addMandatoryPurchaseProperties(purchaseObj,productId,price,currencyCode,quantity,message.timestamp );
-        purchaseObj = setExternalIdOrAliasObject(purchaseObj,message);  
+        purchaseObj = addMandatoryPurchaseProperties(
+          purchaseObj,
+          productId,
+          price,
+          currencyCode,
+          quantity,
+          message.timestamp
+        );
+        purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
         purchaseObjs.push(purchaseObj);
       }
-    }); 
+    });
   }
 
   return purchaseObjs;
-}
+};
 
-function processTrackEvent(messageType, message, destination,mappingJson) { 
-  var eventName = message.event;
+const processTrackEvent = (messageType, message, destination, mappingJson) => {
+  const eventName = message.event;
 
-  if (!message.properties){
-    message.properties = {}
+  if (!message.properties) {
+    message.properties = {};
   }
-  var properties = message.properties; 
+  let { properties } = message;
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
-  attributePayload = setExternalIdOrAliasObject(attributePayload,message); 
+  attributePayload = setExternalIdOrAliasObject(attributePayload, message);
 
-  if(messageType == EventType.TRACK && eventName.toLowerCase() === 'order completed')
-  {
-    purchaseObjs = getPurchaseObjs(message);
-    
+  if (
+    messageType === EventType.TRACK &&
+    eventName.toLowerCase() === "order completed"
+  ) {
+    const purchaseObjs = getPurchaseObjs(message);
+
     // del used properties
-    delete properties['products'];
-    delete  properties['currency']; 
+    delete properties.products;
+    delete properties.currency;
 
     let payload = {};
-    payload['properties'] = properties;
+    payload.properties = properties;
 
-    payload = setExternalIdOrAliasObject(payload,message); 
-    return buildResponse(message, 
-      appendApiKey({"attributes" : [attributePayload], "purchases" : purchaseObjs} , destination), 
-      getTrackEndPoint(destination.Config.endPoint));
-      
+    payload = setExternalIdOrAliasObject(payload, message);
+    return buildResponse(
+      message,
+      appendApiKey(
+        { attributes: [attributePayload], purchases: purchaseObjs },
+        destination
+      ),
+      getTrackEndPoint(destination.Config.endPoint)
+    );
   }
-  else
-  {
-    properties = handleReservedProperties(properties); 
-    let payload = {};
+  properties = handleReservedProperties(properties);
+  let payload = {};
 
-    //mandatory fields
-    payload = addMandatoryEventProperties(payload,message);
-    payload['properties'] = properties;
+  // mandatory fields
+  payload = addMandatoryEventProperties(payload, message);
+  payload.properties = properties;
 
-    payload = setExternalIdOrAliasObject(payload,message); 
-    return buildResponse(message, 
-      appendApiKey({"attributes" : [attributePayload],"events" : [payload]} , destination), 
-      getTrackEndPoint(destination.Config.endPoint));
-  }
-}
+  payload = setExternalIdOrAliasObject(payload, message);
+  return buildResponse(
+    message,
+    appendApiKey(
+      { attributes: [attributePayload], events: [payload] },
+      destination
+    ),
+    getTrackEndPoint(destination.Config.endPoint)
+  );
+};
 
-function process(event) {
-
+const process = event => {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  //console.log(JSON.stringify(message, null, 4));
 
+  // Init -- mostly for test cases
+  destination.Config.endPoint = "https://rest.fra-01.braze.eu";
 
-  //Init -- mostly for test cases
-  destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
-  
-  if(destination.Config.dataCenter){
-    let dataCenterArr =  destination.Config.dataCenter.trim().split('-');
-    if(dataCenterArr[0].toLowerCase() === 'eu'){
-       destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
+  if (destination.Config.dataCenter) {
+    const dataCenterArr = destination.Config.dataCenter.trim().split("-");
+    if (dataCenterArr[0].toLowerCase() === "eu") {
+      destination.Config.endPoint = "https://rest.fra-01.braze.eu";
+    } else {
+      destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
     }
-    else{
-       destination.Config.endPoint = 'https://rest.iad-'+dataCenterArr[1]+'.braze.com'
-    }
-  } 
+  }
 
-
-  let category = ConfigCategory.DEFAULT; 
-  switch (messageType) { 
+  let category = ConfigCategory.DEFAULT;
+  let response;
+  switch (messageType) {
     case EventType.TRACK:
-      response = processTrackEvent(messageType,message, destination,mappingConfig[category.name]); 
-      respList.push(response); 
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name]
+      );
+      respList.push(response);
       break;
     case EventType.PAGE:
       message.event = message.name;
-      response = processTrackEvent(messageType,message, destination,mappingConfig[category.name]); 
-      respList.push(response); 
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name]
+      );
+      respList.push(response);
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
-      response = processIdentify(message, destination); 
+      response = processIdentify(message, destination);
       respList.push(response);
-
-      response = processTrackWithUserAttributes(message, destination, mappingConfig[category.name]); 
-      respList.push(response); 
+      response = processTrackWithUserAttributes(
+        message,
+        destination,
+        mappingConfig[category.name]
+      );
+      respList.push(response);
+      break;
+    default:
       break;
   }
 
-
-  //console.log(JSON.stringify(respList, null, 4));
   return respList;
-}
+};
 
 exports.process = process;

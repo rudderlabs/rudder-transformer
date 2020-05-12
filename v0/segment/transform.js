@@ -2,6 +2,7 @@ const get = require("get-value");
 const { destinationConfigKeys, batchEndpoint } = require("./config");
 const {
   defaultPostRequestConfig,
+  defaultRequestConfig,
   removeUndefinedAndNullValues
 } = require("../util");
 
@@ -10,16 +11,18 @@ function responseBuilderSimple(payload, segmentConfig) {
     "base64"
   );
 
-  const response = {
-    endpoint: batchEndpoint,
-    header: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    },
-    requestConfig: defaultPostRequestConfig,
-    userId: segmentConfig.userId,
-    payload
+  const response = defaultRequestConfig();
+  const header = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${basicAuth}`
   };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = header;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.endpoint = batchEndpoint;
+  response.userId = segmentConfig.userId;
+  response.statusCode = 200;
+
   return response;
 }
 

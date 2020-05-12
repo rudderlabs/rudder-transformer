@@ -7,7 +7,7 @@ const {
   SF_TOKEN_REQUEST_URL,
   mappingConfig
 } = require("./config");
-const { removeUndefinedValues, defaultPostRequestConfig } = require("../util");
+const { removeUndefinedValues, defaultRequestConfig } = require("../util");
 
 const formatQueryParams = params => {
   let paramStr = "";
@@ -40,17 +40,16 @@ function getParamsFromConfig(message, destination) {
   const params = {};
 
   const obj = {};
+  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
   if (destination.Config.customMappings) {
     destination.Config.customMappings.forEach(mapping => {
       obj[mapping.from] = mapping.to;
     });
   }
-
   const keys = Object.keys(obj);
   keys.forEach(key => {
     params[obj[key]] = get(message.properties, key);
   });
-
   return params;
 }
 
@@ -107,10 +106,6 @@ async function responseBuilderSimple(
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 
-  // Get custom params from destination config
-  let customParams = getParamsFromConfig(message, destination);
-  customParams = removeUndefinedValues(customParams);
-
   // TODO : check for the bitwise operator
   const customKeys = Object.keys(message.context.traits);
   customKeys.forEach(key => {
@@ -129,16 +124,24 @@ async function responseBuilderSimple(
     }
   });
 
-  const response = {
-    endpoint: targetEndpoint,
-    requestConfig: defaultPostRequestConfig,
-    header: {
-      "Content-Type": "application/json",
-      Authorization: authorizationData[0]
-    },
-    userId: message.anonymousId,
-    payload: { ...customParams, ...payload }
+  // Get custom params from destination config
+  const customParams = removeUndefinedValues(
+    getParamsFromConfig(message, destination)
+  );
+
+  const response = defaultRequestConfig();
+  const header = {
+    "Content-Type": "application/json",
+    Authorization: authorizationData[0]
   };
+  // console.log(response);
+
+  response.headers = header;
+  response.body.JSON = { ...customParams, ...payload };
+  response.endpoint = targetEndpoint;
+  response.userId = message.anonymousId;
+  response.statusCode = 200;
+
   return response;
 }
 

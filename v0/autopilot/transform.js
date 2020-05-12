@@ -4,6 +4,7 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
+  defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
 } = require("../util");
@@ -11,6 +12,13 @@ const {
 function responseBuilder(payload, message, autoPilotConfig) {
   let endpoint;
   let requestConfig;
+
+  const response = defaultRequestConfig();
+  const header = {
+    autopilotapikey: `${autoPilotConfig.apiKey}`,
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
 
   switch (message.type) {
     case EventType.IDENTIFY:
@@ -25,17 +33,12 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
   }
 
-  const response = {
-    endpoint,
-    header: {
-      autopilotapikey: `${autoPilotConfig.apiKey}`,
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    requestConfig,
-    userId: message.userId || message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
-  };
+  response.method = requestConfig.requestMethod;
+  response.headers = header;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.endpoint = endpoint;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.statusCode = 200;
   return response;
 }
 
@@ -83,7 +86,7 @@ function getTransformedJSON(message) {
       rawPayload = getIdentifyPayload(message);
       break;
     default:
-      break;
+      throw new Error("message type not supported");
   }
   return { ...rawPayload };
 }

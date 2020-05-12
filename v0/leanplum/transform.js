@@ -6,19 +6,19 @@ const {
   ConfigCategory,
   mappingConfig,
   ENDPOINT,
-  API_VERSION
+  API_VERSION,
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
 } = require("../util");
 
 function setValues(payload, message, mappingJson) {
   if (Array.isArray(mappingJson)) {
     let val;
     let sourceKeys;
-    mappingJson.forEach(mapping => {
+    mappingJson.forEach((mapping) => {
       val = undefined;
       sourceKeys = mapping.sourceKeys;
       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
@@ -48,7 +48,7 @@ function constructPayload(message, name, destination) {
   let rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
-    apiVersion: API_VERSION
+    apiVersion: API_VERSION,
   };
 
   rawPayload = setValues(rawPayload, message, mappingJson);
@@ -80,12 +80,12 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = constructPayload(message, category.name, destination);
   response.params = {
-    action: category.action
+    action: category.action,
   };
 
   return response;
@@ -122,18 +122,22 @@ function processSingleMessage(message, destination) {
   // build the response
   const response = responseBuilderSimple(message, category, destination);
 
-  let respList = [];
-
   // all event types except idetify requires startSession
   if (messageType !== EventType.IDENTIFY) {
-    respList = [startSession(message, destination)];
+    return [startSession(message, destination), response];
   }
 
-  return [...respList, response];
+  return response;
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  let response;
+  try {
+    response = processSingleMessage(event.message, event.destination);
+  } catch (error) {
+    response = { statusCode: 400, message: error.message || "Unknown error" };
+  }
+  return response;
 }
 
 exports.process = process;

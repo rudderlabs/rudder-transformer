@@ -413,11 +413,14 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(event) {
-  const result = processSingleMessage(event.message, event.destination);
-  if (!result.statusCode) {
-    result.statusCode = 200;
+  let response;
+  try {
+    response = processSingleMessage(event.message, event.destination);
+  } catch (error) {
+    response = { statusCode: 400, message: error.message || "Unknown error" };
   }
-  return result;
+
+  return response;
 }
 
 exports.process = process;

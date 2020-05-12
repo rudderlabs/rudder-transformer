@@ -6,12 +6,12 @@ const { logger } = require("../../logger");
 const {
   getEndpoint,
   destinationConfigKeys,
-  subscriptionStatus,
+  subscriptionStatus
 } = require("./config");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
-  defaultPutRequestConfig,
+  defaultPutRequestConfig
 } = require("../util");
 
 // Converts to upper case and removes spaces
@@ -40,8 +40,8 @@ async function checkIfMailExists(mailChimpConfig, email) {
     await axios.get(url, {
       auth: {
         username: "apiKey",
-        password: `${mailChimpConfig.apiKey}`,
-      },
+        password: `${mailChimpConfig.apiKey}`
+      }
     });
     status = true;
   } catch (error) {
@@ -55,8 +55,8 @@ async function checkIfDoubleOptIn(mailChimpConfig) {
   const response = await axios.get(url, {
     auth: {
       username: "apiKey",
-      password: `${mailChimpConfig.apiKey}`,
-    },
+      password: `${mailChimpConfig.apiKey}`
+    }
   });
   return !!response.data.double_optin;
 }
@@ -92,9 +92,9 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
     ...response,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`,
+      Authorization: `Basic ${basicAuth}`
     },
-    userId: message.userId ? message.userId : message.anonymousId,
+    userId: message.userId || message.anonymousId
   };
 }
 
@@ -105,22 +105,16 @@ async function getPayload(
   emailExists,
   mailChimpConfig
 ) {
-<<<<<<< HEAD
   if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
-=======
-  if (updateSubscription != undefined && emailExists) {
-    let rawPayload = {};
-    Object.keys(message.integrations.MailChimp).forEach((field) => {
->>>>>>> origin/master
       if (field === "subscriptionStatus") {
         rawPayload.status = message.integrations.MailChimp[field];
       } else {
         rawPayload[field] = message.integrations.MailChimp[field];
       }
     });
-    Object.keys(message.context.traits).forEach((trait) => {
+    Object.keys(message.context.traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = message.context.traits[trait];
       }
@@ -132,7 +126,7 @@ async function getPayload(
     const rawPayload = {};
     rawPayload.merge_fields = {};
 
-    Object.keys(message.context.traits).forEach((trait) => {
+    Object.keys(message.context.traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = message.context.traits[trait];
       } else {
@@ -148,11 +142,8 @@ async function getPayload(
     }
     return rawPayload;
   }
-<<<<<<< HEAD
 
   return null;
-=======
->>>>>>> origin/master
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
@@ -184,13 +175,8 @@ async function getTransformedJSON(message, mailChimpConfig) {
 
 function getMailChimpConfig(message, destination) {
   const configKeys = Object.keys(destination.Config);
-<<<<<<< HEAD
   const mailChimpConfig = {};
   configKeys.forEach(key => {
-=======
-  let mailChimpConfig = {};
-  configKeys.forEach((key) => {
->>>>>>> origin/master
     switch (key) {
       case destinationConfigKeys.apiKey:
         mailChimpConfig.apiKey = `${destination.Config[key]}`;

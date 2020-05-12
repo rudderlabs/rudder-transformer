@@ -223,7 +223,7 @@ function excludeRudderCreatedTableNames(name) {
 function setFromConfig(provider, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
-    if (val !== undefined) {
+    if (val !== undefined || val !== null) {
       const datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
@@ -251,7 +251,10 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
       );
     } else {
       let val = input[key];
-      const datatype = getDataType(val);
+      if (val === null || val === undefined) {
+        return;
+      }
+      datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }

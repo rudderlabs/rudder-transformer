@@ -193,6 +193,9 @@ function safeColumnName(provider, name = "") {
   if (columnName === "") {
     columnName = "STRINGEMPTY";
   }
+  if (provider === "postgres") {
+    columnName = columnName.toLowerCase();
+  }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }

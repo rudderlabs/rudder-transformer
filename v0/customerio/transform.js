@@ -7,7 +7,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  defaultRequestConfig,
+  defaultRequestConfig
 } = require("../util");
 
 const {
@@ -15,13 +15,13 @@ const {
   USER_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
-  DEVICE_DELETE_ENDPOINT,
+  DEVICE_DELETE_ENDPOINT
 } = require("./config");
 
 const deviceRelatedEventNames = [
   "Application Installed",
   "Application Opened",
-  "Application Uninstalled",
+  "Application Uninstalled"
 ];
 const deviceDeleteRelatedEventName = "Application Uninstalled";
 
@@ -29,10 +29,10 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
   // console.log(message);
-  SpecedTraits.forEach((trait) => {
+  SpecedTraits.forEach(trait => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
-    keys.forEach((key) => {
+    keys.forEach(key => {
       set(payload, key, get(message, mapping[key]));
     });
   });
@@ -63,7 +63,7 @@ function responseBuilder(message, evType, evName, destination) {
     populateSpecedTraits(rawPayload, message);
     if (message.context.traits) {
       const traits = Object.keys(message.context.traits);
-      traits.forEach((trait) => {
+      traits.forEach(trait => {
         // populate keys other than speced traits
         if (!SpecedTraits.includes(trait)) {
           set(rawPayload, trait, get(message, "context.traits." + trait));
@@ -73,7 +73,7 @@ function responseBuilder(message, evType, evName, destination) {
 
     if (message.user_properties) {
       const userProps = Object.keys(message.user_properties);
-      userProps.forEach((prop) => {
+      userProps.forEach(prop => {
         const val = get(message, "user_properties." + prop);
         set(rawPayload, prop, val);
       });

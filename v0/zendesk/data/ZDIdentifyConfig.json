@@ -1,0 +1,8 @@
+{
+    "context.traits.email": "user.email",
+    "context.traits.name": "user.name",
+    "context.traits.organizationId": "user.organization_id",
+    "context.traits.timezone": "user.time_zone",
+    "context.traits.phone": "user.phone",
+    "userId": "user.external_id"
+}

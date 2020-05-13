@@ -1,7 +1,10 @@
 const { processWarehouseMessage } = require("../util");
 
 function processSingleMessage(message, destination) {
-    return processWarehouseMessage("postgres", message);
+    const modifiedMessage = Object.fromEntries( // converting object keys to lower case.
+        Object.entries(message).map(([k, v]) => [k.toLowerCase(), v])
+    );
+    return processWarehouseMessage("postgres", modifiedMessage);
 }
 
 function process(event) {

@@ -54,14 +54,7 @@
         "type": "track",
         "userId": "user12345"
       },
-      "userId": "user12345",
-      "config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      }
+      "userId": "user12345"
     }
   },
   {
@@ -122,14 +115,7 @@
         "type": "page",
         "userId": "user12345"
       },
-      "userId": "user12345",
-      "config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      }
+      "userId": "user12345"
     }
   },
   {
@@ -182,14 +168,7 @@
         "type": "identify",
         "userId": "user12345"
       },
-      "userId": "user12345",
-      "config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      }
+      "userId": "user12345"
     }
   },
   {
@@ -244,14 +223,7 @@
         "type": "track",
         "userId": "user12345"
       },
-      "userId": "user12345",
-      "config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      }
+      "userId": "user12345"
     }
   },
   {
@@ -309,14 +281,7 @@
         "type": "track",
         "userId": "user12345"
       },
-      "userId": "user12345",
-      "config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      }
+      "userId": "user12345"
     }
   }
 ]

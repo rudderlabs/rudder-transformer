@@ -1,28 +1,5 @@
 [
   {
-    "destination": {
-      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
-      "Name": "Kinesis",
-      "DestinationDefinition": {
-        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
-        "Name": "KINESIS",
-        "DisplayName": "Kinesis",
-        "Config": {
-          "excludeKeys": [],
-          "includeKeys": []
-        }
-      },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    },
     "message": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
       "channel": "web",
@@ -86,29 +63,6 @@
     }
   },
   {
-    "destination": {
-      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
-      "Name": "Kinesis",
-      "DestinationDefinition": {
-        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
-        "Name": "KINESIS",
-        "DisplayName": "Kinesis",
-        "Config": {
-          "excludeKeys": [],
-          "includeKeys": []
-        }
-      },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    },
     "message": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
       "channel": "web",
@@ -175,29 +129,6 @@
     }
   },
   {
-    "destination": {
-      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
-      "Name": "Kinesis",
-      "DestinationDefinition": {
-        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
-        "Name": "KINESIS",
-        "DisplayName": "Kinesis",
-        "Config": {
-          "excludeKeys": [],
-          "includeKeys": []
-        }
-      },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    },
     "message": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
       "channel": "web",
@@ -256,29 +187,6 @@
     }
   },
   {
-    "destination": {
-      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
-      "Name": "Kinesis",
-      "DestinationDefinition": {
-        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
-        "Name": "KINESIS",
-        "DisplayName": "Kinesis",
-        "Config": {
-          "excludeKeys": [],
-          "includeKeys": []
-        }
-      },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    },
     "message": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
       "channel": "web",
@@ -339,29 +247,6 @@
     }
   },
   {
-    "destination": {
-      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
-      "Name": "Kinesis",
-      "DestinationDefinition": {
-        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
-        "Name": "KINESIS",
-        "DisplayName": "Kinesis",
-        "Config": {
-          "excludeKeys": [],
-          "includeKeys": []
-        }
-      },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    },
     "message": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
       "channel": "web",

@@ -1,5 +1,5 @@
-const integration = "kinesis";
-const name = "Kinesis";
+const integration = "kafka";
+const name = "Kafka";
 
 const fs = require("fs");
 const path = require("path");

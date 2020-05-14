@@ -4,7 +4,7 @@ const name = "Intercom";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/${integration}/transform`);
+const transformer = require(`../v0/destinations/${integration}/transform`);
 
 // TODO: Add cases for group, reset, etc. Also for events with order_id, etc.
 test(`${name} Tests`, async () => {

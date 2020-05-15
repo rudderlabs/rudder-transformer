@@ -2,8 +2,8 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const axios = require("axios");
 const { lstatSync, readdirSync } = require("fs");
+const util = require("util");
 const logger = require("./logger");
-
 const versions = ["v0"];
 
 const dataPlaneURL = (
@@ -14,7 +14,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
-const startSourceTransformer = transformerMode === "source";
+const startSourceTransformer = transformerMode === "source" || !transformerMode;
 
 const router = new Router();
 
@@ -161,10 +161,6 @@ if (startSourceTransformer) {
     sources.forEach(source => {
       const sourceHandler = getSourceHandler(version, source);
       router.post(`/${version}/sources/${source}`, async ctx => {
-        const writeKey = ctx.request.query.writeKey;
-        if (!writeKey) {
-          ctx.throw(400, "no write key provided");
-        }
         const event = ctx.request.body;
         try {
           response = sourceHandler.process(event);
@@ -173,26 +169,8 @@ if (startSourceTransformer) {
             ctx.body = response.error;
             return;
           }
-          payload = {
-            batch: [response.message],
-            sentAt: new Date().toISOString()
-          };
-          // make request to rudder-server
-          try {
-            response = await axios.post(`${dataPlaneURL}/v1/batch`, payload, {
-              auth: { username: writeKey }
-            });
-            ctx.status = 200;
-            return;
-          } catch (error) {
-            console.error(error);
-            if (error.response) {
-              ctx.status = error.response.status;
-              ctx.body = error.response.data;
-              return;
-            }
-            ctx.status = 500;
-          }
+          ctx.status = 200;
+          ctx.body = response.message;
         } catch (error) {
           console.error(error);
           ctx.status = 500;

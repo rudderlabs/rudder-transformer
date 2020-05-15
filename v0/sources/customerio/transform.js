@@ -32,10 +32,9 @@ function process(event) {
   message.setProperties(event, mapping);
 
   if (event.timestamp) {
-    message.setProperty(
-      "originalTimestamp",
-      new Date(event.timestamp * 1000).toISOString()
-    );
+    const ts = new Date(event.timestamp * 1000).toISOString();
+    message.setProperty("originalTimestamp", ts);
+    message.setProperty("sentAt", ts);
   }
 
   return { message };

@@ -161,21 +161,35 @@ if (startSourceTransformer) {
     sources.forEach(source => {
       const sourceHandler = getSourceHandler(version, source);
       router.post(`/${version}/sources/${source}`, async ctx => {
-        const event = ctx.request.body;
-        try {
-          response = sourceHandler.process(event);
-          if (response.error) {
-            ctx.status = 400;
-            ctx.body = response.error;
-            return;
-          }
-          ctx.status = 200;
-          ctx.body = response.message;
-        } catch (error) {
-          console.error(error);
-          ctx.status = 500;
-          ctx.body = error;
-        }
+        const events = ctx.request.body;
+        logger.info("[DT] Input source events: " + JSON.stringify(events));
+        const respList = [];
+        await Promise.all(
+          events.map(async event => {
+            try {
+              let respEvents = await sourceHandler.process(event);
+              if (!Array.isArray(respEvents)) {
+                respEvents = [respEvents];
+              }
+              respList.push(
+                ...respEvents.map(ev => {
+                  return { output: ev };
+                })
+              );
+            } catch (error) {
+              logger.error(error);
+              respList.push({
+                output: {
+                  statusCode: 400,
+                  error:
+                    error.message || "Error occurred while processing payload."
+                }
+              });
+            }
+          })
+        );
+        logger.info("[DT] Output source events: " + JSON.stringify(respList));
+        ctx.body = respList;
       });
     });
   });

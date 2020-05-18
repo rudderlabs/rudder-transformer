@@ -14,7 +14,7 @@ const eventNameMap = {
 function process(event) {
   // support only email status events
   if (event.object_type != "email") {
-    return { error: "Only email status events are supported" };
+    return { statusCode: 400, error: "Only email status events are supported" };
   }
 
   const message = new Message(`Customer.io`);
@@ -25,7 +25,7 @@ function process(event) {
 
   eventName = eventNameMap[event.metric];
   if (!eventName) {
-    return { error: "Metric not supported" };
+    return { statusCode: 400, error: "Metric not supported" };
   }
   message.setEventName(eventName);
 
@@ -37,7 +37,7 @@ function process(event) {
     message.setProperty("sentAt", ts);
   }
 
-  return { message };
+  return message;
 }
 
 exports.process = process;

@@ -15,22 +15,31 @@ const {
   fixIP
 } = require("../util");
 
-function getParamsFromConfig(message, destination) {
+function getParamsFromConfig(message, destination, type) {
   const params = {};
 
   var obj = {};
-  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
-  if (destination.Config.customMappings) {
-    destination.Config.customMappings.forEach(mapping => {
+
+  if (destination) {
+    destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;
     });
   }
-  // console.log(obj);
+ 
+  
   const keys = Object.keys(obj);
   keys.forEach(key => {
+    obj[key] = obj[key].replace(/dimension/g, "cd");
+    obj[key] = obj[key].replace(/metric/g, "cm");
+    obj[key] = obj[key].replace(/content/g, "cg");
+
     params[obj[key]] = get(message.properties, key);
+    if (type === "content") {
+     
+      params[obj[key]] = params[obj[key]].replace(" ", "/");
+    }
   });
-  // console.log(params);
+ 
   return params;
 }
 
@@ -48,21 +57,76 @@ function responseBuilderSimple(
   const rawPayload = {
     v: "1",
     t: hitType,
-    tid: destination.Config.trackingID
+    tid: destination.Config.trackingID,
+    ds: message.channel,
+    an: message.context.app.name,
+    av: message.context.app.version,
+    aiid: message.context.app.namespace
   };
-
+  if (destination.Config.doubleClick) {
+    rawPayload.npa = 1;
+  }
+  if (destination.Config.anonymizeIp) {
+    rawPayload.aip = 1;
+  }
+  if (destination.Config.enhancedLinkAttribution) {
+    rawPayload.linkid = "linkid.js"; // not sure
+  }
+  if (message.context.campaign) {
+    if (message.context.campaign.name) {
+      rawPayload.cn = message.context.campaign.name;
+    }
+    if (message.context.campaign.source) {
+      rawPayload.cs = message.context.campaign.source;
+    }
+    if (message.context.campaign.medium) {
+      rawPayload.cm = message.context.campaign.medium;
+    }
+    if (message.context.campaign.content) {
+      rawPayload.cc = message.context.campaign.content;
+    }
+    if (message.context.campaign.term) {
+      rawPayload.ck = message.context.campaign.term;
+    }
+  }
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
+ =
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
+
   const params = removeUndefinedValues(parameters);
+ 
 
-  // Get custom params from destination config
-  let customParams = getParamsFromConfig(message, destination);
-  customParams = removeUndefinedValues(customParams);
+  // Get dimensions  from destination config
+  let dimensions = getParamsFromConfig(
+    message,
+    destination.Config.dimensions,
+    "dimensions"
+  );
+  
+  dimensions = removeUndefinedValues(dimensions);
 
+  // Get metrics from destination config
+  let metrics = getParamsFromConfig(
+    message,
+    destination.Config.metrics,
+    "metrics"
+  );
+  metrics = removeUndefinedValues(metrics);
+
+  // Get contentGroupings from destination config
+  let contentGroupings = getParamsFromConfig(
+    message,
+    destination.Config.contentGroupings,
+    "content"
+  );
+  contentGroupings = removeUndefinedValues(contentGroupings);
+
+  const customParams = { ...dimensions, ...metrics, ...contentGroupings };
+  
   const finalPayload = { ...params, ...customParams, ...payload };
 
   // check if userId is there and populate
@@ -85,8 +149,21 @@ function responseBuilderSimple(
 }
 
 // Function for processing pageviews
-function processPageViews(message) {
-  return {};
+function processPageViews(message, destination) {
+  var documentPath;
+  if (message.properties) {
+    documentPath = message.properties.path;
+    if (message.properties.search && destination.Config.includeSearch) {
+      documentPath += properties.search;
+    }
+  }
+  var parameters = {
+    dp: documentPath,
+    dl: message.properties.url,
+    dt: message.properties.fullName || message.properties.title,
+    dh: "" // to be implemented
+  };
+  return parameters;
 }
 
 // Function for processing screenviews
@@ -369,7 +446,7 @@ function processSingleMessage(message, destination) {
 
   switch (messageType) {
     case EventType.PAGE:
-      customParams = processPageViews(message);
+      customParams = processPageViews(message, destination);
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:

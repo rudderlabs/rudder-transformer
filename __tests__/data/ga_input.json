@@ -89,7 +89,9 @@
     },
     "destination": {
       "Config": {
-        "trackingID": "abcd"
+        "trackingID": "abcd",
+        "dimensions":
+[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}]
       },
       "Enabled": true
     }

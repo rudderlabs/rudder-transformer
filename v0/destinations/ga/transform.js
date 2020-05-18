@@ -93,7 +93,7 @@ function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
- =
+ 
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 

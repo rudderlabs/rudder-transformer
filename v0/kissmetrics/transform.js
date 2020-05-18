@@ -330,12 +330,11 @@ function process(event) {
       response.statusCode = 200;
       respList.push(response);
       break;
-      case EventType.SCREEN:
-        response = processScreen(message, destination);
-        response.statusCode = 200;
-        respList.push(response);
-        break;
-      
+    case EventType.SCREEN:
+      response = processScreen(message, destination);
+      response.statusCode = 200;
+      respList.push(response);
+      break;
     case EventType.TRACK:
       responses = processTrack(message, destination);
       responses.forEach(element => {

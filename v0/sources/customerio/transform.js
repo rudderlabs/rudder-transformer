@@ -1,6 +1,11 @@
-const Message = require("../message");
+const path = require("path");
+const fs = require("fs");
 
-const mapping = require("./mapping.json");
+// import mapping json using JSON.parse to preserve object key order
+const mapping = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
+);
+const Message = require("../message");
 
 const eventNameMap = {
   clicked: "Email Link Clicked",

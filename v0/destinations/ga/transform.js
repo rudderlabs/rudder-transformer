@@ -6,13 +6,13 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  fixIP
+  fixIP,
 } = require("../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -21,13 +21,13 @@ function getParamsFromConfig(message, destination, type) {
   var obj = {};
 
   if (destination) {
-    destination.forEach(mapping => {
+    destination.forEach((mapping) => {
       obj[mapping.from] = mapping.to;
     });
   }
 
   const keys = Object.keys(obj);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/content/g, "cg");
@@ -62,7 +62,7 @@ function responseBuilderSimple(
     ds: message.channel,
     an: message.context.app.name,
     av: message.context.app.version,
-    aiid: message.context.app.namespace
+    aiid: message.context.app.namespace,
   };
   if (destination.Config.doubleClick) {
     rawPayload.npa = 1;
@@ -90,9 +90,9 @@ function responseBuilderSimple(
       rawPayload.ck = message.context.campaign.term;
     }
   }
-  
+
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
+  sourceKeys.forEach((sourceKey) => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
 
@@ -163,7 +163,7 @@ function processPageViews(message, destination) {
     }
   }
   var parameters = {
-    dp: documentPath
+    dp: documentPath,
   };
   return parameters;
 }
@@ -188,9 +188,9 @@ function processNonEComGenericEvent(message, destination) {
   var parameters = {
     ev: formatValue(eventValue),
     ec: message.properties.category || "All",
-    ni: nonInteraction == false ? 0 : 1
+    ni: nonInteraction == false ? 0 : 1,
   };
- 
+
   return parameters;
 }
 
@@ -203,7 +203,7 @@ function processPromotionEvent(message) {
   const parameters = {
     ea: eventString,
     ec: message.properties.category || "addPromo",
-    cu: message.properties.currency
+    cu: message.properties.currency,
   };
 
   switch (eventString.toLowerCase()) {
@@ -223,7 +223,7 @@ function processPromotionEvent(message) {
 // Function for processing payment-related events
 function processPaymentRelatedEvent(message) {
   const parameters = {
-    pa: "checkout"
+    pa: "checkout",
   };
   return parameters;
 }
@@ -231,7 +231,7 @@ function processPaymentRelatedEvent(message) {
 // Function for processing order refund events
 function processRefundEvent(message) {
   const parameters = {
-    pa: "refund"
+    pa: "refund",
   };
 
   const products = message.properties.products;
@@ -277,7 +277,7 @@ function processSharingEvent(message) {
     case Event.CART_SHARED: {
       const products = message.properties.products;
       let shareTargetString = ""; // all product ids will be concatenated with separation
-      products.forEach(product => {
+      products.forEach((product) => {
         shareTargetString += " " + product.product_id;
       });
       parameters.st = shareTargetString;
@@ -294,7 +294,7 @@ function processProductListEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   // Set action depending on Product List Action
@@ -347,7 +347,7 @@ function processProductEvent(message) {
 
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   // Set product action to click or detail depending on event
@@ -453,7 +453,7 @@ function processEComGenericEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   return parameters;
@@ -478,11 +478,11 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK: {
       const eventName = message.event.toLowerCase();
-      
+
       category = nameToEventMap[eventName]
         ? nameToEventMap[eventName].category
         : ConfigCategory.NON_ECOM;
-     
+
       switch (category.name) {
         case ConfigCategory.PRODUCT_LIST.name:
           customParams = processProductListEvent(message);

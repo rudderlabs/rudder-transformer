@@ -2,9 +2,8 @@
   "anonymousId": "cid",
   "properties.name": "cd",
   "event": "ea",
-  "properties.category": "ec",
+
   "properties.label": "el",
-  "properties.value": "ev",
   "request_ip": "uip",
   "context.userAgent": "ua"
 }

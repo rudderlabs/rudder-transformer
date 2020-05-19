@@ -1,14 +1,9 @@
 const Router = require("koa-router");
 const _ = require("lodash");
-const axios = require("axios");
 const { lstatSync, readdirSync } = require("fs");
-const util = require("util");
 const logger = require("./logger");
-const versions = ["v0"];
 
-const dataPlaneURL = (
-  process.env.DATA_PLANE_URL || "http://localhost:8080"
-).replace(/\/$/, "");
+const versions = ["v0"];
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -22,8 +17,8 @@ const isDirectory = source => {
   return lstatSync(source).isDirectory();
 };
 
-const getDestinations = source =>
-  readdirSync(source).filter(destName => isDirectory(`${source}/${destName}`));
+const getIntegrations = type =>
+  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
@@ -48,46 +43,54 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-if (startDestTransformer) {
-  versions.forEach(version => {
-    const destinations = getDestinations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      const destHandler = getDestHandler(version, destination);
-      router.post(`/${version}/${destination}`, async ctx => {
-        const events = ctx.request.body;
-        logger.debug("[DT] Input events: " + JSON.stringify(events));
-        const respList = [];
-        await Promise.all(
-          events.map(async event => {
-            try {
-              let respEvents = await destHandler.process(event);
-              if (!Array.isArray(respEvents)) {
-                respEvents = [respEvents];
-              }
-              respList.push(
-                ...respEvents.map(ev => {
-                  if (ev.statusCode !== 400 && ev.userId) {
-                    ev.userId += "";
-                  }
-                  return { output: ev, metadata: event.metadata };
-                })
-              );
-            } catch (error) {
-              logger.error(error);
-
-              respList.push({
-                output: {
-                  statusCode: 400,
-                  error:
-                    error.message || "Error occurred while processing payload."
-                },
-                metadata: event.metadata
-              });
+async function handleDest(ctx, destHandler) {
+  const events = ctx.request.body;
+  logger.debug("[DT] Input events: " + JSON.stringify(events));
+  const respList = [];
+  await Promise.all(
+    events.map(async event => {
+      try {
+        let respEvents = await destHandler.process(event);
+        if (!Array.isArray(respEvents)) {
+          respEvents = [respEvents];
+        }
+        respList.push(
+          ...respEvents.map(ev => {
+            if (ev.statusCode !== 400 && ev.userId) {
+              ev.userId += "";
             }
+            return { output: ev, metadata: event.metadata };
           })
         );
-        logger.debug("[DT] Output events: " + JSON.stringify(respList));
-        ctx.body = respList;
+      } catch (error) {
+        logger.error(error);
+
+        respList.push({
+          output: {
+            statusCode: 400,
+            error: error.message || "Error occurred while processing payload."
+          },
+          metadata: event.metadata
+        });
+      }
+    })
+  );
+  logger.debug("[DT] Output events: " + JSON.stringify(respList));
+  ctx.body = respList;
+}
+
+if (startDestTransformer) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      const destHandler = getDestHandler(version, destination);
+      // eg. v0/destinations/ga
+      router.post(`/${version}/destinations/${destination}`, async ctx => {
+        await handleDest(ctx, destHandler);
+      });
+      // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
+      router.post(`/${version}/${destination}`, async ctx => {
+        await handleDest(ctx, destHandler);
       });
     });
   });
@@ -155,41 +158,45 @@ if (startDestTransformer) {
   }
 }
 
-if (startSourceTransformer) {
-  versions.forEach(version => {
-    const sources = getDestinations(`${version}/sources`);
-    sources.forEach(source => {
-      const sourceHandler = getSourceHandler(version, source);
-      router.post(`/${version}/sources/${source}`, async ctx => {
-        const events = ctx.request.body;
-        logger.info("[DT] Input source events: " + JSON.stringify(events));
-        const respList = [];
-        await Promise.all(
-          events.map(async event => {
-            try {
-              let respEvents = await sourceHandler.process(event);
-              if (!Array.isArray(respEvents)) {
-                respEvents = [respEvents];
-              }
-              respList.push(
-                ...respEvents.map(ev => {
-                  return { output: ev };
-                })
-              );
-            } catch (error) {
-              logger.error(error);
-              respList.push({
-                output: {
-                  statusCode: 400,
-                  error:
-                    error.message || "Error occurred while processing payload."
-                }
-              });
-            }
+async function handleSource(ctx, sourceHandler) {
+  const events = ctx.request.body;
+  logger.debug("[ST] Input source events: " + JSON.stringify(events));
+  const respList = [];
+  await Promise.all(
+    events.map(async event => {
+      try {
+        let respEvents = await sourceHandler.process(event);
+        if (!Array.isArray(respEvents)) {
+          respEvents = [respEvents];
+        }
+        respList.push(
+          ...respEvents.map(ev => {
+            return { output: ev };
           })
         );
-        logger.info("[DT] Output source events: " + JSON.stringify(respList));
-        ctx.body = respList;
+      } catch (error) {
+        logger.error(error);
+        respList.push({
+          output: {
+            statusCode: 400,
+            error: error.message || "Error occurred while processing payload."
+          }
+        });
+      }
+    })
+  );
+  logger.debug("[ST] Output source events: " + JSON.stringify(respList));
+  ctx.body = respList;
+}
+
+if (startSourceTransformer) {
+  versions.forEach(version => {
+    const sources = getIntegrations(`${version}/sources`);
+    sources.forEach(source => {
+      const sourceHandler = getSourceHandler(version, source);
+      // eg. v0/sources/customerio
+      router.post(`/${version}/sources/${source}`, async ctx => {
+        await handleSource(ctx, sourceHandler);
       });
     });
   });

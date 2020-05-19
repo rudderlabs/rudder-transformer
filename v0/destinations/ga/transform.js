@@ -25,8 +25,7 @@ function getParamsFromConfig(message, destination, type) {
       obj[mapping.from] = mapping.to;
     });
   }
- 
-  
+
   const keys = Object.keys(obj);
   keys.forEach(key => {
     obj[key] = obj[key].replace(/dimension/g, "cd");
@@ -35,14 +34,16 @@ function getParamsFromConfig(message, destination, type) {
 
     params[obj[key]] = get(message.properties, key);
     if (type === "content") {
-     
       params[obj[key]] = params[obj[key]].replace(" ", "/");
     }
   });
- 
+
   return params;
 }
-
+function formatValue(value) {
+  if (!value || value < 0) return 0;
+  return Math.round(value);
+}
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -89,16 +90,16 @@ function responseBuilderSimple(
       rawPayload.ck = message.context.campaign.term;
     }
   }
+  
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
- 
+
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 
   const params = removeUndefinedValues(parameters);
- 
 
   // Get dimensions  from destination config
   let dimensions = getParamsFromConfig(
@@ -106,7 +107,7 @@ function responseBuilderSimple(
     destination.Config.dimensions,
     "dimensions"
   );
-  
+
   dimensions = removeUndefinedValues(dimensions);
 
   // Get metrics from destination config
@@ -126,11 +127,15 @@ function responseBuilderSimple(
   contentGroupings = removeUndefinedValues(contentGroupings);
 
   const customParams = { ...dimensions, ...metrics, ...contentGroupings };
-  
+
   const finalPayload = { ...params, ...customParams, ...payload };
 
   // check if userId is there and populate
-  if (message.userId && message.userId.length > 0) {
+  if (
+    message.userId &&
+    message.userId.length > 0 &&
+    destination.Config.sendUserId
+  ) {
     finalPayload.cid = message.userId;
   }
 
@@ -154,14 +159,11 @@ function processPageViews(message, destination) {
   if (message.properties) {
     documentPath = message.properties.path;
     if (message.properties.search && destination.Config.includeSearch) {
-      documentPath += properties.search;
+      documentPath += message.properties.search;
     }
   }
   var parameters = {
-    dp: documentPath,
-    dl: message.properties.url,
-    dt: message.properties.fullName || message.properties.title,
-    dh: "" // to be implemented
+    dp: documentPath
   };
   return parameters;
 }
@@ -172,8 +174,24 @@ function processScreenViews(message) {
 }
 
 // Function for processing non-ecom generic track events
-function processNonEComGenericEvent(message) {
-  return {};
+function processNonEComGenericEvent(message, destination) {
+  var eventValue = "";
+  if (message.properties) {
+    eventValue = message.properties.value
+      ? message.properties.value
+      : message.properties.revenue;
+  }
+  var nonInteraction =
+    message.properties.nonInteraction !== undefined
+      ? !!message.properties.nonInteraction
+      : !!destination.Config.nonInteraction;
+  var parameters = {
+    ev: formatValue(eventValue),
+    ec: message.properties.category || "All",
+    ni: nonInteraction == false ? 0 : 1
+  };
+ 
+  return parameters;
 }
 
 // Function for processing promotion viewed or clicked event
@@ -184,7 +202,8 @@ function processPromotionEvent(message) {
   // customer-side overriding of event category and event action values
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: message.properties.category || "addPromo",
+    cu: message.properties.currency
   };
 
   switch (eventString.toLowerCase()) {
@@ -203,15 +222,19 @@ function processPromotionEvent(message) {
 
 // Function for processing payment-related events
 function processPaymentRelatedEvent(message) {
-  const parameters = { pa: "checkout" };
+  const parameters = {
+    pa: "checkout"
+  };
   return parameters;
 }
 
 // Function for processing order refund events
 function processRefundEvent(message) {
-  const parameters = { pa: "refund" };
+  const parameters = {
+    pa: "refund"
+  };
 
-  const { products } = message.properties;
+  const products = message.properties.products;
   if (products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
@@ -455,10 +478,11 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK: {
       const eventName = message.event.toLowerCase();
-      category = Event[nameToEventMap[eventName]]
-        ? Event[nameToEventMap[eventName]].category
+      
+      category = nameToEventMap[eventName]
+        ? nameToEventMap[eventName].category
         : ConfigCategory.NON_ECOM;
-
+     
       switch (category.name) {
         case ConfigCategory.PRODUCT_LIST.name:
           customParams = processProductListEvent(message);
@@ -485,7 +509,7 @@ function processSingleMessage(message, destination) {
           customParams = processEComGenericEvent(message);
           break;
         default:
-          customParams = processNonEComGenericEvent(message);
+          customParams = processNonEComGenericEvent(message, destination);
           break;
       }
       break;

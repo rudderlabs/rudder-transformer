@@ -177,10 +177,8 @@ async function handleSource(ctx, sourceHandler) {
       } catch (error) {
         logger.error(error);
         respList.push({
-          output: {
-            statusCode: 400,
-            error: error.message || "Error occurred while processing payload."
-          }
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
         });
       }
     })

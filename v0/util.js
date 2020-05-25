@@ -371,7 +371,7 @@ function processWarehouseMessage(provider, message) {
       });
 
       // do not create event table in case of empty event name (after transformColumnName)
-      if (tracksEvent.data.event === "") {
+      if (tracksEvent[safeColumnName(provider, "event")] === "") {
         break;
       }
 

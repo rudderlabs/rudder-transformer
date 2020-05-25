@@ -132,8 +132,6 @@ const defaultRequestConfig = () => {
 // Start of warehouse specific utils
 
 const toSafeDBString = str => {
-  if (parseInt(str[0]) > 0) str = `_${str}`;
-  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
   return str.substr(0, 127);
 };
 
@@ -215,7 +213,7 @@ function safeColumnName(provider, name = "") {
   9mega________-________90 to _9mega_90
   it also handles char's where its ascii values are more than 127
   example:
-  Cízǔ to Cz
+  Cízǔ to C_z
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
 function transformColumnName(name = ""){
@@ -381,6 +379,7 @@ function processWarehouseMessage(provider, message) {
       });
 
       const trackProps = {};
+      console.log(columnTypes)
       setFromProperties(provider, trackProps, message.properties, columnTypes);
       setFromProperties(
         provider,

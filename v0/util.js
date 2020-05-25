@@ -90,7 +90,7 @@ const toSnakeCase = str => {
 
 const isObject = value => {
   var type = typeof value;
-  return value != null && (type == "object" || type == "function");
+  return value != null && (type == "object" || type == "function") && !Array.isArray(value);
 };
 
 const defaultGetRequestConfig = {
@@ -196,12 +196,51 @@ function safeColumnName(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
+  else{
+    columnName = columnName.toLowerCase();
+  }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
+      reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
     columnName = "_" + columnName;
   }
   return columnName;
+}
+/*transformColumnName convert keys like this &4yasdfa(84224_fs9##_____*3q to _4yasdfa_84224_fs9_3q
+  it removes symbols and joins continuous letters and numbers with single underscore and if first char is a number will append a underscore before the first number
+  few more examples
+  omega to omega
+  9mega to _9mega
+  mega& to mega
+  9mega________-________90 to _9mega_90
+  it also handles char's where its ascii values are more than 127
+  example:
+  Cízǔ to Cz
+  return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
+*/
+function transformColumnName(name = ""){
+  let extractedValues = [];
+  let extractedValue = "";
+  for(let c of name ){
+    let asciiValue = c.charCodeAt(0);
+    if ((asciiValue >= 65 && asciiValue <= 90)||(asciiValue >=97&&asciiValue<=122)||(asciiValue>=48&&asciiValue<=57)){
+      extractedValue+=c
+    }
+    else{
+      if(extractedValue !== ""){
+        extractedValues.push(extractedValue)
+      }
+      extractedValue = ""
+    }
+  }
+  if(extractedValue !== ""){
+    extractedValues.push(extractedValue)
+  }
+  let key = extractedValues.join("_");
+  if(key !== "" && (key.charCodeAt(0) >= 48&&key.charCodeAt(0) <= 57)){
+    key = "_" + key
+  }
+  return key
 }
 
 const rudderCreatedTables = [
@@ -242,11 +281,11 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setFromProperties(
-        provider,
-        resp,
-        input[key],
-        columnTypes,
-        `${prefix + key}_`
+          provider,
+          resp,
+          input[key],
+          columnTypes,
+          `${prefix + key}_`
       );
     } else {
       let val = input[key];
@@ -257,9 +296,13 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      const safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
-      resp[safeKey] = val;
-      columnTypes[safeKey] = datatype;
+      safeKey = transformColumnName(prefix + key);
+      if (safeKey != ""){ // should we add STRINGEMPTY
+        safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
+        resp[safeKey] = val;
+        columnTypes[safeKey] = datatype;
+      }
+
     }
   });
 }
@@ -325,7 +368,7 @@ function processWarehouseMessage(provider, message) {
       );
       columnTypes[eventColName] = "string";
 
-      // shallow copy is sufficient since it does not containe nested objects
+      // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: safeTableName(provider, "tracks"),

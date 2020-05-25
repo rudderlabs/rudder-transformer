@@ -210,7 +210,12 @@ function processTrack(message, destination) {
   const apiKey = destination.Config.apiKey;
   const event = message.event;
   const messageType = message.type.toLowerCase();
-  let properties = JSON.parse(JSON.stringify(message.properties));
+  let properties = {};
+  if (message.properties) {
+    properties = JSON.parse(JSON.stringify(message.properties));
+  
+  }
+ 
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
@@ -225,7 +230,7 @@ function processTrack(message, destination) {
   }
 
   properties = clean(properties);
-  // console.log(JSON.stringify(properties));
+ 
 
   if (destination.Config.prefixProperties) {
     if (messageType === EventType.TRACK) {
@@ -278,6 +283,27 @@ function processPage(message, destination) {
   return processTrack(message, destination)[0];
 }
 
+function processScreen(message, destination) {
+  const screenName = message.name;
+  const screenCategory = message.properties
+    ? message.properties.category
+    : undefined;
+
+  let eventName = "Loaded a Screen";
+
+  if (screenName) {
+    eventName = "Viewed " + screenName + " screen";
+  }
+
+  if (screenCategory && screenName) {
+    eventName = "Viewed " + screenCategory + " " + screenName + " page";
+  }
+
+  message.event = eventName;
+
+  return processTrack(message, destination)[0];
+}
+
 function processAlias(message, destination) {
   const previousId = message.previousId;
   const userId = message.userId;
@@ -301,6 +327,11 @@ function process(event) {
   switch (messageType) {
     case EventType.PAGE:
       response = processPage(message, destination);
+      response.statusCode = 200;
+      respList.push(response);
+      break;
+    case EventType.SCREEN:
+      response = processScreen(message, destination);
       response.statusCode = 200;
       respList.push(response);
       break;

@@ -124,7 +124,7 @@ async function processTrack(message, destination) {
 }
 
 function handleError(message) {
-  console.log(message);
+  // console.log(message);
   const response = {
     statusCode: 400,
     error: message
@@ -163,14 +163,14 @@ async function processSingleMessage(message, destination) {
         response = await processIdentify(message, destination);
         break;
       default:
-        console.log("message type " + message.type + " is not supported");
+        // console.log("message type " + message.type + " is not supported");
         response = {
           statusCode: 400,
           error: "message type " + message.type + " is not supported"
         };
     }
   } catch (e) {
-    console.log("error occurred while processing payload for HS: ", e);
+    // console.log("error occurred while processing payload for HS: ", e);
     response = {
       statusCode: 400,
       error: "error occurred while processing payload."

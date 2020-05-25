@@ -42,7 +42,7 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
-//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 function stringToHash(string) {
   var hash = 0;
 
@@ -51,7 +51,7 @@ function stringToHash(string) {
   for (i = 0; i < string.length; i++) {
     char = string.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash;
+    hash &= hash;
   }
 
   return Math.abs(hash);
@@ -62,9 +62,9 @@ function fixSessionId(payload) {
     ? stringToHash(payload.session_id)
     : -1;
 }
- function addMinIdlength() {
-   return {"min_id_length":1}
- }
+function addMinIdlength() {
+  return { min_id_length: 1 };
+}
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
@@ -77,7 +77,7 @@ function responseBuilderSimple(
   destination
 ) {
   const rawPayload = {};
-  const addOptions = "options"
+  const addOptions = "options";
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
@@ -108,7 +108,16 @@ function responseBuilderSimple(
   }
 
   rawPayload.time = new Date(message.originalTimestamp).getTime();
-  rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
+  // send user_id only when present, for anonymous users not required
+  if (
+    message.userId &&
+    message.userId != "" &&
+    message.userId != "null" &&
+    message.userId != null
+  ) {
+    rawPayload.user_id = message.userId;
+  }
+
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
   fixIP(payload, message, "ip");

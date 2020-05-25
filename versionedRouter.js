@@ -8,14 +8,14 @@ const versions = ["v0"];
 
 const router = new Router();
 
-const isDirectory = (source) => lstatSync(source).isDirectory();
+const isDirectory = source => lstatSync(source).isDirectory();
 
-const getDirectories = (source) =>
+const getDirectories = source =>
   readdirSync(source)
-    .map((name) => join(source, name))
+    .map(name => join(source, name))
     .filter(isDirectory);
 
-const getDestHandler = (versionedDestination) => {
+const getDestHandler = versionedDestination => {
   return require(`./${versionedDestination}/transform`);
 };
 
@@ -34,24 +34,26 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-versions.forEach((version) => {
+versions.forEach(version => {
   const versionDestinations = getDirectories(version);
-  versionDestinations.forEach((versionedDestination) => {
+  versionDestinations.forEach(versionedDestination => {
     const destHandler = getDestHandler(versionedDestination);
-    router.post(`/${versionedDestination}`, async (ctx) => {
+    router.post(`/${versionedDestination}`, async ctx => {
       const events = ctx.request.body;
       logger.debug("[DT] Input events: " + JSON.stringify(events));
       const respList = [];
       await Promise.all(
-        events.map(async (event) => {
+        events.map(async event => {
           try {
             let respEvents = await destHandler.process(event);
             if (!Array.isArray(respEvents)) {
               respEvents = [respEvents];
             }
             respList.push(
-              ...respEvents.map((ev) => {
-                ev.userId += "";
+              ...respEvents.map(ev => {
+                if (ev.statusCode !== 400 && ev.userId) {
+                  ev.userId += "";
+                }
                 return { output: ev, metadata: event.metadata };
               })
             );
@@ -62,9 +64,9 @@ versions.forEach((version) => {
               output: {
                 statusCode: 400,
                 error:
-                  error.message || "Error occurred while processing payload.",
+                  error.message || "Error occurred while processing payload."
               },
-              metadata: event.metadata,
+              metadata: event.metadata
             });
           }
         })
@@ -114,18 +116,18 @@ if (functionsEnabled()) {
               {
                 statusCode: 400,
                 error: error.message,
-                metadata: destEvents[0].metadata,
-              },
+                metadata: destEvents[0].metadata
+              }
             ];
           }
           transformedEvents.push(
-            ...destTransformedEvents.map((ev) => {
+            ...destTransformedEvents.map(ev => {
               return { output: ev, metadata: destEvents[0].metadata };
             })
           );
         } else {
           transformedEvents.push(
-            ...destEvents.map((ev) => {
+            ...destEvents.map(ev => {
               return { output: ev, metadata: destEvents[0].metadata };
             })
           );

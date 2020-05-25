@@ -177,6 +177,8 @@ function safeTableName(provider, name = "") {
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
+  } else {
+    tableName = tableName.toLowerCase();
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]

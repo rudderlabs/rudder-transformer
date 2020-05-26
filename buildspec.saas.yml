@@ -1,4 +1,7 @@
 version: 0.2
+env:
+  parameter-store:
+    dockerhub_passwd: "/dev/codebuild/dockerhub-password"
 
 phases:
   install:
@@ -6,18 +9,17 @@ phases:
       nodejs: 10
   pre_build:
     commands:
-      - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
+      - docker login --username rudderlabs --password $dockerhub_passwd
   build:
     commands:
-      - VERSION="saas-$(date '+%d%m%Y.%H%M%S')"
+      - VERSION="$(date '+%d%m%Y.%H%M%S')"
       - ls
-      - echo build Docker image on `date`
       - docker build -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
+      - docker tag rudderlabs/rudder-transformer:$VERSION rudderlabs/rudder-transformer:latest
   post_build:
     commands:
-      - echo build Docker image complete `date`
-      - echo push latest Docker images to docker hub...
       - docker push rudderlabs/rudder-transformer:$VERSION
+      - docker push rudderlabs/rudder-transformer:latest
 artifacts:
   files:
     - "**/*"

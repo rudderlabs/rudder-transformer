@@ -7,22 +7,22 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  fixIP
+  fixIP,
 } = require("../util");
 const {
   Event,
   ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
 } = require("./config");
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 const populateSpecedTraits = (payload, message) => {
-  SpecedTraits.forEach(trait => {
+  SpecedTraits.forEach((trait) => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       set(payload, "user_properties." + key, get(message, mapping[key]));
     });
   });
@@ -38,7 +38,7 @@ function createSingleMessageBasicStructure(message) {
     "userId",
     "originalTimestamp",
     "integrations",
-    "session_id"
+    "session_id",
   ]);
 }
 
@@ -62,6 +62,13 @@ function fixSessionId(payload) {
     ? stringToHash(payload.session_id)
     : -1;
 }
+
+function fixVersion(payload, message) {
+  if (message.context.library.name.includes("android")) {
+    payload.app_version = message.context.app.version;
+  }
+}
+
 function addMinIdlength() {
   return { min_id_length: 1 };
 }
@@ -83,7 +90,7 @@ function responseBuilderSimple(
   set(rawPayload, "user_properties", message.userProperties);
 
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
+  sourceKeys.forEach((sourceKey) => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
@@ -93,7 +100,7 @@ function responseBuilderSimple(
   if (evType === EventType.IDENTIFY) {
     populateSpecedTraits(rawPayload, message);
     const traits = Object.keys(message.context.traits);
-    traits.forEach(trait => {
+    traits.forEach((trait) => {
       if (!SpecedTraits.includes(trait)) {
         set(
           rawPayload,
@@ -120,6 +127,7 @@ function responseBuilderSimple(
 
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
+  fixVersion(payload, message);
   fixIP(payload, message, "ip");
 
   // console.log(payload);
@@ -127,18 +135,18 @@ function responseBuilderSimple(
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   };
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = {
     api_key: destination.Config.apiKey,
     [rootElementName]: payload,
-    [addOptions]: addMinIdlength()
+    [addOptions]: addMinIdlength(),
   };
   return response;
 }
 
-const isRevenueEvent = product => {
+const isRevenueEvent = (product) => {
   if (
     product.quantity &&
     product.quantity.length > 0 &&
@@ -177,7 +185,7 @@ function processSingleMessage(message, destination) {
 
       if (message.products && message.products.length > 0) {
         let isRevenue = false;
-        message.products.forEach(product => {
+        message.products.forEach((product) => {
           if (isRevenueEvent(product)) {
             isRevenue = true;
           }
@@ -227,7 +235,7 @@ function processProductListAction(message) {
 
   // Now construct complete payloads for each product and
   // get them processed through single message processing logic
-  products.forEach(product => {
+  products.forEach((product) => {
     const productEvent = createSingleMessageBasicStructure(message);
     productEvent.properties = product;
     eventList.push(productEvent);
@@ -275,7 +283,7 @@ function process(event) {
     toSendEvents.push(message);
   }
 
-  toSendEvents.forEach(sendEvent => {
+  toSendEvents.forEach((sendEvent) => {
     const result = processSingleMessage(sendEvent, destination);
     if (!result.statusCode) {
       result.statusCode = 200;

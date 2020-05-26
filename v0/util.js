@@ -173,7 +173,7 @@ const getDataType = val => {
 function safeTableName(provider, name = "") {
   let tableName = name;
   if (tableName === "") {
-    tableName = "STRINGEMPTY";
+    throw new Error("Table name cannot be empty.");
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
@@ -191,7 +191,7 @@ function safeTableName(provider, name = "") {
 function safeColumnName(provider, name = "") {
   let columnName = name;
   if (columnName === "") {
-    columnName = "STRINGEMPTY";
+    throw new Error("Column name cannot be empty.");
   }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();

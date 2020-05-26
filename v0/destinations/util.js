@@ -90,7 +90,11 @@ const toSnakeCase = str => {
 
 const isObject = value => {
   var type = typeof value;
-  return value != null && (type == "object" || type == "function");
+  return (
+    value != null &&
+    (type == "object" || type == "function") &&
+    !Array.isArray(value)
+  );
 };
 
 const defaultGetRequestConfig = {
@@ -131,12 +135,6 @@ const defaultRequestConfig = () => {
 
 // Start of warehouse specific utils
 
-const toSafeDBString = str => {
-  if (parseInt(str[0]) > 0) str = `_${str}`;
-  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
-  return str.substr(0, 127);
-};
-
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
 // make sure to disable prettier for regex expression
 // prettier-ignore
@@ -175,33 +173,82 @@ const getDataType = val => {
 function safeTableName(provider, name = "") {
   let tableName = name;
   if (tableName === "") {
-    tableName = "STRINGEMPTY";
+    throw new Error("Table name cannot be empty.");
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
+  } else {
+    tableName = tableName.toLowerCase();
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
     tableName = "_" + tableName;
   }
-  return tableName;
+  return tableName.substr(0, 127);
 }
 
 function safeColumnName(provider, name = "") {
   let columnName = name;
   if (columnName === "") {
-    columnName = "STRINGEMPTY";
+    throw new Error("Column name cannot be empty.");
   }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
+  } else {
+    columnName = columnName.toLowerCase();
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
     columnName = "_" + columnName;
   }
-  return columnName;
+  return columnName.substr(0, 127);
+}
+
+/* transformColumnName convert keys like this &4yasdfa(84224_fs9##_____*3q to _4yasdfa_84224_fs9_3q
+  it removes symbols and joins continuous letters and numbers with single underscore and if first char is a number will append a underscore before the first number
+  few more examples
+  omega     to omega
+  omega v2  to omega_v2
+  9mega     to _9mega
+  mega&     to mega
+  ome$ga    to ome_ga
+  omega$    to omega
+  ome_ ga   to ome_ga
+  9mega________-________90 to _9mega_90
+  it also handles char's where its ascii values are more than 127
+  example:
+  Cízǔ to C_z
+  return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
+*/
+function transformColumnName(name = "") {
+  const extractedValues = [];
+  let extractedValue = "";
+  for (var i = 0; i < name.length; i++) {
+    const c = name[i];
+    const asciiValue = c.charCodeAt(0);
+    if (
+      (asciiValue >= 65 && asciiValue <= 90) ||
+      (asciiValue >= 97 && asciiValue <= 122) ||
+      (asciiValue >= 48 && asciiValue <= 57)
+    ) {
+      extractedValue += c;
+    } else {
+      if (extractedValue !== "") {
+        extractedValues.push(extractedValue);
+      }
+      extractedValue = "";
+    }
+  }
+  if (extractedValue !== "") {
+    extractedValues.push(extractedValue);
+  }
+  let key = extractedValues.join("_");
+  if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
+    key = "_" + key;
+  }
+  return key;
 }
 
 const rudderCreatedTables = [
@@ -257,25 +304,14 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      const safeKey = safeColumnName(provider, toSafeDBString(prefix + key));
-      resp[safeKey] = val;
-      columnTypes[safeKey] = datatype;
+      safeKey = transformColumnName(prefix + key);
+      if (safeKey != "") {
+        safeKey = safeColumnName(provider, safeKey);
+        resp[safeKey] = val;
+        columnTypes[safeKey] = datatype;
+      }
     }
   });
-}
-
-function setFromProperty(
-  provider,
-  resp,
-  input,
-  columnTypes,
-  propNameInInput,
-  propNameInOutput = propNameInInput,
-  propType = "string"
-) {
-  const pageName = safeColumnName(provider, propNameInOutput);
-  resp[pageName] = input[propNameInInput];
-  columnTypes[pageName] = propType;
 }
 
 function getColumns(provider, obj, columnTypes) {
@@ -283,7 +319,7 @@ function getColumns(provider, obj, columnTypes) {
   const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
-    columns[toSafeDBString(key)] = columnTypes[key] || getDataType(obj[key]);
+    columns[key] = columnTypes[key] || getDataType(obj[key]);
   });
   return columns;
 }
@@ -318,14 +354,14 @@ function processWarehouseMessage(provider, message) {
         columnTypes
       );
 
-      // set event and event_text columns in the tracks table
+      // set event column based on event_text in the tracks table
       const eventColName = safeColumnName(provider, "event");
-      commonProps[eventColName] = toSnakeCase(
+      commonProps[eventColName] = transformColumnName(
         commonProps[safeColumnName(provider, "event_text")]
       );
       columnTypes[eventColName] = "string";
 
-      // shallow copy is sufficient since it does not containe nested objects
+      // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: safeTableName(provider, "tracks"),
@@ -336,6 +372,11 @@ function processWarehouseMessage(provider, message) {
         metadata: tracksMetadata,
         data: tracksEvent
       });
+
+      // do not create event table in case of empty event name (after transformColumnName)
+      if (tracksEvent[eventColName] === "") {
+        break;
+      }
 
       const trackProps = {};
       setFromProperties(provider, trackProps, message.properties, columnTypes);
@@ -350,7 +391,7 @@ function processWarehouseMessage(provider, message) {
       const trackEvent = { ...trackProps, ...commonProps };
       const trackEventMetadata = {
         table: excludeRudderCreatedTableNames(
-          safeTableName(provider, toSafeDBString(trackEvent[eventColName]))
+          safeTableName(provider, transformColumnName(trackEvent[eventColName]))
         ),
         columns: getColumns(provider, trackEvent, columnTypes),
         receivedAt: message.receivedAt
@@ -523,10 +564,6 @@ module.exports = {
   removeUndefinedAndNullValues,
   isObject,
   toSnakeCase,
-  setFromConfig,
-  setFromProperties,
-  getColumns,
-  toSafeDBString,
   validTimestamp,
   getDataType,
   processWarehouseMessage,

@@ -209,12 +209,13 @@ function safeColumnName(provider, name = "") {
 /* transformColumnName convert keys like this &4yasdfa(84224_fs9##_____*3q to _4yasdfa_84224_fs9_3q
   it removes symbols and joins continuous letters and numbers with single underscore and if first char is a number will append a underscore before the first number
   few more examples
-  omega to omega
-  9mega to _9mega
-  mega& to mega
-  ome$ga to ome_ga
-  omega$ to omega
-  ome_ ga to ome_ga
+  omega     to omega
+  omega v2  to omega_v2
+  9mega     to _9mega
+  mega&     to mega
+  ome$ga    to ome_ga
+  omega$    to omega
+  ome_ ga   to ome_ga
   9mega________-________90 to _9mega_90
   it also handles char's where its ascii values are more than 127
   example:

@@ -1,0 +1,146 @@
+[
+    [
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+            "headers": {
+                "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "user": {
+                        "email": "example124@email.com",
+                        "name": "abcd124",
+                        "external_id": "abcd-124",
+                        "user_fields": {
+                            "id": "abcd-124"
+                        },
+                        "verified": true
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "abcd-124"
+        }
+    ],
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+        "headers": {
+            "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "user": {
+                    "email": "example124@email.com",
+                    "name": "abcd124",
+                    "external_id": "abcd-124",
+                    "user_fields": {
+                        "id": "abcd-124"
+                    },
+                    "verified": true,
+                    "organization_id": 900001329943
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "abcd-124"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+        "headers": {
+            "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "event": {
+                    "description": "test-track-event124",
+                    "type": "test-track-event124",
+                    "source": "Rudder",
+                    "properties": {
+                        "test_prop": "test_prop_value_124"
+                    }
+                },
+                "profile": {
+                    "type": "test-track-event124",
+                    "source": "Rudder",
+                    "identifiers": [
+                        {
+                            "type": "email",
+                            "value": "example124@email.com"
+                        }
+                    ]
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "abcd-124"
+    },
+    [
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "DELETE",
+            "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/organization_memberships/900004877903.json",
+            "headers": {
+                "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "abcd-124"
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+            "headers": {
+                "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "user": {
+                        "email": "example124@email.com",
+                        "name": "abcd124",
+                        "external_id": "abcd-124",
+                        "user_fields": {
+                            "id": "abcd-124"
+                        },
+                        "verified": true
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "abcd-124"
+        }
+    ]
+]

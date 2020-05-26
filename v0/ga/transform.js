@@ -6,13 +6,13 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  fixIP
+  fixIP,
 } = require("../util");
 
 function getParamsFromConfig(message, destination) {
@@ -21,13 +21,13 @@ function getParamsFromConfig(message, destination) {
   var obj = {};
   // customMapping: [{from:<>, to: <>}] , structure of custom mapping
   if (destination.Config.customMappings) {
-    destination.Config.customMappings.forEach(mapping => {
+    destination.Config.customMappings.forEach((mapping) => {
       obj[mapping.from] = mapping.to;
     });
   }
   // console.log(obj);
   const keys = Object.keys(obj);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     params[obj[key]] = get(message.properties, key);
   });
   // console.log(params);
@@ -48,11 +48,11 @@ function responseBuilderSimple(
   const rawPayload = {
     v: "1",
     t: hitType,
-    tid: destination.Config.trackingID
+    tid: destination.Config.trackingID,
   };
 
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
+  sourceKeys.forEach((sourceKey) => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
   // Remove keys with undefined values
@@ -107,7 +107,7 @@ function processPromotionEvent(message) {
   // customer-side overriding of event category and event action values
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   switch (eventString.toLowerCase()) {
@@ -177,7 +177,7 @@ function processSharingEvent(message) {
     case Event.CART_SHARED: {
       const products = message.properties.products;
       let shareTargetString = ""; // all product ids will be concatenated with separation
-      products.forEach(product => {
+      products.forEach((product) => {
         shareTargetString += " " + product.product_id;
       });
       parameters.st = shareTargetString;
@@ -194,7 +194,7 @@ function processProductListEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   // Set action depending on Product List Action
@@ -247,7 +247,7 @@ function processProductEvent(message) {
 
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   // Set product action to click or detail depending on event
@@ -353,7 +353,7 @@ function processEComGenericEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: eventString,
   };
 
   return parameters;
@@ -430,11 +430,14 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 async function process(event) {
-  const result = processSingleMessage(event.message, event.destination);
-  if (!result.statusCode) {
-    result.statusCode = 200;
+  let response;
+  try {
+    response = processSingleMessage(event.message, event.destination);
+  } catch (error) {
+    response = { statusCode: 400, message: error.message || "Unknown error" };
   }
-  return result;
+
+  return response;
 }
 
 exports.process = process;

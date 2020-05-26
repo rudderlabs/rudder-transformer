@@ -42,7 +42,7 @@ function createSingleMessageBasicStructure(message) {
   ]);
 }
 
-//https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
+// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 function stringToHash(string) {
   var hash = 0;
 
@@ -51,7 +51,7 @@ function stringToHash(string) {
   for (i = 0; i < string.length; i++) {
     char = string.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash;
+    hash &= hash;
   }
 
   return Math.abs(hash);
@@ -68,6 +68,7 @@ function fixVersion(payload, message) {
     payload.app_version = message.context.app.version;
   }
 }
+
 function addMinIdlength() {
   return { min_id_length: 1 };
 }
@@ -114,7 +115,16 @@ function responseBuilderSimple(
   }
 
   rawPayload.time = new Date(message.originalTimestamp).getTime();
-  rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
+  // send user_id only when present, for anonymous users not required
+  if (
+    message.userId &&
+    message.userId != "" &&
+    message.userId != "null" &&
+    message.userId != null
+  ) {
+    rawPayload.user_id = message.userId;
+  }
+
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
   fixVersion(payload, message);

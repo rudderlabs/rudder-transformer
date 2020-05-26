@@ -4,6 +4,7 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const { mapPayload } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
+  defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
 } = require("../util");
@@ -11,6 +12,13 @@ const {
 function responseBuilder(payload, message, autoPilotConfig) {
   let endpoint;
   let requestConfig;
+
+  const response = defaultRequestConfig();
+  const header = {
+    autopilotapikey: `${autoPilotConfig.apiKey}`,
+    "Content-Type": "application/json",
+    Accept: "application/json"
+  };
 
   switch (message.type) {
     case EventType.IDENTIFY:
@@ -25,23 +33,18 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
   }
 
-  const response = {
-    endpoint,
-    header: {
-      autopilotapikey: `${autoPilotConfig.apiKey}`,
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    requestConfig,
-    userId: message.userId ? message.userId : message.anonymousId,
-    payload: removeUndefinedAndNullValues(payload)
-  };
+  response.method = requestConfig.requestMethod;
+  response.headers = header;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.endpoint = endpoint;
+  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.statusCode = 200;
   return response;
 }
 
 function getIdentifyPayload(message) {
-  let rawPayload = {};
-  let contact = {};
+  const rawPayload = {};
+  const contact = {};
 
   const traits = get(message.context.traits) ? message.context.traits : null;
 
@@ -58,8 +61,8 @@ function getIdentifyPayload(message) {
 }
 
 function getTrackPayload(message) {
-  let rawPayload = {};
-  let propertiesObj = {};
+  const rawPayload = {};
+  const propertiesObj = {};
 
   const properties = get(message.properties)
     ? Object.keys(message.properties)
@@ -85,13 +88,13 @@ function getTransformedJSON(message, autoPilotConfig) {
       rawPayload = getIdentifyPayload(message);
       break;
     default:
-      break;
+      throw new Error("message type not supported");
   }
   return { ...rawPayload };
 }
 
 function getDestinationKeys(destination) {
-  let autoPilotConfig = {};
+  const autoPilotConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {

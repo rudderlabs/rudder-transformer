@@ -1,7 +1,7 @@
 version: 0.2
 env:
   parameter-store:
-    dockerhub_passwd: "/dev/codebuild/dockerhub-password"
+    dockerhub_passwd: "/prod/codebuild/dockerhub-password"
 
 phases:
   install:

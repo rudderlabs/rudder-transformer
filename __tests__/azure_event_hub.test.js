@@ -4,7 +4,7 @@ const name = "Azure event Hub";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/${integration}/transform`);
+const transformer = require(`../v0/destinations/${integration}/transform`);
 
 test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(

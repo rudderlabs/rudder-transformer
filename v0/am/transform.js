@@ -62,6 +62,14 @@ function fixSessionId(payload) {
     ? stringToHash(payload.session_id)
     : -1;
 }
+
+function fixVersion(payload, message) {
+  console.log(message.context)
+  if (message.context.library.name.includes("android")) {
+    console.log("inside");
+    payload.app_version = message.context.app.version;
+  }
+}
  function addMinIdlength() {
    return {"min_id_length":1}
  }
@@ -111,6 +119,7 @@ function responseBuilderSimple(
   rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
+  fixVersion(payload,message);
   fixIP(payload, message, "ip");
 
   // console.log(payload);

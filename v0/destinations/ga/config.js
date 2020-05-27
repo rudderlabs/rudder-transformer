@@ -1,6 +1,10 @@
 const { getMappingConfig } = require("../util");
 
 const ConfigCategory = {
+  IDENTIFY: {
+    name: "GAIdentifyConfig",
+    hitType: ""
+  },
   PAGE: {
     name: "GAPageViewConfig",
     hitType: "pageview"

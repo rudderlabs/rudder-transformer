@@ -31,9 +31,11 @@ function getParamsFromConfig(message, destination, type) {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/content/g, "cg");
-
+   
     params[obj[key]] = get(message.properties, key);
-    if (type === "content") {
+   
+    if (type === "content" && params[obj[key]]) {
+   
       params[obj[key]] = params[obj[key]].replace(" ", "/");
     }
   });
@@ -153,6 +155,29 @@ function responseBuilderSimple(
   return response;
 }
 
+function processIdentify(message, destination) {
+  var ea;
+  if (destination.Config.serverSideIdentifyEventAction)
+    ea = destination.Config.serverSideIdentifyEventAction;
+  else ea = "User Enriched";
+  var ec;
+  if (
+    destination.Config.serverSideIdentifyEventAction &&
+    message.context.traits[destination.Config.serverSideIdentifyEventCategory]
+  )
+    ec =
+      message.context.traits[
+        destination.Config.serverSideIdentifyEventCategory
+      ];
+  else ec = "All";
+
+  var param = {
+    ea,
+    ec,
+  };
+  return param;
+}
+
 // Function for processing pageviews
 function processPageViews(message, destination) {
   var documentPath;
@@ -207,10 +232,10 @@ function processPromotionEvent(message) {
   };
 
   switch (eventString.toLowerCase()) {
-    case Event.PROMOTION_VIEWED:
+    case Event.PROMOTION_VIEWED.name:
       parameters.promoa = "view";
       break;
-    case Event.PROMOTION_CLICKED:
+    case Event.PROMOTION_CLICKED.name:
       parameters.promoa = "promo_click";
       break;
     default:
@@ -271,10 +296,10 @@ function processSharingEvent(message) {
   // For Cart Shared, the list of product ids can be shared
   const eventTypeString = message.event;
   switch (eventTypeString.toLowerCase()) {
-    case Event.PRODUCT_SHARED:
+    case Event.PRODUCT_SHARED.name:
       parameters.st = message.properties.url;
       break;
-    case Event.CART_SHARED: {
+    case Event.CART_SHARED.name: {
       const { products } = message.properties;
       let shareTargetString = ""; // all product ids will be concatenated with separation
       products.forEach(product => {
@@ -299,11 +324,11 @@ function processProductListEvent(message) {
 
   // Set action depending on Product List Action
   switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_LIST_VIEWED:
-    case Event.PRODUCT_LIST_FILTERED:
+    case Event.PRODUCT_LIST_VIEWED.name:
+    case Event.PRODUCT_LIST_FILTERED.name:
       parameters.pa = "detail";
       break;
-    case Event.PRODUCT_LIST_CLICKED:
+    case Event.PRODUCT_LIST_CLICKED.name:
       parameters.pa = "click";
       break;
     default:
@@ -352,19 +377,19 @@ function processProductEvent(message) {
 
   // Set product action to click or detail depending on event
   switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_CLICKED:
+    case Event.PRODUCT_CLICKED.name:
       parameters.pa = "click";
       break;
-    case Event.PRODUCT_VIEWED:
+    case Event.PRODUCT_VIEWED.name:
       parameters.pa = "detail";
       break;
-    case Event.PRODUCT_ADDED:
-    case Event.WISHLIST_PRODUCT_ADDED_TO_CART:
-    case Event.PRODUCT_ADDED_TO_WISHLIST:
+    case Event.PRODUCT_ADDED.name:
+    case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
+    case Event.PRODUCT_ADDED_TO_WISHLIST.name:
       parameters.pa = "add";
       break;
-    case Event.PRODUCT_REMOVED:
-    case Event.PRODUCT_REMOVED_FROM_WISHLIST:
+    case Event.PRODUCT_REMOVED.name:
+    case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
       parameters.pa = "remove";
       break;
     default:
@@ -386,17 +411,19 @@ function processProductEvent(message) {
 function processTransactionEvent(message) {
   const eventString = message.event;
   const parameters = {};
-
+ 
   // Set product action as per event
   switch (eventString.toLowerCase()) {
-    case Event.CHECKOUT_STARTED:
-    case Event.ORDER_UPDATED:
+    case Event.CHECKOUT_STARTED.name:
       parameters.pa = "checkout";
       break;
-    case Event.ORDER_COMPLETED:
+    case Event.ORDER_UPDATED.name:
+      parameters.pa = "checkout";
+      break;
+    case Event.ORDER_COMPLETED.name:
       parameters.pa = "purchase";
       break;
-    case Event.ORDER_CANCELLED:
+    case Event.ORDER_CANCELLED.name:
       parameters.pa = "refund";
       break;
     default:
@@ -468,6 +495,14 @@ function processSingleMessage(message, destination) {
   let category;
 
   switch (messageType) {
+    case EventType.IDENTIFY:
+      if (destination.Config.enableServerSideIdentify) {
+        customParams = processIdentify(message, destination);
+        category = ConfigCategory.IDENTIFY;
+      } else {
+        throw new Error("server side identify is not on");
+      }
+      break;
     case EventType.PAGE:
       customParams = processPageViews(message, destination);
       category = ConfigCategory.PAGE;
@@ -515,6 +550,8 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
+ 
+      // throw new RangeError('Unexpected value in type field');
       throw new Error("message type not supported");
   }
 

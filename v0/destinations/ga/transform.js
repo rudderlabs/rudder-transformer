@@ -31,11 +31,10 @@ function getParamsFromConfig(message, destination, type) {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/content/g, "cg");
-   
+
     params[obj[key]] = get(message.properties, key);
-   
+
     if (type === "content" && params[obj[key]]) {
-   
       params[obj[key]] = params[obj[key]].replace(" ", "/");
     }
   });
@@ -411,7 +410,7 @@ function processProductEvent(message) {
 function processTransactionEvent(message) {
   const eventString = message.event;
   const parameters = {};
- 
+
   // Set product action as per event
   switch (eventString.toLowerCase()) {
     case Event.CHECKOUT_STARTED.name:
@@ -550,7 +549,6 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
- 
       // throw new RangeError('Unexpected value in type field');
       throw new Error("message type not supported");
   }

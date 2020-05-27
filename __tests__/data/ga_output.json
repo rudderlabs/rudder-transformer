@@ -1,44 +1,736 @@
 [
   { "message": "message type not supported", "statusCode": 400 },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
-    "files": {},
-    "endpoint": "https://www.google-analytics.com/collect",
-    "userId": "12345",
-    "headers": {},
-    "version": "1",
-    "params": {
-      "dl": "",
-      "cid": "12345",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uip": "0.0.0.0",
-      "t": "pageview",
-      "v": "1",
-      "tid": "abcd",
-      "dt": "",
-      "dr": "",
-      "dp": "/abc"
-    },
-    "type": "REST",
-    "method": "GET"
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "action1",
+              "ec": "Ruchira",
+              "cd1": "ruchira moitra",
+              "cg1": "ruchira/plan",
+              "v": "1",
+              "t": "",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "123456",
+              "uip": "0.0.0.0"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "123456",
+          "statusCode": 200
+      }
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
-    "files": {},
-    "endpoint": "https://www.google-analytics.com/collect",
-    "userId": "12345",
-    "headers": {},
-    "version": "1",
-    "params": {
-      "cid": "12345",
-      "ea": "test track event GA3",
-      "ec": "test-category",
-      "t": "event",
-      "v": "1",
-      "tid": "UA-149602794-1",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-    },
-    "type": "REST",
-    "method": "GET"
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "dp": "/abc",
+              "v": "1",
+              "t": "pageview",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "dt": "",
+              "dl": "",
+              "dr": "",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+              "uip": "0.0.0.0"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ev": 0,
+              "ec": "test-category",
+              "ni": 1,
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "ea": "test track event GA3",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "pa": "purchase",
+              "tr": 99.99,
+              "pr1id": "p-298",
+              "pr1nm": "my product",
+              "pr1pr": 24.75,
+              "pr2id": "p-299",
+              "pr2nm": "other product",
+              "pr2pr": 24.75,
+              "v": "1",
+              "t": "transaction",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "ts": 13.99,
+              "tt": 20.99,
+              "cu": "INR",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product added",
+              "ec": "product added",
+              "pa": "add",
+              "pr1id": "p-298",
+              "cd1": "my product 1",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product 1",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1ps": 4.5,
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product removed",
+              "ec": "product removed",
+              "pa": "remove",
+              "pr1id": "p-298",
+              "cd1": "my product 1",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product 1",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1ps": 4.5,
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product viewed",
+              "ec": "product viewed",
+              "pa": "detail",
+              "pr1id": "p-298",
+              "cd1": "my product 1",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product 1",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1ps": 4.5,
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product removed",
+              "ec": "product removed",
+              "pa": "remove",
+              "pr1id": "p-298",
+              "cd1": "my product 1",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product 1",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1ps": 4.5,
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product viewed",
+              "ec": "product viewed",
+              "pa": "detail",
+              "pr1id": "p-298",
+              "cd1": "my product 1",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product 1",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1ps": 4.5,
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product list filtered",
+              "ec": "product list filtered",
+              "pa": "detail",
+              "il1pi1id": "507f1f77bcf86cd799439011",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "il1nm": "1234",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+              "cid": "12345"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product list viewed",
+              "ec": "product list viewed",
+              "pa": "detail",
+              "il1pi1id": "507f1f77bcf86cd799439011",
+              "il1pi1ps": 10,
+              "il1pi2id": "507f1f77bcf86cdef799439011",
+              "il1pi2ps": -10,
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "il1nm": "1234",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+              "cid": "12345"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "product clicked",
+              "ec": "product clicked",
+              "pa": "click",
+              "pr1id": "p-298",
+              "cd1": "my product",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "pr1nm": "my product",
+              "pr1ca": "cat 1",
+              "cu": "CAD",
+              "pr1pr": 24.75,
+              "pr1qt": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "promotion viewed",
+              "ec": "addPromo",
+              "cu": "CAD",
+              "promoa": "view",
+              "cd1": "my product",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "promo1id": "PROMO_1234",
+              "promo1cr": "summer_banner2",
+              "promo1ps": "banner_slot1",
+              "promo1nm": "my product",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ea": "promotion clicked",
+              "ec": "addPromo",
+              "cu": "CAD",
+              "promoa": "promo_click",
+              "cd1": "my product",
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "promo1id": "PROMO_1234",
+              "promo1cr": "summer_banner2",
+              "promo1ps": "banner_slot1",
+              "promo1nm": "my product",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "pa": "checkout",
+              "pr1id": "p-298",
+              "pr1nm": "my product",
+              "pr1pr": 24.75,
+              "pr2id": "p-299",
+              "pr2nm": "my product 2",
+              "pr2pr": 24.75,
+              "v": "1",
+              "t": "transaction",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "cu": "CAD",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "pa": "checkout",
+              "pr1id": "p-298",
+              "pr1nm": "my product",
+              "pr1pr": 24.75,
+              "pr2id": "p-299",
+              "pr2nm": "my product 2",
+              "pr2pr": 24.75,
+              "v": "1",
+              "t": "transaction",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "cu": "CAD",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "pa": "checkout",
+              "v": "1",
+              "t": "transaction",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "cos": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "pa": "checkout",
+              "v": "1",
+              "t": "transaction",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "cos": 1,
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
+  },
+  {
+      "output": {
+          "version": "1",
+          "type": "REST",
+          "method": "GET",
+          "endpoint": "https://www.google-analytics.com/collect",
+          "headers": {},
+          "params": {
+              "ev": 0,
+              "ec": "All",
+              "ni": 1,
+              "v": "1",
+              "t": "event",
+              "tid": "UA-165994240-1",
+              "ds": "web",
+              "an": "RudderLabs JavaScript SDK",
+              "av": "1.0.0",
+              "aiid": "com.rudderlabs.javascript",
+              "npa": 1,
+              "aip": 1,
+              "linkid": "linkid.js",
+              "cid": "12345",
+              "ea": "order starterefundedd",
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+          },
+          "body": {
+              "JSON": {},
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "12345",
+          "statusCode": 200
+      }
   }
 ]

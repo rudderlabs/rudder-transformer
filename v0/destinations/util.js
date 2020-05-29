@@ -193,9 +193,6 @@ function safeColumnName(provider, name = "") {
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
   }
-  if (provider === "postgres") {
-    columnName = columnName.toLowerCase();
-  }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   } else {

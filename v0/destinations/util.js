@@ -220,12 +220,14 @@ function safeColumnName(provider, name = "") {
   it also handles char's where its ascii values are more than 127
   example:
   Cízǔ to C_z
+  CamelCase123Key to camel_case123_key
+  1CComega to _1_c_comega
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
 function transformColumnName(name = "") {
   const extractedValues = [];
   let extractedValue = "";
-  for (var i = 0; i < name.length; i++) {
+  for (let i = 0; i < name.length; i++) {
     const c = name[i];
     const asciiValue = c.charCodeAt(0);
     if (
@@ -245,11 +247,13 @@ function transformColumnName(name = "") {
     extractedValues.push(extractedValue);
   }
   let key = extractedValues.join("_");
+  key = _.snakeCase(key);
   if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
     key = "_" + key;
   }
   return key;
 }
+
 
 const rudderCreatedTables = [
   "tracks",

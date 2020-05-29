@@ -4,7 +4,7 @@ const name = "keen";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/${integration}/transform`);
+const transformer = require(`../v0/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {

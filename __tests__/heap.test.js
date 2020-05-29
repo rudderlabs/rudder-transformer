@@ -3,7 +3,7 @@ const name = "Heap";
 
 const fs = require("fs");
 const path = require("path");
-const transformer = require(`../v0/${integration}/transform`);
+const transformer = require(`../v0/destinations/${integration}/transform`);
 
 test(`${name} Tests`, async () => {
   const inputDataFile = fs.readFileSync(

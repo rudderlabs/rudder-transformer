@@ -1,4 +1,22 @@
-[{
+[
+  {
+    "destination": {
+      "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "Name": "Kafka",
+      "DestinationDefinition": {
+        "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+        "Name": "KAFKA",
+        "DisplayName": "Kafka",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "message": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
       "channel": "web",
@@ -64,6 +82,23 @@
     }
   },
   {
+    "destination": {
+      "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "Name": "Kafka",
+      "DestinationDefinition": {
+        "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+        "Name": "KAFKA",
+        "DisplayName": "Kafka",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "message": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
       "channel": "web",
@@ -122,6 +157,23 @@
     }
   },
   {
+    "destination": {
+      "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "Name": "Kafka",
+      "DestinationDefinition": {
+        "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+        "Name": "KAFKA",
+        "DisplayName": "Kafka",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "message": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
       "channel": "web",
@@ -182,6 +234,23 @@
     }
   },
   {
+    "destination": {
+      "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "Name": "Kafka",
+      "DestinationDefinition": {
+        "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+        "Name": "KAFKA",
+        "DisplayName": "Kafka",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "message": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
       "channel": "web",
@@ -245,6 +314,23 @@
     }
   },
   {
+    "destination": {
+      "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "Name": "Kafka",
+      "DestinationDefinition": {
+        "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+        "Name": "KAFKA",
+        "DisplayName": "Kafka",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "message": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
       "channel": "web",

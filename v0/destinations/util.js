@@ -254,7 +254,6 @@ function transformColumnName(name = "") {
   return key;
 }
 
-
 const rudderCreatedTables = [
   "tracks",
   "users",

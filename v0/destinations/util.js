@@ -14,6 +14,9 @@ const whGroupConfigJson = require("../../util/warehouse/WHGroupConfig.json");
 const whAliasConfigJson = require("../../util/warehouse/WHAliasConfig.json");
 const reservedANSIKeywordsMap = require("../../util/warehouse/ReservedKeywords.json");
 
+const fallbackToOldWarehouseSchema =
+  process.env.WAREHOUSE_SCHEMA_VERSION === "v0" || false;
+
 const fixIP = (payload, message, key) => {
   payload[key] = message.context
     ? message.context.ip
@@ -170,7 +173,29 @@ const getDataType = val => {
   return "string";
 };
 
-function safeTableName(provider, name = "") {
+const toSafeDBString = str => {
+  if (parseInt(str[0]) > 0) str = `_${str}`;
+  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
+  return str.substr(0, 127);
+};
+
+function safeTableOld(provider, name = "") {
+  let tableName = name;
+  if (tableName === "") {
+    tableName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    tableName = tableName.toUpperCase();
+  }
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
+  ) {
+    tableName = "_" + tableName;
+  }
+  return tableName;
+}
+
+function safeTable(provider, name = "") {
   let tableName = name;
   if (tableName === "") {
     throw new Error("Table name cannot be empty.");
@@ -188,7 +213,23 @@ function safeTableName(provider, name = "") {
   return tableName.substr(0, 127);
 }
 
-function safeColumnName(provider, name = "") {
+function safeColumnOld(provider, name = "") {
+  let columnName = name;
+  if (columnName === "") {
+    columnName = "STRINGEMPTY";
+  }
+  if (provider === "snowflake") {
+    columnName = columnName.toUpperCase();
+  }
+  if (
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
+  ) {
+    columnName = "_" + columnName;
+  }
+  return columnName;
+}
+
+function safeColumn(provider, name = "") {
   let columnName = name;
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
@@ -224,7 +265,7 @@ function safeColumnName(provider, name = "") {
   1CComega to _1_c_comega
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformColumnName(name = "") {
+function transformName(name = "") {
   const extractedValues = [];
   let extractedValue = "";
   for (let i = 0; i < name.length; i++) {
@@ -252,6 +293,42 @@ function transformColumnName(name = "") {
     key = "_" + key;
   }
   return key;
+}
+
+function transformTableNameOld(name = "") {
+  return toSnakeCase(name);
+}
+
+function transformColumnNameOld(name = "") {
+  return toSafeDBString(name);
+}
+
+function transformColumnName(name = "") {
+  if (fallbackToOldWarehouseSchema) {
+    return transformColumnNameOld(name);
+  }
+  return transformName(name);
+}
+
+function transformTableName(name = "") {
+  if (fallbackToOldWarehouseSchema) {
+    return transformTableNameOld(name);
+  }
+  return transformName(name);
+}
+
+function safeColumnName(provider, name = "") {
+  if (fallbackToOldWarehouseSchema) {
+    return safeColumnOld(provider, name);
+  }
+  return safeColumn(provider, name);
+}
+
+function safeTableName(provider, name = "") {
+  if (fallbackToOldWarehouseSchema) {
+    return safeTableOld(provider, name);
+  }
+  return safeTable(provider, name);
 }
 
 const rudderCreatedTables = [
@@ -359,7 +436,7 @@ function processWarehouseMessage(provider, message) {
 
       // set event column based on event_text in the tracks table
       const eventColName = safeColumnName(provider, "event");
-      commonProps[eventColName] = transformColumnName(
+      commonProps[eventColName] = transformTableName(
         commonProps[safeColumnName(provider, "event_text")]
       );
       columnTypes[eventColName] = "string";

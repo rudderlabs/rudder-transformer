@@ -14,9 +14,6 @@ const whGroupConfigJson = require("../../util/warehouse/WHGroupConfig.json");
 const whAliasConfigJson = require("../../util/warehouse/WHAliasConfig.json");
 const reservedANSIKeywordsMap = require("../../util/warehouse/ReservedKeywords.json");
 
-const fallbackToOldWarehouseSchema =
-  process.env.WAREHOUSE_SCHEMA_VERSION === "v0" || false;
-
 const fixIP = (payload, message, key) => {
   payload[key] = message.context
     ? message.context.ip
@@ -187,7 +184,7 @@ function safeTableOld(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
-  if (provider === "postgres"){
+  if (provider === "postgres") {
     tableName = tableName.toLowerCase();
   }
   if (
@@ -224,7 +221,7 @@ function safeColumnOld(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
-  if (provider === "postgres"){
+  if (provider === "postgres") {
     columnName = columnName.toLowerCase();
   }
   if (
@@ -309,32 +306,40 @@ function transformColumnNameOld(name = "") {
   return toSafeDBString(name);
 }
 
-function transformColumnName(name = "") {
-  if (fallbackToOldWarehouseSchema) {
-    return transformColumnNameOld(name);
+function transformColumnName(name = "", schemaVersion) {
+  switch (schemaVersion) {
+    case "v0":
+      return transformColumnNameOld(name);
+    default:
+      return transformName(name);
   }
-  return transformName(name);
 }
 
-function transformTableName(name = "") {
-  if (fallbackToOldWarehouseSchema) {
-    return transformTableNameOld(name);
+function transformTableName(name = "", schemaVersion) {
+  switch (schemaVersion) {
+    case "v0":
+      return transformTableNameOld(name);
+    default:
+      return transformName(name);
   }
-  return transformName(name);
 }
 
-function safeColumnName(provider, name = "") {
-  if (fallbackToOldWarehouseSchema) {
-    return safeColumnOld(provider, name);
+function safeColumnName(provider, schemaVersion, name = "") {
+  switch (schemaVersion) {
+    case "v0":
+      return safeColumnOld(provider, name);
+    default:
+      return safeColumn(provider, name);
   }
-  return safeColumn(provider, name);
 }
 
-function safeTableName(provider, name = "") {
-  if (fallbackToOldWarehouseSchema) {
-    return safeTableOld(provider, name);
+function safeTableName(provider, schemaVersion, name = "") {
+  switch (schemaVersion) {
+    case "v0":
+      return safeTableOld(provider, name);
+    default:
+      return safeTable(provider, name);
   }
-  return safeTable(provider, name);
 }
 
 const rudderCreatedTables = [
@@ -354,7 +359,14 @@ function excludeRudderCreatedTableNames(name) {
   return name;
 }
 
-function setFromConfig(provider, resp, input, configJson, columnTypes) {
+function setFromConfig(
+  provider,
+  schemaVersion,
+  resp,
+  input,
+  configJson,
+  columnTypes
+) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
@@ -363,19 +375,27 @@ function setFromConfig(provider, resp, input, configJson, columnTypes) {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
-      const columnName = safeColumnName(provider, prop);
+      const columnName = safeColumnName(provider, schemaVersion, prop);
       resp[columnName] = val;
       columnTypes[columnName] = datatype;
     }
   });
 }
 
-function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
+function setFromProperties(
+  provider,
+  schemaVersion,
+  resp,
+  input,
+  columnTypes,
+  prefix = ""
+) {
   if (!input) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setFromProperties(
         provider,
+        schemaVersion,
         resp,
         input[key],
         columnTypes,
@@ -390,9 +410,9 @@ function setFromProperties(provider, resp, input, columnTypes, prefix = "") {
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      safeKey = transformColumnName(prefix + key);
+      safeKey = transformColumnName(prefix + key, schemaVersion);
       if (safeKey != "") {
-        safeKey = safeColumnName(provider, safeKey);
+        safeKey = safeColumnName(provider, schemaVersion, safeKey);
         resp[safeKey] = val;
         columnTypes[safeKey] = datatype;
       }
@@ -410,7 +430,7 @@ function getColumns(provider, obj, columnTypes) {
   return columns;
 }
 
-function processWarehouseMessage(provider, message) {
+function processWarehouseMessage(provider, message, schemaVersion) {
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
@@ -420,6 +440,7 @@ function processWarehouseMessage(provider, message) {
       const commonProps = {};
       setFromProperties(
         provider,
+        schemaVersion,
         commonProps,
         message.context,
         columnTypes,
@@ -427,6 +448,7 @@ function processWarehouseMessage(provider, message) {
       );
       setFromConfig(
         provider,
+        schemaVersion,
         commonProps,
         message,
         whTrackConfigJson,
@@ -434,6 +456,7 @@ function processWarehouseMessage(provider, message) {
       );
       setFromConfig(
         provider,
+        schemaVersion,
         commonProps,
         message,
         whDefaultConfigJson,
@@ -441,16 +464,17 @@ function processWarehouseMessage(provider, message) {
       );
 
       // set event column based on event_text in the tracks table
-      const eventColName = safeColumnName(provider, "event");
+      const eventColName = safeColumnName(provider, schemaVersion, "event");
       commonProps[eventColName] = transformTableName(
-        commonProps[safeColumnName(provider, "event_text")]
+        commonProps[safeColumnName(provider, schemaVersion, "event_text")],
+        schemaVersion
       );
       columnTypes[eventColName] = "string";
 
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
-        table: safeTableName(provider, "tracks"),
+        table: safeTableName(provider, schemaVersion, "tracks"),
         columns: getColumns(provider, tracksEvent, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -465,9 +489,16 @@ function processWarehouseMessage(provider, message) {
       }
 
       const trackProps = {};
-      setFromProperties(provider, trackProps, message.properties, columnTypes);
       setFromProperties(
         provider,
+        schemaVersion,
+        trackProps,
+        message.properties,
+        columnTypes
+      );
+      setFromProperties(
+        provider,
+        schemaVersion,
         trackProps,
         message.userProperties,
         columnTypes
@@ -477,7 +508,11 @@ function processWarehouseMessage(provider, message) {
       const trackEvent = { ...trackProps, ...commonProps };
       const trackEventMetadata = {
         table: excludeRudderCreatedTableNames(
-          safeTableName(provider, transformColumnName(trackEvent[eventColName]))
+          safeTableName(
+            provider,
+            schemaVersion,
+            transformColumnName(trackEvent[eventColName], schemaVersion)
+          )
         ),
         columns: getColumns(provider, trackEvent, columnTypes),
         receivedAt: message.receivedAt
@@ -492,21 +527,31 @@ function processWarehouseMessage(provider, message) {
       const commonProps = {};
       setFromProperties(
         provider,
+        schemaVersion,
         commonProps,
         message.userProperties,
         columnTypes
       );
       setFromProperties(
         provider,
+        schemaVersion,
         commonProps,
         message.context ? message.context.traits : {},
         columnTypes
       );
-      setFromProperties(provider, commonProps, message.traits, columnTypes, "");
+      setFromProperties(
+        provider,
+        schemaVersion,
+        commonProps,
+        message.traits,
+        columnTypes,
+        ""
+      );
 
       // set context props
       setFromProperties(
         provider,
+        schemaVersion,
         commonProps,
         message.context,
         columnTypes,
@@ -514,13 +559,17 @@ function processWarehouseMessage(provider, message) {
       );
 
       const usersEvent = { ...commonProps };
-      usersEvent[safeColumnName(provider, "id")] = message.userId;
-      usersEvent[safeColumnName(provider, "received_at")] = message.receivedAt
+      usersEvent[safeColumnName(provider, schemaVersion, "id")] =
+        message.userId;
+      usersEvent[
+        safeColumnName(provider, schemaVersion, "received_at")
+      ] = message.receivedAt
         ? new Date(message.receivedAt).toISOString()
         : null;
-      columnTypes[safeColumnName(provider, "received_at")] = "datetime";
+      columnTypes[safeColumnName(provider, schemaVersion, "received_at")] =
+        "datetime";
       const usersMetadata = {
-        table: safeTableName(provider, "users"),
+        table: safeTableName(provider, schemaVersion, "users"),
         columns: getColumns(provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -529,13 +578,14 @@ function processWarehouseMessage(provider, message) {
       const identifiesEvent = { ...commonProps };
       setFromConfig(
         provider,
+        schemaVersion,
         identifiesEvent,
         message,
         whDefaultConfigJson,
         columnTypes
       );
       const identifiesMetadata = {
-        table: safeTableName(provider, "identifies"),
+        table: safeTableName(provider, schemaVersion, "identifies"),
         columns: getColumns(provider, identifiesEvent, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -546,22 +596,44 @@ function processWarehouseMessage(provider, message) {
     case "page":
     case "screen": {
       const event = {};
-      setFromProperties(provider, event, message.properties, columnTypes);
+      setFromProperties(
+        provider,
+        schemaVersion,
+        event,
+        message.properties,
+        columnTypes
+      );
       // set rudder properties after user set properties to prevent overwriting
       setFromProperties(
         provider,
+        schemaVersion,
         event,
         message.context,
         columnTypes,
         "context_"
       );
-      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
+      setFromConfig(
+        provider,
+        schemaVersion,
+        event,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
 
       if (eventType === "page") {
-        setFromConfig(provider, event, message, whPageConfigJson, columnTypes);
+        setFromConfig(
+          provider,
+          schemaVersion,
+          event,
+          message,
+          whPageConfigJson,
+          columnTypes
+        );
       } else if (eventType === "screen") {
         setFromConfig(
           provider,
+          schemaVersion,
           event,
           message,
           whScreenConfigJson,
@@ -570,7 +642,7 @@ function processWarehouseMessage(provider, message) {
       }
 
       const metadata = {
-        table: safeTableName(provider, `${eventType}s`),
+        table: safeTableName(provider, schemaVersion, `${eventType}s`),
         columns: getColumns(provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -582,16 +654,31 @@ function processWarehouseMessage(provider, message) {
       setFromProperties(provider, event, message.traits, columnTypes);
       setFromProperties(
         provider,
+        schemaVersion,
         event,
         message.context,
         columnTypes,
         "context_"
       );
-      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
-      setFromConfig(provider, event, message, whGroupConfigJson, columnTypes);
+      setFromConfig(
+        provider,
+        schemaVersion,
+        event,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
+      setFromConfig(
+        provider,
+        schemaVersion,
+        event,
+        message,
+        whGroupConfigJson,
+        columnTypes
+      );
 
       const metadata = {
-        table: safeTableName(provider, "groups"),
+        table: safeTableName(provider, schemaVersion, "groups"),
         columns: getColumns(provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -603,16 +690,31 @@ function processWarehouseMessage(provider, message) {
       setFromProperties(provider, event, message.traits, columnTypes);
       setFromProperties(
         provider,
+        schemaVersion,
         event,
         message.context,
         columnTypes,
         "context_"
       );
-      setFromConfig(provider, event, message, whDefaultConfigJson, columnTypes);
-      setFromConfig(provider, event, message, whAliasConfigJson, columnTypes);
+      setFromConfig(
+        provider,
+        schemaVersion,
+        event,
+        message,
+        whDefaultConfigJson,
+        columnTypes
+      );
+      setFromConfig(
+        provider,
+        schemaVersion,
+        event,
+        message,
+        whAliasConfigJson,
+        columnTypes
+      );
 
       const metadata = {
-        table: safeTableName(provider, "aliases"),
+        table: safeTableName(provider, schemaVersion, "aliases"),
         columns: getColumns(provider, event, columnTypes),
         receivedAt: message.receivedAt
       };

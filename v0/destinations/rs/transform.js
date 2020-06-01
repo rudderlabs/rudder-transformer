@@ -1,11 +1,12 @@
 const { processWarehouseMessage } = require("../util");
 
-function processSingleMessage(message, destination) {
-  return processWarehouseMessage("rs", message);
+function processSingleMessage(message, destination, schemaVersion) {
+  return processWarehouseMessage("rs", message, schemaVersion);
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  const schemaVersion = event.request.query.whSchemaVersion;
+  return processSingleMessage(event.message, event.destination, schemaVersion);
 }
 
 exports.process = process;

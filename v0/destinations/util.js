@@ -187,6 +187,9 @@ function safeTableOld(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
+  if (provider === "postgres"){
+    tableName = tableName.toLowerCase();
+  }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {

@@ -221,6 +221,9 @@ function safeColumnOld(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
+  if (provider === "postgres"){
+    columnName = columnName.toLowerCase();
+  }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {

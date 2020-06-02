@@ -176,7 +176,7 @@ const toSafeDBString = str => {
   return str.substr(0, 127);
 };
 
-function safeTableOld(provider, name = "") {
+function safeTableV0(provider, name = "") {
   let tableName = name;
   if (tableName === "") {
     tableName = "STRINGEMPTY";
@@ -213,7 +213,7 @@ function safeTable(provider, name = "") {
   return tableName.substr(0, 127);
 }
 
-function safeColumnOld(provider, name = "") {
+function safeColumnV0(provider, name = "") {
   let columnName = name;
   if (columnName === "") {
     columnName = "STRINGEMPTY";
@@ -298,18 +298,18 @@ function transformName(name = "") {
   return key;
 }
 
-function transformTableNameOld(name = "") {
+function transformTableNameV0(name = "") {
   return toSnakeCase(name);
 }
 
-function transformColumnNameOld(name = "") {
+function transformColumnNameV0(name = "") {
   return toSafeDBString(name);
 }
 
 function transformColumnName(name = "", schemaVersion) {
   switch (schemaVersion) {
     case "v0":
-      return transformColumnNameOld(name);
+      return transformColumnNameV0(name);
     default:
       return transformName(name);
   }
@@ -318,7 +318,7 @@ function transformColumnName(name = "", schemaVersion) {
 function transformTableName(name = "", schemaVersion) {
   switch (schemaVersion) {
     case "v0":
-      return transformTableNameOld(name);
+      return transformTableNameV0(name);
     default:
       return transformName(name);
   }
@@ -327,7 +327,7 @@ function transformTableName(name = "", schemaVersion) {
 function safeColumnName(provider, schemaVersion, name = "") {
   switch (schemaVersion) {
     case "v0":
-      return safeColumnOld(provider, name);
+      return safeColumnV0(provider, name);
     default:
       return safeColumn(provider, name);
   }
@@ -336,7 +336,7 @@ function safeColumnName(provider, schemaVersion, name = "") {
 function safeTableName(provider, schemaVersion, name = "") {
   switch (schemaVersion) {
     case "v0":
-      return safeTableOld(provider, name);
+      return safeTableV0(provider, name);
     default:
       return safeTable(provider, name);
   }

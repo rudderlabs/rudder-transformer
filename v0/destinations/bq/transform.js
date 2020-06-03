@@ -1,4 +1,4 @@
-const { processWarehouseMessage } = require("../util");
+const { processWarehouseMessage } = require("../../../warehouse");
 
 function processSingleMessage(message, schemaVersion) {
   return processWarehouseMessage("bq", message, schemaVersion);

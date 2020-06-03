@@ -5,7 +5,7 @@ function processSingleMessage(message, schemaVersion) {
 }
 
 function process(event) {
-  const schemaVersion = event.request.query.whSchemaVersion;
+  const schemaVersion = event.request.query.whSchemaVersion || "v1";
   return processSingleMessage(event.message, schemaVersion);
 }
 

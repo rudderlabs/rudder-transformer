@@ -1,11 +1,12 @@
-const { processWarehouseMessage } = require("../util");
+const { processWarehouseMessage } = require("../../../warehouse");
 
-function processSingleMessage(message, destination) {
-    return processWarehouseMessage("postgres", message);
+function processSingleMessage(message, schemaVersion) {
+  return processWarehouseMessage("postgres", message, schemaVersion);
 }
 
 function process(event) {
-    return processSingleMessage(event.message, event.destination);
+  const schemaVersion = event.request.query.whSchemaVersion || "v1";
+  return processSingleMessage(event.message, schemaVersion);
 }
 
 exports.process = process;

@@ -45,11 +45,13 @@ const userTransformHandler = () => {
 
 async function handleDest(ctx, destHandler) {
   const events = ctx.request.body;
+  const reqParams = ctx.request.query;
   logger.debug("[DT] Input events: " + JSON.stringify(events));
   const respList = [];
   await Promise.all(
     events.map(async event => {
       try {
+        event.request = { query: reqParams };
         let respEvents = await destHandler.process(event);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];

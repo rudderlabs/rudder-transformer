@@ -45,11 +45,6 @@ function setValues(payload, message, mappingJson) {
 
 function constructPayload(message, name, destination) {
   mappingJson = mappingConfig[name];
-  let rawPayload = {
-    appId: destination.Config.applicationId,
-    clientKey: destination.Config.clientKey,
-    apiVersion: API_VERSION
-  };
 
   rawPayload = setValues(rawPayload, message, mappingJson);
 

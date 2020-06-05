@@ -40,15 +40,56 @@ function setValues(payload, message, mappingJson) {
 function constructPayload(message, category, destination) {
   mappingJson = mappingConfig[category.name];
   rawPayload = {};
-  rawPayload = setValues(rawPayload, message, mappingJson);
   switch (category.action) {
     case "identify":
+      rawPayload = setValues(rawPayload, message, mappingJson);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
+      break;
+    case "page":
+      if (destination.Config.trackAllPages) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      } else if (
+        destination.Config.trackCategorisedPages &&
+        message.properties.category
+      ) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      } else if (
+        destination.Config.trackNamedPages &&
+        message.properties.name
+      ) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      }
+      if (destination.Config.mapToSingleEvent) {
+        rawPayload.eventName = "Loaded a Page";
+      } else {
+        rawPayload.eventName += " page";
+      }
+      break;
+    case "screen":
+      if (destination.Config.trackAllPages) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      } else if (
+        destination.Config.trackCategorisedPages &&
+        message.properties.category
+      ) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      } else if (
+        destination.Config.trackNamedPages &&
+        message.properties.name
+      ) {
+        rawPayload = setValues(rawPayload, message, mappingJson);
+      }
+      if (destination.Config.mapToSingleEvent) {
+        rawPayload.eventName = "Loaded a Screen";
+      } else {
+        rawPayload.eventName += " screen";
+      }
       break;
     default:
       throw Error("not supported");
   }
+
   return removeUndefinedValues(rawPayload);
 }
 
@@ -57,6 +98,7 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayload(message, category, destination);
+  response.userId = message.userId;
   response.headers = {
     "Content-Type": "application/json",
     api_key: destination.Config.apiKey,
@@ -70,6 +112,12 @@ function processSingleMessage(message, destination) {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
+      break;
+    case EventType.PAGE:
+      category = ConfigCategory.PAGE;
+      break;
+    case EventType.SCREEN:
+      category = ConfigCategory.SCREEN;
       break;
     default:
       throw Error("Message type not supported");

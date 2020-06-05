@@ -49,7 +49,7 @@ async function handleDest(ctx, destHandler) {
   logger.debug("[DT] Input events: " + JSON.stringify(events));
   const respList = [];
   await Promise.all(
-    events.map(async event => {
+    events.map(async (event, idx) => {
       try {
         event.request = { query: reqParams };
         let respEvents = await destHandler.process(event);
@@ -61,18 +61,16 @@ async function handleDest(ctx, destHandler) {
             if (ev.statusCode !== 400 && ev.userId) {
               ev.userId += "";
             }
-            return { output: ev, metadata: event.metadata };
+            return { output: ev, metadata: event.metadata, statusCode: 200 };
           })
         );
       } catch (error) {
         logger.error(error);
 
         respList.push({
-          output: {
-            statusCode: 400,
-            error: error.message || "Error occurred while processing payload."
-          },
-          metadata: event.metadata
+          metadata: event.metadata,
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
         });
       }
     })
@@ -121,6 +119,14 @@ if (startDestTransformer) {
             destEvents[0].destination.Transformations &&
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
+
+          const messageIds = destEvents.map(ev => ev.metadata.messageId);
+          const commonMetadata = {
+            ...destEvents[0].metadata,
+            messageIds,
+            custom_transformed: true
+          };
+
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
@@ -128,27 +134,38 @@ if (startDestTransformer) {
                 destEvents,
                 transformationVersionId
               );
+
+              transformedEvents.push(
+                ...destTransformedEvents.map(ev => {
+                  return {
+                    output: ev,
+                    metadata: commonMetadata,
+                    destination: destEvents[0].destination,
+                    statusCode: 200
+                  };
+                })
+              );
             } catch (error) {
               logger.error(error);
-              destTransformedEvents = [
+              transformedEvents.push(
                 // add metadata from first event since all events will have same session_id
                 // and session_id along with dest_id, dest_type are used to handle failures in case of custom transformations
                 {
                   statusCode: 400,
                   error: error.message,
-                  metadata: destEvents[0].metadata
+                  metadata: commonMetadata
                 }
-              ];
+              );
             }
-            transformedEvents.push(
-              ...destTransformedEvents.map(ev => {
-                return { output: ev, metadata: destEvents[0].metadata };
-              })
-            );
           } else {
             transformedEvents.push(
               ...destEvents.map(ev => {
-                return { output: ev, metadata: destEvents[0].metadata };
+                return {
+                  output: ev,
+                  metadata: commonMetadata,
+                  destination: destEvents[0].destination,
+                  statusCode: 200
+                };
               })
             );
           }

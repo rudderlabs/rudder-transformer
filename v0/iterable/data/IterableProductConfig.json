@@ -1,0 +1,54 @@
+[
+    {
+        "destKey": "id",
+        "sourceKeys": ["product_id"],
+        "required": false
+      },
+      {
+        "destKey": "sku",
+        "sourceKeys": ["sku"],
+        "required": false
+      },
+      {
+        "destKey": "name",
+        "sourceKeys": ["name"],
+        "required": false
+      },
+      {
+        "destKey": "description",
+        "sourceKeys": ["description"],
+        "required": false
+      },
+      {
+        "destKey": "categories",
+        "sourceKeys": ["category"],
+        "required": false
+      },
+    {
+      "destKey": "price",
+      "sourceKeys": ["price"],
+      "required": false
+    },
+    {
+      "destKey": "quantity",
+      "sourceKeys": ["quantity"],
+      "required": false
+    },
+    {
+        "destKey": "imageUrl",
+        "sourceKeys": ["image_url"],
+        "required": false
+      },
+      {
+        "destKey": "url",
+        "sourceKeys": ["url"],
+        "required": false
+      },
+      {
+        "destKey": "dataFields",
+        "sourceKeys": ["properties"],
+        "required": false
+      }
+    
+  ]
+  

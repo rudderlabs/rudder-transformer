@@ -9,6 +9,7 @@ const {
 } = require("../util");
 
 function setValues(payload, message, mappingJson) {
+  console.log(mappingJson);
   if (Array.isArray(mappingJson)) {
     let val;
     let sourceKeys;
@@ -86,6 +87,36 @@ function constructPayload(message, category, destination) {
         rawPayload.eventName += " screen";
       }
       break;
+    case "track":
+      rawPayload = setValues(rawPayload, message, mappingJson);
+      break;
+    case "trackPurchase":
+      console.log("inside trackPurchase");
+      rawPayload = setValues(rawPayload, message, mappingJson);
+      console.log("===rawPayload===" + rawPayload);
+      mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+      rawPayload.preferUserId = true;
+      rawPayload.mergeNestedObjects = true;
+      rawPayloadUser = {};
+      rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
+      console.log("===rawPayload 2===" + rawPayload);
+      mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
+      rawPayloadItemsArray = [];
+      rawPayloadItems = {};
+
+      for (var i in message.properties.products) {
+        rawPayloadItemsArray.push(
+          setValues(
+            rawPayloadItems,
+            message.properties.products[i],
+            mappingJson
+          )
+        );
+      }
+      rawPayload.items = rawPayloadItemsArray;
+
+      break;
+
     default:
       throw Error("not supported");
   }
@@ -97,6 +128,7 @@ function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
+  console.log(category);
   response.body.JSON = constructPayload(message, category, destination);
   response.userId = message.userId;
   response.headers = {
@@ -108,7 +140,8 @@ function responseBuilderSimple(message, category, destination) {
 
 function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
-
+  const event = message.event.toLowerCase();
+  var category = {};
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
@@ -118,6 +151,17 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       category = ConfigCategory.SCREEN;
+      break;
+    case EventType.TRACK:
+      switch (event) {
+        case "order completed":
+          console.log("inside order completed");
+          category = ConfigCategory.TRACKPURCHASE;
+          console.log(category);
+          break;
+        default:
+          category = ConfigCategory.TRACK;
+      }
       break;
     default:
       throw Error("Message type not supported");

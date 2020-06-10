@@ -122,9 +122,10 @@ if (startDestTransformer) {
 
           const messageIds = destEvents.map(ev => ev.metadata.messageId);
           const commonMetadata = {
-            ...destEvents[0].metadata,
-            messageIds,
-            custom_transformed: true
+            sourceId: destEvents[0].metadata.sourceId,
+            destinationId: destEvents[0].metadata.destinationId,
+            destinationType: destEvents[0].metadata.destinationType,
+            messageIds
           };
 
           if (transformationVersionId) {
@@ -140,34 +141,25 @@ if (startDestTransformer) {
                   return {
                     output: ev,
                     metadata: commonMetadata,
-                    destination: destEvents[0].destination,
                     statusCode: 200
                   };
                 })
               );
             } catch (error) {
               logger.error(error);
-              transformedEvents.push(
-                // add metadata from first event since all events will have same session_id
-                // and session_id along with dest_id, dest_type are used to handle failures in case of custom transformations
-                {
-                  statusCode: 400,
-                  error: error.message,
-                  metadata: commonMetadata
-                }
-              );
+              transformedEvents.push({
+                statusCode: 400,
+                error: error.message,
+                metadata: commonMetadata
+              });
             }
           } else {
-            transformedEvents.push(
-              ...destEvents.map(ev => {
-                return {
-                  output: ev,
-                  metadata: commonMetadata,
-                  destination: destEvents[0].destination,
-                  statusCode: 200
-                };
-              })
-            );
+            logger.error("[CT] Transformation VersionID not found");
+            transformedEvents.push({
+              statusCode: 400,
+              error: error.message,
+              metadata: commonMetadata
+            });
           }
         })
       );

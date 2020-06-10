@@ -9,7 +9,6 @@ const {
 } = require("../util");
 
 function setValues(payload, message, mappingJson) {
-  console.log(mappingJson);
   if (Array.isArray(mappingJson)) {
     let val;
     let sourceKeys;
@@ -34,7 +33,7 @@ function setValues(payload, message, mappingJson) {
       }
     });
   }
-  console.log(payload);
+
   return payload;
 }
 
@@ -66,6 +65,7 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " page";
       }
+      rawPayload.createdAt = parseInt( (new Date(rawPayload.createdAt).getTime()/1000));
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
@@ -86,20 +86,21 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " screen";
       }
+      rawPayload.createdAt = parseInt( (new Date(rawPayload.createdAt).getTime()/1000));
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingJson);
+      rawPayload.createdAt = parseInt( (new Date(rawPayload.createdAt).getTime()/1000));
       break;
     case "trackPurchase":
-      console.log("inside trackPurchase");
       rawPayload = setValues(rawPayload, message, mappingJson);
-      console.log("===rawPayload===" + rawPayload);
+
       mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
       rawPayloadUser = {};
       rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
-      console.log("===rawPayload 2===" + rawPayload);
+
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItemsArray = [];
       rawPayloadItems = {};
@@ -112,8 +113,16 @@ function constructPayload(message, category, destination) {
             mappingJson
           )
         );
+        rawPayloadItemsArray[i].categories = rawPayloadItemsArray[
+          i
+        ].categories.split(",");
+        rawPayloadItemsArray[i].price = parseInt(rawPayloadItemsArray[i].price)
+        rawPayloadItemsArray[i].quantity = parseInt(rawPayloadItemsArray[i].quantity)
       }
       rawPayload.items = rawPayloadItemsArray;
+      rawPayload.createdAt = parseInt( (new Date(rawPayload.createdAt).getTime()/1000));
+      rawPayload.total = parseInt(rawPayload.total)
+     
 
       break;
 
@@ -128,7 +137,7 @@ function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
-  console.log(category);
+
   response.body.JSON = constructPayload(message, category, destination);
   response.userId = message.userId;
   response.headers = {
@@ -140,7 +149,7 @@ function responseBuilderSimple(message, category, destination) {
 
 function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
-  const event = message.event.toLowerCase();
+ 
   var category = {};
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -153,11 +162,11 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
+      const event = message.event.toLowerCase();
       switch (event) {
         case "order completed":
-          console.log("inside order completed");
           category = ConfigCategory.TRACKPURCHASE;
-          console.log(category);
+
           break;
         default:
           category = ConfigCategory.TRACK;

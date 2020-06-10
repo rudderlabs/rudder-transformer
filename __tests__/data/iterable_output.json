@@ -1,0 +1,174 @@
+[
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/users/update",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "ruchira@rudderlabs.com",
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userId": "123456",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "123456",
+      "statusCode": 200
+    }
+  },
+
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "dataFields": {
+            "total": 1000,
+            "products": [
+              {
+                "product_id": "507f1f77bcf86cd799439011",
+                "sku": "45790-32",
+                "name": "Monopoly: 3rd Edition",
+                "price": "19",
+                "position": "1",
+                "category": "Cars",
+                "url": "https://www.example.com/product/path",
+                "image_url": "https://www.example.com/product/path.jpg"
+              },
+              {
+                "product_id": "507f1f77bcf86cd799439011",
+                "sku": "45790-32",
+                "name": "Monopoly: 3rd Edition",
+                "price": "19",
+                "quantity": "2",
+                "position": "1",
+                "category": "Cars",
+                "url": "https://www.example.com/product/path",
+                "image_url": "https://www.example.com/product/path.jpg"
+              }
+            ]
+          },
+          "createdAt": 1571051718,
+          "total": 1000,
+          "preferUserId": true,
+          "mergeNestedObjects": true,
+          "user": {
+            "email": "sayan@gmail.com",
+            "dataFields": {
+              "email": "sayan@gmail.com"
+            },
+            "userId": "12345"
+          },
+          "items": [
+            {
+              "id": "507f1f77bcf86cd799439011",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "categories": ["Cars"],
+              "price": 19,
+              "imageUrl": "https://www.example.com/product/path.jpg",
+              "url": "https://www.example.com/product/path",
+              "quantity": 2
+            },
+            {
+              "id": "507f1f77bcf86cd799439011",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "categories": ["Cars"],
+              "price": 19,
+              "imageUrl": "https://www.example.com/product/path.jpg",
+              "url": "https://www.example.com/product/path",
+              "quantity": 2
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "12345",
+      "statusCode": 200
+    }
+  },
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/events/track",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "sayan@gmail.com",
+          "dataFields": {
+            "path": "/abc",
+            "referrer": "",
+            "search": "",
+            "title": "",
+            "url": ""
+          },
+          "userId": "12345",
+          "eventName": "ApplicationLoaded page",
+          "createdAt": 1571051718
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "12345",
+      "statusCode": 200
+    }
+  },
+  {
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/events/track",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "sayan@gmail.com",
+          "dataFields": {
+            "category": "test-category",
+            "user_actual_role": "system_admin, system_user",
+            "user_actual_id": 12345
+          },
+          "userId": "12345",
+          "eventName": "test track event GA3",
+          "createdAt": 1571051718
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "12345",
+      "statusCode": 200
+    }
+  }
+]

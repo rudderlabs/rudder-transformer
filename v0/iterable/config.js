@@ -24,7 +24,7 @@ const ConfigCategory = {
   TRACKPURCHASE: {
     name: "IterableTrackPurchaseConfig",
     action: "trackPurchase",
-    endpoint: "https://api.iterable.com/api/events/track"
+    endpoint: "https://api.iterable.com/api/commerce/trackPurchase"
   },
   PRODUCT: {
     name: "IterableProductConfig",

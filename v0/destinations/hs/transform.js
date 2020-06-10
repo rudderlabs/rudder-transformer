@@ -91,6 +91,9 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   } else {
     params = removeUndefinedValues(payload);
   }
+  response.headers = {
+    "Content-Type": "application/json"
+  };
   response.endpoint = endpoint;
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.params = params;

@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "http://control.kochava.com/track/json",
+    "endpoint": "https://control.kochava.com/track/json",
     "headers": {},
     "params": {},
     "body": {

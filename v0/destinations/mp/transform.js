@@ -15,9 +15,9 @@ function getEventTime(message) {
 }
 
 function responseBuilderSimple(parameters, message, eventType) {
-  let endpoint = "http://api.mixpanel.com/engage/";
+  let endpoint = "https://api.mixpanel.com/engage/";
   if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
-    endpoint = "http://api.mixpanel.com/track/";
+    endpoint = "https://api.mixpanel.com/track/";
   }
 
   const encodedData = Buffer.from(

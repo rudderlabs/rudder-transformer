@@ -9,7 +9,7 @@ const eventNameMapping = {
   "products searched": "Search"
 };
 
-const KOCHAVA_ENDPOINT = "http://control.kochava.com/track/json";
+const KOCHAVA_ENDPOINT = "https://control.kochava.com/track/json";
 
 const mappingConfig = getMappingConfig(
   {

@@ -1,4 +1,5 @@
 const get = require("get-value");
+const _ = require("lodash");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
@@ -286,7 +287,11 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         columns: getColumns(provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
-      responses.push({ metadata: usersMetadata, data: usersEvent });
+      usersResponse = { metadata: usersMetadata };
+      if (_.toString(message.userId).trim() !== "") {
+        usersResponse.data = usersEvent;
+      }
+      responses.push(usersResponse);
 
       const identifiesEvent = { ...commonProps };
       setFromConfig(

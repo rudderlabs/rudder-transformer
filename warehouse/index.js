@@ -286,7 +286,11 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         columns: getColumns(provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
-      responses.push({ metadata: usersMetadata, data: usersEvent });
+      usersResponse = { metadata: usersMetadata };
+      if (message.userId) {
+        usersResponse.data = usersEvent;
+      }
+      responses.push(usersResponse);
 
       const identifiesEvent = { ...commonProps };
       setFromConfig(

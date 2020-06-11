@@ -120,11 +120,15 @@ if (startDestTransformer) {
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
 
-          const messageIds = destEvents.map(ev => ev.metadata.messageId);
+          const messageIds = destEvents.map(
+            ev => ev.metadata && ev.metadata.messageId
+          );
           const commonMetadata = {
-            sourceId: destEvents[0].metadata.sourceId,
-            destinationId: destEvents[0].metadata.destinationId,
-            destinationType: destEvents[0].metadata.destinationType,
+            sourceId: destEvents[0].metadata && destEvents[0].metadata.sourceId,
+            destinationId:
+              destEvents[0].metadata && destEvents[0].metadata.destinationId,
+            destinationType:
+              destEvents[0].metadata && destEvents[0].metadata.destinationType,
             messageIds
           };
 

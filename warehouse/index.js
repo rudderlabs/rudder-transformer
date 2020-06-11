@@ -287,7 +287,7 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         receivedAt: message.receivedAt
       };
       usersResponse = { metadata: usersMetadata };
-      if (message.userId) {
+      if (_.toString(x).trim() !== "") {
         usersResponse.data = usersEvent;
       }
       responses.push(usersResponse);

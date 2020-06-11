@@ -1,4 +1,5 @@
 const get = require("get-value");
+const _ = require("lodash");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");

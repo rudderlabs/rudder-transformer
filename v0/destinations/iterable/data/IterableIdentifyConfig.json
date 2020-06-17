@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "dataFields",
+    "sourceKeys": ["context.traits"],
+    "required": false
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": ["userId"],
+    "required": false
+  },
+  {
+    "destKey": "preferUserId",
+    "sourceKeys": "",
+    "required": false
+  },
+  {
+    "destKey": "mergeNestedObjects",
+    "sourceKeys": "",
+    "required": false
+  }
+]

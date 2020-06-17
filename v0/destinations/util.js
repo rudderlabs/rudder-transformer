@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
+const get = require("get-value");
 
 const fixIP = (payload, message, key) => {
   payload[key] = message.context
@@ -119,6 +120,35 @@ function isURL(str) {
   return !!pattern.test(str);
 }
 
+function setValues(payload, message, mappingJson) {
+  if (Array.isArray(mappingJson)) {
+    let val;
+    let sourceKeys;
+    mappingJson.forEach(mapping => {
+      val = undefined;
+      sourceKeys = mapping.sourceKeys;
+      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+        for (let index = 0; index < sourceKeys.length; index++) {
+          val = get(message, sourceKeys[index]);
+          if (val) {
+            break;
+          }
+        }
+
+        if (val) {
+          set(payload, mapping.destKey, val);
+        } else if (mapping.required) {
+          throw new Error(
+            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+          );
+        }
+      }
+    });
+  }
+
+  return payload;
+}
+
 module.exports = {
   getMappingConfig,
   toStringValues,
@@ -134,5 +164,6 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   fixIP,
-  isURL
+  isURL,
+  setValues
 };

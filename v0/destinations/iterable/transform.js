@@ -11,6 +11,24 @@ function constructPayload(message, category, destination) {
   mappingJson = mappingConfig[category.name];
   rawPayload = {};
   switch (category.action) {
+    case "identifyDevice":
+      rawPayloadDevice = {};
+      mappingJson = mappingConfig[ConfigCategory.IDENTIFYDEVICE.name];
+      console.log(mappingJson);
+      rawPayload = setValues(rawPayload, message, mappingJson);
+      console.log(rawPayload);
+      mappingJson = mappingConfig[ConfigCategory.DEVICE.name];
+      rawPayload.device = setValues(rawPayloadDevice, message, mappingJson);
+      rawPayload.preferUserId = true;
+      if (message.context.device.type === "ios")
+        rawPayload.device.platform = "APNS";
+      else rawPayload.device.platform = "GCM";
+      break;
+    case "identifyBrowser":
+      mappingJson = mappingConfig[ConfigCategory.IDENTIFYBROWSER.name];
+      rawPayload = setValues(rawPayload, message, mappingJson);
+      console.log(rawPayload);
+      break;
     case "identify":
       rawPayload = setValues(rawPayload, message, mappingJson);
       rawPayload.preferUserId = true;
@@ -38,9 +56,9 @@ function constructPayload(message, category, destination) {
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-      
+
       rawPayload.campaignId = parseInt(rawPayload.campaignId);
-      
+
       rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "screen":
@@ -73,9 +91,9 @@ function constructPayload(message, category, destination) {
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-      
+
       rawPayload.campaignId = parseInt(rawPayload.campaignId);
-   
+
       rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "trackPurchase":
@@ -112,9 +130,9 @@ function constructPayload(message, category, destination) {
         new Date(rawPayload.createdAt).getTime() / 1000
       );
       rawPayload.total = parseInt(rawPayload.total);
-      
+
       rawPayload.campaignId = parseInt(rawPayload.campaignId);
-  
+
       rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "updateCart":
@@ -150,9 +168,9 @@ function constructPayload(message, category, destination) {
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-      
+
       rawPayload.campaignId = parseInt(rawPayload.campaignId);
-   
+
       rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "trackPurchase":
@@ -189,9 +207,9 @@ function constructPayload(message, category, destination) {
         new Date(rawPayload.createdAt).getTime() / 1000
       );
       rawPayload.total = parseInt(rawPayload.total);
-      
+
       rawPayload.campaignId = parseInt(rawPayload.campaignId);
-  
+
       rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "updateCart":
@@ -237,7 +255,24 @@ function responseBuilderSimple(message, category, destination) {
   response.userId = message.userId;
   response.headers = {
     "Content-Type": "application/json",
-    api_key: destination.Config.apiKey,
+    api_key: destination.Config.apiKey
+  };
+  return response;
+}
+function responseBuilderSimpleForIdentify(message, category, destination) {
+  const response = defaultRequestConfig();
+  if (message.context.device) {
+    response.endpoint = category.endpointDevice;
+    category.action = category.actionDevice;
+  } else if (message.context.os) {
+    response.endpoint = category.endpointBrowser;
+    category.action = category.actionBrowser;
+  }
+  response.body.JSON = constructPayload(message, category, destination);
+  response.userId = message.userId;
+  response.headers = {
+    "Content-Type": "application/json",
+    api_key: destination.Config.apiKey
   };
   return response;
 }
@@ -273,6 +308,23 @@ function processSingleMessage(message, destination) {
       throw Error("Message type not supported");
   }
   const response = responseBuilderSimple(message, category, destination);
+
+  if (
+    (message.type === EventType.IDENTIFY &&
+      message.context.device &&
+      message.context.device.token) ||
+    (message.context.os && message.context.os.token)
+  ) {
+    var respIdentify;
+
+    respIdentify = responseBuilderSimpleForIdentify(
+      message,
+      category,
+      destination
+    );
+
+    return [response, respIdentify];
+  }
   return response;
 }
 

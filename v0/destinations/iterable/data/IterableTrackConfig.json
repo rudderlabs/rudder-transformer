@@ -10,13 +10,8 @@
       "required": false
     },
     {
-      "destKey": "id",
-      "sourceKeys": [""],
-      "required": false
-    },
-    {
         "destKey": "userId",
-        "sourceKeys": ["userId"],
+        "sourceKeys": ["userId","context.traits.userId","context.traits.id"],
         "required": false
       },
     {

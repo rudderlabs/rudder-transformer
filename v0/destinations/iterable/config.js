@@ -1,10 +1,20 @@
 const { getMappingConfig } = require("../util");
 
 const ConfigCategory = {
+  IDENTIFYBROWSER: {
+    name: "IterableRegisterBrowserTokenConfig"
+  },
+  IDENTIFYDEVICE: {
+    name: "IterableRegisterDeviceTokenConfig"
+  },
   IDENTIFY: {
     name: "IterableIdentifyConfig",
     action: "identify",
-    endpoint: "https://api.iterable.com/api/users/update"
+    actionDevice: "identifyDevice",
+    actionBrowser: "identifyBrowser",
+    endpoint: "https://api.iterable.com/api/users/update",
+    endpointDevice: "https://api.iterable.com/api/users/registerDeviceToken",
+    endpointBrowser: "https://api.iterable.comapi/users/registerBrowserToken"
   },
   PAGE: {
     name: "IterablePageConfig",
@@ -35,6 +45,11 @@ const ConfigCategory = {
     name: "IterableProductConfig",
     action: "updateCart",
     endpoint: "https://api.iterable.com/api/commerce/updateCart"
+  },
+  DEVICE: {
+    name: "IterableDeviceConfig",
+    action: "product",
+    endpoint: ""
   }
 };
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

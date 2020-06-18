@@ -6,28 +6,26 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap,
+  nameToEventMap
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  fixIP,
+  fixIP
 } = require("../util");
 
 function getParamsFromConfig(message, destination, type) {
   const params = {};
-
-  var obj = {};
-
+  const obj = {};
   if (destination) {
-    destination.forEach((mapping) => {
+    destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;
     });
   }
 
   const keys = Object.keys(obj);
-  keys.forEach((key) => {
+  keys.forEach(key => {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/content/g, "cg");
@@ -41,10 +39,12 @@ function getParamsFromConfig(message, destination, type) {
 
   return params;
 }
+
 function formatValue(value) {
   if (!value || value < 0) return 0;
   return Math.round(value);
 }
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -63,7 +63,7 @@ function responseBuilderSimple(
     ds: message.channel,
     an: message.context.app.name,
     av: message.context.app.version,
-    aiid: message.context.app.namespace,
+    aiid: message.context.app.namespace
   };
   if (destination.Config.doubleClick) {
     rawPayload.npa = 1;
@@ -93,7 +93,7 @@ function responseBuilderSimple(
   }
 
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach((sourceKey) => {
+  sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
 
@@ -155,64 +155,64 @@ function responseBuilderSimple(
 }
 
 function processIdentify(message, destination) {
-  var ea;
-  if (destination.Config.serverSideIdentifyEventAction)
-    ea = destination.Config.serverSideIdentifyEventAction;
-  else ea = "User Enriched";
-  var ec;
-  if (
-    destination.Config.serverSideIdentifyEventAction &&
-    message.context.traits[destination.Config.serverSideIdentifyEventCategory]
-  )
-    ec =
-      message.context.traits[
-        destination.Config.serverSideIdentifyEventCategory
-      ];
-  else ec = "All";
+  const {
+    serverSideIdentifyEventCategory,
+    serverSideIdentifyEventAction
+  } = destination.Config;
+  let ea;
+  if (serverSideIdentifyEventAction) {
+    ea = serverSideIdentifyEventAction;
+  } else {
+    ea = "User Enriched";
+  }
+  let ec;
 
-  var param = {
+  if (
+    serverSideIdentifyEventAction &&
+    message.context.traits[serverSideIdentifyEventCategory]
+  ) {
+    ec = message.context.traits[serverSideIdentifyEventCategory];
+  } else {
+    ec = "All";
+  }
+
+  return {
     ea,
-    ec,
+    ec
   };
-  return param;
 }
 
 // Function for processing pageviews
 function processPageViews(message, destination) {
-  var documentPath;
+  let documentPath;
   if (message.properties) {
     documentPath = message.properties.path;
     if (message.properties.search && destination.Config.includeSearch) {
       documentPath += message.properties.search;
     }
   }
-  var parameters = {
-    dp: documentPath,
+  const parameters = {
+    dp: documentPath
   };
   return parameters;
 }
 
-// Function for processing screenviews
-function processScreenViews(message) {
-  return {};
-}
-
 // Function for processing non-ecom generic track events
 function processNonEComGenericEvent(message, destination) {
-  var eventValue = "";
+  let eventValue = "";
   if (message.properties) {
     eventValue = message.properties.value
       ? message.properties.value
       : message.properties.revenue;
   }
-  var nonInteraction =
+  const nonInteraction =
     message.properties.nonInteraction !== undefined
       ? !!message.properties.nonInteraction
       : !!destination.Config.nonInteraction;
-  var parameters = {
+  const parameters = {
     ev: formatValue(eventValue),
     ec: message.properties.category || "All",
-    ni: nonInteraction == false ? 0 : 1,
+    ni: nonInteraction === false ? 0 : 1
   };
 
   return parameters;
@@ -227,7 +227,7 @@ function processPromotionEvent(message) {
   const parameters = {
     ea: eventString,
     ec: message.properties.category || "addPromo",
-    cu: message.properties.currency,
+    cu: message.properties.currency
   };
 
   switch (eventString.toLowerCase()) {
@@ -245,24 +245,23 @@ function processPromotionEvent(message) {
 }
 
 // Function for processing payment-related events
-function processPaymentRelatedEvent(message) {
-  const parameters = {
-    pa: "checkout",
+function processPaymentRelatedEvent() {
+  return {
+    pa: "checkout"
   };
-  return parameters;
 }
 
 // Function for processing order refund events
 function processRefundEvent(message) {
   const parameters = {
-    pa: "refund",
+    pa: "refund"
   };
 
-  const products = message.properties.products;
+  const { products } = message.properties;
   if (products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
       if (!value.product_id || value.product_id.length === 0) {
@@ -318,7 +317,7 @@ function processProductListEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString,
+    ec: eventString
   };
 
   // Set action depending on Product List Action
@@ -336,7 +335,7 @@ function processProductListEvent(message) {
 
   const { products } = message.properties;
   if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
 
@@ -371,7 +370,7 @@ function processProductEvent(message) {
 
   const parameters = {
     ea: eventString,
-    ec: eventString,
+    ec: eventString
   };
 
   // Set product action to click or detail depending on event
@@ -395,12 +394,13 @@ function processProductEvent(message) {
       throw new Error("unknown ProductEvent type");
   }
 
-  const { sku, product_id } = message.properties;
+  const { sku } = message.properties;
+  const productId = message.product_id;
 
-  if (!product_id || product_id.length === 0) {
+  if (!productId || productId.length === 0) {
     parameters.pr1id = sku;
   } else {
-    parameters.pr1id = product_id;
+    parameters.pr1id = productId;
   }
 
   return parameters;
@@ -450,7 +450,7 @@ function processTransactionEvent(message) {
   const { products } = message.properties;
 
   if (products.length > 0) {
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i += 1) {
       const product = products[i];
       const prodIndex = i + 1;
       // If product_id is not provided, then SKU will be used in place of id
@@ -479,7 +479,7 @@ function processEComGenericEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString,
+    ec: eventString
   };
 
   return parameters;
@@ -496,7 +496,7 @@ function processSingleMessage(message, destination) {
   switch (messageType) {
     case EventType.IDENTIFY:
       if (destination.Config.enableServerSideIdentify) {
-        customParams = processIdentify(message, destination);
+        customParams = processIdentify(message, destination); // check
         category = ConfigCategory.IDENTIFY;
       } else {
         throw new Error("server side identify is not on");
@@ -507,7 +507,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      customParams = processScreenViews(message);
+      customParams = {};
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK: {

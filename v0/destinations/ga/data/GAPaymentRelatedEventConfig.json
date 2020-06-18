@@ -7,5 +7,5 @@
   "context.userAgent": "ua",
   "properties.total": "tr",
   "properties.shipping": "ts",
-  "properties.tax":"tt"
+  "properties.tax": "tt"
 }

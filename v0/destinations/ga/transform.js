@@ -58,14 +58,15 @@ function responseBuilderSimple(
     enhancedLinkAttribution,
     dimensions,
     metrics,
-    contentGroupings
+    contentGroupings,
+    trackingID
   } = destination.Config;
   var rawPayload;
   if (message.context.app) {
     rawPayload = {
       v: "1",
       t: hitType,
-      tid: destination.Config.trackingID,
+      tid: trackingID,
       ds: message.channel,
       an: message.context.app.name,
       av: message.context.app.version,
@@ -118,23 +119,23 @@ function responseBuilderSimple(
   const params = removeUndefinedValues(parameters);
 
   // Get dimensions  from destination config
-  let dimensions1 = getParamsFromConfig(message, dimensions, "dimensions");
+  let dimensionsParam = getParamsFromConfig(message, dimensions, "dimensions");
 
-  dimensions1 = removeUndefinedValues(dimensions1);
+  dimensionsParam = removeUndefinedValues(dimensionsParam);
 
   // Get metrics from destination config
-  let metrics1 = getParamsFromConfig(message, metrics, "metrics");
-  metrics1 = removeUndefinedValues(metrics1);
+  let metricsParam = getParamsFromConfig(message, metrics, "metrics");
+  metricsParam = removeUndefinedValues(metricsParam);
 
   // Get contentGroupings from destination config
-  let contentGroupings1 = getParamsFromConfig(
+  let contentGroupingsParam = getParamsFromConfig(
     message,
     contentGroupings,
     "content"
   );
-  contentGroupings1 = removeUndefinedValues(contentGroupings1);
+  contentGroupingsParam = removeUndefinedValues(contentGroupingsParam);
 
-  const customParams = { ...dimensions1, ...metrics1, ...contentGroupings1 };
+  const customParams = { ...dimensionsParam, ...metricsParam, ...contentGroupingsParam };
 
   const finalPayload = { ...params, ...customParams, ...payload };
 

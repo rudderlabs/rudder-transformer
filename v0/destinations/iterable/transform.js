@@ -53,9 +53,9 @@ function constructPayload(message, category, destination) {
       }
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
-        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
-        rawPayload.templateId = parseInt(rawPayload.templateId);
+        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
@@ -78,17 +78,17 @@ function constructPayload(message, category, destination) {
       }
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
-        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
-        rawPayload.templateId = parseInt(rawPayload.templateId);
+        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingJson);
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
-        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
-        rawPayload.templateId = parseInt(rawPayload.templateId);
+        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "trackPurchase":
       rawPayload = setValues(rawPayload, message, mappingJson);
@@ -100,30 +100,28 @@ function constructPayload(message, category, destination) {
 
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItem = {};
+      rawPayloadItemArr = [];
       rawPayload.items = message.properties.products;
-      for (var i in rawPayload.items) {
-        rawPayload.items[i] = setValues(
-          rawPayloadItem,
-          message.properties.products[i],
-          mappingJson
-        );
-        if (rawPayload.items[i].categories) {
-          rawPayload.items[i].categories = rawPayload.items[i].categories.split(
-            ","
-          );
+      rawPayload.items.forEach(element => {
+        element = setValues(rawPayloadItem, element, mappingJson);
+        if (element.categories) {
+          element.categories = element.categories.split(",");
         }
-        rawPayload.items[i].price = parseFloat(rawPayload.items[i].price);
-        rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
-      }
+        element.price = parseFloat(element.price);
+        element.quantity = parseInt(element.quantity, 10);
+        const clone = { ...element };
+        rawPayloadItemArr.push(clone);
+      });
+      rawPayload.items = rawPayloadItemArr;
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       rawPayload.total = parseFloat(rawPayload.total);
       if (rawPayload.id) {
         rawPayload.id = rawPayload.id.toString();
       }
       if (rawPayload.campaignId)
-        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
-        rawPayload.templateId = parseInt(rawPayload.templateId);
+        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "updateCart":
       mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -134,21 +132,20 @@ function constructPayload(message, category, destination) {
       rawPayload.user.mergeNestedObjects = true;
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItem = {};
+      rawPayloadItemArr = [];
       rawPayload.items = message.properties.products;
-      for (var i in rawPayload.items) {
-        rawPayload.items[i] = setValues(
-          rawPayloadItem,
-          message.properties.products[i],
-          mappingJson
-        );
-        if (rawPayload.items[i].categories) {
-          rawPayload.items[i].categories = rawPayload.items[i].categories.split(
-            ","
-          );
+      rawPayload.items.forEach(element => {
+        element = setValues(rawPayloadItem, element, mappingJson);
+        if (element.categories) {
+          element.categories = element.categories.split(",");
         }
-        rawPayload.items[i].price = parseFloat(rawPayload.items[i].price);
-        rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
-      }
+        element.price = parseFloat(element.price);
+        element.quantity = parseInt(element.quantity, 10);
+        const clone = { ...element };
+        rawPayloadItemArr.push(clone);
+      });
+
+      rawPayload.items = rawPayloadItemArr;
       break;
     default:
       throw Error("not supported");
@@ -190,6 +187,7 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
 function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   var category = {};
+  var event;
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
@@ -201,7 +199,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
-      const event = message.event.toLowerCase();
+      event = message.event.toLowerCase();
       switch (event) {
         case "order completed":
           category = ConfigCategory.TRACKPURCHASE;

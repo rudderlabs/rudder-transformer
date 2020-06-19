@@ -118,7 +118,10 @@ function isURL(str) {
   ); // fragment locator
   return !!pattern.test(str);
 }
-
+function formatValue(value) {
+  if (!value || value < 0) return 0;
+  return Math.round(value);
+}
 module.exports = {
   getMappingConfig,
   toStringValues,
@@ -134,5 +137,6 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   fixIP,
-  isURL
+  isURL,
+  formatValue
 };

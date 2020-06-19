@@ -108,9 +108,17 @@ function constructPayload(message, category, destination) {
       rawPayload.user.mergeNestedObjects = true;
 
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItemsArray = [];
-      rawPayloadItems = {};
+
       rawPayload.items = message.properties.products;
+      for (var i in rawPayload.items) {
+        if (rawPayload.items[i].category) {
+          rawPayload.items[i].category = rawPayload.items[i].category.split(
+            ","
+          );
+        }
+        rawPayload.items[i].price = parseInt(rawPayload.items[i].price);
+        rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
+      }
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
@@ -128,9 +136,16 @@ function constructPayload(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItemsArray = [];
-      rawPayloadItems = {};
       rawPayload.items = message.properties.products;
+      for (var i in rawPayload.items) {
+        if (rawPayload.items[i].category) {
+          rawPayload.items[i].category = rawPayload.items[i].category.split(
+            ","
+          );
+        }
+        rawPayload.items[i].price = parseInt(rawPayload.items[i].price);
+        rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
+      }
       break;
     default:
       throw Error("not supported");
@@ -214,7 +229,7 @@ function processSingleMessage(message, destination) {
       category,
       destination
     );
-    
+
     return [response, respIdentify];
   }
   logger.debug("No token present thus device/browser not mapped with user");

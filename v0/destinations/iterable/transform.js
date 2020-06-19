@@ -56,10 +56,10 @@ function constructPayload(message, category, destination) {
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-
-      rawPayload.templateId = parseInt(rawPayload.templateId);
+      if (rawPayload.campaignId)
+        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+      if (rawPayload.templateId)
+        rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
@@ -83,18 +83,20 @@ function constructPayload(message, category, destination) {
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-      rawPayload.templateId = parseInt(rawPayload.templateId);
+      if (rawPayload.campaignId)
+        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+      if (rawPayload.templateId)
+        rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingJson);
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
-
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-
-      rawPayload.templateId = parseInt(rawPayload.templateId);
+      if (rawPayload.campaignId)
+        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+      if (rawPayload.templateId)
+        rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "trackPurchase":
       rawPayload = setValues(rawPayload, message, mappingJson);
@@ -107,33 +109,15 @@ function constructPayload(message, category, destination) {
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItemsArray = [];
       rawPayloadItems = {};
-
-      for (var i in message.properties.products) {
-        rawPayloadItemsArray.push(
-          setValues(
-            rawPayloadItems,
-            message.properties.products[i],
-            mappingJson
-          )
-        );
-        rawPayloadItemsArray[i].categories = rawPayloadItemsArray[
-          i
-        ].categories.split(",");
-        rawPayloadItemsArray[i].price = parseInt(rawPayloadItemsArray[i].price);
-        rawPayloadItemsArray[i].quantity = parseInt(
-          rawPayloadItemsArray[i].quantity
-        );
-      }
-      rawPayload.items = rawPayloadItemsArray;
-      rawPayload.id = rawPayload.id.toString();
+      rawPayload.items = message.properties.products;
       rawPayload.createdAt = parseInt(
         new Date(rawPayload.createdAt).getTime() / 1000
       );
       rawPayload.total = parseInt(rawPayload.total);
-
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-
-      rawPayload.templateId = parseInt(rawPayload.templateId);
+      if (rawPayload.campaignId)
+        rawPayload.campaignId = parseInt(rawPayload.campaignId);
+      if (rawPayload.templateId)
+        rawPayload.templateId = parseInt(rawPayload.templateId);
       break;
     case "updateCart":
       mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -145,100 +129,7 @@ function constructPayload(message, category, destination) {
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItemsArray = [];
       rawPayloadItems = {};
-      for (var i in message.properties.products) {
-        rawPayloadItemsArray.push(
-          setValues(
-            rawPayloadItems,
-            message.properties.products[i],
-            mappingJson
-          )
-        );
-        rawPayloadItemsArray[i].categories = rawPayloadItemsArray[
-          i
-        ].categories.split(",");
-        rawPayloadItemsArray[i].price = parseInt(rawPayloadItemsArray[i].price);
-        rawPayloadItemsArray[i].quantity = parseInt(
-          rawPayloadItemsArray[i].quantity
-        );
-      }
-      rawPayload.items = rawPayloadItemsArray;
-      break;
-    case "track":
-      rawPayload = setValues(rawPayload, message, mappingJson);
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
-
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-
-      rawPayload.templateId = parseInt(rawPayload.templateId);
-      break;
-    case "trackPurchase":
-      rawPayload = setValues(rawPayload, message, mappingJson);
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-      rawPayloadUser = {};
-      rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
-      rawPayload.user.preferUserId = true;
-      rawPayload.user.mergeNestedObjects = true;
-
-      mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItemsArray = [];
-      rawPayloadItems = {};
-
-      for (var i in message.properties.products) {
-        rawPayloadItemsArray.push(
-          setValues(
-            rawPayloadItems,
-            message.properties.products[i],
-            mappingJson
-          )
-        );
-        rawPayloadItemsArray[i].categories = rawPayloadItemsArray[
-          i
-        ].categories.split(",");
-        rawPayloadItemsArray[i].price = parseInt(rawPayloadItemsArray[i].price);
-        rawPayloadItemsArray[i].quantity = parseInt(
-          rawPayloadItemsArray[i].quantity
-        );
-      }
-      rawPayload.items = rawPayloadItemsArray;
-      rawPayload.id = rawPayload.id.toString();
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
-      rawPayload.total = parseInt(rawPayload.total);
-
-      rawPayload.campaignId = parseInt(rawPayload.campaignId);
-
-      rawPayload.templateId = parseInt(rawPayload.templateId);
-      break;
-    case "updateCart":
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-
-      rawPayloadUser = {};
-      rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
-      rawPayload.user.preferUserId = true;
-      rawPayload.user.mergeNestedObjects = true;
-      mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItemsArray = [];
-      rawPayloadItems = {};
-      for (var i in message.properties.products) {
-        rawPayloadItemsArray.push(
-          setValues(
-            rawPayloadItems,
-            message.properties.products[i],
-            mappingJson
-          )
-        );
-        rawPayloadItemsArray[i].categories = rawPayloadItemsArray[
-          i
-        ].categories.split(",");
-        rawPayloadItemsArray[i].price = parseInt(rawPayloadItemsArray[i].price);
-        rawPayloadItemsArray[i].quantity = parseInt(
-          rawPayloadItemsArray[i].quantity
-        );
-      }
-      rawPayload.items = rawPayloadItemsArray;
+      rawPayload.items = message.properties.products;
       break;
     default:
       throw Error("not supported");

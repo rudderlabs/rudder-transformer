@@ -14,7 +14,7 @@ const ConfigCategory = {
     actionBrowser: "identifyBrowser",
     endpoint: "https://api.iterable.com/api/users/update",
     endpointDevice: "https://api.iterable.com/api/users/registerDeviceToken",
-    endpointBrowser: "https://api.iterable.comapi/users/registerBrowserToken"
+    endpointBrowser: "https://api.iterable.com/api/users/registerBrowserToken"
   },
   PAGE: {
     name: "IterablePageConfig",

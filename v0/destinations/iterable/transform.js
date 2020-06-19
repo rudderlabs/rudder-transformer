@@ -54,9 +54,8 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " page";
       }
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
+      rawPayload.createdAt = 
+        new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -81,9 +80,8 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " screen";
       }
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
+      rawPayload.createdAt =
+        new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -91,9 +89,8 @@ function constructPayload(message, category, destination) {
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingJson);
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
+      rawPayload.createdAt = 
+        new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -119,9 +116,9 @@ function constructPayload(message, category, destination) {
         rawPayload.items[i].price = parseFloat(rawPayload.items[i].price);
         rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
       }
-      rawPayload.createdAt = parseInt(
-        new Date(rawPayload.createdAt).getTime() / 1000
-      );
+      rawPayload.createdAt = 
+        new Date(rawPayload.createdAt).getTime()
+      ;
       rawPayload.total = parseFloat(rawPayload.total);
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);

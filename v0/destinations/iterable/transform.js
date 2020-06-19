@@ -15,9 +15,7 @@ function constructPayload(message, category, destination) {
     case "identifyDevice":
       rawPayloadDevice = {};
       mappingJson = mappingConfig[ConfigCategory.IDENTIFYDEVICE.name];
-      console.log(mappingJson);
       rawPayload = setValues(rawPayload, message, mappingJson);
-      console.log(rawPayload);
       mappingJson = mappingConfig[ConfigCategory.DEVICE.name];
       rawPayload.device = setValues(rawPayloadDevice, message, mappingJson);
       rawPayload.preferUserId = true;
@@ -28,7 +26,6 @@ function constructPayload(message, category, destination) {
     case "identifyBrowser":
       mappingJson = mappingConfig[ConfigCategory.IDENTIFYBROWSER.name];
       rawPayload = setValues(rawPayload, message, mappingJson);
-      console.log(rawPayload);
       break;
     case "identify":
       rawPayload = setValues(rawPayload, message, mappingJson);
@@ -104,10 +101,6 @@ function constructPayload(message, category, destination) {
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
       rawPayloadItem = {};
       rawPayload.items = message.properties.products;
-      console.log(rawPayload);
-
-      console.log("!!!!!!!!!!!!!");
-      console.log(rawPayload);
       for (var i in rawPayload.items) {
         rawPayload.items[i] = setValues(
           rawPayloadItem,

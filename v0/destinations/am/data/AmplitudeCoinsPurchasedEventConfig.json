@@ -1,0 +1,16 @@
+{
+  "context.os.name": "os_name",
+  "context.os.version": "os_version",
+  "context.device.model": "device_model",
+  "context.device.manufacturer": "device_manufacturer",
+  "anonymousId": "device_id",
+  "context.network.carrier": "carrier",
+  "context.app.name": "app_name",
+  "context.app.build": "app_version",
+  "context.platform": "platform",
+  "context.locale": "language",
+  "properties.category": "event_type",
+  "properties.price": "price",
+  "properties.quantity": "quantity",
+  "request_ip": "ip"
+}

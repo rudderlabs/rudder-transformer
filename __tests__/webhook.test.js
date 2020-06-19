@@ -3,7 +3,7 @@ const name = "Webhook";
 
 const fs = require("fs");
 const path = require("path");
-const transformer = require(`../v0/${integration}/transform`);
+const transformer = require(`../v0/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {
@@ -17,6 +17,6 @@ test(`${name} Tests`, () => {
   const expectedData = JSON.parse(outputDataFile);
   inputData.forEach(async (input, index) => {
     const output = transformer.process(input);
-    expect(output).toEqual([expectedData[index]]);
+    expect(output).toEqual(expectedData[index]);
   });
 });

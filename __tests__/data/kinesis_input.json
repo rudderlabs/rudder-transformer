@@ -6,19 +6,13 @@
       "DestinationDefinition": {
         "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
         "Name": "KINESIS",
-        "DisplayName": "Kinesis",
+        "DisplayName": "Amazon Kinesis",
         "Config": {
           "excludeKeys": [],
           "includeKeys": []
         }
       },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
+      "Config": null,
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
@@ -92,19 +86,13 @@
       "DestinationDefinition": {
         "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
         "Name": "KINESIS",
-        "DisplayName": "Kinesis",
+        "DisplayName": "Amazon Kinesis",
         "Config": {
           "excludeKeys": [],
           "includeKeys": []
         }
       },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
+      "Config": null,
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
@@ -181,19 +169,13 @@
       "DestinationDefinition": {
         "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
         "Name": "KINESIS",
-        "DisplayName": "Kinesis",
+        "DisplayName": "Amazon Kinesis",
         "Config": {
           "excludeKeys": [],
           "includeKeys": []
         }
       },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
+      "Config": null,
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
@@ -262,19 +244,13 @@
       "DestinationDefinition": {
         "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
         "Name": "KINESIS",
-        "DisplayName": "Kinesis",
+        "DisplayName": "Amazon Kinesis",
         "Config": {
           "excludeKeys": [],
           "includeKeys": []
         }
       },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
+      "Config": null,
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
@@ -345,19 +321,13 @@
       "DestinationDefinition": {
         "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
         "Name": "KINESIS",
-        "DisplayName": "Kinesis",
+        "DisplayName": "Amazon Kinesis",
         "Config": {
           "excludeKeys": [],
           "includeKeys": []
         }
       },
-      "Config": {
-        "accessKey": "accessKey",
-        "accessKeyID": "accessKeyID",
-        "region": "us-east-1",
-        "stream": "test-kinesis-shard-1",
-        "useMessageId": true
-      },
+      "Config": null,
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true

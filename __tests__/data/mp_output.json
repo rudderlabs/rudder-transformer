@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "http://api.mixpanel.com/engage/",
+    "endpoint": "https://api.mixpanel.com/engage/",
     "headers": {},
     "params": {
         "data": "eyIkc2V0Ijp7IiRlbWFpbCI6Im1peHBhbmVscmV2aXNpdGVkMUBlbWFpbC5jb20iLCIkbmFtZSI6Ik1peHBhbmVsIFJldmlzaXRlZDEiLCJhbm9ueW1vdXNJZCI6IjEyMzQ1NiIsImFnZSI6MjN9LCIkdG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsIiRkaXN0aW5jdF9pZCI6IjExMjIzMzQ0NTUifQ=="
@@ -21,7 +21,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "http://api.mixpanel.com/track/",
+    "endpoint": "https://api.mixpanel.com/track/",
     "headers": {},
     "params": {
         "data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7InBhdGgiOiIvdGVzdCIsInJlZmVycmVyIjoidGVzdHJlZmVycmVyIiwic2VhcmNoIjoiYWJjIiwidGl0bGUiOiJ0ZXN0IHRpdGxlIiwidXJsIjoid3d3LnRlc3R1cmwuY29tIiwidG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsImRpc3RpbmN0X2lkIjoiMTEyMjMzNDQ1NSJ9fQ=="
@@ -39,7 +39,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "http://api.mixpanel.com/track/",
+    "endpoint": "https://api.mixpanel.com/track/",
     "headers": {},
     "params": {
         "data": "eyJldmVudCI6InRlc3QgdHJhY2sgZXZlbnQgTWl4cGFuZWwiLCJwcm9wZXJ0aWVzIjp7InRlc3RfcHJvcF8xIjoiYWJjZCIsInRlc3RfcHJvcF8yIjoxMTIyLCJ0b2tlbiI6ImVmMWQ0MjM5MDQyNmUzZjdjOTBhYzc4MjcyZTc0MzQ0IiwiZGlzdGluY3RfaWQiOiIxMTIyMzM0NDU1In19"
@@ -57,7 +57,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "http://api.mixpanel.com/track/",
+    "endpoint": "https://api.mixpanel.com/track/",
     "headers": {},
     "params": {
         "data": "eyJldmVudCI6InRlc3QgdHJhY2sgZXZlbnQgTWl4cGFuZWwgd2l0aG91dCBwcm9wZXJ0aWVzIiwicHJvcGVydGllcyI6eyJ0b2tlbiI6ImVmMWQ0MjM5MDQyNmUzZjdjOTBhYzc4MjcyZTc0MzQ0IiwiZGlzdGluY3RfaWQiOiIxMTIyMzM0NDU1In19"
@@ -76,7 +76,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "http://api.mixpanel.com/engage/",
+      "endpoint": "https://api.mixpanel.com/engage/",
       "headers": {},
       "params": {
           "data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDE5LTEwLTE1VDA5OjM1OjMxLjI5MVoiLCIkYW1vdW50IjozMH19LCIkdG9rZW4iOiJlZjFkNDIzOTA0MjZlM2Y3YzkwYWM3ODI3MmU3NDM0NCIsIiRkaXN0aW5jdF9pZCI6IjExMjIzMzQ0NTUifQ=="
@@ -94,7 +94,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "http://api.mixpanel.com/track/",
+      "endpoint": "https://api.mixpanel.com/track/",
       "headers": {},
       "params": {
           "data": "eyJldmVudCI6IlB1cmNoYXNlIiwicHJvcGVydGllcyI6eyJyZXZlbnVlIjozMCwiY3VycmVuY3kiOiJVU0QiLCJ0b2tlbiI6ImVmMWQ0MjM5MDQyNmUzZjdjOTBhYzc4MjcyZTc0MzQ0IiwiZGlzdGluY3RfaWQiOiIxMTIyMzM0NDU1In19"

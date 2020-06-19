@@ -4,7 +4,9 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
-      "headers": {},
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "userId": "12345",
       "params": {
           "hapikey" : "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
@@ -37,7 +39,9 @@
       "type": "REST",
       "method": "GET",
       "endpoint": "https://track.hubspot.com/v1/event",
-      "headers": {},
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "userId": "12345",
       "params": {
           "_a": "6405167",

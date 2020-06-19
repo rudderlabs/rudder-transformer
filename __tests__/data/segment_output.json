@@ -1,0 +1,99 @@
+[
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.segment.io/v1/batch",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "batch": [
+            {
+              "type": "page",
+              "userId": "user12345",
+              "traits": {
+                "age": 23,
+                "email": "testmp@rudderstack.com",
+                "firstname": "Test Kafka"
+              },
+              "timeStamp": "2020-04-17T14:55:31.367Z"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user12345",
+      "statusCode": 200
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.segment.io/v1/batch",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "batch": [
+            {
+              "type": "identify",
+              "userId": "user12345",
+              "traits": {
+                "age": 23,
+                "email": "testmp@email.com",
+                "firstname": "Test Transformer"
+              },
+              "timeStamp": "2020-04-17T14:55:31.37Z"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user12345",
+      "statusCode": 200
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.segment.io/v1/batch",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "batch": [
+            {
+              "type": "track",
+              "userId": "user12345",
+              "event": "test track with property",
+              "traits": {
+                "age": 23,
+                "email": "testmp@email.com",
+                "firstname": "Test Transformer"
+              },
+              "timeStamp": "2020-04-17T14:55:31.372Z"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user12345",
+      "statusCode": 200
+    }
+  ]

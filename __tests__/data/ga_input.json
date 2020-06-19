@@ -3,9 +3,9 @@
     "message": {
       "channel": "web",
       "context": {
-      	"traits": {
-      		"name": "Ruchira"
-      	},
+        "traits": {
+          "name": "Ruchira"
+        },
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -27,9 +27,9 @@
           "density": 2
         }
       },
-      "properties" : {
-      	"plan" :"ruchira plan",
-      	"name": "ruchira moitra"
+      "properties": {
+        "plan": "ruchira plan",
+        "name": "ruchira moitra"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -43,36 +43,67 @@
     },
     "destination": {
       "Config": {
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"name",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "name",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -125,37 +156,68 @@
     },
     "destination": {
       "Config": {
-       
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}] },
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
       "Enabled": true
     }
   },
@@ -204,41 +266,72 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
-  },{
+  },
+  {
     "message": {
       "channel": "web",
       "context": {
@@ -291,7 +384,6 @@
             "sku": "p-299"
           }
         ]
-  
       },
       "integrations": {
         "All": true
@@ -300,37 +392,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -378,7 +500,6 @@
         "testDimension": true,
         "testMetric": true,
         "position": 4.5
-  
       },
       "integrations": {
         "All": true
@@ -387,37 +508,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -465,7 +616,6 @@
         "testDimension": true,
         "testMetric": true,
         "position": 4.5
-  
       },
       "integrations": {
         "All": true
@@ -474,37 +624,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -552,7 +732,6 @@
         "testDimension": true,
         "testMetric": true,
         "position": 4.5
-  
       },
       "integrations": {
         "All": true
@@ -561,41 +740,70 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
-    
   },
   {
     "message": {
@@ -640,7 +848,6 @@
         "testDimension": true,
         "testMetric": true,
         "position": 4.5
-  
       },
       "integrations": {
         "All": true
@@ -649,37 +856,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -727,7 +964,6 @@
         "testDimension": true,
         "testMetric": true,
         "position": 4.5
-  
       },
       "integrations": {
         "All": true
@@ -736,37 +972,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -832,7 +1098,6 @@
         ],
         "testDimension": true,
         "testMetric": true
-  
       },
       "integrations": {
         "All": true
@@ -841,37 +1106,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -934,7 +1229,8 @@
             "productDimension": "My Product Dimension",
             "productMetric": "My Product Metric",
             "position": 10
-          }, {
+          },
+          {
             "product_id": "507f1f77bcf86cdef799439011",
             "productDimension": "My Product Dimension1",
             "productMetric": "My Product Metric1",
@@ -943,7 +1239,6 @@
         ],
         "testDimension": true,
         "testMetric": true
-  
       },
       "integrations": {
         "All": true
@@ -952,37 +1247,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1038,37 +1363,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1122,37 +1477,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1206,37 +1591,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1276,22 +1691,22 @@
       "event": "checkout started",
       "properties": {
         "currency": "CAD",
-            "products": [
-              {
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product",
-                "sku": "p-298"
-              },
-              {
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product 2",
-                "sku": "p-299"
-              }
-            ],
-            "step": 1,
-            "paymentMethod": "Visa",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "step": 1,
+        "paymentMethod": "Visa",
         "testDimension": true,
         "testMetric": true
       },
@@ -1302,37 +1717,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1372,22 +1817,22 @@
       "event": "order updated",
       "properties": {
         "currency": "CAD",
-            "products": [
-              {
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product",
-                "sku": "p-298"
-              },
-              {
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product 2",
-                "sku": "p-299"
-              }
-            ],
-            "step": 1,
-            "paymentMethod": "Visa",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "step": 1,
+        "paymentMethod": "Visa",
         "testDimension": true,
         "testMetric": true
       },
@@ -1398,37 +1843,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1468,11 +1943,7 @@
       "event": "checkout step viewed",
       "properties": {
         "currency": "CAD",
-           
-           
-            "step": 1
-           
-       
+        "step": 1
       },
       "integrations": {
         "All": true
@@ -1481,37 +1952,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1551,10 +2052,8 @@
       "event": "checkout step completed",
       "properties": {
         "currency": "CAD",
-           
-            "step": 1,
-            "paymentMethod": "Visa"
-        
+        "step": 1,
+        "paymentMethod": "Visa"
       },
       "integrations": {
         "All": true
@@ -1563,37 +2062,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }
@@ -1632,21 +2161,16 @@
       "userId": "12345",
       "event": "order starterefundedd",
       "properties": {
-       
-            "products": [
-              {
-                "quantity": 1,
-            
-                "sku": "p-298"
-              },
-              {
-                "quantity": 1,
-                
-                "sku": "p-299"
-              }
-            ],
-           
-           
+        "products": [
+          {
+            "quantity": 1,
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "sku": "p-299"
+          }
+        ],
         "testDimension": true,
         "testMetric": true
       },
@@ -1657,37 +2181,67 @@
     },
     "destination": {
       "Config": {
-      
-      "trackingID":"UA-165994240-1",
-"doubleClick":true,
-"enhancedLinkAttribution":true,
-"classic":true,
-"ignoredReferrers":"",
-"serverClassic":false,
-"includeSearch":true,
-"trackCategorizedPages":true,
-"trackNamedPages":true,
-"sampleRate":"100",
-"siteSpeedSampleRate":"1",
-"setAllMappedProps":true,
-"enableServerSideIdentify":true,
-"serverSideIdentifyEventCategory":"cat1",
-"serverSideIdentifyEventAction":"action1",
-"anonymizeIp":true,
-"domain":"domain",
-"enhancedEcommerce":true,
-"nonInteraction":true,
-"optimize":"abc123",
-"sendUserId":true,
-"useGoogleAmpClientId":true,
-"web-useNativeSDK":true,
-"dimensions":
-[{"from":"name","to":"dimension1"},{"from":"custom2","to":"dimension2"}],
-"metrics":
-[{"from":"email","to":"metric1"},{"from":"trait2","to":"metric2"}],
-"resetCustomDimensionsOnPage":
-[{"resetCustomDimensionsOnPage":"abc"},{"resetCustomDimensionsOnPage":"xyz"}],
-"contentGroupings":[{"from":"plan","to":"content1"},{"from":"prop2","to":"content2"}]
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
       },
       "Enabled": true
     }

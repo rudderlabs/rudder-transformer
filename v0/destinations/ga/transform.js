@@ -12,7 +12,8 @@ const {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  fixIP
+  fixIP,
+  formatValue
 } = require("../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -40,11 +41,6 @@ function getParamsFromConfig(message, destination, type) {
   return params;
 }
 
-function formatValue(value) {
-  if (!value || value < 0) return 0;
-  return Math.round(value);
-}
-
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -56,23 +52,42 @@ function responseBuilderSimple(
   mappingJson,
   destination
 ) {
-  const rawPayload = {
-    v: "1",
-    t: hitType,
-    tid: destination.Config.trackingID,
-    ds: message.channel,
-    an: message.context.app.name,
-    av: message.context.app.version,
-    aiid: message.context.app.namespace
-  };
-  if (destination.Config.doubleClick) {
+  const {
+    doubleClick,
+    anonymizeIp,
+    enhancedLinkAttribution,
+    dimensions,
+    metrics,
+    contentGroupings
+  } = destination.Config;
+  var rawPayload;
+  if (message.context.app) {
+    rawPayload = {
+      v: "1",
+      t: hitType,
+      tid: destination.Config.trackingID,
+      ds: message.channel,
+      an: message.context.app.name,
+      av: message.context.app.version,
+      aiid: message.context.app.namespace
+    };
+  } else {
+    rawPayload = {
+      v: "1",
+      t: hitType,
+      tid: destination.Config.trackingID,
+      ds: message.channel
+    };
+  }
+  if (doubleClick) {
     rawPayload.npa = 1;
   }
-  if (destination.Config.anonymizeIp) {
+  if (anonymizeIp) {
     rawPayload.aip = 1;
   }
-  if (destination.Config.enhancedLinkAttribution) {
-    rawPayload.linkid = "linkid.js"; // not sure
+  if (enhancedLinkAttribution) {
+    if (message.properties.linkid)
+      rawPayload.linkid = message.properties.linkid; // not sure
   }
   if (message.context.campaign) {
     if (message.context.campaign.name) {
@@ -103,31 +118,23 @@ function responseBuilderSimple(
   const params = removeUndefinedValues(parameters);
 
   // Get dimensions  from destination config
-  let dimensions = getParamsFromConfig(
-    message,
-    destination.Config.dimensions,
-    "dimensions"
-  );
+  let dimensions1 = getParamsFromConfig(message, dimensions, "dimensions");
 
-  dimensions = removeUndefinedValues(dimensions);
+  dimensions1 = removeUndefinedValues(dimensions1);
 
   // Get metrics from destination config
-  let metrics = getParamsFromConfig(
-    message,
-    destination.Config.metrics,
-    "metrics"
-  );
-  metrics = removeUndefinedValues(metrics);
+  let metrics1 = getParamsFromConfig(message, metrics, "metrics");
+  metrics1 = removeUndefinedValues(metrics1);
 
   // Get contentGroupings from destination config
-  let contentGroupings = getParamsFromConfig(
+  let contentGroupings1 = getParamsFromConfig(
     message,
-    destination.Config.contentGroupings,
+    contentGroupings,
     "content"
   );
-  contentGroupings = removeUndefinedValues(contentGroupings);
+  contentGroupings1 = removeUndefinedValues(contentGroupings1);
 
-  const customParams = { ...dimensions, ...metrics, ...contentGroupings };
+  const customParams = { ...dimensions1, ...metrics1, ...contentGroupings1 };
 
   const finalPayload = { ...params, ...customParams, ...payload };
 

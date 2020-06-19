@@ -54,8 +54,7 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " page";
       }
-      rawPayload.createdAt = 
-        new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -80,8 +79,7 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " screen";
       }
-      rawPayload.createdAt =
-        new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -89,8 +87,7 @@ function constructPayload(message, category, destination) {
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingJson);
-      rawPayload.createdAt = 
-        new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -105,21 +102,31 @@ function constructPayload(message, category, destination) {
       rawPayload.user.mergeNestedObjects = true;
 
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-
+      rawPayloadItem = {};
       rawPayload.items = message.properties.products;
+      console.log(rawPayload);
+
+      console.log("!!!!!!!!!!!!!");
+      console.log(rawPayload);
       for (var i in rawPayload.items) {
-        if (rawPayload.items[i].category) {
-          rawPayload.items[i].category = rawPayload.items[i].category.split(
+        rawPayload.items[i] = setValues(
+          rawPayloadItem,
+          message.properties.products[i],
+          mappingJson
+        );
+        if (rawPayload.items[i].categories) {
+          rawPayload.items[i].categories = rawPayload.items[i].categories.split(
             ","
           );
         }
         rawPayload.items[i].price = parseFloat(rawPayload.items[i].price);
         rawPayload.items[i].quantity = parseInt(rawPayload.items[i].quantity);
       }
-      rawPayload.createdAt = 
-        new Date(rawPayload.createdAt).getTime()
-      ;
+      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       rawPayload.total = parseFloat(rawPayload.total);
+      if (rawPayload.id) {
+        rawPayload.id = rawPayload.id.toString();
+      }
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId);
       if (rawPayload.templateId)
@@ -133,10 +140,16 @@ function constructPayload(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
+      rawPayloadItem = {};
       rawPayload.items = message.properties.products;
       for (var i in rawPayload.items) {
-        if (rawPayload.items[i].category) {
-          rawPayload.items[i].category = rawPayload.items[i].category.split(
+        rawPayload.items[i] = setValues(
+          rawPayloadItem,
+          message.properties.products[i],
+          mappingJson
+        );
+        if (rawPayload.items[i].categories) {
+          rawPayload.items[i].categories = rawPayload.items[i].categories.split(
             ","
           );
         }
@@ -230,7 +243,7 @@ function processSingleMessage(message, destination) {
     return [response, respIdentify];
   }
   logger.debug("No token present thus device/browser not mapped with user");
-  //console.log("No token present thus device/browser not mapped with user");
+  // console.log("No token present thus device/browser not mapped with user");
   return response;
 }
 

@@ -106,7 +106,6 @@ function getUserAttributesObject(message, mappingJson) {
     "email_subscribe",
     "push_subscribe"
   ];
-
   if (message.context && message.context.traits) {
     reserved.forEach(element => {
       delete message.context.traits[element];

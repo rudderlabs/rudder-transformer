@@ -88,7 +88,7 @@ function responseBuilderSimple(
   }
   if (enhancedLinkAttribution) {
     if (message.properties.linkid)
-      rawPayload.linkid = message.properties.linkid; // not sure
+      rawPayload.linkid = message.properties.linkid;
   }
   if (message.context.campaign) {
     if (message.context.campaign.name) {
@@ -508,7 +508,7 @@ function processSingleMessage(message, destination) {
   switch (messageType) {
     case EventType.IDENTIFY:
       if (destination.Config.enableServerSideIdentify) {
-        customParams = processIdentify(message, destination); // check
+        customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
         throw new Error("server side identify is not on");

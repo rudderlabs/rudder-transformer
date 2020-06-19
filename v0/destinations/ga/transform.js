@@ -61,7 +61,7 @@ function responseBuilderSimple(
     contentGroupings,
     trackingID
   } = destination.Config;
-  var rawPayload;
+  let rawPayload;
   if (message.context.app) {
     rawPayload = {
       v: "1",
@@ -76,7 +76,7 @@ function responseBuilderSimple(
     rawPayload = {
       v: "1",
       t: hitType,
-      tid: destination.Config.trackingID,
+      tid: trackingID,
       ds: message.channel
     };
   }
@@ -135,7 +135,11 @@ function responseBuilderSimple(
   );
   contentGroupingsParam = removeUndefinedValues(contentGroupingsParam);
 
-  const customParams = { ...dimensionsParam, ...metricsParam, ...contentGroupingsParam };
+  const customParams = {
+    ...dimensionsParam,
+    ...metricsParam,
+    ...contentGroupingsParam
+  };
 
   const finalPayload = { ...params, ...customParams, ...payload };
 

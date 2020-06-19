@@ -6,6 +6,7 @@ const {
   defaultRequestConfig,
   setValues
 } = require("../util");
+const logger = require("../../../logger");
 
 function constructPayload(message, category, destination) {
   mappingJson = mappingConfig[category.name];
@@ -213,9 +214,11 @@ function processSingleMessage(message, destination) {
       category,
       destination
     );
-
+    
     return [response, respIdentify];
   }
+  logger.debug("No token present thus device/browser not mapped with user");
+  //console.log("No token present thus device/browser not mapped with user");
   return response;
 }
 

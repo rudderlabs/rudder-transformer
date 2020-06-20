@@ -1,10 +1,12 @@
 const { getMappingConfig } = require("../util");
 
+const BASE_URL = "https://api.iterable.com/api/";
+
 const ConfigCategory = {
-  IDENTIFYBROWSER: {
+  IDENTIFY_BROWSER: {
     name: "IterableRegisterBrowserTokenConfig"
   },
-  IDENTIFYDEVICE: {
+  IDENTIFY_DEVICE: {
     name: "IterableRegisterDeviceTokenConfig"
   },
   IDENTIFY: {
@@ -12,39 +14,39 @@ const ConfigCategory = {
     action: "identify",
     actionDevice: "identifyDevice",
     actionBrowser: "identifyBrowser",
-    endpoint: "https://api.iterable.com/api/users/update",
-    endpointDevice: "https://api.iterable.com/api/users/registerDeviceToken",
-    endpointBrowser: "https://api.iterable.com/api/users/registerBrowserToken"
+    endpoint: `${BASE_URL}users/update"`,
+    endpointDevice: `${BASE_URL}users/registerDeviceToken"`,
+    endpointBrowser: `${BASE_URL}users/registerBrowserToken`
   },
   PAGE: {
     name: "IterablePageConfig",
     action: "page",
-    endpoint: "https://api.iterable.com/api/events/track"
+    endpoint: `${BASE_URL}events/track`
   },
   SCREEN: {
     name: "IterablePageConfig",
     action: "screen",
-    endpoint: "https://api.iterable.com/api/events/track"
+    endpoint: `${BASE_URL}events/track`
   },
   TRACK: {
     name: "IterableTrackConfig",
     action: "track",
-    endpoint: "https://api.iterable.com/api/events/track"
+    endpoint: `${BASE_URL}events/track`
   },
-  TRACKPURCHASE: {
+  TRACK_PURCHASE: {
     name: "IterableTrackPurchaseConfig",
     action: "trackPurchase",
-    endpoint: "https://api.iterable.com/api/commerce/trackPurchase"
+    endpoint: `${BASE_URL}commerce/trackPurchase`
   },
   PRODUCT: {
     name: "IterableProductConfig",
     action: "product",
     endpoint: ""
   },
-  UPDATECART: {
+  UPDATE_CART: {
     name: "IterableProductConfig",
     action: "updateCart",
-    endpoint: "https://api.iterable.com/api/commerce/updateCart"
+    endpoint: `${BASE_URL}commerce/updateCart`
   },
   DEVICE: {
     name: "IterableDeviceConfig",

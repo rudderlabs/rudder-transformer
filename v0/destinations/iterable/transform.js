@@ -9,42 +9,67 @@ const {
 const logger = require("../../../logger");
 
 function constructPayload(message, category, destination) {
-  mappingJson = mappingConfig[category.name];
-  rawPayload = {};
+  const rawPayloadUser = {};
+  const rawPayloadDevice = {};
+
+  const rawPayloadItemArr = [];
+  const rawPayloadItem = {};
+  let rawPayload = {};
+
   switch (category.action) {
     case "identifyDevice":
-      rawPayloadDevice = {};
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFYDEVICE.name];
-      rawPayload = setValues(rawPayload, message, mappingJson);
-      mappingJson = mappingConfig[ConfigCategory.DEVICE.name];
-      rawPayload.device = setValues(rawPayloadDevice, message, mappingJson);
+      rawPayload = setValues(
+        rawPayload,
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]
+      );
+      rawPayload.device = setValues(
+        rawPayloadDevice,
+        message,
+        mappingConfig[ConfigCategory.DEVICE.name]
+      );
       rawPayload.preferUserId = true;
       if (message.context.device.type === "ios")
         rawPayload.device.platform = "APNS";
       else rawPayload.device.platform = "GCM";
       break;
     case "identifyBrowser":
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFYBROWSER.name];
-      rawPayload = setValues(rawPayload, message, mappingJson);
+      rawPayload = setValues(
+        rawPayload,
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY_BROWSER.name]
+      );
       break;
     case "identify":
-      rawPayload = setValues(rawPayload, message, mappingJson);
+      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
       break;
     case "page":
       if (destination.Config.trackAllPages) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       } else if (
         destination.Config.trackCategorisedPages &&
         message.properties.category
       ) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       } else if (
         destination.Config.trackNamedPages &&
         message.properties.name
       ) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       }
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Page";
@@ -59,17 +84,29 @@ function constructPayload(message, category, destination) {
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       } else if (
         destination.Config.trackCategorisedPages &&
         message.properties.category
       ) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       } else if (
         destination.Config.trackNamedPages &&
         message.properties.name
       ) {
-        rawPayload = setValues(rawPayload, message, mappingJson);
+        rawPayload = setValues(
+          rawPayload,
+          message,
+          mappingConfig[category.name]
+        );
       }
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Screen";
@@ -83,7 +120,7 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "track":
-      rawPayload = setValues(rawPayload, message, mappingJson);
+      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
@@ -91,19 +128,21 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "trackPurchase":
-      rawPayload = setValues(rawPayload, message, mappingJson);
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-      rawPayloadUser = {};
-      rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
+      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
+      rawPayload.user = setValues(
+        rawPayloadUser,
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY.name]
+      );
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
-
-      mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItem = {};
-      rawPayloadItemArr = [];
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(element => {
-        element = setValues(rawPayloadItem, element, mappingJson);
+      rawPayload.items.forEach(el => {
+        const element = setValues(
+          rawPayloadItem,
+          el,
+          mappingConfig[ConfigCategory.PRODUCT.name]
+        );
         if (element.categories) {
           element.categories = element.categories.split(",");
         }
@@ -112,6 +151,7 @@ function constructPayload(message, category, destination) {
         const clone = { ...element };
         rawPayloadItemArr.push(clone);
       });
+
       rawPayload.items = rawPayloadItemArr;
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       rawPayload.total = parseFloat(rawPayload.total);
@@ -124,18 +164,20 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "updateCart":
-      mappingJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-
-      rawPayloadUser = {};
-      rawPayload.user = setValues(rawPayloadUser, message, mappingJson);
+      rawPayload.user = setValues(
+        rawPayloadUser,
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY.name]
+      );
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
-      mappingJson = mappingConfig[ConfigCategory.PRODUCT.name];
-      rawPayloadItem = {};
-      rawPayloadItemArr = [];
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(element => {
-        element = setValues(rawPayloadItem, element, mappingJson);
+      rawPayload.items.forEach(el => {
+        const element = setValues(
+          rawPayloadItem,
+          el,
+          mappingConfig[ConfigCategory.PRODUCT.name]
+        );
         if (element.categories) {
           element.categories = element.categories.split(",");
         }
@@ -166,16 +208,25 @@ function responseBuilderSimple(message, category, destination) {
   };
   return response;
 }
+
 function responseBuilderSimpleForIdentify(message, category, destination) {
   const response = defaultRequestConfig();
   if (message.context.device) {
     response.endpoint = category.endpointDevice;
-    category.action = category.actionDevice;
+    response.body.JSON = constructPayload(
+      message,
+      { ...category, action: category.actionDevice },
+      destination
+    );
   } else if (message.context.os) {
     response.endpoint = category.endpointBrowser;
-    category.action = category.actionBrowser;
+    response.body.JSON = constructPayload(
+      message,
+      { ...category, action: category.actionBrowser },
+      destination
+    );
   }
-  response.body.JSON = constructPayload(message, category, destination);
+
   response.userId = message.userId;
   response.headers = {
     "Content-Type": "application/json",
@@ -186,8 +237,8 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
 
 function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
-  var category = {};
-  var event;
+  let category = {};
+  let event;
   switch (messageType) {
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
@@ -202,11 +253,11 @@ function processSingleMessage(message, destination) {
       event = message.event.toLowerCase();
       switch (event) {
         case "order completed":
-          category = ConfigCategory.TRACKPURCHASE;
+          category = ConfigCategory.TRACK_PURCHASE;
           break;
         case "product added":
         case "product removed":
-          category = ConfigCategory.UPDATECART;
+          category = ConfigCategory.UPDATE_CART;
           break;
         default:
           category = ConfigCategory.TRACK;
@@ -223,18 +274,12 @@ function processSingleMessage(message, destination) {
       message.context.device.token) ||
     (message.context.os && message.context.os.token)
   ) {
-    var respIdentify;
-
-    respIdentify = responseBuilderSimpleForIdentify(
-      message,
-      category,
-      destination
-    );
-
-    return [response, respIdentify];
+    return [
+      response,
+      responseBuilderSimpleForIdentify(message, category, destination)
+    ];
   }
   logger.debug("No token present thus device/browser not mapped with user");
-  // console.log("No token present thus device/browser not mapped with user");
   return response;
 }
 

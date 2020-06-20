@@ -17,7 +17,11 @@ test(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
   inputData.forEach(async (input, index) => {
-    const output = transformer.process(input);
-    expect(output).toEqual([expectedData[index]]);
+    try {
+      const output = transformer.process(input);
+      expect(output).toEqual([expectedData[index]]);
+    } catch (error) {
+      console.log(error);
+    }
   });
 });

@@ -10,7 +10,7 @@
       "Page-referrer": "",
       "Page-search": "",
       "Page-title": "",
-      "Page-url": "https://localhost/tests/html/index2.html",
+      "Page-url": "http://localhost/tests/html/index2.html",
       "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
       "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "_n": "Loaded a Page",
@@ -30,7 +30,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/s",
+    "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
       "city": "Disney",
@@ -55,7 +55,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/e",
+    "endpoint": "https://trk.kissmetrics.com/e",
     "headers": {},
     "params": {
       "test revenue kissmetrics-currency": "USD",
@@ -80,7 +80,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/a",
+    "endpoint": "https://trk.kissmetrics.com/a",
     "headers": {},
     "params": {
       "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
@@ -100,7 +100,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/e",
+    "endpoint": "https://trk.kissmetrics.com/e",
     "headers": {},
     "params": {
       "KM Order Completed-affiliation": "Google Store",
@@ -134,7 +134,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/s",
+    "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
       "category": "Games",
@@ -161,7 +161,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
-    "endpoint": "http://trk.kissmetrics.com/s",
+    "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
       "category": "Games",

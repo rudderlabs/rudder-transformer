@@ -35,7 +35,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   jail.setSync(
     "_log",
     new ivm.Reference(function(...args) {
-      console.log("Log: ", ...args);
+      // console.log("Log: ", ...args);
     })
   );
 
@@ -198,7 +198,7 @@ async function userTransformHandler(events, versionId) {
         return formattedEvents;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return [
         {
           statusCode: 400,

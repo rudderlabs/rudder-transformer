@@ -16,8 +16,8 @@ module.exports = {
   },
   rules: {
     "prettier/prettier": "error",
-    // "no-unused-vars": [1, { vars: "local", args: "none" }],
     "no-console": "error"
+    // "no-unused-vars": [1, { vars: "local", args: "none" }],
     // "no-var": "off",
     // "vars-on-top": "off",
     // "func-names": "off",

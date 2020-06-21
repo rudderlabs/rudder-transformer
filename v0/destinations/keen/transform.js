@@ -136,7 +136,7 @@ function process(event) {
       return {
         message: "message type not supported",
         statusCode: 400
-      }
+      };
   }
 
   response.statusCode = 200;

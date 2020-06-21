@@ -1,10 +1,23 @@
 module.exports = {
-  extends: ["airbnb", "prettier"],
+  extends: ["airbnb-base", "prettier"],
   plugins: ["prettier"],
+  env: {
+    commonjs: true,
+    browser: false,
+    es6: true,
+    node: true
+  },
+  globals: {
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly"
+  },
+  parserOptions: {
+    ecmaVersion: 2018
+  },
   rules: {
-    "prettier/prettier": ["error"],
+    "prettier/prettier": "error",
     // "no-unused-vars": [1, { vars: "local", args: "none" }],
-    "no-console": 2 
+    "no-console": "error"
     // "no-var": "off",
     // "vars-on-top": "off",
     // "func-names": "off",

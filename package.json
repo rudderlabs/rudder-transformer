@@ -8,7 +8,8 @@
     "start": "node destTransformer.js",
     "test": "jest --runInBand --detectOpenHandles --coverage --notify",
     "postinstall": "node build.js",
-    "lint": "eslint ."
+    "lint-fix": "eslint . --fix",
+    "lint": "eslint .; exit 0"
   },
   "precommit": {
     "run": "lint, test"
@@ -50,20 +51,13 @@
     "sha256": "^0.2.0",
     "valid-url": "^1.0.9"
   },
-  "jest": {
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true
-  },
   "devDependencies": {
     "acorn": "^7.3.1",
     "eslint": "7.2.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^26.0.1",
     "minimist": ">=0.2.1",
     "pre-commit": "^1.2.2",

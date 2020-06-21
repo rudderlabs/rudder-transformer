@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* istanbul ignore file */
+
 const levelDebug = 0; // Most verbose logging level
 const levelInfo = 1; // Logs about state of the application
 const levelError = 2; // Logs about errors which dont immediately halt the application

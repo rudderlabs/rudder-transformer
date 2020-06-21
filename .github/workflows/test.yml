@@ -15,15 +15,4 @@ jobs:
     - name: Jest
       uses: rkusa/jest-action@master
       secrets: d10e6be8dedb20348a882bf1aa92423d6ec22276 
-
-  codacy-coverage-reporter:
-    runs-on: ubuntu-latest
-    name: codacy-coverage-reporter
-    steps:
-      - uses: actions/checkout@master
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
-        with:
-          project-token: 64619d399e534f0597adb8de75f4bf38
-          coverage-reports: clover.xml
           

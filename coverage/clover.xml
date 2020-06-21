@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1592683968888" clover="3.2.0">
-  <project timestamp="1592683968888" name="All files">
+<coverage generated="1592714802447" clover="3.2.0">
+  <project timestamp="1592714802448" name="All files">
     <metrics statements="2391" coveredstatements="1787" conditionals="1107" coveredconditionals="576" methods="311" coveredmethods="249" elements="3809" coveredelements="2612" complexity="0" loc="2391" ncloc="2391" packages="33" files="55" classes="55"/>
     <package name="rudder-transformer">
       <metrics statements="15" coveredstatements="11" conditionals="8" coveredconditionals="3" methods="3" coveredmethods="2"/>

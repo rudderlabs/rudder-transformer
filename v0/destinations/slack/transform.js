@@ -9,15 +9,15 @@ const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 // to string json traits, not using JSON.stringify()
 // always first check for whitelisted traits
 function stringifyJSON(json, whiteListedTraits) {
-  var output = "";
+  let output = "";
   Object.keys(json).forEach(key => {
     if (json.hasOwnProperty(key)) {
       if (whiteListedTraits && whiteListedTraits.length > 0) {
         if (whiteListedTraits.includes(key)) {
-          output += key + ": " + json[key] + " ";
+          output += `${key}: ${json[key]} `;
         }
       } else {
-        output += key + ": " + json[key] + " ";
+        output += `${key}: ${json[key]} `;
       }
     }
   });
@@ -35,14 +35,14 @@ function getName(message) {
     name ||
     (firstName
       ? lastName
-        ? firstName + "" + lastName
+        ? `${firstName}${lastName}`
         : firstName
       : undefined) ||
     username ||
     (properties ? properties.email : undefined) ||
     email ||
-    (userId ? "User " + userId : undefined) ||
-    "Anonymous user " + anonymousId;
+    (userId ? `User ${userId}` : undefined) ||
+    `Anonymous user ${anonymousId}`;
 
   logger.debug("final name::: ", uName);
   return uName;
@@ -73,16 +73,16 @@ function buildResponse(payloadJSON, message, destination) {
 // build default identify template
 // if whitelisted traits are present build on it else build the entire traits object
 function buildDefaultTraitTemplate(traitsList, traits) {
-  var templateString = "Identified {{name}} ";
+  let templateString = "Identified {{name}} ";
   // build template with whitelisted traits
   traitsList.forEach(trait => {
-    templateString += trait + ": " + "{{" + trait + "}} ";
+    templateString += `${trait}: ` + `{{${trait}}} `;
   });
   // else with all traits
   if (traitsList.length == 0) {
     Object.keys(traits).forEach(traitKey => {
       if (traits.hasOwnProperty(traitKey)) {
-        templateString += traitKey + ": " + "{{" + traitKey + "}} ";
+        templateString += `${traitKey}: ` + `{{${traitKey}}} `;
       }
     });
   }
@@ -159,8 +159,8 @@ function processTrack(message, destination) {
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
   const eventName = message.event;
-  var channelListToSendThisEvent = new Set();
-  var templateListForThisEvent = new Set();
+  const channelListToSendThisEvent = new Set();
+  const templateListForThisEvent = new Set();
 
   // Add global context to regex always
   // build the channel list and templatelist for the event, pick the first in case of multiple
@@ -169,12 +169,12 @@ function processTrack(message, destination) {
 
   // building channel list
   eventChannelConfig.forEach(channelConfig => {
-    var configEventName = channelConfig.eventName
+    const configEventName = channelConfig.eventName
       ? channelConfig.eventName.trim().length > 0
         ? channelConfig.eventName
         : undefined
       : undefined;
-    var configEventChannel = channelConfig.eventChannel
+    const configEventChannel = channelConfig.eventChannel
       ? channelConfig.eventChannel.trim().length > 0
         ? channelConfig.eventChannel
         : undefined
@@ -183,7 +183,7 @@ function processTrack(message, destination) {
       if (channelConfig.eventRegex) {
         logger.debug(
           "regex: ",
-          channelConfig.eventName + " trying to match with " + eventName
+          `${channelConfig.eventName} trying to match with ${eventName}`
         );
         logger.debug(
           "match:: ",
@@ -208,12 +208,12 @@ function processTrack(message, destination) {
 
   // building templatelist
   eventTemplateConfig.forEach(templateConfig => {
-    var configEventName = templateConfig.eventName
+    const configEventName = templateConfig.eventName
       ? templateConfig.eventName.trim().length > 0
         ? templateConfig.eventName
         : undefined
       : undefined;
-    var configEventTemplate = templateConfig.eventTemplate
+    const configEventTemplate = templateConfig.eventTemplate
       ? templateConfig.eventTemplate.trim().length > 0
         ? templateConfig.eventTemplate
         : undefined

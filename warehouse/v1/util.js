@@ -15,7 +15,7 @@ function safeTableName(provider, name = "") {
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
-    tableName = "_" + tableName;
+    tableName = `_${tableName}`;
   }
   return tableName.substr(0, 127);
 }
@@ -33,7 +33,7 @@ function safeColumnName(provider, name = "") {
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
-    columnName = "_" + columnName;
+    columnName = `_${columnName}`;
   }
   return columnName.substr(0, 127);
 }
@@ -81,7 +81,7 @@ function transformName(name = "") {
   let key = extractedValues.join("_");
   key = _.snakeCase(key);
   if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
-    key = "_" + key;
+    key = `_${key}`;
   }
   return key;
 }

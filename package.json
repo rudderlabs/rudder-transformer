@@ -6,11 +6,12 @@
   "scripts": {
     "dependency": "npm install",
     "start": "node destTransformer.js",
-    "test": "jest",
-    "postinstall": "node build.js"
+    "test": "jest --runInBand --detectOpenHandles --coverage --notify",
+    "postinstall": "node build.js",
+    "lint": "eslint ."
   },
   "precommit": {
-    "run": "dependency,test"
+    "run": "lint, test"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,6 @@
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "dependencies": {
     "@ndhoule/extend": "^2.0.0",
-    "acorn": ">=5.7.4",
     "axios": "^0.19.2",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
@@ -37,13 +37,13 @@
     "is-ip": "^3.1.0",
     "isolated-vm": "^3.3.3",
     "json-query": "^2.2.2",
-    "koa": "^2.8.2",
+    "koa": "^2.12.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "minimist": ">=0.2.1",
-    "moment": "^2.24.0",
+    "moment": "^2.27.0",
     "node-cache": "^5.1.1",
     "node-fetch": "^2.6.0",
     "set-value": "^3.0.2",
@@ -55,13 +55,13 @@
     "collectCoverage": true
   },
   "devDependencies": {
-    "acorn": ">=5.7.4",
-    "eslint": "^7.1.0",
-    "eslint-config-airbnb": "^18.1.0",
+    "acorn": "^7.3.1",
+    "eslint": "7.2.0",
+    "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^26.0.1",

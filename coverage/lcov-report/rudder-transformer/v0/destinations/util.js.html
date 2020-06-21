@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.39% </span>
+                <span class="strong">68.42% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/57</span>
+                <span class='fraction'>39/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">41.18% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>7/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.41% </span>
+                <span class="strong">64.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/17</span>
+                <span class='fraction'>11/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.86% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/51</span>
+                <span class='fraction'>34/51</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -202,7 +202,7 @@
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -226,9 +226,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">33x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">542x</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">64x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -253,22 +253,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">61x</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
@@ -280,13 +275,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -339,12 +339,12 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 &nbsp;
-const fixIP = <span class="fstat-no" title="function not covered" >(p</span>ayload, message, key) =&gt; {
-<span class="cstat-no" title="statement not covered" >  payload[key] = message.context</span>
+const fixIP = (payload, message, key) =&gt; {
+  payload[key] = message.context
     ? message.context.ip
       ? message.context.ip
       : message.request_ip
-    : message.request_ip;
+    : <span class="branch-1 cbranch-no" title="branch not covered" >message.request_ip;</span>
 };
 &nbsp;
 const getMappingConfig = (config, dir) =&gt; {
@@ -360,13 +360,13 @@ const getMappingConfig = (config, dir) =&gt; {
 };
 &nbsp;
 const isPrimitive = <span class="fstat-no" title="function not covered" >ar</span>g =&gt; {
-  var type = <span class="cstat-no" title="statement not covered" >typeof arg;</span>
+  const type = <span class="cstat-no" title="statement not covered" >typeof arg;</span>
 <span class="cstat-no" title="statement not covered" >  return arg == null || (type != "object" &amp;&amp; type != "function");</span>
 };
 &nbsp;
 const isDefined = x =&gt; !_.isUndefined(x);
-const isNotNull = <span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x != null;</span>
-const isDefinedAndNotNull = <span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >isDefined(x) &amp;&amp; isNotNull(x);</span>
+const isNotNull = x =&gt; x != null;
+const isDefinedAndNotNull = x =&gt; isDefined(x) &amp;&amp; isNotNull(x);
 &nbsp;
 const toStringValues = <span class="fstat-no" title="function not covered" >ob</span>j =&gt; {
 <span class="cstat-no" title="statement not covered" >  Object.keys(obj).forEach(<span class="fstat-no" title="function not covered" >ke</span>y =&gt; {</span>
@@ -374,34 +374,34 @@ const toStringValues = <span class="fstat-no" title="function not covered" >ob</
 <span class="cstat-no" title="statement not covered" >      return toString(obj[key]);</span>
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    obj[key] = "" + obj[key];</span>
+<span class="cstat-no" title="statement not covered" >    obj[key] = `${obj[key]}`;</span>
   });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return obj;</span>
 };
 &nbsp;
 const getDateInFormat = <span class="fstat-no" title="function not covered" >da</span>te =&gt; {
-  var x = <span class="cstat-no" title="statement not covered" >new Date(date);</span>
-  var y = <span class="cstat-no" title="statement not covered" >x.getFullYear().toString();</span>
-  var m = <span class="cstat-no" title="statement not covered" >(x.getMonth() + 1).toString();</span>
-  var d = <span class="cstat-no" title="statement not covered" >x.getDate().toString();</span>
-<span class="cstat-no" title="statement not covered" >  d.length == 1 &amp;&amp; (d = "0" + d);</span>
-<span class="cstat-no" title="statement not covered" >  m.length == 1 &amp;&amp; (m = "0" + m);</span>
-  var yyyymmdd = <span class="cstat-no" title="statement not covered" >y + m + d;</span>
+  const x = <span class="cstat-no" title="statement not covered" >new Date(date);</span>
+  const y = <span class="cstat-no" title="statement not covered" >x.getFullYear().toString();</span>
+  let m = <span class="cstat-no" title="statement not covered" >(x.getMonth() + 1).toString();</span>
+  let d = <span class="cstat-no" title="statement not covered" >x.getDate().toString();</span>
+<span class="cstat-no" title="statement not covered" >  d.length == 1 &amp;&amp; (d = `0${d}`);</span>
+<span class="cstat-no" title="statement not covered" >  m.length == 1 &amp;&amp; (m = `0${m}`);</span>
+  const yyyymmdd = <span class="cstat-no" title="statement not covered" >y + m + d;</span>
 <span class="cstat-no" title="statement not covered" >  return yyyymmdd;</span>
 };
 &nbsp;
 const removeUndefinedValues = obj =&gt; _.pickBy(obj, isDefined);
 const removeNullValues = <span class="fstat-no" title="function not covered" >ob</span>j =&gt; <span class="cstat-no" title="statement not covered" >_.pickBy(obj, isNotNull);</span>
-const removeUndefinedAndNullValues = <span class="fstat-no" title="function not covered" >ob</span>j =&gt; <span class="cstat-no" title="statement not covered" >_.pickBy(obj, isDefinedAndNotNull);</span>
+const removeUndefinedAndNullValues = obj =&gt; _.pickBy(obj, isDefinedAndNotNull);
 &nbsp;
-const updatePayload = <span class="fstat-no" title="function not covered" >(c</span>urrentKey, eventMappingArr, value, payload) =&gt; {
-<span class="cstat-no" title="statement not covered" >  eventMappingArr.map(<span class="fstat-no" title="function not covered" >ob</span>j =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (obj.rudderKey === currentKey) {</span>
-<span class="cstat-no" title="statement not covered" >      set(payload, obj.expectedKey, value);</span>
+const updatePayload = (currentKey, eventMappingArr, value, payload) =&gt; {
+  eventMappingArr.map(obj =&gt; {
+    if (obj.rudderKey === currentKey) {
+      set(payload, obj.expectedKey, value);
     }
   });
-<span class="cstat-no" title="statement not covered" >  return payload;</span>
+  return payload;
 };
 &nbsp;
 const defaultGetRequestConfig = {
@@ -442,7 +442,7 @@ const defaultRequestConfig = () =&gt; {
 &nbsp;
 // ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
 function <span class="fstat-no" title="function not covered" >isURL(</span>str) {
-  var pattern = <span class="cstat-no" title="statement not covered" >new RegExp(</span>
+  const pattern = <span class="cstat-no" title="statement not covered" >new RegExp(</span>
     "^(https?:\\/\\/)?" + // protocol
     "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
     "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
@@ -478,7 +478,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Jun 20 2020 23:15:31 GMT+0530 (India Standard Time)
+                at Sun Jun 21 2020 01:42:48 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

@@ -3,6 +3,7 @@ const name = "S3";
 
 const fs = require("fs");
 const path = require("path");
+
 const transformer = require(`../v0/destinations/${integration}/transform`);
 
 test(`${name} Tests`, () => {

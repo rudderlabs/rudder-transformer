@@ -4,8 +4,7 @@ const name = "CustomerIO";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
+const transformer = require("../v0/destinations/customerio/transform");
 
 test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(
@@ -17,11 +16,7 @@ test(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
   inputData.forEach(async (input, index) => {
-    try {
-      const output = transformer.process(input);
-      expect(output).toEqual([expectedData[index]]);
-    } catch (error) {
-      console.log(error);
-    }
+    const output = transformer.process(input);
+    expect(output).toEqual([expectedData[index]]);
   });
 });

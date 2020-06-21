@@ -3,6 +3,7 @@ const name = "Mailchimp";
 
 const fs = require("fs");
 const path = require("path");
+
 const transformer = require(`../v0/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 

@@ -15,16 +15,14 @@ const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 let hubSpotPropertyMap = {};
 
 function getKey(key) {
-  var re = /\s/g;
+  const re = /\s/g;
   return key.toLowerCase().replace(re, "_");
 }
 
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
     const { apiKey } = destination.Config;
-    const url =
-      "https://api.hubapi.com/properties/v1/contacts/properties?hapikey=" +
-      apiKey;
+    const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
     const response = await axios.get(url);
     const propertyMap = {};
     response.data.forEach(element => {
@@ -51,8 +49,8 @@ async function getTransformedJSON(message, mappingJson, destination) {
     if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
       let propValue = message.context.traits[traitsKey];
       if (propertyMap[hsSupportedKey] == "date") {
-        var time = propValue;
-        var date = new Date(time);
+        const time = propValue;
+        const date = new Date(time);
         date.setUTCHours(0, 0, 0, 0);
         propValue = date.getTime();
       }
@@ -80,9 +78,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     const { apiKey } = destination.Config;
     params = { hapikey: apiKey };
     if (email) {
-      endpoint =
-        "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/" +
-        email;
+      endpoint = `https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/${email}`;
     } else {
       endpoint = "https://api.hubapi.com/contacts/v1/contact";
     }
@@ -169,7 +165,7 @@ async function processSingleMessage(message, destination) {
         // console.log("message type " + message.type + " is not supported");
         response = {
           statusCode: 400,
-          error: "message type " + message.type + " is not supported"
+          error: `message type ${message.type} is not supported`
         };
     }
   } catch (e) {

@@ -19,7 +19,7 @@ test(`${name} Tests`, () => {
   inputData.forEach(async (input, index) => {
     const output = transformer.process(input);
     const outputLength = output.length;
-    for (var i = 0; i < outputLength; i++) {
+    for (let i = 0; i < outputLength; i++) {
       expect(output[i]).toEqual(expectedData[index + i]);
     }
   });

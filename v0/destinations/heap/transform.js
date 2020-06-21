@@ -8,7 +8,7 @@ const {
 } = require("../util");
 
 function responseBuilder(payload, message, heapConfig) {
-  let response = defaultRequestConfig();
+  const response = defaultRequestConfig();
 
   switch (message.type) {
     case EventType.IDENTIFY:
@@ -36,7 +36,7 @@ function responseBuilder(payload, message, heapConfig) {
 }
 
 function commonPayload(message, rawPayload, type) {
-  let propertiesObj = {};
+  const propertiesObj = {};
   let propsArray;
   let rudderPropertiesObj;
   switch (type) {
@@ -67,14 +67,14 @@ function commonPayload(message, rawPayload, type) {
 }
 
 function getIdentifyPayload(message, heapConfig) {
-  let rawPayload = {
+  const rawPayload = {
     app_id: heapConfig.app_id
   };
   return commonPayload(message, rawPayload, message.type);
 }
 
 function getTrackPayload(message, heapConfig) {
-  let rawPayload = {
+  const rawPayload = {
     app_id: heapConfig.app_id,
     event: get(message.event) ? message.event : message.userId
   };

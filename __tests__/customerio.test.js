@@ -4,8 +4,7 @@ const name = "CustomerIO";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
+const transformer = require("../v0/destinations/customerio/transform");
 
 test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(

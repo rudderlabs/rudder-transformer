@@ -129,9 +129,7 @@ function processSingleMessage(message, destination) {
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     default:
-      throw new Error(
-        "message type " + message.type + " is not supported for MP"
-      );
+      throw new Error(`message type ${message.type} is not supported for MP`);
   }
 }
 

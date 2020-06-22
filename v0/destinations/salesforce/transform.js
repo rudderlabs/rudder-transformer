@@ -32,29 +32,27 @@ async function getSFDCHeader(destination) {
       "&grant_type=password"); */
 
   const response = await axios.post(
-    SF_TOKEN_REQUEST_URL +
-      "?username=" +
-      destination.Config.userName +
-      "&password=" +
-      encodeURIComponent(destination.Config.password) +
-      encodeURIComponent(destination.Config.initialAccessToken) +
-      "&client_id=" +
-      destination.Config.consumerKey +
-      //'3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
-      "&client_secret=" +
-      destination.Config.consumerSecret +
-      //'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
-      "&grant_type=password",
+    `${SF_TOKEN_REQUEST_URL}?username=${
+      destination.Config.userName
+    }&password=${encodeURIComponent(
+      destination.Config.password
+    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+      destination.Config.consumerKey
+      // '3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
+    }&client_secret=${
+      destination.Config.consumerSecret
+      // 'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
+    }&grant_type=password`,
     {}
   );
 
-  return ["Bearer " + response.data.access_token, response.data.instance_url];
+  return [`Bearer ${response.data.access_token}`, response.data.instance_url];
 }
 
 function getParamsFromConfig(message, destination) {
   const params = {};
 
-  var obj = {};
+  const obj = {};
   // customMapping: [{from:<>, to: <>}] , structure of custom mapping
   if (destination.Config.customMappings) {
     destination.Config.customMappings.forEach(mapping => {
@@ -85,11 +83,11 @@ async function responseBuilderSimple(
   // First name and last name need to be extracted from the name field
   // and inserted into the message
 
-  var firstName = "";
-  var lastName = "";
+  let firstName = "";
+  let lastName = "";
   if (message.context.traits.name) {
     // Split by space and then take first and last elements
-    var nameComponents = message.context.traits.name.split(" ");
+    const nameComponents = message.context.traits.name.split(" ");
     firstName = nameComponents[0]; // first element
     lastName = nameComponents[nameComponents.length - 1]; // last element
     // Insert first and last names separately into message
@@ -129,7 +127,7 @@ async function responseBuilderSimple(
 
   const customKeys = Object.keys(message.context.traits);
   customKeys.forEach(key => {
-    const keyPath = "context.traits." + key;
+    const keyPath = `context.traits.${key}`;
     mappingJsonKeys = Object.keys(mappingJson);
     if (
       !mappingJsonKeys.some(function(k) {
@@ -138,7 +136,7 @@ async function responseBuilderSimple(
       !(keyPath in ignoreMapJson)
     ) {
       const val = message.context.traits[key];
-      if (val) payload[key + "__c"] = val;
+      if (val) payload[`${key}__c`] = val;
     }
   });
 
@@ -163,42 +161,31 @@ async function responseBuilderSimple(
 async function processIdentify(message, destination) {
   // Get the authorization header if not available
   // if (!authorizationData) {
-  var authorizationData = await getSFDCHeader(destination);
+  const authorizationData = await getSFDCHeader(destination);
   // }
   // start with creation endpoint, update only if Lead does not exist
-  var targetEndpoint =
-    authorizationData[1] +
-    "/services/data/v" +
-    SF_API_VERSION +
-    "/sobjects/Lead";
+  let targetEndpoint = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/sobjects/Lead`;
 
   // check if the lead exists
   // need to perform a parameterized search for this using email
-  var email = message.context.traits.email;
+  const { email } = message.context.traits;
 
-  var leadQueryUrl =
-    authorizationData[1] +
-    "/services/data/v" +
-    SF_API_VERSION +
-    "/parameterizedSearch/?q=" +
-    email +
-    "&sobject=Lead&Lead.fields=id";
+  const leadQueryUrl = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
   // request configuration will be conditional
   // POST for create, PATCH for update
-  var leadQueryResponse = await axios.get(leadQueryUrl, {
+  const leadQueryResponse = await axios.get(leadQueryUrl, {
     headers: {
       Authorization: authorizationData[0]
     }
   });
 
   if (leadQueryResponse && leadQueryResponse.data.searchRecords) {
-    var retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
+    const retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
     // if count is greater than zero, it means that lead exists, then only update it
     // else the original endpoint, which is the one for creation - can be used
     if (retrievedLeadCount > 0) {
-      targetEndpoint +=
-        "/" + leadQueryResponse.data.searchRecords[0].Id + "?_HttpMethod=PATCH";
+      targetEndpoint += `/${leadQueryResponse.data.searchRecords[0].Id}?_HttpMethod=PATCH`;
     }
   }
 
@@ -222,7 +209,7 @@ async function processSingleMessage(message, destination) {
   } else {
     response = {
       statusCode: 400,
-      error: "message type " + message.type + " is not supported"
+      error: `message type ${message.type} is not supported`
     };
   }
   // console.log(response);

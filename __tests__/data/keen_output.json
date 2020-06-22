@@ -1,108 +1,89 @@
 [
+  { "message": "message type not supported", "statusCode": 400 },
   {
-    "statusCode": 400,
-    "error": "message type not supported"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.keen.io/3.0/projects/abcde/events/Viewed ApplicationLoaded page",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "xyz"
-    },
-    "params": {},
     "body": {
+      "XML": {},
       "JSON": {
-        "path": "/test",
-        "referrer": "Rudder",
         "search": "abc",
+        "request_ip": "0.0.0.0",
         "title": "Test Page",
         "url": "www.rudderlabs.com",
-        "user": {
-          "userId": "12345",
-          "traits": {
-            "email": "sayan@gmail.com",
-            "anonymousId": "12345"
-          }
-        },
-        "request_ip": "0.0.0.0",
+        "referrer": "Rudder",
         "userId": "12345",
-        "anonymousId": "00000000000000000000000000",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "keen": {
           "addons": [
             {
-              "name": "keen:ip_to_geo",
               "input": { "ip": "request_ip" },
+              "name": "keen:ip_to_geo",
               "output": "ip_geo_info"
             },
             {
+              "input": { "ua_string": "user_agent" },
               "name": "keen:ua_parser",
-              "input": {
-                "ua_string": "user_agent"
-              },
               "output": "parsed_user_agent"
             }
           ]
-        }
+        },
+        "anonymousId": "00000000000000000000000000",
+        "user": {
+          "traits": { "anonymousId": "12345", "email": "sayan@gmail.com" },
+          "userId": "12345"
+        },
+        "path": "/test",
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       },
-      "XML": {},
       "FORM": {}
     },
     "files": {},
+    "endpoint": "https://api.keen.io/3.0/projects/abcde/events/Viewed ApplicationLoaded page",
     "userId": "12345",
+    "headers": { "Content-Type": "application/json", "Authorization": "xyz" },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
     "statusCode": 200
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.keen.io/3.0/projects/abcde/events/test track event",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "xyz"
-    },
-    "params": {},
     "body": {
+      "XML": {},
       "JSON": {
-        "user_actual_role": "system_admin",
         "user_actual_id": 12345,
-        "user_time_spent": 50000,
-        "user": {
-          "userId": "12345",
-          "traits": {
-            "email": "sayan@gmail.com",
-            "anonymousId": "12345"
-          }
-        },
+        "user_actual_role": "system_admin",
         "request_ip": "1.1.1.1",
+        "user_time_spent": 50000,
         "userId": "12345",
-        "anonymousId": "00000000000000000000000000",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "keen": {
           "addons": [
             {
-              "name": "keen:ip_to_geo",
               "input": { "ip": "request_ip" },
+              "name": "keen:ip_to_geo",
               "output": "ip_geo_info"
             },
             {
+              "input": { "ua_string": "user_agent" },
               "name": "keen:ua_parser",
-              "input": {
-                "ua_string": "user_agent"
-              },
               "output": "parsed_user_agent"
             }
           ]
-        }
+        },
+        "anonymousId": "00000000000000000000000000",
+        "user": {
+          "traits": { "anonymousId": "12345", "email": "sayan@gmail.com" },
+          "userId": "12345"
+        },
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       },
-      "XML": {},
       "FORM": {}
     },
     "files": {},
+    "endpoint": "https://api.keen.io/3.0/projects/abcde/events/test track event",
     "userId": "12345",
+    "headers": { "Content-Type": "application/json", "Authorization": "xyz" },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
     "statusCode": 200
   }
 ]

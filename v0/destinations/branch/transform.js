@@ -50,7 +50,7 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  const context = message.context;
+  const { context } = message;
 
   return removeUndefinedAndNullValues({
     os: context.os.name,

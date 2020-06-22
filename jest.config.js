@@ -6,7 +6,7 @@ module.exports = {
   // automock: false,
 
   // Stop running tests after `n` failures
-  // bail: 0,
+  bail: 1,
 
   // Respect "browser" field in package.json when resolving modules
   // browser: false,
@@ -18,7 +18,7 @@ module.exports = {
   // clearMocks: false,
 
   // Indicates whether the coverage information should be collected while executing the test
-  // collectCoverage: false,
+  collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   // collectCoverageFrom: null,
@@ -27,26 +27,26 @@ module.exports = {
   coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  coveragePathIgnorePatterns: ["/node_modules/"],
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
+  coverageReporters: ["json", "text", "lcov", "clover"],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: null,
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10
+    }
+  },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: null,
 
   // Make calling deprecated APIs throw helpful error messages
-  // errorOnDeprecated: false,
+  errorOnDeprecated: true,
 
   // Force coverage collection from ignored files using an array of glob patterns
   // forceCoverageMatch: [],
@@ -64,19 +64,10 @@ module.exports = {
   // maxWorkers: "50%",
 
   // An array of directory names to be searched recursively up from the requiring module's location
-  // moduleDirectories: [
-  //   "node_modules"
-  // ],
+  moduleDirectories: ["node_modules"],
 
   // An array of file extensions your modules use
-  // moduleFileExtensions: [
-  //   "js",
-  //   "json",
-  //   "jsx",
-  //   "ts",
-  //   "tsx",
-  //   "node"
-  // ],
+  moduleFileExtensions: ["js", "json", "ts", "node"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -85,10 +76,10 @@ module.exports = {
   // modulePathIgnorePatterns: [],
 
   // Activates notifications for test results
-  // notify: false,
+  notify: true,
 
   // An enum that specifies notification mode. Requires { notify: true }
-  // notifyMode: "failure-change",
+  notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
   // preset: null,
@@ -144,12 +135,10 @@ module.exports = {
   testMatch: [
     "**/__tests__/**/*test.[jt]s?(x)",
     "**/?(*.)+(spec|test).[tj]s?(x)"
-  ]
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  // testPathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  testPathIgnorePatterns: ["/node_modules/"]
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

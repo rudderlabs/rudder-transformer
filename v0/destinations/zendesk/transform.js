@@ -11,7 +11,7 @@ const {
   defaultDeleteRequestConfig
 } = require("../util");
 
-var endPoint;
+let endPoint;
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -104,15 +104,15 @@ function getIdentifyPayload(message, category, destinationConfig) {
   const userFields = traitKeys.filter(
     trait =>
       !(
-        sourceKeys.includes("context.traits." + trait) ||
-        typeof message.context.traits[trait] == "object"
+        sourceKeys.includes(`context.traits.${trait}`) ||
+        typeof message.context.traits[trait] === "object"
       )
   );
   userFields.forEach(field => {
     set(
       payload,
-      "user.user_fields." + field,
-      get(message, "context.traits." + field)
+      `user.user_fields.${field}`,
+      get(message, `context.traits.${field}`)
     );
   });
 
@@ -127,7 +127,7 @@ function getIdentifyPayload(message, category, destinationConfig) {
 
 async function getUserId(message, headers) {
   const userEmail = message.context.traits.email;
-  const url = endPoint + `users/search.json?query=${userEmail}`;
+  const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
 
@@ -165,9 +165,9 @@ async function isUserAlreadyAssociated(userId, orgId, headers) {
 }
 
 async function createUser(message, headers, destinationConfig) {
-  const name = message.context.traits.name;
+  const { name } = message.context.traits;
   const userId = message.userId ? message.userId : message.anonymousId;
-  const email = message.context.traits.email;
+  const { email } = message.context.traits;
 
   const userObject = { name, external_id: userId, email };
   if (destinationConfig.createUsersAsVerified) {
@@ -257,15 +257,15 @@ async function createOrganization(
   const organizationFields = traitKeys.filter(
     trait =>
       !(
-        sourceKeys.includes("traits." + trait) ||
-        typeof message.context.traits[trait] == "object"
+        sourceKeys.includes(`traits.${trait}`) ||
+        typeof message.context.traits[trait] === "object"
       )
   );
   organizationFields.forEach(field => {
     set(
       payload,
-      "organization.organization_fields." + field,
-      get(message, "traits." + field)
+      `organization.organization_fields.${field}`,
+      get(message, `traits.${field}`)
     );
   });
 
@@ -317,7 +317,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const traits = message.context.traits;
+  const { traits } = message.context;
   if (
     traits.company &&
     traits.company.remove &&
@@ -366,7 +366,7 @@ async function processTrack(message, destinationConfig, headers) {
   let userEmail = message.context.traits.email;
   let zendeskUserID;
   // let url = endPoint + "users/search.json?external_id=" + userId;
-  let url = endPoint + `users/search.json?query=${userEmail}`;
+  let url = `${endPoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   const userResponse = await axios.get(url, config);
   if (!userResponse || !userResponse.data || userResponse.data.count == 0) {
@@ -396,7 +396,7 @@ async function processTrack(message, destinationConfig, headers) {
   profileObject.identifiers = [{ type: "email", value: userEmail }];
 
   const eventPayload = { event: eventObject, profile: profileObject };
-  url = endPoint + "users/" + zendeskUserID + "/events";
+  url = `${endPoint}users/${zendeskUserID}/events`;
 
   const response = responseBuilder(message, headers, eventPayload, url);
   return response;
@@ -447,14 +447,14 @@ async function processGroup(message, destinationConfig, headers) {
 }
 
 async function processSingleMessage(event) {
-  const message = event.message;
+  const { message } = event;
   const destinationConfig = event.destination.Config;
   const messageType = message.type.toLowerCase();
-  const unencodedBase64Str =
-    destinationConfig.email + "/token:" + destinationConfig.apiToken;
+  const unencodedBase64Str = `${destinationConfig.email}/token:${destinationConfig.apiToken}`;
   const headers = {
-    Authorization:
-      "Basic " + Buffer.from(unencodedBase64Str).toString("base64"),
+    Authorization: `Basic ${Buffer.from(unencodedBase64Str).toString(
+      "base64"
+    )}`,
     "Content-Type": "application/json"
   };
 

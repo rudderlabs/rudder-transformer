@@ -16,9 +16,9 @@ function formatGender(gender) {
   if (!gender) return;
   if (typeof gender !== "string") return;
 
-  var femaleGenders = ["woman", "female", "w", "f"];
-  var maleGenders = ["man", "male", "m"];
-  var otherGenders = ["other", "o"];
+  const femaleGenders = ["woman", "female", "w", "f"];
+  const maleGenders = ["man", "male", "m"];
+  const otherGenders = ["other", "o"];
 
   if (femaleGenders.indexOf(gender.toLowerCase()) > -1) return "F";
   if (maleGenders.indexOf(gender.toLowerCase()) > -1) return "M";
@@ -41,7 +41,7 @@ function buildResponse(message, properties, endpoint) {
 }
 
 function setAliasObjectWithAnonId(payload, message) {
-  payload["user_alias"] = {
+  payload.user_alias = {
     alias_name: message.anonymousId,
     alias_label: "rudder_id"
   };
@@ -49,16 +49,15 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) payload["external_id"] = message.userId;
+  if (message.userId) payload.external_id = message.userId;
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
   if (message.userId) return setExternalId(payload, message);
-  else {
-    payload["_update_existing_only"] = false;
-    return setAliasObjectWithAnonId(payload, message);
-  }
+
+  payload._update_existing_only = false;
+  return setAliasObjectWithAnonId(payload, message);
 }
 
 function getIdentifyPayload(message) {
@@ -72,7 +71,7 @@ function getUserAttributesObject(message, mappingJson) {
   const sourceKeys = Object.keys(mappingJson);
   const data = {};
   sourceKeys.forEach(sourceKey => {
-    let value = get(message, sourceKey);
+    const value = get(message, sourceKey);
     if (value) {
       if (mappingJson[sourceKey] === "gender") {
         data[mappingJson[sourceKey]] = formatGender(value);
@@ -82,7 +81,7 @@ function getUserAttributesObject(message, mappingJson) {
     }
   });
 
-  var reserved = [
+  const reserved = [
     "avatar",
     "address",
     "birthday",
@@ -120,7 +119,7 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function appendApiKey(payload, destination) {
-  payload["api_key"] = destination.Config.restApiKey;
+  payload.api_key = destination.Config.restApiKey;
   return payload;
 }
 
@@ -145,7 +144,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson) {
 function handleReservedProperties(props) {
   // remove reserved keys from custom event properties
   // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  var reserved = [
+  const reserved = [
     "time",
     "product_id",
     "quantity",
@@ -161,8 +160,8 @@ function handleReservedProperties(props) {
 }
 
 function addMandatoryEventProperties(payload, message) {
-  payload["name"] = message.event;
-  payload["time"] = message.timestamp;
+  payload.name = message.event;
+  payload.time = message.timestamp;
   return payload;
 }
 
@@ -174,26 +173,26 @@ function addMandatoryPurchaseProperties(
   quantity,
   timestamp
 ) {
-  payload["price"] = price;
-  payload["product_id"] = productId;
-  payload["currency"] = currencyCode;
-  payload["quantity"] = quantity;
-  payload["time"] = timestamp;
+  payload.price = price;
+  payload.product_id = productId;
+  payload.currency = currencyCode;
+  payload.quantity = quantity;
+  payload.time = timestamp;
   return payload;
 }
 
 function getPurchaseObjs(message) {
-  var products = message.properties.products;
-  var currencyCode = message.properties.currency;
+  const { products } = message.properties;
+  const currencyCode = message.properties.currency;
 
-  let purchaseObjs = [];
+  const purchaseObjs = [];
 
   if (products) {
     // we have to make a separate call to appboy for each product
     products.forEach(product => {
-      var productId = product.product_id;
-      var price = product.price;
-      var quantity = product.quantity;
+      const productId = product.product_id;
+      const { price } = product;
+      const { quantity } = product;
       if (quantity && price && productId) {
         let purchaseObj = {};
         purchaseObj = addMandatoryPurchaseProperties(
@@ -214,12 +213,12 @@ function getPurchaseObjs(message) {
 }
 
 function processTrackEvent(messageType, message, destination, mappingJson) {
-  var eventName = message.event;
+  const eventName = message.event;
 
   if (!message.properties) {
     message.properties = {};
   }
-  var properties = message.properties;
+  let { properties } = message;
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
   attributePayload = setExternalIdOrAliasObject(attributePayload, message);
@@ -231,11 +230,11 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     purchaseObjs = getPurchaseObjs(message);
 
     // del used properties
-    delete properties["products"];
-    delete properties["currency"];
+    delete properties.products;
+    delete properties.currency;
 
     let payload = {};
-    payload["properties"] = properties;
+    payload.properties = properties;
 
     payload = setExternalIdOrAliasObject(payload, message);
     return buildResponse(
@@ -246,42 +245,40 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
       ),
       getTrackEndPoint(destination.Config.endPoint)
     );
-  } else {
-    properties = handleReservedProperties(properties);
-    let payload = {};
-
-    //mandatory fields
-    payload = addMandatoryEventProperties(payload, message);
-    payload["properties"] = properties;
-
-    payload = setExternalIdOrAliasObject(payload, message);
-    return buildResponse(
-      message,
-      appendApiKey(
-        { attributes: [attributePayload], events: [payload] },
-        destination
-      ),
-      getTrackEndPoint(destination.Config.endPoint)
-    );
   }
+  properties = handleReservedProperties(properties);
+  let payload = {};
+
+  // mandatory fields
+  payload = addMandatoryEventProperties(payload, message);
+  payload.properties = properties;
+
+  payload = setExternalIdOrAliasObject(payload, message);
+  return buildResponse(
+    message,
+    appendApiKey(
+      { attributes: [attributePayload], events: [payload] },
+      destination
+    ),
+    getTrackEndPoint(destination.Config.endPoint)
+  );
 }
 
 function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  //console.log(JSON.stringify(message, null, 4));
+  // console.log(JSON.stringify(message, null, 4));
 
-  //Init -- mostly for test cases
+  // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
 
   if (destination.Config.dataCenter) {
-    let dataCenterArr = destination.Config.dataCenter.trim().split("-");
+    const dataCenterArr = destination.Config.dataCenter.trim().split("-");
     if (dataCenterArr[0].toLowerCase() === "eu") {
       destination.Config.endPoint = "https://rest.fra-01.braze.eu";
     } else {
-      destination.Config.endPoint =
-        "https://rest.iad-" + dataCenterArr[1] + ".braze.com";
+      destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
     }
   }
 
@@ -320,7 +317,7 @@ function process(event) {
       break;
   }
 
-  //console.log(JSON.stringify(respList, null, 4));
+  // console.log(JSON.stringify(respList, null, 4));
   return respList;
 }
 

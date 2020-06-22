@@ -13,7 +13,7 @@ const options = {
   endpoint: "https://api.github.com" // for GitHub enterprise, use http(s)://hostname/api/v3
 };
 
-let token = fs.readFileSync(homedir + "/.gh_token", "utf8");
+let token = fs.readFileSync(`${homedir}/.gh_token`, "utf8");
 token = token.replace(/\n/g, "");
 
 options.auth = {

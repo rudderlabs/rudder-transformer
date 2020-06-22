@@ -12,7 +12,7 @@ const {
 } = require("../util");
 
 function responseBuilder(payload, message, intercomConfig) {
-  let response = defaultRequestConfig();
+  const response = defaultRequestConfig();
 
   switch (message.type) {
     case EventType.IDENTIFY:
@@ -58,7 +58,7 @@ function addContext(payload, message) {
   const osKeys = osExists ? Object.keys(osExists) : [];
   const appKeys = appExists ? Object.keys(appExists) : [];
 
-  let customPayload = {};
+  const customPayload = {};
 
   deviceKeys.forEach(key => {
     if (key != "id") {
@@ -82,7 +82,7 @@ function addContext(payload, message) {
 }
 
 function getGroupPayload(message, intercomConfig) {
-  let rawPayload = {};
+  const rawPayload = {};
 
   const companyFields = get(message, "context.traits")
     ? Object.keys(message.context.traits)
@@ -95,14 +95,14 @@ function getGroupPayload(message, intercomConfig) {
     });
 
     const companyId = message.event ? message.event : undefined;
-    rawPayload["company_id"] = companyId ? companyId : md5(rawPayload["name"]);
+    rawPayload.company_id = companyId || md5(rawPayload.name);
   }
 
   return rawPayload;
 }
 
 function getIdentifyPayload(message, intercomConfig) {
-  let rawPayload = {};
+  const rawPayload = {};
 
   const traits = get(message.context, "traits");
 
@@ -126,8 +126,8 @@ function getIdentifyPayload(message, intercomConfig) {
     const value = traits[field];
 
     if (field === "company") {
-      let companies = [];
-      let company = {};
+      const companies = [];
+      const company = {};
       const companyFields = Object.keys(traits[field]);
 
       companyFields.forEach(companyTrait => {
@@ -163,15 +163,15 @@ function getIdentifyPayload(message, intercomConfig) {
 }
 
 function getTrackPayload(message, intercomConfig) {
-  let rawPayload = {};
+  const rawPayload = {};
   const properties = get(message, "properties")
     ? Object.keys(message.properties)
     : undefined;
 
   if (properties) {
-    let metadata = {};
-    let price = {};
-    let order_number = {};
+    const metadata = {};
+    const price = {};
+    const order_number = {};
 
     properties.forEach(property => {
       const value = message.properties[property];
@@ -219,7 +219,7 @@ function getTransformedJSON(message, intercomConfig) {
 }
 
 function getDestinationKeys(destination) {
-  let intercomConfig = {};
+  const intercomConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach(key => {
     switch (key) {

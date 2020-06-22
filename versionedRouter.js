@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -51,17 +53,19 @@ async function handleDest(ctx, destHandler) {
   await Promise.all(
     events.map(async event => {
       try {
-        event.request = { query: reqParams };
-        let respEvents = await destHandler.process(event);
+        const parsedEvent = event;
+        parsedEvent.request = { query: reqParams };
+        let respEvents = await destHandler.process(parsedEvent);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }
         respList.push(
           ...respEvents.map(ev => {
-            if (ev.statusCode !== 400 && ev.userId) {
-              ev.userId += "";
+            let { userId } = ev;
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
             }
-            return { output: ev, metadata: event.metadata };
+            return { output: { ...ev, userId }, metadata: event.metadata };
           })
         );
       } catch (error) {
@@ -98,7 +102,7 @@ if (startDestTransformer) {
   });
 
   if (functionsEnabled()) {
-    router.post("/customTransform", async (ctx, next) => {
+    router.post("/customTransform", async ctx => {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
@@ -114,7 +118,7 @@ if (startDestTransformer) {
 
       const transformedEvents = [];
       await Promise.all(
-        Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+        Object.entries(groupedEvents).map(async ([destEvents]) => {
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&
@@ -202,11 +206,11 @@ if (startSourceTransformer) {
   });
 }
 
-router.get("/version", (ctx, next) => {
+router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
 
-router.get("/health", (ctx, next) => {
+router.get("/health", ctx => {
   ctx.body = "OK";
 });
 

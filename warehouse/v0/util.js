@@ -10,9 +10,10 @@ const toSnakeCase = str => {
 };
 
 const toSafeDBString = str => {
-  if (parseInt(str[0]) > 0) str = `_${str}`;
-  str = str.replace(/[^a-zA-Z0-9_]+/g, "");
-  return str.substr(0, 127);
+  let parsedStr = str;
+  if (parseInt(str[0], 10) > 0) parsedStr = `_${str}`;
+  parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");
+  return parsedStr.substr(0, 127);
 };
 
 function safeTableName(provider, name = "") {

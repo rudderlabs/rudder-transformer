@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const NodeCache = require("node-cache");
+const { logger } = require("../logger");
 
 const myCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 120 });
 const CONFIG_BACKEND_URL =
@@ -20,7 +21,7 @@ async function getTransformationCode(versionId) {
     myCache.set(versionId, myJson, 5 * 60);
     return myJson;
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     throw error;
   }
 }

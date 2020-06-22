@@ -1,0 +1,18 @@
+[
+    {
+        "destKey": "email",
+        "sourceKeys": [
+            "context.traits.email"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "userId",
+        "sourceKeys": [
+            "userId",
+            "context.traits.userId",
+            "context.traits.id"
+        ],
+        "required": false
+    }
+]

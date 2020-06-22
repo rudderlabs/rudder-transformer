@@ -3,9 +3,7 @@ const name = "Google Analytics";
 
 const fs = require("fs");
 const path = require("path");
-
-const transformer = require(`../v0/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
+const transformer = require("../v0/destinations/ga/transform");
 
 test(`${name} Tests`, async () => {
   const inputDataFile = fs.readFileSync(

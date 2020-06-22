@@ -14,8 +14,8 @@ const ConfigCategory = {
     action: "identify",
     actionDevice: "identifyDevice",
     actionBrowser: "identifyBrowser",
-    endpoint: `${BASE_URL}users/update"`,
-    endpointDevice: `${BASE_URL}users/registerDeviceToken"`,
+    endpoint: `${BASE_URL}users/update`,
+    endpointDevice: `${BASE_URL}users/registerDeviceToken`,
     endpointBrowser: `${BASE_URL}users/registerBrowserToken`
   },
   PAGE: {

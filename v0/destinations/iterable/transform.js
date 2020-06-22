@@ -190,7 +190,7 @@ function constructPayload(message, category, destination) {
       rawPayload.items = rawPayloadItemArr;
       break;
     default:
-      throw Error("not supported");
+      logger.debug("not supported type");
   }
 
   return removeUndefinedValues(rawPayload);
@@ -264,7 +264,7 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      throw Error("Message type not supported");
+      return { statusCode: 400, error: "Message type not supported" };
   }
   const response = responseBuilderSimple(message, category, destination);
 
@@ -280,15 +280,12 @@ function processSingleMessage(message, destination) {
     ];
   }
   logger.debug("No token present thus device/browser not mapped with user");
+
   return response;
 }
 
-async function process(event) {
-  const result = processSingleMessage(event.message, event.destination);
-  if (!result.statusCode) {
-    result.statusCode = 200;
-  }
-  return result;
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

@@ -94,8 +94,10 @@ function responseBuilderSimple(
     rawPayload.aip = 1;
   }
   if (enhancedLinkAttribution) {
-    if (message.properties.linkid)
-      rawPayload.linkid = message.properties.linkid;
+    if (message.properties) {
+      if (message.properties.linkid)
+        rawPayload.linkid = message.properties.linkid;
+    }
   }
   if (message.context.campaign) {
     if (message.context.campaign.name) {

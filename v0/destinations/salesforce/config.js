@@ -9,10 +9,9 @@ const ConfigCategory = {
   }
 };
 
-
 const SF_API_VERSION = "47.0";
-const SF_TOKEN_REQUEST_URL = "https://login.salesforce.com/services/oauth2/token";
-
+const SF_TOKEN_REQUEST_URL =
+  "https://login.salesforce.com/services/oauth2/token";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 

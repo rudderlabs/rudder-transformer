@@ -12,7 +12,7 @@ const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
 const isObject = value => {
-  var type = typeof value;
+  const type = typeof value;
   return (
     value != null &&
     (type == "object" || type == "function") &&

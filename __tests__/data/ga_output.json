@@ -1,57 +1,44 @@
 [
+  { "message": "message type not supported", "statusCode": 400 },
   {
-    "statusCode": 400,
-    "error": "message type not supported"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "userId": "12345",
-    "params": {
-      "v": "1",
-      "t": "pageview",
-      "tid": "abcd",
-      "cid": "12345",
-      "dt": "",
-      "dl": "",
-      "dp": "/abc",
-      "dr": "",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uip": "0.0.0.0"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
+    "body": { "XML": {}, "JSON": {}, "FORM": {} },
     "files": {},
-    "statusCode": 200
+    "endpoint": "https://www.google-analytics.com/collect",
+    "userId": "12345",
+    "headers": {},
+    "version": "1",
+    "params": {
+      "dl": "",
+      "cid": "12345",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uip": "0.0.0.0",
+      "t": "pageview",
+      "v": "1",
+      "tid": "abcd",
+      "dt": "",
+      "dr": "",
+      "dp": "/abc"
+    },
+    "type": "REST",
+    "method": "GET"
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
+    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "files": {},
     "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
     "userId": "12345",
+    "headers": {},
+    "version": "1",
     "params": {
-      "v": "1",
-      "t": "event",
-      "tid": "UA-149602794-1",
       "cid": "12345",
       "ea": "test track event GA3",
       "ec": "test-category",
+      "t": "event",
+      "v": "1",
+      "tid": "UA-149602794-1",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
     },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "statusCode": 200
+    "type": "REST",
+    "method": "GET"
   }
 ]

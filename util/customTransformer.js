@@ -1,7 +1,7 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
-var { getTransformationCode } = require("../util/customTransforrmationsStore");
+const { getTransformationCode } = require("./customTransforrmationsStore");
 
 async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
@@ -22,11 +22,11 @@ async function runUserTransform(events, code, eventsMetadata) {
         const res = await fetch(...args);
         const data = await res.json();
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto(),
+          new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto(),
+          new ivm.ExternalCopy("ERROR").copyInto()
         ]);
       }
     })
@@ -35,7 +35,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   jail.setSync(
     "_log",
     new ivm.Reference(function(...args) {
-      console.log("Log: ", ...args);
+      // console.log("Log: ", ...args);
     })
   );
 
@@ -130,18 +130,18 @@ async function runUserTransform(events, code, eventsMetadata) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
 
-  const customScript = await isolate.compileScript(code + "");
+  const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get("transform");
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true,
+      transferIn: true
     });
     try {
       await bootstrapScriptResult.apply(undefined, [
         fnRef,
         new ivm.Reference(resolve),
-        sharedMessagesList,
+        sharedMessagesList
       ]);
     } catch (error) {
       reject(error.message);
@@ -179,7 +179,7 @@ async function userTransformHandler(events, versionId) {
         // Events contain message and destination. We take the message part of event and run transformation on it.
         // And put back the destination after transforrmation
         const { destination } = events && events[0];
-        const eventMessages = events.map((event) => event.message);
+        const eventMessages = events.map(event => event.message);
         const eventsMetadata = {};
         events.forEach(function(ev) {
           eventsMetadata[ev.message.messageId] = ev.metadata;
@@ -190,21 +190,21 @@ async function userTransformHandler(events, versionId) {
           res.code,
           eventsMetadata
         );
-        const formattedEvents = userTransformedEvents.map((e) => ({
+        const formattedEvents = userTransformedEvents.map(e => ({
           message: e,
           destination,
-          metadata,
+          metadata
         }));
         return formattedEvents;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return [
         {
           statusCode: 400,
           error: error.message,
-          metadata,
-        },
+          metadata
+        }
       ];
     }
   }

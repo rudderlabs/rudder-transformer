@@ -1,7 +1,6 @@
 const get = require("get-value");
 const set = require("set-value");
 const btoa = require("btoa");
-
 const {
   EventType,
   SpecedTraits,
@@ -13,7 +12,6 @@ const {
   defaultPutRequestConfig,
   defaultRequestConfig
 } = require("../util");
-
 const {
   IDENTITY_ENDPOINT,
   USER_EVENT_ENDPOINT,
@@ -21,6 +19,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
   DEVICE_DELETE_ENDPOINT
 } = require("./config");
+const { logger } = require("../../../logger");
 
 const deviceRelatedEventNames = [
   "Application Installed",
@@ -32,7 +31,6 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
-  // console.log(message);
   SpecedTraits.forEach(trait => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
@@ -46,16 +44,15 @@ function responseBuilder(message, evType, evName, destination) {
   const rawPayload = {};
   let endpoint;
   let requestConfig = defaultPostRequestConfig;
-  // console.log(message);
   const userId =
     message.userId && message.userId != "" ? message.userId : undefined;
 
   const response = defaultRequestConfig();
   response.userId = message.userId || message.anonymousId;
   response.headers = {
-    Authorization:
-      "Basic " +
-      btoa(destination.Config.siteID + ":" + destination.Config.apiKey)
+    Authorization: `Basic ${btoa(
+      `${destination.Config.siteID}:${destination.Config.apiKey}`
+    )}`
   };
 
   if (evType === EventType.IDENTIFY) {
@@ -70,7 +67,7 @@ function responseBuilder(message, evType, evName, destination) {
       traits.forEach(trait => {
         // populate keys other than speced traits
         if (!SpecedTraits.includes(trait)) {
-          set(rawPayload, trait, get(message, "context.traits." + trait));
+          set(rawPayload, trait, get(message, `context.traits.${trait}`));
         }
       });
     }
@@ -78,7 +75,7 @@ function responseBuilder(message, evType, evName, destination) {
     if (message.user_properties) {
       const userProps = Object.keys(message.user_properties);
       userProps.forEach(prop => {
-        const val = get(message, "user_properties." + prop);
+        const val = get(message, `user_properties.${prop}`);
         set(rawPayload, prop, val);
       });
     }
@@ -96,8 +93,6 @@ function responseBuilder(message, evType, evName, destination) {
         Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
       );
     }
-
-    // console.log(rawPayload);
 
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
@@ -158,12 +153,10 @@ function responseBuilder(message, evType, evName, destination) {
     }
   }
   const payload = removeUndefinedValues(rawPayload);
-  // console.log(payload);
   response.endpoint = endpoint;
   response.method = requestConfig.requestMethod;
   response.body.JSON = payload;
 
-  // console.log(response);
   return response;
 }
 
@@ -171,7 +164,6 @@ function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let evType;
   let evName;
-  // console.log("messageType", messageType);
   switch (messageType) {
     case EventType.IDENTIFY:
       evType = "identify";
@@ -182,18 +174,16 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName =
-        "Viewed " + (message.event || message.properties.name) + " Screen";
+      evName = `Viewed ${message.event || message.properties.name} Screen`;
       break;
     case EventType.TRACK:
       evType = "event";
       evName = message.event;
       break;
     default:
-      console.log("could not determine type " + messageType);
+      logger.error(`could not determine type ${messageType}`);
       return { statusCode: 400, error: "userId not present" };
   }
-  // console.log(message);
   const response = responseBuilder(message, evType, evName, destination);
   return response;
 }
@@ -201,7 +191,6 @@ function processSingleMessage(message, destination) {
 function process(event) {
   const respList = [];
   const { message, destination } = event;
-  // console.log("processSingleMessage");
   const result = processSingleMessage(message, destination);
   if (!result.statusCode) {
     result.statusCode = 200;

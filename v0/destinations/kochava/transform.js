@@ -79,7 +79,7 @@ function processMessage(message, destination) {
     case EventType.SCREEN:
       eventName = "screen view";
       if (message.properties && message.properties.name) {
-        eventName += " " + message.properties.name;
+        eventName += ` ${message.properties.name}`;
       }
       customParams = processTrackEvents(message);
       break;

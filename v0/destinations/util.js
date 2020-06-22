@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
+const get = require("get-value");
 
 const fixIP = (payload, message, key) => {
   payload[key] = message.context
@@ -25,7 +26,7 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isPrimitive = arg => {
-  var type = typeof arg;
+  const type = typeof arg;
   return arg == null || (type != "object" && type != "function");
 };
 
@@ -39,20 +40,20 @@ const toStringValues = obj => {
       return toString(obj[key]);
     }
 
-    obj[key] = "" + obj[key];
+    obj[key] = `${obj[key]}`;
   });
 
   return obj;
 };
 
 const getDateInFormat = date => {
-  var x = new Date(date);
-  var y = x.getFullYear().toString();
-  var m = (x.getMonth() + 1).toString();
-  var d = x.getDate().toString();
-  d.length == 1 && (d = "0" + d);
-  m.length == 1 && (m = "0" + m);
-  var yyyymmdd = y + m + d;
+  const x = new Date(date);
+  const y = x.getFullYear().toString();
+  let m = (x.getMonth() + 1).toString();
+  let d = x.getDate().toString();
+  d.length == 1 && (d = `0${d}`);
+  m.length == 1 && (m = `0${m}`);
+  const yyyymmdd = y + m + d;
   return yyyymmdd;
 };
 
@@ -107,7 +108,7 @@ const defaultRequestConfig = () => {
 
 // ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
 function isURL(str) {
-  var pattern = new RegExp(
+  const pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
     "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
     "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
@@ -117,6 +118,35 @@ function isURL(str) {
     "i"
   ); // fragment locator
   return !!pattern.test(str);
+}
+
+function setValues(payload, message, mappingJson) {
+  if (Array.isArray(mappingJson)) {
+    let val;
+    let sourceKeys;
+    mappingJson.forEach(mapping => {
+      val = undefined;
+      sourceKeys = mapping.sourceKeys;
+      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+        for (let index = 0; index < sourceKeys.length; index++) {
+          val = get(message, sourceKeys[index]);
+          if (val) {
+            break;
+          }
+        }
+
+        if (val) {
+          set(payload, mapping.destKey, val);
+        } else if (mapping.required) {
+          throw new Error(
+            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+          );
+        }
+      }
+    });
+  }
+
+  return payload;
 }
 
 module.exports = {
@@ -134,5 +164,6 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   fixIP,
-  isURL
+  isURL,
+  setValues
 };

@@ -46,7 +46,7 @@ const userTransformHandler = () => {
 async function handleDest(ctx, destHandler) {
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
-  logger.debug("[DT] Input events: " + JSON.stringify(events));
+  logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -77,7 +77,7 @@ async function handleDest(ctx, destHandler) {
       }
     })
   );
-  logger.debug("[DT] Output events: " + JSON.stringify(respList));
+  logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
 }
 
@@ -101,7 +101,7 @@ if (startDestTransformer) {
     router.post("/customTransform", async (ctx, next) => {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
-      logger.debug("[CT] Input events: " + JSON.stringify(events));
+      logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(
@@ -154,7 +154,7 @@ if (startDestTransformer) {
           }
         })
       );
-      logger.debug("[CT] Output events: " + JSON.stringify(transformedEvents));
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
     });
   }
@@ -162,7 +162,7 @@ if (startDestTransformer) {
 
 async function handleSource(ctx, sourceHandler) {
   const events = ctx.request.body;
-  logger.debug("[ST] Input source events: " + JSON.stringify(events));
+  logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -185,7 +185,7 @@ async function handleSource(ctx, sourceHandler) {
       }
     })
   );
-  logger.debug("[ST] Output source events: " + JSON.stringify(respList));
+  logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
 }
 

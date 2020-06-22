@@ -8,24 +8,20 @@ const ConfigCategory = {
     name: "BrazeUserAttributesConfig"
   }
 };
- 
 
-function getIdentifyEndpoint(endPoint)
-{
-  return endPoint+"/users/identify";
+function getIdentifyEndpoint(endPoint) {
+  return `${endPoint}/users/identify`;
 }
 
-function getTrackEndPoint(endPoint)
-{
-  return endPoint+"/users/track";
+function getTrackEndPoint(endPoint) {
+  return `${endPoint}/users/track`;
 }
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
- 
 
-module.exports = { 
+module.exports = {
   ConfigCategory,
-  mappingConfig, 
+  mappingConfig,
   getIdentifyEndpoint,
   getTrackEndPoint
 };

@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-var AWS = require("aws-sdk");
-var readline = require("readline-sync");
+const AWS = require("aws-sdk");
+const readline = require("readline-sync");
 
 // get inputs from user
 
@@ -8,15 +8,15 @@ const accessKeyId = readline.question("Access Key ID ");
 const secretAccessKey = readline.question("Secret Access Key ");
 const region = readline.question("Region ");
 const name = readline.question("Name of Dataset Group ");
-var noOfFields = readline.question(
+let noOfFields = readline.question(
   "Number of fields in Schema in addition to USER_ID, TIMESTAMP,ITEM_ID "
 );
 
-var columns = [];
-var type = [];
+const columns = [];
+const type = [];
 // eslint-disable-next-line radix
 noOfFields = parseInt(noOfFields);
-var i;
+let i;
 columns[0] = "USER_ID";
 columns[1] = "ITEM_ID";
 columns[2] = "TIMESTAMP";
@@ -25,20 +25,19 @@ type[1] = "string";
 type[2] = "long";
 
 for (i = 4; i <= noOfFields + 3; i++) {
-  columns[i - 1] = readline.question("Name of field no. " + i);
-  type[i - 1] = readline.question("Type of field " + columns[i - 1] + " ");
+  columns[i - 1] = readline.question(`Name of field no. ${i}`);
+  type[i - 1] = readline.question(`Type of field ${columns[i - 1]} `);
 }
 console.log("Your fields and their types for the schema: ");
 console.log(columns);
 console.log(type);
 
-var schema =
+let schema =
   '{"type": "record","name": "Interactions","namespace": "com.amazonaws.personalize.schema","fields": [{"name": "USER_ID","type": "string"},{"name": "ITEM_ID","type": "string"},{"name": "TIMESTAMP","type": "long" }'; // ], "version": "1.0"}'
 
 if (noOfFields > 0) {
   for (i = 3; i < noOfFields + 3; i++) {
-    schema =
-      schema + ',{"name": "' + columns[i] + '","type": "' + type[i] + '"}';
+    schema = `${schema},{"name": "${columns[i]}","type": "${type[i]}"}`;
   }
 }
 schema += '], "version": "1.0"}';
@@ -65,15 +64,15 @@ console.log(schema);
 
     console.log("Creation of Dataset group ARN started");
 
-    var paramsCreateDatasetGroup = {
-      name: name + "_DataSetGroup" /* required */
+    const paramsCreateDatasetGroup = {
+      name: `${name}_DataSetGroup` /* required */
     };
 
     const responseDatasetGroup = await personalize
       .createDatasetGroup(paramsCreateDatasetGroup)
       .promise();
 
-    const datasetGroupArn = responseDatasetGroup.datasetGroupArn;
+    const { datasetGroupArn } = responseDatasetGroup;
 
     console.log("Creation of Dataset group ARN  done");
     console.log("Your Dataset Group ARN: ");
@@ -81,7 +80,7 @@ console.log(schema);
 
     // describe dataset group
 
-    var paramsDescribeDatasetGroup = {
+    const paramsDescribeDatasetGroup = {
       datasetGroupArn /* required */
     };
 
@@ -95,8 +94,8 @@ console.log(schema);
 
     console.log("Creation of schema ARN started");
 
-    var paramsSchema = {
-      name: name + "_schema" /* required */,
+    const paramsSchema = {
+      name: `${name}_schema` /* required */,
       schema
       /* required */
     };
@@ -105,7 +104,7 @@ console.log(schema);
       .createSchema(paramsSchema)
       .promise();
 
-    const schemaArn = responseSchema.schemaArn;
+    const { schemaArn } = responseSchema;
 
     console.log("Creation of Schema ARN  done");
     console.log("Your Schema ARN: ");
@@ -126,10 +125,10 @@ console.log(schema);
 
     console.log("Creation of Dataset  ARN  started");
 
-    var paramsDataset = {
+    const paramsDataset = {
       datasetGroupArn /* required */,
       datasetType: "Interactions" /* required */,
-      name: name + "_dataset" /* required */,
+      name: `${name}_dataset` /* required */,
       schemaArn /* required */
     };
 
@@ -137,7 +136,7 @@ console.log(schema);
       .createDataset(paramsDataset)
       .promise();
 
-    const datasetArn = responseDataset.datasetArn;
+    const { datasetArn } = responseDataset;
 
     console.log("Creation of Dataset ARN  done");
     console.log("Your Dataset ARN: ");
@@ -145,14 +144,14 @@ console.log(schema);
 
     // describe dataset
 
-    var paramsDescribeDataset = {
+    const paramsDescribeDataset = {
       datasetArn
     };
 
     let responseDescribeDS = await personalize
       .describeDataset(paramsDescribeDataset)
       .promise();
-    var statusDS = responseDescribeDS.dataset.status;
+    let statusDS = responseDescribeDS.dataset.status;
     while (statusDS != "ACTIVE") {
       console.log("Status of Dataset Creation");
       console.log(statusDS);
@@ -165,16 +164,16 @@ console.log(schema);
 
     // event tracker
     console.log("Creation of Event tracker tracking id  started");
-    var paramsEventTracker = {
+    const paramsEventTracker = {
       datasetGroupArn /* required */,
-      name: name + "_eventtracker" /* required */
+      name: `${name}_eventtracker` /* required */
     };
 
     const responseEventTracker = await personalize
       .createEventTracker(paramsEventTracker)
       .promise();
-    const eventTrackerArn = responseEventTracker.eventTrackerArn;
-    const trackingId = responseEventTracker.trackingId;
+    const { eventTrackerArn } = responseEventTracker;
+    const { trackingId } = responseEventTracker;
     console.log("Creation of Event tracker tracking id done");
     console.log("Your Event Tracker ARN: ");
     console.log(eventTrackerArn);
@@ -186,13 +185,13 @@ console.log(schema);
 
     return trackingId;
   } catch (e) {
-    var err_msg;
+    let err_msg;
     console.log(e.code);
     if (e.code == "InvalidInputException") {
       err_msg =
         "Wrong type of field. Types can be of: null, boolean, int, long, float, double, bytes, and string.Try Again.";
       if (statusDSGroup == "ACTIVE") {
-        var params = {
+        const params = {
           datasetGroupArn /* required */
         };
         await personalize.deleteDatasetGroup(params).promise();

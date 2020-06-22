@@ -26,7 +26,7 @@ const getMappingConfig = (config, dir) => {
 };
 
 const isPrimitive = arg => {
-  var type = typeof arg;
+  const type = typeof arg;
   return arg == null || (type != "object" && type != "function");
 };
 
@@ -40,20 +40,20 @@ const toStringValues = obj => {
       return toString(obj[key]);
     }
 
-    obj[key] = "" + obj[key];
+    obj[key] = `${obj[key]}`;
   });
 
   return obj;
 };
 
 const getDateInFormat = date => {
-  var x = new Date(date);
-  var y = x.getFullYear().toString();
-  var m = (x.getMonth() + 1).toString();
-  var d = x.getDate().toString();
-  d.length == 1 && (d = "0" + d);
-  m.length == 1 && (m = "0" + m);
-  var yyyymmdd = y + m + d;
+  const x = new Date(date);
+  const y = x.getFullYear().toString();
+  let m = (x.getMonth() + 1).toString();
+  let d = x.getDate().toString();
+  d.length == 1 && (d = `0${d}`);
+  m.length == 1 && (m = `0${m}`);
+  const yyyymmdd = y + m + d;
   return yyyymmdd;
 };
 
@@ -108,7 +108,7 @@ const defaultRequestConfig = () => {
 
 // ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
 function isURL(str) {
-  var pattern = new RegExp(
+  const pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
     "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
     "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address

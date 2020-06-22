@@ -32,7 +32,7 @@ function responseBuilderSimple(payload, message, destination) {
     af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
-    appsflyer_id: appsflyer_id
+    appsflyer_id
   };
 
   const response = defaultRequestConfig();

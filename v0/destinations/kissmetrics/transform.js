@@ -14,34 +14,35 @@ const { ENDPOINT } = require("./config");
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {
   date = new Date(date);
-  return "" + Math.floor(date.getTime() / 1000);
+  return `${Math.floor(date.getTime() / 1000)}`;
 }
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function flatten(target, opts) {
   opts = opts || {};
 
-  var delimiter = opts.delimiter || ".";
-  var maxDepth = opts.maxDepth;
-  var currentDepth = 1;
-  var output = {};
+  const delimiter = opts.delimiter || ".";
+  let { maxDepth } = opts;
+  let currentDepth = 1;
+  const output = {};
 
   function step(object, prev) {
-    for (var key in object) {
+    for (const key in object) {
       if (object.hasOwnProperty(key)) {
-        var value = object[key];
-        var isarray = opts.safe && is.array(value);
-        var type = Object.prototype.toString.call(value);
-        var isobject = type === "[object Object]" || type === "[object Array]";
-        var arr = [];
+        const value = object[key];
+        const isarray = opts.safe && is.array(value);
+        const type = Object.prototype.toString.call(value);
+        const isobject =
+          type === "[object Object]" || type === "[object Array]";
+        const arr = [];
 
-        var newKey = prev ? prev + delimiter + key : key;
+        const newKey = prev ? prev + delimiter + key : key;
 
         if (!opts.maxDepth) {
           maxDepth = currentDepth + 1;
         }
 
-        for (var keys in value) {
+        for (const keys in value) {
           if (value.hasOwnProperty(keys)) {
             arr.push(keys);
           }
@@ -64,11 +65,11 @@ function flatten(target, opts) {
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function clean(obj) {
-  var ret = {};
+  let ret = {};
 
-  for (var k in obj) {
+  for (const k in obj) {
     if (obj.hasOwnProperty(k)) {
-      var value = obj[k];
+      const value = obj[k];
       if (value === null || typeof value === "undefined") continue;
 
       // convert date to unix
@@ -98,12 +99,12 @@ function clean(obj) {
 
       // json
       // must flatten including the name of the original trait/property
-      var nestedObj = {};
+      const nestedObj = {};
       nestedObj[k] = value;
-      var flattenedObj = flatten(nestedObj, { safe: true });
+      const flattenedObj = flatten(nestedObj, { safe: true });
 
       // stringify arrays inside nested object to be consistent with top level behavior of arrays
-      for (var key in flattenedObj) {
+      for (const key in flattenedObj) {
         if (is.array(flattenedObj[key])) {
           flattenedObj[key] = flattenedObj[key].toString();
         }
@@ -118,15 +119,15 @@ function clean(obj) {
 
 //  source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function prefix(event, properties) {
-  var prefixed = {};
+  const prefixed = {};
   each(properties, function(key, val) {
     if (key === "Billing Amount") {
       prefixed[key] = val;
     } else if (key === "revenue") {
-      prefixed[event + " - " + key] = val;
+      prefixed[`${event} - ${key}`] = val;
       prefixed["Billing Amount"] = val;
     } else {
-      prefixed[event + "-" + key] = val;
+      prefixed[`${event}-${key}`] = val;
     }
   });
   return prefixed;
@@ -150,8 +151,8 @@ function getCurrency(val) {
 }
 
 function getRevenue(properties, eventName) {
-  var revenue = properties.revenue;
-  var orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
+  let { revenue } = properties;
+  const orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
 
   // it's always revenue, unless it's called during an order completion.
   if (!revenue && eventName && eventName.match(orderCompletedRegExp)) {
@@ -190,7 +191,7 @@ function buildResponse(message, properties, endpoint) {
 } */
 
 function processIdentify(message, destination) {
-  const apiKey = destination.Config.apiKey;
+  const { apiKey } = destination.Config;
   let properties = JSON.parse(JSON.stringify(message.context.traits));
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;
@@ -207,15 +208,14 @@ function processIdentify(message, destination) {
 }
 
 function processTrack(message, destination) {
-  const apiKey = destination.Config.apiKey;
-  const event = message.event;
+  const { apiKey } = destination.Config;
+  const { event } = message;
   const messageType = message.type.toLowerCase();
   let properties = {};
   if (message.properties) {
     properties = JSON.parse(JSON.stringify(message.properties));
-  
   }
- 
+
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
@@ -224,13 +224,12 @@ function processTrack(message, destination) {
     properties.revenue = revenue;
   }
 
-  const products = properties.products;
+  const { products } = properties;
   if (products) {
     delete properties.products;
   }
 
   properties = clean(properties);
- 
 
   if (destination.Config.prefixProperties) {
     if (messageType === EventType.TRACK) {
@@ -271,11 +270,11 @@ function processPage(message, destination) {
   let eventName = "Loaded a Page";
 
   if (pageName) {
-    eventName = "Viewed " + pageName + " page";
+    eventName = `Viewed ${pageName} page`;
   }
 
   if (pageCategory && pageName) {
-    eventName = "Viewed " + pageCategory + " " + pageName + " page";
+    eventName = `Viewed ${pageCategory} ${pageName} page`;
   }
 
   message.event = eventName;
@@ -292,11 +291,11 @@ function processScreen(message, destination) {
   let eventName = "Loaded a Screen";
 
   if (screenName) {
-    eventName = "Viewed " + screenName + " screen";
+    eventName = `Viewed ${screenName} screen`;
   }
 
   if (screenCategory && screenName) {
-    eventName = "Viewed " + screenCategory + " " + screenName + " page";
+    eventName = `Viewed ${screenCategory} ${screenName} page`;
   }
 
   message.event = eventName;
@@ -305,9 +304,9 @@ function processScreen(message, destination) {
 }
 
 function processAlias(message, destination) {
-  const previousId = message.previousId;
-  const userId = message.userId;
-  const apiKey = destination.Config.apiKey;
+  const { previousId } = message;
+  const { userId } = message;
+  const { apiKey } = destination.Config;
   const endpoint = ENDPOINT.ALIAS;
 
   const properties = {};

@@ -24,7 +24,7 @@ describe("User transformation", () => {
       code: `function transform(events) {
             return events;
           }
-          `,
+          `
     };
     fetch.mockReturnValueOnce(
       Promise.resolve(new Response(JSON.stringify(respBody)))
@@ -66,7 +66,7 @@ describe("User transformation", () => {
                         log(filteredEvents);
                         return filteredEvents;
                       }
-                      `,
+                      `
     };
     fetch.mockReturnValue(
       Promise.resolve(new Response(JSON.stringify(respBody)))

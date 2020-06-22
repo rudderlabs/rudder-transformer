@@ -19,7 +19,7 @@ const ConfigCategory = {
 };
 
 const defaultFields = {
-  [ConfigCategory.IDENTIFY.userFieldsJson]:[
+  [ConfigCategory.IDENTIFY.userFieldsJson]: [
     "email",
     "name",
     "organizationId",
@@ -27,7 +27,7 @@ const defaultFields = {
     "phone",
     "userId"
   ],
-[ConfigCategory.GROUP.organizationFieldsJson]:[
+  [ConfigCategory.GROUP.organizationFieldsJson]: [
     "name",
     "domainNames",
     "tags",

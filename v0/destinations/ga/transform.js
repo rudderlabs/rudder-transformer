@@ -52,15 +52,22 @@ function responseBuilderSimple(
   mappingJson,
   destination
 ) {
-  const {
+  let {
     doubleClick,
     anonymizeIp,
     enhancedLinkAttribution,
     dimensions,
     metrics,
-    contentGroupings,
-    trackingID
+    contentGroupings
   } = destination.Config;
+  const { trackingID } = destination.Config;
+  doubleClick = doubleClick || false;
+  anonymizeIp = anonymizeIp || false;
+  enhancedLinkAttribution = enhancedLinkAttribution || false;
+  dimensions = dimensions || [];
+  metrics = metrics || [];
+  contentGroupings = contentGroupings || [];
+
   let rawPayload;
   if (message.context.app) {
     rawPayload = {
@@ -87,8 +94,10 @@ function responseBuilderSimple(
     rawPayload.aip = 1;
   }
   if (enhancedLinkAttribution) {
-    if (message.properties.linkid)
-      rawPayload.linkid = message.properties.linkid;
+    if (message.properties) {
+      if (message.properties.linkid)
+        rawPayload.linkid = message.properties.linkid;
+    }
   }
   if (message.context.campaign) {
     if (message.context.campaign.name) {
@@ -142,16 +151,13 @@ function responseBuilderSimple(
   };
 
   const finalPayload = { ...params, ...customParams, ...payload };
-
+  let { sendUserId } = destination.Config;
+  sendUserId = sendUserId || false;
   // check if userId is there and populate
-  if (
-    message.userId &&
-    message.userId.length > 0 &&
-    destination.Config.sendUserId
-  ) {
-    finalPayload.cid = message.userId;
+  if (message.userId && message.userId.length > 0 && sendUserId) {
+    finalPayload.uid = message.userId;
   }
-
+  finalPayload.cid = message.anonymousId;
   fixIP(finalPayload, message, "uip");
 
   const response = defaultRequestConfig();
@@ -167,10 +173,12 @@ function responseBuilderSimple(
 }
 
 function processIdentify(message, destination) {
-  const {
+  let {
     serverSideIdentifyEventCategory,
     serverSideIdentifyEventAction
   } = destination.Config;
+  serverSideIdentifyEventAction = serverSideIdentifyEventAction || "";
+  serverSideIdentifyEventCategory = serverSideIdentifyEventCategory || "";
   let ea;
   if (serverSideIdentifyEventAction) {
     ea = serverSideIdentifyEventAction;
@@ -197,9 +205,11 @@ function processIdentify(message, destination) {
 // Function for processing pageviews
 function processPageViews(message, destination) {
   let documentPath;
+  let { includeSearch } = destination.Config;
+  includeSearch = includeSearch || false;
   if (message.properties) {
     documentPath = message.properties.path;
-    if (message.properties.search && destination.Config.includeSearch) {
+    if (message.properties.search && includeSearch) {
       documentPath += message.properties.search;
     }
   }
@@ -217,14 +227,16 @@ function processNonEComGenericEvent(message, destination) {
       ? message.properties.value
       : message.properties.revenue;
   }
-  const nonInteraction =
+  let { nonInteraction } = destination.Config;
+  nonInteraction = nonInteraction || false;
+  const nonInteractionProp =
     message.properties.nonInteraction !== undefined
       ? !!message.properties.nonInteraction
-      : !!destination.Config.nonInteraction;
+      : !!nonInteraction;
   const parameters = {
     ev: formatValue(eventValue),
     ec: message.properties.category || "All",
-    ni: nonInteraction === false ? 0 : 1
+    ni: nonInteractionProp === false ? 0 : 1
   };
 
   return parameters;
@@ -504,10 +516,12 @@ function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let customParams = {};
   let category;
+  let { enableServerSideIdentify } = destination.Config;
+  enableServerSideIdentify = enableServerSideIdentify || false;
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      if (destination.Config.enableServerSideIdentify) {
+      if (enableServerSideIdentify) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {

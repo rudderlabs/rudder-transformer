@@ -49,11 +49,10 @@ const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const updatePayload = (currentKey, eventMappingArr, value, payload) => {
-  eventMappingArr.map(obj => {
+  eventMappingArr.forEach(obj => {
     if (obj.rudderKey === currentKey) {
       set(payload, obj.expectedKey, value);
     }
-    return true;
   });
   return payload;
 };

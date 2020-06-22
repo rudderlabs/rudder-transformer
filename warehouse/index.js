@@ -82,6 +82,7 @@ function setFromConfig(provider, utils, resp, input, configJson, columnTypes) {
       }
       const prop = configJson[key];
       const columnName = utils.safeColumnName(provider, prop);
+      // TODO: can we handle it in a different way without modifying the params
       resp[columnName] = val;
       columnTypes[columnName] = datatype;
     }
@@ -119,6 +120,7 @@ function setFromProperties(
       let safeKey = utils.transformColumnName(prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(provider, safeKey);
+        // TODO: can we handle it in a different way without modifying the params
         resp[safeKey] = val;
         columnTypes[safeKey] = datatype;
       }

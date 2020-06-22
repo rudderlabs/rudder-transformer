@@ -1,7 +1,9 @@
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
 
 const toSnakeCase = str => {
-  if (!str) return "";
+  if (!str) {
+    return "";
+  }
   return String(str)
     .replace(/^[^A-Za-z0-9]*|[^A-Za-z0-9]*$/g, "")
     .replace(/([a-z])([A-Z])/g, (m, a, b) => `${a}_${b.toLowerCase()}`)
@@ -11,7 +13,9 @@ const toSnakeCase = str => {
 
 const toSafeDBString = str => {
   let parsedStr = str;
-  if (parseInt(str[0], 10) > 0) parsedStr = `_${str}`;
+  if (parseInt(str[0], 10) > 0) {
+    parsedStr = `_${str}`;
+  }
   parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");
   return parsedStr.substr(0, 127);
 };

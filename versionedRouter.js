@@ -118,7 +118,8 @@ if (startDestTransformer) {
 
       const transformedEvents = [];
       await Promise.all(
-        Object.entries(groupedEvents).map(async ([destEvents]) => {
+        Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+          logger.debug(`dest: ${dest}`);
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&

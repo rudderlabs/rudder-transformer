@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* istanbul ignore file */
 
 const levelDebug = 0; // Most verbose logging level

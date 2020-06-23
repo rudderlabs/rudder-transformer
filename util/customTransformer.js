@@ -1,6 +1,5 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
-const _ = require("lodash");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 
 async function runUserTransform(events, code, eventsMetadata) {
@@ -17,7 +16,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async function(resolve, ...args) {
+    new ivm.Reference(async (resolve, ...args) => {
       try {
         const res = await fetch(...args);
         const data = await res.json();
@@ -34,14 +33,14 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(function(...args) {
+    new ivm.Reference(() => {
       // console.log("Log: ", ...args);
     })
   );
 
   jail.setSync(
     "_metadata",
-    new ivm.Reference(function(...args) {
+    new ivm.Reference((...args) => {
       const eventMetadata = eventsMetadata[args[0].messageId] || {};
       return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
@@ -133,6 +132,8 @@ async function runUserTransform(events, code, eventsMetadata) {
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get("transform");
+  // TODO : check if we can resolve this
+  // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
       transferIn: true
@@ -149,7 +150,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   });
   let result;
   try {
-    const timeoutPromise = new Promise((resolve, reject) => {
+    const timeoutPromise = new Promise(resolve => {
       const wait = setTimeout(() => {
         clearTimeout(wait);
         resolve("Timedout");
@@ -181,7 +182,7 @@ async function userTransformHandler(events, versionId) {
         const { destination } = events && events[0];
         const eventMessages = events.map(event => event.message);
         const eventsMetadata = {};
-        events.forEach(function(ev) {
+        events.forEach(ev => {
           eventsMetadata[ev.message.messageId] = ev.metadata;
         });
 

@@ -19,7 +19,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
   DEVICE_DELETE_ENDPOINT
 } = require("./config");
-const { logger } = require("../../../logger");
+const logger = require("../../../logger");
 
 const deviceRelatedEventNames = [
   "Application Installed",

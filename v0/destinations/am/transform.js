@@ -11,7 +11,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  fixIP
+  getParsedIP
 } = require("../util");
 const {
   Event,
@@ -132,7 +132,7 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
   fixVersion(payload, message);
-  fixIP(payload, message, "ip");
+  payload.ip = getParsedIP(message);
 
   // console.log(payload);
   const response = defaultRequestConfig();

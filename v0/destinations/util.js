@@ -5,12 +5,11 @@ const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
 
-const fixIP = (payload, message, key) => {
-  payload[key] = message.context
-    ? message.context.ip
-      ? message.context.ip
-      : message.request_ip
-    : message.request_ip;
+const getParsedIP = message => {
+  if (message.context && message.context.ip) {
+    return message.context.ip;
+  }
+  return message.request_ip;
 };
 
 const getMappingConfig = (config, dir) => {
@@ -27,32 +26,20 @@ const getMappingConfig = (config, dir) => {
 
 const isPrimitive = arg => {
   const type = typeof arg;
-  return arg == null || (type != "object" && type != "function");
+  return arg == null || (type !== "object" && type !== "function");
 };
 
 const isDefined = x => !_.isUndefined(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 
-const toStringValues = obj => {
-  Object.keys(obj).forEach(key => {
-    if (typeof obj[key] === "object") {
-      return toString(obj[key]);
-    }
-
-    obj[key] = `${obj[key]}`;
-  });
-
-  return obj;
-};
-
 const getDateInFormat = date => {
   const x = new Date(date);
   const y = x.getFullYear().toString();
   let m = (x.getMonth() + 1).toString();
   let d = x.getDate().toString();
-  d.length == 1 && (d = `0${d}`);
-  m.length == 1 && (m = `0${m}`);
+  d = d.length === 1 ? d : `0${d}`;
+  m = m.length === 1 ? m : `0${m}`;
   const yyyymmdd = y + m + d;
   return yyyymmdd;
 };
@@ -62,7 +49,7 @@ const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 const updatePayload = (currentKey, eventMappingArr, value, payload) => {
-  eventMappingArr.map(obj => {
+  eventMappingArr.forEach(obj => {
     if (obj.rudderKey === currentKey) {
       set(payload, obj.expectedKey, value);
     }
@@ -106,20 +93,6 @@ const defaultRequestConfig = () => {
   };
 };
 
-// ref: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url/49849482
-function isURL(str) {
-  const pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // fragment locator
-  return !!pattern.test(str);
-}
-
 function setValues(payload, message, mappingJson) {
   if (Array.isArray(mappingJson)) {
     let val;
@@ -128,7 +101,7 @@ function setValues(payload, message, mappingJson) {
       val = undefined;
       sourceKeys = mapping.sourceKeys;
       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index++) {
+        for (let index = 0; index < sourceKeys.length; index += 1) {
           val = get(message, sourceKeys[index]);
           if (val) {
             break;
@@ -151,7 +124,6 @@ function setValues(payload, message, mappingJson) {
 
 module.exports = {
   getMappingConfig,
-  toStringValues,
   getDateInFormat,
   removeUndefinedValues,
   removeNullValues,
@@ -163,7 +135,6 @@ module.exports = {
   updatePayload,
   defaultRequestConfig,
   isPrimitive,
-  fixIP,
-  isURL,
+  getParsedIP,
   setValues
 };

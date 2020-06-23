@@ -8,7 +8,7 @@ const {
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  fixIP
+  getParsedIP
 } = require("../util");
 
 // build final response
@@ -49,7 +49,7 @@ function responseBuilder(
   const eventPayload = removeUndefinedValues(eventData);
   // final data object to be passed to the payload
   const dataPayload = { ...finalData, event_data: eventPayload };
-  fixIP(dataPayload, message, "origination_ip");
+  dataPayload.origination_ip = getParsedIP(message);
   // final payload to be sent to kochava
   const payload = { ...rawPayload, data: dataPayload };
 

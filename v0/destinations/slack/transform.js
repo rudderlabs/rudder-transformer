@@ -26,21 +26,23 @@ function stringifyJSON(json, whiteListedTraits) {
 // get the name value from either traits.name/traits.firstName+traits.lastName/traits.username/
 // properties.email/traits.email/userId/anonymousId
 function getName(message) {
-  const { context, anonymousId, userId, properties } = message;
+  const { context, anonymousId, userId } = message;
   const { traits } = context;
-  const { name, firstName, lastName, username, email } = traits;
-  const uName =
-    name ||
-    (firstName
-      ? lastName
-        ? `${firstName}${lastName}`
-        : firstName
-      : undefined) ||
-    username ||
-    (properties ? properties.email : undefined) ||
-    email ||
-    (userId ? `User ${userId}` : undefined) ||
-    `Anonymous user ${anonymousId}`;
+  const { name, firstName, lastName, username } = traits;
+  let uName = name;
+  if (firstName) {
+    if (lastName) {
+      uName = `${firstName} ${lastName}`;
+    } else {
+      uName = `${firstName}`;
+    }
+  } else if (username) {
+    uName = username;
+  } else if (userId) {
+    uName = `User ${userId}`;
+  } else {
+    uName = `Anonymous user ${anonymousId}`;
+  }
 
   logger.debug("final name::: ", uName);
   return uName;
@@ -90,13 +92,7 @@ function processIdentify(message, destination) {
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = [];
   destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
-    if (
-      whiteListTrait.trait
-        ? whiteListTrait.trait.trim().length != 0
-          ? whiteListTrait.trait
-          : undefined
-        : undefined
-    ) {
+    if (whiteListTrait.trait && whiteListTrait.trait.trim().length !== 0) {
       traitsList.push(whiteListTrait.trait);
     }
   });
@@ -108,28 +104,18 @@ function processIdentify(message, destination) {
     throw Error("traits list in config not present");
   } */
 
+  let templateConfig;
+  if (identifyTemplateConfig && identifyTemplateConfig.length > 0) {
+    templateConfig = identifyTemplateConfig;
+  }
   const template = Handlebars.compile(
-    (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length == 0
-        ? undefined
-        : identifyTemplateConfig
-      : undefined) ||
-      buildDefaultTraitTemplate(
-        traitsList,
-        message.context ? message.context.traits : {}
-      )
+    templateConfig ||
+      buildDefaultTraitTemplate(traitsList, message.context || {})
   );
   logger.debug(
     "identifyTemplateConfig: ",
-    (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length == 0
-        ? undefined
-        : identifyTemplateConfig
-      : undefined) ||
-      buildDefaultTraitTemplate(
-        traitsList,
-        message.context ? message.context.traits : {}
-      )
+    templateConfig ||
+      buildDefaultTraitTemplate(traitsList, message.context || {})
   );
 
   // provide a fat input with flattened traits as well as traits object
@@ -165,16 +151,19 @@ function processTrack(message, destination) {
 
   // building channel list
   eventChannelConfig.forEach(channelConfig => {
-    const configEventName = channelConfig.eventName
-      ? channelConfig.eventName.trim().length > 0
-        ? channelConfig.eventName
-        : undefined
-      : undefined;
-    const configEventChannel = channelConfig.eventChannel
-      ? channelConfig.eventChannel.trim().length > 0
-        ? channelConfig.eventChannel
-        : undefined
-      : undefined;
+    let configEventName;
+    if (channelConfig.eventName && channelConfig.eventName.trim().length > 0) {
+      configEventName = channelConfig.eventName;
+    }
+
+    let configEventChannel;
+    if (
+      channelConfig.eventChannel &&
+      channelConfig.eventChannel.trim().length > 0
+    ) {
+      configEventChannel = channelConfig.eventChannel;
+    }
+
     if (configEventName && configEventChannel) {
       if (channelConfig.eventRegex) {
         logger.debug(
@@ -204,16 +193,22 @@ function processTrack(message, destination) {
 
   // building templatelist
   eventTemplateConfig.forEach(templateConfig => {
-    const configEventName = templateConfig.eventName
-      ? templateConfig.eventName.trim().length > 0
-        ? templateConfig.eventName
-        : undefined
-      : undefined;
-    const configEventTemplate = templateConfig.eventTemplate
-      ? templateConfig.eventTemplate.trim().length > 0
-        ? templateConfig.eventTemplate
-        : undefined
-      : undefined;
+    let configEventName;
+    if (
+      templateConfig.eventName &&
+      templateConfig.eventName.trim().length > 0
+    ) {
+      configEventName = templateConfig.eventName;
+    }
+
+    let configEventTemplate;
+    if (
+      templateConfig.eventTemplate &&
+      templateConfig.eventTemplate.trim().length > 0
+    ) {
+      configEventTemplate = templateConfig.eventTemplate;
+    }
+
     if (configEventName && configEventTemplate) {
       if (templateConfig.eventRegex) {
         if (
@@ -222,7 +217,7 @@ function processTrack(message, destination) {
         ) {
           templateListForThisEvent.add(templateConfig.eventTemplate);
         }
-      } else if (templateConfig.eventName == eventName) {
+      } else if (templateConfig.eventName === eventName) {
         templateListForThisEvent.add(templateConfig.eventTemplate);
       }
     }
@@ -240,13 +235,11 @@ function processTrack(message, destination) {
   // track event default handlebar expression
   const defaultTemplate = "{{name}} did {{event}}";
 
-  const eventTemplate = Handlebars.compile(
-    templateListArray
-      ? templateListArray.length > 0
-        ? templateListArray[0]
-        : defaultTemplate
-      : defaultTemplate
-  );
+  let templateList = defaultTemplate;
+  if (templateListArray && templateListArray.length > 0) {
+    [templateList] = templateListArray;
+  }
+  const eventTemplate = Handlebars.compile(templateList);
 
   // provide flattened properties as well as propertie sobject
   const templateInput = {

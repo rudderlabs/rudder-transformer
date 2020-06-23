@@ -1,5 +1,6 @@
 {
   "request_ip": "uip",
   "context.userAgent": "ua",
-  "anonymousId": "cid"
+  "anonymousId": "cid",
+  "properties.order_id": "ti",
 }

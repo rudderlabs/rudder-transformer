@@ -121,7 +121,6 @@ function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
-
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
 
@@ -248,7 +247,7 @@ function processNonEComGenericEvent(message, destination) {
 }
 
 // Function for processing promotion viewed or clicked event
-function processPromotionEvent(message) {
+function processPromotionEvent(message, destination) {
   const eventString = message.event;
 
   // Future releases will have additional logic for below elements allowing for
@@ -269,19 +268,42 @@ function processPromotionEvent(message) {
     default:
       break;
   }
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
+  if (enhancedEcommerce) {
+    switch (eventString.toLowerCase()) {
+      case Event.PROMOTION_VIEWED.name:
+        parameters.pa = "view";
+        break;
+      case Event.PROMOTION_CLICKED.name:
+        parameters.pa = "promo_click";
+        break;
+      default:
+        break;
+    }
+  }
 
   return parameters;
 }
 
 // Function for processing payment-related events
-function processPaymentRelatedEvent() {
+function processPaymentRelatedEvent(message, destination) {
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
+  if (enhancedEcommerce) {
+    return {
+      pa: "checkout",
+      ea: message.event,
+      ec: message.properties.category || message.event
+    };
+  }
   return {
     pa: "checkout"
   };
 }
 
 // Function for processing order refund events
-function processRefundEvent(message) {
+function processRefundEvent(message, destination) {
   const parameters = {
     pa: "refund"
   };
@@ -311,6 +333,12 @@ function processRefundEvent(message) {
   } else {
     // full refund, only populate order_id
     parameters.ti = message.properties.order_id;
+  }
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
+  if (enhancedEcommerce) {
+    parameters.ea = message.event;
+    parameters.ec = message.properties.categories || message.event;
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -346,7 +374,7 @@ function processProductListEvent(message) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: message.properties.category || "EnhancedEcommerce"
   };
 
   // Set action depending on Product List Action
@@ -399,7 +427,7 @@ function processProductEvent(message) {
 
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: message.properties.category || "EnhancedEcommerce"
   };
 
   // Set product action to click or detail depending on event
@@ -436,7 +464,7 @@ function processProductEvent(message) {
 }
 
 // Function for processing transaction event
-function processTransactionEvent(message) {
+function processTransactionEvent(message, destination) {
   const eventString = message.event;
   const parameters = {};
 
@@ -500,17 +528,52 @@ function processTransactionEvent(message) {
     // throw error, empty Product List in Product List Viewed event payload
     throw new Error("No product information supplied for transaction event");
   }
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
+  if (enhancedEcommerce) {
+    parameters.ea = message.event;
+    parameters.ec = message.properties.category || message.event;
+  }
   return parameters;
 }
 
 // Function for handling generic e-commerce events
-function processEComGenericEvent(message) {
+function processEComGenericEvent(message, destination) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: eventString
+    ec: message.properties.category || eventString
   };
-
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
+  if (enhancedEcommerce) {
+    // Set product action as per event
+    switch (eventString.toLowerCase()) {
+      case Event.CART_VIEWED.name:
+        parameters.pa = "detail";
+        break;
+      case Event.COUPON_ENTERED.name:
+        parameters.pa = "add";
+        break;
+      case Event.COUPON_APPLIED.name:
+        parameters.pa = "add";
+        break;
+      case Event.COUPON_DENIED.name:
+        parameters.pa = "remove";
+        break;
+      case Event.COUPON_REMOVED.name:
+        parameters.pa = "remove";
+        break;
+      case Event.PRODUCT_REVIEWED.name:
+        parameters.pa = "detail";
+        break;
+      case Event.PRODUCTS_SEARCHED:
+        parameters.pa = "click";
+        break;
+      default:
+        throw new Error("unknown TransactionEvent type");
+    }
+  }
   return parameters;
 }
 
@@ -521,9 +584,9 @@ function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let customParams = {};
   let category;
-  let { enableServerSideIdentify } = destination.Config;
+  let { enableServerSideIdentify, enhancedEcommerce } = destination.Config;
   enableServerSideIdentify = enableServerSideIdentify || false;
-
+  enhancedEcommerce = enhancedEcommerce || false;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (enableServerSideIdentify) {
@@ -542,40 +605,76 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK: {
-      const eventName = message.event.toLowerCase();
+      if (enhancedEcommerce) {
+        const eventName = message.event.toLowerCase();
 
-      category = nameToEventMap[eventName]
-        ? nameToEventMap[eventName].category
-        : ConfigCategory.NON_ECOM;
+        category = nameToEventMap[eventName]
+          ? nameToEventMap[eventName].category
+          : ConfigCategory.NON_ECOM;
+        category.hitType = "event";
 
-      switch (category.name) {
-        case ConfigCategory.PRODUCT_LIST.name:
-          customParams = processProductListEvent(message);
-          break;
-        case ConfigCategory.PROMOTION.name:
-          customParams = processPromotionEvent(message);
-          break;
-        case ConfigCategory.PRODUCT.name:
-          customParams = processProductEvent(message);
-          break;
-        case ConfigCategory.TRANSACTION.name:
-          customParams = processTransactionEvent(message);
-          break;
-        case ConfigCategory.PAYMENT.name:
-          customParams = processPaymentRelatedEvent(message);
-          break;
-        case ConfigCategory.REFUND.name:
-          customParams = processRefundEvent(message);
-          break;
-        case ConfigCategory.SHARING.name:
-          customParams = processSharingEvent(message);
-          break;
-        case ConfigCategory.ECOM_GENERIC.name:
-          customParams = processEComGenericEvent(message);
-          break;
-        default:
-          customParams = processNonEComGenericEvent(message, destination);
-          break;
+        switch (category.name) {
+          case ConfigCategory.PRODUCT_LIST.name:
+            customParams = processProductListEvent(message);
+            break;
+          case ConfigCategory.PROMOTION.name:
+            customParams = processPromotionEvent(message, destination);
+            break;
+          case ConfigCategory.PRODUCT.name:
+            customParams = processProductEvent(message);
+            break;
+          case ConfigCategory.TRANSACTION.name:
+            customParams = processTransactionEvent(message, destination);
+            break;
+          case ConfigCategory.PAYMENT.name:
+            customParams = processPaymentRelatedEvent(message, destination);
+            break;
+          case ConfigCategory.REFUND.name:
+            customParams = processRefundEvent(message, destination);
+            break;
+          case ConfigCategory.ECOM_GENERIC.name:
+            customParams = processEComGenericEvent(message, destination);
+            break;
+          default:
+            customParams = processNonEComGenericEvent(message, destination);
+            break;
+        }
+      } else {
+        const eventName = message.event.toLowerCase();
+
+        category = nameToEventMap[eventName]
+          ? nameToEventMap[eventName].category
+          : ConfigCategory.NON_ECOM;
+
+        switch (category.name) {
+          case ConfigCategory.PRODUCT_LIST.name:
+            customParams = processProductListEvent(message);
+            break;
+          case ConfigCategory.PROMOTION.name:
+            customParams = processPromotionEvent(message, destination);
+            break;
+          case ConfigCategory.PRODUCT.name:
+            customParams = processProductEvent(message);
+            break;
+          case ConfigCategory.TRANSACTION.name:
+            customParams = processTransactionEvent(message, destination);
+            break;
+          case ConfigCategory.PAYMENT.name:
+            customParams = processPaymentRelatedEvent(message, destination);
+            break;
+          case ConfigCategory.REFUND.name:
+            customParams = processRefundEvent(message, destination);
+            break;
+          case ConfigCategory.SHARING.name:
+            customParams = processSharingEvent(message);
+            break;
+          case ConfigCategory.ECOM_GENERIC.name:
+            customParams = processEComGenericEvent(message, destination);
+            break;
+          default:
+            customParams = processNonEComGenericEvent(message, destination);
+            break;
+        }
       }
       break;
     }

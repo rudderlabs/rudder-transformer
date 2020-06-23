@@ -48,7 +48,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
     const hsSupportedKey = getKey(traitsKey);
     if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
       let propValue = message.context.traits[traitsKey];
-      if (propertyMap[hsSupportedKey] == "date") {
+      if (propertyMap[hsSupportedKey] === "date") {
         const time = propValue;
         const date = new Date(time);
         date.setUTCHours(0, 0, 0, 0);

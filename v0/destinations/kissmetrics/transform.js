@@ -1,9 +1,3 @@
-/* eslint-disable no-continue */
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
 const is = require("is");
 const extend = require("@ndhoule/extend");
 const each = require("component-each");
@@ -11,13 +5,43 @@ const { EventType } = require("../../../constants");
 const { defaultGetRequestConfig, defaultRequestConfig } = require("../util");
 const { ENDPOINT } = require("./config");
 
-// source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {
   date = new Date(date);
   return `${Math.floor(date.getTime() / 1000)}`;
 }
 
-// source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
+function step(object, prev) {
+  for (const key in object) {
+    if (object.hasOwnProperty(key)) {
+      const value = object[key];
+      const isarray = opts.safe && is.array(value);
+      const type = Object.prototype.toString.call(value);
+      const isobject =
+        type === "[object Object]" || type === "[object Array]";
+      const arr = [];
+
+      const newKey = prev ? prev + delimiter + key : key;
+
+      if (!opts.maxDepth) {
+        maxDepth = currentDepth + 1;
+      }
+
+      for (const keys in value) {
+        if (value.hasOwnProperty(keys)) {
+          arr.push(keys);
+        }
+      }
+
+      if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
+        ++currentDepth;
+        return step(value, newKey);
+      }
+
+      output[newKey] = value;
+    }
+  }
+}
+
 function flatten(target, opts) {
   opts = opts || {};
 
@@ -26,44 +50,11 @@ function flatten(target, opts) {
   let currentDepth = 1;
   const output = {};
 
-  function step(object, prev) {
-    for (const key in object) {
-      if (object.hasOwnProperty(key)) {
-        const value = object[key];
-        const isarray = opts.safe && is.array(value);
-        const type = Object.prototype.toString.call(value);
-        const isobject =
-          type === "[object Object]" || type === "[object Array]";
-        const arr = [];
-
-        const newKey = prev ? prev + delimiter + key : key;
-
-        if (!opts.maxDepth) {
-          maxDepth = currentDepth + 1;
-        }
-
-        for (const keys in value) {
-          if (value.hasOwnProperty(keys)) {
-            arr.push(keys);
-          }
-        }
-
-        if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
-          ++currentDepth;
-          return step(value, newKey);
-        }
-
-        output[newKey] = value;
-      }
-    }
-  }
-
   step(target);
 
   return output;
 }
 
-// source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function clean(obj) {
   let ret = {};
 
@@ -91,7 +82,6 @@ function clean(obj) {
       }
 
       // convert non objects to strings
-      // console.log(value.toString());
       if (value.toString() !== "[object Object]") {
         ret[k] = value.toString();
         continue;
@@ -120,7 +110,7 @@ function clean(obj) {
 //  source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function prefix(event, properties) {
   const prefixed = {};
-  each(properties, function(key, val) {
+  each(properties, (key, val) => {
     if (key === "Billing Amount") {
       prefixed[key] = val;
     } else if (key === "revenue") {
@@ -173,23 +163,6 @@ function buildResponse(message, properties, endpoint) {
   return response;
 }
 
-/* function track(message, destination) {
-  const apiKey = destination.Config.apiKey;
-  const eventName = message.event;
-  let properties = message.properties;
-  properties = {
-    ...properties
-  };
-  if (destination.Config.prefixProperties) {
-    properties = this.prefix("Page", properties);
-  }
-  properties._k = apiKey;
-  properties._p = message.userId ? message.userId : message.anonymousId;
-  properties._k = eventName;
-
-  return buildResponse(message, properties);
-} */
-
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
   let properties = JSON.parse(JSON.stringify(message.context.traits));
@@ -197,7 +170,6 @@ function processIdentify(message, destination) {
   const endpoint = ENDPOINT.IDENTIFY;
 
   properties = clean(properties);
-  // console.log(JSON.stringify(properties));
 
   properties._k = apiKey;
   properties._p = message.userId ? message.userId : message.anonymousId;
@@ -352,7 +324,6 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      console.log("Message type not supported");
       throw new Error("Message type not supported");
   }
 

@@ -11,14 +11,12 @@ const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 function stringifyJSON(json, whiteListedTraits) {
   let output = "";
   Object.keys(json).forEach(key => {
-    if (json.hasOwnProperty(key)) {
-      if (whiteListedTraits && whiteListedTraits.length > 0) {
-        if (whiteListedTraits.includes(key)) {
-          output += `${key}: ${json[key]} `;
-        }
-      } else {
+    if (whiteListedTraits && whiteListedTraits.length > 0) {
+      if (whiteListedTraits.includes(key)) {
         output += `${key}: ${json[key]} `;
       }
+    } else {
+      output += `${key}: ${json[key]} `;
     }
   });
   logger.debug("traitsString:: ", output);
@@ -76,14 +74,12 @@ function buildDefaultTraitTemplate(traitsList, traits) {
   let templateString = "Identified {{name}} ";
   // build template with whitelisted traits
   traitsList.forEach(trait => {
-    templateString += `${trait}: ` + `{{${trait}}} `;
+    templateString += `${trait}: {{${trait}}}`;
   });
   // else with all traits
-  if (traitsList.length == 0) {
+  if (traitsList.length === 0) {
     Object.keys(traits).forEach(traitKey => {
-      if (traits.hasOwnProperty(traitKey)) {
-        templateString += `${traitKey}: ` + `{{${traitKey}}} `;
-      }
+      templateString += `${traitKey}: {{${traitKey}}} `;
     });
   }
   return templateString;
@@ -198,7 +194,7 @@ function processTrack(message, destination) {
           channelListToSendThisEvent.add(channelConfig.eventChannel);
         }
       }
-      if (channelConfig.eventName == eventName) {
+      if (channelConfig.eventName === eventName) {
         channelListToSendThisEvent.add(channelConfig.eventChannel);
       }
     }

@@ -6,8 +6,9 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig
 } = require("../util");
+const logger = require("../../../logger");
 
-function responseBuilder(payload, message, heapConfig) {
+function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
   switch (message.type) {
@@ -54,10 +55,12 @@ function commonPayload(message, rawPayload, type) {
       rudderPropertiesObj = message.context.traits;
       rawPayload.identity = message.context.traits.email;
       break;
+    default:
+      logger.debug("Unsupported message type");
   }
 
   propsArray.forEach(property => {
-    if (property != "email") {
+    if (property !== "email") {
       propertiesObj[property] = rudderPropertiesObj[property];
     }
   });
@@ -114,7 +117,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const heapConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, heapConfig);
-  return responseBuilder(properties, event.message, heapConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

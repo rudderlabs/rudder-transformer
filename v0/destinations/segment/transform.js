@@ -26,7 +26,7 @@ function responseBuilderSimple(payload, segmentConfig) {
   return response;
 }
 
-function getTransformedJSON(message, segmentConfig) {
+function getTransformedJSON(message) {
   const { type } = message;
   const userId = get(message, "userId") ? message.userId : message.anonymousId;
   const traits = get(message, "context.traits")
@@ -70,7 +70,7 @@ function getSegmentConfig(destination, message) {
 
 function processSingleMessage(message, destination) {
   const segmentConfig = getSegmentConfig(destination, message);
-  const properties = getTransformedJSON(message, segmentConfig);
+  const properties = getTransformedJSON(message);
   const respObj = {
     batch: []
   };

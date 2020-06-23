@@ -1,6 +1,6 @@
 [
     {
-       
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -22,6 +22,7 @@
                 "aip": 1,
                 "uid": "123456",
                 "cid": "00000000000000000000000000",
+                "ni": 1,
                 "uip": "0.0.0.0"
             },
             "body": {
@@ -57,6 +58,7 @@
                 "dr": "",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "uid": "12345",
+                "ni": 1,
                 "uip": "0.0.0.0"
             },
             "body": {
@@ -103,6 +105,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -134,7 +137,8 @@
                 "tt": 20.99,
                 "cu": "INR",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -146,6 +150,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -174,7 +179,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -186,6 +192,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -214,7 +221,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -226,6 +234,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -254,7 +263,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -266,6 +276,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -294,7 +305,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -306,6 +318,7 @@
         }
     ,
     {
+        
             "version": "1",
             "type": "REST",
             "method": "GET",
@@ -334,7 +347,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -369,7 +383,8 @@
                 "il1nm": "1234",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -407,7 +422,8 @@
                 "il1nm": "1234",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -447,7 +463,8 @@
                 "pr1pr": 24.75,
                 "pr1qt": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -487,7 +504,8 @@
                 "promo1ps": "banner_slot1",
                 "promo1nm": "my product",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -527,7 +545,8 @@
                 "promo1ps": "banner_slot1",
                 "promo1nm": "my product",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -567,7 +586,8 @@
                 "cid": "00000000000000000000000000",
                 "cu": "CAD",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -607,7 +627,8 @@
                 "cid": "00000000000000000000000000",
                 "cu": "CAD",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -641,7 +662,8 @@
                 "cid": "00000000000000000000000000",
                 "cos": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -675,7 +697,8 @@
                 "cid": "00000000000000000000000000",
                 "cos": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1050,7 +1073,8 @@
                 "aiid": "com.rudderlabs.javascript",
                 "npa": 1,
                 "uid": "123",
-                "cid": "38e169a1-3234-46f7-9ceb-c1a6a69005fe"
+                "cid": "38e169a1-3234-46f7-9ceb-c1a6a69005fe",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1081,6 +1105,7 @@
                 "cid": "00000000000000000000000000",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "uid": "12345",
+                "ni": 1,
                 "uip": "0.0.0.0"
             },
             "body": {
@@ -1116,6 +1141,7 @@
                 "dr": "",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "uid": "12345",
+                "ni": 1,
                 "uip": "0.0.0.0"
             },
             "body": {
@@ -1193,7 +1219,8 @@
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
                 "ti": "ruchiraorder1",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1227,7 +1254,8 @@
                 "aip": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1261,7 +1289,8 @@
                 "aip": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1303,7 +1332,8 @@
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
                 "ti": "ruchiraorder1",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1409,7 +1439,8 @@
                 "il1nm": "Sample Product List",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1449,7 +1480,8 @@
                 "il1nm": "Sample Product List",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1499,7 +1531,8 @@
                 "tt": 20.99,
                 "cu": "INR",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1543,7 +1576,8 @@
                 "tt": 20.99,
                 "cu": "INR",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1587,7 +1621,8 @@
                 "tt": 20.99,
                 "cu": "INR",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1626,7 +1661,8 @@
                 "aip": 1,
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "cid": "00000000000000000000000000",
-                "uid": "12345"
+                "uid": "12345",
+                "ni": 1
             },
             "body": {
                 "JSON": {},
@@ -1665,6 +1701,7 @@
                 "cd": "homescreen",
                 "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "uid": "12345",
+                "ni": 1,
                 "uip": "0.0.0.0"
             },
             "body": {

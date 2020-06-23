@@ -133,7 +133,6 @@ function processSingleMessage(message, destination) {
         message: "message type not supported",
         statusCode: 400
       };
-    
   }
 }
 

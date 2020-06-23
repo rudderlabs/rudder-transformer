@@ -58,13 +58,15 @@ function responseBuilderSimple(
     enhancedLinkAttribution,
     dimensions,
     metrics,
-    contentGroupings
+    contentGroupings,
+    enhancedEcommerce
   } = destination.Config;
   const { trackingID } = destination.Config;
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
   dimensions = dimensions || [];
+  enhancedEcommerce = enhancedEcommerce || false;
   metrics = metrics || [];
   contentGroupings = contentGroupings || [];
 
@@ -157,6 +159,7 @@ function responseBuilderSimple(
     finalPayload.uid = message.userId;
   }
   finalPayload.cid = message.anonymousId;
+  if (enhancedEcommerce && finalPayload.ni!== undefined) finalPayload.ni = 1;
   fixIP(finalPayload, message, "uip");
 
   const response = defaultRequestConfig();

@@ -16,8 +16,7 @@ function step(object, prev) {
       const value = object[key];
       const isarray = opts.safe && is.array(value);
       const type = Object.prototype.toString.call(value);
-      const isobject =
-        type === "[object Object]" || type === "[object Array]";
+      const isobject = type === "[object Object]" || type === "[object Array]";
       const arr = [];
 
       const newKey = prev ? prev + delimiter + key : key;
@@ -46,8 +45,8 @@ function flatten(target, opts) {
   opts = opts || {};
 
   const delimiter = opts.delimiter || ".";
-  let { maxDepth } = opts;
-  let currentDepth = 1;
+  const { maxDepth } = opts;
+  const currentDepth = 1;
   const output = {};
 
   step(target);

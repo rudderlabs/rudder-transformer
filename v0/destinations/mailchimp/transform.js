@@ -1,6 +1,5 @@
 const get = require("get-value");
 const axios = require("axios");
-const set = require("set-value");
 const md5 = require("md5");
 const { EventType } = require("../../../constants");
 const {
@@ -13,6 +12,7 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig
 } = require("../util");
+const logger = require("../../../logger");
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {
@@ -44,7 +44,9 @@ async function checkIfMailExists(mailChimpConfig, email) {
       }
     });
     status = true;
-  } catch (error) {}
+  } catch (error) {
+    logger.error(error);
+  }
   return status;
 }
 
@@ -84,7 +86,7 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   }
   response.body.JSON = payload;
   const basicAuth = Buffer.from(
-    "apiKey" + ":" + `${mailChimpConfig.apiKey}`
+    `apiKey:${`${mailChimpConfig.apiKey}`}`
   ).toString("base64");
   return {
     ...response,
@@ -103,7 +105,7 @@ async function getPayload(
   emailExists,
   mailChimpConfig
 ) {
-  if (updateSubscription != undefined && emailExists) {
+  if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
@@ -140,6 +142,8 @@ async function getPayload(
     }
     return rawPayload;
   }
+
+  return false;
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
@@ -179,7 +183,6 @@ function getMailChimpConfig(message, destination) {
         mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
         break;
       default:
-        console.log("MailChimp: Unknown key type: ", key);
         break;
     }
   });

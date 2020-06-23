@@ -44,8 +44,6 @@ function responseBuilder(payload, message, intercomConfig) {
     userId: message.userId ? message.userId : message.anonymousId
   };
 
-  // console.log(resp);
-
   return resp;
 }
 
@@ -61,7 +59,7 @@ function addContext(payload, message) {
   const customPayload = {};
 
   deviceKeys.forEach(key => {
-    if (key != "id") {
+    if (key !== "id") {
       const deviceKeysMapping = mapPayload.collectContext.device;
       const value = message.context.device[key];
       updatePayload(key, deviceKeysMapping, value, customPayload);
@@ -81,7 +79,7 @@ function addContext(payload, message) {
   return removeUndefinedAndNullValues(payload);
 }
 
-function getGroupPayload(message, intercomConfig) {
+function getGroupPayload(message) {
   const rawPayload = {};
 
   const companyFields = get(message, "context.traits")
@@ -132,13 +130,10 @@ function getIdentifyPayload(message, intercomConfig) {
 
       companyFields.forEach(companyTrait => {
         const companyValue = traits[field][companyTrait];
-        // console.log(companyValue);
         const replaceKeys = mapPayload.identify.company;
-        // console.log(replaceKeys);
         updatePayload(companyTrait, replaceKeys, companyValue, company);
       });
 
-      // console.log(company);
       if (!companyFields.includes("id")) {
         set(company, "company_id", md5(company.name));
       }
@@ -151,18 +146,17 @@ function getIdentifyPayload(message, intercomConfig) {
     updatePayload(field, replaceKeys, value, rawPayload);
   });
 
-  intercomConfig.collectContext ? addContext(rawPayload, message) : null;
-  // // console.log(message.userId);
+  if (intercomConfig.collectContext) {
+    addContext(rawPayload, message);
+  }
   if (!rawPayload.user_id) {
     rawPayload.user_id = message.userId ? message.userId : message.anonymousId;
   }
-  // console.log("============================");
-  // console.log(rawPayload);
-  // console.log("============================");
+
   return rawPayload;
 }
 
-function getTrackPayload(message, intercomConfig) {
+function getTrackPayload(message) {
   const rawPayload = {};
   const properties = get(message, "properties")
     ? Object.keys(message.properties)
@@ -171,7 +165,7 @@ function getTrackPayload(message, intercomConfig) {
   if (properties) {
     const metadata = {};
     const price = {};
-    const order_number = {};
+    const orderNumber = {};
 
     properties.forEach(property => {
       const value = message.properties[property];
@@ -184,8 +178,8 @@ function getTrackPayload(message, intercomConfig) {
       }
 
       if (property === "order_ID" || property === "order_url") {
-        updatePayload(property, mapPayload.track.order, value, order_number);
-        metadata.order_number = order_number;
+        updatePayload(property, mapPayload.track.order, value, orderNumber);
+        metadata.order_number = orderNumber;
       }
     });
     rawPayload.metadata = metadata;
@@ -204,13 +198,13 @@ function getTransformedJSON(message, intercomConfig) {
   let rawPayload;
   switch (message.type) {
     case EventType.TRACK:
-      rawPayload = getTrackPayload(message, intercomConfig);
+      rawPayload = getTrackPayload(message);
       break;
     case EventType.IDENTIFY:
       rawPayload = getIdentifyPayload(message, intercomConfig);
       break;
     case EventType.GROUP:
-      rawPayload = getGroupPayload(message, intercomConfig);
+      rawPayload = getGroupPayload(message);
       break;
     default:
       break;

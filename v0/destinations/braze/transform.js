@@ -13,16 +13,22 @@ const {
 } = require("./config");
 
 function formatGender(gender) {
-  if (!gender) return;
-  if (typeof gender !== "string") return;
+  if (gender && typeof gender === "string") {
+    const femaleGenders = ["woman", "female", "w", "f"];
+    const maleGenders = ["man", "male", "m"];
+    const otherGenders = ["other", "o"];
 
-  const femaleGenders = ["woman", "female", "w", "f"];
-  const maleGenders = ["man", "male", "m"];
-  const otherGenders = ["other", "o"];
-
-  if (femaleGenders.indexOf(gender.toLowerCase()) > -1) return "F";
-  if (maleGenders.indexOf(gender.toLowerCase()) > -1) return "M";
-  if (otherGenders.indexOf(gender.toLowerCase()) > -1) return "O";
+    if (femaleGenders.indexOf(gender.toLowerCase()) > -1) {
+      return "F";
+    }
+    if (maleGenders.indexOf(gender.toLowerCase()) > -1) {
+      return "M";
+    }
+    if (otherGenders.indexOf(gender.toLowerCase()) > -1) {
+      return "O";
+    }
+  }
+  return "O";
 }
 
 function buildResponse(message, properties, endpoint) {
@@ -224,7 +230,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   attributePayload = setExternalIdOrAliasObject(attributePayload, message);
 
   if (
-    messageType == EventType.TRACK &&
+    messageType === EventType.TRACK &&
     eventName.toLowerCase() === "order completed"
   ) {
     purchaseObjs = getPurchaseObjs(message);
@@ -283,6 +289,7 @@ function process(event) {
   }
 
   let category = ConfigCategory.DEFAULT;
+  let response;
   switch (messageType) {
     case EventType.TRACK:
       response = processTrackEvent(
@@ -315,9 +322,10 @@ function process(event) {
       );
       respList.push(response);
       break;
+    default:
+      break;
   }
 
-  // console.log(JSON.stringify(respList, null, 4));
   return respList;
 }
 

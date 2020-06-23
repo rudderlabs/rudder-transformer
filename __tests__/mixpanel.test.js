@@ -18,9 +18,6 @@ test(`${name} Tests`, () => {
   const expectedData = JSON.parse(outputDataFile);
   inputData.forEach((input, index) => {
     const output = transformer.process(input);
-    console.log("output:: "+JSON.stringify(output));
-    console.log("index::"+index);
-    console.log("expectedData:: "+JSON.stringify(expectedData[index]));
     expect(output).toEqual(expectedData[index]);
   });
 });

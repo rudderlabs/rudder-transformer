@@ -159,7 +159,7 @@ function responseBuilderSimple(
     finalPayload.uid = message.userId;
   }
   finalPayload.cid = message.anonymousId;
-  if (enhancedEcommerce && finalPayload.ni!== undefined) finalPayload.ni = 1;
+  if (enhancedEcommerce && finalPayload.ni === undefined) finalPayload.ni = 1;
   fixIP(finalPayload, message, "uip");
 
   const response = defaultRequestConfig();

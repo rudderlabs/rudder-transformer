@@ -365,7 +365,7 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -3730,7 +3730,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -3856,7 +3856,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -3968,7 +3968,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4081,7 +4081,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4209,7 +4209,7 @@
       "userId": "12345",
       "event": "Cart Shared",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4337,7 +4337,7 @@
       "userId": "12345",
       "event": "Product Shared",
       "properties": {
-        "productId": "ruchiraorder1",
+        "product_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4808,7 +4808,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4936,7 +4936,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "value": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5064,7 +5064,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5192,7 +5192,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5305,7 +5305,7 @@
       "userId": "12345",
       "event": "Cart Viewed",
       "properties": {
-        "orderId": "ruchiraorder1",
+        "order_id": "ruchiraorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,

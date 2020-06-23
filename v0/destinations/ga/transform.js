@@ -230,12 +230,17 @@ function processNonEComGenericEvent(message, destination) {
   let { nonInteraction } = destination.Config;
   nonInteraction = nonInteraction || false;
   const nonInteractionProp =
+    message.properties !== undefined &&
     message.properties.nonInteraction !== undefined
       ? !!message.properties.nonInteraction
       : !!nonInteraction;
   const parameters = {
     ev: formatValue(eventValue),
-    ec: message.properties.category || "All",
+    ec:
+      message.properties !== undefined &&
+      message.properties.category !== undefined
+        ? message.properties.category
+        : "All",
     ni: nonInteractionProp === false ? 0 : 1
   };
 
@@ -282,7 +287,7 @@ function processRefundEvent(message) {
   };
 
   const { products } = message.properties;
-  if (products.length > 0) {
+  if (products && products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
     for (let i = 0; i < products.length; i += 1) {
@@ -305,7 +310,7 @@ function processRefundEvent(message) {
     }
   } else {
     // full refund, only populate order_id
-    parameters.ti = message.order_id;
+    parameters.ti = message.properties.order_id;
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -358,7 +363,7 @@ function processProductListEvent(message) {
   }
 
   const { products } = message.properties;
-  if (products.length > 0) {
+  if (products && products.length > 0) {
     for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
@@ -419,7 +424,7 @@ function processProductEvent(message) {
   }
 
   const { sku } = message.properties;
-  const productId = message.product_id;
+  const productId = message.properties.product_id;
 
   if (!productId || productId.length === 0) {
     parameters.pr1id = sku;
@@ -473,7 +478,7 @@ function processTransactionEvent(message) {
 
   const { products } = message.properties;
 
-  if (products.length > 0) {
+  if (products && products.length > 0) {
     for (let i = 0; i < products.length; i += 1) {
       const product = products[i];
       const prodIndex = i + 1;

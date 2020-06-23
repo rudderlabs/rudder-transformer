@@ -1,6 +1,6 @@
-batchEndpoint = "https://api.segment.io/v1/batch";
+const batchEndpoint = "https://api.segment.io/v1/batch";
 
-destinationConfigKeys = {
+const destinationConfigKeys = {
   writeKey: "writeKey"
 };
 

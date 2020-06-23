@@ -45,7 +45,7 @@ function responseBuilder(message, evType, evName, destination) {
   let endpoint;
   let requestConfig = defaultPostRequestConfig;
   const userId =
-    message.userId && message.userId != "" ? message.userId : undefined;
+    message.userId && message.userId !== "" ? message.userId : undefined;
 
   const response = defaultRequestConfig();
   response.userId = message.userId || message.anonymousId;
@@ -102,7 +102,7 @@ function responseBuilder(message, evType, evName, destination) {
     if (message.properties) {
       // use this if only top level keys are to be sent
 
-      if (deviceDeleteRelatedEventName == evName) {
+      if (deviceDeleteRelatedEventName === evName) {
         if (userId && token) {
           endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
             ":device_id",

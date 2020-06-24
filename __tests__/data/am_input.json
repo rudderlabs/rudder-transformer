@@ -1,0 +1,1089 @@
+[
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "test track event",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "android",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sajal@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs Android SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "screen",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Screen",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product list viewed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product list filtered",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product list clicked",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "promotion viewed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "promotion clicked",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product clicked",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product viewed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product added",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "wishlist product added to cart",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product removed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "firstname": "Mickey"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+      "originalTimestamp": "2020-01-24T06:29:02.362Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53709",
+      "sentAt": "2020-01-24T06:29:02.363Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    },
+    "metadata": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "destinationType": "AMPLITUDE",
+      "jobId": 2,
+      "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "firstname": "Mickey"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e",
+      "originalTimestamp": "2020-01-24T06:29:02.366Z",
+      "previousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53711",
+      "sentAt": "2020-01-24T06:29:02.366Z",
+      "timestamp": "2020-01-24T11:59:02.403+05:30",
+      "type": "alias",
+      "userId": "1234abc"
+    },
+    "metadata": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "destinationType": "MIXPANEL",
+      "jobId": 4,
+      "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e",
+      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "firstname": "Mickey"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "properties": {
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+        "coupon": "hasbros",
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "category": "Games",
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "product_id": "507f1f77bcf86cd799439011",
+            "quantity": 1,
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path"
+          },
+          {
+            "category": "Games",
+            "name": "Uno Card Game",
+            "price": 3,
+            "product_id": "505bd76785ebb509fc183733",
+            "quantity": 2,
+            "sku": "46493-32"
+          }
+        ],
+        "revenue": 25,
+        "shipping": 3,
+        "subtotal": 22.5,
+        "tax": 2,
+        "total": 27.5
+      },
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "track",
+      "userId": ""
+    },
+    "metadata": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "destinationType": "AMPLITUDE",
+      "jobId": 5,
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "firstname": "Mickey"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "properties": {
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+        "coupon": "hasbros",
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "revenue": 34,
+        "key_1": {
+          "child_key1": "child_value1",
+          "child_key2": {
+            "child_key21": "child_value21",
+            "child_key22": "child_value22"
+          }
+        },
+        "shipping": 3,
+        "subtotal": 22.5,
+        "tax": 2,
+        "total": 27.5
+      },
+      "products": [
+          {
+            "category": "Games",
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "product_id": "507f1f77bcf86cd799439011",
+            "quantity": 1,
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path"
+          },
+          {
+            "category": "Games",
+            "name": "Uno Card Game",
+            "price": 3,
+            "product_id": "505bd76785ebb509fc183733",
+            "quantity": 2,
+            "sku": "46493-32"
+          }
+        ],
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "track",
+      "userId": ""
+    },
+    "metadata": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "destinationType": "MIXPANEL",
+      "jobId": 5,
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    }
+  }
+]

@@ -39,18 +39,22 @@ function getParamsFromConfig(message, destination, type) {
 }
 
 function getProductLevelCustomParams(message, destination) {
-  let customParams = {};
-  let dimensions = destination.Config.dimensions;
-  let metrics = destination.Config.metrics;
-  let valueKey, dimensionKey, metricKey, productKey, customParamKeys = {};
-  let products = message.properties ? message.properties.products : undefined;
+  const customParams = {};
+  const { dimensions } = destination.Config;
+  const { metrics } = destination.Config;
+  let valueKey;
+  let dimensionKey;
+  let metricKey;
+  let productKey;
+  const customParamKeys = {};
+  const products = message.properties ? message.properties.products : undefined;
 
   // convert dimension<index> to cd<index> and push to customParamKeys
   if (dimensions && dimensions.length > 0) {
     dimensions.forEach(dimension => {
       valueKey = dimension.from;
       dimensionKey = dimension.to.replace(/dimension/g, "cd");
-      customParamKeys[dimensionKey] = valueKey; 
+      customParamKeys[dimensionKey] = valueKey;
     });
   }
 
@@ -64,15 +68,16 @@ function getProductLevelCustomParams(message, destination) {
   }
 
   // add all custom parameters
-  if (( products && products.length > 0 ) && (customParamKeys.length > 0)) {
-    products.forEach((product , index) => {
+  if (products && products.length > 0 && customParamKeys.length > 0) {
+    products.forEach((product, index) => {
       productKey = `pr${index}`;
       customParamKeys.forEach(customParamKey => {
-        customParams[`${productKey}${customParamKey}`] = product[customParamKeys[key]]
+        customParams[`${productKey}${customParamKey}`] =
+          product[customParamKeys[key]];
       });
     });
 
-  return removeUndefinedValues(customParams);
+    return removeUndefinedValues(customParams);
   }
 }
 
@@ -377,7 +382,10 @@ function processRefundEvent(message, destination) {
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.categories || message.event;
-    Object.assign(parameters, getProductLevelCustomParams(message, destination));
+    Object.assign(
+      parameters,
+      getProductLevelCustomParams(message, destination)
+    );
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -411,85 +419,98 @@ function processSharingEvent(message) {
 // Function for processing product list view event
 function processProductListEvent(message, destination) {
   const eventString = message.event;
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
   const parameters = {
     ea: eventString,
-    ec: message.properties.category || "EnhancedEcommerce"
+    ec:
+      message.properties.category ||
+      (enhancedEcommerce ? "EnhancedEcommerce" : "All")
   };
 
   // Set action depending on Product List Action
-  switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_LIST_VIEWED.name:
-    case Event.PRODUCT_LIST_FILTERED.name:
-      parameters.pa = "detail";
-      break;
-    case Event.PRODUCT_LIST_CLICKED.name:
-      parameters.pa = "click";
-      break;
-    default:
-      throw new Error("unknown ProductListEvent type");
-  }
 
-  const { products } = message.properties;
-  if (products && products.length > 0) {
-    for (let i = 0; i < products.length; i += 1) {
-      const value = products[i];
-      const prodIndex = i + 1;
-
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters[`il1pi${prodIndex}id`] = value.sku;
-      } else {
-        parameters[`il1pi${prodIndex}id`] = value.product_id;
-      }
-      parameters[`il1pi${prodIndex}nm`] = value.name;
-      parameters[`il1pi${prodIndex}ca`] = value.category;
-      parameters[`il1pi${prodIndex}br`] = value.brand;
-      parameters[`il1pi${prodIndex}va`] = value.variant;
-      parameters[`il1pi${prodIndex}cc`] = value.coupon;
-      parameters[`il1pi${prodIndex}ps`] = value.position;
-      parameters[`il1pi${prodIndex}pr`] = value.price;
+  if (enhancedEcommerce) {
+    switch (eventString.toLowerCase()) {
+      case Event.PRODUCT_LIST_VIEWED.name:
+      case Event.PRODUCT_LIST_FILTERED.name:
+        parameters.pa = "detail";
+        break;
+      case Event.PRODUCT_LIST_CLICKED.name:
+        parameters.pa = "click";
+        break;
+      default:
+        throw new Error("unknown ProductListEvent type");
     }
-  } else {
-    // throw error, empty Product List in Product List Viewed event payload
-    throw new Error(
-      "Empty Product List provided for Product List Viewed Event"
-    );
+
+    const { products } = message.properties;
+    if (products && products.length > 0) {
+      for (let i = 0; i < products.length; i += 1) {
+        const value = products[i];
+        const prodIndex = i + 1;
+
+        if (!value.product_id || value.product_id.length === 0) {
+          parameters[`il1pi${prodIndex}id`] = value.sku;
+        } else {
+          parameters[`il1pi${prodIndex}id`] = value.product_id;
+        }
+        parameters[`il1pi${prodIndex}nm`] = value.name;
+        parameters[`il1pi${prodIndex}ca`] = value.category;
+        parameters[`il1pi${prodIndex}br`] = value.brand;
+        parameters[`il1pi${prodIndex}va`] = value.variant;
+        parameters[`il1pi${prodIndex}cc`] = value.coupon;
+        parameters[`il1pi${prodIndex}ps`] = value.position;
+        parameters[`il1pi${prodIndex}pr`] = value.price;
+      }
+    } else {
+      // throw error, empty Product List in Product List Viewed event payload
+      throw new Error(
+        "Empty Product List provided for Product List Viewed Event"
+      );
+    }
   }
   return parameters;
 }
 
 // Function for processing product viewed or clicked events
-function processProductEvent(message) {
+function processProductEvent(message, destination) {
   const eventString = message.event;
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
 
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
 
   const parameters = {
     ea: eventString,
-    ec: message.properties.category || "EnhancedEcommerce"
+    ec:
+      message.properties.category ||
+      (enhancedEcommerce ? "EnhancedEcommerce" : "All")
   };
 
   // Set product action to click or detail depending on event
-  switch (eventString.toLowerCase()) {
-    case Event.PRODUCT_CLICKED.name:
-      parameters.pa = "click";
-      break;
-    case Event.PRODUCT_VIEWED.name:
-      parameters.pa = "detail";
-      break;
-    case Event.PRODUCT_ADDED.name:
-    case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
-    case Event.PRODUCT_ADDED_TO_WISHLIST.name:
-      parameters.pa = "add";
-      break;
-    case Event.PRODUCT_REMOVED.name:
-    case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
-      parameters.pa = "remove";
-      break;
-    default:
-      throw new Error("unknown ProductEvent type");
-  }
 
+  if (enhancedEcommerce) {
+    switch (eventString.toLowerCase()) {
+      case Event.PRODUCT_CLICKED.name:
+        parameters.pa = "click";
+        break;
+      case Event.PRODUCT_VIEWED.name:
+        parameters.pa = "detail";
+        break;
+      case Event.PRODUCT_ADDED.name:
+      case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
+      case Event.PRODUCT_ADDED_TO_WISHLIST.name:
+        parameters.pa = "add";
+        break;
+      case Event.PRODUCT_REMOVED.name:
+      case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
+        parameters.pa = "remove";
+        break;
+      default:
+        throw new Error("unknown ProductEvent type");
+    }
+  }
   const { sku } = message.properties;
   const productId = message.properties.product_id;
 
@@ -572,7 +593,10 @@ function processTransactionEvent(message, destination) {
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.category || message.event;
-    Object.assign(parameters, getProductLevelCustomParams(message, destination));
+    Object.assign(
+      parameters,
+      getProductLevelCustomParams(message, destination)
+    );
   }
   return parameters;
 }
@@ -661,7 +685,7 @@ function processSingleMessage(message, destination) {
             customParams = processPromotionEvent(message, destination);
             break;
           case ConfigCategory.PRODUCT.name:
-            customParams = processProductEvent(message);
+            customParams = processProductEvent(message, destination);
             break;
           case ConfigCategory.TRANSACTION.name:
             customParams = processTransactionEvent(message, destination);
@@ -694,7 +718,7 @@ function processSingleMessage(message, destination) {
             customParams = processPromotionEvent(message, destination);
             break;
           case ConfigCategory.PRODUCT.name:
-            customParams = processProductEvent(message);
+            customParams = processProductEvent(message, destination);
             break;
           case ConfigCategory.TRANSACTION.name:
             customParams = processTransactionEvent(message, destination);

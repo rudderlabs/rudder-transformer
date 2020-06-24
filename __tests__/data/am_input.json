@@ -800,8 +800,6 @@
         "useNativeSDK": false
       },
       "DestinationDefinition": {
-        "DisplayName": "Amplitude",
-        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
         "Name": "Amplitude"
       },
       "Enabled": true,

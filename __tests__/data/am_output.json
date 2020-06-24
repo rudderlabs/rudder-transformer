@@ -1,1 +1,601 @@
-[{"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"user_properties": {"city": "kolkata", "country": "India", "postalCode": 712136, "state": "WB", "street": "", "anonymousId": "123456", "email": "sayan@gmail.com", "ip": "0.0.0.0", "age": 26}, "os_name": "", "os_version": "", "device_id": "123456", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "$identify", "session_id": 991701108, "time": 1571043797562, "user_id": "123456", "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "123456", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"path": "/test", "referrer": "Rudder", "search": "abc", "title": "Test Page", "url": "www.rudderlabs.com"}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "pageview", "session_id": 991701108, "ip": "1.1.1.1", "time": 1571051718299, "user_id": "12345"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "test track event", "session_id": 991701108, "time": 1571051718300, "user_id": "12345", "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"path": "/test", "referrer": "Rudder", "search": "abc", "title": "Test Screen", "url": "www.rudderlabs.com"}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "screenview", "ip": "1.1.1.1", "time": 1571051718299, "user_id": "12345", "session_id": -1}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"statusCode": 400, "error": "Cannot read property 'toLowerCase' of undefined"}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product list filtered", "session_id": 991701108, "time": 1571051718300, "user_id": "12345", "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product list clicked", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "promotion viewed", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "promotion clicked", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product clicked", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product viewed", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product added", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "wishlist product added to cart", "session_id": 991701108, "time": 1571051718300, "user_id": "12345", "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "abcde", "events": {"event_properties": {"user_actual_role": "system_admin", "user_actual_id": 12345, "user_time_spent": 50000}, "os_name": "", "os_version": "", "device_id": "00000000000000000000000000", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-US", "event_type": "product removed", "time": 1571051718300, "user_id": "12345", "session_id": -1, "ip": "0.0.0.0"}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "12345", "statusCode": 200}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "9432f11f70f8ce386f5110c8c924b3ec4f825256", "events": {"user_properties": {"city": "Disney", "country": "USA", "email": "mickey@disney.com", "firstname": "Mickey"}, "os_name": "", "os_version": "", "device_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-GB", "event_type": "$identify", "ip": "0.0.0.0", "time": 1579847342362, "session_id": -1}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "statusCode": 200}, {"statusCode": 400, "error": "message type not supported"}, {"statusCode": 400, "error": "Cannot read property 'name' of undefined"}, {"statusCode": 400, "error": "Cannot read property 'name' of undefined"}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api.amplitude.com/2/httpapi", "headers": {"Content-Type": "application/json"}, "params": {}, "body": {"JSON": {"api_key": "9432f11f70f8ce386f5110c8c924b3ec4f825256", "events": {"event_properties": {"affiliation": "Google Store", "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "coupon": "hasbros", "currency": "USD", "discount": 2.5, "order_id": "50314b8e9bcf000000000000", "products": [{"category": "Games", "image_url": "https:///www.example.com/product/path.jpg", "name": "Monopoly: 3rd Edition", "price": 19, "product_id": "507f1f77bcf86cd799439011", "quantity": 1, "sku": "45790-32", "url": "https://www.example.com/product/path"}, {"category": "Games", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2, "sku": "46493-32"}], "revenue": 25, "shipping": 3, "subtotal": 22.5, "tax": 2, "total": 27.5}, "os_name": "", "os_version": "", "device_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "app_name": "RudderLabs JavaScript SDK", "app_version": "1.0.0", "language": "en-GB", "event_type": "Order Refunded", "ip": "0.0.0.0", "time": 1579847342367, "session_id": -1}, "options": {"min_id_length": 1}}, "XML": {}, "FORM": {}}, "files": {}, "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "statusCode": 200}]
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "anonymousId": "123456",
+            "email": "sayan@gmail.com",
+            "ip": "0.0.0.0",
+            "age": 26
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "123456",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "$identify",
+          "session_id": 991701108,
+          "time": 1571043797562,
+          "user_id": "123456",
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "path": "/test",
+            "referrer": "Rudder",
+            "search": "abc",
+            "title": "Test Page",
+            "url": "www.rudderlabs.com"
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "pageview",
+          "session_id": 991701108,
+          "ip": "1.1.1.1",
+          "time": 1571051718299,
+          "user_id": "12345"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "test track event",
+          "session_id": 991701108,
+          "time": 1571051718300,
+          "user_id": "12345",
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "path": "/test",
+            "referrer": "Rudder",
+            "search": "abc",
+            "title": "Test Screen",
+            "url": "www.rudderlabs.com"
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "screenview",
+          "ip": "1.1.1.1",
+          "time": 1571051718299,
+          "user_id": "12345",
+          "session_id": -1
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "Cannot read property 'toLowerCase' of undefined"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product list filtered",
+          "session_id": 991701108,
+          "time": 1571051718300,
+          "user_id": "12345",
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product list clicked",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "promotion viewed",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "promotion clicked",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product clicked",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product viewed",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product added",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "wishlist product added to cart",
+          "session_id": 991701108,
+          "time": 1571051718300,
+          "user_id": "12345",
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "user_actual_role": "system_admin",
+            "user_actual_id": 12345,
+            "user_time_spent": 50000
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "00000000000000000000000000",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "product removed",
+          "time": 1571051718300,
+          "user_id": "12345",
+          "session_id": -1,
+          "ip": "0.0.0.0"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "events": {
+          "user_properties": {
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey"
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-GB",
+          "event_type": "$identify",
+          "ip": "0.0.0.0",
+          "time": 1579847342362,
+          "session_id": -1
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  { "statusCode": 400, "error": "message type not supported" },
+  { "statusCode": 400, "error": "Cannot read property 'name' of undefined" },
+  { "statusCode": 400, "error": "Cannot read property 'name' of undefined" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "events": {
+          "event_properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "revenue": 25,
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "total": 27.5
+          },
+          "os_name": "",
+          "os_version": "",
+          "device_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-GB",
+          "event_type": "Order Refunded",
+          "ip": "0.0.0.0",
+          "time": 1579847342367,
+          "session_id": -1
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  }
+]

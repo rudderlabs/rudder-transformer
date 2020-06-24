@@ -24,20 +24,17 @@ function getParamsFromConfig(message, destination, type) {
       obj[mapping.from] = mapping.to;
     });
   }
-
   const keys = Object.keys(obj);
   keys.forEach(key => {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
-    obj[key] = obj[key].replace(/content/g, "cg");
-
+    obj[key] = obj[key].replace(/contentGroup/g, "cg");
     params[obj[key]] = get(message.properties, key);
 
     if (type === "content" && params[obj[key]]) {
       params[obj[key]] = params[obj[key]].replace(" ", "/");
     }
   });
-
   return params;
 }
 

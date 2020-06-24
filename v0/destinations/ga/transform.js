@@ -38,6 +38,43 @@ function getParamsFromConfig(message, destination, type) {
   return params;
 }
 
+function getProductLevelCustomParams(message, destination) {
+  let customParams = {};
+  let dimensions = destination.Config.dimensions;
+  let metrics = destination.Config.metrics;
+  let valueKey, dimensionKey, metricKey, productKey, customParamKeys = {};
+  let products = message.properties ? message.properties.products : undefined;
+
+  // convert dimension<index> to cd<index> and push to customParamKeys
+  if (dimensions && dimensions.length > 0) {
+    dimensions.forEach(dimension => {
+      valueKey = dimension.from;
+      dimensionKey = dimension.to.replace(/dimension/g, "cd");
+      customParamKeys[dimensionKey] = valueKey; 
+    });
+  }
+
+  // convert metric<index> to cm<index> and push to customParamKeys
+  if (metrics && metrics.length > 0) {
+    metrics.forEach(metric => {
+      valueKey = dimension.from;
+      metricKey = dimension.to.replace(/metric/g, "cm");
+      customParamKeys[metricKey] = valueKey;
+    });
+  }
+
+  // add all custom parameters
+  if (( products && products.length > 0 ) && (customParamKeys.length > 0)) {
+    products.forEach((product , index) => {
+      productKey = `pr${index}`;
+      customParamKeys.forEach(customParamKey => {
+        customParams[`${productKey}${customParamKey}`] = product[customParamKeys[key]]
+      });
+    });
+
+  return removeUndefinedValues(customParams);
+}
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -339,6 +376,7 @@ function processRefundEvent(message, destination) {
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.categories || message.event;
+    Object.assign(parameters, getProductLevelCustomParams(message, destination));
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -370,7 +408,7 @@ function processSharingEvent(message) {
 }
 
 // Function for processing product list view event
-function processProductListEvent(message) {
+function processProductListEvent(message, destination) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
@@ -533,6 +571,7 @@ function processTransactionEvent(message, destination) {
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.category || message.event;
+    Object.assign(parameters, getProductLevelCustomParams(message, destination));
   }
   return parameters;
 }
@@ -615,7 +654,7 @@ function processSingleMessage(message, destination) {
 
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
-            customParams = processProductListEvent(message);
+            customParams = processProductListEvent(message, destination);
             break;
           case ConfigCategory.PROMOTION.name:
             customParams = processPromotionEvent(message, destination);
@@ -648,7 +687,7 @@ function processSingleMessage(message, destination) {
 
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
-            customParams = processProductListEvent(message);
+            customParams = processProductListEvent(message, destination);
             break;
           case ConfigCategory.PROMOTION.name:
             customParams = processPromotionEvent(message, destination);

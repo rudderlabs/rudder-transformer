@@ -73,6 +73,7 @@ function getProductLevelCustomParams(message, destination) {
     });
 
   return removeUndefinedValues(customParams);
+  }
 }
 
 // Basic response builder

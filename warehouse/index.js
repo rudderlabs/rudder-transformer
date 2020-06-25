@@ -152,7 +152,7 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
-function processWarehouseMessage(provider, message, schemaVersion, RSAlterStringToText) {
+function processWarehouseMessage(provider, message, schemaVersion, RSAlterStringToText = "false") {
   const utils = getVersionedUtils(schemaVersion);
   const responses = [];
   const eventType = message.type.toLowerCase();

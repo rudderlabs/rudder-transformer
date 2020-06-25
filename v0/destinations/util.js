@@ -121,7 +121,10 @@ function setValues(payload, message, mappingJson) {
 
   return payload;
 }
-
+function formatValue(value) {
+  if (!value || value < 0) return 0;
+  return Math.round(value);
+}
 module.exports = {
   getMappingConfig,
   getDateInFormat,
@@ -136,5 +139,6 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   getParsedIP,
-  setValues
+  setValues,
+  formatValue
 };

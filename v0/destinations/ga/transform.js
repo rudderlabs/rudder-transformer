@@ -38,47 +38,68 @@ function getParamsFromConfig(message, destination, type) {
   return params;
 }
 
-function getProductLevelCustomParams(message, destination) {
+function getProductLevelCustomParams(product, index, customParamKeys) {
   const customParams = {};
-  const { dimensions } = destination.Config;
-  const { metrics } = destination.Config;
-  let valueKey;
-  let dimensionKey;
-  let metricKey;
-  let productKey;
-  const customParamKeys = {};
-  const products = message.properties ? message.properties.products : undefined;
-
-  // convert dimension<index> to cd<index> and push to customParamKeys
-  if (dimensions && dimensions.length > 0) {
-    dimensions.forEach(dimension => {
-      valueKey = dimension.from;
-      dimensionKey = dimension.to.replace(/dimension/g, "cd");
-      customParamKeys[dimensionKey] = valueKey;
-    });
-  }
-
-  // convert metric<index> to cm<index> and push to customParamKeys
-  if (metrics && metrics.length > 0) {
-    metrics.forEach(metric => {
-      valueKey = dimension.from;
-      metricKey = dimension.to.replace(/metric/g, "cm");
-      customParamKeys[metricKey] = valueKey;
-    });
-  }
 
   // add all custom parameters
-  if (products && products.length > 0 && customParamKeys.length > 0) {
-    products.forEach((product, index) => {
-      productKey = `pr${index}`;
-      customParamKeys.forEach(customParamKey => {
-        customParams[`${productKey}${customParamKey}`] =
-          product[customParamKeys[key]];
-      });
+  if (product && Object.keys(customParamKeys).length > 0) {
+    const productKey = `pr${index}`;
+    Object.keys(customParamKeys).forEach(customParamKey => {
+      customParams[`${productKey}${customParamKey}`] =
+        product[customParamKeys[customParamKey]];
     });
+  }
+
+  return removeUndefinedValues(customParams);
+}
+
+function getCustomParamKeys(config) {
+  if (config) {
+    const customParams = {};
+    const { dimensions } = config;
+    const { metrics } = config;
+    let valueKey;
+    let dimensionKey;
+    let metricKey;
+
+    // convert dimension<index> to cd<index> and push to customParams
+    if (dimensions && dimensions.length > 0) {
+      dimensions.forEach(dimension => {
+        valueKey = dimension.from;
+        dimensionKey = dimension.to.replace(/dimension/g, "cd");
+        customParams[dimensionKey] = valueKey;
+      });
+    }
+
+    // convert metric<index> to cm<index> and push to customParams
+    if (metrics && metrics.length > 0) {
+      metrics.forEach(metric => {
+        valueKey = metric.from;
+        metricKey = metric.to.replace(/metric/g, "cm");
+        customParams[metricKey] = valueKey;
+      });
+    }
 
     return removeUndefinedValues(customParams);
   }
+  // return empty object if config is undefined or invalid
+  return {};
+}
+
+function getCustomParamsFromOldConfig(config) {
+  const dimensions = [];
+  const metrics = [];
+  if (config && config.customMappings && config.customMappings.length > 0) {
+    config.customMappings.forEach(mapping => {
+      if (mapping.to && mapping.to.startsWith("cd")) {
+        dimensions.push(mapping);
+      }
+      if (mapping.to && mapping.to.startsWith("cm")) {
+        metrics.push(mapping);
+      }
+    });
+  }
+  return [dimensions, metrics];
 }
 
 // Basic response builder
@@ -105,10 +126,13 @@ function responseBuilderSimple(
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
-  dimensions = dimensions || [];
   enhancedEcommerce = enhancedEcommerce || false;
-  metrics = metrics || [];
   contentGroupings = contentGroupings || [];
+
+  // for backward compatibility with old config
+  if(!dimensions && !metrics) {
+    [dimensions, metrics] = getCustomParamsFromOldConfig(destination.Config);
+  }
 
   let rawPayload;
   if (message.context.app) {
@@ -350,11 +374,14 @@ function processRefundEvent(message, destination) {
   const parameters = {
     pa: "refund"
   };
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
 
   const { products } = message.properties;
   if (products && products.length > 0) {
     // partial refund
     // Now iterate through the products and add parameters accordingly
+    const customParamKeys = getCustomParamKeys(destination.Config);
     for (let i = 0; i < products.length; i += 1) {
       const value = products[i];
       const prodIndex = i + 1;
@@ -362,6 +389,14 @@ function processRefundEvent(message, destination) {
         parameters[`pr${prodIndex}id`] = value.sku;
       } else {
         parameters[`pr${prodIndex}id`] = value.product_id;
+      }
+
+      // add product level custom dimensions and metrics to parameters
+      if(enhancedEcommerce) {
+        Object.assign(
+          parameters,
+          getProductLevelCustomParams(value, prodIndex, customParamKeys)
+        );
       }
 
       parameters[`pr${prodIndex}nm`] = value.name;
@@ -377,15 +412,9 @@ function processRefundEvent(message, destination) {
     // full refund, only populate order_id
     parameters.ti = message.properties.order_id;
   }
-  let { enhancedEcommerce } = destination.Config;
-  enhancedEcommerce = enhancedEcommerce || false;
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.categories || message.event;
-    Object.assign(
-      parameters,
-      getProductLevelCustomParams(message, destination)
-    );
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -445,6 +474,7 @@ function processProductListEvent(message, destination) {
 
     const { products } = message.properties;
     if (products && products.length > 0) {
+      const customParamKeys = getCustomParamKeys(destination.Config);
       for (let i = 0; i < products.length; i += 1) {
         const value = products[i];
         const prodIndex = i + 1;
@@ -454,6 +484,13 @@ function processProductListEvent(message, destination) {
         } else {
           parameters[`il1pi${prodIndex}id`] = value.product_id;
         }
+
+        // add product level custom dimensions and metrics to parameters
+        Object.assign(
+          parameters,
+          getProductLevelCustomParams(value, prodIndex, customParamKeys)
+        );
+
         parameters[`il1pi${prodIndex}nm`] = value.name;
         parameters[`il1pi${prodIndex}ca`] = value.category;
         parameters[`il1pi${prodIndex}br`] = value.brand;
@@ -510,6 +547,13 @@ function processProductEvent(message, destination) {
       default:
         throw new Error("unknown ProductEvent type");
     }
+
+    // add produt level custom dimensions and metrics to parameters
+    const customParamKeys = getCustomParamKeys(destination.Config);
+    Object.assign(
+      parameters,
+      getProductLevelCustomParams(message.properties, 1, customParamKeys)
+    );
   }
   const { sku } = message.properties;
   const productId = message.properties.product_id;
@@ -527,6 +571,8 @@ function processProductEvent(message, destination) {
 function processTransactionEvent(message, destination) {
   const eventString = message.event;
   const parameters = {};
+  let { enhancedEcommerce } = destination.Config;
+  enhancedEcommerce = enhancedEcommerce || false;
 
   // Set product action as per event
   switch (eventString.toLowerCase()) {
@@ -576,6 +622,16 @@ function processTransactionEvent(message, destination) {
       } else {
         parameters[`pr${prodIndex}id`] = product.product_id;
       }
+
+      // add product level custom dimensions and metrics to parameters
+      if(enhancedEcommerce) {
+        const customParamKeys = getCustomParamKeys(destination.Config);
+        Object.assign(
+          parameters,
+          getProductLevelCustomParams(product, prodIndex, customParamKeys)
+        );
+      }
+
       parameters[`pr${prodIndex}nm`] = product.name;
       parameters[`pr${prodIndex}ca`] = product.category;
       parameters[`pr${prodIndex}br`] = product.brand;
@@ -588,15 +644,10 @@ function processTransactionEvent(message, destination) {
     // throw error, empty Product List in Product List Viewed event payload
     throw new Error("No product information supplied for transaction event");
   }
-  let { enhancedEcommerce } = destination.Config;
-  enhancedEcommerce = enhancedEcommerce || false;
+
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.category || message.event;
-    Object.assign(
-      parameters,
-      getProductLevelCustomParams(message, destination)
-    );
   }
   return parameters;
 }

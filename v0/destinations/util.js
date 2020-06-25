@@ -139,5 +139,6 @@ module.exports = {
   defaultRequestConfig,
   isPrimitive,
   getParsedIP,
-  setValues
+  setValues,
+  formatValue
 };

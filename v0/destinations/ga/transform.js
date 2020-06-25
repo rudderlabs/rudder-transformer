@@ -130,7 +130,7 @@ function responseBuilderSimple(
   contentGroupings = contentGroupings || [];
 
   // for backward compatibility with old config
-  if(!dimensions && !metrics) {
+  if (!dimensions && !metrics) {
     [dimensions, metrics] = getCustomParamsFromOldConfig(destination.Config);
   }
 
@@ -392,7 +392,7 @@ function processRefundEvent(message, destination) {
       }
 
       // add product level custom dimensions and metrics to parameters
-      if(enhancedEcommerce) {
+      if (enhancedEcommerce) {
         Object.assign(
           parameters,
           getProductLevelCustomParams(value, prodIndex, customParamKeys)
@@ -624,7 +624,7 @@ function processTransactionEvent(message, destination) {
       }
 
       // add product level custom dimensions and metrics to parameters
-      if(enhancedEcommerce) {
+      if (enhancedEcommerce) {
         const customParamKeys = getCustomParamKeys(destination.Config);
         Object.assign(
           parameters,

@@ -12,7 +12,7 @@ const {
   removeUndefinedValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  fixIP,
+  getParsedIP,
   formatValue
 } = require("../util");
 
@@ -222,9 +222,12 @@ function responseBuilderSimple(
   if (message.userId && message.userId.length > 0 && sendUserId) {
     finalPayload.uid = message.userId;
   }
+
   finalPayload.cid = message.anonymousId;
-  if (enhancedEcommerce && finalPayload.ni === undefined) finalPayload.ni = 1;
-  fixIP(finalPayload, message, "uip");
+  if (enhancedEcommerce && finalPayload.ni === undefined) {
+    finalPayload.ni = 1;
+  }
+  finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;

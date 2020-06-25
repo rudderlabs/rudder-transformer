@@ -59,7 +59,7 @@ function safeColumnName(provider, name = "") {
 function transformName(name = "") {
   const extractedValues = [];
   let extractedValue = "";
-  for (let i = 0; i < name.length; i++) {
+  for (let i = 0; i < name.length; i += 1) {
     const c = name[i];
     const asciiValue = c.charCodeAt(0);
     if (

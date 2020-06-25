@@ -4,7 +4,7 @@ const { EventType } = require("../../../constants");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  fixIP
+  getParsedIP
 } = require("../util");
 const { ENDPOINT } = require("./config");
 
@@ -88,7 +88,7 @@ function processTrack(message, destination) {
   properties.anonymousId = message.anonymousId;
 
   // add ip from the message
-  fixIP(properties, message, "request_ip");
+  properties.request_ip = getParsedIP(message);
 
   // add user-agent
   properties.user_agent = message.context.userAgent;

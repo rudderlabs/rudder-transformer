@@ -1,5 +1,4 @@
 const get = require("get-value");
-const _ = require("lodash");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
@@ -10,6 +9,8 @@ const whPageConfigJson = require("./config/WHPageConfig.json");
 const whScreenConfigJson = require("./config/WHScreenConfig.json");
 const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
+// redshift destination string limit, if the string length crosses 512 we will change data type to text which is varchar(max) in redshift
+const RSStringLimit = 512;
 
 const isObject = value => {
   const type = typeof value;
@@ -39,7 +40,7 @@ function validTimestamp(input) {
 //   return new Date(input).getTime() > 0;
 // }
 
-const getDataType = val => {
+const getDataType = (val, RSAlterStringToText) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -51,6 +52,9 @@ const getDataType = val => {
   }
   if (validTimestamp(val)) {
     return "datetime";
+  }
+  if (val != undefined && val.length > RSStringLimit && RSAlterStringToText === "true") {
+    return "text";
   }
   return "string";
 };
@@ -72,11 +76,11 @@ function excludeRudderCreatedTableNames(name) {
   return name;
 }
 
-function setFromConfig(provider, utils, resp, input, configJson, columnTypes) {
+function setFromConfig(provider, utils, resp, input, configJson, columnTypes, RSAlterStringToText) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
-      datatype = getDataType(val);
+      datatype = getDataType(val, RSAlterStringToText);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
@@ -94,6 +98,7 @@ function setFromProperties(
   resp,
   input,
   columnTypes,
+  RSAlterStringToText,
   prefix = ""
 ) {
   if (!input) return;
@@ -112,7 +117,7 @@ function setFromProperties(
       if (val === null || val === undefined) {
         return;
       }
-      datatype = getDataType(val);
+      datatype = getDataType(val, RSAlterStringToText);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
@@ -131,7 +136,7 @@ function getColumns(provider, obj, columnTypes) {
   const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(obj[key]);
+    columns[key] = columnTypes[key] || getDataType(obj[key], RSAlterStringToText);
   });
   return columns;
 }
@@ -147,7 +152,7 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
-function processWarehouseMessage(provider, message, schemaVersion) {
+function processWarehouseMessage(provider, message, schemaVersion, RSAlterStringToText) {
   const utils = getVersionedUtils(schemaVersion);
   const responses = [];
   const eventType = message.type.toLowerCase();
@@ -170,7 +175,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         commonProps,
         message,
         whTrackConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromConfig(
         provider,
@@ -178,7 +184,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         commonProps,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
 
       // set event column based on event_text in the tracks table
@@ -211,14 +218,16 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         utils,
         trackProps,
         message.properties,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromProperties(
         provider,
         utils,
         trackProps,
         message.userProperties,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
 
       // always set commonProps last so that they are not overwritten
@@ -246,14 +255,16 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         utils,
         commonProps,
         message.userProperties,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromProperties(
         provider,
         utils,
         commonProps,
         message.context ? message.context.traits : {},
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromProperties(
         provider,
@@ -261,6 +272,7 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         commonProps,
         message.traits,
         columnTypes,
+        RSAlterStringToText,
         ""
       );
 
@@ -271,6 +283,7 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         commonProps,
         message.context,
         columnTypes,
+        RSAlterStringToText,
         "context_"
       );
 
@@ -279,8 +292,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
       usersEvent[
         utils.safeColumnName(provider, "received_at")
       ] = message.receivedAt
-        ? new Date(message.receivedAt).toISOString()
-        : null;
+          ? new Date(message.receivedAt).toISOString()
+          : null;
       columnTypes[utils.safeColumnName(provider, "received_at")] = "datetime";
       const usersMetadata = {
         table: utils.safeTableName(provider, "users"),
@@ -300,7 +313,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         identifiesEvent,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       const identifiesMetadata = {
         table: utils.safeTableName(provider, "identifies"),
@@ -319,7 +333,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         utils,
         event,
         message.properties,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       // set rudder properties after user set properties to prevent overwriting
       setFromProperties(
@@ -328,6 +343,7 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message.context,
         columnTypes,
+        RSAlterStringToText,
         "context_"
       );
       setFromConfig(
@@ -336,7 +352,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
 
       if (eventType === "page") {
@@ -346,7 +363,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
           event,
           message,
           whPageConfigJson,
-          columnTypes
+          columnTypes,
+          RSAlterStringToText
         );
       } else if (eventType === "screen") {
         setFromConfig(
@@ -355,7 +373,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
           event,
           message,
           whScreenConfigJson,
-          columnTypes
+          columnTypes,
+          RSAlterStringToText
         );
       }
 
@@ -384,7 +403,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromConfig(
         provider,
@@ -392,7 +412,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message,
         whGroupConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
 
       const metadata = {
@@ -420,7 +441,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
       setFromConfig(
         provider,
@@ -428,7 +450,8 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         event,
         message,
         whAliasConfigJson,
-        columnTypes
+        columnTypes,
+        RSAlterStringToText
       );
 
       const metadata = {

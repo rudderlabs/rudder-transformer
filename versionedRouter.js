@@ -83,6 +83,7 @@ async function handleDest(ctx, destHandler) {
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set('apiVersion', '1')
 }
 
 if (startDestTransformer) {

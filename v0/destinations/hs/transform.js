@@ -15,8 +15,10 @@ const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 let hubSpotPropertyMap = {};
 
 function getKey(key) {
-  const re = /\s/g;
-  return key.toLowerCase().replace(re, "_");
+  let modifiedKey = key.toLowerCase();
+  modifiedKey = modifiedKey.replace(/\s/g, "_");
+  modifiedKey = modifiedKey.replace(/\./g, "_");
+  return modifiedKey;
 }
 
 async function getProperties(destination) {

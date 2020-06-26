@@ -6,6 +6,7 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 
 const versions = ["v0"];
+const API_VERSION = '1'
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -83,6 +84,7 @@ async function handleDest(ctx, destHandler) {
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set('apiVersion', API_VERSION)
 }
 
 if (startDestTransformer) {

@@ -1,4 +1,5 @@
 const get = require("get-value");
+const _ = require("lodash");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
@@ -11,10 +12,10 @@ const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
 const isObject = value => {
-  var type = typeof value;
+  const type = typeof value;
   return (
     value != null &&
-    (type == "object" || type == "function") &&
+    (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
 };
@@ -66,7 +67,7 @@ const rudderCreatedTables = [
 ];
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
-    name = `_${name}`;
+    return `_${name}`;
   }
   return name;
 }
@@ -75,12 +76,13 @@ function setFromConfig(provider, utils, resp, input, configJson, columnTypes) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
-      datatype = getDataType(val);
+      const datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
       const columnName = utils.safeColumnName(provider, prop);
+      // TODO: can we handle it in a different way without modifying the params
       resp[columnName] = val;
       columnTypes[columnName] = datatype;
     }
@@ -111,13 +113,14 @@ function setFromProperties(
       if (val === null || val === undefined) {
         return;
       }
-      datatype = getDataType(val);
+      const datatype = getDataType(val);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      safeKey = utils.transformColumnName(prefix + key);
-      if (safeKey != "") {
+      let safeKey = utils.transformColumnName(prefix + key);
+      if (safeKey !== "") {
         safeKey = utils.safeColumnName(provider, safeKey);
+        // TODO: can we handle it in a different way without modifying the params
         resp[safeKey] = val;
         columnTypes[safeKey] = datatype;
       }
@@ -286,7 +289,11 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         columns: getColumns(provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
-      responses.push({ metadata: usersMetadata, data: usersEvent });
+      const usersResponse = { metadata: usersMetadata };
+      if (_.toString(message.userId).trim() !== "") {
+        usersResponse.data = usersEvent;
+      }
+      responses.push(usersResponse);
 
       const identifiesEvent = { ...commonProps };
       setFromConfig(

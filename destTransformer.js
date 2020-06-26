@@ -1,5 +1,6 @@
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
+const logger = require("./logger");
 require("dotenv").config();
 
 const router = require("./versionedRouter");
@@ -22,5 +23,5 @@ if (clusterEnabled) {
   cluster.start(PORT, app);
 } else {
   app.listen(PORT);
-  console.log(`Listening on Port: ${PORT}`);
+  logger.debug(`Listening on Port: ${PORT}`);
 }

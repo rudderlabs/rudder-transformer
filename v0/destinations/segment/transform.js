@@ -27,7 +27,7 @@ function responseBuilderSimple(payload, segmentConfig) {
 }
 
 function getTransformedJSON(message, segmentConfig) {
-  const type = message.type;
+  const { type } = message;
   const userId = get(message, "userId") ? message.userId : message.anonymousId;
   const traits = get(message, "context.traits")
     ? message.context.traits

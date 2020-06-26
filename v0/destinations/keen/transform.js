@@ -1,10 +1,10 @@
 const isIp = require("is-ip");
-var validUrl = require("valid-url");
+const validUrl = require("valid-url");
 const { EventType } = require("../../../constants");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  fixIP
+  getParsedIP
 } = require("../util");
 const { ENDPOINT } = require("./config");
 
@@ -54,8 +54,7 @@ function addAddons(properties, config) {
 }
 
 function buildResponse(eventName, message, destination) {
-  const endpoint =
-    ENDPOINT + "/" + destination.Config.projectID + "/events/" + eventName;
+  const endpoint = `${ENDPOINT}/${destination.Config.projectID}/events/${eventName}`;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -72,7 +71,7 @@ function buildResponse(eventName, message, destination) {
 
 function processTrack(message, destination) {
   const eventName = message.event;
-  let properties = message.properties;
+  let { properties } = message;
   const user = {};
   user.userId = message.userId
     ? message.userId != ""
@@ -89,7 +88,7 @@ function processTrack(message, destination) {
   properties.anonymousId = message.anonymousId;
 
   // add ip from the message
-  fixIP(properties, message, "request_ip");
+  properties.request_ip = getParsedIP(message);
 
   // add user-agent
   properties.user_agent = message.context.userAgent;
@@ -109,11 +108,11 @@ function processPage(message, destination) {
   let eventName = "Loaded a Page";
 
   if (pageName) {
-    eventName = "Viewed " + pageName + " page";
+    eventName = `Viewed ${pageName} page`;
   }
 
   if (pageCategory && pageName) {
-    eventName = "Viewed " + pageCategory + " " + pageName + " page";
+    eventName = `Viewed ${pageCategory} ${pageName} page`;
   }
 
   message.event = eventName;
@@ -122,7 +121,6 @@ function processPage(message, destination) {
 }
 
 function process(event) {
-  const respList = [];
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -130,20 +128,19 @@ function process(event) {
   switch (messageType) {
     case EventType.PAGE:
       response = processPage(message, destination);
-      response.statusCode = 200;
-      respList.push(response);
       break;
     case EventType.TRACK:
       response = processTrack(message, destination);
-      response.statusCode = 200;
-      respList.push(response);
       break;
     default:
-      console.log("Message type not supported");
-      throw new Error("Message type not supported");
+      return {
+        message: "message type not supported",
+        statusCode: 400
+      };
   }
 
-  return respList;
+  response.statusCode = 200;
+  return response;
 }
 
 exports.process = process;

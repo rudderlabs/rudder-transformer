@@ -1,9 +1,12 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 
 const versions = ["v0"];
+const API_VERSION = "1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -46,22 +49,28 @@ const userTransformHandler = () => {
 async function handleDest(ctx, destHandler) {
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
-  logger.debug("[DT] Input events: " + JSON.stringify(events));
+  logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
-    events.map(async (event, idx) => {
+    events.map(async event => {
       try {
-        event.request = { query: reqParams };
-        let respEvents = await destHandler.process(event);
+        const parsedEvent = event;
+        parsedEvent.request = { query: reqParams };
+        let respEvents = await destHandler.process(parsedEvent);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }
         respList.push(
           ...respEvents.map(ev => {
-            if (ev.statusCode !== 400 && ev.userId) {
-              ev.userId += "";
+            let { userId } = ev;
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
             }
-            return { output: ev, metadata: event.metadata, statusCode: 200 };
+            return {
+              output: { ...ev, userId },
+              metadata: event.metadata,
+              statusCode: 200
+            };
           })
         );
       } catch (error) {
@@ -75,8 +84,9 @@ async function handleDest(ctx, destHandler) {
       }
     })
   );
-  logger.debug("[DT] Output events: " + JSON.stringify(respList));
+  logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
 }
 
 if (startDestTransformer) {
@@ -96,10 +106,10 @@ if (startDestTransformer) {
   });
 
   if (functionsEnabled()) {
-    router.post("/customTransform", async (ctx, next) => {
+    router.post("/customTransform", async ctx => {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
-      logger.debug("[CT] Input events: " + JSON.stringify(events));
+      logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(
@@ -113,6 +123,7 @@ if (startDestTransformer) {
       const transformedEvents = [];
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+          logger.debug(`dest: ${dest}`);
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&
@@ -158,24 +169,26 @@ if (startDestTransformer) {
               });
             }
           } else {
-            logger.error("[CT] Transformation VersionID not found");
+            const errorMessage = "Transformation VersionID not found";
+            logger.error(`[CT] ${errorMessage}`);
             transformedEvents.push({
               statusCode: 400,
-              error: error.message,
+              error: errorMessage,
               metadata: commonMetadata
             });
           }
         })
       );
-      logger.debug("[CT] Output events: " + JSON.stringify(transformedEvents));
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.set("apiVersion", API_VERSION);
     });
   }
 }
 
 async function handleSource(ctx, sourceHandler) {
   const events = ctx.request.body;
-  logger.debug("[ST] Input source events: " + JSON.stringify(events));
+  logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -198,8 +211,9 @@ async function handleSource(ctx, sourceHandler) {
       }
     })
   );
-  logger.debug("[ST] Output source events: " + JSON.stringify(respList));
+  logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
 }
 
 if (startSourceTransformer) {
@@ -215,11 +229,11 @@ if (startSourceTransformer) {
   });
 }
 
-router.get("/version", (ctx, next) => {
+router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
 
-router.get("/health", (ctx, next) => {
+router.get("/health", ctx => {
   ctx.body = "OK";
 });
 

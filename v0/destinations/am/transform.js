@@ -11,7 +11,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  fixIP
+  getParsedIP
 } = require("../util");
 const {
   Event,
@@ -27,7 +27,7 @@ const populateSpecedTraits = (payload, message) => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach(key => {
-      set(payload, "user_properties." + key, get(message, mapping[key]));
+      set(payload, `user_properties.${key}`, get(message, mapping[key]));
     });
   });
 };
@@ -48,7 +48,7 @@ function createSingleMessageBasicStructure(message) {
 
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 function stringToHash(string) {
-  var hash = 0;
+  let hash = 0;
 
   if (string.length == 0) return hash;
 
@@ -108,8 +108,8 @@ function responseBuilderSimple(
       if (!SpecedTraits.includes(trait)) {
         set(
           rawPayload,
-          "user_properties." + trait,
-          get(message, "context.traits." + trait)
+          `user_properties.${trait}`,
+          get(message, `context.traits.${trait}`)
         );
       }
     });
@@ -132,7 +132,7 @@ function responseBuilderSimple(
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
   fixVersion(payload, message);
-  fixIP(payload, message, "ip");
+  payload.ip = getParsedIP(message);
 
   // console.log(payload);
   const response = defaultRequestConfig();
@@ -169,7 +169,7 @@ function processSingleMessage(message, destination) {
   let evType;
   let category = ConfigCategory.DEFAULT;
 
-  var messageType = message.type.toLowerCase();
+  const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
       // payloadObjectName = "identification"; // identify same as events
@@ -235,7 +235,7 @@ function processSingleMessage(message, destination) {
 // Method for handling product list actions
 function processProductListAction(message) {
   const eventList = [];
-  const products = message.properties.products;
+  const { products } = message.properties;
 
   // Now construct complete payloads for each product and
   // get them processed through single message processing logic

@@ -1,5 +1,7 @@
+name: codacy-coverage-reporter
+
 on: push
-name: test transformer
+
 jobs:
   install-and-test:
     name: install and test
@@ -13,3 +15,4 @@ jobs:
     - name: Jest
       uses: rkusa/jest-action@master
       secrets: d10e6be8dedb20348a882bf1aa92423d6ec22276 
+          

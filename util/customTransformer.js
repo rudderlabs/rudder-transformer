@@ -1,7 +1,6 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
-const _ = require("lodash");
-var { getTransformationCode } = require("../util/customTransforrmationsStore");
+const { getTransformationCode } = require("./customTransforrmationsStore");
 
 async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
@@ -17,16 +16,16 @@ async function runUserTransform(events, code, eventsMetadata) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async function(resolve, ...args) {
+    new ivm.Reference(async (resolve, ...args) => {
       try {
         const res = await fetch(...args);
         const data = await res.json();
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto(),
+          new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
         resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto(),
+          new ivm.ExternalCopy("ERROR").copyInto()
         ]);
       }
     })
@@ -34,14 +33,14 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(function(...args) {
-      console.log("Log: ", ...args);
+    new ivm.Reference(() => {
+      // console.log("Log: ", ...args);
     })
   );
 
   jail.setSync(
     "_metadata",
-    new ivm.Reference(function(...args) {
+    new ivm.Reference((...args) => {
       const eventMetadata = eventsMetadata[args[0].messageId] || {};
       return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
@@ -130,18 +129,20 @@ async function runUserTransform(events, code, eventsMetadata) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
 
-  const customScript = await isolate.compileScript(code + "");
+  const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get("transform");
+  // TODO : check if we can resolve this
+  // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true,
+      transferIn: true
     });
     try {
       await bootstrapScriptResult.apply(undefined, [
         fnRef,
         new ivm.Reference(resolve),
-        sharedMessagesList,
+        sharedMessagesList
       ]);
     } catch (error) {
       reject(error.message);
@@ -149,7 +150,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   });
   let result;
   try {
-    const timeoutPromise = new Promise((resolve, reject) => {
+    const timeoutPromise = new Promise(resolve => {
       const wait = setTimeout(() => {
         clearTimeout(wait);
         resolve("Timedout");
@@ -175,7 +176,7 @@ async function userTransformHandler(events, versionId) {
       // And put back the destination after transforrmation
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
-      events.forEach(function(ev) {
+      events.forEach(ev => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 

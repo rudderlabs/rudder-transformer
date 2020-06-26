@@ -163,6 +163,7 @@ if (startDestTransformer) {
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.set('apiVersion', API_VERSION)
     });
   }
 }
@@ -194,6 +195,7 @@ async function handleSource(ctx, sourceHandler) {
   );
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set('apiVersion', API_VERSION)
 }
 
 if (startSourceTransformer) {

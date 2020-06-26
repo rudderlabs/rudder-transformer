@@ -14,6 +14,7 @@ const {
   eventPropsMapping,
   eventPropsToPathMapping
 } = require("./config");
+const logger = require("../../../logger");
 
 const funcMap = {
   integer: parseInt,
@@ -224,11 +225,8 @@ function processSingleMessage(message, destination) {
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     default:
-      console.log("could not determine type");
-      return {
-        statusCode: 400,
-        error: "message type not supported"
-      };
+      logger.error("could not determine type");
+      throw new Error("message type not supported");
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);

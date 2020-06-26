@@ -1,7 +1,7 @@
 [
   {
       "statusCode": 400,
-      "error": "message type not supported"
+      "message": "message type not supported"
   },
   {
       "endpoint": "https://www.google-analytics.com/collect",

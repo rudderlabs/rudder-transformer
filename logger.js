@@ -7,7 +7,7 @@ const levelNone = 3; // Nothing is logged
 
 const logLevel = process.env.LOG_LEVEL
   ? parseInt(process.env.LOG_LEVEL, 10)
-  : levelNone;
+  : levelInfo;
 
 const debug = (msg, ...optionalParams) => {
   if (levelDebug >= logLevel) {

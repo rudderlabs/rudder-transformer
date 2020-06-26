@@ -15,7 +15,7 @@ function processInfo() {
 
 function start(port, app) {
   if (cluster.isMaster) {
-    logger.debug(`Master ${process.pid} is running`);
+    logger.info(`Master ${process.pid} is running`);
 
     // Fork workers.
     for (let i = 0; i < numCPUs; i += 1) {
@@ -23,11 +23,11 @@ function start(port, app) {
     }
 
     cluster.on("online", worker => {
-      logger.debug(`Worker ${worker.process.pid} is online`);
+      logger.info(`Worker ${worker.process.pid} is online`);
     });
     cluster.on("exit", worker => {
-      logger.debug(`worker ${worker.process.pid} died`);
-      logger.debug(
+      logger.error(`worker ${worker.process.pid} died`);
+      logger.error(
         `Killing Process to avoid any side effects of dead worker.\nProcess Info: `,
         util.inspect(processInfo(), false, null, true)
       );
@@ -35,7 +35,7 @@ function start(port, app) {
     });
   } else {
     app.listen(port);
-    logger.debug(`Worker ${process.pid} started`);
+    logger.info(`Worker ${process.pid} started`);
   }
   logger.debug("transformerServer: started");
 }

@@ -170,43 +170,22 @@ async function runUserTransform(events, code, eventsMetadata) {
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
-    // add metadata from first event to all custom transformed events since all events will have same session_id
-    // and job_id is not applicable after events are custom_transformed
-    const { metadata } = events && events[0];
-    if (metadata) metadata.custom_transformed = true;
-    try {
-      const res = await getTransformationCode(versionId);
-      if (res) {
-        // Events contain message and destination. We take the message part of event and run transformation on it.
-        // And put back the destination after transforrmation
-        const { destination } = events && events[0];
-        const eventMessages = events.map(event => event.message);
-        const eventsMetadata = {};
-        events.forEach(ev => {
-          eventsMetadata[ev.message.messageId] = ev.metadata;
-        });
+    const res = await getTransformationCode(versionId);
+    if (res) {
+      // Events contain message and destination. We take the message part of event and run transformation on it.
+      // And put back the destination after transforrmation
+      const eventMessages = events.map(event => event.message);
+      const eventsMetadata = {};
+      events.forEach(ev => {
+        eventsMetadata[ev.message.messageId] = ev.metadata;
+      });
 
-        const userTransformedEvents = await runUserTransform(
-          eventMessages,
-          res.code,
-          eventsMetadata
-        );
-        const formattedEvents = userTransformedEvents.map(e => ({
-          message: e,
-          destination,
-          metadata
-        }));
-        return formattedEvents;
-      }
-    } catch (error) {
-      // console.log(error);
-      return [
-        {
-          statusCode: 400,
-          error: error.message,
-          metadata
-        }
-      ];
+      const userTransformedEvents = await runUserTransform(
+        eventMessages,
+        res.code,
+        eventsMetadata
+      );
+      return userTransformedEvents;
     }
   }
   return events;

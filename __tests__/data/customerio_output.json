@@ -166,7 +166,7 @@
     "method": "DELETE",
     "statusCode": 200
   },
-  { "error": "userId or device_token not present", "statusCode": 400 },
+  { "message": "userId or device_token not present", "statusCode": 400 },
   {
     "body": {
       "XML": {},

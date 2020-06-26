@@ -382,8 +382,8 @@
       "request_ip": "[::1]:58876",
       "sentAt": "2020-04-15T08:31:42.172Z",
       "timestamp": "2020-04-15T14:01:42.199+05:30",
-      "type": "track",
-      "userId": "user12345"
+      "type": "track"
+
     },
     "metadata": {
       "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",

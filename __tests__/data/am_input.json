@@ -216,49 +216,107 @@
   },
   {
     "message": {
-      "channel": "web",
+      "type": "track",
+      "event": "Product List Viewed",
+      "sentAt": "2020-06-24T20:24:18.296Z",
+      "userId": "sajal",
+      "channel": "mobile",
       "context": {
+        "os": {
+          "name": "Android",
+          "version": "8.1.0"
+        },
         "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "5094f5704b9cf2b3",
+          "name": "generic_x86",
+          "type": "android",
+          "model": "Android SDK built for x86",
+          "manufacturer": "Google"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 1794,
+          "density": 420
         },
         "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
+          "id": "sajal",
+          "age": "30",
+          "name": "User_id_identify",
+          "email": "identify@test.com",
+          "phone": "9112340345",
+          "price": "56.0",
+          "userId": "sajal",
+          "address": {
+            "city": "KOlkata",
+            "state": "West bengal",
+            "street": "Park Street",
+            "country": "India",
+            "postalcode": "700096"
+          },
+          "birthday": "2020-06-25",
+          "lastname": "Mohanta",
+          "quantity": "5",
+          "username": "Samle_putUserName",
+          "createdat": "18th March 2020",
+          "firstname": "Sajal",
+          "anonymousId": "5094f5704b9cf2b3",
+          "description": "Sample description"
         },
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.1"
         },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
+        "network": {
+          "wifi": true,
+          "carrier": "Android",
+          "cellular": true,
+          "bluetooth": false
         },
-        "screen": {
-          "density": 2
-        }
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
       },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "12345",
-      "event": "product list viewed",
+      "messageId": "1593030238599-490c3bee-1fb6-4333-a850-8b67631d20a5",
       "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
+        "products": [
+          {
+            "sku": "some_product_sku_a",
+            "name": "Some Product Name A",
+            "price": 2.99,
+            "currency": "USD",
+            "position": 0,
+            "quantity": 1,
+            "product_id": "some_product_id_a"
+          },
+          {
+            "sku": "some_product_sku_b",
+            "name": "Some Product Name B",
+            "price": 3.99,
+            "currency": "USD",
+            "position": 0,
+            "quantity": 1,
+            "product_id": "some_product_id_b"
+          },
+          {
+            "sku": "some_product_sku_c",
+            "name": "Some Product Name C",
+            "price": 4.99,
+            "currency": "USD",
+            "position": 0,
+            "quantity": 1,
+            "product_id": "some_product_id_c"
+          }
+        ]
       },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
+      "anonymousId": "5094f5704b9cf2b3",
+      "integrations": {},
+      "originalTimestamp": "2020-06-24T20:23:58.600Z"
     },
     "destination": {
       "Config": {
@@ -742,13 +800,13 @@
         "useNativeSDK": false
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Amplitude",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "Amplitude"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Amplitude",
       "Transformations": []
     },
     "message": {
@@ -811,13 +869,13 @@
         "useNativeSDK": false
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Amplitude",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "Amplitude"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Amplitude",
       "Transformations": []
     },
     "message": {
@@ -867,7 +925,7 @@
     "metadata": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "MIXPANEL",
+      "destinationType": "Amplitude",
       "jobId": 4,
       "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e",
       "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
@@ -881,13 +939,13 @@
         "useNativeSDK": false
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Amplitude",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "Amplitude"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Amplitude",
       "Transformations": []
     },
     "message": {
@@ -921,7 +979,7 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
-      "event": "KM Order Completed",
+      "event": "Order Completed",
       "integrations": {
         "All": true
       },
@@ -984,13 +1042,13 @@
         "useNativeSDK": false
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Amplitude",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "Amplitude"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Amplitude",
       "Transformations": []
     },
     "message": {
@@ -999,13 +1057,13 @@
       "context": {
         "app": {
           "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
+          "name": "android",
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.5"
         },
         "ip": "0.0.0.0",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
+          "name": "android",
           "version": "1.0.5"
         },
         "locale": "en-GB",
@@ -1024,7 +1082,7 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
-      "event": "KM Order Completed",
+      "event": "Order Completed",
       "integrations": {
         "All": true
       },
@@ -1045,12 +1103,7 @@
             "child_key22": "child_value22"
           }
         },
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "total": 27.5
-      },
-      "products": [
+        "products": [
           {
             "category": "Games",
             "image_url": "https:///www.example.com/product/path.jpg",
@@ -1070,6 +1123,11 @@
             "sku": "46493-32"
           }
         ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "tax": 2,
+        "total": 27.5
+      },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53712",
       "sentAt": "2020-01-24T06:29:02.368Z",
@@ -1080,7 +1138,7 @@
     "metadata": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "MIXPANEL",
+      "destinationType": "Amplitude",
       "jobId": 5,
       "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
       "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"

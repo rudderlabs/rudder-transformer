@@ -207,10 +207,7 @@ async function processSingleMessage(message, destination) {
     response = await processIdentify(message, destination);
     // console.log(response);
   } else {
-    response = {
-      statusCode: 400,
-      error: `message type ${message.type} is not supported`
-    };
+    throw new Error(`message type ${message.type} is not supported`);
   }
   // console.log(response);
   return response;

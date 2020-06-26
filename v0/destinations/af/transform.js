@@ -19,20 +19,19 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const endpoint = ENDPOINT + message.context.app.namespace;
 
-  let appsflyer_id = message.destination_props
-    ? message.destination_props.AF
-      ? message.destination_props.AF.af_uid
-      : undefined
-    : undefined;
+  let appsFlyerId;
+  if (message.destination_props && message.destination_props.AF) {
+    appsFlyerId = message.destination_props.AF.af_uid;
+  }
 
-  appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
+  appsFlyerId = appsFlyerId || destination.Config.appsFlyerId;
 
   const updatedPayload = {
     ...payload,
     af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
-    appsflyer_id
+    appsFlyerId
   };
 
   const response = defaultRequestConfig();
@@ -80,13 +79,13 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
   return rawPayload;
 }
 
-function processNonTrackEvents(message, destination, eventName) {
+function processNonTrackEvents(message, eventName) {
   const payload = getEventValueForUnIdentifiedTrackEvent(message);
   payload.eventName = eventName;
   return payload;
 }
 
-function processEventTypeTrack(message, destination) {
+function processEventTypeTrack(message) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
   const evType = message.event.toLowerCase();
@@ -130,17 +129,17 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message, destination);
+      payload = processEventTypeTrack(message);
       break;
     }
     case EventType.SCREEN: {
       const eventName = EventType.SCREEN;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
       const eventName = EventType.PAGE;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     default:

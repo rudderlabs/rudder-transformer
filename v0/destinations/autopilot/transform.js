@@ -78,7 +78,7 @@ function getTrackPayload(message) {
   return rawPayload;
 }
 
-function getTransformedJSON(message, autoPilotConfig) {
+function getTransformedJSON(message) {
   let rawPayload;
   switch (message.type) {
     case EventType.TRACK:
@@ -114,7 +114,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const autoPilotConfig = getDestinationKeys(event.destination);
   // TODO: Implement to accept multiple triggerId's.
-  const properties = getTransformedJSON(event.message, autoPilotConfig);
+  const properties = getTransformedJSON(event.message);
   return responseBuilder(properties, event.message, autoPilotConfig);
 }
 

@@ -8,7 +8,7 @@ const {
   removeUndefinedAndNullValues
 } = require("../util");
 
-function responseBuilder(payload, message, branchConfig) {
+function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
   if (payload.event_data === null && payload.content_items === null) {
@@ -31,17 +31,20 @@ function responseBuilder(payload, message, branchConfig) {
 }
 
 function getCategoryAndName(rudderEventName) {
-  for (let i = 0; i < categoriesList.length; i++) {
+  for (let i = 0; i < categoriesList.length; i += 1) {
     const category = categoriesList[i];
     let requiredName = null;
     let requiredCategory = null;
-    // eslint-disable-next-line array-callback-return
-    Object.keys(category.name).find(branchKey => {
+    const categoryKeys = Object.keys(category.name);
+    for (let index = 0; index < categoryKeys.length; index += 1) {
+      const branchKey = categoryKeys[index];
       if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
+        break;
       }
-    });
+    }
+
     if (requiredName != null && requiredCategory != null) {
       return { name: requiredName, category: requiredCategory };
     }
@@ -68,105 +71,116 @@ function getUserData(message) {
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
-  const content_items = {};
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = {};
+  const eventData = {};
+  const customData = {};
 
   let valFound = false;
-  Object.keys(category.content_items).find(branchMappingProperty => {
+  const contentItemKeys = Object.keys(category.content_items);
+  for (let index = 0; index < contentItemKeys; index += 1) {
+    const branchMappingProperty = contentItemKeys[index];
     if (branchMappingProperty === rudderProperty) {
       const tmpKeyName = category.content_items[branchMappingProperty];
-      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+      contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
       valFound = true;
+      break;
     }
-  });
+  }
 
   if (!valFound) {
-    category.event_data.find(branchMappingProperty => {
+    for (let index = 0; index < category.event_data.length; index += 1) {
+      const branchMappingProperty = category.event_data[index];
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        eventData[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
+        break;
       }
-    });
+    }
   }
 
   if (!valFound) {
-    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+    customData[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
-  return {
-    content_itemsObj: content_items,
-    event_dataObj: event_data,
-    custom_dataObj: custom_data
-  };
+  return { contentItems, eventData, customData };
 }
 
 function commonPayload(message, rawPayload, category) {
-  let rudderPropertiesObj;
-  const content_items = [];
-  const event_data = {};
-  const custom_data = {};
-  let productObj = {};
+  const contentItemsParent = [];
+  const eventDataParent = {};
+  const customDataParent = {};
+  const contentItemObj = {};
 
-  // eslint-disable-next-line default-case
+  let payloadProperties = {};
+  let rudderPropertiesObj;
+
   switch (message.type) {
     case EventType.TRACK:
-      rudderPropertiesObj = get(message, "properties")
-        ? message.properties
-        : null;
+      rudderPropertiesObj = message.properties || null;
       break;
     case EventType.IDENTIFY:
-      rudderPropertiesObj = get(message.context, "traits")
-        ? message.context.traits
-        : null;
+      rudderPropertiesObj = message.context.traits || null;
+      break;
+    default:
       break;
   }
 
-  if (rudderPropertiesObj != null) {
-    Object.keys(rudderPropertiesObj).map(rudderProperty => {
-      if (rudderProperty === "products") {
-        productObj = {};
-        for (let i = 0; i < rudderPropertiesObj.products.length; i++) {
-          const product = rudderPropertiesObj.products[i];
-          // eslint-disable-next-line no-loop-func
-          Object.keys(product).map(productProp => {
-            const {
-              content_itemsObj,
-              event_dataObj,
-              custom_dataObj
-            } = mapPayload(category, productProp, product);
-            Object.assign(productObj, content_itemsObj);
-            Object.assign(event_data, event_dataObj);
-            Object.assign(custom_data, custom_dataObj);
-          });
-          content_items.push(productObj);
-          productObj = {};
+  if (rudderPropertiesObj) {
+    const rudderPropertyKeys = Object.keys(rudderPropertiesObj);
+    for (let index = 0; index < rudderPropertyKeys.length; index += 1) {
+      const rudderPropertyKey = rudderPropertyKeys[index];
+      if (rudderPropertyKey === "products") {
+        const { products } = rudderPropertiesObj;
+        for (let pIndex = 0; pIndex < products.length; pIndex += 1) {
+          const product = products[pIndex];
+          const productKeys = Object.keys(product);
+          const productObj = {};
+          for (
+            let pKeyIndex = 0;
+            pKeyIndex < productKeys.length;
+            pKeyIndex += 1
+          ) {
+            const productKey = productKeys[pKeyIndex];
+            const { contentItems, eventData, customData } = mapPayload(
+              category,
+              productKey,
+              product
+            );
+            Object.assign(productObj, contentItems);
+            Object.assign(eventDataParent, eventData);
+            Object.assign(customDataParent, customData);
+          }
+
+          contentItemsParent.push(productObj);
         }
       } else {
-        const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
+        const { contentItems, eventData, customData } = mapPayload(
           category,
-          rudderProperty,
+          rudderPropertyKey,
           rudderPropertiesObj
         );
-        Object.assign(productObj, content_itemsObj);
-        Object.assign(event_data, event_dataObj);
-        Object.assign(custom_data, custom_dataObj);
+        Object.assign(contentItemObj, contentItems);
+        Object.assign(eventDataParent, eventData);
+        Object.assign(contentItemsParent, customData);
       }
-    });
-    content_items.push(productObj);
-    rawPayload.custom_data = custom_data;
-    rawPayload.content_items = content_items;
-    rawPayload.event_data = event_data;
-    rawPayload.user_data = getUserData(message);
+    }
+    contentItemsParent.push(contentItemObj);
 
-    Object.keys(rawPayload).map(key => {
-      if (Object.keys(rawPayload[key]).length == 0) {
-        rawPayload[key] = null;
+    payloadProperties = {
+      custom_data: customDataParent,
+      content_items: contentItemsParent,
+      event_data: eventDataParent,
+      user_data: getUserData(message)
+    };
+
+    Object.keys(payloadProperties).forEach(key => {
+      if (Object.keys(payloadProperties[key]).length === 0) {
+        payloadProperties[key] = null;
       }
     });
   }
 
-  return rawPayload;
+  return { ...rawPayload, ...payloadProperties };
 }
 
 function getIdentifyPayload(message, branchConfig) {
@@ -207,10 +221,11 @@ function getTransformedJSON(message, branchConfig) {
 function getDestinationKeys(destination) {
   const branchConfig = {};
   Object.keys(destination.Config).forEach(key => {
-    // eslint-disable-next-line default-case
     switch (key) {
       case destinationConfigKeys.BRANCH_KEY:
         branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
+        break;
+      default:
         break;
     }
   });
@@ -220,7 +235,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const branchConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, branchConfig);
-  return responseBuilder(properties, event.message, branchConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

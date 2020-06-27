@@ -27,7 +27,7 @@ destinations.forEach(integration => {
           if (!Array.isArray(output)) {
             output = [output];
           }
-          expect(output).toStrictEqual(destination.output);
+          expect(output).toEqual(destination.output);
         });
       });
     });

@@ -48,9 +48,7 @@ function addAddons(properties, config) {
     });
   }
 
-  properties.keen = {
-    addons
-  };
+  return addons;
 }
 
 function buildResponse(eventName, message, destination) {
@@ -72,12 +70,14 @@ function buildResponse(eventName, message, destination) {
 function processTrack(message, destination) {
   const eventName = message.event;
   let { properties } = message;
+
+  let userId = message.anonymousId;
+  if (message.userId && message.userId !== "") {
+    userId = message.userId;
+  }
+
   const user = {};
-  user.userId = message.userId
-    ? message.userId != ""
-      ? message.userId
-      : message.anonymousId
-    : message.anonymousId;
+  user.userId = userId;
   user.traits = message.context.traits;
   properties = {
     ...properties,
@@ -93,10 +93,9 @@ function processTrack(message, destination) {
   // add user-agent
   properties.user_agent = message.context.userAgent;
 
-  addAddons(properties, destination.Config);
+  properties.keen = addAddons(properties, destination.Config);
 
-  message.properties = properties;
-  return buildResponse(eventName, message, destination);
+  return buildResponse(eventName, { ...message, properties }, destination);
 }
 
 function processPage(message, destination) {
@@ -115,9 +114,7 @@ function processPage(message, destination) {
     eventName = `Viewed ${pageCategory} ${pageName} page`;
   }
 
-  message.event = eventName;
-
-  return processTrack(message, destination);
+  return processTrack({ ...message, event: eventName }, destination);
 }
 
 function process(event) {

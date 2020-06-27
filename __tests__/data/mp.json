@@ -1,1 +1,1444 @@
-[{"input": {"message": {"request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjikl", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "page", "properties": {"category": "communication", "search": "", "title": "", "url": "http://localhost/tests/html/index2.html", "referrer": "", "path": "/tests/html/index2.html"}, "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "hjikl", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImNhdGVnb3J5IjoiY29tbXVuaWNhdGlvbiIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicmVmZXJyZXIiOiIiLCJwYXRoIjoiL3Rlc3RzL2h0bWwvaW5kZXgyLmh0bWwiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"category": "Contact", "request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjikl", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "page", "properties": {"category": "Contact", "search": "", "title": "", "url": "http://localhost/tests/html/index2.html", "referrer": "", "path": "/tests/html/index2.html"}, "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "hjikl", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImNhdGVnb3J5IjoiQ29udGFjdCIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicmVmZXJyZXIiOiIiLCJwYXRoIjoiL3Rlc3RzL2h0bWwvaW5kZXgyLmh0bWwiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjikl", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "mobile", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs Android SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "screen", "properties": {"category": "communication"}, "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "hjikl", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiY2F0ZWdvcnkiOiJjb21tdW5pY2F0aW9uIiwiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"category": "Contact", "request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjiklmk", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "mobile", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs Android SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "screen", "properties": {"url": "http://localhost/tests/html/index2.html", "path": "/tests/html/index2.html", "search": "", "referrer": "", "title": ""}, "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "hjiklmk", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicGF0aCI6Ii90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwic2VhcmNoIjoiIiwicmVmZXJyZXIiOiIiLCJ0aXRsZSI6IiIsImRpc3RpbmN0X2lkIjoiaGppa2xtayIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjikl", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "mobile", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs Android SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "screen", "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "hjikl", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53709", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "originalTimestamp": "2020-01-24T06:29:02.362Z", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214", "type": "identify", "channel": "web", "sentAt": "2020-01-24T06:29:02.363Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 2, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/engage/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyIkc2V0Ijp7ImNpdHkiOiJEaXNuZXkiLCIkZW1haWwiOiJtaWNrZXlAZGlzbmV5LmNvbSIsIiRmaXJzdE5hbWUiOiJNaWNrZXkiLCJjb3VudHJ5IjoiVVNBIn0sIiRkaXN0aW5jdF9pZCI6ImU2YWIyYzVlLTJjZGEtNDRhOS1hOTYyLWUyZjY3ZGY3OGJjYSJ9"}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53710", "timestamp": "2020-01-24T11:59:02.403+05:30", "userId": "", "integrations": {"All": true}, "event": "test revenue MIXPANEL", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7", "type": "track", "properties": {"currency": "USD", "revenue": 45.89}, "originalTimestamp": "2020-01-24T06:29:02.364Z", "sentAt": "2020-01-24T06:29:02.364Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 3, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/engage/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2NFoiLCIkYW1vdW50Ijo0NS44OX19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="}, "type": "REST", "method": "POST", "statusCode": 200}, {"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6InRlc3QgcmV2ZW51ZSBNSVhQQU5FTCIsInByb3BlcnRpZXMiOnsiY3VycmVuY3kiOiJVU0QiLCJyZXZlbnVlIjo0NS44OSwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDMrMDU6MzAifX0="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53711", "timestamp": "2020-01-24T11:59:02.403+05:30", "previousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "userId": "1234abc", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "originalTimestamp": "2020-01-24T06:29:02.366Z", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e", "type": "alias", "channel": "web", "sentAt": "2020-01-24T06:29:02.366Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 4, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e"}}, "output": [{"message": "message type not supported", "statusCode": 400}]}, {"input": {"message": {"request_ip": "[::1]:53712", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "event": "KM Order Completed", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a", "type": "track", "properties": {"revenue": 25, "coupon": "hasbros", "subtotal": 22.5, "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "currency": "USD", "discount": 2.5, "affiliation": "Google Store", "products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1, "product_id": "507f1f77bcf86cd799439011"}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "total": 27.5, "order_id": "50314b8e9bcf000000000000"}, "originalTimestamp": "2020-01-24T06:29:02.367Z", "sentAt": "2020-01-24T06:29:02.368Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 5, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/engage/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2N1oiLCIkYW1vdW50IjoyNX19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="}, "type": "REST", "method": "POST", "statusCode": 200}, {"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6IktNIE9yZGVyIENvbXBsZXRlZCIsInByb3BlcnRpZXMiOnsicmV2ZW51ZSI6MjUsImNvdXBvbiI6Imhhc2Jyb3MiLCJzdWJ0b3RhbCI6MjIuNSwidGF4IjoyLCJzaGlwcGluZyI6MywiY2hlY2tvdXRfaWQiOiJma3NkamZzZGpmaXNqZjlzZGZqc2Q5ZiIsImN1cnJlbmN5IjoiVVNEIiwiZGlzY291bnQiOjIuNSwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJwcm9kdWN0cyI6W3siY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ1NzkwLTMyIiwibmFtZSI6Ik1vbm9wb2x5OiAzcmQgRWRpdGlvbiIsInVybCI6Imh0dHBzOi8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aCIsInByaWNlIjoxOSwiaW1hZ2VfdXJsIjoiaHR0cHM6Ly8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aC5qcGciLCJxdWFudGl0eSI6MSwicHJvZHVjdF9pZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSJ9LHsiY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ2NDkzLTMyIiwibmFtZSI6IlVubyBDYXJkIEdhbWUiLCJwcmljZSI6MywicHJvZHVjdF9pZCI6IjUwNWJkNzY3ODVlYmI1MDlmYzE4MzczMyIsInF1YW50aXR5IjoyfV0sInRvdGFsIjoyNy41LCJvcmRlcl9pZCI6IjUwMzE0YjhlOWJjZjAwMDAwMDAwMDAwMCIsImRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53712", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "event": "KM Order Completed", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a", "type": "track", "properties": {"revenue": 34, "coupon": "hasbros", "subtotal": 22.5, "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "currency": "USD", "discount": 2.5, "affiliation": "Google Store", "key_1": {"child_key1": "child_value1", "child_key2": {"child_key22": "child_value22", "child_key21": "child_value21"}}, "products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1, "product_id": "507f1f77bcf86cd799439011"}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "total": 27.5, "order_id": "50314b8e9bcf000000000000"}, "originalTimestamp": "2020-01-24T06:29:02.367Z", "sentAt": "2020-01-24T06:29:02.368Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 5, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/engage/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2N1oiLCIkYW1vdW50IjozNH19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="}, "type": "REST", "method": "POST", "statusCode": 200}, {"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6IktNIE9yZGVyIENvbXBsZXRlZCIsInByb3BlcnRpZXMiOnsicmV2ZW51ZSI6MzQsImNvdXBvbiI6Imhhc2Jyb3MiLCJzdWJ0b3RhbCI6MjIuNSwidGF4IjoyLCJzaGlwcGluZyI6MywiY2hlY2tvdXRfaWQiOiJma3NkamZzZGpmaXNqZjlzZGZqc2Q5ZiIsImN1cnJlbmN5IjoiVVNEIiwiZGlzY291bnQiOjIuNSwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJrZXlfMSI6eyJjaGlsZF9rZXkxIjoiY2hpbGRfdmFsdWUxIiwiY2hpbGRfa2V5MiI6eyJjaGlsZF9rZXkyMiI6ImNoaWxkX3ZhbHVlMjIiLCJjaGlsZF9rZXkyMSI6ImNoaWxkX3ZhbHVlMjEifX0sInByb2R1Y3RzIjpbeyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDU3OTAtMzIiLCJuYW1lIjoiTW9ub3BvbHk6IDNyZCBFZGl0aW9uIiwidXJsIjoiaHR0cHM6Ly93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoIiwicHJpY2UiOjE5LCJpbWFnZV91cmwiOiJodHRwczovLy93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoLmpwZyIsInF1YW50aXR5IjoxLCJwcm9kdWN0X2lkIjoiNTA3ZjFmNzdiY2Y4NmNkNzk5NDM5MDExIn0seyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDY0OTMtMzIiLCJuYW1lIjoiVW5vIENhcmQgR2FtZSIsInByaWNlIjozLCJwcm9kdWN0X2lkIjoiNTA1YmQ3Njc4NWViYjUwOWZjMTgzNzMzIiwicXVhbnRpdHkiOjJ9XSwidG90YWwiOjI3LjUsIm9yZGVyX2lkIjoiNTAzMTRiOGU5YmNmMDAwMDAwMDAwMDAwIiwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53712", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "event": " new Order Completed totally", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a", "type": "track", "properties": {"currency": "USD", "coupon": "hasbros", "subtotal": 22.5, "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "discount": 2.5, "affiliation": "Google Store", "key_1": {"child_key1": "child_value1", "child_key2": {"child_key22": "child_value22", "child_key21": "child_value21"}}, "products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1, "product_id": "507f1f77bcf86cd799439011"}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "total": 23, "order_id": "50314b8e9bcf000000000000"}, "originalTimestamp": "2020-01-24T06:29:02.367Z", "sentAt": "2020-01-24T06:29:02.368Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 5, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6IiBuZXcgT3JkZXIgQ29tcGxldGVkIHRvdGFsbHkiLCJwcm9wZXJ0aWVzIjp7ImN1cnJlbmN5IjoiVVNEIiwiY291cG9uIjoiaGFzYnJvcyIsInN1YnRvdGFsIjoyMi41LCJ0YXgiOjIsInNoaXBwaW5nIjozLCJjaGVja291dF9pZCI6ImZrc2RqZnNkamZpc2pmOXNkZmpzZDlmIiwiZGlzY291bnQiOjIuNSwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJrZXlfMSI6eyJjaGlsZF9rZXkxIjoiY2hpbGRfdmFsdWUxIiwiY2hpbGRfa2V5MiI6eyJjaGlsZF9rZXkyMiI6ImNoaWxkX3ZhbHVlMjIiLCJjaGlsZF9rZXkyMSI6ImNoaWxkX3ZhbHVlMjEifX0sInByb2R1Y3RzIjpbeyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDU3OTAtMzIiLCJuYW1lIjoiTW9ub3BvbHk6IDNyZCBFZGl0aW9uIiwidXJsIjoiaHR0cHM6Ly93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoIiwicHJpY2UiOjE5LCJpbWFnZV91cmwiOiJodHRwczovLy93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoLmpwZyIsInF1YW50aXR5IjoxLCJwcm9kdWN0X2lkIjoiNTA3ZjFmNzdiY2Y4NmNkNzk5NDM5MDExIn0seyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDY0OTMtMzIiLCJuYW1lIjoiVW5vIENhcmQgR2FtZSIsInByaWNlIjozLCJwcm9kdWN0X2lkIjoiNTA1YmQ3Njc4NWViYjUwOWZjMTgzNzMzIiwicXVhbnRpdHkiOjJ9XSwidG90YWwiOjIzLCJvcmRlcl9pZCI6IjUwMzE0YjhlOWJjZjAwMDAwMDAwMDAwMCIsImRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53712", "timestamp": "2020-01-24T11:59:02.402+05:30", "integrations": {"All": true}, "event": " Order Completed ", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a", "type": "track", "properties": {"products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1, "product_id": "507f1f77bcf86cd799439011"}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "currency": "USD", "coupon": "hasbros", "subtotal": 22.5, "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "discount": 2.5, "affiliation": "Google Store", "key_1": {"child_key1": "child_value1", "child_key2": {"child_key22": "child_value22", "child_key21": "child_value21"}}, "Billing Amount": "77", "total": 23, "order_id": "50314b8e9bcf000000000000"}, "originalTimestamp": "2020-01-24T06:29:02.367Z", "sentAt": "2020-01-24T06:29:02.368Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 5, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"}}, "output": [{"body": {"XML": {}, "JSON": {}, "FORM": {}}, "files": {}, "endpoint": "https://api.mixpanel.com/track/", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {}, "version": "1", "params": {"data": "eyJldmVudCI6IiBPcmRlciBDb21wbGV0ZWQgIiwicHJvcGVydGllcyI6eyJwcm9kdWN0cyI6W3siY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ1NzkwLTMyIiwibmFtZSI6Ik1vbm9wb2x5OiAzcmQgRWRpdGlvbiIsInVybCI6Imh0dHBzOi8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aCIsInByaWNlIjoxOSwiaW1hZ2VfdXJsIjoiaHR0cHM6Ly8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aC5qcGciLCJxdWFudGl0eSI6MSwicHJvZHVjdF9pZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSJ9LHsiY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ2NDkzLTMyIiwibmFtZSI6IlVubyBDYXJkIEdhbWUiLCJwcmljZSI6MywicHJvZHVjdF9pZCI6IjUwNWJkNzY3ODVlYmI1MDlmYzE4MzczMyIsInF1YW50aXR5IjoyfV0sImN1cnJlbmN5IjoiVVNEIiwiY291cG9uIjoiaGFzYnJvcyIsInN1YnRvdGFsIjoyMi41LCJ0YXgiOjIsInNoaXBwaW5nIjozLCJjaGVja291dF9pZCI6ImZrc2RqZnNkamZpc2pmOXNkZmpzZDlmIiwiZGlzY291bnQiOjIuNSwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJrZXlfMSI6eyJjaGlsZF9rZXkxIjoiY2hpbGRfdmFsdWUxIiwiY2hpbGRfa2V5MiI6eyJjaGlsZF9rZXkyMiI6ImNoaWxkX3ZhbHVlMjIiLCJjaGlsZF9rZXkyMSI6ImNoaWxkX3ZhbHVlMjEifX0sIkJpbGxpbmcgQW1vdW50IjoiNzciLCJ0b3RhbCI6MjMsIm9yZGVyX2lkIjoiNTAzMTRiOGU5YmNmMDAwMDAwMDAwMDAwIiwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53708", "name": "Contact Us", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "hjikl", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "mobile", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs Android SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "group", "properties": {"url": "http://localhost/tests/html/index2.html", "path": "/tests/html/index2.html", "search": "", "referrer": "", "title": ""}, "originalTimestamp": "2020-01-24T06:29:02.358Z", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Kiss Metrics", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Kiss Metrics", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "MIXPANEL"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "MIXPANEL", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"message": "message type not supported", "statusCode": 400}]}]
+[
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjikl",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "page",
+        "properties": {
+          "category": "communication",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html",
+          "referrer": "",
+          "path": "/tests/html/index2.html"
+        },
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "hjikl",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImNhdGVnb3J5IjoiY29tbXVuaWNhdGlvbiIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicmVmZXJyZXIiOiIiLCJwYXRoIjoiL3Rlc3RzL2h0bWwvaW5kZXgyLmh0bWwiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "category": "Contact",
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjikl",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "page",
+        "properties": {
+          "category": "Contact",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html",
+          "referrer": "",
+          "path": "/tests/html/index2.html"
+        },
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "hjikl",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImNhdGVnb3J5IjoiQ29udGFjdCIsInNlYXJjaCI6IiIsInRpdGxlIjoiIiwidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicmVmZXJyZXIiOiIiLCJwYXRoIjoiL3Rlc3RzL2h0bWwvaW5kZXgyLmh0bWwiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjikl",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "screen",
+        "properties": { "category": "communication" },
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "hjikl",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiY2F0ZWdvcnkiOiJjb21tdW5pY2F0aW9uIiwiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "category": "Contact",
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjiklmk",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": { "version": "1.0.5", "name": "RudderLabs Android SDK" },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "screen",
+        "properties": {
+          "url": "http://localhost/tests/html/index2.html",
+          "path": "/tests/html/index2.html",
+          "search": "",
+          "title": "",
+          "referrer": ""
+        },
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "hjiklmk",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsidXJsIjoiaHR0cDovL2xvY2FsaG9zdC90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwicGF0aCI6Ii90ZXN0cy9odG1sL2luZGV4Mi5odG1sIiwic2VhcmNoIjoiIiwidGl0bGUiOiIiLCJyZWZlcnJlciI6IiIsImRpc3RpbmN0X2lkIjoiaGppa2xtayIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjikl",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "screen",
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "hjikl",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOiIyMDIwLTAxLTI0VDExOjU5OjAyLjQwMiswNTozMCJ9fQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53709",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+        "type": "identify",
+        "originalTimestamp": "2020-01-24T06:29:02.362Z",
+        "sentAt": "2020-01-24T06:29:02.363Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 2,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/engage/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyIkc2V0Ijp7ImNpdHkiOiJEaXNuZXkiLCIkZW1haWwiOiJtaWNrZXlAZGlzbmV5LmNvbSIsIiRmaXJzdE5hbWUiOiJNaWNrZXkiLCJjb3VudHJ5IjoiVVNBIn0sIiRkaXN0aW5jdF9pZCI6ImU2YWIyYzVlLTJjZGEtNDRhOS1hOTYyLWUyZjY3ZGY3OGJjYSJ9"
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53710",
+        "timestamp": "2020-01-24T11:59:02.403+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "properties": { "currency": "USD", "revenue": 45.89 },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.364Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+        "type": "track",
+        "event": "test revenue MIXPANEL",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.364Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 3,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/engage/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2NFoiLCIkYW1vdW50Ijo0NS44OX19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      },
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InRlc3QgcmV2ZW51ZSBNSVhQQU5FTCIsInByb3BlcnRpZXMiOnsiY3VycmVuY3kiOiJVU0QiLCJyZXZlbnVlIjo0NS44OSwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDMrMDU6MzAifX0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53711",
+        "timestamp": "2020-01-24T11:59:02.403+05:30",
+        "previousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "userId": "1234abc",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e",
+        "type": "alias",
+        "originalTimestamp": "2020-01-24T06:29:02.366Z",
+        "sentAt": "2020-01-24T06:29:02.366Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 4,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "79313729-7fe5-4204-963a-dc46f4205e4e"
+      }
+    },
+    "output": [{ "message": "message type not supported", "statusCode": 400 }]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53712",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "properties": {
+          "revenue": 25,
+          "coupon": "hasbros",
+          "subtotal": 22.5,
+          "tax": 2,
+          "shipping": 3,
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "currency": "USD",
+          "affiliation": "Google Store",
+          "products": [
+            {
+              "category": "Games",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path",
+              "price": 19,
+              "product_id": "507f1f77bcf86cd799439011",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "quantity": 1
+            },
+            {
+              "category": "Games",
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "product_id": "505bd76785ebb509fc183733",
+              "quantity": 2
+            }
+          ],
+          "discount": 2.5,
+          "total": 27.5,
+          "order_id": "50314b8e9bcf000000000000"
+        },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.367Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+        "type": "track",
+        "event": "KM Order Completed",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.368Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 5,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/engage/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2N1oiLCIkYW1vdW50IjoyNX19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      },
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6IktNIE9yZGVyIENvbXBsZXRlZCIsInByb3BlcnRpZXMiOnsicmV2ZW51ZSI6MjUsImNvdXBvbiI6Imhhc2Jyb3MiLCJzdWJ0b3RhbCI6MjIuNSwidGF4IjoyLCJzaGlwcGluZyI6MywiY2hlY2tvdXRfaWQiOiJma3NkamZzZGpmaXNqZjlzZGZqc2Q5ZiIsImN1cnJlbmN5IjoiVVNEIiwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJwcm9kdWN0cyI6W3siY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ1NzkwLTMyIiwibmFtZSI6Ik1vbm9wb2x5OiAzcmQgRWRpdGlvbiIsInVybCI6Imh0dHBzOi8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aCIsInByaWNlIjoxOSwicHJvZHVjdF9pZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSIsImltYWdlX3VybCI6Imh0dHBzOi8vL3d3dy5leGFtcGxlLmNvbS9wcm9kdWN0L3BhdGguanBnIiwicXVhbnRpdHkiOjF9LHsiY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ2NDkzLTMyIiwibmFtZSI6IlVubyBDYXJkIEdhbWUiLCJwcmljZSI6MywicHJvZHVjdF9pZCI6IjUwNWJkNzY3ODVlYmI1MDlmYzE4MzczMyIsInF1YW50aXR5IjoyfV0sImRpc2NvdW50IjoyLjUsInRvdGFsIjoyNy41LCJvcmRlcl9pZCI6IjUwMzE0YjhlOWJjZjAwMDAwMDAwMDAwMCIsImRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53712",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "properties": {
+          "revenue": 34,
+          "coupon": "hasbros",
+          "subtotal": 22.5,
+          "tax": 2,
+          "shipping": 3,
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "currency": "USD",
+          "affiliation": "Google Store",
+          "key_1": {
+            "child_key1": "child_value1",
+            "child_key2": {
+              "child_key22": "child_value22",
+              "child_key21": "child_value21"
+            }
+          },
+          "products": [
+            {
+              "category": "Games",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path",
+              "price": 19,
+              "product_id": "507f1f77bcf86cd799439011",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "quantity": 1
+            },
+            {
+              "category": "Games",
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "product_id": "505bd76785ebb509fc183733",
+              "quantity": 2
+            }
+          ],
+          "discount": 2.5,
+          "total": 27.5,
+          "order_id": "50314b8e9bcf000000000000"
+        },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.367Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+        "type": "track",
+        "event": "KM Order Completed",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.368Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 5,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/engage/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyIkYXBwZW5kIjp7IiR0cmFuc2FjdGlvbnMiOnsiJHRpbWUiOiIyMDIwLTAxLTI0VDA2OjI5OjAyLjM2N1oiLCIkYW1vdW50IjozNH19LCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EifQ=="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      },
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6IktNIE9yZGVyIENvbXBsZXRlZCIsInByb3BlcnRpZXMiOnsicmV2ZW51ZSI6MzQsImNvdXBvbiI6Imhhc2Jyb3MiLCJzdWJ0b3RhbCI6MjIuNSwidGF4IjoyLCJzaGlwcGluZyI6MywiY2hlY2tvdXRfaWQiOiJma3NkamZzZGpmaXNqZjlzZGZqc2Q5ZiIsImN1cnJlbmN5IjoiVVNEIiwiYWZmaWxpYXRpb24iOiJHb29nbGUgU3RvcmUiLCJrZXlfMSI6eyJjaGlsZF9rZXkxIjoiY2hpbGRfdmFsdWUxIiwiY2hpbGRfa2V5MiI6eyJjaGlsZF9rZXkyMiI6ImNoaWxkX3ZhbHVlMjIiLCJjaGlsZF9rZXkyMSI6ImNoaWxkX3ZhbHVlMjEifX0sInByb2R1Y3RzIjpbeyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDU3OTAtMzIiLCJuYW1lIjoiTW9ub3BvbHk6IDNyZCBFZGl0aW9uIiwidXJsIjoiaHR0cHM6Ly93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoIiwicHJpY2UiOjE5LCJwcm9kdWN0X2lkIjoiNTA3ZjFmNzdiY2Y4NmNkNzk5NDM5MDExIiwiaW1hZ2VfdXJsIjoiaHR0cHM6Ly8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aC5qcGciLCJxdWFudGl0eSI6MX0seyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDY0OTMtMzIiLCJuYW1lIjoiVW5vIENhcmQgR2FtZSIsInByaWNlIjozLCJwcm9kdWN0X2lkIjoiNTA1YmQ3Njc4NWViYjUwOWZjMTgzNzMzIiwicXVhbnRpdHkiOjJ9XSwiZGlzY291bnQiOjIuNSwidG90YWwiOjI3LjUsIm9yZGVyX2lkIjoiNTAzMTRiOGU5YmNmMDAwMDAwMDAwMDAwIiwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53712",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "properties": {
+          "discount": 2.5,
+          "coupon": "hasbros",
+          "order_id": "50314b8e9bcf000000000000",
+          "tax": 2,
+          "shipping": 3,
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "currency": "USD",
+          "affiliation": "Google Store",
+          "key_1": {
+            "child_key1": "child_value1",
+            "child_key2": {
+              "child_key22": "child_value22",
+              "child_key21": "child_value21"
+            }
+          },
+          "products": [
+            {
+              "category": "Games",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path",
+              "price": 19,
+              "product_id": "507f1f77bcf86cd799439011",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "quantity": 1
+            },
+            {
+              "category": "Games",
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "product_id": "505bd76785ebb509fc183733",
+              "quantity": 2
+            }
+          ],
+          "total": 23,
+          "subtotal": 22.5
+        },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.367Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+        "type": "track",
+        "event": " new Order Completed totally",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.368Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 5,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6IiBuZXcgT3JkZXIgQ29tcGxldGVkIHRvdGFsbHkiLCJwcm9wZXJ0aWVzIjp7ImRpc2NvdW50IjoyLjUsImNvdXBvbiI6Imhhc2Jyb3MiLCJvcmRlcl9pZCI6IjUwMzE0YjhlOWJjZjAwMDAwMDAwMDAwMCIsInRheCI6Miwic2hpcHBpbmciOjMsImNoZWNrb3V0X2lkIjoiZmtzZGpmc2RqZmlzamY5c2RmanNkOWYiLCJjdXJyZW5jeSI6IlVTRCIsImFmZmlsaWF0aW9uIjoiR29vZ2xlIFN0b3JlIiwia2V5XzEiOnsiY2hpbGRfa2V5MSI6ImNoaWxkX3ZhbHVlMSIsImNoaWxkX2tleTIiOnsiY2hpbGRfa2V5MjIiOiJjaGlsZF92YWx1ZTIyIiwiY2hpbGRfa2V5MjEiOiJjaGlsZF92YWx1ZTIxIn19LCJwcm9kdWN0cyI6W3siY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ1NzkwLTMyIiwibmFtZSI6Ik1vbm9wb2x5OiAzcmQgRWRpdGlvbiIsInVybCI6Imh0dHBzOi8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aCIsInByaWNlIjoxOSwicHJvZHVjdF9pZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSIsImltYWdlX3VybCI6Imh0dHBzOi8vL3d3dy5leGFtcGxlLmNvbS9wcm9kdWN0L3BhdGguanBnIiwicXVhbnRpdHkiOjF9LHsiY2F0ZWdvcnkiOiJHYW1lcyIsInNrdSI6IjQ2NDkzLTMyIiwibmFtZSI6IlVubyBDYXJkIEdhbWUiLCJwcmljZSI6MywicHJvZHVjdF9pZCI6IjUwNWJkNzY3ODVlYmI1MDlmYzE4MzczMyIsInF1YW50aXR5IjoyfV0sInRvdGFsIjoyMywic3VidG90YWwiOjIyLjUsImRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwidGltZSI6IjIwMjAtMDEtMjRUMTE6NTk6MDIuNDAyKzA1OjMwIn19"
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53712",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "integrations": { "All": true },
+        "properties": {
+          "discount": 2.5,
+          "coupon": "hasbros",
+          "order_id": "50314b8e9bcf000000000000",
+          "tax": 2,
+          "shipping": 3,
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "currency": "USD",
+          "affiliation": "Google Store",
+          "key_1": {
+            "child_key1": "child_value1",
+            "child_key2": {
+              "child_key22": "child_value22",
+              "child_key21": "child_value21"
+            }
+          },
+          "Billing Amount": "77",
+          "products": [
+            {
+              "category": "Games",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path",
+              "price": 19,
+              "product_id": "507f1f77bcf86cd799439011",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "quantity": 1
+            },
+            {
+              "category": "Games",
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "product_id": "505bd76785ebb509fc183733",
+              "quantity": 2
+            }
+          ],
+          "total": 23,
+          "subtotal": 22.5
+        },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.367Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+        "type": "track",
+        "event": " Order Completed ",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.368Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 5,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6IiBPcmRlciBDb21wbGV0ZWQgIiwicHJvcGVydGllcyI6eyJkaXNjb3VudCI6Mi41LCJjb3Vwb24iOiJoYXNicm9zIiwib3JkZXJfaWQiOiI1MDMxNGI4ZTliY2YwMDAwMDAwMDAwMDAiLCJ0YXgiOjIsInNoaXBwaW5nIjozLCJjaGVja291dF9pZCI6ImZrc2RqZnNkamZpc2pmOXNkZmpzZDlmIiwiY3VycmVuY3kiOiJVU0QiLCJhZmZpbGlhdGlvbiI6Ikdvb2dsZSBTdG9yZSIsImtleV8xIjp7ImNoaWxkX2tleTEiOiJjaGlsZF92YWx1ZTEiLCJjaGlsZF9rZXkyIjp7ImNoaWxkX2tleTIyIjoiY2hpbGRfdmFsdWUyMiIsImNoaWxkX2tleTIxIjoiY2hpbGRfdmFsdWUyMSJ9fSwiQmlsbGluZyBBbW91bnQiOiI3NyIsInByb2R1Y3RzIjpbeyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDU3OTAtMzIiLCJuYW1lIjoiTW9ub3BvbHk6IDNyZCBFZGl0aW9uIiwidXJsIjoiaHR0cHM6Ly93d3cuZXhhbXBsZS5jb20vcHJvZHVjdC9wYXRoIiwicHJpY2UiOjE5LCJwcm9kdWN0X2lkIjoiNTA3ZjFmNzdiY2Y4NmNkNzk5NDM5MDExIiwiaW1hZ2VfdXJsIjoiaHR0cHM6Ly8vd3d3LmV4YW1wbGUuY29tL3Byb2R1Y3QvcGF0aC5qcGciLCJxdWFudGl0eSI6MX0seyJjYXRlZ29yeSI6IkdhbWVzIiwic2t1IjoiNDY0OTMtMzIiLCJuYW1lIjoiVW5vIENhcmQgR2FtZSIsInByaWNlIjozLCJwcm9kdWN0X2lkIjoiNTA1YmQ3Njc4NWViYjUwOWZjMTgzNzMzIiwicXVhbnRpdHkiOjJ9XSwidG90YWwiOjIzLCJzdWJ0b3RhbCI6MjIuNSwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "hjikl",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "group",
+        "properties": {
+          "url": "http://localhost/tests/html/index2.html",
+          "path": "/tests/html/index2.html",
+          "search": "",
+          "title": "",
+          "referrer": ""
+        },
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "Kiss Metrics"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [{ "message": "message type not supported", "statusCode": 400 }]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "screen",
+        "properties": { "category": "communication" },
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "MIXPANEL"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiY2F0ZWdvcnkiOiJjb21tdW5pY2F0aW9uIiwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "mobile",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "screen",
+        "properties": { "category": "communication" },
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Name": "MIXPANEL",
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/track/",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyJldmVudCI6InNjcmVlbiIsInByb3BlcnRpZXMiOnsiY2F0ZWdvcnkiOiJjb21tdW5pY2F0aW9uIiwiZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCJ0aW1lIjoiMjAyMC0wMS0yNFQxMTo1OTowMi40MDIrMDU6MzAifX0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "name": "Contact Us",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "123456",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs Android SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "identify",
+        "channel": "mobile",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Name": "MIXPANEL"
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "MIXPANEL",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://api.mixpanel.com/engage/",
+        "userId": "123456",
+        "headers": {},
+        "version": "1",
+        "params": {
+          "data": "eyIkc2V0Ijp7fSwiJGRpc3RpbmN0X2lkIjoiMTIzNDU2In0="
+        },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  }
+]

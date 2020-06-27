@@ -76,7 +76,7 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " page";
       }
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(message.originalTimestamp).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
@@ -113,7 +113,7 @@ function constructPayload(message, category, destination) {
       } else {
         rawPayload.eventName += " screen";
       }
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(message.originalTimestamp).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
@@ -121,7 +121,7 @@ function constructPayload(message, category, destination) {
       break;
     case "track":
       rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(message.originalTimestamp).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
       if (rawPayload.templateId)
@@ -153,7 +153,7 @@ function constructPayload(message, category, destination) {
       });
 
       rawPayload.items = rawPayloadItemArr;
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
+      rawPayload.createdAt = new Date(message.originalTimestamp).getTime();
       rawPayload.total = parseFloat(rawPayload.total);
       if (rawPayload.id) {
         rawPayload.id = rawPayload.id.toString();
@@ -209,24 +209,30 @@ function responseBuilderSimple(message, category, destination) {
   return response;
 }
 
-function responseBuilderSimpleForIdentify(message, category, destination) {
+function responseBuilderPushDevice(message, category, destination) {
   const response = defaultRequestConfig();
-  if (message.context.device) {
-    response.endpoint = category.endpointDevice;
-    response.body.JSON = constructPayload(
-      message,
-      { ...category, action: category.actionDevice },
-      destination
-    );
-  } else if (message.context.os) {
-    response.endpoint = category.endpointBrowser;
-    response.body.JSON = constructPayload(
-      message,
-      { ...category, action: category.actionBrowser },
-      destination
-    );
-  }
+  response.endpoint = category.endpointDevice;
+  response.body.JSON = constructPayload(
+    message,
+    { ...category, action: category.actionDevice },
+    destination
+  );
+  response.userId = message.userId;
+  response.headers = {
+    "Content-Type": "application/json",
+    api_key: destination.Config.apiKey
+  };
+  return response;
+}
 
+function responseBuilderPushWeb(message, category, destination) {
+  const response = defaultRequestConfig();
+  response.endpoint = category.endpointDevice;
+  response.body.JSON = constructPayload(
+    message,
+    { ...category, action: category.actionBrowser },
+    destination
+  );
   response.userId = message.userId;
   response.headers = {
     "Content-Type": "application/json",
@@ -268,17 +274,19 @@ function processSingleMessage(message, destination) {
   }
   const response = responseBuilderSimple(message, category, destination);
 
-  if (
-    (message.type === EventType.IDENTIFY &&
-      message.context.device &&
-      message.context.device.token) ||
-    (message.context.os && message.context.os.token)
-  ) {
-    return [
-      response,
-      responseBuilderSimpleForIdentify(message, category, destination)
-    ];
+  if (message.type === EventType.IDENTIFY) {
+    if (message.context.device && message.context.device.token) {
+      return [
+        response,
+        responseBuilderPushDevice(message, category, destination)
+      ];
+    }
+
+    if (message.context.os && message.context.os.token) {
+      return [response, responseBuilderPushWeb(message, category, destination)];
+    }
   }
+
   logger.debug("No token present thus device/browser not mapped with user");
 
   return response;

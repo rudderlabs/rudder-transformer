@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-bitwise */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
@@ -17,32 +20,21 @@ const {
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  /* console.log(SF_TOKEN_REQUEST_URL +
-      "?username=" +
-      destination.Config.userName +
-      "&password=" +
-      encodeURIComponent(destination.Config.password) +
-      encodeURIComponent(destination.Config.initialAccessToken) +
-      "&client_id=" +
-      //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
-      "&client_secret=" +
-      //destination.Config.consumerSecret +
-      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
-      "&grant_type=password"); */
-
+  const {
+    userName,
+    password,
+    initialAccessToken,
+    consumerKey,
+    consumerSecret
+  } = destination.Config;
   const response = await axios.post(
-    `${SF_TOKEN_REQUEST_URL}?username=${
-      destination.Config.userName
-    }&password=${encodeURIComponent(
-      destination.Config.password
-    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-      destination.Config.consumerKey
-      // '3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
-    }&client_secret=${
-      destination.Config.consumerSecret
-      // 'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
-    }&grant_type=password`,
+    `${SF_TOKEN_REQUEST_URL}
+    ?username=${userName}
+    &password=
+    ${encodeURIComponent(password)}${encodeURIComponent(initialAccessToken)}
+    &client_id=${consumerKey}
+    &client_secret=${consumerSecret}
+    &grant_type=password`,
     {}
   );
 
@@ -112,10 +104,10 @@ async function responseBuilderSimple(
     rawPayload['FirstName'] = 'n/a'
   */
 
-  if (!rawPayload.LastName || rawPayload.LastName.trim() == "")
+  if (!rawPayload.LastName || rawPayload.LastName.trim() === "")
     rawPayload.LastName = "n/a";
 
-  if (!rawPayload.Company || rawPayload.Company.trim() == "")
+  if (!rawPayload.Company || rawPayload.Company.trim() === "")
     rawPayload.Company = "n/a";
 
   // Remove keys with undefined values
@@ -128,9 +120,9 @@ async function responseBuilderSimple(
   const customKeys = Object.keys(message.context.traits);
   customKeys.forEach(key => {
     const keyPath = `context.traits.${key}`;
-    mappingJsonKeys = Object.keys(mappingJson);
+    const mappingJsonKeys = Object.keys(mappingJson);
     if (
-      !mappingJsonKeys.some(function(k) {
+      !mappingJsonKeys.some(k => {
         return ~k.indexOf(keyPath);
       }) &&
       !(keyPath in ignoreMapJson)
@@ -145,7 +137,6 @@ async function responseBuilderSimple(
     "Content-Type": "application/json",
     Authorization: authorizationData[0]
   };
-  // console.log(response);
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -205,22 +196,18 @@ async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, destination);
-    // console.log(response);
   } else {
     response = {
       statusCode: 400,
       error: `message type ${message.type} is not supported`
     };
   }
-  // console.log(response);
   return response;
 }
 
 async function process(event) {
-  // console.log(JSON.stringify(event));
-  // console.log('==')
-  //   console.log(processSingleMessage(event.message, event.destination))
-  return await processSingleMessage(event.message, event.destination);
+  const response = await processSingleMessage(event.message, event.destination);
+  return response;
 }
 
 exports.process = process;

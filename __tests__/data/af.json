@@ -1,0 +1,206 @@
+[
+  {
+    "input": {
+      "message": {
+        "userProperties": { "test_key": "test value" },
+        "destination_props": { "AF": { "af_uid": "afUid" } },
+        "userId": "12345",
+        "integrations": { "All": true },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "page": {
+            "url": "",
+            "path": "",
+            "search": "",
+            "title": "",
+            "referrer": ""
+          },
+          "traits": {
+            "anonymousId": "12345",
+            "email": "testhubspot2@email.com",
+            "name": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+        "type": "identify",
+        "originalTimestamp": "2019-10-15T09:35:31.288Z",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" }
+      }
+    },
+    "output": [{ "error": "message type not supported", "statusCode": 400 }]
+  },
+  {
+    "input": {
+      "message": {
+        "destination_props": { "AF": { "af_uid": "afUid" } },
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": { "All": true },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "anonymousId": "12345",
+            "email": "testhubspot2@email.com",
+            "name": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+        "type": "page",
+        "properties": {
+          "url": "",
+          "path": "",
+          "search": "",
+          "title": "",
+          "referrer": ""
+        },
+        "originalTimestamp": "2019-10-15T09:35:31.289Z",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "page",
+            "eventValue": {
+              "url": "",
+              "path": "",
+              "search": "",
+              "referrer": "",
+              "title": ""
+            },
+            "appsflyer_id": "afUid",
+            "af_events_api": "true"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "authentication": "ef1d42390426e3f7c90ac78272e74344",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "destination_props": { "AF": { "af_uid": "afUid" } },
+        "userId": "12345",
+        "properties": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin, system_user"
+        },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "testhubspot2@email.com",
+            "name": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+        "type": "track",
+        "event": "test track event HS",
+        "originalTimestamp": "2019-10-15T09:35:31.291Z",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "test track event hs",
+            "eventValue": {
+              "user_actual_id": 12345,
+              "user_actual_role": "system_admin, system_user"
+            },
+            "appsflyer_id": "afUid",
+            "af_events_api": "true"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "authentication": "ef1d42390426e3f7c90ac78272e74344",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  }
+]

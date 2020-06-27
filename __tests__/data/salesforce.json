@@ -1,0 +1,110 @@
+[
+  {
+    "input": {
+      "message": {
+        "request_ip": "14.98.244.60",
+        "timestamp": "2020-01-27T17:50:57.109+05:30",
+        "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-27T17:50:58.657+05:30",
+        "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+        "channel": "web",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "rating": "Hot",
+            "name": "Peter Gibbons",
+            "title": "VP of Derp",
+            "company": "Initech",
+            "phone": "570-690-4150",
+            "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+            "address": {
+              "postalCode": "94115",
+              "city": "east greenwich",
+              "state": "California",
+              "street": "19123 forest lane",
+              "country": "USA"
+            },
+            "email": "peter.gibbons@initech.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "f19c35da-e9de-4c6e-b6e5-9e60cccc12c8",
+        "type": "identify",
+        "originalTimestamp": "2020-01-27T12:20:55.301Z",
+        "sentAt": "2020-01-27T12:20:56.849Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "Config": {
+          "userName": "sampathvinayak1453@gmail.com",
+          "password": "hJCR557#uzFfD",
+          "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5"
+        },
+        "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+        "DestinationDefinition": {
+          "DisplayName": "Salesforce",
+          "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+          "Name": "SALESFORCE"
+        },
+        "Name": "tst"
+      },
+      "metadata": {
+        "sourceId": "1TETvz9qpoy0DNzVQwUbvD7uKth",
+        "destinationType": "SALESFORCE",
+        "jobId": 1,
+        "destinationId": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+        "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+        "messageId": "f19c35da-e9de-4c6e-b6e5-9e60cccc12c8"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "Rating": "Hot",
+            "FirstName": "Peter",
+            "Title": "VP of Derp",
+            "LastName": "Gibbons",
+            "Company": "Initech",
+            "City": "east greenwich",
+            "Phone": "570-690-4150",
+            "State": "California",
+            "Street": "19123 forest lane",
+            "Country": "USA",
+            "PostalCode": "94115",
+            "Email": "peter.gibbons@initech.com"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+        "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  }
+]

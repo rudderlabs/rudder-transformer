@@ -70,7 +70,6 @@ async function handleDest(ctx, destHandler) {
         );
       } catch (error) {
         logger.error(error);
-
         respList.push({
           output: {
             statusCode: 400,

@@ -50,27 +50,28 @@ function createSingleMessageBasicStructure(message) {
 function stringToHash(string) {
   let hash = 0;
 
-  if (string.length == 0) return hash;
+  if (string.length === 0) return hash;
 
-  for (i = 0; i < string.length; i++) {
-    char = string.charCodeAt(i);
+  for (let i = 0; i < string.length; i += 1) {
+    const char = string.charCodeAt(i);
+    // eslint-disable-next-line no-bitwise
     hash = (hash << 5) - hash + char;
+    // eslint-disable-next-line no-bitwise
     hash &= hash;
   }
 
   return Math.abs(hash);
 }
 
-function fixSessionId(payload) {
-  payload.session_id = payload.session_id
-    ? stringToHash(payload.session_id)
-    : -1;
+function getParsedSessionId(payload) {
+  return payload.session_id ? stringToHash(payload.session_id) : -1;
 }
 
-function fixVersion(payload, message) {
+function getParsedVersion(message) {
   if (message.context.library.name.includes("android")) {
-    payload.app_version = message.context.app.version;
+    return message.context.app.version;
   }
+  return message.context.app.build;
 }
 
 function addMinIdlength() {
@@ -79,7 +80,6 @@ function addMinIdlength() {
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
-
 function responseBuilderSimple(
   rootElementName,
   message,
@@ -98,7 +98,7 @@ function responseBuilderSimple(
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  const endpoint = ENDPOINT; // evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT; // identify on same endpoint also works
+  const endpoint = ENDPOINT;
 
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
@@ -122,19 +122,19 @@ function responseBuilderSimple(
   // send user_id only when present, for anonymous users not required
   if (
     message.userId &&
-    message.userId != "" &&
-    message.userId != "null" &&
+    message.userId !== "" &&
+    message.userId !== "null" &&
     message.userId != null
   ) {
     rawPayload.user_id = message.userId;
   }
 
   const payload = removeUndefinedValues(rawPayload);
-  fixSessionId(payload);
-  fixVersion(payload, message);
+  payload.session_id = getParsedSessionId(payload);
+  payload.app_version = getParsedVersion(message);
+
   payload.ip = getParsedIP(message);
 
-  // console.log(payload);
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -219,7 +219,6 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      console.log("could not determine type");
       throw new Error("message type not supported");
   }
 
@@ -263,7 +262,7 @@ function processTransaction(message) {
   return [];
 }
 
-function process(event) {
+function handleEvent(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -277,10 +276,10 @@ function process(event) {
     toSendEvents.push(processProductListAction(message));
   } else if (
     messageType === EventType.TRACK &&
-    (eventType == Event.CHECKOUT_STARTED.name ||
-      eventType == Event.ORDER_UPDATED.name ||
-      eventType == Event.ORDER_COMPLETED.name ||
-      eventType == Event.ORDER_CANCELLED.name)
+    (eventType === Event.CHECKOUT_STARTED.name ||
+      eventType === Event.ORDER_UPDATED.name ||
+      eventType === Event.ORDER_COMPLETED.name ||
+      eventType === Event.ORDER_CANCELLED.name)
   ) {
     toSendEvents.push(processTransaction(message));
   } else {
@@ -296,5 +295,16 @@ function process(event) {
   });
   return respList;
 }
+
+const process = event => {
+  try {
+    return handleEvent(event);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
 

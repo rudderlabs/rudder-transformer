@@ -4,7 +4,6 @@
   "destination_props.Fb.application_tracking_enabled": "application_tracking_enabled",
   "context.device.advertiser_id": "advertiser_id",
   "context.app.namespace": "extinfo.1",
-  "context.app.build": "extinfo.2",
   "context.app.build": "extinfo.3",
   "context.os.version": "extinfo.4",
   "context.device.model": "extinfo.5",

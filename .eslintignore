@@ -2,3 +2,5 @@ __tests__/*
 __mocks__/*
 logger.js
 build.js
+# NEED TO HANDLE KISSMETRICS
+v0/destinations/kissmetrics/transform.js

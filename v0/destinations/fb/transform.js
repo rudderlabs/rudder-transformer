@@ -15,11 +15,6 @@ const {
   eventPropsToPathMapping
 } = require("./config");
 
-const funcMap = {
-  integer: parseInt,
-  float: parseFloat
-};
-
 const extInfoArray = ["", "", 0, 0, "", "", "", "", "", 0, 0, 0.0, 0, 0, 0];
 const userProps = [
   "ud[em]",
@@ -33,15 +28,18 @@ const userProps = [
   "ud[zp]"
 ];
 
-function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
+function sanityCheckPayloadForTypesAndModifications(event) {
+  const updatedEvent = event;
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
   set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
 
   let num = Number(updatedEvent.advertiser_tracking_enabled);
-  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : `${num}`;
+  updatedEvent.advertiser_tracking_enabled = Number.isNaN(num) ? "0" : `${num}`;
   num = Number(updatedEvent.application_tracking_enabled);
-  updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : `${num}`;
+  updatedEvent.application_tracking_enabled = Number.isNaN(num)
+    ? "0"
+    : `${num}`;
 
   userProps.forEach(prop => {
     switch (prop) {
@@ -93,6 +91,8 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 
   // Event type required by fb
   updatedEvent.event = "CUSTOM_APP_EVENTS";
+
+  return updatedEvent;
 }
 
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
@@ -118,8 +118,8 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           updatedEvent.custom_events[0][fbEventPath][length] =
             intendValue || "";
 
-          length++;
-          count--;
+          length += 1;
+          count -= 1;
         }
       } else {
         rudderEventPath = eventPropsToPathMapping[k];
@@ -136,14 +136,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
 }
 
 function responseBuilderSimple(message, payload, destination) {
-  const requestConfig = {
-    requestFormat: "FORM",
-    requestMethod: "POST"
-  };
-
   const { appID } = destination.Config;
-
-  // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
 
   const endpoint = `https://graph.facebook.com/v3.3/${appID}/activities`;
 
@@ -163,22 +156,23 @@ function buildBaseEvent(message) {
   baseEvent.custom_events = [{}];
 
   baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
-  let extInfoIdx;
   Object.keys(baseMapping).forEach(k => {
     const inputVal = get(message, k);
     const splits = baseMapping[k].split(".");
     if (splits.length > 1 && splits[0] === "extinfo") {
-      extInfoIdx = splits[1];
+      const extInfoIdx = splits[1];
       let outputVal;
       switch (typeof extInfoArray[extInfoIdx]) {
         case "number":
           if (extInfoIdx === 11) {
             // density
             outputVal = parseFloat(inputVal);
-            outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
+            outputVal = Number.isNaN(outputVal)
+              ? undefined
+              : outputVal.toFixed(2);
           } else {
             outputVal = parseInt(inputVal, 10);
-            outputVal = isNaN(outputVal) ? undefined : outputVal;
+            outputVal = Number.isNaN(outputVal) ? undefined : outputVal;
           }
           break;
 
@@ -224,15 +218,17 @@ function processSingleMessage(message, destination) {
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     default:
-      console.log("could not determine type");
       return {
         statusCode: 400,
         error: "message type not supported"
       };
   }
 
-  sanityCheckPayloadForTypesAndModifications(updatedEvent);
-  return responseBuilderSimple(message, updatedEvent, destination);
+  return responseBuilderSimple(
+    message,
+    sanityCheckPayloadForTypesAndModifications(updatedEvent),
+    destination
+  );
 }
 
 function process(event) {

@@ -80,7 +80,7 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
-    if (message.context.traits.createdAt) {
+    if (message.context.traits && message.context.traits.createdAt) {
       set(
         rawPayload,
         "created_at",
@@ -174,7 +174,8 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName = `Viewed ${message.event || message.properties.name} Screen`;
+      evName = `Viewed ${message.event ||
+        (message.properties && message.properties.name)} Screen`;
       break;
     case EventType.TRACK:
       evType = "event";

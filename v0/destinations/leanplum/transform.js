@@ -15,30 +15,25 @@ const {
 } = require("../util");
 
 function setValues(payload, message, mappingJson) {
-  if (Array.isArray(mappingJson)) {
+  mappingJson.forEach(mapping => {
     let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index += 1) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new Error(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
+    const { sourceKeys } = mapping;
+    for (let index = 0; index < sourceKeys.length; index += 1) {
+      val = get(message, sourceKeys[index]);
+      if (val) {
+        break;
       }
-    });
-  }
+    }
+
+    if (val) {
+      set(payload, mapping.destKey, val);
+    } else if (mapping.required) {
+      throw new Error(
+        `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+      );
+    }
+  });
+
   return payload;
 }
 
@@ -52,7 +47,7 @@ function constructPayload(message, name, destination) {
 
   rawPayload = setValues(rawPayload, message, mappingJson);
 
-  if (rawPayload.newUserId === "") {
+  if (!rawPayload.newUserId || rawPayload.newUserId === "") {
     delete rawPayload.newUserId;
   }
 
@@ -81,7 +76,7 @@ function responseBuilderSimple(message, category, destination) {
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.userId || message.anonymousId;
   response.body.JSON = constructPayload(message, category.name, destination);
   response.params = {
     action: category.action
@@ -95,13 +90,9 @@ function startSession(message, destination) {
 }
 
 function processSingleMessage(message, destination) {
-  if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
-  }
-  const messageType = message.type.toLowerCase();
   let category;
 
-  switch (messageType) {
+  switch (message.type) {
     case EventType.PAGE:
       category = ConfigCategory.PAGE;
       break;
@@ -122,7 +113,7 @@ function processSingleMessage(message, destination) {
   const response = responseBuilderSimple(message, category, destination);
 
   // all event types except idetify requires startSession
-  if (messageType !== EventType.IDENTIFY) {
+  if (message.type !== EventType.IDENTIFY) {
     return [startSession(message, destination), response];
   }
 
@@ -135,7 +126,7 @@ const process = event => {
   } catch (error) {
     return {
       statusCode: 400,
-      error: error.message || "Unkown error"
+      error: `${error.message}`
     };
   }
 };

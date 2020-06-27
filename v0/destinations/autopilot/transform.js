@@ -111,11 +111,18 @@ function getDestinationKeys(destination) {
   return autoPilotConfig;
 }
 
-function process(event) {
-  const autoPilotConfig = getDestinationKeys(event.destination);
-  // TODO: Implement to accept multiple triggerId's.
-  const properties = getTransformedJSON(event.message);
-  return responseBuilder(properties, event.message, autoPilotConfig);
-}
+const process = event => {
+  try {
+    const autoPilotConfig = getDestinationKeys(event.destination);
+    // TODO: Implement to accept multiple triggerId's.
+    const properties = getTransformedJSON(event.message);
+    return responseBuilder(properties, event.message, autoPilotConfig);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

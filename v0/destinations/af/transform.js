@@ -143,7 +143,6 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
-      // throw new Error("message type not supported");
       return { statusCode: 400, error: "message type not supported" };
   }
   return responseBuilderSimple(payload, message, destination);

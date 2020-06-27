@@ -129,14 +129,15 @@ function processSingleMessage(message, destination) {
   return response;
 }
 
-function process(event) {
-  let response;
+const process = event => {
   try {
-    response = processSingleMessage(event.message, event.destination);
+    return processSingleMessage(event.message, event.destination);
   } catch (error) {
-    response = { statusCode: 400, message: error.message || "Unknown error" };
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
   }
-  return response;
-}
+};
 
 exports.process = process;

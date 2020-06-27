@@ -113,12 +113,15 @@ function processMessage(message, destination) {
 }
 
 // process message
-async function process(event) {
-  const result = processMessage(event.message, event.destination);
-  if (!result.statusCode) {
-    result.statusCode = 200;
+const process = event => {
+  try {
+    return processMessage(event.message, event.destination);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
   }
-  return result;
-}
+};
 
 exports.process = process;

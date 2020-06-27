@@ -422,10 +422,17 @@ async function processSingleMessage(event) {
   }
 }
 
-async function process(event) {
-  endPoint = `https://${event.destination.Config.domain}.zendesk.com/api/v2/`;
-  const resp = await processSingleMessage(event);
-  return resp;
-}
+const process = async event => {
+  try {
+    endPoint = `https://${event.destination.Config.domain}.zendesk.com/api/v2/`;
+    const resp = await processSingleMessage(event);
+    return resp;
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

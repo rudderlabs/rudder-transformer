@@ -287,7 +287,7 @@ function processAlias(message, destination) {
   return buildResponse(message, properties, endpoint);
 }
 
-function process(event) {
+function handleEvent(event) {
   const respList = [];
   let response;
   let responses;
@@ -328,5 +328,16 @@ function process(event) {
 
   return respList;
 }
+
+const process = event => {
+  try {
+    return handleEvent(event);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

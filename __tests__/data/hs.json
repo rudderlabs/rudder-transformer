@@ -1,0 +1,197 @@
+[
+  {
+    "input": {
+      "message": {
+        "userId": "12345",
+        "integrations": { "All": true },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "page": {
+            "url": "",
+            "path": "",
+            "search": "",
+            "title": "",
+            "referrer": ""
+          },
+          "traits": {
+            "anonymousId": "12345",
+            "email": "testhubspot2@email.com",
+            "firstname": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+        "type": "identify",
+        "originalTimestamp": "2019-10-15T09:35:31.288Z",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": {
+          "hubID": "6405167",
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "properties": [
+              { "property": "email", "value": "testhubspot2@email.com" },
+              { "property": "firstname", "value": "Test Hubspot" }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+        "userId": "12345",
+        "headers": { "Content-Type": "application/json" },
+        "version": "1",
+        "params": { "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3" },
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": { "All": true },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "anonymousId": "12345",
+            "email": "testhubspot2@email.com",
+            "firstname": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+        "type": "page",
+        "properties": {
+          "url": "",
+          "path": "",
+          "search": "",
+          "title": "",
+          "referrer": ""
+        },
+        "originalTimestamp": "2019-10-15T09:35:31.289Z",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": {
+          "hubID": "6405167",
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+        }
+      }
+    },
+    "output": [
+      {
+        "error": "message type page is not supported",
+        "statusCode": 400
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "12345",
+        "properties": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin, system_user"
+        },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "testhubspot2@email.com",
+            "firstname": "Test Hubspot"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+        "type": "track",
+        "event": "test track event HS",
+        "originalTimestamp": "2019-10-15T09:35:31.291Z",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": {
+          "hubID": "6405167",
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+        }
+      }
+    },
+    "output": [
+      {
+        "body": { "XML": {}, "JSON": {}, "FORM": {} },
+        "files": {},
+        "endpoint": "https://track.hubspot.com/v1/event",
+        "userId": "12345",
+        "headers": { "Content-Type": "application/json" },
+        "version": "1",
+        "params": {
+          "firstname": "Test Hubspot",
+          "_n": "test track event HS",
+          "email": "testhubspot2@email.com",
+          "_a": "6405167"
+        },
+        "type": "REST",
+        "method": "GET",
+        "statusCode": 200
+      }
+    ]
+  }
+]

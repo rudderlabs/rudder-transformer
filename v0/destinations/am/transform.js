@@ -262,7 +262,7 @@ function processTransaction(message) {
   return [];
 }
 
-function process(event) {
+function handleEvent(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -295,5 +295,16 @@ function process(event) {
   });
   return respList;
 }
+
+const process = event => {
+  try {
+    return handleEvent(event);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

@@ -263,10 +263,9 @@ function processTrack(message, destination) {
   return buildResponse({ text: resultText }, message, destination);
 }
 
-function process(event) {
+function handleEvent(event) {
   logger.info("=====start=====");
   logger.info(JSON.stringify(event));
-  const respList = [];
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -276,20 +275,28 @@ function process(event) {
     case EventType.IDENTIFY:
       response = processIdentify(message, destination);
       response.statusCode = 200;
-      respList.push(response);
       break;
     case EventType.TRACK:
       response = processTrack(message, destination);
       response.statusCode = 200;
-      respList.push(response);
       break;
     default:
       logger.debug("Message type not supported");
       throw new Error("Message type not supported");
   }
-  logger.info(JSON.stringify(respList));
-  logger.info("=====end======");
-  return respList;
+
+  return response;
 }
+
+const process = event => {
+  try {
+    return handleEvent(event);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: error.message || "Unkown error"
+    };
+  }
+};
 
 exports.process = process;

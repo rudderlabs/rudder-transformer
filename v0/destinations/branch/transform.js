@@ -77,7 +77,7 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
 
   let valFound = false;
   const contentItemKeys = Object.keys(category.content_items);
-  for (let index = 0; index < contentItemKeys; index += 1) {
+  for (let index = 0; index < contentItemKeys.length; index += 1) {
     const branchMappingProperty = contentItemKeys[index];
     if (branchMappingProperty === rudderProperty) {
       const tmpKeyName = category.content_items[branchMappingProperty];

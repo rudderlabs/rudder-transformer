@@ -27,10 +27,11 @@ function stringifyJSON(json, whiteListedTraits) {
 // properties.email/traits.email/userId/anonymousId
 function getName(message) {
   const { context, anonymousId, userId } = message;
-  const { traits } = context;
-  const { name, firstName, lastName, username } = traits;
-  let uName = name;
-  if (firstName) {
+  const { name, firstName, lastName, username } = context.traits;
+  let uName;
+  if (name) {
+    uName = name;
+  } else if (firstName) {
     if (lastName) {
       uName = `${firstName} ${lastName}`;
     } else {

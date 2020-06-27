@@ -8,7 +8,7 @@ const {
 } = require("../util");
 const { ENDPOINT } = require("./config");
 
-function addAddons(properties, config) {
+function getAddons(properties, config) {
   const addons = [];
   if (config.ipAddon && properties.request_ip && isIp(properties.request_ip)) {
     addons.push({
@@ -93,7 +93,7 @@ function processTrack(message, destination) {
   // add user-agent
   properties.user_agent = message.context.userAgent;
 
-  properties.keen = addAddons(properties, destination.Config);
+  properties.keen = { addons: getAddons(properties, destination.Config) };
 
   return buildResponse(eventName, { ...message, properties }, destination);
 }

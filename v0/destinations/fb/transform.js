@@ -160,7 +160,7 @@ function buildBaseEvent(message) {
     const inputVal = get(message, k);
     const splits = baseMapping[k].split(".");
     if (splits.length > 1 && splits[0] === "extinfo") {
-      const [, extInfoIdx] = splits[1];
+      const extInfoIdx = splits[1];
       let outputVal;
       switch (typeof extInfoArray[extInfoIdx]) {
         case "number":

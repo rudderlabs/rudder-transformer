@@ -75,8 +75,10 @@ function addContext(payload, message) {
     const value = message.context.app[key];
     updatePayload(key, appKeysMapping, value, customPayload);
   });
-  payload.custom_attributes = customPayload;
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedAndNullValues({
+    ...payload,
+    custom_attributes: customPayload
+  });
 }
 
 function getGroupPayload(message) {

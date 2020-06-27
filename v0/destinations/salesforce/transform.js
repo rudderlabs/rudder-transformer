@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-bitwise */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
@@ -101,10 +104,10 @@ async function responseBuilderSimple(
     rawPayload['FirstName'] = 'n/a'
   */
 
-  if (!rawPayload.LastName || rawPayload.LastName.trim() == "")
+  if (!rawPayload.LastName || rawPayload.LastName.trim() === "")
     rawPayload.LastName = "n/a";
 
-  if (!rawPayload.Company || rawPayload.Company.trim() == "")
+  if (!rawPayload.Company || rawPayload.Company.trim() === "")
     rawPayload.Company = "n/a";
 
   // Remove keys with undefined values

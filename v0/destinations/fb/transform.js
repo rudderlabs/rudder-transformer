@@ -28,15 +28,18 @@ const userProps = [
   "ud[zp]"
 ];
 
-function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
+function sanityCheckPayloadForTypesAndModifications(event) {
+  const updatedEvent = event;
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
   set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
 
   let num = Number(updatedEvent.advertiser_tracking_enabled);
-  updatedEvent.advertiser_tracking_enabled = isNaN(num) ? "0" : `${num}`;
+  updatedEvent.advertiser_tracking_enabled = Number.isNaN(num) ? "0" : `${num}`;
   num = Number(updatedEvent.application_tracking_enabled);
-  updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : `${num}`;
+  updatedEvent.application_tracking_enabled = Number.isNaN(num)
+    ? "0"
+    : `${num}`;
 
   userProps.forEach(prop => {
     switch (prop) {
@@ -88,6 +91,8 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 
   // Event type required by fb
   updatedEvent.event = "CUSTOM_APP_EVENTS";
+
+  return updatedEvent;
 }
 
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
@@ -151,22 +156,23 @@ function buildBaseEvent(message) {
   baseEvent.custom_events = [{}];
 
   baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
-  let extInfoIdx;
   Object.keys(baseMapping).forEach(k => {
     const inputVal = get(message, k);
     const splits = baseMapping[k].split(".");
     if (splits.length > 1 && splits[0] === "extinfo") {
-      extInfoIdx = splits[1];
+      const [, extInfoIdx] = splits[1];
       let outputVal;
       switch (typeof extInfoArray[extInfoIdx]) {
         case "number":
           if (extInfoIdx === 11) {
             // density
             outputVal = parseFloat(inputVal);
-            outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
+            outputVal = Number.isNaN(outputVal)
+              ? undefined
+              : outputVal.toFixed(2);
           } else {
             outputVal = parseInt(inputVal, 10);
-            outputVal = isNaN(outputVal) ? undefined : outputVal;
+            outputVal = Number.isNaN(outputVal) ? undefined : outputVal;
           }
           break;
 
@@ -218,8 +224,11 @@ function processSingleMessage(message, destination) {
       };
   }
 
-  sanityCheckPayloadForTypesAndModifications(updatedEvent);
-  return responseBuilderSimple(message, updatedEvent, destination);
+  return responseBuilderSimple(
+    message,
+    sanityCheckPayloadForTypesAndModifications(updatedEvent),
+    destination
+  );
 }
 
 function process(event) {

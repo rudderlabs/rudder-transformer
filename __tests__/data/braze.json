@@ -1,1 +1,521 @@
-[{"input": {"message": {"request_ip": "[::1]:53708", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "originalTimestamp": "2020-01-24T06:29:02.358Z", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312", "type": "page", "properties": {"url": "http://localhost/tests/html/index2.html", "path": "/tests/html/index2.html", "search": "", "referrer": "", "title": ""}, "channel": "web", "sentAt": "2020-01-24T06:29:02.359Z"}, "destination": {"Name": "Braze", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Braze", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "BRAZE"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "BRAZE", "jobId": 1, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"}}, "output": [{"body": {"XML": {}, "JSON": {"attributes": [{"_update_existing_only": false, "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}}], "events": [{"_update_existing_only": false, "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "properties": {"url": "http://localhost/tests/html/index2.html", "path": "/tests/html/index2.html", "search": "", "title": "", "referrer": ""}, "time": "2020-01-24T11:59:02.402+05:30"}]}, "FORM": {}}, "files": {}, "endpoint": "https://rest.fra-01.braze.eu/users/track", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {"Content-Type": "application/json", "Accept": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"request_ip": "[::1]:53709", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "originalTimestamp": "2020-01-24T06:29:02.362Z", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214", "type": "identify", "channel": "web", "sentAt": "2020-01-24T06:29:02.363Z"}, "destination": {"Name": "Braze", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Braze", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "BRAZE"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "BRAZE", "jobId": 2, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214"}}, "output": [{"body": {"XML": {}, "JSON": {"aliases_to_identify": [{"user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}}]}, "FORM": {}}, "files": {}, "endpoint": "https://rest.fra-01.braze.eu/users/identify", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {"Content-Type": "application/json", "Accept": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"attributes": [{"_update_existing_only": false, "city": "Disney", "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "email": "mickey@disney.com"}]}, "FORM": {}}, "files": {}, "endpoint": "https://rest.fra-01.braze.eu/users/track", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {"Content-Type": "application/json", "Accept": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"request_ip": "[::1]:53710", "timestamp": "2020-01-24T11:59:02.403+05:30", "userId": "", "integrations": {"All": true}, "event": "braze revenue test", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7", "type": "track", "properties": {"currency": "USD", "revenue": 50}, "originalTimestamp": "2020-01-24T06:29:02.364Z", "sentAt": "2020-01-24T06:29:02.364Z"}, "destination": {"Name": "Braze", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Braze", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "BRAZE"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "BRAZE", "jobId": 3, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7"}}, "output": [{"body": {"XML": {}, "JSON": {"attributes": [{"_update_existing_only": false, "city": "Disney", "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "email": "mickey@disney.com"}], "events": [{"_update_existing_only": false, "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "properties": {"revenue": 50}, "name": "braze revenue test", "time": "2020-01-24T11:59:02.403+05:30"}]}, "FORM": {}}, "files": {}, "endpoint": "https://rest.fra-01.braze.eu/users/track", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {"Content-Type": "application/json", "Accept": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"request_ip": "[::1]:53712", "timestamp": "2020-01-24T11:59:02.402+05:30", "userId": "", "integrations": {"All": true}, "event": "KM Order Completed", "receivedAt": "2020-01-24T11:59:02.403+05:30", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "channel": "web", "context": {"locale": "en-GB", "ip": "0.0.0.0", "app": {"version": "1.0.5", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.5", "name": "RudderLabs JavaScript SDK"}, "traits": {"city": "Disney", "email": "mickey@disney.com", "firstname": "Mickey", "country": "USA"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a", "type": "track", "properties": {"revenue": 25, "coupon": "hasbros", "subtotal": 22.5, "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "currency": "USD", "discount": 2.5, "affiliation": "Google Store", "products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1, "product_id": "507f1f77bcf86cd799439011"}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "total": 27.5, "order_id": "50314b8e9bcf000000000000"}, "originalTimestamp": "2020-01-24T06:29:02.367Z", "sentAt": "2020-01-24T06:29:02.368Z"}, "destination": {"Name": "Braze", "Enabled": true, "Config": {"useNativeSDK": false, "prefixProperties": true, "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"}, "ID": "1WhcOCGgj9asZu850HvugU2C3Aq", "DestinationDefinition": {"DisplayName": "Braze", "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie", "Name": "BRAZE"}, "Transformations": []}, "metadata": {"sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY", "destinationType": "BRAZE", "jobId": 5, "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq", "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"}}, "output": [{"body": {"XML": {}, "JSON": {"attributes": [{"_update_existing_only": false, "city": "Disney", "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "email": "mickey@disney.com"}], "events": [{"_update_existing_only": false, "user_alias": {"alias_label": "rudder_id", "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}, "properties": {"revenue": 25, "coupon": "hasbros", "order_id": "50314b8e9bcf000000000000", "tax": 2, "shipping": 3, "checkout_id": "fksdjfsdjfisjf9sdfjsd9f", "discount": 2.5, "affiliation": "Google Store", "products": [{"category": "Games", "sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "product_id": "507f1f77bcf86cd799439011", "image_url": "https:///www.example.com/product/path.jpg", "quantity": 1}, {"category": "Games", "sku": "46493-32", "name": "Uno Card Game", "price": 3, "product_id": "505bd76785ebb509fc183733", "quantity": 2}], "total": 27.5, "subtotal": 22.5}, "name": "KM Order Completed", "time": "2020-01-24T11:59:02.402+05:30"}]}, "FORM": {}}, "files": {}, "endpoint": "https://rest.fra-01.braze.eu/users/track", "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "headers": {"Content-Type": "application/json", "Accept": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}]
+[
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53708",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "type": "page",
+        "properties": {
+          "url": "http://localhost/tests/html/index2.html",
+          "path": "/tests/html/index2.html",
+          "search": "",
+          "referrer": "",
+          "title": ""
+        },
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.359Z"
+      },
+      "destination": {
+        "Name": "Braze",
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "BRAZE",
+        "jobId": 1,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "attributes": [
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                }
+              }
+            ],
+            "events": [
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "properties": {
+                  "url": "http://localhost/tests/html/index2.html",
+                  "path": "/tests/html/index2.html",
+                  "search": "",
+                  "title": "",
+                  "referrer": ""
+                },
+                "time": "2020-01-24T11:59:02.402+05:30"
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.fra-01.braze.eu/users/track",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53709",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "originalTimestamp": "2020-01-24T06:29:02.362Z",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2020-01-24T06:29:02.363Z"
+      },
+      "destination": {
+        "Name": "Braze",
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "BRAZE",
+        "jobId": 2,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "aliases_to_identify": [
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                }
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.fra-01.braze.eu/users/identify",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "attributes": [
+              {
+                "_update_existing_only": false,
+                "city": "Disney",
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "email": "mickey@disney.com"
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.fra-01.braze.eu/users/track",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53710",
+        "timestamp": "2020-01-24T11:59:02.403+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "event": "braze revenue test",
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+        "type": "track",
+        "properties": { "currency": "USD", "revenue": 50 },
+        "originalTimestamp": "2020-01-24T06:29:02.364Z",
+        "sentAt": "2020-01-24T06:29:02.364Z"
+      },
+      "destination": {
+        "Name": "Braze",
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "BRAZE",
+        "jobId": 3,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "attributes": [
+              {
+                "_update_existing_only": false,
+                "city": "Disney",
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "email": "mickey@disney.com"
+              }
+            ],
+            "events": [
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "properties": { "revenue": 50 },
+                "name": "braze revenue test",
+                "time": "2020-01-24T11:59:02.403+05:30"
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.fra-01.braze.eu/users/track",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53712",
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "userId": "",
+        "integrations": { "All": true },
+        "event": "KM Order Completed",
+        "receivedAt": "2020-01-24T11:59:02.403+05:30",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.5",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.5",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "city": "Disney",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "country": "USA"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+        "type": "track",
+        "properties": {
+          "revenue": 25,
+          "coupon": "hasbros",
+          "subtotal": 22.5,
+          "tax": 2,
+          "shipping": 3,
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "currency": "USD",
+          "discount": 2.5,
+          "affiliation": "Google Store",
+          "products": [
+            {
+              "category": "Games",
+              "sku": "45790-32",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path",
+              "price": 19,
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "quantity": 1,
+              "product_id": "507f1f77bcf86cd799439011"
+            },
+            {
+              "category": "Games",
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "product_id": "505bd76785ebb509fc183733",
+              "quantity": 2
+            }
+          ],
+          "total": 27.5,
+          "order_id": "50314b8e9bcf000000000000"
+        },
+        "originalTimestamp": "2020-01-24T06:29:02.367Z",
+        "sentAt": "2020-01-24T06:29:02.368Z"
+      },
+      "destination": {
+        "Name": "Braze",
+        "Enabled": true,
+        "Config": {
+          "useNativeSDK": false,
+          "prefixProperties": true,
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        },
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY",
+        "destinationType": "BRAZE",
+        "jobId": 5,
+        "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "attributes": [
+              {
+                "_update_existing_only": false,
+                "city": "Disney",
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "email": "mickey@disney.com"
+              }
+            ],
+            "events": [
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+                },
+                "properties": {
+                  "revenue": 25,
+                  "coupon": "hasbros",
+                  "order_id": "50314b8e9bcf000000000000",
+                  "tax": 2,
+                  "shipping": 3,
+                  "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+                  "discount": 2.5,
+                  "affiliation": "Google Store",
+                  "products": [
+                    {
+                      "category": "Games",
+                      "sku": "45790-32",
+                      "name": "Monopoly: 3rd Edition",
+                      "url": "https://www.example.com/product/path",
+                      "price": 19,
+                      "product_id": "507f1f77bcf86cd799439011",
+                      "image_url": "https:///www.example.com/product/path.jpg",
+                      "quantity": 1
+                    },
+                    {
+                      "category": "Games",
+                      "sku": "46493-32",
+                      "name": "Uno Card Game",
+                      "price": 3,
+                      "product_id": "505bd76785ebb509fc183733",
+                      "quantity": 2
+                    }
+                  ],
+                  "total": 27.5,
+                  "subtotal": 22.5
+                },
+                "name": "KM Order Completed",
+                "time": "2020-01-24T11:59:02.402+05:30"
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.fra-01.braze.eu/users/track",
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  }
+]

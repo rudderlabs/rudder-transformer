@@ -1,1 +1,2501 @@
-[{"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "page", "properties": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": false, "mapToSingleEvent": false, "trackCategorisedPages": true, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "ApplicationLoaded page", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "page", "properties": {"category": "test-category", "search": "", "campaignId": "123456", "url": "", "referrer": "", "title": "", "templateId": "1213458", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": true, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"campaignId": 123456, "userId": "12345", "dataFields": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "campaignId": "123456", "templateId": "1213458", "path": "/abc"}, "eventName": "Loaded a Page", "templateId": 1213458, "email": "sayan@gmail.com", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "page", "properties": {"search": "", "name": "test-name", "title": "", "url": "", "referrer": "", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": false, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": true}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "test-name page", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"search": "", "name": "test-name", "title": "", "url": "", "referrer": "", "path": "/abc"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "page", "properties": {"url": "", "path": "/abc", "search": "", "referrer": "", "title": ""}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "ApplicationLoaded page", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"url": "", "path": "/abc", "search": "", "title": "", "referrer": ""}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "screen", "properties": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": false, "mapToSingleEvent": false, "trackCategorisedPages": true, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "ApplicationLoaded screen", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "screen", "properties": {"category": "test-category", "search": "", "campaignId": "123456", "url": "", "referrer": "", "title": "", "templateId": "1213458", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": true, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"campaignId": 123456, "userId": "12345", "dataFields": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "campaignId": "123456", "templateId": "1213458", "path": "/abc"}, "eventName": "Loaded a Screen", "templateId": 1213458, "email": "sayan@gmail.com", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "screen", "properties": {"search": "", "name": "test-name", "title": "", "url": "", "referrer": "", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": false, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": true}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "test-name screen", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"search": "", "name": "test-name", "title": "", "url": "", "referrer": "", "path": "/abc"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "screen", "properties": {"url": "", "path": "/abc", "search": "", "referrer": "", "title": ""}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "ApplicationLoaded screen", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"url": "", "path": "/abc", "search": "", "title": "", "referrer": ""}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"userId": "123456", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T09:03:17.562Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "ruchira@rudderlabs.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"name": "generic_x86_arm", "token": "some_device_token", "model": "sdk_gphone_x86", "type": "android", "id": "72e528f869711c3d", "manufacturer": "Google"}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "group", "channel": "web", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"error": "Message type not supported", "statusCode": 400}]}, {"input": {"message": {"userId": "123456", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T09:03:17.562Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "ruchira@rudderlabs.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"name": "generic_x86_arm", "token": "some_device_token", "model": "sdk_gphone_x86", "type": "android", "id": "72e528f869711c3d", "manufacturer": "Google"}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "identify", "channel": "web", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"preferUserId": true, "mergeNestedObjects": true, "userId": "123456", "email": "ruchira@rudderlabs.com", "dataFields": {"email": "ruchira@rudderlabs.com"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/update", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"browserToken": "some_device_token", "userId": "123456", "email": "ruchira@rudderlabs.com"}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/registerDeviceToken", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"userId": "123456", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T09:03:17.562Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "ruchira@rudderlabs.com"}, "device": {"model": "sample_device_model", "manufacturer": "sample_device_manufacturer", "type": "ios", "token": "sample_push_token", "name": "sample_device_name"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"name": "generic_x86_arm", "token": "some_device_token", "model": "sdk_gphone_x86", "type": "android", "id": "72e528f869711c3d", "manufacturer": "Google"}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "identify", "channel": "web", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"preferUserId": true, "mergeNestedObjects": true, "userId": "123456", "email": "ruchira@rudderlabs.com", "dataFields": {"email": "ruchira@rudderlabs.com"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/update", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"device": {"applicationName": "sample_device_name", "platform": "APNS", "token": "sample_push_token"}, "preferUserId": true, "userId": "123456", "email": "ruchira@rudderlabs.com"}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/registerDeviceToken", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"userId": "123456", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T09:03:17.562Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "ruchira@rudderlabs.com"}, "device": {"model": "sample_device_model", "manufacturer": "sample_device_manufacturer", "type": "android", "token": "sample_push_token", "name": "sample_device_name"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"name": "generic_x86_arm", "token": "some_device_token", "model": "sdk_gphone_x86", "type": "android", "id": "72e528f869711c3d", "manufacturer": "Google"}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "identify", "channel": "web", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"preferUserId": true, "mergeNestedObjects": true, "userId": "123456", "email": "ruchira@rudderlabs.com", "dataFields": {"email": "ruchira@rudderlabs.com"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/update", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"device": {"applicationName": "sample_device_name", "platform": "GCM", "token": "sample_push_token"}, "preferUserId": true, "userId": "123456", "email": "ruchira@rudderlabs.com"}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/registerDeviceToken", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "product added", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"orderId": 10000, "campaignId": "1", "total": 1000, "products": [{"sku": "45790-32", "category": "cars", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "category": "Cars2", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}], "templateId": "0"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"items": [{"sku": "45790-32", "imageUrl": "https://www.example.com/product/path.jpg", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "id": "507f1f77bcf86cd799439011", "categories": ["cars"], "quantity": 2}, {"sku": "45790-322", "imageUrl": "https://www.example.com/product/path.jpg2", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "price": 192, "id": "507f1f77bcf86cd7994390112", "categories": ["Cars2"], "quantity": 22}], "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/updateCart", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "order completed", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"orderId": 10000, "campaignId": "123456", "total": "1000", "products": [{"sku": "45790-32", "category": "Cars", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": 2}, {"sku": "45790-322", "category": "Cars2", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": "22", "name": "Monopoly: 3rd Edition2"}], "templateId": "1213458"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"campaignId": 123456, "items": [{"sku": "45790-32", "imageUrl": "https://www.example.com/product/path.jpg", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "id": "507f1f77bcf86cd799439011", "categories": ["Cars"], "quantity": 2}, {"sku": "45790-322", "imageUrl": "https://www.example.com/product/path.jpg2", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "price": 192, "id": "507f1f77bcf86cd7994390112", "categories": ["Cars2"], "quantity": 22}], "dataFields": {"orderId": 10000, "templateId": "1213458", "total": "1000", "products": [{"sku": "45790-32", "category": "Cars", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": 2, "name": "Monopoly: 3rd Edition"}, {"sku": "45790-322", "category": "Cars2", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "name": "Monopoly: 3rd Edition2", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": "22"}], "campaignId": "123456"}, "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}, "templateId": 1213458, "total": 1000, "id": "10000", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/trackPurchase", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"userId": "12345", "integrations": {"All": true}, "event": "test track event GA3", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.300Z", "context": {"locale": "en-US", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be", "type": "track", "properties": {"category": "test-category", "user_actual_role": "system_admin, system_user", "campaignId": "1", "user_actual_id": 12345, "templateId": "0"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"campaignId": 1, "userId": "12345", "dataFields": {"category": "test-category", "user_actual_role": "system_admin, system_user", "templateId": "0", "user_actual_id": 12345, "campaignId": "1"}, "eventName": "test track event GA3", "templateId": 0, "email": "sayan@gmail.com", "createdAt": 1571051718300}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "screen", "properties": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": false, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "undefined screen", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "channel": "web", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "page", "properties": {"category": "test-category", "search": "", "title": "", "url": "", "referrer": "", "path": "/abc"}, "originalTimestamp": "2019-10-14T11:15:18.299Z", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Enabled": true, "Config": {"trackNamedPages": false, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackAllPages": false}}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "undefined page", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "product added", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"orderId": 10000, "total": 1000, "products": [{"sku": "45790-32", "category": "cars", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "category": "Cars2", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}]}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"items": [{"sku": "45790-32", "imageUrl": "https://www.example.com/product/path.jpg", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "price": 19, "id": "507f1f77bcf86cd799439011", "categories": ["cars"], "quantity": 2}, {"sku": "45790-322", "imageUrl": "https://www.example.com/product/path.jpg2", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "price": 192, "id": "507f1f77bcf86cd7994390112", "categories": ["Cars2"], "quantity": 22}], "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/updateCart", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "order completed", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"orderId": 10000, "total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}]}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"items": [{"sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "imageUrl": "https://www.example.com/product/path.jpg", "id": "507f1f77bcf86cd799439011", "price": 19, "quantity": 2}, {"sku": "45790-322", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "imageUrl": "https://www.example.com/product/path.jpg2", "id": "507f1f77bcf86cd7994390112", "price": 192, "quantity": 22}], "dataFields": {"orderId": 10000, "total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2", "name": "Monopoly: 3rd Edition"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "name": "Monopoly: 3rd Edition2", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22}]}, "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}, "total": 1000, "id": "10000", "createdAt": 1571051718299}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/trackPurchase", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "order completed", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}]}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"items": [{"sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "imageUrl": "https://www.example.com/product/path.jpg", "id": "507f1f77bcf86cd799439011", "price": 19, "quantity": 2}, {"sku": "45790-322", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "imageUrl": "https://www.example.com/product/path.jpg2", "id": "507f1f77bcf86cd7994390112", "price": 192, "quantity": 22}], "total": 1000, "dataFields": {"total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2", "name": "Monopoly: 3rd Edition"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "name": "Monopoly: 3rd Edition2", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22}]}, "createdAt": 1571051718299, "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/trackPurchase", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "simple track", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}]}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"eventName": "simple track", "userId": "12345", "email": "sayan@gmail.com", "createdAt": 1571051718299, "dataFields": {"total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2", "name": "Monopoly: 3rd Edition"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "name": "Monopoly: 3rd Edition2", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22}]}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/events/track", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "ApplicationLoaded", "userId": "12345", "integrations": {"All": true}, "event": "product added", "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T11:15:18.299Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "sayan@gmail.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71", "type": "track", "properties": {"total": 1000, "products": [{"sku": "45790-32", "product_id": "507f1f77bcf86cd799439011", "url": "https://www.example.com/product/path", "price": "19", "name": "Monopoly: 3rd Edition", "image_url": "https://www.example.com/product/path.jpg", "position": "1", "quantity": "2"}, {"sku": "45790-322", "product_id": "507f1f77bcf86cd7994390112", "url": "https://www.example.com/product/path2", "price": "192", "image_url": "https://www.example.com/product/path.jpg2", "position": "12", "quantity": 22, "name": "Monopoly: 3rd Edition2"}]}, "channel": "web", "sentAt": "2019-10-14T11:15:53.296Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"items": [{"sku": "45790-32", "name": "Monopoly: 3rd Edition", "url": "https://www.example.com/product/path", "imageUrl": "https://www.example.com/product/path.jpg", "id": "507f1f77bcf86cd799439011", "price": 19, "quantity": 2}, {"sku": "45790-322", "name": "Monopoly: 3rd Edition2", "url": "https://www.example.com/product/path2", "imageUrl": "https://www.example.com/product/path.jpg2", "id": "507f1f77bcf86cd7994390112", "price": 192, "quantity": 22}], "user": {"preferUserId": true, "mergeNestedObjects": true, "userId": "12345", "email": "sayan@gmail.com", "dataFields": {"email": "sayan@gmail.com"}}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/commerce/updateCart", "userId": "12345", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"userId": "123456", "integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "originalTimestamp": "2019-10-14T09:03:17.562Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"email": "ruchira@rudderlabs.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"model": "sdk_gphone_x86", "manufacturer": "Google", "type": "android", "name": "generic_x86_arm", "id": "72e528f869711c3d"}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "identify", "channel": "web", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"trackAllPages": true, "mapToSingleEvent": false, "trackCategorisedPages": false, "apiKey": "12345", "trackNamedPages": false}, "Enabled": true}}, "output": [{"body": {"XML": {}, "JSON": {"preferUserId": true, "mergeNestedObjects": true, "userId": "123456", "email": "ruchira@rudderlabs.com", "dataFields": {"email": "ruchira@rudderlabs.com"}}, "FORM": {}}, "files": {}, "endpoint": "https://api.iterable.com/api/users/update", "userId": "123456", "headers": {"api_key": "12345", "Content-Type": "application/json"}, "version": "1", "params": {}, "type": "REST", "method": "POST"}]}]
+[
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "page",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": true,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "ApplicationLoaded page",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "category": "test-category",
+              "search": "",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "path": "/abc"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "page",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "campaignId": "123456",
+          "url": "",
+          "referrer": "",
+          "title": "",
+          "templateId": "1213458",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": true,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "campaignId": 123456,
+            "userId": "12345",
+            "dataFields": {
+              "category": "test-category",
+              "search": "",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "campaignId": "123456",
+              "templateId": "1213458",
+              "path": "/abc"
+            },
+            "eventName": "Loaded a Page",
+            "templateId": 1213458,
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "page",
+        "properties": {
+          "search": "",
+          "name": "test-name",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": true
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "test-name page",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "search": "",
+              "name": "test-name",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "path": "/abc"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "page",
+        "properties": {
+          "url": "",
+          "path": "/abc",
+          "search": "",
+          "referrer": "",
+          "title": ""
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "ApplicationLoaded page",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "url": "",
+              "path": "/abc",
+              "search": "",
+              "title": "",
+              "referrer": ""
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "screen",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": true,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "ApplicationLoaded screen",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "category": "test-category",
+              "search": "",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "path": "/abc"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "screen",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "campaignId": "123456",
+          "url": "",
+          "referrer": "",
+          "title": "",
+          "templateId": "1213458",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": true,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "campaignId": 123456,
+            "userId": "12345",
+            "dataFields": {
+              "category": "test-category",
+              "search": "",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "campaignId": "123456",
+              "templateId": "1213458",
+              "path": "/abc"
+            },
+            "eventName": "Loaded a Screen",
+            "templateId": 1213458,
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "screen",
+        "properties": {
+          "search": "",
+          "name": "test-name",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": true
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "test-name screen",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "search": "",
+              "name": "test-name",
+              "title": "",
+              "url": "",
+              "referrer": "",
+              "path": "/abc"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "screen",
+        "properties": {
+          "url": "",
+          "path": "/abc",
+          "search": "",
+          "referrer": "",
+          "title": ""
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "ApplicationLoaded screen",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "url": "",
+              "path": "/abc",
+              "search": "",
+              "title": "",
+              "referrer": ""
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "123456",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "name": "generic_x86_arm",
+            "token": "some_device_token",
+            "model": "sdk_gphone_x86",
+            "type": "android",
+            "id": "72e528f869711c3d",
+            "manufacturer": "Google"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "group",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "error": "Message type not supported",
+        "statusCode": 400
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "123456",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "name": "generic_x86_arm",
+            "token": "some_device_token",
+            "model": "sdk_gphone_x86",
+            "type": "android",
+            "id": "72e528f869711c3d",
+            "manufacturer": "Google"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "preferUserId": true,
+            "mergeNestedObjects": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com",
+            "dataFields": {
+              "email": "ruchira@rudderlabs.com"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/update",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "browserToken": "some_device_token",
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "123456",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "device": {
+            "model": "sample_device_model",
+            "manufacturer": "sample_device_manufacturer",
+            "type": "ios",
+            "token": "sample_push_token",
+            "name": "sample_device_name"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "name": "generic_x86_arm",
+            "token": "some_device_token",
+            "model": "sdk_gphone_x86",
+            "type": "android",
+            "id": "72e528f869711c3d",
+            "manufacturer": "Google"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "preferUserId": true,
+            "mergeNestedObjects": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com",
+            "dataFields": {
+              "email": "ruchira@rudderlabs.com"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/update",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "device": {
+              "applicationName": "sample_device_name",
+              "platform": "APNS",
+              "token": "sample_push_token"
+            },
+            "preferUserId": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "123456",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "device": {
+            "model": "sample_device_model",
+            "manufacturer": "sample_device_manufacturer",
+            "type": "android",
+            "token": "sample_push_token",
+            "name": "sample_device_name"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "name": "generic_x86_arm",
+            "token": "some_device_token",
+            "model": "sdk_gphone_x86",
+            "type": "android",
+            "id": "72e528f869711c3d",
+            "manufacturer": "Google"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "preferUserId": true,
+            "mergeNestedObjects": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com",
+            "dataFields": {
+              "email": "ruchira@rudderlabs.com"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/update",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "device": {
+              "applicationName": "sample_device_name",
+              "platform": "GCM",
+              "token": "sample_push_token"
+            },
+            "preferUserId": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "product added",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "orderId": 10000,
+          "campaignId": "1",
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "category": "cars",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "category": "Cars2",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ],
+          "templateId": "0"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "items": [
+              {
+                "sku": "45790-32",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "price": 19,
+                "id": "507f1f77bcf86cd799439011",
+                "categories": ["cars"],
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "price": 192,
+                "id": "507f1f77bcf86cd7994390112",
+                "categories": ["Cars2"],
+                "quantity": 22
+              }
+            ],
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "order completed",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "orderId": 10000,
+          "campaignId": "123456",
+          "total": "1000",
+          "products": [
+            {
+              "sku": "45790-32",
+              "category": "Cars",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": 2
+            },
+            {
+              "sku": "45790-322",
+              "category": "Cars2",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": "22",
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ],
+          "templateId": "1213458"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "campaignId": 123456,
+            "items": [
+              {
+                "sku": "45790-32",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "price": 19,
+                "id": "507f1f77bcf86cd799439011",
+                "categories": ["Cars"],
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "price": 192,
+                "id": "507f1f77bcf86cd7994390112",
+                "categories": ["Cars2"],
+                "quantity": 22
+              }
+            ],
+            "dataFields": {
+              "orderId": 10000,
+              "templateId": "1213458",
+              "total": "1000",
+              "products": [
+                {
+                  "sku": "45790-32",
+                  "category": "Cars",
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "url": "https://www.example.com/product/path",
+                  "price": "19",
+                  "image_url": "https://www.example.com/product/path.jpg",
+                  "position": "1",
+                  "quantity": 2,
+                  "name": "Monopoly: 3rd Edition"
+                },
+                {
+                  "sku": "45790-322",
+                  "category": "Cars2",
+                  "product_id": "507f1f77bcf86cd7994390112",
+                  "url": "https://www.example.com/product/path2",
+                  "price": "192",
+                  "name": "Monopoly: 3rd Edition2",
+                  "image_url": "https://www.example.com/product/path.jpg2",
+                  "position": "12",
+                  "quantity": "22"
+                }
+              ],
+              "campaignId": "123456"
+            },
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            },
+            "templateId": 1213458,
+            "total": 1000,
+            "id": "10000",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "test track event GA3",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.300Z",
+        "context": {
+          "locale": "en-US",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "type": "track",
+        "properties": {
+          "category": "test-category",
+          "user_actual_role": "system_admin, system_user",
+          "campaignId": "1",
+          "user_actual_id": 12345,
+          "templateId": "0"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "campaignId": 1,
+            "userId": "12345",
+            "dataFields": {
+              "category": "test-category",
+              "user_actual_role": "system_admin, system_user",
+              "templateId": "0",
+              "user_actual_id": 12345,
+              "campaignId": "1"
+            },
+            "eventName": "test track event GA3",
+            "templateId": 0,
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718300
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "screen",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "undefined screen",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "channel": "web",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "page",
+        "properties": {
+          "category": "test-category",
+          "search": "",
+          "title": "",
+          "url": "",
+          "referrer": "",
+          "path": "/abc"
+        },
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Enabled": true,
+        "Config": {
+          "trackNamedPages": false,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackAllPages": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "undefined page",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "product added",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "orderId": 10000,
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "category": "cars",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "category": "Cars2",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ]
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "items": [
+              {
+                "sku": "45790-32",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "price": 19,
+                "id": "507f1f77bcf86cd799439011",
+                "categories": ["cars"],
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "price": 192,
+                "id": "507f1f77bcf86cd7994390112",
+                "categories": ["Cars2"],
+                "quantity": 22
+              }
+            ],
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "order completed",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "orderId": 10000,
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ]
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "items": [
+              {
+                "sku": "45790-32",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "id": "507f1f77bcf86cd799439011",
+                "price": 19,
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "id": "507f1f77bcf86cd7994390112",
+                "price": 192,
+                "quantity": 22
+              }
+            ],
+            "dataFields": {
+              "orderId": 10000,
+              "total": 1000,
+              "products": [
+                {
+                  "sku": "45790-32",
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "url": "https://www.example.com/product/path",
+                  "price": "19",
+                  "image_url": "https://www.example.com/product/path.jpg",
+                  "position": "1",
+                  "quantity": "2",
+                  "name": "Monopoly: 3rd Edition"
+                },
+                {
+                  "sku": "45790-322",
+                  "product_id": "507f1f77bcf86cd7994390112",
+                  "url": "https://www.example.com/product/path2",
+                  "price": "192",
+                  "name": "Monopoly: 3rd Edition2",
+                  "image_url": "https://www.example.com/product/path.jpg2",
+                  "position": "12",
+                  "quantity": 22
+                }
+              ]
+            },
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            },
+            "total": 1000,
+            "id": "10000",
+            "createdAt": 1571051718299
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "order completed",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ]
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "items": [
+              {
+                "sku": "45790-32",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "id": "507f1f77bcf86cd799439011",
+                "price": 19,
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "id": "507f1f77bcf86cd7994390112",
+                "price": 192,
+                "quantity": 22
+              }
+            ],
+            "total": 1000,
+            "dataFields": {
+              "total": 1000,
+              "products": [
+                {
+                  "sku": "45790-32",
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "url": "https://www.example.com/product/path",
+                  "price": "19",
+                  "image_url": "https://www.example.com/product/path.jpg",
+                  "position": "1",
+                  "quantity": "2",
+                  "name": "Monopoly: 3rd Edition"
+                },
+                {
+                  "sku": "45790-322",
+                  "product_id": "507f1f77bcf86cd7994390112",
+                  "url": "https://www.example.com/product/path2",
+                  "price": "192",
+                  "name": "Monopoly: 3rd Edition2",
+                  "image_url": "https://www.example.com/product/path.jpg2",
+                  "position": "12",
+                  "quantity": 22
+                }
+              ]
+            },
+            "createdAt": 1571051718299,
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "simple track",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ]
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "eventName": "simple track",
+            "userId": "12345",
+            "email": "sayan@gmail.com",
+            "createdAt": 1571051718299,
+            "dataFields": {
+              "total": 1000,
+              "products": [
+                {
+                  "sku": "45790-32",
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "url": "https://www.example.com/product/path",
+                  "price": "19",
+                  "image_url": "https://www.example.com/product/path.jpg",
+                  "position": "1",
+                  "quantity": "2",
+                  "name": "Monopoly: 3rd Edition"
+                },
+                {
+                  "sku": "45790-322",
+                  "product_id": "507f1f77bcf86cd7994390112",
+                  "url": "https://www.example.com/product/path2",
+                  "price": "192",
+                  "name": "Monopoly: 3rd Edition2",
+                  "image_url": "https://www.example.com/product/path.jpg2",
+                  "position": "12",
+                  "quantity": 22
+                }
+              ]
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/events/track",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "ApplicationLoaded",
+        "userId": "12345",
+        "integrations": {
+          "All": true
+        },
+        "event": "product added",
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "sayan@gmail.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "type": "track",
+        "properties": {
+          "total": 1000,
+          "products": [
+            {
+              "sku": "45790-32",
+              "product_id": "507f1f77bcf86cd799439011",
+              "url": "https://www.example.com/product/path",
+              "price": "19",
+              "name": "Monopoly: 3rd Edition",
+              "image_url": "https://www.example.com/product/path.jpg",
+              "position": "1",
+              "quantity": "2"
+            },
+            {
+              "sku": "45790-322",
+              "product_id": "507f1f77bcf86cd7994390112",
+              "url": "https://www.example.com/product/path2",
+              "price": "192",
+              "image_url": "https://www.example.com/product/path.jpg2",
+              "position": "12",
+              "quantity": 22,
+              "name": "Monopoly: 3rd Edition2"
+            }
+          ]
+        },
+        "channel": "web",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "items": [
+              {
+                "sku": "45790-32",
+                "name": "Monopoly: 3rd Edition",
+                "url": "https://www.example.com/product/path",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "id": "507f1f77bcf86cd799439011",
+                "price": 19,
+                "quantity": 2
+              },
+              {
+                "sku": "45790-322",
+                "name": "Monopoly: 3rd Edition2",
+                "url": "https://www.example.com/product/path2",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "id": "507f1f77bcf86cd7994390112",
+                "price": 192,
+                "quantity": 22
+              }
+            ],
+            "user": {
+              "preferUserId": true,
+              "mergeNestedObjects": true,
+              "userId": "12345",
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              }
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+        "userId": "12345",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "123456",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "model": "sdk_gphone_x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "name": "generic_x86_arm",
+            "id": "72e528f869711c3d"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackAllPages": true,
+          "mapToSingleEvent": false,
+          "trackCategorisedPages": false,
+          "apiKey": "12345",
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "preferUserId": true,
+            "mergeNestedObjects": true,
+            "userId": "123456",
+            "email": "ruchira@rudderlabs.com",
+            "dataFields": {
+              "email": "ruchira@rudderlabs.com"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.iterable.com/api/users/update",
+        "userId": "123456",
+        "headers": {
+          "api_key": "12345",
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  }
+]

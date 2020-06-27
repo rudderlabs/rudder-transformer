@@ -47,23 +47,31 @@ function buildResponse(message, properties, endpoint) {
 }
 
 function setAliasObjectWithAnonId(payload, message) {
-  payload.user_alias = {
-    alias_name: message.anonymousId,
-    alias_label: "rudder_id"
+  return {
+    ...payload,
+    user_alias: {
+      alias_name: message.anonymousId,
+      alias_label: "rudder_id"
+    }
   };
-  return payload;
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) payload.external_id = message.userId;
+  if (message.userId) {
+    return { ...payload, external_id: message.userId };
+  }
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
-  if (message.userId) return setExternalId(payload, message);
+  if (message.userId) {
+    return setExternalId(payload, message);
+  }
 
-  payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObjectWithAnonId(
+    { ...payload, _update_existing_only: false },
+    message
+  );
 }
 
 function getIdentifyPayload(message) {
@@ -112,12 +120,10 @@ function getUserAttributesObject(message, mappingJson) {
     "push_subscribe"
   ];
   if (message.context && message.context.traits) {
-    reserved.forEach(element => {
-      delete message.context.traits[element];
-    });
-
     Object.keys(message.context.traits).forEach(key => {
-      data[key] = message.context.traits[key];
+      if (!reserved.includes(key)) {
+        data[key] = message.context.traits[key];
+      }
     });
   }
 
@@ -125,8 +131,7 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function appendApiKey(payload, destination) {
-  payload.api_key = destination.Config.restApiKey;
-  return payload;
+  return { ...payload, api_key: destination.Config.restApiKey };
 }
 
 function processIdentify(message, destination) {
@@ -159,16 +164,17 @@ function handleReservedProperties(props) {
     "currency"
   ];
 
-  reserved.forEach(element => {
-    delete props[element];
+  const updatedProps = {};
+  Object.keys(props).forEach(key => {
+    if (!reserved.includes(key)) {
+      updatedProps[key] = props[key];
+    }
   });
-  return props;
+  return updatedProps;
 }
 
 function addMandatoryEventProperties(payload, message) {
-  payload.name = message.event;
-  payload.time = message.timestamp;
-  return payload;
+  return { ...payload, name: message.event, time: message.timestamp };
 }
 
 function addMandatoryPurchaseProperties(
@@ -179,12 +185,14 @@ function addMandatoryPurchaseProperties(
   quantity,
   timestamp
 ) {
-  payload.price = price;
-  payload.product_id = productId;
-  payload.currency = currencyCode;
-  payload.quantity = quantity;
-  payload.time = timestamp;
-  return payload;
+  return {
+    ...payload,
+    price,
+    quantity,
+    product_id: productId,
+    currency: currencyCode,
+    time: timestamp
+  };
 }
 
 function getPurchaseObjs(message) {
@@ -221,10 +229,7 @@ function getPurchaseObjs(message) {
 function processTrackEvent(messageType, message, destination, mappingJson) {
   const eventName = message.event;
 
-  if (!message.properties) {
-    message.properties = {};
-  }
-  let { properties } = message;
+  let properties = message.properties || {};
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
   attributePayload = setExternalIdOrAliasObject(attributePayload, message);
@@ -233,7 +238,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     messageType === EventType.TRACK &&
     eventName.toLowerCase() === "order completed"
   ) {
-    purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message);
 
     // del used properties
     delete properties.products;
@@ -274,7 +279,6 @@ function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  // console.log(JSON.stringify(message, null, 4));
 
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";

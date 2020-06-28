@@ -18,9 +18,13 @@ test(`${name} Tests`, async () => {
   const expectedData = JSON.parse(outputDataFile);
 
   for (const [index, value] of inputData.entries()) {
-    const output = await transformer.process(value);
-    output.headers.Authorization = "";
-    expectedData[index].headers.Authorization = "";
-    expect(output).toEqual(expectedData[index]);
+    try {
+      const output = await transformer.process(value);
+      output.headers.Authorization = "";
+      expectedData[index].headers.Authorization = "";
+      expect(output).toEqual(expectedData[index]);
+    } catch (error) {
+      expect(error.message).toEqual(expectedData[index].message);
+    }
   }
 });

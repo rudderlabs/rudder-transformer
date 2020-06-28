@@ -1,6 +1,5 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
-const _ = require("lodash");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 
 async function runUserTransform(events, code, eventsMetadata) {
@@ -17,7 +16,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async function(resolve, ...args) {
+    new ivm.Reference(async (resolve, ...args) => {
       try {
         const res = await fetch(...args);
         const data = await res.json();
@@ -34,14 +33,14 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(function(...args) {
+    new ivm.Reference(() => {
       // console.log("Log: ", ...args);
     })
   );
 
   jail.setSync(
     "_metadata",
-    new ivm.Reference(function(...args) {
+    new ivm.Reference((...args) => {
       const eventMetadata = eventsMetadata[args[0].messageId] || {};
       return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
@@ -133,6 +132,8 @@ async function runUserTransform(events, code, eventsMetadata) {
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get("transform");
+  // TODO : check if we can resolve this
+  // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
       transferIn: true
@@ -149,7 +150,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   });
   let result;
   try {
-    const timeoutPromise = new Promise((resolve, reject) => {
+    const timeoutPromise = new Promise(resolve => {
       const wait = setTimeout(() => {
         clearTimeout(wait);
         resolve("Timedout");
@@ -169,43 +170,22 @@ async function runUserTransform(events, code, eventsMetadata) {
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
-    // add metadata from first event to all custom transformed events since all events will have same session_id
-    // and job_id is not applicable after events are custom_transformed
-    const { metadata } = events && events[0];
-    if (metadata) metadata.custom_transformed = true;
-    try {
-      const res = await getTransformationCode(versionId);
-      if (res) {
-        // Events contain message and destination. We take the message part of event and run transformation on it.
-        // And put back the destination after transforrmation
-        const { destination } = events && events[0];
-        const eventMessages = events.map(event => event.message);
-        const eventsMetadata = {};
-        events.forEach(function(ev) {
-          eventsMetadata[ev.message.messageId] = ev.metadata;
-        });
+    const res = await getTransformationCode(versionId);
+    if (res) {
+      // Events contain message and destination. We take the message part of event and run transformation on it.
+      // And put back the destination after transforrmation
+      const eventMessages = events.map(event => event.message);
+      const eventsMetadata = {};
+      events.forEach(ev => {
+        eventsMetadata[ev.message.messageId] = ev.metadata;
+      });
 
-        const userTransformedEvents = await runUserTransform(
-          eventMessages,
-          res.code,
-          eventsMetadata
-        );
-        const formattedEvents = userTransformedEvents.map(e => ({
-          message: e,
-          destination,
-          metadata
-        }));
-        return formattedEvents;
-      }
-    } catch (error) {
-      // console.log(error);
-      return [
-        {
-          statusCode: 400,
-          error: error.message,
-          metadata
-        }
-      ];
+      const userTransformedEvents = await runUserTransform(
+        eventMessages,
+        res.code,
+        eventsMetadata
+      );
+      return userTransformedEvents;
     }
   }
   return events;

@@ -1,4 +1,5 @@
 const get = require("get-value");
+const _ = require("lodash");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
@@ -10,12 +11,11 @@ const whScreenConfigJson = require("./config/WHScreenConfig.json");
 const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
-
 const isObject = value => {
   const type = typeof value;
   return (
     value != null &&
-    (type == "object" || type == "function") &&
+    (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
 };
@@ -70,7 +70,7 @@ const rudderCreatedTables = [
 ];
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
-    name = `_${name}`;
+    return `_${name}`;
   }
   return name;
 }
@@ -79,7 +79,7 @@ function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
-      datatype = getDataType(val, options);
+      const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
@@ -115,11 +115,11 @@ function setFromProperties(
       if (val === null || val === undefined) {
         return;
       }
-      datatype = getDataType(val, options);
+      const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      safeKey = utils.transformColumnName(prefix + key);
+      let safeKey = utils.transformColumnName(prefix + key);
       if (safeKey != "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
         resp[safeKey] = val;
@@ -289,7 +289,7 @@ function processWarehouseMessage(message, options) {
         columns: getColumns(options.provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
-      usersResponse = { metadata: usersMetadata };
+      const usersResponse = { metadata: usersMetadata };
       if (_.toString(message.userId).trim() !== "") {
         usersResponse.data = usersEvent;
       }

@@ -71,11 +71,7 @@ async function process(event) {
           });
           property[keyField[k]] = event.message[mappedFields];
         } else {
-          payload = {
-            statusCode: 400,
-            error: `Mapped Field ${mappedFields} not found`
-          };
-          return payload;
+          throw new Error(`Mapped Field ${mappedFields} not found`);
         }
       }
     }

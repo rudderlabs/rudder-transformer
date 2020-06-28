@@ -9,7 +9,7 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(val, options) {
-  if (options.RSAlterStringToText === "true") {
+  if (options.rsAlterStringToText === "true") {
     if (val && val.length > RSStringLimit) {
       return "text"
     }
@@ -18,10 +18,10 @@ function getDataTypeOverride(val, options) {
 }
 
 function process(event) {
-  const schemaVersion = event.request.query.whSchemaVersion || "v1";
-  const RSAlterStringToText = event.request.query.RSAlterStringToText || "false";
+  const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
+  const rsAlterStringToText = event.request.query.rsAlterStringToText || "false";
   const provider = redshift
-  return processSingleMessage(event.message, { schemaVersion, getDataTypeOverride, provider, RSAlterStringToText });
+  return processSingleMessage(event.message, { whSchemaVersion, getDataTypeOverride, provider, rsAlterStringToText });
 }
 
 exports.process = process;

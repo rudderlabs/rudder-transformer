@@ -32,5 +32,5 @@
     "userId": "sampath",
     "statusCode": 200
   },
-  { "statusCode": 400, "error": "message type not supported" }
+  { "statusCode": 400, "message": "message type not supported" }
 ]

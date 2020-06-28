@@ -1,9 +1,12 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 
 const versions = ["v0"];
+const API_VERSION = "1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -51,34 +54,39 @@ async function handleDest(ctx, destHandler) {
   await Promise.all(
     events.map(async event => {
       try {
-        event.request = { query: reqParams };
-        let respEvents = await destHandler.process(event);
+        const parsedEvent = event;
+        parsedEvent.request = { query: reqParams };
+        let respEvents = await destHandler.process(parsedEvent);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }
         respList.push(
           ...respEvents.map(ev => {
-            if (ev.statusCode !== 400 && ev.userId) {
-              ev.userId += "";
+            let { userId } = ev;
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
             }
-            return { output: ev, metadata: event.metadata };
+            return {
+              output: { ...ev, userId },
+              metadata: event.metadata,
+              statusCode: 200
+            };
           })
         );
       } catch (error) {
         logger.error(error);
 
         respList.push({
-          output: {
-            statusCode: 400,
-            error: error.message || "Error occurred while processing payload."
-          },
-          metadata: event.metadata
+          metadata: event.metadata,
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
         });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
 }
 
 if (startDestTransformer) {
@@ -98,7 +106,7 @@ if (startDestTransformer) {
   });
 
   if (functionsEnabled()) {
-    router.post("/customTransform", async (ctx, next) => {
+    router.post("/customTransform", async ctx => {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
@@ -115,12 +123,26 @@ if (startDestTransformer) {
       const transformedEvents = [];
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+          logger.debug(`dest: ${dest}`);
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&
             destEvents[0].destination.Transformations &&
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
+
+          const messageIds = destEvents.map(
+            ev => ev.metadata && ev.metadata.messageId
+          );
+          const commonMetadata = {
+            sourceId: destEvents[0].metadata && destEvents[0].metadata.sourceId,
+            destinationId:
+              destEvents[0].metadata && destEvents[0].metadata.destinationId,
+            destinationType:
+              destEvents[0].metadata && destEvents[0].metadata.destinationType,
+            messageIds
+          };
+
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
@@ -128,34 +150,38 @@ if (startDestTransformer) {
                 destEvents,
                 transformationVersionId
               );
+
+              transformedEvents.push(
+                ...destTransformedEvents.map(ev => {
+                  return {
+                    output: ev,
+                    metadata: commonMetadata,
+                    statusCode: 200
+                  };
+                })
+              );
             } catch (error) {
               logger.error(error);
-              destTransformedEvents = [
-                // add metadata from first event since all events will have same session_id
-                // and session_id along with dest_id, dest_type are used to handle failures in case of custom transformations
-                {
-                  statusCode: 400,
-                  error: error.message,
-                  metadata: destEvents[0].metadata
-                }
-              ];
+              transformedEvents.push({
+                statusCode: 400,
+                error: error.message,
+                metadata: commonMetadata
+              });
             }
-            transformedEvents.push(
-              ...destTransformedEvents.map(ev => {
-                return { output: ev, metadata: destEvents[0].metadata };
-              })
-            );
           } else {
-            transformedEvents.push(
-              ...destEvents.map(ev => {
-                return { output: ev, metadata: destEvents[0].metadata };
-              })
-            );
+            const errorMessage = "Transformation VersionID not found";
+            logger.error(`[CT] ${errorMessage}`);
+            transformedEvents.push({
+              statusCode: 400,
+              error: errorMessage,
+              metadata: commonMetadata
+            });
           }
         })
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.set("apiVersion", API_VERSION);
     });
   }
 }
@@ -187,6 +213,7 @@ async function handleSource(ctx, sourceHandler) {
   );
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
 }
 
 if (startSourceTransformer) {
@@ -202,11 +229,11 @@ if (startSourceTransformer) {
   });
 }
 
-router.get("/version", (ctx, next) => {
+router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
 
-router.get("/health", (ctx, next) => {
+router.get("/health", ctx => {
   ctx.body = "OK";
 });
 

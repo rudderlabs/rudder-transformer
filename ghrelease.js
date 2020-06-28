@@ -1,6 +1,7 @@
 const ghRelease = require("gh-release");
 const homedir = require("os").homedir();
 const fs = require("fs");
+const logger = require("./logger");
 
 // all options have defaults and can be omitted
 const options = {
@@ -20,7 +21,7 @@ options.auth = {
   token
 };
 
-ghRelease(options, function(err, result) {
+ghRelease(options, (err, result) => {
   if (err) throw err;
-  console.log(result); // create release response: https://developer.github.com/v3/repos/releases/#response-4
+  logger.debug(result); // create release response: https://developer.github.com/v3/repos/releases/#response-4
 });

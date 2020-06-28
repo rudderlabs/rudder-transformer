@@ -15,8 +15,10 @@ const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 let hubSpotPropertyMap = {};
 
 function getKey(key) {
-  const re = /\s/g;
-  return key.toLowerCase().replace(re, "_");
+  let modifiedKey = key.toLowerCase();
+  modifiedKey = modifiedKey.replace(/\s/g, "_");
+  modifiedKey = modifiedKey.replace(/\./g, "_");
+  return modifiedKey;
 }
 
 async function getProperties(destination) {
@@ -123,12 +125,7 @@ async function processTrack(message, destination) {
 }
 
 function handleError(message) {
-  // console.log(message);
-  const response = {
-    statusCode: 400,
-    error: message
-  };
-  return response;
+  throw new Error(message);
 }
 
 async function processIdentify(message, destination) {
@@ -162,18 +159,10 @@ async function processSingleMessage(message, destination) {
         response = await processIdentify(message, destination);
         break;
       default:
-        // console.log("message type " + message.type + " is not supported");
-        response = {
-          statusCode: 400,
-          error: `message type ${message.type} is not supported`
-        };
+        throw new Error(`message type ${message.type} is not supported`);
     }
   } catch (e) {
-    // console.log("error occurred while processing payload for HS: ", e);
-    response = {
-      statusCode: 400,
-      error: "error occurred while processing payload."
-    };
+    throw new Error("error occurred while processing payload.");
   }
   return response;
 }

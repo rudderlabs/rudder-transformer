@@ -41,7 +41,7 @@ function responseBuilder(payload, message, intercomConfig) {
       Authorization: `Bearer ${intercomConfig.accessToken}`,
       Accept: "application/json"
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: message.userId || message.anonymousId
   };
 
   return resp;

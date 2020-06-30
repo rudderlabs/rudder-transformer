@@ -29,7 +29,15 @@
         "channel": "web",
         "sentAt": "2019-10-14T09:03:22.563Z"
       },
-      "destination": { "Config": { "trackingID": "abcd" }, "Enabled": true }
+      "destination": {
+        "Config": {
+          "accessToken": "abcd",
+          "appId": "some_app_id",
+          "mobileApiKey": "some_mobile_api_key",
+          "collectContext": true
+        },
+        "Enabled": true
+      }
     },
     "output": [
       {
@@ -41,78 +49,6 @@
         "files": {},
         "endpoint": "https://api.intercom.io/contacts",
         "userId": "123456",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer undefined"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      }
-    ]
-  },
-  {
-    "input": {
-      "message": {
-        "userId": "12345",
-        "integrations": { "All": true },
-        "event": "test track event GA3",
-        "anonymousId": "00000000000000000000000000",
-        "originalTimestamp": "2019-10-14T11:15:18.300Z",
-        "context": {
-          "locale": "en-US",
-          "ip": "0.0.0.0",
-          "app": {
-            "version": "1.0.0",
-            "namespace": "com.rudderlabs.javascript",
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK"
-          },
-          "library": {
-            "version": "1.0.0",
-            "name": "RudderLabs JavaScript SDK"
-          },
-          "traits": { "email": "sayan@gmail.com" },
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-          "os": { "version": "", "name": "" },
-          "screen": { "density": 2 }
-        },
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-        "type": "track",
-        "properties": {
-          "category": "test-category",
-          "user_actual_role": "system_admin, system_user",
-          "user_actual_id": 12345
-        },
-        "channel": "web",
-        "sentAt": "2019-10-14T11:15:53.296Z"
-      },
-      "destination": {
-        "Config": { "trackingID": "UA-149602794-1" },
-        "Enabled": true
-      }
-    },
-    "output": [
-      {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "event_name": "test track event GA3",
-            "created_at": 1571051718,
-            "user_id": "12345",
-            "metadata": {
-              "category": "test-category",
-              "user_actual_role": "system_admin, system_user",
-              "user_actual_id": 12345
-            }
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://api.intercom.io/events",
-        "userId": "12345",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/json",

@@ -122,7 +122,7 @@ function processIdentifyEvents(message, type, destination) {
       event: "$create_alias",
       properties: {
         distinct_id: message.anonymousId,
-        alias: message.userId || message.anonymousId,
+        alias: message.userId,
         token: destination.Config.token
       }
     };

@@ -7,7 +7,6 @@ const {
   defaultPostRequestConfig
 } = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
-const { is } = require("is");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -17,7 +16,11 @@ function getEventTime(message) {
 
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "https://api.mixpanel.com/engage/";
-  if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
+  if (
+    eventType !== EventType.IDENTIFY &&
+    eventType !== EventType.GROUP &&
+    eventType !== "revenue"
+  ) {
     endpoint = "https://api.mixpanel.com/track/";
   }
 
@@ -52,7 +55,7 @@ function processRevenueEvents(message, destination) {
 
 function getEventValueForTrackEvent(message, destination) {
   const properties = {
-    ...message.properties,
+    ...{ ...message.properties, ...message.context.traits },
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -95,15 +98,27 @@ function getTransformedJSON(message, mappingJson) {
 }
 
 function processIdentifyEvents(message, type, destination) {
-  let returnValue = [];
+  const returnValue = [];
+
+  const properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  const parameters = {
+    $set: properties,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId
+  };
+  returnValue.push(responseBuilderSimple(parameters, message, type));
+
   if (message.userId) {
-    const parameters = {
-      $identified_id: message.userId,
-      $anon_id: message.anonymousId,
-      $token: destination.Config.token
+    const trackParameters = {
+      event: "$create_alias",
+      properties: {
+        distinct_id: message.anonymousId,
+        alias: message.userId || message.anonymousId,
+        token: destination.Config.token
+      }
     };
-    let identifyTrackResponse = responseBuilderSimple(
-      parameters,
+    const identifyTrackResponse = responseBuilderSimple(
+      trackParameters,
       message,
       type
     );
@@ -111,19 +126,12 @@ function processIdentifyEvents(message, type, destination) {
     returnValue.push(identifyTrackResponse);
   }
 
-  const properties = getTransformedJSON(message, mPIdentifyConfigJson);
-  const parameters = {
-    $set: properties,
-    $token: destination.Config.token,
-    $distinct_id: message.userId
-  };
-  returnValue.push(responseBuilderSimple(parameters, message, type));
   return returnValue;
 }
 
 function processPageOrScreenEvents(message, type, destination) {
   const properties = {
-    ...message.properties,
+    ...{ ...message.properties, ...message.context.traits },
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -136,9 +144,28 @@ function processPageOrScreenEvents(message, type, destination) {
   return responseBuilderSimple(parameters, message, type);
 }
 
-function processAliasEvents(message, type, destination) {}
+function processAliasEvents(message, type, destination) {
+  const parameters = {
+    event: "$create_alias",
+    properties: {
+      distinct_id: message.previousId,
+      alias: message.userId || message.anonymousId,
+      token: destination.Config.token
+    }
+  };
+  return responseBuilderSimple(parameters, message, type);
+}
 
-function processGroupEvents(message, type, destination) {}
+function processGroupEvents(message, type, destination) {
+  const parameters = {
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+    $set: {
+      $group_id: message.groupId
+    }
+  };
+  return responseBuilderSimple(parameters, message, type);
+}
 
 function processSingleMessage(message, destination) {
   switch (message.type) {

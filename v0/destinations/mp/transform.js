@@ -55,7 +55,8 @@ function processRevenueEvents(message, destination) {
 
 function getEventValueForTrackEvent(message, destination) {
   const properties = {
-    ...{ ...message.properties, ...message.context.traits },
+    ...message.properties,
+    ...message.context.traits,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -140,7 +141,8 @@ function processIdentifyEvents(message, type, destination) {
 
 function processPageOrScreenEvents(message, type, destination) {
   const properties = {
-    ...{ ...message.properties, ...message.context.traits },
+    ...message.properties,
+    ...message.context.traits,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp

@@ -7,6 +7,7 @@ const {
   defaultPostRequestConfig
 } = require("../util");
 const { ConfigCategory, mappingConfig } = require("./config");
+const { is } = require("is");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -94,13 +95,30 @@ function getTransformedJSON(message, mappingJson) {
 }
 
 function processIdentifyEvents(message, type, destination) {
+  let returnValue = [];
+  if (message.userId) {
+    const parameters = {
+      $identified_id: message.userId,
+      $anon_id: message.anonymousId,
+      $token: destination.Config.token
+    };
+    let identifyTrackResponse = responseBuilderSimple(
+      parameters,
+      message,
+      type
+    );
+    identifyTrackResponse.endpoint = "https://api.mixpanel.com/track/";
+    returnValue.push(identifyTrackResponse);
+  }
+
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId
+    $distinct_id: message.userId
   };
-  return responseBuilderSimple(parameters, message, type);
+  returnValue.push(responseBuilderSimple(parameters, message, type));
+  return returnValue;
 }
 
 function processPageOrScreenEvents(message, type, destination) {
@@ -118,6 +136,10 @@ function processPageOrScreenEvents(message, type, destination) {
   return responseBuilderSimple(parameters, message, type);
 }
 
+function processAliasEvents(message, type, destination) {}
+
+function processGroupEvents(message, type, destination) {}
+
 function processSingleMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
@@ -128,6 +150,11 @@ function processSingleMessage(message, destination) {
     }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
+    case EventType.ALIAS:
+      return processAliasEvents(message, message.type, destination);
+    case EventType.GROUP:
+      return processGroupEvents(message, message.type, destination);
+
     default:
       throw new Error("message type not supported");
   }

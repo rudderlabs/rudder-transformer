@@ -159,8 +159,8 @@ function processAliasEvents(message, type, destination) {
   const parameters = {
     event: "$create_alias",
     properties: {
-      distinct_id: message.previousId,
-      alias: message.userId || message.anonymousId,
+      distinct_id: message.previousId || message.anonymousId,
+      alias: message.userId,
       token: destination.Config.token
     }
   };

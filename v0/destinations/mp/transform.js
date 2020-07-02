@@ -168,14 +168,36 @@ function processAliasEvents(message, type, destination) {
 }
 
 function processGroupEvents(message, type, destination) {
-  const parameters = {
-    $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId,
-    $set: {
-      $group_id: message.groupId
-    }
-  };
-  return responseBuilderSimple(parameters, message, type);
+  const returnValue = [];
+  if (destination.Config.groupKey) {
+    const parameters = {
+      $token: destination.Config.token,
+      $distinct_id: message.userId || message.anonymousId,
+      $set: {
+        [destination.Config.groupKey]: [
+          get(message.traits, destination.Config.groupKey)
+        ]
+      }
+    };
+    const response = responseBuilderSimple(parameters, message, type);
+    returnValue.push(response);
+
+    const groupParameters = {
+      $token: destination.Config.token,
+      $group_key: destination.Config.groupKey,
+      $group_id: get(message.traits, destination.Config.groupKey),
+      $set: {
+        ...message.traits
+      }
+    };
+
+    const groupResponse = responseBuilderSimple(groupParameters, message, type);
+    groupResponse.endpoint = "https://api.mixpanel.com/groups/";
+    returnValue.push(groupResponse);
+  } else {
+    throw new Error("config is not supported");
+  }
+  return returnValue;
 }
 
 function processSingleMessage(message, destination) {

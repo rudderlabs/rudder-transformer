@@ -128,7 +128,7 @@ function setFromProperties(
   });
 }
 
-function getColumns(provider, obj, columnTypes) {
+function getColumns(provider, obj, columnTypes = {}) {
   const columns = {};
   const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
@@ -136,6 +136,32 @@ function getColumns(provider, obj, columnTypes) {
     columns[key] = columnTypes[key] || getDataType(obj[key]);
   });
   return columns;
+}
+
+function getMergeRuleEvent(message = {}, utils, provider) {
+  if (message.anonymousId && _.isEmpty(_.toString(message.userId))) {
+    const mergeRule = {
+      [utils.safeColumnName(provider, "merge_property_1_type")]: "anonymous_id",
+      [utils.safeColumnName(
+        provider,
+        "merge_property_1_value"
+      )]: message.anonymousId
+    };
+    const mergeColumns = {
+      [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
+      [utils.safeColumnName(provider, "merge_property_1_value")]: "string"
+    };
+
+    const mergeRulesMetadata = {
+      table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
+      columns: mergeColumns,
+      receivedAt: message.receivedAt,
+      isMergeRule: true,
+      anonymousId: message.anonymousId
+    };
+    return { metadata: mergeRulesMetadata, data: mergeRule };
+  }
+  return null;
 }
 
 function getVersionedUtils(schemaVersion) {
@@ -239,6 +265,12 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         metadata: trackEventMetadata,
         data: trackEvent
       });
+
+      const mergeRuleEvent = getMergeRuleEvent(message, utils, provider);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+
       break;
     }
     case "identify": {
@@ -311,6 +343,35 @@ function processWarehouseMessage(provider, message, schemaVersion) {
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
 
+      const mergeRule = {
+        [utils.safeColumnName(
+          provider,
+          "merge_property_1_type"
+        )]: "anonymous_id",
+        [utils.safeColumnName(
+          provider,
+          "merge_property_1_value"
+        )]: message.anonymousId,
+        [utils.safeColumnName(provider, "merge_property_2_type")]: "user_id",
+        [utils.safeColumnName(
+          provider,
+          "merge_property_2_value"
+        )]: message.userId
+      };
+      const mergeColumns = {
+        [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
+        [utils.safeColumnName(provider, "merge_property_1_value")]: "string",
+        [utils.safeColumnName(provider, "merge_property_2_type")]: "string",
+        [utils.safeColumnName(provider, "merge_property_2_value")]: "string"
+      };
+
+      const mergeRulesMetadata = {
+        table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
+        columns: mergeColumns,
+        receivedAt: message.receivedAt
+      };
+      responses.push({ metadata: mergeRulesMetadata, data: mergeRule });
+
       break;
     }
     case "page":
@@ -367,6 +428,12 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      const mergeRuleEvent = getMergeRuleEvent(message, utils, provider);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+
       break;
     }
     case "group": {
@@ -403,6 +470,12 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      const mergeRuleEvent = getMergeRuleEvent(message, utils, provider);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+
       break;
     }
     case "alias": {
@@ -439,6 +512,33 @@ function processWarehouseMessage(provider, message, schemaVersion) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      const mergeRule = {
+        [utils.safeColumnName(provider, "merge_property_1_type")]: "user_id",
+        [utils.safeColumnName(
+          provider,
+          "merge_property_1_value"
+        )]: message.userId,
+        [utils.safeColumnName(provider, "merge_property_2_type")]: "user_id",
+        [utils.safeColumnName(
+          provider,
+          "merge_property_2_value"
+        )]: message.previousId
+      };
+      const mergeColumns = {
+        [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
+        [utils.safeColumnName(provider, "merge_property_1_value")]: "string",
+        [utils.safeColumnName(provider, "merge_property_2_type")]: "string",
+        [utils.safeColumnName(provider, "merge_property_2_value")]: "string"
+      };
+
+      const mergeRulesMetadata = {
+        table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
+        columns: mergeColumns,
+        receivedAt: message.receivedAt
+      };
+      responses.push({ metadata: mergeRulesMetadata, data: mergeRule });
+
       break;
     }
     default:

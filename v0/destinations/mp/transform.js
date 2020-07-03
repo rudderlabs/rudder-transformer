@@ -118,7 +118,7 @@ function processIdentifyEvents(message, type, destination) {
   };
   returnValue.push(responseBuilderSimple(parameters, message, type));
 
-  if (message.userId) {
+  if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
     /* const trackParameters = {
       event: "$identify",

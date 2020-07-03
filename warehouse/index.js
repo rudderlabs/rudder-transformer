@@ -39,7 +39,7 @@ function validTimestamp(input) {
 //   return new Date(input).getTime() > 0;
 // }
 
-const getDataType = val => {
+const getDataType = (val, options) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -51,6 +51,9 @@ const getDataType = val => {
   }
   if (validTimestamp(val)) {
     return "datetime";
+  }
+  if (options.getDataTypeOverride && typeof options.getDataTypeOverride === "function") {
+    return options.getDataTypeOverride(val, options);
   }
   return "string";
 };
@@ -72,17 +75,16 @@ function excludeRudderCreatedTableNames(name) {
   return name;
 }
 
-function setFromConfig(provider, utils, resp, input, configJson, columnTypes) {
+function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
-      const datatype = getDataType(val);
+      const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
       const prop = configJson[key];
-      const columnName = utils.safeColumnName(provider, prop);
-      // TODO: can we handle it in a different way without modifying the params
+      const columnName = utils.safeColumnName(options.provider, prop);
       resp[columnName] = val;
       columnTypes[columnName] = datatype;
     }
@@ -90,11 +92,11 @@ function setFromConfig(provider, utils, resp, input, configJson, columnTypes) {
 }
 
 function setFromProperties(
-  provider,
   utils,
   resp,
   input,
   columnTypes,
+  options,
   prefix = ""
 ) {
   if (!input) return;
@@ -113,14 +115,13 @@ function setFromProperties(
       if (val === null || val === undefined) {
         return;
       }
-      const datatype = getDataType(val);
+      const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
       let safeKey = utils.transformColumnName(prefix + key);
-      if (safeKey !== "") {
-        safeKey = utils.safeColumnName(provider, safeKey);
-        // TODO: can we handle it in a different way without modifying the params
+      if (safeKey != "") {
+        safeKey = utils.safeColumnName(options.provider, safeKey);
         resp[safeKey] = val;
         columnTypes[safeKey] = datatype;
       }
@@ -133,7 +134,7 @@ function getColumns(provider, obj, columnTypes) {
   const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(obj[key]);
+    columns[key] = columnTypes[key] || getDataType(obj[key], options);
   });
   return columns;
 }
@@ -149,8 +150,8 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
-function processWarehouseMessage(provider, message, schemaVersion) {
-  const utils = getVersionedUtils(schemaVersion);
+function processWarehouseMessage(message, options) {
+  const utils = getVersionedUtils(options.schemaVersion);
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
@@ -159,42 +160,43 @@ function processWarehouseMessage(provider, message, schemaVersion) {
     case "track": {
       const commonProps = {};
       setFromProperties(
-        provider,
         utils,
         commonProps,
         message.context,
         columnTypes,
+        options,
         "context_"
       );
+
       setFromConfig(
-        provider,
         utils,
         commonProps,
         message,
         whTrackConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
       setFromConfig(
-        provider,
         utils,
         commonProps,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
 
       // set event column based on event_text in the tracks table
-      const eventColName = utils.safeColumnName(provider, "event");
+      const eventColName = utils.safeColumnName(options.provider, "event");
       commonProps[eventColName] = utils.transformTableName(
-        commonProps[utils.safeColumnName(provider, "event_text")]
+        commonProps[utils.safeColumnName(options.provider, "event_text")]
       );
       columnTypes[eventColName] = "string";
 
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
-        table: utils.safeTableName(provider, "tracks"),
-        columns: getColumns(provider, tracksEvent, columnTypes),
+        table: utils.safeTableName(options.provider, "tracks"),
+        columns: getColumns(options.provider, tracksEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -206,33 +208,31 @@ function processWarehouseMessage(provider, message, schemaVersion) {
       if (tracksEvent[eventColName] === "") {
         break;
       }
-
       const trackProps = {};
       setFromProperties(
-        provider,
         utils,
         trackProps,
         message.properties,
-        columnTypes
+        columnTypes,
+        options
       );
       setFromProperties(
-        provider,
         utils,
         trackProps,
         message.userProperties,
-        columnTypes
+        columnTypes,
+        options
       );
-
       // always set commonProps last so that they are not overwritten
       const trackEvent = { ...trackProps, ...commonProps };
       const trackEventMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
-            provider,
+            options.provider,
             utils.transformColumnName(trackEvent[eventColName])
           )
         ),
-        columns: getColumns(provider, trackEvent, columnTypes),
+        columns: getColumns(options.provider, trackEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -244,49 +244,49 @@ function processWarehouseMessage(provider, message, schemaVersion) {
     case "identify": {
       const commonProps = {};
       setFromProperties(
-        provider,
         utils,
         commonProps,
         message.userProperties,
-        columnTypes
+        columnTypes,
+        options
       );
       setFromProperties(
-        provider,
         utils,
         commonProps,
         message.context ? message.context.traits : {},
-        columnTypes
+        columnTypes,
+        options
       );
       setFromProperties(
-        provider,
         utils,
         commonProps,
         message.traits,
         columnTypes,
+        options,
         ""
       );
 
       // set context props
       setFromProperties(
-        provider,
         utils,
         commonProps,
         message.context,
         columnTypes,
+        options,
         "context_"
       );
 
       const usersEvent = { ...commonProps };
-      usersEvent[utils.safeColumnName(provider, "id")] = message.userId;
+      usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersEvent[
-        utils.safeColumnName(provider, "received_at")
+        utils.safeColumnName(options.provider, "received_at")
       ] = message.receivedAt
-        ? new Date(message.receivedAt).toISOString()
-        : null;
-      columnTypes[utils.safeColumnName(provider, "received_at")] = "datetime";
+          ? new Date(message.receivedAt).toISOString()
+          : null;
+      columnTypes[utils.safeColumnName(options.provider, "received_at")] = "datetime";
       const usersMetadata = {
-        table: utils.safeTableName(provider, "users"),
-        columns: getColumns(provider, usersEvent, columnTypes),
+        table: utils.safeTableName(options.provider, "users"),
+        columns: getColumns(options.provider, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       const usersResponse = { metadata: usersMetadata };
@@ -297,16 +297,16 @@ function processWarehouseMessage(provider, message, schemaVersion) {
 
       const identifiesEvent = { ...commonProps };
       setFromConfig(
-        provider,
         utils,
         identifiesEvent,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
       const identifiesMetadata = {
-        table: utils.safeTableName(provider, "identifies"),
-        columns: getColumns(provider, identifiesEvent, columnTypes),
+        table: utils.safeTableName(options.provider, "identifies"),
+        columns: getColumns(options.provider, identifiesEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
@@ -317,53 +317,53 @@ function processWarehouseMessage(provider, message, schemaVersion) {
     case "screen": {
       const event = {};
       setFromProperties(
-        provider,
         utils,
         event,
         message.properties,
-        columnTypes
+        columnTypes,
+        options
       );
       // set rudder properties after user set properties to prevent overwriting
       setFromProperties(
-        provider,
         utils,
         event,
         message.context,
         columnTypes,
+        options,
         "context_"
       );
       setFromConfig(
-        provider,
         utils,
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
 
       if (eventType === "page") {
         setFromConfig(
-          provider,
           utils,
           event,
           message,
           whPageConfigJson,
-          columnTypes
+          columnTypes,
+          options
         );
       } else if (eventType === "screen") {
         setFromConfig(
-          provider,
           utils,
           event,
           message,
           whScreenConfigJson,
-          columnTypes
+          columnTypes,
+          options
         );
       }
 
       const metadata = {
-        table: utils.safeTableName(provider, `${eventType}s`),
-        columns: getColumns(provider, event, columnTypes),
+        table: utils.safeTableName(options.provider, `${eventType}s`),
+        columns: getColumns(options.provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
@@ -371,35 +371,35 @@ function processWarehouseMessage(provider, message, schemaVersion) {
     }
     case "group": {
       const event = {};
-      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(event, message.traits, columnTypes, options);
       setFromProperties(
-        provider,
         utils,
         event,
         message.context,
         columnTypes,
+        options,
         "context_"
       );
       setFromConfig(
-        provider,
         utils,
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
       setFromConfig(
-        provider,
         utils,
         event,
         message,
         whGroupConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
 
       const metadata = {
-        table: utils.safeTableName(provider, "groups"),
-        columns: getColumns(provider, event, columnTypes),
+        table: utils.safeTableName(options.provider, "groups"),
+        columns: getColumns(options.provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
@@ -407,35 +407,35 @@ function processWarehouseMessage(provider, message, schemaVersion) {
     }
     case "alias": {
       const event = {};
-      setFromProperties(provider, event, message.traits, columnTypes);
+      setFromProperties(event, message.traits, columnTypes, options);
       setFromProperties(
-        provider,
         utils,
         event,
         message.context,
         columnTypes,
+        options,
         "context_"
       );
       setFromConfig(
-        provider,
         utils,
         event,
         message,
         whDefaultConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
       setFromConfig(
-        provider,
         utils,
         event,
         message,
         whAliasConfigJson,
-        columnTypes
+        columnTypes,
+        options
       );
 
       const metadata = {
-        table: utils.safeTableName(provider, "aliases"),
-        columns: getColumns(provider, event, columnTypes),
+        table: utils.safeTableName(options.provider, "aliases"),
+        columns: getColumns(options.provider, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });

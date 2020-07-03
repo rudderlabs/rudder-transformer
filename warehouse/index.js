@@ -103,11 +103,11 @@ function setFromProperties(
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setFromProperties(
-        provider,
-        utils,
-        resp,
-        input[key],
-        columnTypes,
+          utils,
+          resp,
+          input[key],
+          columnTypes,
+          options,
         `${prefix + key}_`
       );
     } else {
@@ -129,9 +129,9 @@ function setFromProperties(
   });
 }
 
-function getColumns(provider, obj, columnTypes) {
+function getColumns(options, obj, columnTypes) {
   const columns = {};
-  const uuidTS = provider === "snowflake" ? "UUID_TS" : "uuid_ts";
+  const uuidTS = options.provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
   Object.keys(obj).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(obj[key], options);
@@ -196,7 +196,7 @@ function processWarehouseMessage(message, options) {
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: utils.safeTableName(options.provider, "tracks"),
-        columns: getColumns(options.provider, tracksEvent, columnTypes),
+        columns: getColumns(options, tracksEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -232,7 +232,7 @@ function processWarehouseMessage(message, options) {
             utils.transformColumnName(trackEvent[eventColName])
           )
         ),
-        columns: getColumns(options.provider, trackEvent, columnTypes),
+        columns: getColumns(options, trackEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -286,7 +286,7 @@ function processWarehouseMessage(message, options) {
       columnTypes[utils.safeColumnName(options.provider, "received_at")] = "datetime";
       const usersMetadata = {
         table: utils.safeTableName(options.provider, "users"),
-        columns: getColumns(options.provider, usersEvent, columnTypes),
+        columns: getColumns(options, usersEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       const usersResponse = { metadata: usersMetadata };
@@ -306,7 +306,7 @@ function processWarehouseMessage(message, options) {
       );
       const identifiesMetadata = {
         table: utils.safeTableName(options.provider, "identifies"),
-        columns: getColumns(options.provider, identifiesEvent, columnTypes),
+        columns: getColumns(options, identifiesEvent, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
@@ -363,7 +363,7 @@ function processWarehouseMessage(message, options) {
 
       const metadata = {
         table: utils.safeTableName(options.provider, `${eventType}s`),
-        columns: getColumns(options.provider, event, columnTypes),
+        columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
@@ -399,7 +399,7 @@ function processWarehouseMessage(message, options) {
 
       const metadata = {
         table: utils.safeTableName(options.provider, "groups"),
-        columns: getColumns(options.provider, event, columnTypes),
+        columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
@@ -435,7 +435,7 @@ function processWarehouseMessage(message, options) {
 
       const metadata = {
         table: utils.safeTableName(options.provider, "aliases"),
-        columns: getColumns(options.provider, event, columnTypes),
+        columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });

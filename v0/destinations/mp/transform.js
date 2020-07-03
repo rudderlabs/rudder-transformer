@@ -118,12 +118,13 @@ function processIdentifyEvents(message, type, destination) {
   };
   returnValue.push(responseBuilderSimple(parameters, message, type));
 
-  if (message.userId) {
-    const trackParameters = {
-      event: "$create_alias",
+  if (message.userId && destination.Config.apiSecret) {
+    // Use this block when our userids are changed to UUID V4.
+    /* const trackParameters = {
+      event: "$identify",
       properties: {
-        distinct_id: message.anonymousId,
-        alias: message.userId,
+        $identified_id: message.userId,
+        $anon_id: message.anonymousId,
         token: destination.Config.token
       }
     };
@@ -133,6 +134,26 @@ function processIdentifyEvents(message, type, destination) {
       type
     );
     identifyTrackResponse.endpoint = "https://api.mixpanel.com/track/";
+    returnValue.push(identifyTrackResponse); */
+
+    const trackParameters = {
+      event: "$merge",
+      properties: {
+        $distinct_ids: [message.userId, message.anonymousId],
+        token: destination.Config.token
+      }
+    };
+    const identifyTrackResponse = responseBuilderSimple(
+      trackParameters,
+      message,
+      type
+    );
+    identifyTrackResponse.endpoint = "https://api.mixpanel.com/import";
+    identifyTrackResponse.headers = {
+      Authorization: `Basic ${Buffer.from(
+        destination.Config.apiSecret
+      ).toString("base64")}`
+    };
     returnValue.push(identifyTrackResponse);
   }
 

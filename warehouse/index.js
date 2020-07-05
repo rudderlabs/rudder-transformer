@@ -53,7 +53,7 @@ const getDataType = (val, options) => {
     return "datetime";
   }
   if (options.getDataTypeOverride && typeof options.getDataTypeOverride === "function") {
-    return options.getDataTypeOverride(val, options);
+    return options.getDataTypeOverride(val, options)?options.getDataTypeOverride(val, options):"string";
   }
   return "string";
 };
@@ -80,9 +80,7 @@ function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
     let val = get(input, key);
     if (val !== undefined || val !== null) {
       const datatype = getDataType(val, options);
-      if (datatype === "datetime") {
-        val = new Date(val).toISOString();
-      }
+      val = options.getDataOverride(val,datatype)
       const prop = configJson[key];
       const columnName = utils.safeColumnName(options.provider, prop);
       resp[columnName] = val;
@@ -116,9 +114,7 @@ function setFromProperties(
         return;
       }
       const datatype = getDataType(val, options);
-      if (datatype === "datetime") {
-        val = new Date(val).toISOString();
-      }
+      val = options.getDataOverride(val,datatype)
       let safeKey = utils.transformColumnName(prefix + key);
       if (safeKey != "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
@@ -167,7 +163,6 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-
       setFromConfig(
         utils,
         commonProps,

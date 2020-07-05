@@ -17,11 +17,18 @@ function getDataTypeOverride(val, options) {
   return "string"
 }
 
+function getDataOverride(val, datatype) {
+  if (datatype === "datetime") {
+    return new Date(val).toISOString();
+  }
+  return val
+}
+
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const rsAlterStringToText = event.request.query.rsAlterStringToText || "false";
   const provider = redshift
-  return processSingleMessage(event.message, { whSchemaVersion, getDataTypeOverride, provider, rsAlterStringToText });
+  return processSingleMessage(event.message, { whSchemaVersion, getDataTypeOverride, getDataOverride, provider, rsAlterStringToText });
 }
 
 exports.process = process;

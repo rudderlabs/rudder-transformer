@@ -1,8 +1,22 @@
 const { removeUndefinedAndNullValues } = require("../util");
 
+function getResouceList(config) {
+  let resource;
+  const resourceList = [];
+  const key = "arn";
+  if (config) {
+    config.forEach(obj => {
+      resource = obj[key];
+      if (resource) {
+        resourceList.push(resource);
+      }
+    });
+  }
+  return resourceList;
+}
+
 function process(event) {
   // TODO: Use JSON mapping
-  // TODO: remove list in Resources after changing in config be
   let response;
   try {
     if (event.destination && event.destination.Config) {
@@ -10,7 +24,7 @@ function process(event) {
         DetailType: event.destination.Config.detailType,
         Detail: JSON.stringify(event.message),
         EventBusName: event.destination.Config.eventBusName,
-        Resources: [event.destination.Config.resourceID],
+        Resources: getResouceList(event.destination.Config.resourceID),
         Source: "rudderstack"
       };
     } else {

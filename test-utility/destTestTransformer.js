@@ -1,7 +1,7 @@
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
-
 const router = require("./integrationTestRouter");
+const logger = require("./logger");
 
 const PORT = 9090;
 const app = new Koa();
@@ -15,4 +15,4 @@ app.use(
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(PORT);
-console.log(`Listening on Port: ${PORT}`);
+logger.debug(`Listening on Port: ${PORT}`);

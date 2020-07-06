@@ -1,10 +1,10 @@
 const Router = require("koa-router");
 
 const _ = require("lodash");
-const { lstatSync, readdirSync, existsSync, readFileSync } = require("fs");
-const logger = require("./logger");
+const { lstatSync, existsSync, readFileSync } = require("fs");
 const axios = require("axios");
 const set = require("set-value");
+const logger = require("../logger");
 
 require("dotenv").config();
 
@@ -14,59 +14,58 @@ const versions = ["v0"];
 const destination = process.env.DESTINATION;
 const destinationConfigFilePath = process.env.DESTINATION_CONFIG_PATH;
 
-const readFile = (fileName) => {
-    if(existsSync(fileName)) {
-        if(lstatSync(fileName).isFile()) {
-            return readFileSync(fileName, 'utf8');
-        } else {
-            throw new Error(`\'${fileName}\' is not a valid File`);
-        }
-    } else {
-        throw new Error(`Path \'${fileName}\' does not exist`);
+const readFile = fileName => {
+  if (existsSync(fileName)) {
+    if (lstatSync(fileName).isFile()) {
+      return readFileSync(fileName, "utf8");
     }
-};
-
-const getDestinationConfig = () => {
-  try {  
-    config = readFile(destinationConfigFilePath);
-    return JSON.parse(config);
-  } catch(error) {
-    logger.error(`Error while reading file: ${error.message}`);
-    process.exit();
+    throw new Error(`\\'${fileName}\\' is not a valid File`);
+  } else {
+    throw new Error(`Path \\'${fileName}\\' does not exist`);
   }
 };
 
-const getTransformerPayload = (events) => {
-  // const destinationConfig = getDestinationConfig();
+const getDestinationConfig = () => {
+  try {
+    const config = readFile(destinationConfigFilePath);
+    return JSON.parse(config);
+  } catch (error) {
+    logger.error(`Error while reading file: ${error.message}`);
+    process.exit();
+  }
+  return false;
+};
+
+const getTransformerPayload = events => {
+  const destinationConfig = getDestinationConfig();
   events.forEach(event => set(event, "destination.Config", destinationConfig));
   return events;
 };
 
 const getDestHandler = versionedDestination => {
-    return require(`./${versionedDestination}/transform`);
+  return require(`./${versionedDestination}/transform`);
 };
 
-const validateResponse = (response) => {
-  let isValid = true;
-  // add checking
+const validateResponse = () => {
+  const isValid = true;
   return isValid;
 };
 
-const processTransformerResponse = async (transformedJson) => {
+const processTransformerResponse = async transformedJson => {
   const isValidResponse = validateResponse(transformedJson);
-  if(isValidResponse) {
-    let jsonData = transformedJson.output;
-    let requestEndPoint = jsonData.endpoint;
-    let requestMethod = jsonData.method;
-    let requestBody = jsonData.body;
-    let requestQueryParams = jsonData.params;
-    let requestHeaders = jsonData.headers;
+  if (isValidResponse) {
+    const jsonData = transformedJson.output;
+    const requestEndPoint = jsonData.endpoint;
+    const requestMethod = jsonData.method;
+    const requestBody = jsonData.body;
+    const requestQueryParams = jsonData.params;
+    const requestHeaders = jsonData.headers;
     let bodyFormat;
     let bodyValue;
-    
-    for(key in requestBody) {
-      let val = requestBody[key];
-      if(!(_.isEmpty(val))) {
+
+    for (key in requestBody) {
+      const val = requestBody[key];
+      if (!_.isEmpty(val)) {
         bodyFormat = key;
         bodyValue = val;
         break;
@@ -75,38 +74,38 @@ const processTransformerResponse = async (transformedJson) => {
 
     requestHeaders["User-Agent"] = "RudderLabs";
 
-    let axiosRequestConfig = {
+    const axiosRequestConfig = {
       url: requestEndPoint,
       method: requestMethod
     };
-    
-    if(requestHeaders && !(_.isEmpty(requestHeaders))) {
-      axiosRequestConfig["headers"] = requestHeaders;
+
+    if (requestHeaders && !_.isEmpty(requestHeaders)) {
+      axiosRequestConfig.headers = requestHeaders;
     }
 
-    if(requestQueryParams && !(_.isEmpty(requestQueryParams))) {
-      axiosRequestConfig["params"] = requestQueryParams;
+    if (requestQueryParams && !_.isEmpty(requestQueryParams)) {
+      axiosRequestConfig.params = requestQueryParams;
     }
 
-    if(bodyValue) {
-      axiosRequestConfig["data"] = bodyValue;
+    if (bodyValue) {
+      axiosRequestConfig.data = bodyValue;
     }
 
     const response = await axios.request(axiosRequestConfig);
-    
+
     return {
-      status:response.status,
-      headers:response.headers,
-      body:response.data
+      status: response.status,
+      headers: response.headers,
+      body: response.data
     };
   }
 };
 
-const getDestinationResponse = async (respList) => {
+const getDestinationResponse = async respList => {
   const destinationRespList = [];
-  for(let i=0;i<respList.length;i++) {
-    let response = respList[i];
-    if(response.output && response.output.statusCode !== 400) {
+  for (let i = 0; i < respList.length; i++) {
+    const response = respList[i];
+    if (response.output && response.output.statusCode !== 400) {
       destinationRespList.push(await processTransformerResponse(response));
     } else {
       destinationRespList.push(response);
@@ -122,8 +121,8 @@ versions.forEach(version => {
   const destHandler = getDestHandler(versionedDestination);
   router.post(`/${versionedDestination}`, async ctx => {
     const events = getTransformerPayload(ctx.request.body);
-    logger.debug("[DT] Input events: " + JSON.stringify(events));
-    let respList = [];
+    logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+    const respList = [];
     await Promise.all(
       events.map(async event => {
         try {
@@ -133,27 +132,26 @@ versions.forEach(version => {
           }
           respList.push(
             ...respEvents.map(ev => {
-            return { output: ev, metadata: event.metadata };
+              return { output: ev, metadata: event.metadata };
             })
-        );
+          );
         } catch (error) {
           logger.error(error);
 
           respList.push({
             output: {
-            statusCode: 400,
-            error:
-              error.message || "Error occurred while processing payload."
+              statusCode: 400,
+              error: error.message || "Error occurred while processing payload."
             },
             metadata: event.metadata
           });
         }
       })
     );
-    logger.debug("[DT] Output events: " + JSON.stringify(respList));
+    logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
     const destinationRespList = await getDestinationResponse(respList);
     ctx.body = destinationRespList;
-  });  
+  });
 });
 
 module.exports = router;

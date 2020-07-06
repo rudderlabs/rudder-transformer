@@ -12,7 +12,7 @@
     "lint": "eslint . || exit 0",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
     "merge-check": "npm run verify || exit 1; codecov",
-    "testDestination": "node destTestTransformer.js"
+    "testDestination": "node ./test-utility/destTestTransformer.js"
   },
   "precommit": {
     "run": "lint, test"

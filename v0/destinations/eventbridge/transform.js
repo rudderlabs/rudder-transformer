@@ -25,7 +25,8 @@ function process(event) {
         Detail: JSON.stringify(event.message),
         EventBusName: event.destination.Config.eventBusName,
         Resources: getResouceList(event.destination.Config.resourceID),
-        Source: "rudderstack"
+        Source: "rudderstack",
+        userId: event.message.userId || event.message.anonymousId
       };
     } else {
       // return empty object if config is not present or is invalid

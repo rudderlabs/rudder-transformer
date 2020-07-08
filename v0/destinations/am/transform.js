@@ -92,6 +92,11 @@ function responseBuilderSimple(
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
+  
+  if(message.channel == "mobile") {
+    set(rawPayload,"message.context.device.brand",message.context.device.manufacturer);
+  }
+  
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {

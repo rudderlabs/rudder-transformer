@@ -94,7 +94,7 @@ function responseBuilderSimple(
   set(rawPayload, "user_properties", message.userProperties);
   
   if(message.channel == "mobile") {
-    set(rawPayload,"message.context.device.brand",message.context.device.manufacturer);
+    set(rawPayload,"device_brand",message.context.device.manufacturer);
   }
   
 

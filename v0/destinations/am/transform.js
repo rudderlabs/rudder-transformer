@@ -63,7 +63,7 @@ function stringToHash(string) {
 
 function fixSessionId(payload) {
   payload.session_id = payload.session_id
-    ? payload.session_id
+    ? ((payload.session_id).substr((payload.session_id).lastIndexOf(":") + 1 , (payload.session_id).length))
     : -1;
 }
 

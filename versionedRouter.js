@@ -4,6 +4,7 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
+const { even } = require("is");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -188,15 +189,18 @@ if (startDestTransformer) {
 
 async function handleSource(ctx, sourceHandler) {
   const events = ctx.request.body;
+  console.log(events);
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
     events.map(async event => {
       try {
+        console.log(event);
         let respEvents = await sourceHandler.process(event);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }
+        console.log(respEvents);
         respList.push(
           ...respEvents.map(ev => {
             return { output: ev };

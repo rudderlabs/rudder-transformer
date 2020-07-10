@@ -5,7 +5,7 @@ function getDeliveryStreamMapTo(event) {
   const { mapEvents } = config;
   let check = true;
   let deliveryStreamMapFrom;
-  let deliveryStreamMapTo;
+  let deliveryStreamMapTo = null;
   mapEvents.forEach(mapEvent => {
     deliveryStreamMapFrom = mapEvent.from;
     if (deliveryStreamMapFrom === "*") {
@@ -35,12 +35,19 @@ function getDeliveryStreamMapTo(event) {
 }
 
 function process(event) {
-  const result = {
-    message: event.message,
-    userId: event.message.userId || event.message.anonymousId,
-    deliveryStreamMapTo: getDeliveryStreamMapTo(event)
-  };
-  return result;
+  if (getDeliveryStreamMapTo(event) == null) {
+    throw new Error(
+      "No delivery stream set for event",
+      event.message.event || event.message.type
+    );
+  } else {
+    const result = {
+      message: event.message,
+      userId: event.message.userId || event.message.anonymousId,
+      deliveryStreamMapTo: getDeliveryStreamMapTo(event)
+    };
+    return result;
+  }
 }
 
 exports.process = process;

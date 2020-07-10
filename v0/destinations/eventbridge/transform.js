@@ -29,11 +29,11 @@ function process(event) {
         userId: event.message.userId || event.message.anonymousId
       };
     } else {
-      // return empty object if config is not present or is invalid
-      response = {};
+      // drop event if config is empty
+      throw new Error("EventBridge: received empty config, dropping event");
     }
   } catch (error) {
-    throw new Error(error.message || "Unknown error");
+    throw new Error(error.message || "EventBridge: Unknown error");
   }
   return removeUndefinedAndNullValues(response);
 }

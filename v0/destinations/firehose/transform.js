@@ -1,53 +1,21 @@
+const { getHashFromArray } = require("../util");
+
 function getDeliveryStreamMapTo(event) {
-  const config = event.destination.Config;
   const { message } = event;
-
-  const { mapEvents } = config;
-  let check = true;
-  let deliveryStreamMapFrom;
-  let deliveryStreamMapTo = null;
-  mapEvents.forEach(mapEvent => {
-    deliveryStreamMapFrom = mapEvent.from;
-    if (deliveryStreamMapFrom === "*") {
-      check = false;
-      deliveryStreamMapTo = mapEvent.to;
-    }
-  });
-
-  if (check) {
-    mapEvents.forEach(mapEvent => {
-      deliveryStreamMapFrom = mapEvent.from;
-      if (deliveryStreamMapFrom === message.type) {
-        check = false;
-        deliveryStreamMapTo = mapEvent.to;
-      }
-    });
-  }
-  if (check) {
-    mapEvents.forEach(mapEvent => {
-      deliveryStreamMapFrom = mapEvent.from;
-      if (deliveryStreamMapFrom === message.event) {
-        deliveryStreamMapTo = mapEvent.to;
-      }
-    });
-  }
-  return deliveryStreamMapTo;
+  const { mapEvents } = event.destination.Config;
+  const hashMap = getHashFromArray(mapEvents, "from", "to");
+  return hashMap["*"] || hashMap[message.type] || hashMap[message.event];
 }
 
 function process(event) {
-  if (getDeliveryStreamMapTo(event) == null) {
-    throw new Error(
-      "No delivery stream set for event",
-      event.message.event || event.message.type
-    );
-  } else {
-    const result = {
+  const deliveryStreamMapTo = getDeliveryStreamMapTo(event);
+  if (deliveryStreamMapTo) {
+    return {
       message: event.message,
       userId: event.message.userId || event.message.anonymousId,
-      deliveryStreamMapTo: getDeliveryStreamMapTo(event)
+      deliveryStreamMapTo
     };
-    return result;
   }
+  throw new Error("No delivery stream set for this event");
 }
-
 exports.process = process;

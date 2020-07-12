@@ -12,7 +12,9 @@
               "name": "Auth0"
             },
             "request_ip": "47.15.6.58",
-            "user_name": "example@test.com",
+            "traits": {
+              "user_name": "example@test.com"
+            },
             "userAgent": "Chrome Mobile 69.0.3497 / Android 0.0.0"
           },
           "integrations": {
@@ -52,7 +54,9 @@
               "name": "Auth0"
             },
             "request_ip": "47.15.6.58",
-            "user_name": "example@test.com",
+            "traits": {
+              "user_name": "example@test.com"
+            },
             "userAgent": "okhttp 2.7.5 / Other 0.0.0"
           },
           "integrations": {
@@ -90,7 +94,9 @@
               "name": "Auth0"
             },
             "request_ip": "47.15.6.58",
-            "user_name": "example@test.com",
+            "traits": {
+              "user_name": "example@test.com"
+            },
             "userAgent": "Chrome Mobile 69.0.3497 / Android 0.0.0"
           },
           "integrations": {

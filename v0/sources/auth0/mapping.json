@@ -9,6 +9,6 @@
   "ip": "context.request_ip",
   "details.auth.user.email": "context.traits.email",
   "details.auth.user.name": "context.traits.name",
-  "user_name": "context.user_name",
+  "user_name": "context.traits.user_name",
   "user_agent": "context.userAgent"
 }

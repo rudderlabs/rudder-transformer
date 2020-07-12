@@ -4,7 +4,6 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
-const { even } = require("is");
 
 const versions = ["v0"];
 const API_VERSION = "1";

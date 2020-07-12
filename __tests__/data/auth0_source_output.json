@@ -1,0 +1,183 @@
+[
+  {
+    "output": {
+      "batch": [
+        {
+          "context": {
+            "library": {
+              "name": "unknown",
+              "version": "unknown"
+            },
+            "integration": {
+              "name": "Auth0"
+            },
+            "request_ip": "47.15.6.58",
+            "user_name": "arnab+1@rudderlabs.com",
+            "userAgent": "Chrome Mobile 69.0.3497 / Android 0.0.0"
+          },
+          "integrations": {
+            "Auth0": false
+          },
+          "properties": {
+            "client_id": "XhA4vVXy5R43Aj3Pb0exPUdQFUtazBqu",
+            "client_name": "My App",
+            "details": {
+              "prompts": [],
+              "completedAt": 1594366987765,
+              "elapsedTime": null,
+              "session_id": "XRdpUcKYsl3zy2m_UnyuzyR5Iz1tFCmA"
+            },
+            "auth0_client": {
+              "name": "Auth0.Android",
+              "env": {
+                "android": "28"
+              },
+              "version": "1.23.0"
+            },
+            "log_id": "90020200710074313168000804384501091581623602656441270274",
+            "is_mobile": true
+          },
+          "type": "track",
+          "event": "Successful Login",
+          "originalTimestamp": "2020-07-10T07:43:07.766Z",
+          "sentAt": "2020-07-10T07:43:07.766Z"
+        },
+        {
+          "context": {
+            "library": {
+              "name": "unknown",
+              "version": "unknown"
+            },
+            "integration": {
+              "name": "Auth0"
+            },
+            "request_ip": "47.15.6.58",
+            "user_name": "arnab+1@rudderlabs.com",
+            "userAgent": "okhttp 2.7.5 / Other 0.0.0"
+          },
+          "integrations": {
+            "Auth0": false
+          },
+          "properties": {
+            "client_id": "XhA4vVXy5R43Aj3Pb0exPUdQFUtazBqu",
+            "client_name": "My App",
+            "details": {
+              "code": "*************Xst"
+            },
+            "auth0_client": {
+              "name": "Auth0.Android",
+              "env": {
+                "android": "28"
+              },
+              "version": "1.23.0"
+            },
+            "log_id": "90020200710074313168000804384503509433262831914790682626",
+            "is_mobile": false,
+            "description": ""
+          },
+          "type": "track",
+          "event": "seacft",
+          "originalTimestamp": "2020-07-10T07:43:09.620Z",
+          "sentAt": "2020-07-10T07:43:09.620Z"
+        },
+        {
+          "context": {
+            "library": {
+              "name": "unknown",
+              "version": "unknown"
+            },
+            "integration": {
+              "name": "Auth0"
+            },
+            "request_ip": "47.15.6.58",
+            "userAgent": "Chrome 83.0.4103 / Mac OS X 10.15.5"
+          },
+          "integrations": {
+            "Auth0": false
+          },
+          "properties": {
+            "client_id": "s8yESBG5aVBgFPytEnpojFyEfYOhzgv4",
+            "client_name": "",
+            "details": {
+              "request": {
+                "method": "patch",
+                "path": "/api/v2/client-grants/cgr_bfYfKZACmxeI2gt1",
+                "query": {},
+                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+                "body": {
+                  "scope": ["read:logs", "delete:clients"]
+                },
+                "channel": "https://manage.auth0.com/",
+                "ip": "47.15.6.58",
+                "auth": {
+                  "user": {
+                    "user_id": "auth0|5f04b6eeb07e900019eec3b1",
+                    "name": "arnab.compsc@gmail.com",
+                    "email": "arnab.compsc@gmail.com"
+                  },
+                  "strategy": "jwt",
+                  "credentials": {
+                    "jti": "b42049b8e42cff4c1d6b77d49b96b991"
+                  }
+                }
+              },
+              "response": {
+                "statusCode": 200,
+                "body": {
+                  "client_id": "P0838PMtQDd20irYPv5K6roAFd3YJ2On",
+                  "audience": "https://dev-wlw63thz.us.auth0.com/api/v2/",
+                  "scope": ["read:logs", "delete:clients"]
+                }
+              }
+            },
+            "log_id": "90020200710074450968000825066771709014671178281678536722",
+            "is_mobile": false,
+            "description": "Update client grant"
+          },
+          "type": "track",
+          "event": "sapi",
+          "originalTimestamp": "2020-07-10T07:44:45.622Z",
+          "sentAt": "2020-07-10T07:44:45.622Z"
+        },
+        {
+          "context": {
+            "library": {
+              "name": "unknown",
+              "version": "unknown"
+            },
+            "integration": {
+              "name": "Auth0"
+            },
+            "request_ip": "47.15.6.58",
+            "user_name": "arnab+1@rudderlabs.com",
+            "userAgent": "Chrome Mobile 69.0.3497 / Android 0.0.0"
+          },
+          "integrations": {
+            "Auth0": false
+          },
+          "properties": {
+            "client_id": "XhA4vVXy5R43Aj3Pb0exPUdQFUtazBqu",
+            "client_name": "My App",
+            "details": {
+              "prompts": [],
+              "completedAt": 1594366987765,
+              "elapsedTime": null,
+              "session_id": "XRdpUcKYsl3zy2m_UnyuzyR5Iz1tFCmA"
+            },
+            "auth0_client": {
+              "name": "Auth0.Android",
+              "env": {
+                "android": "28"
+              },
+              "version": "1.23.0"
+            },
+            "log_id": "90020200710074313168000804384501091581623602656441270274",
+            "is_mobile": true
+          },
+          "type": "track",
+          "event": "Successful Login"
+        }
+      ]
+    }
+  }
+]

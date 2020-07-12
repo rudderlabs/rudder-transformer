@@ -43,13 +43,14 @@ function process(events) {
     try {
       responses.push(processEvent(event));
     } catch (error) {
-      responses.push({
-        statusCode: 400,
-        error: error.message || "Unknwon error"
-      });
+      // TODO: figure out a way to handle partial failures within batch
+      // responses.push({
+      //   statusCode: 400,
+      //   error: error.message || "Unknwon error"
+      // });
     }
   });
-  return responses;
+  return { batch: responses };
 }
 
 exports.process = process;

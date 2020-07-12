@@ -17,17 +17,17 @@ const eventNameMap = {
 
 function process(event) {
   // support only email status events
-  if (event.object_type != "email") {
+  if (event.object_type !== "email") {
     throw new Error("Only email status events are supported");
   }
 
   const message = new Message(`Customer.io`);
 
   // since only email status events are supported, event type is always track
-  eventType = "track";
+  const eventType = "track";
   message.setEventType(eventType);
 
-  eventName = eventNameMap[event.metric];
+  const eventName = eventNameMap[event.metric];
   if (!eventName) {
     throw new Error("Metric not supported");
   }
@@ -52,7 +52,7 @@ function process(event) {
     }
   }
 
-  return message;
+  return { batch: [message] };
 }
 
 exports.process = process;

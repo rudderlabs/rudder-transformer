@@ -52,7 +52,7 @@ function process(event) {
     }
   }
 
-  return { batch: [message] };
+  return message;
 }
 
 exports.process = process;

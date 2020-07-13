@@ -53,7 +53,7 @@ function process(events) {
   if (responses.length === 0) {
     throw new Error("All requests in the batch failed");
   } else {
-    return { batch: responses };
+    return responses;
   }
 }
 

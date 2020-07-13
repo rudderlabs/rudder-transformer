@@ -41,6 +41,10 @@ function processEvent(event) {
       message.setProperty("sentAt", event.date);
     }
 
+    if (message.context && message.context.traits) {
+      message.userId = message.context.traits.userId;
+    }
+
     return message;
   }
   throw new Error("Unknwon event type from Auth0");

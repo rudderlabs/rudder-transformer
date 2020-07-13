@@ -125,6 +125,13 @@ function formatValue(value) {
   if (!value || value < 0) return 0;
   return Math.round(value);
 }
+function getHashFromArray(arrays, fromKey = "from", toKey = "to") {
+  const hashMap = {};
+  arrays.forEach(array => {
+    hashMap[array[fromKey]] = array[toKey];
+  });
+  return hashMap;
+}
 module.exports = {
   getMappingConfig,
   getDateInFormat,
@@ -140,5 +147,6 @@ module.exports = {
   isPrimitive,
   getParsedIP,
   setValues,
-  formatValue
+  formatValue,
+  getHashFromArray
 };

@@ -50,7 +50,11 @@ function process(events) {
       // });
     }
   });
-  return { batch: responses };
+  if (responses.length === 0) {
+    throw new Error("All requests in the batch failed");
+  } else {
+    return { batch: responses };
+  }
 }
 
 exports.process = process;

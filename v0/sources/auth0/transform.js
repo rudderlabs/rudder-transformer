@@ -6,11 +6,9 @@ const mapping = JSON.parse(
 );
 const Message = require("../message");
 
-const eventNameMap = {
-  s: "Successful Login",
-  ss: "Successful Signup",
-  f: "Failed Login"
-};
+const eventNameMap = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "./eventMapping.json"), "utf-8")
+);
 
 function processEvent(event) {
   const messageType = "track";

@@ -9,7 +9,7 @@ phases:
       - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
-      - VERSION=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///g' | tr "/" .)
+      - VERSION=master
       - ls
       - echo build Docker image on `date`
       - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .

@@ -16,7 +16,11 @@ function getEventTime(message) {
 
 function responseBuilderSimple(parameters, message, eventType) {
   let endpoint = "https://api.mixpanel.com/engage/";
-  if (eventType !== EventType.IDENTIFY && eventType !== "revenue") {
+  if (
+    eventType !== EventType.IDENTIFY &&
+    eventType !== EventType.GROUP &&
+    eventType !== "revenue"
+  ) {
     endpoint = "https://api.mixpanel.com/track/";
   }
 
@@ -52,6 +56,7 @@ function processRevenueEvents(message, destination) {
 function getEventValueForTrackEvent(message, destination) {
   const properties = {
     ...message.properties,
+    ...message.context.traits,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -94,18 +99,71 @@ function getTransformedJSON(message, mappingJson) {
 }
 
 function processIdentifyEvents(message, type, destination) {
+  const returnValue = [];
+
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  const { device } = message.context;
+  if (device && device.token) {
+    if (device.type === "ios") {
+      properties.$ios_devices = [device.token];
+    } else if (device.type === "android") {
+      properties.$android_devices = [device.token];
+    }
+  }
+
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId
   };
-  return responseBuilderSimple(parameters, message, type);
+  returnValue.push(responseBuilderSimple(parameters, message, type));
+
+  if (message.userId && destination.Config.apiSecret) {
+    // Use this block when our userids are changed to UUID V4.
+    /* const trackParameters = {
+      event: "$identify",
+      properties: {
+        $identified_id: message.userId,
+        $anon_id: message.anonymousId,
+        token: destination.Config.token
+      }
+    };
+    const identifyTrackResponse = responseBuilderSimple(
+      trackParameters,
+      message,
+      type
+    );
+    identifyTrackResponse.endpoint = "https://api.mixpanel.com/track/";
+    returnValue.push(identifyTrackResponse); */
+
+    const trackParameters = {
+      event: "$merge",
+      properties: {
+        $distinct_ids: [message.userId, message.anonymousId],
+        token: destination.Config.token
+      }
+    };
+    const identifyTrackResponse = responseBuilderSimple(
+      trackParameters,
+      message,
+      type
+    );
+    identifyTrackResponse.endpoint = "https://api.mixpanel.com/import";
+    identifyTrackResponse.headers = {
+      Authorization: `Basic ${Buffer.from(
+        destination.Config.apiSecret
+      ).toString("base64")}`
+    };
+    returnValue.push(identifyTrackResponse);
+  }
+
+  return returnValue;
 }
 
 function processPageOrScreenEvents(message, type, destination) {
   const properties = {
     ...message.properties,
+    ...message.context.traits,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -118,6 +176,51 @@ function processPageOrScreenEvents(message, type, destination) {
   return responseBuilderSimple(parameters, message, type);
 }
 
+function processAliasEvents(message, type, destination) {
+  const parameters = {
+    event: "$create_alias",
+    properties: {
+      distinct_id: message.previousId || message.anonymousId,
+      alias: message.userId,
+      token: destination.Config.token
+    }
+  };
+  return responseBuilderSimple(parameters, message, type);
+}
+
+function processGroupEvents(message, type, destination) {
+  const returnValue = [];
+  if (destination.Config.groupKey) {
+    const parameters = {
+      $token: destination.Config.token,
+      $distinct_id: message.userId || message.anonymousId,
+      $set: {
+        [destination.Config.groupKey]: [
+          get(message.traits, destination.Config.groupKey)
+        ]
+      }
+    };
+    const response = responseBuilderSimple(parameters, message, type);
+    returnValue.push(response);
+
+    const groupParameters = {
+      $token: destination.Config.token,
+      $group_key: destination.Config.groupKey,
+      $group_id: get(message.traits, destination.Config.groupKey),
+      $set: {
+        ...message.traits
+      }
+    };
+
+    const groupResponse = responseBuilderSimple(groupParameters, message, type);
+    groupResponse.endpoint = "https://api.mixpanel.com/groups/";
+    returnValue.push(groupResponse);
+  } else {
+    throw new Error("config is not supported");
+  }
+  return returnValue;
+}
+
 function processSingleMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
@@ -128,6 +231,11 @@ function processSingleMessage(message, destination) {
     }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
+    case EventType.ALIAS:
+      return processAliasEvents(message, message.type, destination);
+    case EventType.GROUP:
+      return processGroupEvents(message, message.type, destination);
+
     default:
       throw new Error("message type not supported");
   }

@@ -1,12 +1,27 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
-function processSingleMessage(message, schemaVersion) {
-  return processWarehouseMessage("rs", message, schemaVersion);
+// redshift destination string limit, if the string length crosses 512 we will change data type to text which is varchar(max) in redshift
+const RSStringLimit = 512;
+const redshift = "rs"
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
+
+function getDataTypeOverride(val, options) {
+  if (options.rsAlterStringToText === "true") {
+    if (val && val.length > RSStringLimit) {
+      return "text"
+    }
+  }
+  return "string"
 }
 
 function process(event) {
-  const schemaVersion = event.request.query.whSchemaVersion || "v1";
-  return processSingleMessage(event.message, schemaVersion);
+  const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
+  const rsAlterStringToText = event.request.query.rsAlterStringToText || "false";
+  const provider = redshift
+  return processSingleMessage(event.message, { whSchemaVersion, getDataTypeOverride, provider, rsAlterStringToText });
 }
 
 exports.process = process;

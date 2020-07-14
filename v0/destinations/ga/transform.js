@@ -797,6 +797,7 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
+      // throw new RangeError('Unexpected value in type field');
       throw new Error("message type not supported");
   }
 
@@ -809,15 +810,16 @@ function processSingleMessage(message, destination) {
   );
 }
 
-const process = event => {
+// Iterate over input batch and generate response for each message
+async function process(event) {
+  let response;
   try {
-    return processSingleMessage(event.message, event.destination);
+    response = processSingleMessage(event.message, event.destination);
   } catch (error) {
-    return {
-      statusCode: 400,
-      error: error.message || "Unkown error"
-    };
+    throw new Error(error.message || "Unknown error");
   }
-};
+
+  return response;
+}
 
 exports.process = process;

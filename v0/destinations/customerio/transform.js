@@ -57,7 +57,7 @@ function responseBuilder(message, evType, evName, destination) {
 
   if (evType === EventType.IDENTIFY) {
     if (!userId) {
-      return { statusCode: 400, error: "userId not present" };
+      throw new Error("userId not present");
     }
 
     // populate speced traits
@@ -114,10 +114,7 @@ function responseBuilder(message, evType, evName, destination) {
 
           return response;
         }
-        return {
-          statusCode: 400,
-          error: "userId or device_token not present"
-        };
+        throw new Error("userId or device_token not present");
       }
 
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
@@ -182,7 +179,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error(`could not determine type ${messageType}`);
-      return { statusCode: 400, error: "userId not present" };
+      throw new Error(`could not determine type ${messageType}`);
   }
   const response = responseBuilder(message, evType, evName, destination);
   return response;

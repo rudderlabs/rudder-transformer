@@ -1,6 +1,8 @@
 const get = require("get-value");
 const set = require("set-value");
 
+const set = require("set-value");
+
 const { EventType } = require("../../../constants");
 const {
   ConfigCategory,
@@ -133,10 +135,7 @@ const process = event => {
   try {
     return processSingleMessage(event.message, event.destination);
   } catch (error) {
-    return {
-      statusCode: 400,
-      error: error.message || "Unkown error"
-    };
+    throw new Error(error.message || "Unknown error");
   }
 };
 

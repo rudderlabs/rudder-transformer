@@ -1,12 +1,19 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
-function processSingleMessage(message, schemaVersion) {
-  return processWarehouseMessage("postgres", message, schemaVersion);
+const postgres = "postgres"
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
+
+function getDataTypeOverride(val, options) {
+
 }
 
 function process(event) {
-  const schemaVersion = event.request.query.whSchemaVersion || "v1";
-  return processSingleMessage(event.message, schemaVersion);
+  const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
+  const provider = postgres
+  return processSingleMessage(event.message, {whSchemaVersion, getDataTypeOverride, provider});
 }
 
 exports.process = process;

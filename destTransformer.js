@@ -23,5 +23,5 @@ if (clusterEnabled) {
   cluster.start(PORT, app);
 } else {
   app.listen(PORT);
-  logger.debug(`Listening on Port: ${PORT}`);
+  logger.info(`Listening on Port: ${PORT}`);
 }

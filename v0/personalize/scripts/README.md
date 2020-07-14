@@ -1,29 +1,35 @@
-#Instructions to run create-trackingid.js
+# Instructions to Run `create-trackingid.js`
 
-This is a script that you can run if you want to create a tracking id which is needed while creating a destination for AWS Personalize in RudderStack automatically.
+In order to configure AWS Personalize as a destination in RudderStack, you need to first generate a tracking ID. Running this script allows you to do so.
 
-Download the script in local.
+Please follow these steps:
 
-To run the script import aws-sdk and readline-sync.
-npm install aws-sdk
-npm install readline-sync
+- Download the script locally.
 
-Run the script
-node create-trackingid.js
+- To run the script import `aws-sdk` and `readline-sync`.
+  - `npm install aws-sdk`
+  - `npm install readline-sync`
 
-In the console it will ask your:
-1. Access Key ID
-2. Secret Access Key
-3. Region
-4. Name of Dataset Group 
-5. Number of Fields you need in the AVRO SCHEMA in addition to already required Fields : USER_ID,TIMESTAMP,ITEM_ID
-6. Name of the other fields
-7. Type of other fields.
+- Run the script
+`node create-trackingid.js`
 
-About Avro Schema: 
+- In the console you will be asked to enter the following:
+  - Access Key ID
+  - Secret Access Key
+  - Region
+  - Name of Dataset Group 
+  - Number of fields you need in the AVRO SCHEMA in addition to already required fields : `USER_ID`,`TIMESTAMP`,`ITEM_ID`
+  - Name of the other fields
+  - Type of other fields
 
-Avro schemas are defined using JSON. Schemas are composed of primitive types (null, boolean, int, long, float, double, bytes, and string)and complex types (record, enum, array, map, union, and fixed)
+- As an ouput, you will get all the ARNs of Dataset Group, Dataset, Schema, and Event Tracker.
+- You will also get the tracking ID as an output. Please note this tracking ID down.
 
-In the ouput you will get all the ARNs of Dataset Group, Dataset, Schema, Event Tracker.
-Also Tracking Id will be an output. 
-Please note that down for future use.
+## About Avro Schema
+
+Avro schemas are defined using JSON. The schemas are composed of primitive types (null, boolean, int, long, float, double, bytes, and string) and complex types (record, enum, array, map, union, and fixed).
+
+Learn more about the Avro Schemas [here](https://avro.apache.org/docs/current/spec.html).
+
+# Contact Us
+In case you come across any issues while running this script, please feel free to [contact us](https://rudderstack.com/contact/). You can also chat with us on our [Discord](https://discordapp.com/invite/xNEdEGw) channel.

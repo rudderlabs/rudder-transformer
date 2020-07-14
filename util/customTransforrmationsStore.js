@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const NodeCache = require("node-cache");
 const logger = require("../logger");
+const stats = require("./stats");
 
 const myCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 120 });
 const CONFIG_BACKEND_URL =
@@ -14,14 +15,18 @@ async function getTransformationCode(versionId) {
   const transformation = myCache.get(versionId);
   if (transformation) return transformation;
   try {
+    const startTime = new Date();
     const response = await fetch(
       `${getTransformationURL}?versionId=${versionId}`
     );
+    stats.increment("get_transformation_code.success");
+    stats.timing("get_transformation_code", startTime);
     const myJson = await response.json();
     myCache.set(versionId, myJson, 5 * 60);
     return myJson;
   } catch (error) {
     logger.error(error);
+    stats.increment("get_transformation_code.error");
     throw error;
   }
 }

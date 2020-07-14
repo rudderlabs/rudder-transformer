@@ -4,6 +4,7 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
+const stats = require("./util/stats");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -96,17 +97,22 @@ if (startDestTransformer) {
       const destHandler = getDestHandler(version, destination);
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
+        const startTime = new Date();
         await handleDest(ctx, destHandler);
+        stats.timing("request_latency", startTime, { destination, version });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
+        const startTime = new Date();
         await handleDest(ctx, destHandler);
+        stats.timing("request_latency", startTime, { destination, version });
       });
     });
   });
 
   if (functionsEnabled()) {
     router.post("/customTransform", async ctx => {
+      const startTime = new Date();
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
@@ -182,6 +188,7 @@ if (startDestTransformer) {
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
+      stats.timing("ct_request_latency", startTime);
     });
   }
 }

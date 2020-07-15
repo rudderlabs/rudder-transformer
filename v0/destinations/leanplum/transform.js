@@ -129,14 +129,7 @@ const process = event => {
   try {
     return processSingleMessage(event.message, event.destination);
   } catch (error) {
-<<<<<<< HEAD
     throw new Error(error.message || "Unknown error");
-=======
-    return {
-      statusCode: 400,
-      error: `${error.message}`
-    };
->>>>>>> Updated codecoverage for Customer.io, LeanPlum, Webhook
   }
 };
 

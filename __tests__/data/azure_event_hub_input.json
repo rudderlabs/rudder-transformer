@@ -1,0 +1,476 @@
+[
+  {
+    "destination": {
+      "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "Name": "Azure Event Hub",
+      "DestinationDefinition": {
+        "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+        "Name": "AZURE_EVENT_HUB",
+        "DisplayName": "Azure Event Hub",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "event": "Purchase",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "ce46866c-6f19-42f0-86cb-18c51863b817",
+      "originalTimestamp": "2020-05-21T10:23:15.984Z",
+      "properties": {
+        "currency": "USD",
+        "revenue": 100
+      },
+      "receivedAt": "2020-05-21T15:53:16.013+05:30",
+      "request_ip": "[::1]:59371",
+      "sentAt": "2020-05-21T10:23:15.985Z",
+      "timestamp": "2020-05-21T15:53:16.012+05:30",
+      "type": "track",
+      "userId": "user-12345"
+    },
+    "metadata": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "destinationId": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 46,
+      "messageId": "ce46866c-6f19-42f0-86cb-18c51863b817",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "Name": "Azure Event Hub",
+      "DestinationDefinition": {
+        "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+        "Name": "AZURE_EVENT_HUB",
+        "DisplayName": "Azure Event Hub",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "e02dafb0-9df8-4fa2-becd-f4d8617956a4",
+      "originalTimestamp": "2020-05-21T10:23:15.975Z",
+      "properties": {
+        "path": "/tests/html/index7.html",
+        "referrer": "http://localhost:1111/tests/html/",
+        "search": "",
+        "title": "",
+        "url": "http://localhost:1111/tests/html/index7.html"
+      },
+      "receivedAt": "2020-05-21T15:53:16.014+05:30",
+      "request_ip": "[::1]:58616",
+      "sentAt": "2020-05-21T10:23:15.975Z",
+      "timestamp": "2020-05-21T15:53:16.014+05:30",
+      "type": "page",
+      "userId": "user-12345"
+    },
+    "metadata": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "destinationId": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 47,
+      "messageId": "e02dafb0-9df8-4fa2-becd-f4d8617956a4",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "Name": "Azure Event Hub",
+      "DestinationDefinition": {
+        "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+        "Name": "AZURE_EVENT_HUB",
+        "DisplayName": "Azure Event Hub",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "41b62b30-db5d-450c-98ed-cec14ead27cc",
+      "originalTimestamp": "2020-05-21T10:23:15.979Z",
+      "receivedAt": "2020-05-21T15:53:16.014+05:30",
+      "request_ip": "[::1]:59372",
+      "sentAt": "2020-05-21T10:23:15.979Z",
+      "timestamp": "2020-05-21T15:53:16.014+05:30",
+      "type": "identify",
+      "userId": "user-12345"
+    },
+    "metadata": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "destinationId": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 48,
+      "messageId": "41b62b30-db5d-450c-98ed-cec14ead27cc",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "Name": "Azure Event Hub",
+      "DestinationDefinition": {
+        "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+        "Name": "AZURE_EVENT_HUB",
+        "DisplayName": "Azure Event Hub",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "event": "test track without property",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c409577d-5dd4-430a-8965-a20aed7b9c9e",
+      "originalTimestamp": "2020-05-21T10:23:15.981Z",
+      "properties": {},
+      "receivedAt": "2020-05-21T15:53:16.014+05:30",
+      "request_ip": "[::1]:59374",
+      "sentAt": "2020-05-21T10:23:15.981Z",
+      "timestamp": "2020-05-21T15:53:16.014+05:30",
+      "type": "track",
+      "userId": "user-12345"
+    },
+    "metadata": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "destinationId": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 49,
+      "messageId": "c409577d-5dd4-430a-8965-a20aed7b9c9e",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "Name": "Azure Event Hub",
+      "DestinationDefinition": {
+        "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+        "Name": "AZURE_EVENT_HUB",
+        "DisplayName": "Azure Event Hub",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "event": "test track with property",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "f8b6e882-3186-446a-b589-51eba60930d7",
+      "originalTimestamp": "2020-05-21T10:23:15.982Z",
+      "properties": {
+        "test_prop_1": "test prop",
+        "test_prop_2": 1232
+      },
+      "receivedAt": "2020-05-21T15:53:16.014+05:30",
+      "request_ip": "[::1]:59373",
+      "sentAt": "2020-05-21T10:23:15.983Z",
+      "timestamp": "2020-05-21T15:53:16.013+05:30",
+      "type": "track",
+      "userId": "user-12345"
+    },
+    "metadata": {
+      "anonymousId": "d36981e7-6413-4862-9bb9-b8595fb3d0d4",
+      "destinationId": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 50,
+      "messageId": "f8b6e882-3186-446a-b589-51eba60930d7",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
+      "Name": "Kinesis",
+      "DestinationDefinition": {
+        "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
+        "Name": "KINESIS",
+        "DisplayName": "Amazon Kinesis",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": null,
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1-rc.2"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1-rc.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index4.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "testmp@rudderstack.com",
+          "firstname": "Test Kafka"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+      },
+      "event": "test track with property",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c122dbd5-43cc-4636-9baf-b724be86ad10",
+      "originalTimestamp": "2020-04-15T08:31:42.172Z",
+      "properties": {
+        "test_prop_1": "test prop",
+        "test_prop_2": 1232
+      },
+      "receivedAt": "2020-04-15T14:01:42.199+05:30",
+      "request_ip": "[::1]:58876",
+      "sentAt": "2020-04-15T08:31:42.172Z",
+      "timestamp": "2020-04-15T14:01:42.199+05:30",
+      "type": "track"
+
+    },
+    "metadata": {
+      "anonymousId": "c063778b-8477-4c28-a07d-cae9ab3f8e7b",
+      "destinationId": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
+      "destinationType": "AZURE EVENT HUB",
+      "jobId": 5,
+      "messageId": "c122dbd5-43cc-4636-9baf-b724be86ad10",
+      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    }
+  }
+]

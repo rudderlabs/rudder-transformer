@@ -151,7 +151,7 @@ function getVersionedUtils(schemaVersion) {
 }
 
 function processWarehouseMessage(message, options) {
-  const utils = getVersionedUtils(options.schemaVersion);
+  const utils = getVersionedUtils(options.whSchemaVersion);
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again

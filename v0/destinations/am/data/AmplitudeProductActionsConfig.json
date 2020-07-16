@@ -7,7 +7,7 @@
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
   "context.app.build": "app_version",
-  "context.platform": "platform",
+  "context.device.type": "platform",
   "context.locale": "language",
   "properties.category": "event_type",
   "properties.product_id": "productId",

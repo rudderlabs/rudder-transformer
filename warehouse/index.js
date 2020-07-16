@@ -53,7 +53,7 @@ const getDataType = (val, options) => {
     return "datetime";
   }
   if (options.getDataTypeOverride && typeof options.getDataTypeOverride === "function") {
-    return options.getDataTypeOverride(val, options)?options.getDataTypeOverride(val, options):"string";
+    return options.getDataTypeOverride(val, options) || "string"
   }
   return "string";
 };

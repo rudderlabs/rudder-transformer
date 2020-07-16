@@ -437,5 +437,6 @@
     "WHENEVER": true,
     "WHERE": true,
     "WITH": true
-  }
+  },
+  "CLICKHOUSE": {}
 }

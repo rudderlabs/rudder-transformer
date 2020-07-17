@@ -1,5 +1,5 @@
 const integration = "segment";
-const name = "Auth0";
+const name = "Segment";
 
 const fs = require("fs");
 const path = require("path");

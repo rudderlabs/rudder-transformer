@@ -17,5 +17,5 @@
   "properties.keywords": "event_properties.keywords",
   "session_id": "session_id",
   "request_ip": "ip",
-  "name" : "name"
+  "name" : "event_properties.name"
 }

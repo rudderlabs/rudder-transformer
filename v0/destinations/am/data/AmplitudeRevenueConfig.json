@@ -13,7 +13,7 @@
   "properties.price": "price",
   "properties.quantity": "quantity",
   "properties.revenue": "revenue",
-  "properties.revenue_Type": "revenueType",
+  "properties.revenue_type": "revenueType",
   "properties.category": "event_type",
   "request_ip": "ip"
 }

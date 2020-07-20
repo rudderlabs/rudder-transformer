@@ -9,7 +9,7 @@
   "context.app.build": "app_version",
   "context.device.type": "platform",
   "context.locale": "language",
-  "properties.product_Id": "productId",
+  "properties.product_id": "productId",
   "properties.price": "price",
   "properties.quantity": "quantity",
   "properties.revenue": "revenue",

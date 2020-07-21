@@ -147,7 +147,7 @@ if (startDestTransformer) {
       }
       stats.counter(
         "user_transform_function_group_size",
-        groupedEvents.length,
+        Object.entries(groupedEvents).length,
         { processSessions }
       );
 

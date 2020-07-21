@@ -47,7 +47,8 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-async function handleDest(ctx, destHandler) {
+async function handleDest(ctx, version, destination) {
+  const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
@@ -82,6 +83,7 @@ async function handleDest(ctx, destHandler) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
+        stats.increment("dest_transform_errors", 1, { destination, version });
       }
     })
   );
@@ -94,18 +96,23 @@ if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
-      const destHandler = getDestHandler(version, destination);
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
-        await handleDest(ctx, destHandler);
-        stats.timing("request_latency", startTime, { destination, version });
+        await handleDest(ctx, version, destination);
+        stats.timing("dest_transform_request_latency", startTime, {
+          destination,
+          version
+        });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
-        await handleDest(ctx, destHandler);
-        stats.timing("request_latency", startTime, { destination, version });
+        await handleDest(ctx, version, destination);
+        stats.timing("dest_transform_request_latency", startTime, {
+          destination,
+          version
+        });
       });
     });
   });
@@ -173,6 +180,9 @@ if (startDestTransformer) {
                 error: error.message,
                 metadata: commonMetadata
               });
+              stats.counter("user_transform_errors", destEvents.length, {
+                transformationVersionId
+              });
             }
           } else {
             const errorMessage = "Transformation VersionID not found";
@@ -182,18 +192,22 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata
             });
+            stats.counter("user_transform_errors", destEvents.length, {
+              transformationVersionId
+            });
           }
         })
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
-      stats.timing("ct_request_latency", startTime);
+      stats.timing("user_transform_request_latency", startTime);
     });
   }
 }
 
-async function handleSource(ctx, sourceHandler) {
+async function handleSource(ctx, version, source) {
+  const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   const respList = [];
@@ -216,6 +230,10 @@ async function handleSource(ctx, sourceHandler) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
+        stats.counter("source_transform_errors", events.length, {
+          source,
+          version
+        });
       }
     })
   );
@@ -228,10 +246,14 @@ if (startSourceTransformer) {
   versions.forEach(version => {
     const sources = getIntegrations(`${version}/sources`);
     sources.forEach(source => {
-      const sourceHandler = getSourceHandler(version, source);
       // eg. v0/sources/customerio
       router.post(`/${version}/sources/${source}`, async ctx => {
-        await handleSource(ctx, sourceHandler);
+        const startTime = new Date();
+        await handleSource(ctx, version, source);
+        stats.timing("source_transform_request_latency", startTime, {
+          source,
+          version
+        });
       });
     });
   });

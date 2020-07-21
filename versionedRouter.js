@@ -133,7 +133,9 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter("user_transform_input_events", events.length);
+      stats.counter("user_transform_input_events", events.length, {
+        processSessions
+      });
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(
@@ -143,7 +145,11 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }
-      stats.counter("user_transform_function_group_size", groupedEvents.length);
+      stats.counter(
+        "user_transform_function_group_size",
+        groupedEvents.length,
+        { processSessions }
+      );
 
       const transformedEvents = [];
       await Promise.all(
@@ -177,7 +183,8 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   transformationVersionId,
-                  groupedBy: dest
+                  groupedBy: dest,
+                  processSessions
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -202,12 +209,14 @@ if (startDestTransformer) {
                 metadata: commonMetadata
               });
               stats.counter("user_transform_errors", destEvents.length, {
-                transformationVersionId
+                transformationVersionId,
+                processSessions
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
-                userFuncStartTime
+                userFuncStartTime,
+                processSessions
               );
             }
           } else {
@@ -219,7 +228,8 @@ if (startDestTransformer) {
               metadata: commonMetadata
             });
             stats.counter("user_transform_errors", destEvents.length, {
-              transformationVersionId
+              transformationVersionId,
+              processSessions
             });
           }
         })
@@ -227,9 +237,13 @@ if (startDestTransformer) {
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
-      stats.timing("user_transform_request_latency", startTime);
-      stats.increment("user_transform_requests");
-      stats.counter("user_transform_output_events", transformedEvents.length);
+      stats.timing("user_transform_request_latency", startTime, {
+        processSessions
+      });
+      stats.increment("user_transform_requests", 1, { processSessions });
+      stats.counter("user_transform_output_events", transformedEvents.length, {
+        processSessions
+      });
     });
   }
 }

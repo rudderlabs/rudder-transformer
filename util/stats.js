@@ -3,13 +3,14 @@ const SDC = require("statsd-client");
 const enableStats = process.env.ENABLE_STATS !== "false";
 const statsServerHost = process.env.STATSD_SERVER_HOST || "localhost";
 const statsServerPort = parseInt(process.env.STATSD_SERVER_PORT || "8125", 10);
-const transformerInstanceName = process.env.INSTANCE_NAME || "local-dev";
+// HOST_NAME is automatically set by k8s. No need to add it manually
+const transformerHostName = process.env.HOST_NAME || "local-dev";
 
 const statsdClient = new SDC({
   host: statsServerHost,
   port: statsServerPort,
   prefix: "transformer",
-  tags: { pid: process.pid, transformerInstanceName }
+  tags: { pid: process.pid, transformerHostName }
 });
 
 // Sends the diff between current time and start as the stat

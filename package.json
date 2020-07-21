@@ -43,7 +43,7 @@
     "koa": "^2.12.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^7.4.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "minimist": ">=0.2.1",
     "moment": "^2.27.0",

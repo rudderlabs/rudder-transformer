@@ -252,7 +252,7 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
-  stats.increment("dest_transform_input_events", events.length, {
+  stats.increment("source_transform_input_events", events.length, {
     source,
     version
   });

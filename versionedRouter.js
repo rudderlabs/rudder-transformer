@@ -52,6 +52,10 @@ async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+  stats.increment("dest_transform_input_events", events.length, {
+    destination,
+    version
+  });
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -88,6 +92,10 @@ async function handleDest(ctx, version, destination) {
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
+  stats.increment("dest_transform_output_events", respList.length, {
+    destination,
+    version
+  });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }
@@ -104,6 +112,7 @@ if (startDestTransformer) {
           destination,
           version
         });
+        stats.increment("dest_transform_requests", 1, { destination, version });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
@@ -113,6 +122,7 @@ if (startDestTransformer) {
           destination,
           version
         });
+        stats.increment("dest_transform_requests", 1, { destination, version });
       });
     });
   });
@@ -123,6 +133,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
+      stats.counter("user_transform_input_events", events.length);
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(
@@ -202,6 +213,8 @@ if (startDestTransformer) {
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime);
+      stats.increment("user_transform_requests");
+      stats.counter("user_transform_output_events", transformedEvents.length);
     });
   }
 }
@@ -210,6 +223,10 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
+  stats.increment("dest_transform_input_events", events.length, {
+    source,
+    version
+  });
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -238,6 +255,10 @@ async function handleSource(ctx, version, source) {
     })
   );
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
+  stats.increment("source_transform_output_events", respList.length, {
+    source,
+    version
+  });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }
@@ -254,6 +275,7 @@ if (startSourceTransformer) {
           source,
           version
         });
+        stats.increment("source_transform_requests", 1, { source, version });
       });
     });
   });

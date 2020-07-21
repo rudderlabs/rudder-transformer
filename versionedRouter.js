@@ -143,6 +143,7 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }
+      stats.counter("user_transform_function_group_size", groupedEvents.length);
 
       const transformedEvents = [];
       await Promise.all(
@@ -167,9 +168,18 @@ if (startDestTransformer) {
             messageIds
           };
 
+          const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
+              stats.counter(
+                "user_transform_function_input_events",
+                destEvents.length,
+                {
+                  transformationVersionId,
+                  groupedBy: dest
+                }
+              );
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId
@@ -194,6 +204,11 @@ if (startDestTransformer) {
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId
               });
+            } finally {
+              stats.timing(
+                "user_transform_function_latency",
+                userFuncStartTime
+              );
             }
           } else {
             const errorMessage = "Transformation VersionID not found";

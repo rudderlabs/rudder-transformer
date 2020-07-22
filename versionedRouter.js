@@ -216,7 +216,7 @@ if (startDestTransformer) {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { processSessions }
+                { transformationVersionId, processSessions }
               );
             }
           } else {

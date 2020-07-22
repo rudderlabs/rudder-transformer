@@ -42,6 +42,30 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
+  it(`Multiple ${name} Test`, async () => {
+    const inputDataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_filter_input_multi.json`)
+    );
+    const { userTransformHandler } = require("../util/customTransformer");
+    const respBody = {
+      code: `function transformBatch(events) {
+            return events;
+          }
+          function transform(events) {
+            return events;
+          }
+          `
+    };
+    fetch.mockReturnValueOnce(
+      Promise.resolve(new Response(JSON.stringify(respBody)))
+    );
+
+    const inputData = JSON.parse(inputDataFile);
+    const output = await userTransformHandler(inputData, 23);
+    expect(userTransformHandler(inputData, 23)).rejects.toThrow()
+
+  });
+
   it(`Filtering ${name} Test`, async () => {
     const inputDataFile = fs.readFileSync(
       path.resolve(__dirname, `./data/${integration}_filter_input.json`)

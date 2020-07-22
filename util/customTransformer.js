@@ -131,7 +131,28 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
-  const fnRef = await jail.get("transform");
+
+  const supportedFuncNames = ["transform", "transformEvent", "transformBatch"];
+  let supportedFuncs = [];
+
+  await Promise.all(
+    supportedFuncNames.map(async sName => {
+      const funcRef = await jail.get(sName);
+      if (funcRef) {
+        supportedFuncs.push(funcRef);
+      }
+    })
+  );
+
+  if (supportedFuncs.length !== 1) {
+    throw new Error(
+      `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(
+        sFunc => sFunc.name
+      )}`
+    );
+  }
+
+  const fnRef = supportedFuncs[0];
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {

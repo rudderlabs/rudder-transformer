@@ -289,7 +289,7 @@ function processWarehouseMessage(message, options) {
         delete columnTypes[userIdColumn];
       }
 
-      // -----start: users table------
+      // -----start: identifies table------
       const identifiesEvent = { ...commonProps };
       setFromConfig(
         utils,
@@ -310,12 +310,11 @@ function processWarehouseMessage(message, options) {
       });
       // -----end: identifies table------
 
+      // -----start: users table------
       // do not create a user record if userId is not present in payload
       if (_.toString(message.userId).trim() === "") {
         break;
       }
-
-      // -----start: identifies table------
       const usersEvent = { ...commonProps };
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersEvent[

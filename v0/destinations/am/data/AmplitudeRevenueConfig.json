@@ -9,11 +9,11 @@
   "context.app.build": "app_version",
   "context.device.type": "platform",
   "context.locale": "language",
-  "properties.productId": "productId",
+  "properties.product_id": "productId",
   "properties.price": "price",
   "properties.quantity": "quantity",
   "properties.revenue": "revenue",
-  "properties.revenueType": "revenueType",
+  "properties.revenue_type": "revenueType",
   "properties.category": "event_type",
   "request_ip": "ip"
 }

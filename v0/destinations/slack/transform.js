@@ -89,10 +89,7 @@ function buildDefaultTraitTemplate(traitsList, traits) {
   return templateString;
 }
 
-function processIdentify(message, destination) {
-  // debug(JSON.stringify(destination));
-  const identifyTemplateConfig = destination.Config.identifyTemplate;
-  const traitsList = [];
+function getWhiteListedTraits(destination, traitsList) {
   destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
     if (
       whiteListTrait.trait
@@ -104,6 +101,16 @@ function processIdentify(message, destination) {
       traitsList.push(whiteListTrait.trait);
     }
   });
+}
+
+
+function processIdentify(message, destination) {
+  // debug(JSON.stringify(destination));
+  const identifyTemplateConfig = destination.Config.identifyTemplate;
+  const traitsList = [];
+
+  getWhiteListedTraits(destination, traitsList);
+  
   logger.debug("defaulTraitsList:: ", traitsList);
   const uName = getName(message);
 
@@ -155,12 +162,15 @@ function processIdentify(message, destination) {
 
 function processTrack(message, destination) {
   // logger.debug(JSON.stringify(destination));
+  const traitsList = [];
   const eventChannelConfig = destination.Config.eventChannelSettings;
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
   const eventName = message.event;
   const channelListToSendThisEvent = new Set();
   const templateListForThisEvent = new Set();
+
+  getWhiteListedTraits(destination, traitsList);
 
   // Add global context to regex always
   // build the channel list and templatelist for the event, pick the first in case of multiple
@@ -257,7 +267,12 @@ function processTrack(message, destination) {
     name: getName(message),
     event: eventName,
     ...message.properties,
-    properties: message.properties
+    properties: message.properties,
+    traits: stringifyJSON(
+      message.context ? message.context.traits : {},
+      traitsList
+    ),
+    traitsList: message.context ? message.context.traits : {}
   };
 
   logger.debug("templateInputTrack: ", templateInput);

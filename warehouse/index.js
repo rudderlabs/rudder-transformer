@@ -235,7 +235,7 @@ function processWarehouseMessage(message, options) {
       });
 
       // do not create event table in case of empty event name (after utils.transformColumnName)
-      if (tracksEvent[eventColName] === "") {
+      if (_.toString(tracksEvent[eventColName]).trim() === "") {
         break;
       }
       const trackProps = {};
@@ -316,26 +316,17 @@ function processWarehouseMessage(message, options) {
         "context_"
       );
 
-      const usersEvent = { ...commonProps };
-      usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
-      usersEvent[
-        utils.safeColumnName(options.provider, "received_at")
-      ] = message.receivedAt
-        ? new Date(message.receivedAt).toISOString()
-        : null;
-      columnTypes[utils.safeColumnName(options.provider, "received_at")] =
-        "datetime";
-      const usersMetadata = {
-        table: utils.safeTableName(options.provider, "users"),
-        columns: getColumns(options, usersEvent, columnTypes),
-        receivedAt: message.receivedAt
-      };
-      const usersResponse = { metadata: usersMetadata };
-      if (_.toString(message.userId).trim() !== "") {
-        usersResponse.data = usersEvent;
+      // TODO: create a list of reserved keywords and append underscore for all in setFromProperties
+      const userIdColumn = utils.safeColumnName(options.provider, "user_id");
+      if (_.has(commonProps, userIdColumn)) {
+        const newUserIdColumn = `_${userIdColumn}`;
+        commonProps[newUserIdColumn] = commonProps[userIdColumn];
+        delete commonProps[userIdColumn];
+        columnTypes[newUserIdColumn] = columnTypes[userIdColumn];
+        delete columnTypes[userIdColumn];
       }
-      responses.push(usersResponse);
 
+      // -----start: identifies table------
       const identifiesEvent = { ...commonProps };
       setFromConfig(
         utils,
@@ -350,7 +341,36 @@ function processWarehouseMessage(message, options) {
         columns: getColumns(options, identifiesEvent, columnTypes),
         receivedAt: message.receivedAt
       };
-      responses.push({ metadata: identifiesMetadata, data: identifiesEvent });
+      responses.push({
+        metadata: identifiesMetadata,
+        data: identifiesEvent
+      });
+      // -----end: identifies table------
+
+      // -----start: users table------
+      // do not create a user record if userId is not present in payload
+      if (_.toString(message.userId).trim() === "") {
+        break;
+      }
+      const usersEvent = { ...commonProps };
+      usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
+      usersEvent[
+        utils.safeColumnName(options.provider, "received_at")
+      ] = message.receivedAt
+        ? new Date(message.receivedAt).toISOString()
+        : null;
+      columnTypes[utils.safeColumnName(options.provider, "received_at")] =
+        "datetime";
+      const usersMetadata = {
+        table: utils.safeTableName(options.provider, "users"),
+        columns: getColumns(options, usersEvent, columnTypes),
+        receivedAt: message.receivedAt
+      };
+      responses.push({
+        metadata: usersMetadata,
+        data: usersEvent
+      });
+      // -----end: users table------
 
       const mergeRule = {
         [utils.safeColumnName(

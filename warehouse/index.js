@@ -12,7 +12,7 @@ const whScreenConfigJson = require("./config/WHScreenConfig.json");
 const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
-const identityEnabledWarehouses = ["SNOWFLAKE"];
+const identityEnabledWarehouses = ["snowflake"];
 
 const isObject = value => {
   const type = typeof value;

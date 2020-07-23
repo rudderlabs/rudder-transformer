@@ -45,7 +45,7 @@ function responseBuilder(message, evType, evName, destination) {
   let endpoint;
   let requestConfig = defaultPostRequestConfig;
   const userId =
-    message.userId && message.userId != "" ? message.userId : undefined;
+    message.userId && message.userId !== "" ? message.userId : undefined;
 
   const response = defaultRequestConfig();
   response.userId = message.userId || message.anonymousId;
@@ -66,7 +66,14 @@ function responseBuilder(message, evType, evName, destination) {
       const traits = Object.keys(message.context.traits);
       traits.forEach(trait => {
         // populate keys other than speced traits
-        if (!SpecedTraits.includes(trait)) {
+        // also don't send anonymousId, userId as we are setting those form the SDK and it's not actually an user property for the customer
+        // discard createdAt as well as we are setting the values at created_at separately
+        if (
+          !SpecedTraits.includes(trait) &&
+          trait !== "createdAt" &&
+          trait !== "userId" &&
+          trait !== "anonymousId"
+        ) {
           set(rawPayload, trait, get(message, `context.traits.${trait}`));
         }
       });

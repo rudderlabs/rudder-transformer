@@ -7,9 +7,9 @@ const {
   ConfigCategory,
   mappingConfig,
   defaultFields,
-  ZENDEDK_MARKET_PLACE_NAME,
-  ZENDEDK_MARKET_PLACE_ORG_ID,
-  ZENDEDK_MARKET_PLACE_APP_ID
+  ZENDESK_MARKET_PLACE_NAME,
+  ZENDESK_MARKET_PLACE_ORG_ID,
+  ZENDESK_MARKET_PLACE_APP_ID
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -25,9 +25,9 @@ function responseBuilder(message, headers, payload, endpoint) {
 
   const updatedHeaders = {
     ...headers,
-    "X-Zendesk-Marketplace-Name": ZENDEDK_MARKET_PLACE_NAME,
-    "X-Zendesk-Marketplace-Organization-Id": ZENDEDK_MARKET_PLACE_ORG_ID,
-    "X-Zendesk-Marketplace-App-Id": ZENDEDK_MARKET_PLACE_APP_ID
+    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
   };
 
   response.endpoint = endpoint;

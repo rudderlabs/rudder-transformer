@@ -19,9 +19,12 @@ function getTrackEndPoint(endPoint) {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+const BRAZE_PARTNER_NAME = "RudderStack";
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,
-  getTrackEndPoint
+  getTrackEndPoint,
+  BRAZE_PARTNER_NAME
 };

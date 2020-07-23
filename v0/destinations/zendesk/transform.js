@@ -3,7 +3,14 @@ const set = require("set-value");
 const axios = require("axios");
 
 const { EventType } = require("../../../constants");
-const { ConfigCategory, mappingConfig, defaultFields } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  defaultFields,
+  ZENDESK_MARKET_PLACE_NAME,
+  ZENDESK_MARKET_PLACE_ORG_ID,
+  ZENDESK_MARKET_PLACE_APP_ID
+} = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -16,9 +23,16 @@ let endPoint;
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
+  const updatedHeaders = {
+    ...headers,
+    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+  };
+
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = headers;
+  response.headers = updatedHeaders;
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = payload;
 

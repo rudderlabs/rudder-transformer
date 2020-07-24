@@ -7,7 +7,7 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 

@@ -39,8 +39,15 @@ const defaultFields = {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+const ZENDESK_MARKET_PLACE_NAME = "RudderStack";
+const ZENDESK_MARKET_PLACE_ORG_ID = "3339";
+const ZENDESK_MARKET_PLACE_APP_ID = "263241";
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
-  defaultFields
+  defaultFields,
+  ZENDESK_MARKET_PLACE_NAME,
+  ZENDESK_MARKET_PLACE_ORG_ID,
+  ZENDESK_MARKET_PLACE_APP_ID
 };

@@ -103,14 +103,13 @@ function getWhiteListedTraits(destination, traitsList) {
   });
 }
 
-
 function processIdentify(message, destination) {
   // debug(JSON.stringify(destination));
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = [];
 
   getWhiteListedTraits(destination, traitsList);
-  
+
   logger.debug("defaulTraitsList:: ", traitsList);
   const uName = getName(message);
 
@@ -268,6 +267,7 @@ function processTrack(message, destination) {
     event: eventName,
     ...message.properties,
     properties: message.properties,
+    propertiesList: stringifyJSON(message.properties || {}),
     traits: stringifyJSON(
       message.context ? message.context.traits : {},
       traitsList

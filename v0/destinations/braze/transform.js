@@ -9,7 +9,8 @@ const {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,
-  getTrackEndPoint
+  getTrackEndPoint,
+  BRAZE_PARTNER_NAME
 } = require("./config");
 
 function formatGender(gender) {
@@ -28,7 +29,7 @@ function formatGender(gender) {
 function buildResponse(message, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.userId || message.anonymousId;
   response.body.JSON = removeUndefinedAndNullValues(properties);
   return {
     ...response,
@@ -36,7 +37,7 @@ function buildResponse(message, properties, endpoint) {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: message.userId || message.anonymousId
   };
 }
 
@@ -240,7 +241,11 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     return buildResponse(
       message,
       appendApiKey(
-        { attributes: [attributePayload], purchases: purchaseObjs },
+        {
+          attributes: [attributePayload],
+          purchases: purchaseObjs,
+          partner: BRAZE_PARTNER_NAME
+        },
         destination
       ),
       getTrackEndPoint(destination.Config.endPoint)
@@ -257,7 +262,11 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   return buildResponse(
     message,
     appendApiKey(
-      { attributes: [attributePayload], events: [payload] },
+      {
+        attributes: [attributePayload],
+        events: [payload],
+        partner: BRAZE_PARTNER_NAME
+      },
       destination
     ),
     getTrackEndPoint(destination.Config.endPoint)

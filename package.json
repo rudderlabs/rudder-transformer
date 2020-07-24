@@ -51,6 +51,7 @@
     "node-fetch": "^2.6.0",
     "set-value": "^3.0.2",
     "sha256": "^0.2.0",
+    "statsd-client": "^0.4.4",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

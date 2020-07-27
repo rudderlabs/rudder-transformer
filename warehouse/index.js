@@ -145,94 +145,58 @@ function getColumns(options, obj, columnTypes) {
   return columns;
 }
 
-function getMergeRuleEvent(message = {}, utils, provider) {
+function getMergeRuleEvent(message = {}, utils, isAlias, provider) {
   if (!identityEnabledWarehouses.includes(provider)) {
     return null;
   }
 
-  if (!message.anonymousId || !_.isEmpty(_.toString(message.userId))) {
+  // TODO: Should we add rule if userId is present for track calls,
+  // does it always guarantee identify was made?
+  // if (!message.anonymousId || !_.isEmpty(_.toString(message.userId))) {
+  //   return null;
+  // }
+
+  const prop1 = isAlias
+    ? { name: "user_id", value: message.userId }
+    : { name: "anonymous_id", value: message.anonymousId };
+  const prop2 = isAlias
+    ? { name: "user_id", value: message.previousId }
+    : { name: "user_id", value: message.userId };
+
+  if (_.isEmpty(_.toString(prop1.value))) {
     return null;
   }
 
+  // add prop1 to merge rule
   const mergeRule = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "anonymous_id",
-    [utils.safeColumnName(
-      provider,
-      "merge_property_1_value"
-    )]: message.anonymousId
+    [utils.safeColumnName(provider, "merge_property_1_type")]: prop1.name,
+    [utils.safeColumnName(provider, "merge_property_1_value")]: prop1.value
   };
   const mergeColumns = {
     [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
     [utils.safeColumnName(provider, "merge_property_1_value")]: "string"
   };
 
+  // add prop2 to merge rule
+  if (!_.isEmpty(_.toString(prop2.value))) {
+    mergeRule[utils.safeColumnName(provider, "merge_property_2_type")] =
+      prop2.name;
+    mergeRule[utils.safeColumnName(provider, "merge_property_2_value")] =
+      prop2.value;
+    mergeColumns[utils.safeColumnName(provider, "merge_property_2_type")] =
+      "string";
+    mergeColumns[utils.safeColumnName(provider, "merge_property_2_value")] =
+      "string";
+  }
+
   const mergeRulesMetadata = {
     table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
     columns: mergeColumns,
     receivedAt: message.receivedAt,
     isMergeRule: true,
-    anonymousId: message.anonymousId
+    anonymousId: message.anonymousId,
+    userId: message.userId
   };
-  return { metadata: mergeRulesMetadata, data: mergeRule };
-}
-
-function getIdentifyMergeRuleEvent(message = {}, utils, provider) {
-  if (!identityEnabledWarehouses.includes(provider)) {
-    return null;
-  }
-
-  const mergeRule = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "anonymous_id",
-    [utils.safeColumnName(
-      provider,
-      "merge_property_1_value"
-    )]: message.anonymousId,
-    [utils.safeColumnName(provider, "merge_property_2_type")]: "user_id",
-    [utils.safeColumnName(provider, "merge_property_2_value")]: message.userId
-  };
-  const mergeColumns = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
-    [utils.safeColumnName(provider, "merge_property_1_value")]: "string",
-    [utils.safeColumnName(provider, "merge_property_2_type")]: "string",
-    [utils.safeColumnName(provider, "merge_property_2_value")]: "string"
-  };
-
-  const mergeRulesMetadata = {
-    table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
-    columns: mergeColumns,
-    receivedAt: message.receivedAt
-  };
-
-  return { metadata: mergeRulesMetadata, data: mergeRule };
-}
-
-function getAliasMergeRuleEvent(message = {}, utils, provider) {
-  if (!identityEnabledWarehouses.includes(provider)) {
-    return null;
-  }
-
-  const mergeRule = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "user_id",
-    [utils.safeColumnName(provider, "merge_property_1_value")]: message.userId,
-    [utils.safeColumnName(provider, "merge_property_2_type")]: "user_id",
-    [utils.safeColumnName(
-      provider,
-      "merge_property_2_value"
-    )]: message.previousId
-  };
-  const mergeColumns = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
-    [utils.safeColumnName(provider, "merge_property_1_value")]: "string",
-    [utils.safeColumnName(provider, "merge_property_2_type")]: "string",
-    [utils.safeColumnName(provider, "merge_property_2_value")]: "string"
-  };
-
-  const mergeRulesMetadata = {
-    table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
-    columns: mergeColumns,
-    receivedAt: message.receivedAt
-  };
-
   return { metadata: mergeRulesMetadata, data: mergeRule };
 }
 
@@ -340,6 +304,7 @@ function processWarehouseMessage(message, options) {
       const mergeRuleEvent = getMergeRuleEvent(
         message,
         utils,
+        false,
         options.provider
       );
       if (mergeRuleEvent) {
@@ -439,9 +404,10 @@ function processWarehouseMessage(message, options) {
       });
       // -----end: users table------
 
-      const mergeRuleEvent = getIdentifyMergeRuleEvent(
+      const mergeRuleEvent = getMergeRuleEvent(
         message,
         utils,
+        false,
         options.provider
       );
       if (mergeRuleEvent) {
@@ -502,6 +468,7 @@ function processWarehouseMessage(message, options) {
       const mergeRuleEvent = getMergeRuleEvent(
         message,
         utils,
+        false,
         options.provider
       );
       if (mergeRuleEvent) {
@@ -548,6 +515,7 @@ function processWarehouseMessage(message, options) {
       const mergeRuleEvent = getMergeRuleEvent(
         message,
         utils,
+        false,
         options.provider
       );
       if (mergeRuleEvent) {
@@ -591,9 +559,10 @@ function processWarehouseMessage(message, options) {
       };
       responses.push({ metadata, data: event });
 
-      const mergeRuleEvent = getAliasMergeRuleEvent(
+      const mergeRuleEvent = getMergeRuleEvent(
         message,
         utils,
+        true,
         options.provider
       );
       if (mergeRuleEvent) {

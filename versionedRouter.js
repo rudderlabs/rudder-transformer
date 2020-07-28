@@ -7,7 +7,7 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 
 const versions = ["v0"];
-const API_VERSION = "2";
+const API_VERSION = "1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -56,6 +56,10 @@ async function handleDest(ctx, version, destination) {
     destination,
     version
   });
+  stats.gauge("dest_transform_input_events_gauge", events.length, {
+    destination,
+    version
+  });
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -93,6 +97,10 @@ async function handleDest(ctx, version, destination) {
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
+    destination,
+    version
+  });
+  stats.gauge("dest_transform_output_events_gauge", respList.length, {
     destination,
     version
   });
@@ -136,6 +144,9 @@ if (startDestTransformer) {
       stats.counter("user_transform_input_events", events.length, {
         processSessions
       });
+      stats.gauge("user_transform_input_events_gauge", events.length, {
+        processSessions
+      });
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(
@@ -145,11 +156,22 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }
+
+      console.log("=======group-events=======",  Object.entries(groupedEvents))
+
+      console.log("=======group-size=======",  Object.entries(groupedEvents).length)
       stats.counter(
         "user_transform_function_group_size",
         Object.entries(groupedEvents).length,
         { processSessions }
       );
+
+      stats.gauge(
+        "user_transform_function_group_size_gauge",
+        Object.entries(groupedEvents).length,
+        { processSessions }
+      );
+      
 
       const transformedEvents = [];
       await Promise.all(
@@ -212,6 +234,10 @@ if (startDestTransformer) {
                 transformationVersionId,
                 processSessions
               });
+              stats.gauge("user_transform_errors_gauge", destEvents.length, {
+                transformationVersionId,
+                processSessions
+              });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
@@ -231,6 +257,10 @@ if (startDestTransformer) {
               transformationVersionId,
               processSessions
             });
+            stats.gauge("user_transform_errors_gauge", destEvents.length, {
+              transformationVersionId,
+              processSessions
+            });
           }
         })
       );
@@ -242,6 +272,9 @@ if (startDestTransformer) {
       });
       stats.increment("user_transform_requests", 1, { processSessions });
       stats.counter("user_transform_output_events", transformedEvents.length, {
+        processSessions
+      });
+      stats.gauge("user_transform_output_events_gauge", transformedEvents.length, {
         processSessions
       });
     });

@@ -73,7 +73,9 @@ const defaultRequestConfig = () => {
 // ========================================================================
 // TRANSFORMER UTILITIES
 // ========================================================================
-const MESSAGE_MAPPING = JSON.parse( fs.readFileSync(path.resolve(__dirname, `./data/message.json`)));
+const MESSAGE_MAPPING = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, `./data/message.json`))
+);
 
 // Get the IP address from the message.
 // NEED TO DEPRECATE
@@ -194,10 +196,11 @@ const constructPayload = (message, mappingJson) => {
 // get a field value from message.
 // check `data/message.json` for actual field precedence
 // Example usage: getFieldValueFromMessage(message, "userId")
-//                This will return "userId", "context.traits.userId", "context.traits.id", "anonymousId"
+//                This will return the first nonnull value from
+//                ["userId", "context.traits.userId", "context.traits.id", "anonymousId"]
 const getFieldValueFromMessage = (message, field) => {
   const sourceKey = MESSAGE_MAPPING[field];
-  if (mapping) {
+  if (sourceKey) {
     return getValueFromMessage(message, sourceKey);
   }
   return null;

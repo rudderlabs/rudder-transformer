@@ -4,7 +4,7 @@ const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues
-} = require("../util");
+} = require("../../util");
 const {
   ConfigCategory,
   mappingConfig,

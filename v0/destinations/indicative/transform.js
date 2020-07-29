@@ -1,45 +1,48 @@
-const get = require("get-value");
-const set = require("set-value");
-
 const { EventType } = require("../../../constants");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  ConfigCategory,
-  mappingConfig,
-  ENDPOINT,
-  API_VERSION
-} = require("./config");
-const {
-  removeUndefinedValues,
-  defaultPostRequestConfig,
-  defaultRequestConfig
-} = require("../util");
+  defaultRequestConfig,
+  getFieldValueFromMessage,
+  constructPayload,
+  defaultPostRequestConfig
+} = require("../../util");
 
 const responseBuilderSimple = (message, category, destination) => {
-
-}
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const responseBody = { ...payload, apiKey: destination.Config.apiKey };
+  const response = defaultRequestConfig();
+  response.endpoint = category.endPoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.userId = getFieldValueFromMessage(message, "userId");
+  response.body.JSON = responseBody;
+  return response;
+};
 
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
-  let category;
 
+  let category;
   switch (messageType) {
-    case EventType.PAGE:
-      category = ConfigCategory.PAGE;
-      break;
     case EventType.IDENTIFY:
-      category = ConfigCategory.IDENTIFY;
+      category = CONFIG_CATEGORIES.IDENTIFY;
       break;
     case EventType.TRACK:
-      category = ConfigCategory.TRACK;
+      category = CONFIG_CATEGORIES.TRACK;
       break;
     case EventType.ALIAS:
-      category = ConfigCategory.SCREEN;
+      category = CONFIG_CATEGORIES.ALIAS;
+      break;
+    case EventType.PAGE:
+      category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.SCREEN:
-      category = ConfigCategory.SCREEN;
+      category = CONFIG_CATEGORIES.SCREEN;
       break;
     default:
       throw new Error("Message type not supported");
@@ -50,13 +53,11 @@ const processEvent = (message, destination) => {
 };
 
 const process = event => {
-  let response;
   try {
-    response = processEvent(event.message, event.destination);
+    return processEvent(event.message, event.destination);
   } catch (error) {
     throw new Error(error.message || "Unknown error");
   }
-  return response;
 };
 
 exports.process = process;

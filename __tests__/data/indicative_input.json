@@ -94,7 +94,7 @@
     },
     "destination": {
       "Config": {
-        "trackingID": "abcde"
+        "apiKey": "abcde"
       }
     }
   },
@@ -194,7 +194,7 @@
     },
     "destination": {
       "Config": {
-        "trackingID": "abcde"
+        "apiKey": "abcde"
       }
     }
   }

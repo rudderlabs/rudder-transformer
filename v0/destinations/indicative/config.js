@@ -1,36 +1,28 @@
-const { getMappingConfig } = require("../util");
+const { getMappingConfig } = require("../../util");
 
-const ConfigCategory = {
-  PAGE: {
-    name: "LPPageConfig",
-    action: "advance"
+const BASE_ENDPOINT = "https://api.indicative.com/service";
+const TRACK_ENDPOINT = `${BASE_ENDPOINT}/event`;
+const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/identify`;
+const ALIAS_ENDPOINT = `${BASE_ENDPOINT}/alias`;
+
+const CONFIG_CATEGORIES = {
+  TRACK: {
+    endPoint: TRACK_ENDPOINT,
+    name: "INTrackConfig"
+  },
+  ALIAS: {
+    endPoint: ALIAS_ENDPOINT,
+    name: "INAliasConfig"
   },
   IDENTIFY: {
-    name: "LPIdentifyConfig",
-    action: "setUserAttributes"
-  },
-  TRACK: {
-    name: "LPTrackConfig",
-    action: "track"
-  },
-  SCREEN: {
-    name: "LPScreenConfig",
-    action: "advance"
-  },
-  START: {
-    name: "LPStartConfig",
-    action: "start"
+    endPoint: IDENTIFY_ENDPOINT,
+    name: "INIdentifyConfig"
   }
 };
 
-const ENDPOINT = "https://api.leanplum.com/api";
-const API_VERSION = "1.0.6";
-
-const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  ConfigCategory,
-  mappingConfig,
-  ENDPOINT,
-  API_VERSION
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG
 };

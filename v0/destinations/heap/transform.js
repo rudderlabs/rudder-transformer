@@ -5,7 +5,7 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig
-} = require("../util");
+} = require("../../util");
 
 function responseBuilder(payload, message, heapConfig) {
   const response = defaultRequestConfig();

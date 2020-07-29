@@ -8,7 +8,7 @@ const is = require("is");
 const extend = require("@ndhoule/extend");
 const each = require("component-each");
 const { EventType } = require("../../../constants");
-const { defaultGetRequestConfig, defaultRequestConfig } = require("../util");
+const { defaultGetRequestConfig, defaultRequestConfig } = require("../../util");
 const { ENDPOINT } = require("./config");
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js

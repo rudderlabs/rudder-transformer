@@ -12,7 +12,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig
-} = require("../util");
+} = require("../../util");
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {

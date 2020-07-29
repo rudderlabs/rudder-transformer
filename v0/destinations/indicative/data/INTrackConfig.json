@@ -1,0 +1,19 @@
+[
+  {
+    "destKey": "eventUniqueId",
+    "sourceKeys": [
+      "userId",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  { "destKey": "eventName", "sourceKeys": "event", "required": true },
+  { "destKey": "properties", "sourceKeys": "properties", "required": false },
+  {
+    "destKey": "eventTime",
+    "sourceKeys": ["originalTimestamp"],
+    "required": false
+  }
+]

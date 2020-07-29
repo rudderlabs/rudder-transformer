@@ -138,6 +138,14 @@ const getValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+// format the value as per the metadata values
+// Expected metadata keys are: template, type, format
+// - - template : need to have a handlebar expression {{value}}
+// - - type: expected data type
+const handleMetadataForValue = (value, metadata) => {
+
+}
+
 // construct payload from an event and mappingJson
 const constructPayload = (message, mappingJson) => {
   // Mapping JSON should be an array
@@ -152,33 +160,45 @@ const constructPayload = (message, mappingJson) => {
     // Expected mappingJson :
     // [
     //   {
-    //     "sourceKeys" : ["userId", "context.traits.userId", "context.traits.id", "anonymousId"],
-    //     "destKey" : "uniqueid",
-    //     "required": true
+    //     sourceKeys: [ "userId", "context.traits.userId", "context.traits.id", "anonymousId" ],
+    //     destKey: "uniqueid",
+    //     required: true
     //   },
     //   {
-    //     "sourceKeys" : "event"
-    //     "destKey" : "eventName",
-    //     "required": true
+    //     sourceKeys: "event",
+    //     destKey: "eventName",
+    //     required: true
     //   },
     //   {
-    //     "sourceKeys" : "event"
-    //     "destKey" : "eventName",
-    //     "required": true,
-    //     "template": "Visited {{value}} page"
+    //     sourceKeys: "event",
+    //     destKey: "eventName",
+    //     required: true,
+    //     metadata: {
+    //       template: "Visited {{value}} page"
+    //     }
+    //   },
+    //   {
+    //     sourceKeys: "originalTimestamp",
+    //     destKey: "timestamp",
+    //     required: true,
+    //     metadata: {
+    //       type: "timestamp",
+    //       typeFormat: "yyyymmdd"
+    //     }
     //   },
     //   ...
-    // ]
+    // ];
     mappingJson.forEach(mapping => {
-      const { sourceKeys, destKey, required, template } = mapping;
+      const { sourceKeys, destKey, required, metadata } = mapping;
       // get the value from event
       const value = getValueFromMessage(message, sourceKeys);
       if (value) {
         // set the value only if correct
-        if (template) {
+        if (metadata) {
           // check for template
           const hTemplate = Handlebars.compile(template.trim());
           payload[destKey] = hTemplate({ value });
+          payload[destKey] = handleMetadataForValue(value, metadata);
         } else {
           payload[destKey] = value;
         }

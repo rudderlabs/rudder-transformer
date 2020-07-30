@@ -139,12 +139,37 @@ const getValueFromMessage = (message, sourceKey) => {
 };
 
 // format the value as per the metadata values
-// Expected metadata keys are: template, type, format
+// Expected metadata keys are: (according to precedence)
+// - - type, typeFormat: expected data type and its format
 // - - template : need to have a handlebar expression {{value}}
-// - - type: expected data type
 const handleMetadataForValue = (value, metadata) => {
+  let formattedVal = value;
+  const { type, typeFormat, template } = metadata;
 
-}
+  // handle type and format
+  // skipping check for typeFormat to support default for each type
+  if (type) {
+    switch (type) {
+      case "timestamp":
+        formattedVal = new Date(value);
+        if (typeFormat) {
+          // handle typeFormat
+          // skipping as it's not needed for indicative
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  // handle template
+  if (template) {
+    const hTemplate = Handlebars.compile(template.trim());
+    formattedVal = hTemplate({ value });
+  }
+
+  return formattedVal;
+};
 
 // construct payload from an event and mappingJson
 const constructPayload = (message, mappingJson) => {
@@ -195,9 +220,6 @@ const constructPayload = (message, mappingJson) => {
       if (value) {
         // set the value only if correct
         if (metadata) {
-          // check for template
-          const hTemplate = Handlebars.compile(template.trim());
-          payload[destKey] = hTemplate({ value });
           payload[destKey] = handleMetadataForValue(value, metadata);
         } else {
           payload[destKey] = value;

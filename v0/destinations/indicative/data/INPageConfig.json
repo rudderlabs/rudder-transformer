@@ -9,7 +9,9 @@
     ],
     "required": true
   },
-  { "destKey": "eventName", "sourceKeys": "event", "required": true },
+  { "destKey": "eventName", "sourceKeys": "event", "required": true, "metadata": {
+    "template": "Visited {{value}} page"
+  } },
   { "destKey": "properties", "sourceKeys": "properties", "required": false },
   {
     "destKey": "eventTime",

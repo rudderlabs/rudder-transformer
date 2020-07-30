@@ -29,20 +29,20 @@ const processEvent = (message, destination) => {
 
   let category;
   switch (messageType) {
-    case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
-      break;
-    case EventType.TRACK:
-      category = CONFIG_CATEGORIES.TRACK;
-      break;
     case EventType.ALIAS:
       category = CONFIG_CATEGORIES.ALIAS;
+      break;
+    case EventType.IDENTIFY:
+      category = CONFIG_CATEGORIES.IDENTIFY;
       break;
     case EventType.PAGE:
       category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.SCREEN:
       category = CONFIG_CATEGORIES.SCREEN;
+      break;
+    case EventType.TRACK:
+      category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
       throw new Error("Message type not supported");

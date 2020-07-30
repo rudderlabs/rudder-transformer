@@ -76,13 +76,12 @@ function getUserAttributesObject(message, mappingJson) {
   const data = {};
   const destKeys = Object.keys(mappingJson);
   destKeys.forEach(destKey => {
-    // console.log("destKey:: ", destKey);
     const sourceKeys = mappingJson[destKey];
-    // console.log("sourceKeys :: ", sourceKeys);
+
     let value;
     for (let index = 0; index < sourceKeys.length; index += 1) {
       value = get(message, sourceKeys[index]);
-      // console.log("value: "+ value);
+
       if (value) {
         break;
       }
@@ -109,7 +108,6 @@ function getUserAttributesObject(message, mappingJson) {
   //   }
   // });
 
-  // console.log("final data", data);
   const reserved = [
     "avatar",
     "address",
@@ -308,7 +306,6 @@ function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  // console.log(JSON.stringify(message, null, 4));
 
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
@@ -357,7 +354,6 @@ function process(event) {
       break;
   }
 
-  // console.log(JSON.stringify(respList, null, 4));
   return respList;
 }
 

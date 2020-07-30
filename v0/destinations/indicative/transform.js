@@ -9,16 +9,19 @@ const {
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const responseBody = { ...payload, apiKey: destination.Config.apiKey };
-  const response = defaultRequestConfig();
-  response.endpoint = category.endPoint;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.userId = getFieldValueFromMessage(message, "userId");
-  response.body.JSON = responseBody;
-  return response;
+  if (payload) {
+    const responseBody = { ...payload, apiKey: destination.Config.apiKey };
+    const response = defaultRequestConfig();
+    response.endpoint = category.endPoint;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json"
+    };
+    response.userId = getFieldValueFromMessage(message, "userId");
+    response.body.JSON = responseBody;
+    return response;
+  }
+  throw new Error("Payload could not be constructed");
 };
 
 const processEvent = (message, destination) => {

@@ -11,7 +11,7 @@
   },
   {
     "destKey": "eventName",
-    "sourceKeys": "event",
+    "sourceKeys": "name",
     "required": true,
     "metadata": {
       "template": "Visited {{value}} page"

@@ -174,7 +174,7 @@ const handleMetadataForValue = (value, metadata) => {
 // construct payload from an event and mappingJson
 const constructPayload = (message, mappingJson) => {
   // Mapping JSON should be an array
-  if (Array.isArray(mappingJson)) {
+  if (Array.isArray(mappingJson) && mappingJson.length > 0) {
     // - construct a blank payload and return at the end
     // - if you to need merge multiple constructPayload do it on the transformer code
     // - - will give a cleaner approach
@@ -231,7 +231,11 @@ const constructPayload = (message, mappingJson) => {
         );
       }
     });
+
+    return payload;
   }
+
+  // invalid mappingJson
   return null;
 };
 

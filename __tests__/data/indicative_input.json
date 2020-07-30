@@ -26,9 +26,7 @@
       },
       "event": "spin_result",
       "integrations": {
-        "AM": true,
-        "All": false,
-        "GA": true
+        "AM": true
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
@@ -65,32 +63,12 @@
         "start_date": "2019-08-01",
         "total_payments": 0,
         "tournament_id": "T1561970819",
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2,
         "win_amount": 0
       },
-      "timestamp": "2019-09-01T15:46:51.693229+05:30",
-      "type": "track",
-      "user_properties": {
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "fb_profile": "0",
-        "game_fps": 30,
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": false,
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2
-      }
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
     },
     "destination": {
       "Config": {
@@ -98,104 +76,121 @@
       }
     }
   },
-
   {
     "message": {
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "channel": "web",
       "context": {
-        "device": {
-          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
-          "manufacturer": "Xiaomi",
-          "model": "Redmi 6",
-          "name": "xiaomi"
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
         },
-        "network": {
-          "carrier": "Banglalink"
-        },
-        "os": {
-          "name": "android",
-          "version": "8.1.0"
-        },
-        "traits": {
-          "address": {
-            "city": "Dhaka",
-            "country": "Bangladesh"
-          },
-          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
         }
       },
-      "event": "spin_result",
-      "integrations": {
-        "AM": true,
-        "All": false,
-        "GA": true
-      },
-      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
-      "properties": {
-        "additional_bet_index": 0,
-        "battle_id": "N/A",
-        "bet_amount": 9,
-        "bet_level": 1,
-        "bet_multiplier": 1,
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "days_in_game": 0,
-        "extra_param": "N/A",
-        "fb_profile": "0",
-        "featureGameType": "N/A",
-        "game_fps": 30,
-        "game_id": "fireEagleBase",
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": "False",
-        "is_auto_spin": "False",
-        "is_turbo": "False",
-        "isf": "False",
-        "ishighroller": "False",
-        "jackpot_win_amount": 90,
-        "jackpot_win_type": "Silver",
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "no_of_spin": 1,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "tournament_id": "T1561970819",
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2,
-        "win_amount": 0
-      },
-      "timestamp": "2019-09-01T15:46:51.693229+05:30",
-      "type": "track",
-      "user_properties": {
-        "coin_balance": 9466052,
-        "current_module_name": "CasinoGameModule",
-        "fb_profile": "0",
-        "game_fps": 30,
-        "game_name": "FireEagleSlots",
-        "gem_balance": 0,
-        "graphicsQuality": "HD",
-        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-        "internetReachability": "ReachableViaLocalAreaNetwork",
-        "isLowEndDevice": false,
-        "level": 6,
-        "lifetime_gem_balance": 0,
-        "player_total_battles": 0,
-        "player_total_shields": 0,
-        "start_date": "2019-08-01",
-        "total_payments": 0,
-        "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-        "versionSessionCount": 2
-      }
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
     },
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    }
+    "destination": { "Config": { "apiKey": "abcde" } }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": { "Config": { "apiKey": "abcde" } }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": { "All": true },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": { "Config": { "apiKey": "abcde" } }
   }
 ]

@@ -13,7 +13,7 @@
   { "destKey": "properties", "sourceKeys": "properties", "required": false },
   {
     "destKey": "eventTime",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
       "type": "timestamp"

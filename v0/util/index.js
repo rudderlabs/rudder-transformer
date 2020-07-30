@@ -151,7 +151,7 @@ const handleMetadataForValue = (value, metadata) => {
   if (type) {
     switch (type) {
       case "timestamp":
-        formattedVal = new Date(value);
+        formattedVal = new Date(value).getTime();
         if (typeFormat) {
           // handle typeFormat
           // skipping as it's not needed for indicative

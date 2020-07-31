@@ -50,12 +50,16 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) payload.external_id = message.userId;
+  if (message.userId) {
+    payload.external_id = message.userId;
+  }
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
-  if (message.userId) return setExternalId(payload, message);
+  if (message.userId) {
+    return setExternalId(payload, message);
+  }
 
   payload._update_existing_only = false;
   return setAliasObjectWithAnonId(payload, message);
@@ -69,18 +73,40 @@ function getIdentifyPayload(message) {
 }
 
 function getUserAttributesObject(message, mappingJson) {
-  const sourceKeys = Object.keys(mappingJson);
   const data = {};
-  sourceKeys.forEach(sourceKey => {
-    const value = get(message, sourceKey);
+  const destKeys = Object.keys(mappingJson);
+  destKeys.forEach(destKey => {
+    const sourceKeys = mappingJson[destKey];
+
+    let value;
+    for (let index = 0; index < sourceKeys.length; index += 1) {
+      value = get(message, sourceKeys[index]);
+
+      if (value) {
+        break;
+      }
+    }
+
     if (value) {
-      if (mappingJson[sourceKey] === "gender") {
-        data[mappingJson[sourceKey]] = formatGender(value);
+      if (destKey === "gender") {
+        data[destKey] = formatGender(value);
       } else {
-        data[mappingJson[sourceKey]] = value;
+        data[destKey] = value;
       }
     }
   });
+
+  // const sourceKeys = Object.keys(mappingJson);
+  // sourceKeys.forEach(sourceKey => {
+  //   const value = get(message, sourceKey);
+  //   if (value) {
+  //     if (mappingJson[sourceKey] === "gender") {
+  //       data[mappingJson[sourceKey]] = formatGender(value);
+  //     } else {
+  //       data[mappingJson[sourceKey]] = value;
+  //     }
+  //   }
+  // });
 
   const reserved = [
     "avatar",
@@ -106,13 +132,16 @@ function getUserAttributesObject(message, mappingJson) {
     "email_subscribe",
     "push_subscribe"
   ];
-  if (message.context && message.context.traits) {
+
+  const traits = message.traits || message.context.traits;
+
+  if (traits) {
     reserved.forEach(element => {
-      delete message.context.traits[element];
+      delete traits[element];
     });
 
-    Object.keys(message.context.traits).forEach(key => {
-      data[key] = message.context.traits[key];
+    Object.keys(traits).forEach(key => {
+      data[key] = traits[key];
     });
   }
 
@@ -277,7 +306,6 @@ function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  // console.log(JSON.stringify(message, null, 4));
 
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
@@ -326,7 +354,6 @@ function process(event) {
       break;
   }
 
-  // console.log(JSON.stringify(respList, null, 4));
   return respList;
 }
 

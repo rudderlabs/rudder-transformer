@@ -74,7 +74,7 @@ const defaultRequestConfig = () => {
 // TRANSFORMER UTILITIES
 // ========================================================================
 const MESSAGE_MAPPING = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, `./data/message.json`))
+  fs.readFileSync(path.resolve(__dirname, `./data/GenericFieldMapping.json`))
 );
 
 // Get the IP address from the message.

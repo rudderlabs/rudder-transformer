@@ -1,187 +1,223 @@
 [
   {
-    "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "context": {
-      "device": {
-        "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
-        "manufacturer": "Xiaomi",
-        "model": "Redmi 6",
-        "name": "xiaomi"
-      },
-      "network": {
-        "carrier": "Banglalink"
-      },
-      "os": {
-        "name": "android",
-        "version": "8.1.0"
-      },
-      "traits": {
-        "address": {
-          "city": "Dhaka",
-          "country": "Bangladesh"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/event",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventUniqueId": "test_user_id",
+        "eventName": "spin_result",
+        "properties": {
+          "additional_bet_index": 0,
+          "battle_id": "N/A",
+          "bet_amount": 9,
+          "bet_level": 1,
+          "bet_multiplier": 1,
+          "coin_balance": 9466052,
+          "current_module_name": "CasinoGameModule",
+          "days_in_game": 0,
+          "extra_param": "N/A",
+          "fb_profile": "0",
+          "featureGameType": "N/A",
+          "game_fps": 30,
+          "game_id": "fireEagleBase",
+          "game_name": "FireEagleSlots",
+          "gem_balance": 0,
+          "graphicsQuality": "HD",
+          "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+          "internetReachability": "ReachableViaLocalAreaNetwork",
+          "isLowEndDevice": "False",
+          "is_auto_spin": "False",
+          "is_turbo": "False",
+          "isf": "False",
+          "ishighroller": "False",
+          "jackpot_win_amount": 90,
+          "jackpot_win_type": "Silver",
+          "level": 6,
+          "lifetime_gem_balance": 0,
+          "no_of_spin": 1,
+          "player_total_battles": 0,
+          "player_total_shields": 0,
+          "start_date": "2019-08-01",
+          "total_payments": 0,
+          "tournament_id": "T1561970819",
+          "versionSessionCount": 2,
+          "win_amount": 0
         },
-        "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
-      }
+        "eventTime": 1567352811693,
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "event": "spin_result",
-    "integrations": {
-      "AM": true,
-      "All": false,
-      "GA": true
-    },
-    "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
-    "properties": {
-      "additional_bet_index": 0,
-      "battle_id": "N/A",
-      "bet_amount": 9,
-      "bet_level": 1,
-      "bet_multiplier": 1,
-      "coin_balance": 9466052,
-      "current_module_name": "CasinoGameModule",
-      "days_in_game": 0,
-      "extra_param": "N/A",
-      "fb_profile": "0",
-      "featureGameType": "N/A",
-      "game_fps": 30,
-      "game_id": "fireEagleBase",
-      "game_name": "FireEagleSlots",
-      "gem_balance": 0,
-      "graphicsQuality": "HD",
-      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-      "internetReachability": "ReachableViaLocalAreaNetwork",
-      "isLowEndDevice": "False",
-      "is_auto_spin": "False",
-      "is_turbo": "False",
-      "isf": "False",
-      "ishighroller": "False",
-      "jackpot_win_amount": 90,
-      "jackpot_win_type": "Silver",
-      "level": 6,
-      "lifetime_gem_balance": 0,
-      "no_of_spin": 1,
-      "player_total_battles": 0,
-      "player_total_shields": 0,
-      "start_date": "2019-08-01",
-      "total_payments": 0,
-      "tournament_id": "T1561970819",
-      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "versionSessionCount": 2,
-      "win_amount": 0
-    },
-    "timestamp": "2019-09-01T15:46:51.693229+05:30",
-    "type": "track",
-    "user_properties": {
-      "coin_balance": 9466052,
-      "current_module_name": "CasinoGameModule",
-      "fb_profile": "0",
-      "game_fps": 30,
-      "game_name": "FireEagleSlots",
-      "gem_balance": 0,
-      "graphicsQuality": "HD",
-      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-      "internetReachability": "ReachableViaLocalAreaNetwork",
-      "isLowEndDevice": false,
-      "level": 6,
-      "lifetime_gem_balance": 0,
-      "player_total_battles": 0,
-      "player_total_shields": 0,
-      "start_date": "2019-08-01",
-      "total_payments": 0,
-      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "versionSessionCount": 2
-    }
+    "files": {},
+    "userId": "test_user_id"
   },
-
   {
-    "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "context": {
-      "device": {
-        "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
-        "manufacturer": "Xiaomi",
-        "model": "Redmi 6",
-        "name": "xiaomi"
-      },
-      "network": {
-        "carrier": "Banglalink"
-      },
-      "os": {
-        "name": "android",
-        "version": "8.1.0"
-      },
-      "traits": {
-        "address": {
-          "city": "Dhaka",
-          "country": "Bangladesh"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/identify",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "uniqueId": "123456",
+        "properties": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
         },
-        "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
-      }
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "event": "spin_result",
-    "integrations": {
-      "AM": true,
-      "All": false,
-      "GA": true
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/identify",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "uniqueId": "123456",
+        "properties": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
-    "properties": {
-      "additional_bet_index": 0,
-      "battle_id": "N/A",
-      "bet_amount": 9,
-      "bet_level": 1,
-      "bet_multiplier": 1,
-      "coin_balance": 9466052,
-      "current_module_name": "CasinoGameModule",
-      "days_in_game": 0,
-      "extra_param": "N/A",
-      "fb_profile": "0",
-      "featureGameType": "N/A",
-      "game_fps": 30,
-      "game_id": "fireEagleBase",
-      "game_name": "FireEagleSlots",
-      "gem_balance": 0,
-      "graphicsQuality": "HD",
-      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-      "internetReachability": "ReachableViaLocalAreaNetwork",
-      "isLowEndDevice": "False",
-      "is_auto_spin": "False",
-      "is_turbo": "False",
-      "isf": "False",
-      "ishighroller": "False",
-      "jackpot_win_amount": 90,
-      "jackpot_win_type": "Silver",
-      "level": 6,
-      "lifetime_gem_balance": 0,
-      "no_of_spin": 1,
-      "player_total_battles": 0,
-      "player_total_shields": 0,
-      "start_date": "2019-08-01",
-      "total_payments": 0,
-      "tournament_id": "T1561970819",
-      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "versionSessionCount": 2,
-      "win_amount": 0
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/event",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventUniqueId": "12345",
+        "eventName": "Visited ApplicationLoaded page",
+        "properties": {
+          "path": "/test",
+          "referrer": "Rudder",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "www.rudderlabs.com"
+        },
+        "eventTime": 1571051718299,
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "timestamp": "2019-09-01T15:46:51.693229+05:30",
-    "type": "track",
-    "user_properties": {
-      "coin_balance": 9466052,
-      "current_module_name": "CasinoGameModule",
-      "fb_profile": "0",
-      "game_fps": 30,
-      "game_name": "FireEagleSlots",
-      "gem_balance": 0,
-      "graphicsQuality": "HD",
-      "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
-      "internetReachability": "ReachableViaLocalAreaNetwork",
-      "isLowEndDevice": false,
-      "level": 6,
-      "lifetime_gem_balance": 0,
-      "player_total_battles": 0,
-      "player_total_shields": 0,
-      "start_date": "2019-08-01",
-      "total_payments": 0,
-      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "versionSessionCount": 2
-    }
+    "files": {},
+    "userId": "12345"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/event",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventUniqueId": "test_user_id",
+        "eventName": "Visited spin_result screen",
+        "properties": {
+          "additional_bet_index": 0,
+          "battle_id": "N/A",
+          "bet_amount": 9,
+          "bet_level": 1,
+          "bet_multiplier": 1,
+          "coin_balance": 9466052,
+          "current_module_name": "CasinoGameModule",
+          "days_in_game": 0,
+          "extra_param": "N/A",
+          "fb_profile": "0",
+          "featureGameType": "N/A",
+          "game_fps": 30,
+          "game_id": "fireEagleBase",
+          "game_name": "FireEagleSlots",
+          "gem_balance": 0,
+          "graphicsQuality": "HD",
+          "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+          "internetReachability": "ReachableViaLocalAreaNetwork",
+          "isLowEndDevice": "False",
+          "is_auto_spin": "False",
+          "is_turbo": "False",
+          "isf": "False",
+          "ishighroller": "False",
+          "jackpot_win_amount": 90,
+          "jackpot_win_type": "Silver",
+          "level": 6,
+          "lifetime_gem_balance": 0,
+          "no_of_spin": 1,
+          "player_total_battles": 0,
+          "player_total_shields": 0,
+          "start_date": "2019-08-01",
+          "total_payments": 0,
+          "tournament_id": "T1561970819",
+          "versionSessionCount": 2,
+          "win_amount": 0
+        },
+        "eventTime": 1567352811693,
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "test_user_id"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.indicative.com/service/alias",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "previousId": "test_previous_id",
+        "newId": "test_new_user_id",
+        "apiKey": "abcde"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "test_new_user_id"
   }
 ]
+

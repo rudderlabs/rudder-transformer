@@ -21,6 +21,7 @@ const responseBuilderSimple = (message, category, destination) => {
     response.body.JSON = responseBody;
     return response;
   }
+  // fail-safety for developer error
   throw new Error("Payload could not be constructed");
 };
 

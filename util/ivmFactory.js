@@ -1,10 +1,47 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
-const { getPool } = require("./ivmPool");
 const logger = require("../logger");
+const { string } = require("is");
 
-async function runUserTransform(events, code, eventsMetadata) {
+async function createIvm(versionId) {
+  //   const codeRes = await getTransformationCode(versionId);
+  //   const { code } = codeRes;
+  let code = `/***
+* Docs: https://docs.rudderstack.com/getting-started/adding-a-new-user-transformation-in-rudderstack
+* Examples: https://github.com/rudderlabs/sample-user-transformers
+***/
+
+function transform(events) {
+  let cleanEvents = events.map(ev => {
+      ev.metadata = metadata(ev)
+    return ev
+  });
+  
+
+  return cleanEvents;
+}
+`;
+  code = code.replace("metadata(", "metadata(eventsMetadata, ");
+
+  const match = `function transform(events) {
+`;
+  const replacement = `
+function metadata(eventsMetadata, event) {
+    log("Inside modified code");
+    log(eventsMetadata);
+    return eventsMetadata[event.messageId] || {};
+}
+
+function transform(fullEvents) {
+  const events = fullEvents.map(event => event.message);
+  const eventsMetadata = {};
+  fullEvents.forEach(ev => {
+    eventsMetadata[ev.message.messageId] = ev.metadata;
+  });
+`;
+  code = code.replace(match, replacement);
+  logger.debug(`Shanmukh-Code : ${code}`);
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
@@ -35,19 +72,14 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(() => {
-      // console.log("Log: ", ...args);
-    })
+    new ivm.Reference(
+      ...args => {
+        console.log("Log: ", ...args);
+      }
+    )
   );
 
-  jail.setSync(
-    "_metadata",
-    new ivm.Reference((...args) => {
-      const eventMetadata = args[0][args[1].messageId] || {};
-      return new ivm.ExternalCopy(eventMetadata).copyInto();
-    })
-  );
-
+  logger.debug("Shanmukh: Before compile in factory");
   const bootstrap = await isolate.compileScript(
     "new " +
       `
@@ -90,21 +122,6 @@ async function runUserTransform(events, code, eventsMetadata) {
           );
         };
 
-        // Now we create the other half of the 'metadata' function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to metadata log function above.
-        let metadata = _metadata;
-        delete _metadata;
-        global.metadata = function(...args) {
-          // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // 'applyIgnored' calls 'metadata' asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from 'metadata'.
-          return metadata.applySync(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-            );
-          };
-        
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -130,7 +147,11 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
+  logger.debug("Shanmukh: After compile in factory");
+
+  logger.debug("Shanmukh in factory");
   logger.debug(bootstrapScriptResult);
+
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
 
@@ -157,95 +178,20 @@ async function runUserTransform(events, code, eventsMetadata) {
   const fnRef = supportedFuncs[0];
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true
-    });
-    try {
-      await bootstrapScriptResult.apply(undefined, [
-        fnRef,
-        new ivm.Reference(resolve),
-        sharedMessagesList
-      ]);
-    } catch (error) {
-      reject(error.message);
-    }
-  });
-  let result;
-  try {
-    const timeoutPromise = new Promise(resolve => {
-      const wait = setTimeout(() => {
-        clearTimeout(wait);
-        resolve("Timedout");
-      }, 4000);
-    });
-    result = await Promise.race([executionPromise, timeoutPromise]);
-    if (result === "Timedout") {
-      throw new Error("Timed out");
-    }
-  } catch (error) {
-    isolate.dispose();
-    throw error;
-  }
-  isolate.dispose();
-  return result;
+  return { isolate, jail, bootstrapScriptResult, context, fnRef };
 }
 
-async function transform(isolatevm, events) {
-  // TODO : check if we can resolve this
-  // eslint-disable-next-line no-async-promise-executor
-  const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true
-    });
-    try {
-      logger.debug("Shanmukh: Before apply");
-      logger.debug(isolatevm.bootstrapScriptResult);
-      await isolatevm.bootstrapScriptResult.apply(undefined, [
-        isolatevm.fnRef,
-        new ivm.Reference(resolve),
-        sharedMessagesList
-      ]);
-      logger.debug("Shanmukh: After apply");
-    } catch (error) {
-      reject(error.message);
-      logger.debug("Shanmukh: Some error caught with message : ");
-      logger.debug("Shanmukh");
-      logger.debug(error);
+async function getFactory(versionId) {
+  const factory = {
+    create: () => {
+      return createIvm(versionId);
+    },
+    destroy: client => {
+      client.isolate.dispose();
     }
-    logger.debug("Shanmukh: After try-catch");
-  });
-  const timeoutPromise = new Promise(resolve => {
-    const wait = setTimeout(() => {
-      clearTimeout(wait);
-      resolve("Timedout");
-    }, 4000);
-  });
-  const result = await Promise.race([executionPromise, timeoutPromise]);
-  if (result === "Timedout") {
-    throw new Error("Timed out");
-  }
-  logger.debug("Shanmukh-result");
-  logger.debug(result);
-  return result;
+  };
+
+  return factory;
 }
 
-async function userTransformHandler(events, versionId) {
-  if (versionId) {
-    logger.debug("Shanmukh:userTransformHandler");
-    const isolatevmPool = await getPool(versionId);
-    logger.debug("Shanmukh:gotPool");
-    const isolatevm = await isolatevmPool.acquire();
-    logger.debug(isolatevm);
-    logger.debug("Shanmukh:gotIsolateVM");
-    const transformedEvents = await transform(isolatevm, events);
-    logger.debug("Shanmukh:transformedEvents");
-    isolatevmPool.release(isolatevm);
-    return transformedEvents;
-    // Events contain message and destination. We take the message part of event and run transformation on it.
-    // And put back the destination after transforrmation
-  }
-  return events;
-}
-
-exports.userTransformHandler = userTransformHandler;
+exports.getFactory = getFactory;

@@ -22,7 +22,7 @@ async function getTransformationCode(versionId) {
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime);
     const myJson = await response.json();
-    myCache.set(versionId, myJson, 5 * 60);
+    myCache.set(versionId, myJson, 5 * 60); // TODO 1 day ttl
     return myJson;
   } catch (error) {
     logger.error(error);

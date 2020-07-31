@@ -5,9 +5,7 @@ const levelInfo = 1; // Logs about state of the application
 const levelError = 2; // Logs about errors which dont immediately halt the application
 const levelNone = 3; // Nothing is logged
 
-const logLevel = process.env.LOG_LEVEL
-  ? parseInt(process.env.LOG_LEVEL, 10)
-  : levelInfo;
+const logLevel = 0;
 
 const debug = (msg, ...optionalParams) => {
   if (levelDebug >= logLevel) {

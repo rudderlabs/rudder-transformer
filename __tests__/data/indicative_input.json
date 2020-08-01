@@ -1,5 +1,6 @@
 [
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -69,14 +70,10 @@
       "userId": "test_user_id",
       "timestamp": "2019-09-01T15:46:51.693Z",
       "type": "track"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
     }
   },
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "channel": "web",
       "context": {
@@ -112,10 +109,10 @@
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": { "Config": { "apiKey": "abcde" } }
+    }
   },
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "channel": "web",
       "context": {
@@ -153,10 +150,10 @@
       "userId": "123456",
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": { "Config": { "apiKey": "abcde" } }
+    }
   },
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "channel": "web",
       "context": {
@@ -190,10 +187,10 @@
       "integrations": { "All": true },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": { "Config": { "apiKey": "abcde" } }
+    }
   },
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -264,19 +261,10 @@
       "timestamp": "2019-09-01T15:46:51.693Z",
       "originalTimestamp": "2019-09-01T15:46:51.693Z",
       "type": "screen"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
     }
   },
   {
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    },
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "channel": "web",
@@ -323,11 +311,7 @@
     }
   },
   {
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    },
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "channel": "web",
@@ -373,6 +357,7 @@
     }
   },
   {
+    "destination": { "Config": { "apiKey": "abcde" } },
     "message": {
       "channel": "web",
       "context": {
@@ -408,7 +393,6 @@
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": { "Config": { "apiKey": "abcde" } }
+    }
   }
 ]

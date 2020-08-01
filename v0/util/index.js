@@ -25,6 +25,53 @@ const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 
 // ========================================================================
+// GENERIC UTLITY
+// ========================================================================
+
+const isPrimitive = arg => {
+  const type = typeof arg;
+  return arg == null || (type !== "object" && type !== "function");
+};
+
+const formatValue = value => {
+  if (!value || value < 0) return 0;
+  return Math.round(value);
+};
+
+// Format the destination.Config.dynamicMap arrays to hashMap
+const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
+  const hashMap = {};
+  arrays.forEach(array => {
+    hashMap[array[fromKey]] = array[toKey];
+  });
+  return hashMap;
+};
+
+// Important !@!
+// format date in yyyymmdd format
+// NEED TO DEPRECATE
+const getDateInFormat = date => {
+  const x = new Date(date);
+  const y = x.getFullYear().toString();
+  let m = (x.getMonth() + 1).toString();
+  let d = x.getDate().toString();
+  d = d.length === 1 ? d : `0${d}`;
+  m = m.length === 1 ? m : `0${m}`;
+  const yyyymmdd = y + m + d;
+  return yyyymmdd;
+};
+
+// Important !@!
+// Generic timestamp formatter
+const formatTimeStamp = (dateStr, format) => {
+  const date = new Date(dateStr);
+  switch (format) {
+    default:
+      return date.getTime();
+  }
+};
+
+// ========================================================================
 // REQUEST FORMAT METHODS
 // ========================================================================
 
@@ -115,7 +162,6 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 // - get value from a list of sourceKeys in precedence order
 // - get value from a string key
 const getValueFromMessage = (message, sourceKey) => {
-  // TODO: add multiple datatypes or do it in it's sister method. (start with datetime?)
   if (Array.isArray(sourceKey) || sourceKey.length === 0) {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
@@ -151,11 +197,7 @@ const handleMetadataForValue = (value, metadata) => {
   if (type) {
     switch (type) {
       case "timestamp":
-        formattedVal = new Date(value).getTime();
-        if (typeFormat) {
-          // handle typeFormat
-          // skipping as it's not needed for indicative
-        }
+        formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
       default:
         break;
@@ -280,42 +322,6 @@ const setValues = (payload, message, mappingJson) => {
     });
   }
   return payload;
-};
-
-// ========================================================================
-// GENERIC UTLITY
-// ========================================================================
-
-const isPrimitive = arg => {
-  const type = typeof arg;
-  return arg == null || (type !== "object" && type !== "function");
-};
-
-const formatValue = value => {
-  if (!value || value < 0) return 0;
-  return Math.round(value);
-};
-
-// Format the destination.Config.dynamicMap arrays to hashMap
-const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
-  const hashMap = {};
-  arrays.forEach(array => {
-    hashMap[array[fromKey]] = array[toKey];
-  });
-  return hashMap;
-};
-
-// Important !@!
-// format date in yyyymmdd format
-const getDateInFormat = date => {
-  const x = new Date(date);
-  const y = x.getFullYear().toString();
-  let m = (x.getMonth() + 1).toString();
-  let d = x.getDate().toString();
-  d = d.length === 1 ? d : `0${d}`;
-  m = m.length === 1 ? m : `0${m}`;
-  const yyyymmdd = y + m + d;
-  return yyyymmdd;
 };
 
 // ========================================================================

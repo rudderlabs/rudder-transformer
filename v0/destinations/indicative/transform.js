@@ -32,6 +32,7 @@ const processEvent = (message, destination) => {
   const messageType = message.type.toLowerCase();
 
   let category;
+  const respList = [];
   switch (messageType) {
     case EventType.ALIAS:
       category = CONFIG_CATEGORIES.ALIAS;
@@ -53,7 +54,16 @@ const processEvent = (message, destination) => {
   }
 
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  respList.push(responseBuilderSimple(message, category, destination));
+
+  if (messageType === EventType.IDENTIFY) {
+    // append an alias call with anonymousId and userId for identity resolution
+    respList.push(
+      responseBuilderSimple(message, CONFIG_CATEGORIES.ALIAS, destination)
+    );
+  }
+
+  return respList;
 };
 
 const process = event => {

@@ -2,26 +2,10 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const logger = require("../logger");
-const { string } = require("is");
 
 async function createIvm(versionId) {
-  //   const codeRes = await getTransformationCode(versionId);
-  //   const { code } = codeRes;
-  let code = `/***
-* Docs: https://docs.rudderstack.com/getting-started/adding-a-new-user-transformation-in-rudderstack
-* Examples: https://github.com/rudderlabs/sample-user-transformers
-***/
-
-function transform(events) {
-  let cleanEvents = events.map(ev => {
-      ev.metadata = metadata(ev)
-    return ev
-  });
-  
-
-  return cleanEvents;
-}
-`;
+  const codeRes = await getTransformationCode(versionId);
+  let { code } = codeRes;
   code = code.replace("metadata(", "metadata(eventsMetadata, ");
 
   const match = `function transform(events) {
@@ -41,7 +25,6 @@ function transform(fullEvents) {
   });
 `;
   code = code.replace(match, replacement);
-  logger.debug(`Shanmukh-Code : ${code}`);
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
@@ -79,7 +62,6 @@ function transform(fullEvents) {
     )
   );
 
-  logger.debug("Shanmukh: Before compile in factory");
   const bootstrap = await isolate.compileScript(
     "new " +
       `
@@ -147,10 +129,6 @@ function transform(fullEvents) {
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
-  logger.debug("Shanmukh: After compile in factory");
-
-  logger.debug("Shanmukh in factory");
-  logger.debug(bootstrapScriptResult);
 
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);

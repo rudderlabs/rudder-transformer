@@ -130,7 +130,7 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
-  logger.debug(bootstrapScriptResult);
+
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
 
@@ -199,21 +199,14 @@ async function transform(isolatevm, events) {
       transferIn: true
     });
     try {
-      logger.debug("Shanmukh: Before apply");
-      logger.debug(isolatevm.bootstrapScriptResult);
       await isolatevm.bootstrapScriptResult.apply(undefined, [
         isolatevm.fnRef,
         new ivm.Reference(resolve),
         sharedMessagesList
       ]);
-      logger.debug("Shanmukh: After apply");
     } catch (error) {
-      reject(error.message);
-      logger.debug("Shanmukh: Some error caught with message : ");
-      logger.debug("Shanmukh");
       logger.debug(error);
     }
-    logger.debug("Shanmukh: After try-catch");
   });
   const timeoutPromise = new Promise(resolve => {
     const wait = setTimeout(() => {
@@ -225,21 +218,14 @@ async function transform(isolatevm, events) {
   if (result === "Timedout") {
     throw new Error("Timed out");
   }
-  logger.debug("Shanmukh-result");
-  logger.debug(result);
   return result;
 }
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
-    logger.debug("Shanmukh:userTransformHandler");
     const isolatevmPool = await getPool(versionId);
-    logger.debug("Shanmukh:gotPool");
     const isolatevm = await isolatevmPool.acquire();
-    logger.debug(isolatevm);
-    logger.debug("Shanmukh:gotIsolateVM");
     const transformedEvents = await transform(isolatevm, events);
-    logger.debug("Shanmukh:transformedEvents");
     isolatevmPool.release(isolatevm);
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.

@@ -17,17 +17,21 @@ destinations.forEach(integration => {
     describe(`Destination [${version}], [${integration}]`, () => {
       it(`Test - `, async () => {
         const dataFile = readFileSync(
-          path.resolve(__dirname, `./data/${integration}.json`)
+          path.resolve(__dirname, `./data/destination/${integration}.json`)
         );
 
         const transformer = require(`../${version}/destinations/${integration}/transform`);
         const testData = JSON.parse(dataFile);
         testData.forEach(async destination => {
-          let output = await transformer.process(destination.input);
-          if (!Array.isArray(output)) {
-            output = [output];
+          try {
+            let output = await transformer.process(destination.input);
+            if (!Array.isArray(output)) {
+              output = [output];
+            }
+            expect(output).toEqual(destination.output);
+          } catch (error) {
+            expect(error.message).toEqual(destination.output[0].error);
           }
-          expect(output).toEqual(destination.output);
         });
       });
     });

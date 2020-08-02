@@ -1,1 +1,192 @@
-[{"input": {"message": {"request_ip": "[::1]:53513", "timestamp": "2020-04-17T20:12:44.758+05:30", "userId": "user12345", "integrations": {"All": true}, "receivedAt": "2020-04-17T20:12:44.758+05:30", "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd", "channel": "web", "context": {"locale": "en-GB", "app": {"version": "1.1.1-rc.2", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.1.1-rc.2", "name": "RudderLabs JavaScript SDK"}, "page": {"url": "http://localhost/tests/html/index4.html", "path": "/tests/html/index4.html", "search": "", "title": "", "referrer": ""}, "traits": {"age": 23, "email": "testmp@rudderstack.com", "firstname": "Test Kafka"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "fad9b3fb-5778-4db3-9fb6-7168b554191f", "type": "identify", "originalTimestamp": "2020-04-17T14:42:44.722Z", "sentAt": "2020-04-17T14:42:44.722Z"}, "destination": {"Transformations": [], "Enabled": true, "IsProcessorEnabled": true, "Config": {"customMappings": [{"to": "Signup", "from": "0001"}], "apiKey": "1d6583b196d34de28a3g19ahadde4b0z", "triggerId": "00XX"}, "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v", "DestinationDefinition": {"Config": {"excludeKeys": [], "includeKeys": []}, "DisplayName": "Autopilot", "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo", "Name": "AUTOPILOT"}, "Name": "Autopilot"}, "metadata": {"sourceId": "1afjLW184k0nlnvtRlNcTO4TexW", "destinationType": "AUTOPILOT", "jobId": 3, "destinationId": "1afjtc6chkhdeKsXYrNFOzR5D9v", "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd", "messageId": "fad9b3fb-5778-4db3-9fb6-7168b554191f"}}, "output": [{"body": {"XML": {}, "JSON": {"contact": {"Email": "testmp@rudderstack.com"}}, "FORM": {}}, "files": {}, "endpoint": "https://api2.autopilothq.com/v1/contact", "userId": "user12345", "headers": {"Content-Type": "application/json", "Accept": "application/json", "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z"}, "version": "1", "params": {}, "type": "REST", "method": "POST", "statusCode": 200}]}, {"input": {"message": {"request_ip": "[::1]:53512", "timestamp": "2020-04-17T20:12:44.757+05:30", "userId": "user12345", "integrations": {"All": true}, "properties": {"test_prop_2": 1232, "test_prop_1": "test prop"}, "receivedAt": "2020-04-17T20:12:44.758+05:30", "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd", "originalTimestamp": "2020-04-17T14:42:44.724Z", "context": {"locale": "en-GB", "app": {"version": "1.1.1-rc.2", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.1.1-rc.2", "name": "RudderLabs JavaScript SDK"}, "page": {"url": "http://localhost/tests/html/index4.html", "path": "/tests/html/index4.html", "search": "", "title": "", "referrer": ""}, "traits": {"age": 23, "email": "testmp@rudderstack.com", "firstname": "Test Kafka"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "37b75e61-9bd2-4fb8-91ed-e3a064905f3a", "type": "track", "event": "test track with property", "channel": "web", "sentAt": "2020-04-17T14:42:44.725Z"}, "destination": {"Transformations": [], "Enabled": true, "IsProcessorEnabled": true, "Config": {"customMappings": [{"to": "Signup", "from": "0001"}], "apiKey": "1d6583b196d34de28a3g19ahadde4b0z", "triggerId": "00XX"}, "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v", "DestinationDefinition": {"Config": {"excludeKeys": [], "includeKeys": []}, "DisplayName": "Autopilot", "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo", "Name": "AUTOPILOT"}, "Name": "Autopilot"}, "metadata": {"sourceId": "1afjLW184k0nlnvtRlNcTO4TexW", "destinationType": "AUTOPILOT", "jobId": 4, "destinationId": "1afjtc6chkhdeKsXYrNFOzR5D9v", "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd", "messageId": "37b75e61-9bd2-4fb8-91ed-e3a064905f3a"}}, "output": [{"body": {"XML": {}, "JSON": {"property": {"test_prop_2": 1232, "test_prop_1": "test prop"}}, "FORM": {}}, "files": {}, "endpoint": "https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com", "userId": "user12345", "headers": {"Content-Type": "application/json", "Accept": "application/json", "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z"}, "version": "1", "params": {}, "type": "REST", "method": "POST", "statusCode": 200}]}]
+[
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53513",
+        "timestamp": "2020-04-17T20:12:44.758+05:30",
+        "userId": "user12345",
+        "integrations": { "All": true },
+        "receivedAt": "2020-04-17T20:12:44.758+05:30",
+        "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+        "channel": "web",
+        "context": {
+          "locale": "en-GB",
+          "app": {
+            "version": "1.1.1-rc.2",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.1.1-rc.2",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "page": {
+            "url": "http://localhost/tests/html/index4.html",
+            "path": "/tests/html/index4.html",
+            "search": "",
+            "title": "",
+            "referrer": ""
+          },
+          "traits": {
+            "age": 23,
+            "email": "testmp@rudderstack.com",
+            "firstname": "Test Kafka"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "fad9b3fb-5778-4db3-9fb6-7168b554191f",
+        "type": "identify",
+        "originalTimestamp": "2020-04-17T14:42:44.722Z",
+        "sentAt": "2020-04-17T14:42:44.722Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "IsProcessorEnabled": true,
+        "Config": {
+          "customMappings": [{ "to": "Signup", "from": "0001" }],
+          "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+          "triggerId": "00XX"
+        },
+        "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "DestinationDefinition": {
+          "Config": { "excludeKeys": [], "includeKeys": [] },
+          "DisplayName": "Autopilot",
+          "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo",
+          "Name": "AUTOPILOT"
+        },
+        "Name": "Autopilot"
+      },
+      "metadata": {
+        "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW",
+        "destinationType": "AUTOPILOT",
+        "jobId": 3,
+        "destinationId": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+        "messageId": "fad9b3fb-5778-4db3-9fb6-7168b554191f"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": { "contact": { "Email": "testmp@rudderstack.com" } },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api2.autopilothq.com/v1/contact",
+        "userId": "user12345",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:53512",
+        "timestamp": "2020-04-17T20:12:44.757+05:30",
+        "userId": "user12345",
+        "integrations": { "All": true },
+        "properties": { "test_prop_2": 1232, "test_prop_1": "test prop" },
+        "receivedAt": "2020-04-17T20:12:44.758+05:30",
+        "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "context": {
+          "locale": "en-GB",
+          "app": {
+            "version": "1.1.1-rc.2",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.1.1-rc.2",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "page": {
+            "url": "http://localhost/tests/html/index4.html",
+            "path": "/tests/html/index4.html",
+            "search": "",
+            "title": "",
+            "referrer": ""
+          },
+          "traits": {
+            "age": 23,
+            "email": "testmp@rudderstack.com",
+            "firstname": "Test Kafka"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "37b75e61-9bd2-4fb8-91ed-e3a064905f3a",
+        "type": "track",
+        "event": "test track with property",
+        "channel": "web",
+        "sentAt": "2020-04-17T14:42:44.725Z"
+      },
+      "destination": {
+        "Transformations": [],
+        "Enabled": true,
+        "IsProcessorEnabled": true,
+        "Config": {
+          "customMappings": [{ "to": "Signup", "from": "0001" }],
+          "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+          "triggerId": "00XX"
+        },
+        "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "DestinationDefinition": {
+          "Config": { "excludeKeys": [], "includeKeys": [] },
+          "DisplayName": "Autopilot",
+          "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo",
+          "Name": "AUTOPILOT"
+        },
+        "Name": "Autopilot"
+      },
+      "metadata": {
+        "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW",
+        "destinationType": "AUTOPILOT",
+        "jobId": 4,
+        "destinationId": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+        "messageId": "37b75e61-9bd2-4fb8-91ed-e3a064905f3a"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "property": { "test_prop_2": 1232, "test_prop_1": "test prop" }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com",
+        "userId": "user12345",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST",
+        "statusCode": 200
+      }
+    ]
+  }
+]

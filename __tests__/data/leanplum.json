@@ -1,1 +1,2267 @@
-[{"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id2", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key__", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key__"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key__"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id3", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id3", "type": "page", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"name": "Test Page Name", "integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id3", "type": "page", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "Test Page Name", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id4", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id5", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id6", "type": "screen", "properties": {"automatic": true}, "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"error": "One of [\"properties.name\",\"event\"] is required", "statusCode": 400}]}, {"input": {"message": {"integrations": {"All": true}, "anonymousId": "00000000000000000000000000", "channel": "web", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"country": "India", "createAt": "2019-10-14T09:03:17.562Z", "city": "Delhi", "id": "some_developer_id", "address": {"country": "USA", "city": "NY"}}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "84e26acc-56a5-4835-8233-591137fca468", "type": "identify", "originalTimestamp": "2019-10-14T09:03:17.562Z", "sentAt": "2019-10-14T09:03:22.563Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"city": "NY", "newUserId": "some_developer_id", "created": 1571043798, "locale": "en-US", "country": "USA", "time": 1571043798, "userId": "00000000000000000000000000", "apiVersion": "1.0.6", "devMode": true, "userAttributes": {"country": "India", "createAt": "2019-10-14T09:03:17.562Z", "id": "some_developer_id", "address": {"country": "USA", "city": "NY"}, "city": "Delhi"}, "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "00000000000000000000000000", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "setUserAttributes"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "screen", "event": "MainActivity", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "state": "MainActivity", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "advance"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "screen", "properties": {"automatic": true}, "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"error": "One of [\"properties.name\",\"event\"] is required", "statusCode": 400}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "track", "event": "account: logged out", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"devMode": true, "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "params": {"automatic": true, "name": "MainActivity"}, "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key", "event": "account: logged out"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "track"}, "type": "REST", "method": "POST"}]}, {"input": {"message": {"integrations": {"All": true}, "properties": {"currency": "USD", "total": 2.45, "automatic": true, "name": "MainActivity"}, "anonymousId": "5094f5704b9cf2b3", "originalTimestamp": "2020-03-12T09:05:03.421Z", "context": {"network": {"carrier": "Android", "wifi": true, "cellular": true, "bluetooth": false}, "locale": "en-US", "app": {"version": "1.0", "namespace": "com.android.SampleLeanPlum", "build": "1", "name": "LeanPlumIntegrationAndroid"}, "library": {"version": "1.0.1-beta.1", "name": "com.rudderstack.android.sdk.core"}, "traits": {"anonymousId": "5094f5704b9cf2b3"}, "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)", "device": {"model": "Android SDK built for x86", "type": "android", "id": "5094f5704b9cf2b3", "name": "generic_x86", "manufacturer": "Google"}, "timezone": "Asia/Kolkata", "os": {"version": "8.1.0", "name": "Android"}, "screen": {"width": 1080, "height": 1794, "density": 420}}, "messageId": "id1", "type": "track", "event": "account: logged out", "channel": "mobile", "sentAt": "2020-03-12T09:05:13.042Z"}, "destination": {"Config": {"useNativeSDK": false, "isDevelop": true, "clientKey": "leanplum_client_key", "applicationId": "leanplum_application_id", "sendEvents": false}}}, "output": [{"body": {"XML": {}, "JSON": {"deviceName": "generic_x86", "userAttributes": {"anonymousId": "5094f5704b9cf2b3"}, "deviceModel": "Android SDK built for x86", "devMode": true, "locale": "en-US", "time": 1584003903, "userId": "5094f5704b9cf2b3", "appVersion": "1.0", "apiVersion": "1.0.6", "timezone": "Asia/Kolkata", "systemName": "Android", "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "systemVersion": "8.1.0", "clientKey": "leanplum_client_key"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "start"}, "type": "REST", "method": "POST"}, {"body": {"XML": {}, "JSON": {"value": 2.45, "devMode": true, "currencyCode": "USD", "time": 1584003903, "userId": "5094f5704b9cf2b3", "apiVersion": "1.0.6", "params": {"currency": "USD", "total": 2.45, "automatic": true, "name": "MainActivity"}, "deviceId": "5094f5704b9cf2b3", "appId": "leanplum_application_id", "clientKey": "leanplum_client_key", "event": "account: logged out"}, "FORM": {}}, "files": {}, "endpoint": "https://api.leanplum.com/api", "userId": "5094f5704b9cf2b3", "headers": {"Content-Type": "application/json"}, "version": "1", "params": {"action": "track"}, "type": "REST", "method": "POST"}]}]
+[
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "screen",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id2",
+        "type": "screen",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key__",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key__"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key__"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id3",
+        "type": "screen",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id3",
+        "type": "page",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "name": "Test Page Name",
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id3",
+        "type": "page",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "Test Page Name",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id4",
+        "type": "screen",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id5",
+        "type": "screen",
+        "properties": {
+          "automatic": true
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id6",
+        "type": "screen",
+        "properties": {
+          "automatic": true
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "error": "One of [\"properties.name\",\"event\"] is required",
+        "statusCode": 400
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "country": "India",
+            "createAt": "2019-10-14T09:03:17.562Z",
+            "id": "some_developer_id",
+            "address": {
+              "country": "USA",
+              "city": "NY"
+            },
+            "city": "Delhi"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "city": "NY",
+            "newUserId": "some_developer_id",
+            "created": 1571043798,
+            "locale": "en-US",
+            "country": "USA",
+            "time": 1571043798,
+            "userId": "00000000000000000000000000",
+            "apiVersion": "1.0.6",
+            "devMode": true,
+            "userAttributes": {
+              "country": "India",
+              "createAt": "2019-10-14T09:03:17.562Z",
+              "city": "Delhi",
+              "id": "some_developer_id",
+              "address": {
+                "country": "USA",
+                "city": "NY"
+              }
+            },
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "setUserAttributes"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "screen",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "MainActivity",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "screen",
+        "properties": {
+          "automatic": true
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "state": "MainActivity",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "advance"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "screen",
+        "properties": {
+          "automatic": true
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "error": "One of [\"properties.name\",\"event\"] is required",
+        "statusCode": 400
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "account: logged out",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "track",
+        "properties": {
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "devMode": true,
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "params": {
+              "automatic": true,
+              "name": "MainActivity"
+            },
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key",
+            "event": "account: logged out"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "track"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "account: logged out",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "track",
+        "properties": {
+          "currency": "USD",
+          "total": 2.45,
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "value": 2.45,
+            "devMode": true,
+            "currencyCode": "USD",
+            "time": 1584003903,
+            "userId": "5094f5704b9cf2b3",
+            "apiVersion": "1.0.6",
+            "params": {
+              "currency": "USD",
+              "total": 2.45,
+              "automatic": true,
+              "name": "MainActivity"
+            },
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key",
+            "event": "account: logged out"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "5094f5704b9cf2b3",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "track"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "event": "account: logged out",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "group",
+        "properties": {
+          "currency": "USD",
+          "total": 2.45,
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "error": "Message type not supported",
+        "statusCode": 400
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "sample_user_id",
+        "integrations": {
+          "All": true
+        },
+        "event": "account: logged out",
+        "anonymousId": "5094f5704b9cf2b3",
+        "channel": "mobile",
+        "context": {
+          "network": {
+            "wifi": true,
+            "bluetooth": false,
+            "cellular": true,
+            "carrier": "Android"
+          },
+          "locale": "en-US",
+          "app": {
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum",
+            "build": "1",
+            "name": "LeanPlumIntegrationAndroid"
+          },
+          "library": {
+            "version": "1.0.1-beta.1",
+            "name": "com.rudderstack.android.sdk.core"
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "timezone": "Asia/Kolkata",
+          "device": {
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google",
+            "type": "android",
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "os": {
+            "version": "8.1.0",
+            "name": "Android"
+          },
+          "screen": {
+            "width": 1080,
+            "density": 420,
+            "height": 1794
+          }
+        },
+        "messageId": "id1",
+        "type": "track",
+        "properties": {
+          "currency": "USD",
+          "total": 2.45,
+          "automatic": true,
+          "name": "MainActivity"
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z",
+        "sentAt": "2020-03-12T09:05:13.042Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "deviceName": "generic_x86",
+            "userAttributes": {
+              "anonymousId": "5094f5704b9cf2b3"
+            },
+            "deviceModel": "Android SDK built for x86",
+            "devMode": true,
+            "locale": "en-US",
+            "time": 1584003903,
+            "userId": "sample_user_id",
+            "appVersion": "1.0",
+            "apiVersion": "1.0.6",
+            "timezone": "Asia/Kolkata",
+            "systemName": "Android",
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "systemVersion": "8.1.0",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "sample_user_id",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "start"
+        },
+        "type": "REST",
+        "method": "POST"
+      },
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "value": 2.45,
+            "devMode": true,
+            "currencyCode": "USD",
+            "time": 1584003903,
+            "userId": "sample_user_id",
+            "apiVersion": "1.0.6",
+            "params": {
+              "currency": "USD",
+              "total": 2.45,
+              "automatic": true,
+              "name": "MainActivity"
+            },
+            "deviceId": "5094f5704b9cf2b3",
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key",
+            "event": "account: logged out"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "sample_user_id",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "track"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "country": "India",
+            "createAt": "2019-10-14T09:03:17.562Z",
+            "address": {
+              "country": "USA",
+              "city": "NY"
+            },
+            "city": "Delhi"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "city": "NY",
+            "created": 1571043798,
+            "locale": "en-US",
+            "country": "USA",
+            "time": 1571043798,
+            "userId": "00000000000000000000000000",
+            "apiVersion": "1.0.6",
+            "devMode": true,
+            "userAttributes": {
+              "country": "India",
+              "createAt": "2019-10-14T09:03:17.562Z",
+              "city": "Delhi",
+              "address": {
+                "country": "USA",
+                "city": "NY"
+              }
+            },
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "setUserAttributes"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "country": "India",
+            "createAt": "2019-10-14T09:03:17.562Z",
+            "address": {
+              "country": "USA",
+              "city": "NY"
+            },
+            "city": "Delhi"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": true,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "city": "NY",
+            "created": 1571043798,
+            "locale": "en-US",
+            "country": "USA",
+            "time": 1571043798,
+            "userId": "00000000000000000000000000",
+            "apiVersion": "1.0.6",
+            "devMode": true,
+            "userAttributes": {
+              "country": "India",
+              "createAt": "2019-10-14T09:03:17.562Z",
+              "city": "Delhi",
+              "address": {
+                "country": "USA",
+                "city": "NY"
+              }
+            },
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "setUserAttributes"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "userId": "",
+        "integrations": {
+          "All": true
+        },
+        "anonymousId": "00000000000000000000000000",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "country": "India",
+            "createAt": "2019-10-14T09:03:17.562Z",
+            "address": {
+              "country": "USA",
+              "city": "NY"
+            },
+            "city": "Delhi"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "os": {
+            "version": "",
+            "name": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "useNativeSDK": false,
+          "isDevelop": false,
+          "clientKey": "leanplum_client_key",
+          "applicationId": "leanplum_application_id",
+          "sendEvents": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "city": "NY",
+            "created": 1571043798,
+            "locale": "en-US",
+            "country": "USA",
+            "userId": "00000000000000000000000000",
+            "apiVersion": "1.0.6",
+            "userAttributes": {
+              "country": "India",
+              "createAt": "2019-10-14T09:03:17.562Z",
+              "city": "Delhi",
+              "address": {
+                "country": "USA",
+                "city": "NY"
+              }
+            },
+            "appId": "leanplum_application_id",
+            "clientKey": "leanplum_client_key"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://api.leanplum.com/api",
+        "userId": "00000000000000000000000000",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "params": {
+          "action": "setUserAttributes"
+        },
+        "type": "REST",
+        "method": "POST"
+      }
+    ]
+  }
+]

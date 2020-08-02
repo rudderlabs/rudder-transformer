@@ -1,1 +1,164 @@
-[{"input": {"message": {"request_ip": "[::1]:62921", "timestamp": "2019-11-15T15:52:32+05:30", "userId": "userId12345", "integrations": {"All": true}, "receivedAt": "2019-11-15T15:52:37+05:30", "anonymousId": "userId12345", "originalTimestamp": "2019-11-15T10:22:32Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"lastName": "Dole", "anonymousId": "userId12345", "email": "bob.dole@initech.com", "firstName": "Bob"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "21e475b2-3694-477b-afb6-5b94a81aac21", "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr", "type": "identify", "channel": "web", "sentAt": "2019-11-15T10:22:37Z"}, "destination": {"Name": "test-mc", "Enabled": true, "Config": {"datacenterId": "us20", "apiKey": "94f71917d8522770c97449b0c90caa4c-us20", "audienceId": "df42a82d07"}, "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6", "DestinationDefinition": {"DisplayName": "MailChimp", "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn", "Name": "MC"}, "Transformations": []}}, "output": [{"body": {"XML": {}, "JSON": {"email_address": "bob.dole@initech.com", "merge_fields": {"LASTNAME": "Dole", "FIRSTNAME": "Bob", "anonymousI": "userId12345"}}, "FORM": {}}, "files": {}, "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab", "userId": "userId12345", "headers": {"Content-Type": "application/json", "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="}, "version": "1", "params": {}, "type": "REST", "method": "PUT"}]}, {"input": {"message": {"request_ip": "[::1]:62921", "timestamp": "2019-11-15T15:56:53+05:30", "userId": "userId12345", "integrations": {"MailChimp": {"subscriptionStatus": "subscribed"}}, "receivedAt": "2019-11-15T15:56:58+05:30", "anonymousId": "userId12345", "originalTimestamp": "2019-11-15T10:26:53Z", "context": {"locale": "en-US", "ip": "0.0.0.0", "app": {"version": "1.0.0", "namespace": "com.rudderlabs.javascript", "build": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "library": {"version": "1.0.0", "name": "RudderLabs JavaScript SDK"}, "traits": {"anonymousId": "userId12345", "email": "bob.dole@initech.com"}, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36", "os": {"version": "", "name": ""}, "screen": {"density": 2}}, "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c", "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr", "type": "identify", "channel": "web", "sentAt": "2019-11-15T10:26:58Z"}, "destination": {"Name": "test-mc", "Enabled": true, "Config": {"datacenterId": "us20", "apiKey": "94f71917d8522770c97449b0c90caa4c-us20", "audienceId": "df42a82d07"}, "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6", "DestinationDefinition": {"DisplayName": "MailChimp", "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn", "Name": "MC"}, "Transformations": []}}, "output": [{"body": {"XML": {}, "JSON": {"status": "subscribed", "email_address": "bob.dole@initech.com"}, "FORM": {}}, "files": {}, "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab", "userId": "userId12345", "headers": {"Content-Type": "application/json", "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="}, "version": "1", "params": {}, "type": "REST", "method": "PUT"}]}]
+[
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:62921",
+        "timestamp": "2019-11-15T15:52:32+05:30",
+        "userId": "userId12345",
+        "integrations": { "All": true },
+        "receivedAt": "2019-11-15T15:52:37+05:30",
+        "anonymousId": "userId12345",
+        "originalTimestamp": "2019-11-15T10:22:32Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "lastName": "Dole",
+            "anonymousId": "userId12345",
+            "email": "bob.dole@initech.com",
+            "firstName": "Bob"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "21e475b2-3694-477b-afb6-5b94a81aac21",
+        "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-11-15T10:22:37Z"
+      },
+      "destination": {
+        "Name": "test-mc",
+        "Enabled": true,
+        "Config": {
+          "datacenterId": "us20",
+          "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+          "audienceId": "df42a82d07"
+        },
+        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+        "DestinationDefinition": {
+          "DisplayName": "MailChimp",
+          "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+          "Name": "MC"
+        },
+        "Transformations": []
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "email_address": "bob.dole@initech.com",
+            "merge_fields": {
+              "LASTNAME": "Dole",
+              "FIRSTNAME": "Bob",
+              "anonymousI": "userId12345"
+            }
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+        "userId": "userId12345",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "PUT"
+      }
+    ]
+  },
+  {
+    "input": {
+      "message": {
+        "request_ip": "[::1]:62921",
+        "timestamp": "2019-11-15T15:56:53+05:30",
+        "userId": "userId12345",
+        "integrations": { "MailChimp": { "subscriptionStatus": "subscribed" } },
+        "receivedAt": "2019-11-15T15:56:58+05:30",
+        "anonymousId": "userId12345",
+        "originalTimestamp": "2019-11-15T10:26:53Z",
+        "context": {
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "app": {
+            "version": "1.0.0",
+            "namespace": "com.rudderlabs.javascript",
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "library": {
+            "version": "1.0.0",
+            "name": "RudderLabs JavaScript SDK"
+          },
+          "traits": {
+            "anonymousId": "userId12345",
+            "email": "bob.dole@initech.com"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",
+          "os": { "version": "", "name": "" },
+          "screen": { "density": 2 }
+        },
+        "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+        "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+        "type": "identify",
+        "channel": "web",
+        "sentAt": "2019-11-15T10:26:58Z"
+      },
+      "destination": {
+        "Name": "test-mc",
+        "Enabled": true,
+        "Config": {
+          "datacenterId": "us20",
+          "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+          "audienceId": "df42a82d07"
+        },
+        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+        "DestinationDefinition": {
+          "DisplayName": "MailChimp",
+          "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+          "Name": "MC"
+        },
+        "Transformations": []
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "status": "subscribed",
+            "email_address": "bob.dole@initech.com"
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+        "userId": "userId12345",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "PUT"
+      }
+    ]
+  }
+]

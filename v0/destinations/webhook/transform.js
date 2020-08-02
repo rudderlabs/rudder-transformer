@@ -1,6 +1,6 @@
 const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
 
-function process(event) {
+function handleEvent(event) {
   const { message, destination } = event;
   const response = defaultRequestConfig();
   if (destination.Config.webhookUrl) {
@@ -24,5 +24,16 @@ function process(event) {
   }
   throw new Error("Invalid Url in destination");
 }
+
+const process = event => {
+  try {
+    return handleEvent(event);
+  } catch (error) {
+    return {
+      statusCode: 400,
+      error: `${error.message}`
+    };
+  }
+};
 
 exports.process = process;

@@ -83,17 +83,10 @@ function processMessage(message, destination) {
       }
       customParams = processTrackEvents(message);
       break;
-    case EventType.PAGE:
-      // `page` event is not supported
-      throw new Error("message type not supported");
-    case EventType.IDENTIFY:
-      // process `identify` event
-      throw new Error("message type not supported");
     case EventType.TRACK:
-      // process `track` event
       if (eventName) {
         const evName = eventName.toLowerCase();
-        if (eventNameMapping[evName] !== undefined) {
+        if (eventNameMapping[evName]) {
           eventName = eventNameMapping[evName];
         }
       }
@@ -119,7 +112,7 @@ const process = event => {
   } catch (error) {
     return {
       statusCode: 400,
-      error: error.message || "Unkown error"
+      error: `${error.message}`
     };
   }
 };

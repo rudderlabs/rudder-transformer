@@ -7,7 +7,51 @@ const {
   defaultRequestConfig
 } = require("../util");
 
-function responseBuilder(payload, message, heapConfig) {
+function flatten(target, opts) {
+  opts = opts || {};
+
+  const delimiter = opts.delimiter || ".";
+  let { maxDepth } = opts;
+  let currentDepth = 1;
+  const output = {};
+
+  function step(object, prev) {
+    for (const key in object) {
+      if (object.hasOwnProperty(key)) {
+        const value = object[key];
+        const isarray = opts.safe && is.array(value);
+        const type = Object.prototype.toString.call(value);
+        const isobject =
+          type === "[object Object]" || type === "[object Array]";
+        const arr = [];
+
+        const newKey = prev ? prev + delimiter + key : key;
+
+        if (!opts.maxDepth) {
+          maxDepth = currentDepth + 1;
+        }
+
+        for (const keys in value) {
+          if (value.hasOwnProperty(keys)) {
+            arr.push(keys);
+          }
+        }
+
+        if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
+          ++currentDepth;
+          return step(value, newKey);
+        }
+
+        output[newKey] = value;
+      }
+    }
+  }
+
+  step(target);
+
+  return output;
+}
+function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
   switch (message.type) {
@@ -39,20 +83,32 @@ function commonPayload(message, rawPayload, type) {
   const propertiesObj = {};
   let propsArray;
   let rudderPropertiesObj;
+  let email;
   switch (type) {
     case EventType.TRACK:
       propsArray = get(message, "properties")
         ? Object.keys(message.properties)
         : null;
       rudderPropertiesObj = message.properties;
-      rawPayload.identity = message.context.traits.email;
+      email =
+        (message.context.traits ? email : null) || message.properties.email;
+      if (email) rawPayload.identity = email;
+      else
+        throw Error("Email for identity is required for sending track calls.");
       break;
     case EventType.IDENTIFY:
       propsArray = get(message.context, "traits")
         ? Object.keys(message.context.traits)
         : null;
+      email =
+        message.context.traits.email ||
+        (message.properties ? message.properties.email : null);
+      if (email) rawPayload.identity = email;
+      else
+        throw Error("Email for identity is required for sending track calls.");
       rudderPropertiesObj = message.context.traits;
-      rawPayload.identity = message.context.traits.email;
+      break;
+    default:
       break;
   }
 
@@ -62,7 +118,7 @@ function commonPayload(message, rawPayload, type) {
     }
   });
 
-  rawPayload.properties = propertiesObj;
+  rawPayload.properties = flatten(propertiesObj);
   return rawPayload;
 }
 
@@ -90,8 +146,10 @@ function getTransformedJSON(message, heapConfig) {
     case EventType.IDENTIFY:
       rawPayload = getIdentifyPayload(message, heapConfig);
       break;
+    case EventType.PAGE:
+      throw Error("Page calls are not supported for Heap.");
     default:
-      break;
+      throw Error("Type of message is not correct");
   }
   return { ...rawPayload };
 }
@@ -114,7 +172,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const heapConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, heapConfig);
-  return responseBuilder(properties, event.message, heapConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

@@ -12,6 +12,7 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+const logger = require("../../logger");
 
 // ========================================================================
 // INLINERS
@@ -162,7 +163,12 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 // - get value from a list of sourceKeys in precedence order
 // - get value from a string key
 const getValueFromMessage = (message, sourceKey) => {
-  if (Array.isArray(sourceKey) || sourceKey.length === 0) {
+  if (Array.isArray(sourceKey) && sourceKey.length > 0) {
+    if (sourceKey.length === 1) {
+      logger.warn(
+        "List with single element is not ideal. Use it as string instead"
+      );
+    }
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);

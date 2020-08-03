@@ -7,7 +7,7 @@ const {
   getDateInFormat,
   defaultRequestConfig,
   defaultPostRequestConfig
-} = require("../util");
+} = require("../../util");
 const {
   baseMapping,
   eventNameMapping,

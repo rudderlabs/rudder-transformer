@@ -11,7 +11,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig
-} = require("../util");
+} = require("../../util");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for

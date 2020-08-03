@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "uniqueId",
+    "sourceKeys": ["userId", "context.traits.userId", "context.traits.id"],
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": false
+  }
+]

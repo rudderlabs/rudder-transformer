@@ -4,7 +4,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues
-} = require("../util");
+} = require("../../util");
 
 function responseBuilderSimple(payload, segmentConfig) {
   const basicAuth = Buffer.from(`${segmentConfig.writeKey}:`).toString(

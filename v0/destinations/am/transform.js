@@ -12,7 +12,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP
-} = require("../util");
+} = require("../../util");
 const {
   Event,
   ENDPOINT,
@@ -67,11 +67,11 @@ function fixSessionId(payload) {
     : -1;
 }
 
-function fixVersion(payload, message) {
-  if (message.context.library.name.includes("android")) {
-    payload.app_version = message.context.app.version;
-  }
-}
+// function fixVersion(payload, message) {
+//   if (message.context.library.name.includes("android")) {
+//     payload.app_version = message.context.app.version;
+//   }
+// }
 
 function addMinIdlength() {
   return { min_id_length: 1 };
@@ -92,11 +92,11 @@ function responseBuilderSimple(
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
-  
+
   if(message.channel == "mobile") {
     set(rawPayload,"device_brand",message.context.device.manufacturer);
   }
-  
+
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -136,7 +136,12 @@ function responseBuilderSimple(
 
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
-  fixVersion(payload, message);
+
+  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+  // for correct versionName
+  // ====================
+  // fixVersion(payload, message);
+
   payload.ip = getParsedIP(message);
 
   // console.log(payload);

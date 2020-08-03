@@ -6,7 +6,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig
-} = require("../util");
+} = require("../../util");
 
 const {
   Event,

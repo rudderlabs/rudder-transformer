@@ -4,7 +4,7 @@ const { EventType } = require("../../../constants");
 const logger = require("../../../logger");
 
 const { SLACK_RUDDER_IMAGE_URL, SLACK_USER_NAME } = require("./config");
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const { defaultPostRequestConfig, defaultRequestConfig } = require("../../util");
 
 // to string json traits, not using JSON.stringify()
 // always first check for whitelisted traits

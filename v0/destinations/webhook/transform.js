@@ -1,4 +1,4 @@
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const { defaultPostRequestConfig, defaultRequestConfig } = require("../../util");
 
 function process(event) {
   const { message, destination } = event;

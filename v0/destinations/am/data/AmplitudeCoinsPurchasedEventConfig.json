@@ -6,7 +6,7 @@
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
-  "context.app.build": "app_version",
+  "context.app.version": "app_version",
   "context.device.type": "platform",
   "context.locale": "language",
   "properties.category": "event_type",

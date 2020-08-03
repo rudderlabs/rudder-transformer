@@ -1,0 +1,17 @@
+{
+  "request_ip": "origination_ip",
+  "context.network.carrier": "carrier_name",
+  "context.device.model": "device",
+  "context.userAgent": "device_ua",
+  "context.screen.height": "disp_h",
+  "context.screen.width": "disp_w",
+  "context.app.name": "app_name",
+  "context.app.build": "app_version",
+  "context.app.version": "app_short_string",
+  "context.os.version": "os_version",
+  "context.screen.density": "screen_dpi",
+  "context.device.manufacturer": "manufacturer",
+  "context.device.name": "product_name",
+  "context.locale": "locale",
+  "context.timezone": "timezone"
+}

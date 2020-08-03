@@ -1,0 +1,8 @@
+{
+  "anonymousId": "cid",
+  "properties.name": "cd",
+  "context.app.name": "an",
+  "context.app.version": "av",
+  "request_ip": "uip",
+  "context.userAgent": "ua"
+}

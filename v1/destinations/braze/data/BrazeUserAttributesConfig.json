@@ -1,0 +1,11 @@
+{
+  "dob": ["traits.birthday", "context.traits.birthday"],
+  "email": ["traits.email", "context.traits.email"],
+  "first_name": ["traits.firstName", "context.traits.firstName"],
+  "last_name": ["traits.lastName", "context.traits.lastName"],
+  "gender": ["traits.gender", "context.traits.gender"],
+  "image_url": ["traits.avatar", "context.traits.avatar"],
+  "phone": ["traits.phone", "context.traits.phone"],
+  "country": ["traits.address.country", "context.traits.address.country"],
+  "home_city": ["traits.address.city", "context.traits.address.city"]
+}

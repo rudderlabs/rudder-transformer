@@ -4,53 +4,10 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  defaultRequestConfig
-} = require("../../util");
+  defaultRequestConfig,
+  flattenJson
+} = require("../util");
 
-function flatten(target, opts) {
-  opts = opts || {};
-
-  const delimiter = opts.delimiter || ".";
-  let { maxDepth } = opts;
-  let currentDepth = 1;
-  const output = {};
-
-  function step(object, prev) {
-    for (const key in object) {
-      if (object.hasOwnProperty(key)) {
-        const value = object[key];
-        const isarray = opts.safe && is.array(value);
-        const type = Object.prototype.toString.call(value);
-        const isobject =
-          type === "[object Object]" || type === "[object Array]";
-        const arr = [];
-
-        const newKey = prev ? prev + delimiter + key : key;
-
-        if (!opts.maxDepth) {
-          maxDepth = currentDepth + 1;
-        }
-
-        for (const keys in value) {
-          if (value.hasOwnProperty(keys)) {
-            arr.push(keys);
-          }
-        }
-
-        if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
-          ++currentDepth;
-          return step(value, newKey);
-        }
-
-        output[newKey] = value;
-      }
-    }
-  }
-
-  step(target);
-
-  return output;
-}
 function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
@@ -90,22 +47,20 @@ function commonPayload(message, rawPayload, type) {
         ? Object.keys(message.properties)
         : null;
       rudderPropertiesObj = message.properties;
-      email =
-        (message.context.traits ? email : null) || message.properties.email;
-      if (email) rawPayload.identity = email;
-      else
-        throw Error("Email for identity is required for sending track calls.");
+      rawPayload.identity =
+        message.userId && message.userId.length > 0
+          ? message.userId
+          : message.anonymousId;
       break;
     case EventType.IDENTIFY:
       propsArray = get(message.context, "traits")
         ? Object.keys(message.context.traits)
         : null;
-      email =
-        message.context.traits.email ||
-        (message.properties ? message.properties.email : null);
-      if (email) rawPayload.identity = email;
-      else
-        throw Error("Email for identity is required for sending track calls.");
+      rawPayload.identity =
+        message.userId && message.userId.length > 0
+          ? message.userId
+          : message.anonymousId;
+
       rudderPropertiesObj = message.context.traits;
       break;
     default:
@@ -113,12 +68,12 @@ function commonPayload(message, rawPayload, type) {
   }
 
   propsArray.forEach(property => {
-    if (property != "email") {
+    if (property !== "email") {
       propertiesObj[property] = rudderPropertiesObj[property];
     }
   });
 
-  rawPayload.properties = flatten(propertiesObj);
+  rawPayload.properties = flattenJson(propertiesObj);
   return rawPayload;
 }
 

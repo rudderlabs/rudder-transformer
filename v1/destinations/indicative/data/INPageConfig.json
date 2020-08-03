@@ -1,0 +1,29 @@
+[
+  {
+    "destKey": "eventUniqueId",
+    "sourceKeys": [
+      "userId",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "name",
+    "required": true,
+    "metadata": {
+      "template": "Visited {{value}} page"
+    }
+  },
+  { "destKey": "properties", "sourceKeys": "properties", "required": false },
+  {
+    "destKey": "eventTime",
+    "sourceKeys": "originalTimestamp",
+    "required": true,
+    "metadata": {
+      "type": "timestamp"
+    }
+  }
+]

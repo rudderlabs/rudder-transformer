@@ -67,11 +67,11 @@ function fixSessionId(payload) {
     : -1;
 }
 
-function fixVersion(payload, message) {
-  if (message.context.library.name.includes("android")) {
-    payload.app_version = message.context.app.version;
-  }
-}
+// function fixVersion(payload, message) {
+//   if (message.context.library.name.includes("android")) {
+//     payload.app_version = message.context.app.version;
+//   }
+// }
 
 function addMinIdlength() {
   return { min_id_length: 1 };
@@ -136,7 +136,12 @@ function responseBuilderSimple(
 
   const payload = removeUndefinedValues(rawPayload);
   fixSessionId(payload);
-  fixVersion(payload, message);
+
+  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+  // for correct versionName
+  // ====================
+  // fixVersion(payload, message);
+
   payload.ip = getParsedIP(message);
 
   // console.log(payload);

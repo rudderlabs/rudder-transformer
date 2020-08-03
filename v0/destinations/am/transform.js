@@ -67,11 +67,11 @@ function fixSessionId(payload) {
     : -1;
 }
 
-function fixVersion(payload, message) {
-  if (message.context.library.name.includes("android")) {
-    payload.app_version = message.context.app.version;
-  }
-}
+// function fixVersion(payload, message) {
+//   if (message.context.library.name.includes("android")) {
+//     payload.app_version = message.context.app.version;
+//   }
+// }
 
 function addMinIdlength() {
   return { min_id_length: 1 };

@@ -40,7 +40,6 @@ function commonPayload(message, rawPayload, type) {
   const propertiesObj = {};
   let propsArray;
   let rudderPropertiesObj;
-  let email;
   switch (type) {
     case EventType.TRACK:
       propsArray = get(message, "properties")

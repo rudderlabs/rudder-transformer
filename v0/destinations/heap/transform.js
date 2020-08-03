@@ -6,7 +6,7 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   flattenJson
-} = require("../util");
+} = require("../../util");
 
 function responseBuilder(payload, message) {
   const response = defaultRequestConfig();

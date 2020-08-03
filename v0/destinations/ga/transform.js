@@ -14,7 +14,7 @@ const {
   defaultRequestConfig,
   getParsedIP,
   formatValue
-} = require("../util");
+} = require("../../util");
 
 function getParamsFromConfig(message, destination, type) {
   const params = {};

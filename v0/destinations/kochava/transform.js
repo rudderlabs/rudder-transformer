@@ -9,7 +9,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   getParsedIP
-} = require("../util");
+} = require("../../util");
 
 // build final response
 // --------------------

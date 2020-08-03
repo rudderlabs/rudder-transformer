@@ -5,7 +5,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP
-} = require("../util");
+} = require("../../util");
 const { ENDPOINT } = require("./config");
 
 function addAddons(properties, config) {

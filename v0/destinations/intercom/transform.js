@@ -9,7 +9,7 @@ const {
   defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
-} = require("../util");
+} = require("../../util");
 
 function responseBuilder(payload, message, intercomConfig) {
   const response = defaultRequestConfig();

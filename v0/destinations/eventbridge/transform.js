@@ -1,4 +1,4 @@
-const { removeUndefinedAndNullValues } = require("../util");
+const { removeUndefinedAndNullValues } = require("../../util");
 
 function getResouceList(config) {
   let resource;

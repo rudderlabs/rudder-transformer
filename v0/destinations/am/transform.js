@@ -12,7 +12,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP
-} = require("../util");
+} = require("../../util");
 const {
   Event,
   ENDPOINT,
@@ -92,11 +92,11 @@ function responseBuilderSimple(
 
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
-  
+
   if(message.channel == "mobile") {
     set(rawPayload,"device_brand",message.context.device.manufacturer);
   }
-  
+
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {

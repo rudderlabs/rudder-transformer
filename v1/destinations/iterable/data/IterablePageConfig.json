@@ -3,7 +3,7 @@
     "destKey": "email",
     "sourceKeys": [
       "context.traits.email",
-      "traits.email"
+      "traits.email",
       "userId"
     ],
     "required": true

@@ -1,8 +1,44 @@
-{
-    "traits.name": "organization.name",
-    "traits.domainNames": "organization.domain_names",
-    "traits.tags": "organization.tags",
-    "groupId": "organization.external_id",
-    "traits.url": "organization.url",
-    "traits.deleted": "organization.deleted"
-}
+[
+    {
+        "destKey": "organization.name",
+        "sourceKeys": [
+            "traits.name"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "organization.domain_names",
+        "sourceKeys": [
+            "traits.domainNames"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "organization.tags",
+        "sourceKeys": [
+            "traits.tags"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "organization.external_id",
+        "sourceKeys": [
+            "groupId"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "organization.url",
+        "sourceKeys": [
+            "traits.url"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "organization.deleted",
+        "sourceKeys": [
+            "traits.deleted"
+        ],
+        "required": false
+    }
+]

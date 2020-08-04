@@ -15,10 +15,28 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  defaultDeleteRequestConfig
+  defaultDeleteRequestConfig,
+  setValues
 } = require("../../util");
 
 let endPoint;
+
+const getTraits = (message) => {
+  if (message.context && message.context.traits) {
+    return message.context.traits;
+  }
+  return message.traits;
+};
+
+const getAllSourceKeys = (mappingJson) => {
+  let sourceKeys = [];
+  mappingJson.forEach(element => {
+    if (element.sourceKeys) {
+      sourceKeys = sourceKeys.concat(element.sourceKeys);
+    }
+  });
+  return sourceKeys;
+}
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -105,21 +123,19 @@ function getIdentifyPayload(message, category, destinationConfig) {
   mappingJson = mappingConfig[category.name];
   const payload = {};
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(payload, mappingJson[sourceKey], get(message, sourceKey));
-  });
+  setValues(payload, message, mappingJson);
+  const sourceKeys = getAllSourceKeys(mappingJson);
 
   if (payload.user.external_id) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
   // send fields not in sourceKeys as user fields
-  const traitKeys = Object.keys(message.context.traits);
-  const userFields = traitKeys.filter(
+  const traits = getTraits(message);
+  const userFields = Object.keys(traits).filter(
     trait =>
       !(
         sourceKeys.includes(`context.traits.${trait}`) ||
-        typeof message.context.traits[trait] === "object"
+        typeof traits[trait] === "object"
       )
   );
   userFields.forEach(field => {
@@ -255,11 +271,9 @@ async function createOrganization(
   mappingJson = mappingConfig[category.name];
   const payload = {};
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(payload, mappingJson[sourceKey], get(message, sourceKey));
-  });
-  // console.log(payload);
+  setValues(payload, message, mappingJson);
+  const sourceKeys = getAllSourceKeys(mappingJson);
+  
   if (payload.organization.external_id) {
     set(
       payload,
@@ -272,7 +286,7 @@ async function createOrganization(
     trait =>
       !(
         sourceKeys.includes(`traits.${trait}`) ||
-        typeof message.context.traits[trait] === "object"
+        typeof message.traits[trait] === "object"
       )
   );
   organizationFields.forEach(field => {
@@ -358,7 +372,12 @@ async function processIdentify(message, destinationConfig, headers) {
 
             deleteResponse.endpoint = `${endPoint}users/${userId}/organization_memberships/${membershipId}.json`;
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
-            deleteResponse.headers = headers;
+            deleteResponse.headers = {
+              ...headers,
+              "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+              "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+              "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+            };
             deleteResponse.userId = message.userId
               ? message.userId
               : message.anonymousId;

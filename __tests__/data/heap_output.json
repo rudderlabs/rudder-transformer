@@ -11,9 +11,12 @@
     "params": {},
     "body": {
       "JSON": {
-        "app_id": "<app id>",
-        "identity": "sampath@gmail.com",
-        "properties": { "anonymousId": "sampath" }
+        "identity": "sampath",
+        "properties": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "app_id": "<app id>"
       },
       "XML": {},
       "FORM": {}
@@ -33,10 +36,13 @@
     "params": {},
     "body": {
       "JSON": {
-        "app_id": "<app id>",
+        "identity": "sampath",
         "event": "Send Transactional Email",
-        "identity": "sampath@gmail.com",
-        "properties": { "subject": "Welcome to My App!", "variation": "A" }
+        "properties": {
+          "subject": "Welcome to My App!",
+          "variation": "A"
+        },
+        "app_id": "<app id>"
       },
       "XML": {},
       "FORM": {}

@@ -27,7 +27,7 @@
         "ip": "1.1.1.1",
         "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": { "name": "macOS", "version": "15.9" },
         "screen": { "density": 2 },
         "traits": { "anonymousId": "sampath", "email": "sampath@gmail.com" },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"

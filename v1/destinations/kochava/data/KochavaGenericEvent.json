@@ -1,17 +1,107 @@
-{
-  "request_ip": "origination_ip",
-  "context.network.carrier": "carrier_name",
-  "context.device.model": "device",
-  "context.userAgent": "device_ua",
-  "context.screen.height": "disp_h",
-  "context.screen.width": "disp_w",
-  "context.app.name": "app_name",
-  "context.app.build": "app_version",
-  "context.app.version": "app_short_string",
-  "context.os.version": "os_version",
-  "context.screen.density": "screen_dpi",
-  "context.device.manufacturer": "manufacturer",
-  "context.device.name": "product_name",
-  "context.locale": "locale",
-  "context.timezone": "timezone"
-}
+[
+  {
+      "destKey": "origination_ip",
+      "sourceKeys": [
+          "request_ip"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "carrier_name",
+      "sourceKeys": [
+          "context.network.carrier"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "device",
+      "sourceKeys": [
+          "context.device.model"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "device_ua",
+      "sourceKeys": [
+          "context.userAgent"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "disp_h",
+      "sourceKeys": [
+          "context.screen.height"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "disp_w",
+      "sourceKeys": [
+          "context.screen.width"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "app_name",
+      "sourceKeys": [
+          "context.app.name"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "app_version",
+      "sourceKeys": [
+          "context.app.build"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "app_short_string",
+      "sourceKeys": [
+          "context.app.version"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "os_version",
+      "sourceKeys": [
+          "context.os.version"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "screen_dpi",
+      "sourceKeys": [
+          "context.screen.density"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "manufacturer",
+      "sourceKeys": [
+          "context.device.manufacturer"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "product_name",
+      "sourceKeys": [
+          "context.device.name"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "locale",
+      "sourceKeys": [
+          "context.locale"
+      ],
+      "required": false
+  },
+  {
+      "destKey": "timezone",
+      "sourceKeys": [
+          "context.timezone"
+      ],
+      "required": false
+  }
+]

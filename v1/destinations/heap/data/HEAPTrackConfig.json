@@ -5,6 +5,8 @@
             "userId",
             "context.traits.userId",
             "context.traits.id",
+            "traits.userId",
+            "traits.id",
             "anonymousId"
         ],
         "required": true

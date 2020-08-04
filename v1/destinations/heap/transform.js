@@ -43,7 +43,7 @@ function responseBuilderSimple(message, category, destination) {
       "Content-Type": "application/json",
       Accept: "application/json"
     };
-    response.userId = getFieldValueFromMessage(message, "userId");
+    response.userId = message.anonymousId;
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
     return response;
   }

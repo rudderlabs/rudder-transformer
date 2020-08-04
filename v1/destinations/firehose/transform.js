@@ -1,5 +1,4 @@
 const { getHashFromArray } = require("../../util");
-const { getFieldValueFromMessage } = require("../../util");
 
 function getDeliveryStreamMapTo(event) {
   const { message } = event;
@@ -13,7 +12,7 @@ function process(event) {
   if (deliveryStreamMapTo) {
     return {
       message: event.message,
-      userId: getFieldValueFromMessage(event.message, "userId"),
+      userId: event.message.anonymousId,
       deliveryStreamMapTo
     };
   }

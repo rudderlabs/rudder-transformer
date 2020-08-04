@@ -165,7 +165,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 const getValueFromMessage = (message, sourceKey) => {
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
-      logger.warn(
+      logger.info(
         "List with single element is not ideal. Use it as string instead"
       );
     }
@@ -330,6 +330,31 @@ const setValues = (payload, message, mappingJson) => {
   return payload;
 };
 
+// function to flatten a json
+
+function flattenJson(data) {
+  const result = {};
+  // a recursive function to loop through the array of the data
+  function recurse(cur, prop) {
+    if (Object(cur) !== cur) {
+      result[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      for (var i = 0, l = cur.length; i < l; i++)
+        recurse(cur[i], `${prop}[${i}]`);
+      if (l == 0) result[prop] = [];
+    } else {
+      let isEmpty = true;
+      for (const p in cur) {
+        isEmpty = false;
+        recurse(cur[p], prop ? `${prop}.${p}` : p);
+      }
+      if (isEmpty && prop) result[prop] = {};
+    }
+  }
+  recurse(data, "");
+  return result;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -341,6 +366,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  flattenJson,
   formatValue,
   getDateInFormat,
   getFieldValueFromMessage,

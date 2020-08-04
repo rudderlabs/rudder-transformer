@@ -5,12 +5,15 @@ const {
   ConfigCategory,
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
-  mappingConfig
+  mappingConfig,
+  defaultTraits
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  setValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
 // Utility method to construct the header to be used for SFDC API calls
@@ -95,18 +98,7 @@ async function responseBuilderSimple(
     message.context.traits.lastName = lastName;
   }
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    const val = get(message, sourceKey);
-    if (val) {
-      if (typeof val === "string") {
-        if (val.trim().length > 0)
-          rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
-      } else if (typeof val !== "object") {
-        rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
-      }
-    }
-  });
+  setValues(rawPayload, message, mappingJson);
 
   /* if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
     rawPayload['FirstName'] = 'n/a'
@@ -125,17 +117,16 @@ async function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  const customKeys = Object.keys(message.context.traits);
+  const traits = getFieldValueFromMessage(message, "traits");
+  const customKeys = Object.keys(traits);
   customKeys.forEach(key => {
-    const keyPath = `context.traits.${key}`;
-    mappingJsonKeys = Object.keys(mappingJson);
     if (
-      !mappingJsonKeys.some(function(k) {
-        return ~k.indexOf(keyPath);
+      !defaultTraits.some(function(k) {
+        return ~k.indexOf(key);
       }) &&
-      !(keyPath in ignoreMapJson)
+      !ignoreMapJson.includes(key)
     ) {
-      const val = message.context.traits[key];
+      const val = traits[key];
       if (val) payload[`${key}__c`] = val;
     }
   });

@@ -227,7 +227,7 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
     );
   }
 
-  response.userId = message.userId;
+  response.userId = message.anonymousId;
   response.headers = {
     "Content-Type": "application/json",
     api_key: destination.Config.apiKey

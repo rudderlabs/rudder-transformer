@@ -49,5 +49,30 @@
     },
     "files": {},
     "userId": "sampath"
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/add_user_properties",
+    "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "identity": "sampath",
+            "properties": {
+                "anonymousId": "sampath",
+                "email": "sampath@gmail.com"
+            },
+            "app_id": "<app id>"
+        },
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+}
 ]

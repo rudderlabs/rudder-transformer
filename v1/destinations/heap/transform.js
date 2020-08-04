@@ -1,100 +1,17 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const { destinationConfigKeys, endpoints } = require("./config");
 const {
+  CONFIG_CATEGORIES,
+  destinationConfigKeys,
+  MAPPING_CONFIG
+} = require("./config");
+const { EventType } = require("../../../constants");
+const {
+  constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  defaultRequestConfig
+  defaultRequestConfig,
+  flattenJson,
+  getFieldValueFromMessage
 } = require("../../util");
-
-function responseBuilder(payload, message, heapConfig) {
-  const response = defaultRequestConfig();
-
-  switch (message.type) {
-    case EventType.IDENTIFY:
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = endpoints.identifyUrl;
-      break;
-    case EventType.TRACK:
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = `${endpoints.trackUrl}`;
-      break;
-    default:
-      break;
-  }
-
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-
-  return {
-    ...response,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    userId: message.userId ? message.userId : message.anonymousId
-  };
-}
-
-function commonPayload(message, rawPayload, type) {
-  const propertiesObj = {};
-  let propsArray;
-  let rudderPropertiesObj;
-  switch (type) {
-    case EventType.TRACK:
-      propsArray = get(message, "properties")
-        ? Object.keys(message.properties)
-        : null;
-      rudderPropertiesObj = message.properties;
-      rawPayload.identity = message.context.traits.email;
-      break;
-    case EventType.IDENTIFY:
-      propsArray = get(message.context, "traits")
-        ? Object.keys(message.context.traits)
-        : null;
-      rudderPropertiesObj = message.context.traits;
-      rawPayload.identity = message.context.traits.email;
-      break;
-  }
-
-  propsArray.forEach(property => {
-    if (property != "email") {
-      propertiesObj[property] = rudderPropertiesObj[property];
-    }
-  });
-
-  rawPayload.properties = propertiesObj;
-  return rawPayload;
-}
-
-function getIdentifyPayload(message, heapConfig) {
-  const rawPayload = {
-    app_id: heapConfig.app_id
-  };
-  return commonPayload(message, rawPayload, message.type);
-}
-
-function getTrackPayload(message, heapConfig) {
-  const rawPayload = {
-    app_id: heapConfig.app_id,
-    event: get(message.event) ? message.event : message.userId
-  };
-  return commonPayload(message, rawPayload, message.type);
-}
-
-function getTransformedJSON(message, heapConfig) {
-  let rawPayload;
-  switch (message.type) {
-    case EventType.TRACK:
-      rawPayload = getTrackPayload(message, heapConfig);
-      break;
-    case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(message, heapConfig);
-      break;
-    default:
-      break;
-  }
-  return { ...rawPayload };
-}
 
 function getDestinationKeys(destination) {
   const heapConfig = {};
@@ -110,11 +27,63 @@ function getDestinationKeys(destination) {
   });
   return heapConfig;
 }
-
-function process(event) {
-  const heapConfig = getDestinationKeys(event.destination);
-  const properties = getTransformedJSON(event.message, heapConfig);
-  return responseBuilder(properties, event.message, heapConfig);
+function responseBuilderSimple(message, category, destination) {
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (payload) {
+    payload.properties = flattenJson(payload.properties);
+    const heapConfig = getDestinationKeys(destination);
+    const responseBody = {
+      ...payload,
+      app_id: heapConfig.app_id
+    };
+    const response = defaultRequestConfig();
+    response.endpoint = category.endPoint;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.userId = getFieldValueFromMessage(message, "userId");
+    response.body.JSON = removeUndefinedAndNullValues(responseBody);
+    return response;
+  }
+  // fail-safety for developer error
+  throw new Error("Payload could not be constructed");
 }
+
+const processEvent = (message, destination) => {
+  if (!message.type) {
+    throw Error("Message Type is not present. Aborting message.");
+  }
+  const messageType = message.type.toLowerCase();
+  let category;
+  const respList = [];
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      category = CONFIG_CATEGORIES.IDENTIFY;
+      break;
+    case EventType.PAGE:
+      throw Error("Page calls are not supported for Heap.");
+    case EventType.SCREEN:
+      throw Error("Screen calls are not supported for Heap.");
+    case EventType.TRACK:
+      category = CONFIG_CATEGORIES.TRACK;
+      break;
+    default:
+      throw new Error("Message type not supported");
+  }
+
+  // build the response
+  respList.push(responseBuilderSimple(message, category, destination));
+  return respList;
+};
+
+const process = event => {
+  try {
+    return processEvent(event.message, event.destination);
+  } catch (error) {
+    throw new Error(error.message || "Unknown error");
+  }
+};
 
 exports.process = process;

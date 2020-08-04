@@ -3,7 +3,8 @@ const { destinationConfigKeys, batchEndpoint } = require("./config");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function responseBuilderSimple(payload, segmentConfig) {
@@ -28,7 +29,7 @@ function responseBuilderSimple(payload, segmentConfig) {
 
 function getTransformedJSON(message, segmentConfig) {
   const { type } = message;
-  const userId = get(message, "userId") ? message.userId : message.anonymousId;
+  const userId = segmentConfig.userId;
   const traits = get(message, "context.traits")
     ? message.context.traits
     : undefined;
@@ -62,9 +63,7 @@ function getSegmentConfig(destination, message) {
     }
   });
 
-  segmentConfig.userId = get(message, "userId")
-    ? message.userId
-    : message.anonymousId;
+  segmentConfig.userId = getFieldValueFromMessage(message, "userId");
   return segmentConfig;
 }
 
@@ -83,3 +82,4 @@ function process(event) {
 }
 
 exports.process = process;
+

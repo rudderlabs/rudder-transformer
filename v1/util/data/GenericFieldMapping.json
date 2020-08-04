@@ -4,5 +4,9 @@
     "context.traits.userId",
     "context.traits.id",
     "anonymousId"
+  ],
+  "traits": [
+    "context.traits",
+    "traits"
   ]
 }

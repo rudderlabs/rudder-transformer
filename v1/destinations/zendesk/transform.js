@@ -16,27 +16,12 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   defaultDeleteRequestConfig,
+  getFieldValueFromMessage,
   setValues
 } = require("../../util");
 
 let endPoint;
 
-const getTraits = (message) => {
-  if (message.context && message.context.traits) {
-    return message.context.traits;
-  }
-  return message.traits;
-};
-
-const getAllSourceKeys = (mappingJson) => {
-  let sourceKeys = [];
-  mappingJson.forEach(element => {
-    if (element.sourceKeys) {
-      sourceKeys = sourceKeys.concat(element.sourceKeys);
-    }
-  });
-  return sourceKeys;
-}
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -124,17 +109,17 @@ function getIdentifyPayload(message, category, destinationConfig) {
   const payload = {};
 
   setValues(payload, message, mappingJson);
-  const sourceKeys = getAllSourceKeys(mappingJson);
+  const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 
   if (payload.user.external_id) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
   // send fields not in sourceKeys as user fields
-  const traits = getTraits(message);
+  const traits = getFieldValueFromMessage(message, "traits");
   const userFields = Object.keys(traits).filter(
     trait =>
       !(
-        sourceKeys.includes(`context.traits.${trait}`) ||
+        sourceKeys.includes(trait) ||
         typeof traits[trait] === "object"
       )
   );
@@ -272,7 +257,7 @@ async function createOrganization(
   const payload = {};
 
   setValues(payload, message, mappingJson);
-  const sourceKeys = getAllSourceKeys(mappingJson);
+  const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
   
   if (payload.organization.external_id) {
     set(
@@ -285,7 +270,7 @@ async function createOrganization(
   const organizationFields = traitKeys.filter(
     trait =>
       !(
-        sourceKeys.includes(`traits.${trait}`) ||
+        sourceKeys.includes(trait) ||
         typeof message.traits[trait] === "object"
       )
   );

@@ -14,7 +14,7 @@
     "sourceKeys": "event",
     "required": true,
     "metadata": {
-      "template": "Visited {{value}} screen"
+      "template": "Screen View"
     }
   },
   { "destKey": "properties", "sourceKeys": "properties", "required": false },

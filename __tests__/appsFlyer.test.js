@@ -3,8 +3,9 @@ const name = "AppsFlyer";
 
 const fs = require("fs");
 const path = require("path");
+const version = "v1";
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../${version}/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {

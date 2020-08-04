@@ -18,7 +18,7 @@
           "app_name": "RudderLabs JavaScript SDK",
           "app_version": "1.0.0",
           "app_short_string": "1.0.0",
-          "os_version": "",
+          "os_version": "15.9",
           "screen_dpi": 2,
           "locale": "en-US",
           "event_name": "Add to Cart",

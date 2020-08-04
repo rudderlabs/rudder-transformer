@@ -8,7 +8,8 @@ const {
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  getParsedIP
+  getParsedIP,
+  setValues
 } = require("../../util");
 
 // build final response
@@ -36,9 +37,7 @@ function responseBuilder(
   // map values from message.context to payload.data for kochava
   const sourceKeys = Object.keys(mappingJson);
   const data = {};
-  sourceKeys.forEach(sourceKey => {
-    data[mappingJson[sourceKey]] = get(message, sourceKey);
-  });
+  setValues(data, message, mappingJson);
 
   if (eventName) {
     data.event_name = eventName;

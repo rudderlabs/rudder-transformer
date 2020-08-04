@@ -48,6 +48,26 @@ const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   return hashMap;
 };
 
+// Returns traits.
+// returns message.context.traits if it exists, message.traits otherwise
+const getTraits = (message) => {
+  if (message.context && message.context.traits) {
+    return message.context.traits;
+  }
+  return message.traits;
+};
+
+// Iterates over mappingJson and returns all sourceKeys
+const getAllSourceKeys = (mappingJson) => {
+  let sourceKeys = [];
+  mappingJson.forEach(element => {
+    if (element.sourceKeys) {
+      sourceKeys = sourceKeys.concat(element.sourceKeys);
+    }
+  });
+  return sourceKeys;
+}
+
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE

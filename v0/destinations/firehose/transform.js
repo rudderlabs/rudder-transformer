@@ -1,4 +1,4 @@
-const { getHashFromArray } = require("../util");
+const { getHashFromArray } = require("../../util");
 
 function getDeliveryStreamMapTo(event) {
   const { message } = event;

@@ -5,7 +5,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   setValues
-} = require("../util");
+} = require("../../util");
 const logger = require("../../../logger");
 
 function constructPayload(message, category, destination) {

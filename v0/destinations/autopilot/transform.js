@@ -7,7 +7,7 @@ const {
   defaultRequestConfig,
   updatePayload,
   removeUndefinedAndNullValues
-} = require("../util");
+} = require("../../util");
 
 function responseBuilder(payload, message, autoPilotConfig) {
   let endpoint;

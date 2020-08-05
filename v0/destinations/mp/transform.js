@@ -5,7 +5,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig
-} = require("../util");
+} = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];

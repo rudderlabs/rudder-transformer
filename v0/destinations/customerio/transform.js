@@ -11,7 +11,7 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig
-} = require("../util");
+} = require("../../util");
 const {
   IDENTITY_ENDPOINT,
   USER_EVENT_ENDPOINT,

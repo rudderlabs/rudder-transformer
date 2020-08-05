@@ -12,7 +12,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig
-} = require("../util");
+} = require("../../util");
 
 function setValues(payload, message, mappingJson) {
   if (Array.isArray(mappingJson)) {

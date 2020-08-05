@@ -7,7 +7,7 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedValues
-} = require("../util");
+} = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];

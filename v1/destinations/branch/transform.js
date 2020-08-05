@@ -85,12 +85,14 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   }
 
   if (!valFound) {
-    category.event_data.find(branchMappingProperty => {
-      if (branchMappingProperty === rudderProperty) {
-        event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
-        valFound = true;
-      }
-    });
+    if (category.event_data) {
+      category.event_data.find(branchMappingProperty => {
+        if (branchMappingProperty === rudderProperty) {
+          event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+          valFound = true;
+        }
+      });
+    }
   }
 
   if (!valFound) {

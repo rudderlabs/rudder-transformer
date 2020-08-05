@@ -1,9 +1,5 @@
 const { getMappingConfig } = require("../../util");
 
-const destinationConfigKeys = {
-  appId: "appId"
-};
-
 const baseEndpoint = "https://heapanalytics.com/api";
 const endpoints = {
   trackUrl: `${baseEndpoint}/track`, // track properties, | Track
@@ -18,6 +14,5 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   CONFIG_CATEGORIES,
-  destinationConfigKeys,
   MAPPING_CONFIG
 };

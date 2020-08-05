@@ -80,6 +80,11 @@
       "files": {},
       "userId": "sampath"
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+  },
+  { "statusCode": 400, "error": "Message type not supported" }
 ]
 

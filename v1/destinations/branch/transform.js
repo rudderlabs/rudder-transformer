@@ -5,7 +5,8 @@ const { categoriesList } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function responseBuilder(payload, message, branchConfig) {
@@ -73,19 +74,20 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   const custom_data = {};
 
   let valFound = false;
-  Object.keys(category.content_items).find(branchMappingProperty => {
-    if (branchMappingProperty === rudderProperty) {
-      const tmpKeyName = category.content_items[branchMappingProperty];
-      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
-      valFound = true;
-    }
-  });
+  if (category.content_items) {
+    Object.keys(category.content_items).find(branchMappingProperty => {
+      if (branchMappingProperty === rudderProperty) {
+        const tmpKeyName = category.content_items[branchMappingProperty];
+        content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        valFound = true;
+      }
+    });
+  }
 
   if (!valFound) {
     category.event_data.find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
-        const tmpKeyName = category.content_items[branchMappingProperty];
-        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
         valFound = true;
       }
     });
@@ -116,9 +118,7 @@ function commonPayload(message, rawPayload, category) {
         : null;
       break;
     case EventType.IDENTIFY:
-      rudderPropertiesObj = get(message.context, "traits")
-        ? message.context.traits
-        : null;
+      rudderPropertiesObj = getFieldValueFromMessage(message, "traits");
       break;
   }
 

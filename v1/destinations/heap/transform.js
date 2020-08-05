@@ -1,32 +1,17 @@
-const {
-  CONFIG_CATEGORIES,
-  destinationConfigKeys,
-  MAPPING_CONFIG
-} = require("./config");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
-  flattenJson,
-  getFieldValueFromMessage
+  flattenJson
 } = require("../../util");
 
 function getDestinationKeys(destination) {
-  const heapConfig = {};
-  const configKeys = Object.keys(destination.Config);
-  configKeys.forEach(key => {
-    switch (key) {
-      case destinationConfigKeys.appId:
-        heapConfig.app_id = `${destination.Config[key]}`;
-        break;
-      default:
-        break;
-    }
-  });
-  return heapConfig;
+  return { app_id: destination.Config.appId };
 }
+
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
@@ -75,11 +60,7 @@ const processEvent = (message, destination) => {
 };
 
 const process = event => {
-  try {
-    return processEvent(event.message, event.destination);
-  } catch (error) {
-    throw new Error(error.message || "Unknown error");
-  }
+  return processEvent(event.message, event.destination);
 };
 
 exports.process = process;

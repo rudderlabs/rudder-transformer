@@ -268,9 +268,9 @@ const constructPayload = (message, mappingJson) => {
       if (value) {
         // set the value only if correct
         if (metadata) {
-          payload[destKey] = handleMetadataForValue(value, metadata);
+          set(payload, destKey, handleMetadataForValue(value, metadata));
         } else {
-          payload[destKey] = value;
+          set(payload, destKey, value);
         }
       } else if (required) {
         // throw error if reqired value is missing

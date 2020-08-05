@@ -17,7 +17,7 @@ const {
   defaultRequestConfig,
   defaultDeleteRequestConfig,
   getFieldValueFromMessage,
-  setValues
+  constructPayload
 } = require("../../util");
 
 let endPoint;
@@ -106,9 +106,8 @@ async function checkAndCreateUserFields(
 
 function getIdentifyPayload(message, category, destinationConfig) {
   mappingJson = mappingConfig[category.name];
-  const payload = {};
 
-  setValues(payload, message, mappingJson);
+  const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 
   if (payload.user.external_id) {
@@ -254,9 +253,8 @@ async function createOrganization(
     headers
   );
   mappingJson = mappingConfig[category.name];
-  const payload = {};
 
-  setValues(payload, message, mappingJson);
+  const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
   
   if (payload.organization.external_id) {

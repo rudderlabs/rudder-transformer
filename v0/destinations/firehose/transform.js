@@ -18,4 +18,5 @@ function process(event) {
   }
   throw new Error("No delivery stream set for this event");
 }
+
 exports.process = process;

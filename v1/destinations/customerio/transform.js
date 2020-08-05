@@ -62,8 +62,8 @@ function responseBuilder(message, evType, evName, destination) {
 
     // populate speced traits
     populateSpecedTraits(rawPayload, message);
-    if (message.context.traits) {
-      const traits = Object.keys(message.context.traits);
+    if (message.traits || message.context.traits) {
+      const traits = Object.keys(message.traits || message.context ? message.context.traits : {});
       traits.forEach(trait => {
         // populate keys other than speced traits
         // also don't send anonymousId, userId as we are setting those form the SDK and it's not actually an user property for the customer
@@ -87,11 +87,11 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
-    if (message.context.traits.createdAt) {
+    if (message.traits.createdAt || message.context.traits.createdAt) {
       set(
         rawPayload,
         "created_at",
-        Math.floor(new Date(message.context.traits.createdAt).getTime() / 1000)
+        Math.floor(new Date(message.traits.createdAt || message.context.traits.createdAt).getTime() / 1000)
       );
     } else {
       set(

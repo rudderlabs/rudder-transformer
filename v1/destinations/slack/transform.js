@@ -126,7 +126,7 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.context ? message.context.traits : {}
+        messsage.traits || message.context ? message.context.traits : {}
       )
   );
   logger.debug(
@@ -138,7 +138,7 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.context ? message.context.traits : {}
+        messsage.traits || message.context ? message.context.traits : {}
       )
   );
 
@@ -148,10 +148,10 @@ function processIdentify(message, destination) {
     name: uName,
     ...message.context.traits,
     traits: stringifyJSON(
-      message.context ? message.context.traits : {},
+      message.traits || message.context ? message.context.traits : {},
       traitsList
     ),
-    traitsList: message.context ? message.context.traits : {}
+    traitsList: message.traits || message.context ? message.context.traits : {}
   };
   logger.debug("templateInputIdentify: ", templateInput);
 
@@ -269,10 +269,10 @@ function processTrack(message, destination) {
     properties: message.properties,
     propertiesList: stringifyJSON(message.properties || {}),
     traits: stringifyJSON(
-      message.context ? message.context.traits : {},
+      message.traits || message.context ? message.context.traits : {},
       traitsList
     ),
-    traitsList: message.context ? message.context.traits : {}
+    traitsList: message.traits || message.context ? message.context.traits : {}
   };
 
   logger.debug("templateInputTrack: ", templateInput);

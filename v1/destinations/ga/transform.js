@@ -258,9 +258,9 @@ function processIdentify(message, destination) {
 
   if (
     serverSideIdentifyEventAction &&
-    message.context.traits[serverSideIdentifyEventCategory]
+    (message.traits ? message.traits[serverSideIdentifyEventCategory] : undefined || message.context.traits[serverSideIdentifyEventCategory])
   ) {
-    ec = message.context.traits[serverSideIdentifyEventCategory];
+    ec = message.traits ? message.traits[serverSideIdentifyEventCategory] : undefined || message.context.traits[serverSideIdentifyEventCategory];
   } else {
     ec = "All";
   }

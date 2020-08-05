@@ -18,12 +18,12 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  it(`${name} Tests: payload: ${index}`, async () => {
+  it(`${name} Tests: payload: ${index}`, () => {
     try {
-      const output = await transformer.process(input);
+      const output = transformer.process(input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });

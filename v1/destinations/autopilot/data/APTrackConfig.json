@@ -1,0 +1,7 @@
+[
+    {
+      "destKey": "property",
+      "sourceKeys": ["properties"],
+      "required": true
+    }
+  ]

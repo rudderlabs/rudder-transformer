@@ -55,11 +55,7 @@
           "screen": {
             "density": 2
           },
-          "traits": {
-            "age": 23,
-            "email": "testmp@rudderstack.com",
-            "firstname": "Test Kafka"
-          },
+          
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
         },
         "integrations": {
@@ -70,6 +66,11 @@
         "receivedAt": "2020-04-17T20:12:44.758+05:30",
         "request_ip": "[::1]:53513",
         "sentAt": "2020-04-17T14:42:44.722Z",
+        "traits": {
+          "age": 23,
+          "email": "testmp@rudderstack.com",
+          "firstname": "Test Kafka"
+        },
         "timestamp": "2020-04-17T20:12:44.758+05:30",
         "type": "identify",
         "userId": "user12345"

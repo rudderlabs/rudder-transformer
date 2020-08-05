@@ -165,7 +165,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 const getValueFromMessage = (message, sourceKey) => {
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
-      logger.warn(
+      logger.info(
         "List with single element is not ideal. Use it as string instead"
       );
     }

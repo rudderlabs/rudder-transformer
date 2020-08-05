@@ -88,14 +88,15 @@ async function responseBuilderSimple(
 
   let firstName = "";
   let lastName = "";
-  if (message.context.traits.name) {
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (traits.name) {
     // Split by space and then take first and last elements
-    const nameComponents = message.context.traits.name.split(" ");
+    const nameComponents = traits.name.split(" ");
     firstName = nameComponents[0]; // first element
     lastName = nameComponents[nameComponents.length - 1]; // last element
     // Insert first and last names separately into message
-    message.context.traits.firstName = firstName;
-    message.context.traits.lastName = lastName;
+    traits.firstName = firstName;
+    traits.lastName = lastName;
   }
 
   setValues(rawPayload, message, mappingJson);
@@ -117,7 +118,7 @@ async function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  
   const customKeys = Object.keys(traits);
   customKeys.forEach(key => {
     if (
@@ -159,7 +160,7 @@ async function processIdentify(message, destination) {
 
   // check if the lead exists
   // need to perform a parameterized search for this using email
-  const { email } = message.context.traits;
+  const { email } = getFieldValueFromMessage(message, "traits");
 
   const leadQueryUrl = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 

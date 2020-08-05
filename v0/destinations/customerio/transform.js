@@ -10,7 +10,8 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   IDENTITY_ENDPOINT,
@@ -144,6 +145,16 @@ function responseBuilder(message, evType, evName, destination) {
     if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
+      if (getFieldValueFromMessage(message, "timestamp")) {
+        set(
+          rawPayload,
+          "timestamp",
+          Math.floor(
+            new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
+              1000
+          )
+        );
+      }
     }
 
     if (userId) {

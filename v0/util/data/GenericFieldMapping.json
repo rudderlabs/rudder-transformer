@@ -4,5 +4,6 @@
     "context.traits.userId",
     "context.traits.id",
     "anonymousId"
-  ]
+  ],
+  "timestamp": "timestamp"
 }

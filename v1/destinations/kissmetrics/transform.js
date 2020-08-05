@@ -192,7 +192,7 @@ function buildResponse(message, properties, endpoint) {
 
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
-  let properties = JSON.parse(JSON.stringify(message.context.traits));
+  let properties = JSON.parse(JSON.stringify(message.traits || message.context.traits));
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;
 
@@ -250,7 +250,7 @@ function processTrack(message, destination) {
   if (products) {
     products.forEach((product, i) => {
       let item = product;
-      if (this.prefixProperties) item = this.prefix(event, item);
+      if (destination.Config.prefixProperties) item = prefix(event, item);
       item._k = apiKey;
       item._p = message.userId ? message.userId : message.anonymousId;
 

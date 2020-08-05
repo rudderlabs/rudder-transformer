@@ -2,7 +2,7 @@
   {
     "destKey": "uniqueId",
     "sourceKeys": ["userId", "context.traits.userId", "context.traits.id"],
-    "required": true
+    "required": false
   },
   {
     "destKey": "properties",

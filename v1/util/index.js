@@ -334,20 +334,22 @@ const setValues = (payload, message, mappingJson) => {
 
 function flattenJson(data) {
   const result = {};
+  let l;
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
+    let i;
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (var i = 0, l = cur.length; i < l; i++)
+      for (i = 0, l = cur.length; i < l; i += 1)
         recurse(cur[i], `${prop}[${i}]`);
-      if (l == 0) result[prop] = [];
+      if (l === 0) result[prop] = [];
     } else {
       let isEmpty = true;
-      for (const p in cur) {
+      Object.keys(cur).forEach(key => {
         isEmpty = false;
-        recurse(cur[p], prop ? `${prop}.${p}` : p);
-      }
+        recurse(cur[key], prop ? `${prop}.${key}` : key);
+      });
       if (isEmpty && prop) result[prop] = {};
     }
   }

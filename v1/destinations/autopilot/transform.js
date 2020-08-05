@@ -6,7 +6,7 @@ const {
 } = require("./config");
 
 const {
-  defaultGetRequestConfig,
+  defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   constructPayload
@@ -65,7 +65,7 @@ function responseBuilderSimple(message, category, destination) {
       default:
         break;
     }
-    response.method = defaultGetRequestConfig.requestMethod;
+    response.method = defaultPostRequestConfig.requestMethod;
     response.userId = message.anonymousId;
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
     return response;
@@ -89,7 +89,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new Error("Message  not supported");
   }
   // build the response
   respList.push(responseBuilderSimple(message, category, destination));

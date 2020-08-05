@@ -243,6 +243,7 @@
     "UNIQUE": true,
     "USER": true,
     "USING": true,
+    "UUID": true,
     "VERBOSE": true,
     "WALLET": true,
     "WHEN": true,

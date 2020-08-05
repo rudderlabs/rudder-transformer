@@ -42,7 +42,7 @@
             },
             "sentAt": "2019-10-14T09:03:22.563Z"
         },
-        "userId": "123456",
+        "userId": "00000000000000000000000000",
         "deliveryStreamMapTo": "ruchira-test-firehose"
     },
     {

@@ -592,26 +592,52 @@
     "files": {},
     "userId": "00000000000000000000000000"
   },
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
+    "endpoint": "https://api.iterable.com/api/users/update",
     "headers": {
-      "Content-Type": "application/json",
-      "api_key": "12345"
+        "Content-Type": "application/json",
+        "api_key": "12345"
     },
     "params": {},
     "body": {
-      "JSON": {
-        "browserToken": "some_device_token",
-        "email": "ruchira@rudderlabs.com",
-        "userId": "123456"
-      },
-      "XML": {},
-      "FORM": {}
+        "JSON": {
+            "email": "ruchira@rudderlabs.com",
+            "dataFields": {
+                "email": "ruchira@rudderlabs.com"
+            },
+            "userId": "123456",
+            "preferUserId": true,
+            "mergeNestedObjects": true
+        },
+        "XML": {},
+        "FORM": {}
     },
     "files": {},
     "userId": "00000000000000000000000000"
-  }
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "POST",
+  "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
+  "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+  },
+  "params": {},
+  "body": {
+      "JSON": {
+          "browserToken": "some_device_token",
+          "email": "ruchira@rudderlabs.com",
+          "userId": "123456"
+      },
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {},
+  "userId": "00000000000000000000000000"
+}]
 ]

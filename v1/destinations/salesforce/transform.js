@@ -12,8 +12,8 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  setValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  constructPayload
 } = require("../../util");
 
 // Utility method to construct the header to be used for SFDC API calls
@@ -81,7 +81,6 @@ async function responseBuilderSimple(
   targetEndpoint,
   authorizationData
 ) {
-  const rawPayload = {};
 
   // First name and last name need to be extracted from the name field
   // and inserted into the message
@@ -99,7 +98,7 @@ async function responseBuilderSimple(
     traits.lastName = lastName;
   }
 
-  setValues(rawPayload, message, mappingJson);
+  const rawPayload = constructPayload(message, mappingJson);
 
   /* if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
     rawPayload['FirstName'] = 'n/a'

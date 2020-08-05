@@ -62,10 +62,6 @@ const processEvent = (message, destination) => {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
-    case EventType.PAGE:
-      throw Error("Page calls are not supported for Heap.");
-    case EventType.SCREEN:
-      throw Error("Screen calls are not supported for Heap.");
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
       break;

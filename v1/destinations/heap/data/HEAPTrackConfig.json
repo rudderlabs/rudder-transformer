@@ -13,16 +13,12 @@
     },
     {
         "destKey": "event",
-        "sourceKeys": [
-            "event"
-        ],
+        "sourceKeys": "event",
         "required": true
     },
     {
         "destKey": "properties",
-        "sourceKeys": [
-            "properties"
-        ],
+        "sourceKeys": "properties",
         "required": false
     }
 ]

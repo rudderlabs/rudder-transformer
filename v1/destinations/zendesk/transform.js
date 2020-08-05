@@ -140,7 +140,8 @@ function getIdentifyPayload(message, category, destinationConfig) {
 }
 
 async function getUserId(message, headers) {
-  const userEmail = message.context.traits.email;
+  const traits = getFieldValueFromMessage(message, "traits");
+  const userEmail = traits.email;
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
@@ -179,9 +180,10 @@ async function isUserAlreadyAssociated(userId, orgId, headers) {
 }
 
 async function createUser(message, headers, destinationConfig) {
-  const { name } = message.context.traits;
+  const traits = getFieldValueFromMessage(message, "traits");
+  const { name, email } = traits;
   const userId = message.userId ? message.userId : message.anonymousId;
-  const { email } = message.context.traits;
+  
 
   const userObject = { name, external_id: userId, email };
   if (destinationConfig.createUsersAsVerified) {
@@ -205,8 +207,8 @@ async function createUser(message, headers, destinationConfig) {
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
     console.log(error);
-    console.log(`Couldn't find user: ${message.context.traits.name}`);
-    throw new Error(`Couldn't find user: ${message.context.traits.name}`);
+    console.log(`Couldn't find user: ${name}`);
+    throw new Error(`Couldn't find user: ${name}`);
   }
 }
 
@@ -218,9 +220,9 @@ async function getUserMembershipPayload(
 ) {
   // let zendeskUserID = await getUserId(message.userId, headers);
   let zendeskUserID = await getUserId(message, headers);
-
+  const traits = getFieldValueFromMessage(message, "traits");
   if (!zendeskUserID) {
-    if (message.context.traits.name && message.context.traits.email) {
+    if (traits.name && traits.email) {
       const { zendeskUserId } = await createUser(
         message,
         headers,
@@ -318,7 +320,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const category = ConfigCategory.IDENTIFY;
   // create user fields if required
   await checkAndCreateUserFields(
-    message.context.traits,
+    getFieldValueFromMessage(message, "traits"),
     category.userFieldsEndpoint,
     category.userFieldsJson,
     headers
@@ -328,7 +330,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const { traits } = message.context;
+  const  traits  = getFieldValueFromMessage(message, "traits");
   if (
     traits.company &&
     traits.company.remove &&
@@ -379,7 +381,8 @@ async function processIdentify(message, destinationConfig, headers) {
 
 async function processTrack(message, destinationConfig, headers) {
   validateUserId(message);
-  let userEmail = message.context.traits.email;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let userEmail = traits.email;
   let zendeskUserID;
   // let url = endPoint + "users/search.json?external_id=" + userId;
   let url = `${endPoint}users/search.json?query=${userEmail}`;

@@ -2,6 +2,6 @@
     {
       "destKey": "property",
       "sourceKeys": "properties",
-      "required": true
+      "required": false
     }
   ]

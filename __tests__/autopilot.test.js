@@ -4,7 +4,7 @@ const name = "Autopilot";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../v1/destinations/${integration}/transform`);
 
 test(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(

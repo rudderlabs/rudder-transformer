@@ -6,7 +6,7 @@ const {
 } = require("./config");
 
 const {
-  defaultPostRequestConfig,
+  defaultGetRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   constructPayload
@@ -34,6 +34,7 @@ function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
     const autoPilotConfig = getDestinationKeys(destination);
+
     const response = defaultRequestConfig();
     response.headers = {
       autopilotapikey: `${autoPilotConfig.apiKey}`,
@@ -41,25 +42,30 @@ function responseBuilderSimple(message, category, destination) {
       Accept: "application/json"
     };
     let responseBody;
+    let contactIdOrEmail;
     switch (message.type) {
       case EventType.IDENTIFY:
         responseBody = {
           contact: { ...payload }
         };
-        response.endpoint = category.endPoint.addContactUrl;
+        response.endpoint = category.endPoint;
         break;
       case EventType.TRACK:
         responseBody = { ...payload };
-        response.endpoint = `${category.endPoint.triggerJourneyUrl}/${autoPilotConfig.triggerId}/contact/${message.context.traits.email}`;
+        contactIdOrEmail = message.context.traits
+          ? message.context.traits.email
+          : undefined;
+        if (contactIdOrEmail) {
+          response.endpoint = `${category.endPoint}/${autoPilotConfig.triggerId}/contact/${contactIdOrEmail}`;
+        } else {
+          throw new Error("Email is required for track calls");
+        }
+        response.endpoint = `${category.endPoint}/${autoPilotConfig.triggerId}/contact/${contactIdOrEmail}`;
         break;
       default:
         break;
     }
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
+    response.method = defaultGetRequestConfig.requestMethod;
     response.userId = message.anonymousId;
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
     return response;
@@ -79,10 +85,6 @@ const processEvent = (message, destination) => {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
-    case EventType.PAGE:
-      throw Error("Page calls are not supported for Heap.");
-    case EventType.SCREEN:
-      throw Error("Screen calls are not supported for Heap.");
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
       break;

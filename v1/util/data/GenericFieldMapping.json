@@ -8,5 +8,10 @@
   "traits": [
     "context.traits",
     "traits"
+  ],
+  "email": [
+    "traits.email",
+    "context.traits.email",
+    "properties.email"
   ]
 }

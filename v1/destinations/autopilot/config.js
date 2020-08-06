@@ -1,10 +1,5 @@
 const { getMappingConfig } = require("../../util");
 
-const destinationConfigKeys = {
-  apiKey: "apiKey",
-  triggerId: "triggerId"
-};
-
 const baseEndpoint = "https://api2.autopilothq.com/v1";
 const endpoints = {
   addContactUrl: `${baseEndpoint}/contact`, // add a contact, | Identify
@@ -16,8 +11,8 @@ const CONFIG_CATEGORIES = {
   TRACK: { endPoint: endpoints.triggerJourneyUrl, name: "APTrackConfig" }
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+
 module.exports = {
-  destinationConfigKeys,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES
 };

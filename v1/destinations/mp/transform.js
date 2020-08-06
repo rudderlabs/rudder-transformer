@@ -4,7 +4,8 @@ const { EventType } = require("../../../constants");
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 

@@ -4,7 +4,7 @@ const name = "Slack";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../v1/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {
@@ -17,7 +17,7 @@ test(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
 
-  inputData.forEach(async (input, index) => {
+  inputData.forEach((input, index) => {
     if (input.message.type == "page") {
       expect(() => transformer.process(input)).toThrow(
         new Error("Message type not supported")

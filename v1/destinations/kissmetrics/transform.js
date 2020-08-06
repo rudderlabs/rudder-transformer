@@ -196,7 +196,9 @@ function buildResponse(message, properties, endpoint) {
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
   let properties = JSON.parse(
-    JSON.stringify(message.traits || message.context.traits)
+    JSON.stringify(
+      message.traits || (message.context ? message.context.traits : {})
+    )
   );
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;

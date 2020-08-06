@@ -166,7 +166,6 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
-  response.userId = message.anonymousId;
   response.headers = {
     "Content-Type": "application/json",
     api_key: destination.Config.apiKey
@@ -192,7 +191,6 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
     );
   }
 
-  response.userId = message.anonymousId;
   response.headers = {
     "Content-Type": "application/json",
     api_key: destination.Config.apiKey

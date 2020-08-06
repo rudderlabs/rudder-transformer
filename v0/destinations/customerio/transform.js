@@ -101,7 +101,16 @@ function responseBuilder(message, evType, evName, destination) {
         Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
       );
     }
-
+    if (getFieldValueFromMessage(message, "timestamp")) {
+      set(
+        rawPayload,
+        "_timestamp",
+        Math.floor(
+          new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
+            1000
+        )
+      );
+    }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {

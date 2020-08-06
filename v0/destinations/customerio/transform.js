@@ -57,6 +57,7 @@ function responseBuilder(message, evType, evName, destination) {
   };
 
   if (evType === EventType.IDENTIFY) {
+    // if userId is not there simply drop the payload
     if (!userId) {
       throw new Error("userId not present");
     }
@@ -80,6 +81,7 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
+    // populate user_properties (DEPRECATED)
     if (message.user_properties) {
       const userProps = Object.keys(message.user_properties);
       userProps.forEach(prop => {
@@ -88,19 +90,17 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
-    if (message.context.traits.createdAt) {
-      set(
-        rawPayload,
-        "created_at",
-        Math.floor(new Date(message.context.traits.createdAt).getTime() / 1000)
-      );
-    } else {
-      set(
-        rawPayload,
-        "created_at",
-        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
-      );
-    }
+    // make user creation time
+    set(
+      rawPayload,
+      "created_at",
+      Math.floor(
+        new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
+          1000
+      )
+    );
+
+    // Impportant for historical import
     if (getFieldValueFromMessage(message, "timestamp")) {
       set(
         rawPayload,
@@ -114,11 +114,12 @@ function responseBuilder(message, evType, evName, destination) {
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
+    // any other event type except identify
     const token = get(message, "context.device.token");
 
     if (message.properties) {
       // use this if only top level keys are to be sent
-
+      // DEVICE DELETE from CustomerIO
       if (deviceDeleteRelatedEventName === evName) {
         if (userId && token) {
           endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
@@ -134,6 +135,7 @@ function responseBuilder(message, evType, evName, destination) {
         throw new Error("userId or device_token not present");
       }
 
+      // DEVICE registration
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));

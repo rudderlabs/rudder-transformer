@@ -5,5 +5,11 @@
     "context.traits.id",
     "anonymousId"
   ],
-  "timestamp": "timestamp"
+  "timestamp": "timestamp",
+  "createdAt": [
+    "traits.createdAt",
+    "context.traits.createdAt",
+    "timestamp",
+    "originalTimestamp"
+  ]
 }

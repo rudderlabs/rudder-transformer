@@ -6,17 +6,17 @@ const path = require("path");
 
 const transformer = require("../v0/destinations/customerio/transform");
 
-test(`${name} Tests`, () => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
-  );
-  const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
-  );
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
+const inputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_input.json`)
+);
+const outputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_output.json`)
+);
+const inputData = JSON.parse(inputDataFile);
+const expectedData = JSON.parse(outputDataFile);
 
-  for (let index = 0; index < inputData.length; index++) {
+for (let index = 0; index < inputData.length; index++) {
+  it(`${name} Tests - payload: ${index}`, () => {
     let output, expected;
     try {
       output = transformer.process(inputData[index]);
@@ -27,5 +27,5 @@ test(`${name} Tests`, () => {
     }
 
     expect(output).toEqual(expected);
-  }
-});
+  });
+}

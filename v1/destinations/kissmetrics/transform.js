@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-continue */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-restricted-syntax */
@@ -10,6 +12,7 @@ const each = require("component-each");
 const { EventType } = require("../../../constants");
 const { defaultGetRequestConfig, defaultRequestConfig } = require("../../util");
 const { ENDPOINT } = require("./config");
+const logger = require("../../../logger");
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {
@@ -192,7 +195,9 @@ function buildResponse(message, properties, endpoint) {
 
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
-  let properties = JSON.parse(JSON.stringify(message.traits || message.context.traits));
+  let properties = JSON.parse(
+    JSON.stringify(message.traits || message.context.traits)
+  );
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;
 
@@ -216,6 +221,7 @@ function processTrack(message, destination) {
     properties = JSON.parse(JSON.stringify(message.properties));
   }
 
+  // TODO: Give priority to timestamp, then originalTimestam ?
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
@@ -248,7 +254,7 @@ function processTrack(message, destination) {
   const trackList = [];
   trackList.push(buildResponse(message, properties, endpoint));
   if (products) {
-    products.forEach((product, i) => {
+    products.forEach(product => {
       let item = product;
       if (destination.Config.prefixProperties) item = prefix(event, item);
       item._k = apiKey;
@@ -352,7 +358,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      console.log("Message type not supported");
+      logger.debug("Message type not supported");
       throw new Error("Message type not supported");
   }
 

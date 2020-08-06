@@ -257,12 +257,6 @@
       },
       "event": "test_isent1",
       "integrations": { "All": true },
-      "traits": {
-        "country": "USA",
-        "email": "test@domain.com",
-        "hiji": "hulala-1",
-        "name": "my-name-1"
-      },
       "messageId": "78102118-56ac-4c5a-a495-8cd7c8f71cc2",
       "originalTimestamp": "2020-03-23T03:46:30.921Z",
       "properties": {

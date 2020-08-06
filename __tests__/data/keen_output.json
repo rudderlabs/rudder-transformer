@@ -26,7 +26,7 @@
         },
         "anonymousId": "00000000000000000000000000",
         "user": {
-          "traits": { "anonymousId": "12345", "email": "sayan@gmail.com" },
+          "traits": { "anonymousId": "anon-id", "email": "test@gmail.com" },
           "userId": "12345"
         },
         "path": "/test",
@@ -69,7 +69,7 @@
         },
         "anonymousId": "00000000000000000000000000",
         "user": {
-          "traits": { "anonymousId": "12345", "email": "sayan@gmail.com" },
+          "traits": { "anonymousId": "anon-id", "email": "test@gmail.com" },
           "userId": "12345"
         },
         "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"

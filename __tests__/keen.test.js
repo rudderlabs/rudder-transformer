@@ -4,7 +4,7 @@ const name = "keen";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../v1/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {
@@ -16,12 +16,17 @@ test(`${name} Tests`, () => {
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  inputData.forEach(async (input, index) => {
-    try {
-      const output = await transformer.process(input);
-      expect(output).toEqual(expectedData[index]);
-    } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+  inputData.forEach( (input, index) => {
+    let output, expected;
+    try{
+      output =  transformer.process(input);
+      expected = expectedData[index]
+    } catch(error) {
+      output = error.message
+      expected = expectedData[index].message
     }
+      
+      expect(output).toEqual(expected);
+   
   });
 });

@@ -33,6 +33,31 @@
     "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
+      "city": "Disney-1",
+      "country": "India",
+      "email": "sayan@disney.com",
+      "firstname": "Sayan",
+      "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "_t": "1579847342",
+      "_d": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://trk.kissmetrics.com/s",
+    "headers": {},
+    "params": {
       "city": "Disney",
       "country": "USA",
       "email": "mickey@disney.com",
@@ -137,14 +162,14 @@
     "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
-      "category": "Games",
-      "image_url": "https:///www.example.com/product/path.jpg",
-      "name": "Monopoly: 3rd Edition",
-      "price": 19,
-      "product_id": "507f1f77bcf86cd799439011",
-      "quantity": 1,
-      "sku": "45790-32",
-      "url": "https://www.example.com/product/path",
+      "KM Order Completed-category": "Games",
+      "KM Order Completed-image_url": "https:///www.example.com/product/path.jpg",
+      "KM Order Completed-name": "Monopoly: 3rd Edition",
+      "KM Order Completed-price": 19,
+      "KM Order Completed-product_id": "507f1f77bcf86cd799439011",
+      "KM Order Completed-quantity": 1,
+      "KM Order Completed-sku": "45790-32",
+      "KM Order Completed-url": "https://www.example.com/product/path",
       "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
       "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
@@ -164,12 +189,12 @@
     "endpoint": "https://trk.kissmetrics.com/s",
     "headers": {},
     "params": {
-      "category": "Games",
-      "name": "Uno Card Game",
-      "price": 3,
-      "product_id": "505bd76785ebb509fc183733",
-      "quantity": 2,
-      "sku": "46493-32",
+      "KM Order Completed-category": "Games",
+      "KM Order Completed-name": "Uno Card Game",
+      "KM Order Completed-price": 3,
+      "KM Order Completed-product_id": "505bd76785ebb509fc183733",
+      "KM Order Completed-quantity": 2,
+      "KM Order Completed-sku": "46493-32",
       "_k": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
       "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },

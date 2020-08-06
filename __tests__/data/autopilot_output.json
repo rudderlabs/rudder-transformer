@@ -20,8 +20,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "user12345",
-    "statusCode": 200
+    "userId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd"
   },
   {
     "version": "1",
@@ -45,7 +44,13 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "user12345",
-    "statusCode": 200
+    "userId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd"
+  },
+  { "statusCode": 400, "error": "Message  not supported" },
+  { "statusCode": 400, "error": "Email is required for track calls" },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
   }
 ]
+

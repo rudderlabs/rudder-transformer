@@ -8,18 +8,13 @@ const {
   flattenJson
 } = require("../../util");
 
-function getDestinationKeys(destination) {
-  return { app_id: destination.Config.appId };
-}
-
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
     payload.properties = flattenJson(payload.properties);
-    const heapConfig = getDestinationKeys(destination);
     const responseBody = {
       ...payload,
-      app_id: heapConfig.app_id
+      app_id: destination.Config.appId
     };
     const response = defaultRequestConfig();
     response.endpoint = category.endPoint;
@@ -40,9 +35,9 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
+
   const messageType = message.type.toLowerCase();
   let category;
-  const respList = [];
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
@@ -55,8 +50,7 @@ const processEvent = (message, destination) => {
   }
 
   // build the response
-  respList.push(responseBuilderSimple(message, category, destination));
-  return respList;
+  return responseBuilderSimple(message, category, destination);
 };
 
 const process = event => {

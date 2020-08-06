@@ -62,10 +62,8 @@ function responseBuilder(message, evType, evName, destination) {
 
     // populate speced traits
     populateSpecedTraits(rawPayload, message);
-    if (message.traits || message.context) {
-      const traits = Object.keys(
-        message.traits || (message.context.traits ? message.context.traits : {})
-      );
+    if (message.traits || message.context.traits) {
+      const traits = Object.keys(message.traits || message.context.traits);
       const pathToTraits = message.traits ? "traits" : "context.traits";
       traits.forEach(trait => {
         // populate keys other than speced traits

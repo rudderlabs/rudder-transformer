@@ -1,12 +1,13 @@
 [
-    {
-      "destKey": "Email",
-      "sourceKeys": ["traits.email", "context.traits.email"],
-      "required": true
-    },
-    {
-      "destKey": "Name",
-      "sourceKeys": ["traits.name", "context.traits.name"],
-      "required": false
-    }
-  ]
+  {
+    "destKey": "Email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  }
+]
+

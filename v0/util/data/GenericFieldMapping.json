@@ -4,5 +4,12 @@
     "context.traits.userId",
     "context.traits.id",
     "anonymousId"
+  ],
+  "timestamp": "timestamp",
+  "createdAt": [
+    "traits.createdAt",
+    "context.traits.createdAt",
+    "timestamp",
+    "originalTimestamp"
   ]
 }

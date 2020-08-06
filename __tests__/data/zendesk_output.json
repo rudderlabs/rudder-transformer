@@ -48,8 +48,8 @@
         "body": {
             "JSON": {
                 "user": {
-                    "email": "example124@email.com",
-                    "name": "abcd124",
+                    "email": "group_email_124@xyz.com",
+                    "name": "test-org124",
                     "external_id": "abcd-124",
                     "user_fields": {
                         "id": "abcd-124"

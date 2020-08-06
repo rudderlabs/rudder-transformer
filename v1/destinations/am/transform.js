@@ -11,7 +11,8 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getParsedIP
+  getParsedIP,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   Event,
@@ -23,13 +24,17 @@ const {
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 const populateSpecedTraits = (payload, message) => {
-  SpecedTraits.forEach(trait => {
-    const mapping = TraitsMapping[trait];
-    const keys = Object.keys(mapping);
-    keys.forEach(key => {
-      set(payload, `user_properties.${key}`, get(message, mapping[key]));
+
+  let traits = getFieldValueFromMessage(message, "traits");
+  if(traits){
+    SpecedTraits.forEach(trait => {
+      const mapping = TraitsMapping[trait];
+      const keys = Object.keys(mapping);
+      keys.forEach(key => {
+        set(payload, `user_properties.${key}`, get(traits, mapping[key]));
+      });
     });
-  });
+  }
 };
 
 // Utility method for creating the structure required for single message processing
@@ -108,13 +113,15 @@ function responseBuilderSimple(
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
     populateSpecedTraits(rawPayload, message);
-    const traits = Object.keys(message.context.traits);
+    let traitsObject = message.context.traits || message.traits;
+    let traitsKey = message.context.traits ? 'context.traits' : 'traits'
+    const traits = Object.keys(traitsObject);
     traits.forEach(trait => {
       if (!SpecedTraits.includes(trait)) {
         set(
           rawPayload,
           `user_properties.${trait}`,
-          get(message, `context.traits.${trait}`)
+          get(message, `${traitsKey}.${trait}`)
         );
       }
     });

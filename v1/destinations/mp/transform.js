@@ -83,15 +83,15 @@ function getTransformedJSON(message, mappingJson) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  if (message.context.traits) {
-    const traits = { ...message.context.traits };
+  let traits = getFieldValueFromMessage(message, "traits");
+  if (traits) {
+    traits = { ...traits };
     const keys = Object.keys(traits);
     keys.forEach(key => {
-      const traitsKey = `context.traits.${key}`;
-      if (sourceKeys.includes(traitsKey)) {
-        set(rawPayload, mappingJson[traitsKey], get(message, traitsKey));
+      if (sourceKeys.includes(key)) {
+        set(rawPayload, mappingJson[key], get(traits, key));
       } else {
-        set(rawPayload, key, get(message, traitsKey));
+        set(rawPayload, key, get(traits, key));
       }
     });
   }
@@ -102,6 +102,7 @@ function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
 
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  //const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { device } = message.context;
   if (device && device.token) {
     if (device.type === "ios") {

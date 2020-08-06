@@ -4,24 +4,30 @@ const name = "Mixpanel";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../v1/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
-test(`${name} Tests`, () => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
-  );
-  const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
-  );
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
-  inputData.forEach(async (input, index) => {
+const inputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_input.json`)
+);
+const outputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_output.json`)
+);
+
+const inputData = JSON.parse(inputDataFile);
+const expectedData = JSON.parse(outputDataFile);
+
+inputData.forEach((input, index) => {
+  test(`${name} Tests`, () => {
+    let output, expected;
     try {
-      const output = await transformer.process(input);
-      expect(output).toEqual(expectedData[index]);
+      output = transformer.process(input);
+      output = output;
+      expected = expectedData[index]
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      output = error.message;
+      expected = expectedData[index].message;
     }
+    expect(output).toEqual(expected);         
   });
 });

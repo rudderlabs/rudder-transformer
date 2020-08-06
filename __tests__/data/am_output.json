@@ -33,7 +33,7 @@
           "time": 1571043797562,
           "user_id": "123456",
           "device_id": "123456",
-          "session_id": 991701108
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22"
         },
         "options": {
           "min_id_length": 1
@@ -60,6 +60,7 @@
         "api_key": "abcde",
         "events": {
           "event_properties": {
+            "name": "ApplicationLoaded",
             "path": "/test",
             "name": "ApplicationLoaded",
             "referrer": "Rudder",
@@ -77,7 +78,7 @@
           "time": 1571051718299,
           "device_id": "00000000000000000000000000",
           "user_id": "12345",
-          "session_id": 991701108
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22"
         },
         "options": {
           "min_id_length": 1
@@ -118,7 +119,54 @@
           "time": 1571051718300,
           "device_id": "00000000000000000000000000",
           "user_id": "12345",
-          "session_id": 991701108
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22"
+        },
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "params": {},
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "userId": "123456",
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "anonymousId": "123456",
+            "email": "sayan@gmail.com",
+            "ip": "0.0.0.0",
+            "age": 26
+          },
+          "ip": "0.0.0.0",
+          "os_name": "",
+          "os_version": "",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "$identify",
+          "time": 1571043797562,
+          "user_id": "123456",
+          "device_id": "123456",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22"
         },
         "options": {
           "min_id_length": 1

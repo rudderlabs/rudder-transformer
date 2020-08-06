@@ -44,9 +44,9 @@
   },
   {
     "destKey": "templateId",
-    "sourceKeys": [
+    "sourceKeys":
       "properties.templateId"
-    ],
+    ,
     "required": false
   }
 ]

@@ -1,9 +1,7 @@
 [
     {
         "destKey": "browserToken",
-        "sourceKeys": [
-            "context.os.token"
-        ],
+        "sourceKeys": "context.os.token",
         "required": true
     },
     {

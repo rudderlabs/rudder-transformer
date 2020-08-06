@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-nested-ternary */
 const isIp = require("is-ip");
 const validUrl = require("valid-url");
 const { EventType } = require("../../../constants");
@@ -74,11 +76,12 @@ function processTrack(message, destination) {
   let { properties } = message;
   const user = {};
   user.userId = message.userId
-    ? message.userId != ""
+    ? message.userId !== ""
       ? message.userId
       : message.anonymousId
     : message.anonymousId;
-  user.traits = message.context.traits;
+  user.traits =
+    message.traits || (message.context ? message.context.traits : {});
   properties = {
     ...properties,
     user

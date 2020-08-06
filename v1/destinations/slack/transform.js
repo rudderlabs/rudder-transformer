@@ -266,17 +266,16 @@ function processTrack(message, destination) {
   );
 
   // provide flattened properties as well as propertie sobject
+  const identityTraits =
+    message.traits || (message.context ? message.context.traits : {});
   const templateInput = {
     name: getName(message),
     event: eventName,
     ...message.properties,
     properties: message.properties,
     propertiesList: stringifyJSON(message.properties || {}),
-    traits: stringifyJSON(
-      message.context ? message.context.traits : {},
-      traitsList
-    ),
-    traitsList: message.context ? message.context.traits : {}
+    traits: stringifyJSON(identityTraits, traitsList),
+    traitsList: identityTraits
   };
 
   logger.debug("templateInputTrack: ", templateInput);

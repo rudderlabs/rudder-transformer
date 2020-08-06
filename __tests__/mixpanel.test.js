@@ -23,7 +23,6 @@ inputData.forEach((input, index) => {
     let output, expected;
     try {
       output = transformer.process(input);
-      output = output;
       expected = expectedData[index]
     } catch (error) {
       output = error.message;

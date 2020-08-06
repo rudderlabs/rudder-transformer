@@ -8,7 +8,8 @@ const logger = require("../../../logger");
 const { SLACK_RUDDER_IMAGE_URL, SLACK_USER_NAME } = require("./config");
 const {
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 
 // to string json traits, not using JSON.stringify()
@@ -131,7 +132,7 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.traits || message.context ? message.context.traits : {}
+        getFieldValueFromMessage(message, "traits") || {}
       )
   );
   logger.debug(
@@ -143,14 +144,13 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.traits || message.context ? message.context.traits : {}
+        getFieldValueFromMessage(message, "traits") || {}
       )
   );
 
   // provide a fat input with flattened traits as well as traits object
   // helps the user to build additional handlebar expressions
-  const identityTraits =
-    message.traits || (message.context ? message.context.traits : {});
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
 
   const templateInput = {
     name: uName,
@@ -266,8 +266,7 @@ function processTrack(message, destination) {
   );
 
   // provide flattened properties as well as propertie sobject
-  const identityTraits =
-    message.traits || (message.context ? message.context.traits : {});
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
   const templateInput = {
     name: getName(message),
     event: eventName,

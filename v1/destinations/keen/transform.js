@@ -6,7 +6,8 @@ const { EventType } = require("../../../constants");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getParsedIP
+  getParsedIP,
+  getFieldValueFromMessage
 } = require("../../util");
 const { ENDPOINT } = require("./config");
 
@@ -80,8 +81,7 @@ function processTrack(message, destination) {
       ? message.userId
       : message.anonymousId
     : message.anonymousId;
-  user.traits =
-    message.traits || (message.context ? message.context.traits : {});
+  user.traits = getFieldValueFromMessage(message, "traits") || {};
   properties = {
     ...properties,
     user

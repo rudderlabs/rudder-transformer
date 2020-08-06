@@ -50,6 +50,17 @@
       "integrations": {
         "All": true
       },
+      "traits": {
+        "anonymousId": "anon-id",
+        "email": "test@gmail.com",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {

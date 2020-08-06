@@ -10,7 +10,8 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   IDENTITY_ENDPOINT,
@@ -31,11 +32,12 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
+  const pathToTraits = message.traits ? "traits" : "context.traits";
   SpecedTraits.forEach(trait => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach(key => {
-      set(payload, key, get(message, mapping[key]));
+      set(payload, key, get(message, `${pathToTraits}.${mapping[`${key}`]}`));
     });
   });
 };
@@ -61,9 +63,11 @@ function responseBuilder(message, evType, evName, destination) {
     }
 
     // populate speced traits
+    const identityTrailts = getFieldValueFromMessage(message, "traits") || {};
     populateSpecedTraits(rawPayload, message);
-    if (message.traits || message.context.traits) {
-      const traits = Object.keys(message.traits || message.context.traits);
+
+    if (Object.keys(identityTrailts).length > 0) {
+      const traits = Object.keys(identityTrailts);
       const pathToTraits = message.traits ? "traits" : "context.traits";
       traits.forEach(trait => {
         // populate keys other than speced traits
@@ -88,18 +92,12 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
-    if (message.traits || (message.context && message.context.traits)) {
-      const createdAt = message.traits
-        ? message.traits.createdAt
-        : message.context.traits.createdAt;
-
-      if (createdAt) {
-        set(
-          rawPayload,
-          "created_at",
-          Math.floor(new Date(createdAt).getTime() / 1000)
-        );
-      }
+    if (identityTrailts.createdAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(identityTrailts.createdAt).getTime() / 1000)
+      );
     } else {
       set(
         rawPayload,

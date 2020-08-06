@@ -10,9 +10,7 @@
   },
   {
     "destKey": "dataFields",
-    "sourceKeys": [
-      "properties"
-    ],
+    "sourceKeys": "properties",
     "required": false
   },
   {
@@ -36,16 +34,12 @@
   },
   {
     "destKey": "createdAt",
-    "sourceKeys": [
-      "originalTimestamp"
-    ],
+    "sourceKeys": "originalTimestamp",
     "required": false
   },
   {
     "destKey": "campaignId",
-    "sourceKeys": [
-      "properties.campaignId"
-    ],
+    "sourceKeys": "properties.campaignId",
     "required": false
   },
   {

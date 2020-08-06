@@ -4,27 +4,21 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  setValues
+  constructPayload
 } = require("../../util");
 const logger = require("../../../logger");
 
-function constructPayload(message, category, destination) {
-  const rawPayloadUser = {};
-  const rawPayloadDevice = {};
-
+function constructPayloadItem(message, category, destination) {
   const rawPayloadItemArr = [];
-  const rawPayloadItem = {};
   let rawPayload = {};
 
   switch (category.action) {
     case "identifyDevice":
-      rawPayload = setValues(
-        rawPayload,
+      rawPayload = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]
       );
-      rawPayload.device = setValues(
-        rawPayloadDevice,
+      rawPayload.device = constructPayload(
         message,
         mappingConfig[ConfigCategory.DEVICE.name]
       );
@@ -34,42 +28,29 @@ function constructPayload(message, category, destination) {
       else rawPayload.device.platform = "GCM";
       break;
     case "identifyBrowser":
-      rawPayload = setValues(
-        rawPayload,
+      rawPayload = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY_BROWSER.name]
       );
       break;
     case "identify":
-      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
       break;
     case "page":
       if (destination.Config.trackAllPages) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
         message.properties.category
       ) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
         message.properties.name
       ) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       }
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Page";
@@ -84,29 +65,17 @@ function constructPayload(message, category, destination) {
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
         message.properties.category
       ) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
         message.properties.name
       ) {
-        rawPayload = setValues(
-          rawPayload,
-          message,
-          mappingConfig[category.name]
-        );
+        rawPayload = constructPayload(message, mappingConfig[category.name]);
       }
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Screen";
@@ -120,7 +89,7 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "track":
-      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId)
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
@@ -128,9 +97,8 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "trackPurchase":
-      rawPayload = setValues(rawPayload, message, mappingConfig[category.name]);
-      rawPayload.user = setValues(
-        rawPayloadUser,
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
+      rawPayload.user = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
@@ -138,8 +106,7 @@ function constructPayload(message, category, destination) {
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
       rawPayload.items.forEach(el => {
-        const element = setValues(
-          rawPayloadItem,
+        const element = constructPayload(
           el,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
@@ -164,8 +131,7 @@ function constructPayload(message, category, destination) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       break;
     case "updateCart":
-      rawPayload.user = setValues(
-        rawPayloadUser,
+      rawPayload.user = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
@@ -173,8 +139,7 @@ function constructPayload(message, category, destination) {
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
       rawPayload.items.forEach(el => {
-        const element = setValues(
-          rawPayloadItem,
+        const element = constructPayload(
           el,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
@@ -200,7 +165,7 @@ function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = constructPayload(message, category, destination);
+  response.body.JSON = constructPayloadItem(message, category, destination);
   response.userId = message.anonymousId;
   response.headers = {
     "Content-Type": "application/json",
@@ -213,14 +178,14 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
   const response = defaultRequestConfig();
   if (message.context.device) {
     response.endpoint = category.endpointDevice;
-    response.body.JSON = constructPayload(
+    response.body.JSON = constructPayloadItem(
       message,
       { ...category, action: category.actionDevice },
       destination
     );
   } else if (message.context.os) {
     response.endpoint = category.endpointBrowser;
-    response.body.JSON = constructPayload(
+    response.body.JSON = constructPayloadItem(
       message,
       { ...category, action: category.actionBrowser },
       destination

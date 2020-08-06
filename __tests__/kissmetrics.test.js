@@ -4,7 +4,7 @@ const name = "kissmetrics";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../v1/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 test(`${name} Tests`, () => {
@@ -16,7 +16,7 @@ test(`${name} Tests`, () => {
   );
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
-  inputData.forEach(async (input, index) => {
+  inputData.forEach((input, index) => {
     const output = transformer.process(input);
     const outputLength = output.length;
     for (let i = 0; i < outputLength; i++) {

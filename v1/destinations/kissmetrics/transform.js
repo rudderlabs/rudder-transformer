@@ -10,7 +10,11 @@ const is = require("is");
 const extend = require("@ndhoule/extend");
 const each = require("component-each");
 const { EventType } = require("../../../constants");
-const { defaultGetRequestConfig, defaultRequestConfig } = require("../../util");
+const {
+  defaultGetRequestConfig,
+  defaultRequestConfig,
+  getFieldValueFromMessage
+} = require("../../util");
 const { ENDPOINT } = require("./config");
 const logger = require("../../../logger");
 
@@ -196,9 +200,7 @@ function buildResponse(message, properties, endpoint) {
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
   let properties = JSON.parse(
-    JSON.stringify(
-      message.traits || (message.context ? message.context.traits : {})
-    )
+    JSON.stringify(getFieldValueFromMessage(message, "traits") || {})
   );
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;

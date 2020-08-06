@@ -1,72 +1,53 @@
 [
   {
     "destKey": "id",
-    "sourceKeys": [
-      "product_id"
-    ],
+    "sourceKeys": "product_id",
     "required": true
   },
   {
     "destKey": "sku",
-    "sourceKeys": [
-      "sku"
-    ],
+    "sourceKeys": "sku",
     "required": false
   },
   {
     "destKey": "name",
-    "sourceKeys": [
-      "name"
-    ],
+    "sourceKeys": "name",
     "required": true
   },
   {
     "destKey": "description",
-    "sourceKeys": [
-      "description"
-    ],
+    "sourceKeys": "description",
     "required": false
   },
   {
     "destKey": "categories",
-    "sourceKeys": [
-      "category"
-    ],
+    "sourceKeys": "category",
     "required": false
   },
   {
     "destKey": "price",
-    "sourceKeys": [
-      "price"
-    ],
+    "sourceKeys": "price",
     "required": true
   },
   {
     "destKey": "quantity",
-    "sourceKeys": [
-      "quantity"
-    ],
+    "sourceKeys": "quantity",
     "required": true
   },
   {
     "destKey": "imageUrl",
-    "sourceKeys": [
-      "image_url"
-    ],
+    "sourceKeys": "image_url",
     "required": false
   },
   {
     "destKey": "url",
-    "sourceKeys": [
-      "url"
-    ],
+    "sourceKeys": "url",
     "required": false
   },
   {
     "destKey": "dataFields",
-    "sourceKeys": [
-      "properties"
-    ],
+    "sourceKeys": "properties",
     "required": false
   }
 ]
+

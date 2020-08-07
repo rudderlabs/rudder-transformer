@@ -118,13 +118,14 @@ function responseBuilderSimple(
   if (evType === EventType.IDENTIFY) {
     populateSpecedTraits(rawPayload, message);
     const traitsObject = getFieldValueFromMessage(message, "traits");
-    // let traitsKey = message.context.traits ? 'context.traits' : 'traits'
-    const traits = Object.keys(traitsObject);
-    traits.forEach(trait => {
-      if (!SpecedTraits.includes(trait)) {
-        set(rawPayload, `user_properties.${trait}`, get(traitsObject, trait));
-      }
-    });
+    if (traitsObject) {
+      const traits = Object.keys(traitsObject);
+      traits.forEach(trait => {
+        if (!SpecedTraits.includes(trait)) {
+          set(rawPayload, `user_properties.${trait}`, get(traitsObject, trait));
+        }
+      });
+    }
     rawPayload.event_type = EventType.IDENTIFY_AM;
   } else {
     rawPayload.event_type = evType;

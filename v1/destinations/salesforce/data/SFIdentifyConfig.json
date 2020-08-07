@@ -2,176 +2,176 @@
     {
         "destKey": "Email",
         "sourceKeys": [
-            "context.traits.email",
-            "traits.email"
+            "traits.email",
+            "context.traits.email"
         ],
         "required": false
     },
     {
         "destKey": "Phone",
         "sourceKeys": [
-            "context.traits.phone",
-            "traits.phone"
+            "traits.phone",
+            "context.traits.phone"
         ],
         "required": false
     },
     {
         "destKey": "Rating",
         "sourceKeys": [
-            "context.traits.rating",
-            "traits.rating"
+            "traits.rating",
+            "context.traits.rating"
         ],
         "required": false
     },
     {
         "destKey": "Title",
         "sourceKeys": [
-            "context.traits.title",
-            "traits.title"
+            "traits.title",
+            "context.traits.title"
         ],
         "required": false
     },
     {
         "destKey": "FirstName",
         "sourceKeys": [
-            "context.traits.firstName",
-            "traits.firstName"
+            "traits.firstName",
+            "context.traits.firstName"
         ],
         "required": false
     },
     {
         "destKey": "LastName",
         "sourceKeys": [
-            "context.traits.lastName",
-            "traits.lastName"
+            "traits.lastName",
+            "context.traits.lastName"
         ],
         "required": false
     },
     {
         "destKey": "PostalCode",
         "sourceKeys": [
-            "context.traits.address.postalCode",
-            "traits.address.postalCode"
+            "traits.address.postalCode",
+            "context.traits.address.postalCode"
         ],
         "required": false
     },
     {
         "destKey": "City",
         "sourceKeys": [
-            "context.traits.address.city",
-            "traits.address.city"
+            "traits.address.city",
+            "context.traits.address.city"
         ],
         "required": false
     },
     {
         "destKey": "Country",
         "sourceKeys": [
-            "context.traits.address.country",
-            "traits.address.country"
+            "traits.address.country",
+            "context.traits.address.country"
         ],
         "required": false
     },
     {
         "destKey": "State",
         "sourceKeys": [
-            "context.traits.address.state",
-            "traits.address.state"
+            "traits.address.state",
+            "context.traits.address.state"
         ],
         "required": false
     },
     {
         "destKey": "Street",
         "sourceKeys": [
-            "context.traits.address.street",
-            "traits.address.street"
+            "traits.address.street",
+            "context.traits.address.street"
         ],
         "required": false
     },
     {
         "destKey": "Country",
         "sourceKeys": [
-            "context.traits.country",
-            "traits.country"
+            "traits.country",
+            "context.traits.country"
         ],
         "required": false
     },
     {
         "destKey": "PostalCode",
         "sourceKeys": [
-            "context.traits.postalCode",
-            "traits.postalCode"
+            "traits.postalCode",
+            "context.traits.postalCode"
         ],
         "required": false
     },
     {
         "destKey": "State",
         "sourceKeys": [
-            "context.traits.state",
-            "traits.state"
+            "traits.state",
+            "context.traits.state"
         ],
         "required": false
     },
     {
         "destKey": "Street",
         "sourceKeys": [
-            "context.traits.street",
-            "traits.street"
+            "traits.street",
+            "context.traits.street"
         ],
         "required": false
     },
     {
         "destKey": "City",
         "sourceKeys": [
-            "context.traits.city",
-            "traits.city"
+            "traits.city",
+            "context.traits.city"
         ],
         "required": false
     },
     {
         "destKey": "Industry",
         "sourceKeys": [
-            "context.traits.company.industry",
-            "traits.company.industry"
+            "traits.company.industry",
+            "context.traits.company.industry"
         ],
         "required": false
     },
     {
         "destKey": "NumberOfEmployees",
         "sourceKeys": [
-            "context.traits.company.employee_count",
-            "traits.company.employee_count"
+            "traits.company.employee_count",
+            "context.traits.company.employee_count"
         ],
         "required": false
     },
     {
         "destKey": "Company",
         "sourceKeys": [
-            "context.traits.company.name",
-            "traits.company.name"
+            "traits.company.name",
+            "context.traits.company.name"
         ],
         "required": false
     },
     {
         "destKey": "Company",
         "sourceKeys": [
-            "context.traits.company",
-            "traits.company"
+            "traits.company",
+            "context.traits.company"
         ],
         "required": false
     },
     {
         "destKey": "Description",
         "sourceKeys": [
-            "context.traits.description",
-            "traits.description"
+            "traits.description",
+            "context.traits.description"
         ],
         "required": false
     },
     {
         "destKey": "Website",
         "sourceKeys": [
-            "context.traits.website",
-            "traits.website"
+            "traits.website",
+            "context.traits.website"
         ],
         "required": false
     }

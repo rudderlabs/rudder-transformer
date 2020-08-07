@@ -103,7 +103,6 @@ function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
 
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
-  //const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { device } = message.context;
   if (device && device.token) {
     if (device.type === "ios") {

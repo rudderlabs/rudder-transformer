@@ -40,8 +40,8 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-  if(traits){
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (traits) {
     const traitsKeys = Object.keys(traits);
     const propertyMap = await getProperties(destination);
     sourceKeys.forEach(sourceKey => {
@@ -53,7 +53,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
       const hsSupportedKey = getKey(traitsKey);
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
-        if (propertyMap[hsSupportedKey] == "date") {
+        if (propertyMap[hsSupportedKey] === "date") {
           const time = propValue;
           const date = new Date(time);
           date.setUTCHours(0, 0, 0, 0);
@@ -80,7 +80,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   response.method = defaultGetRequestConfig.requestMethod;
 
   if (eventType !== EventType.TRACK) {
-    let traits = getFieldValueFromMessage(message, "traits");
+    const traits = getFieldValueFromMessage(message, "traits");
     const { email } = traits;
     const { apiKey } = destination.Config;
     params = { hapikey: apiKey };
@@ -134,9 +134,8 @@ function handleError(message) {
 }
 
 async function processIdentify(message, destination) {
-  let traits = getFieldValueFromMessage(message, "traits");
-  if ( !traits || !(traits.email) ) {
-    console.log("email not present");
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (!traits || !traits.email) {
     return handleError("Identify without email is not supported.");
   }
   const userProperties = await getTransformedJSON(

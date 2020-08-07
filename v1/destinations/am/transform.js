@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
@@ -22,11 +23,12 @@ const {
   nameToEventMap
 } = require("./config");
 
+const logger = require("../../../logger");
+
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 const populateSpecedTraits = (payload, message) => {
-
-  let traits = getFieldValueFromMessage(message, "traits");
-  if(traits){
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (traits) {
     SpecedTraits.forEach(trait => {
       const mapping = TraitsMapping[trait];
       const keys = Object.keys(mapping);
@@ -52,7 +54,7 @@ function createSingleMessageBasicStructure(message) {
 }
 
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
-function stringToHash(string) {
+/* function stringToHash(string) {
   let hash = 0;
 
   if (string.length == 0) return hash;
@@ -64,11 +66,14 @@ function stringToHash(string) {
   }
 
   return Math.abs(hash);
-}
+} */
 
 function fixSessionId(payload) {
   payload.session_id = payload.session_id
-    ? ((payload.session_id).substr((payload.session_id).lastIndexOf(":") + 1 , (payload.session_id).length))
+    ? payload.session_id.substr(
+        payload.session_id.lastIndexOf(":") + 1,
+        payload.session_id.length
+      )
     : -1;
 }
 
@@ -98,10 +103,9 @@ function responseBuilderSimple(
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
 
-  if(message.channel == "mobile") {
-    set(rawPayload,"device_brand",message.context.device.manufacturer);
+  if (message.channel === "mobile") {
+    set(rawPayload, "device_brand", message.context.device.manufacturer);
   }
-
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -113,16 +117,12 @@ function responseBuilderSimple(
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
     populateSpecedTraits(rawPayload, message);
-    let traitsObject = message.context.traits || message.traits;
-    let traitsKey = message.context.traits ? 'context.traits' : 'traits'
+    const traitsObject = getFieldValueFromMessage(message, "traits");
+    // let traitsKey = message.context.traits ? 'context.traits' : 'traits'
     const traits = Object.keys(traitsObject);
     traits.forEach(trait => {
       if (!SpecedTraits.includes(trait)) {
-        set(
-          rawPayload,
-          `user_properties.${trait}`,
-          get(message, `${traitsKey}.${trait}`)
-        );
+        set(rawPayload, `user_properties.${trait}`, get(traitsObject, trait));
       }
     });
     rawPayload.event_type = EventType.IDENTIFY_AM;
@@ -134,9 +134,9 @@ function responseBuilderSimple(
   // send user_id only when present, for anonymous users not required
   if (
     message.userId &&
-    message.userId != "" &&
-    message.userId != "null" &&
-    message.userId != null
+    message.userId !== "" &&
+    message.userId !== "null" &&
+    message.userId !== null
   ) {
     rawPayload.user_id = message.userId;
   }
@@ -236,7 +236,7 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      console.log("could not determine type");
+      logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
 
@@ -294,10 +294,10 @@ function process(event) {
     toSendEvents.push(processProductListAction(message));
   } else if (
     messageType === EventType.TRACK &&
-    (eventType == Event.CHECKOUT_STARTED.name ||
-      eventType == Event.ORDER_UPDATED.name ||
-      eventType == Event.ORDER_COMPLETED.name ||
-      eventType == Event.ORDER_CANCELLED.name)
+    (eventType === Event.CHECKOUT_STARTED.name ||
+      eventType === Event.ORDER_UPDATED.name ||
+      eventType === Event.ORDER_COMPLETED.name ||
+      eventType === Event.ORDER_CANCELLED.name)
   ) {
     toSendEvents.push(processTransaction(message));
   } else {

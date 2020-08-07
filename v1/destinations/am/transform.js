@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
@@ -26,18 +25,18 @@ const {
 const logger = require("../../../logger");
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
-const populateSpecedTraits = (payload, message) => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (traits) {
-    SpecedTraits.forEach(trait => {
-      const mapping = TraitsMapping[trait];
-      const keys = Object.keys(mapping);
-      keys.forEach(key => {
-        set(payload, `user_properties.${key}`, get(traits, mapping[key]));
-      });
-    });
-  }
-};
+// const populateSpecedTraits = (payload, message) => {
+//   const traits = getFieldValueFromMessage(message, "traits");
+//   if (traits) {
+//     SpecedTraits.forEach(trait => {
+//       const mapping = TraitsMapping[trait];
+//       const keys = Object.keys(mapping);
+//       keys.forEach(key => {
+//         set(payload, `user_properties.${key}`, get(traits, mapping[key]));
+//       });
+//     });
+//   }
+// };
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
@@ -68,8 +67,8 @@ function createSingleMessageBasicStructure(message) {
   return Math.abs(hash);
 } */
 
-function fixSessionId(payload) {
-  payload.session_id = payload.session_id
+function getSessionId(payload) {
+  return payload.session_id
     ? payload.session_id.substr(
         payload.session_id.lastIndexOf(":") + 1,
         payload.session_id.length
@@ -89,7 +88,6 @@ function addMinIdlength() {
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
-
 function responseBuilderSimple(
   rootElementName,
   message,
@@ -116,13 +114,21 @@ function responseBuilderSimple(
 
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
-    populateSpecedTraits(rawPayload, message);
-    const traitsObject = getFieldValueFromMessage(message, "traits");
-    if (traitsObject) {
-      const traits = Object.keys(traitsObject);
-      traits.forEach(trait => {
-        if (!SpecedTraits.includes(trait)) {
-          set(rawPayload, `user_properties.${trait}`, get(traitsObject, trait));
+    // populateSpecedTraits(rawPayload, message);
+    const traits = getFieldValueFromMessage(message, "traits");
+    if (traits) {
+      Object.keys(traits).forEach(trait => {
+        if (SpecedTraits.includes(trait)) {
+          const mapping = TraitsMapping[trait];
+          Object.keys(mapping).forEach(key => {
+            set(
+              rawPayload,
+              `user_properties.${key}`,
+              get(traits, mapping[key])
+            );
+          });
+        } else {
+          set(rawPayload, `user_properties.${trait}`, get(traits, trait));
         }
       });
     }
@@ -131,7 +137,10 @@ function responseBuilderSimple(
     rawPayload.event_type = evType;
   }
 
-  rawPayload.time = new Date(message.originalTimestamp).getTime();
+  rawPayload.time = new Date(
+    getFieldValueFromMessage(message, "timestamp")
+  ).getTime();
+
   // send user_id only when present, for anonymous users not required
   if (
     message.userId &&
@@ -143,7 +152,7 @@ function responseBuilderSimple(
   }
 
   const payload = removeUndefinedValues(rawPayload);
-  fixSessionId(payload);
+  payload.session_id = getSessionId(payload);
 
   // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
   // for correct versionName
@@ -159,7 +168,7 @@ function responseBuilderSimple(
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.anonymousId;
   response.body.JSON = {
     api_key: destination.Config.apiKey,
     [rootElementName]: payload,
@@ -306,11 +315,7 @@ function process(event) {
   }
 
   toSendEvents.forEach(sendEvent => {
-    const result = processSingleMessage(sendEvent, destination);
-    if (!result.statusCode) {
-      result.statusCode = 200;
-    }
-    respList.push(result);
+    respList.push(processSingleMessage(sendEvent, destination));
   });
   return respList;
 }

@@ -5,8 +5,9 @@ const name = "Hubspot";
 
 const fs = require("fs");
 const path = require("path");
+const version = "v1";
 
-const transformer = require(`../v1/destinations/${integration}/transform`);
+const transformer = require(`../${version}/destinations/${integration}/transform`);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -18,12 +19,12 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach(async (input, index) => {
-  test(`${name} Tests`, async () => {
+  test(`${name} Tests: payload - ${index}`, async () => {
     try {
       const output = await transformer.process(input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });

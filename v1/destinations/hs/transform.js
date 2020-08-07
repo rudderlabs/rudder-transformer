@@ -98,7 +98,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     "Content-Type": "application/json"
   };
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = params;
   response.statusCode = 200;
 
@@ -129,14 +129,14 @@ async function processTrack(message, destination) {
   );
 }
 
-function handleError(message) {
-  throw new Error(message);
-}
+// function handleError(message) {
+//   throw new Error(message);
+// }
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !traits.email) {
-    return handleError("Identify without email is not supported.");
+    throw new Error("Identify without email is not supported.");
   }
   const userProperties = await getTransformedJSON(
     message,
@@ -172,10 +172,6 @@ async function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
-  if (!resp.statusCode) {
-    resp.statusCode = 200;
-  }
-  return resp;
+  return processSingleMessage(event.message, event.destination);
 }
 exports.process = process;

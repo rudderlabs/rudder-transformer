@@ -7,7 +7,7 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "12345",
+    "userId": "00000000000000000000000000",
     "params": {
       "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
     },
@@ -32,7 +32,7 @@
   },
   {
     "statusCode": 400,
-    "message": "message type page is not supported"
+    "error": "message type page is not supported"
   },
   {
     "version": "1",
@@ -42,7 +42,7 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "12345",
+    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -65,7 +65,7 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "12345",
+    "userId": "00000000000000000000000000",
     "params": {
       "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
     },
@@ -82,6 +82,55 @@
           }
         ]
       },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "statusCode": 200
+  },
+  { "statusCode": 400, "error": "Identify without email is not supported." },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://track.hubspot.com/v1/event",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "userId": "00000000000000000000000000",
+    "params": {
+      "_a": "6405167",
+      "_n": "test track event HS",
+      "_m": 4.99,
+      "email": "testhubspot2@email.com",
+      "firstname": "Test Hubspot"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://track.hubspot.com/v1/event",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "userId": "00000000000000000000000000",
+    "params": {
+      "_a": "6405167",
+      "_n": "test track event HS",
+      "_m": 4.99,
+      "email": "testhubspot2@email.com",
+      "firstname": "Test Hubspot"
+    },
+    "body": {
+      "JSON": {},
       "XML": {},
       "FORM": {}
     },

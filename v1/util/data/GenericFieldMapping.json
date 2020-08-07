@@ -6,6 +6,7 @@
     "anonymousId"
   ],
   "traits": ["traits", "context.traits"],
+  "address": ["traits.address", "context.traits.address"],
   "email": ["traits.email", "context.traits.email", "properties.email"],
-  "address": ["traits.address", "context.traits.address"]
+  "timestamp": ["originalTimestamp", "timestamp"]
 }

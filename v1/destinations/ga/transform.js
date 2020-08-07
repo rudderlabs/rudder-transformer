@@ -13,7 +13,8 @@ const {
   defaultGetRequestConfig,
   defaultRequestConfig,
   getParsedIP,
-  formatValue
+  formatValue,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -255,12 +256,12 @@ function processIdentify(message, destination) {
     ea = "User Enriched";
   }
   let ec;
-
+  const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
   if (
     serverSideIdentifyEventAction &&
-    (message.traits ? message.traits[serverSideIdentifyEventCategory] : undefined || message.context.traits[serverSideIdentifyEventCategory])
+    identifyTraits[serverSideIdentifyEventCategory]
   ) {
-    ec = message.traits ? message.traits[serverSideIdentifyEventCategory] : undefined || message.context.traits[serverSideIdentifyEventCategory];
+    ec = identifyTraits[serverSideIdentifyEventCategory];
   } else {
     ec = "All";
   }

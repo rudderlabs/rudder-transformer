@@ -5404,7 +5404,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name1": "Ruchira"
         },
         "app": {
           "build": "1.0.0",
@@ -5438,6 +5438,9 @@
       "userId": "123456",
       "integrations": {
         "All": true
+      },
+      "traits": {
+        "name1": "Ruchira"
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },

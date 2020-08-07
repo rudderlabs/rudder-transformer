@@ -6,8 +6,8 @@
     "anonymousId"
   ],
   "traits": [
-    "context.traits",
-    "traits"
+    "traits",
+    "context.traits"
   ],
   "email": [
     "traits.email",

@@ -5,13 +5,8 @@
     "context.traits.id",
     "anonymousId"
   ],
-  "traits": [
-    "traits",
-    "context.traits"
-  ],
-  "email": [
-    "traits.email",
-    "context.traits.email",
-    "properties.email"
-  ]
+  "traits": ["traits", "context.traits"],
+  "address": ["traits.address", "context.traits.address"],
+  "email": ["traits.email", "context.traits.email", "properties.email"],
+  "timestamp": ["originalTimestamp", "timestamp"]
 }

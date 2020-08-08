@@ -233,10 +233,7 @@ function responseBuilderSimple(
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
-  response.userId =
-    message.userId && message.userId.length > 0
-      ? message.userId
-      : message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = finalPayload;
 
   return response;
@@ -812,7 +809,7 @@ function processSingleMessage(message, destination) {
 }
 
 // Iterate over input batch and generate response for each message
-async function process(event) {
+function process(event) {
   let response;
   try {
     response = processSingleMessage(event.message, event.destination);

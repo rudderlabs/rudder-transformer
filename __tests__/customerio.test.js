@@ -4,8 +4,9 @@ const name = "CustomerIO";
 
 const fs = require("fs");
 const path = require("path");
+const version = "v1";
 
-const transformer = require("../v1/destinations/customerio/transform");
+const transformer = require(`../${version}/destinations/customerio/transform`);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)

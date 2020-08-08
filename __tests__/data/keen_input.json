@@ -46,6 +46,17 @@
       "integrations": {
         "All": true
       },
+      "traits": {
+        "anonymousId": "my-anon-id",
+        "email": "test@gmail.com",
+        "address": {
+          "city": "kolkata-1",
+          "country": "US",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
@@ -101,6 +112,10 @@
         "search": "abc",
         "title": "Test Page",
         "url": "www.rudderlabs.com"
+      },
+      "traits": {
+        "email": "test@gmail.com",
+        "anonymousId": "anon-id"
       },
       "integrations": {
         "All": true
@@ -162,6 +177,10 @@
       },
       "integrations": {
         "All": true
+      },
+      "traits": {
+        "email": "test@gmail.com",
+        "anonymousId": "anon-id"
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },

@@ -14,7 +14,6 @@ const inputDataFile = fs.readFileSync(
 const outputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_output.json`)
 );
-
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 

@@ -14,8 +14,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "hjikl",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
       "version": "1",
@@ -32,8 +31,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "hjikl",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
       "version": "1",
@@ -50,8 +48,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "hjikl",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
       "version": "1",
@@ -68,8 +65,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "hjiklmk",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
       "version": "1",
@@ -86,8 +82,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "hjikl",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     [{
       "version": "1",
@@ -104,8 +99,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }],
     [
       {
@@ -123,8 +117,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       },
       {
         "version": "1",
@@ -141,8 +134,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }
     ],
     {
@@ -158,9 +150,8 @@
       "params": {
         "data": "eyJldmVudCI6IiRjcmVhdGVfYWxpYXMiLCJwcm9wZXJ0aWVzIjp7ImRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwiYWxpYXMiOiIxMjM0YWJjIn19"
       },
-      "statusCode": 200,
       "type": "REST",
-      "userId": "1234abc",
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "version": "1"
     },
     [
@@ -179,8 +170,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       },
       {
         "version": "1",
@@ -197,8 +187,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }
     ],
     [
@@ -217,8 +206,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       },
       {
         "version": "1",
@@ -235,8 +223,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }
     ],
     [
@@ -255,8 +242,7 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }
     ],
     [
@@ -275,9 +261,8 @@
           "FORM": {}
         },
         "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "statusCode": 200
-      }
+        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+     }
     ],
     {
       "message": "config is not supported",
@@ -298,7 +283,6 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "statusCode": 200
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }]
   ]

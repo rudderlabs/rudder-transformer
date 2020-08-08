@@ -32,9 +32,8 @@ function responseBuilderSimple(parameters, message, eventType) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  response.userId = message.userId || message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = { data: encodedData };
-  response.statusCode = 200;
 
   return response;
 }

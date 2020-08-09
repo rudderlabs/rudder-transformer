@@ -1,4 +1,3 @@
-const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   KOCHAVA_ENDPOINT,
@@ -9,7 +8,6 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   getParsedIP,
-  setValues,
   constructPayload
 } = require("../../util");
 
@@ -36,7 +34,6 @@ function responseBuilder(
   };
 
   // map values from message.context to payload.data for kochava
-  const sourceKeys = Object.keys(mappingJson);
   const data = constructPayload(message, mappingJson);
 
   if (eventName) {
@@ -55,10 +52,7 @@ function responseBuilder(
   // construct the response and return
   const response = defaultRequestConfig();
   response.endpoint = KOCHAVA_ENDPOINT;
-  response.userId =
-    message.userId && message.userId.length > 0
-      ? message.userId
-      : message.anonymousId;
+  response.userId = message.anonymousId;
   response.body.JSON = payload;
   return response;
 }
@@ -82,17 +76,11 @@ function processMessage(message, destination) {
       }
       customParams = processTrackEvents(message);
       break;
-    case EventType.PAGE:
-      // `page` event is not supported
-      throw new Error("message type not supported");
-    case EventType.IDENTIFY:
-      // process `identify` event
-      throw new Error("message type not supported");
     case EventType.TRACK:
       // process `track` event
       if (eventName) {
         const evName = eventName.toLowerCase();
-        if (eventNameMapping[evName] != undefined) {
+        if (eventNameMapping[evName] !== undefined) {
           eventName = eventNameMapping[evName];
         }
       }
@@ -112,12 +100,8 @@ function processMessage(message, destination) {
 }
 
 // process message
-async function process(event) {
-  const result = processMessage(event.message, event.destination);
-  if (!result.statusCode) {
-    result.statusCode = 200;
-  }
-  return result;
+function process(event) {
+  return processMessage(event.message, event.destination);
 }
 
 exports.process = process;

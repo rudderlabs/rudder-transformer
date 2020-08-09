@@ -29,8 +29,69 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath",
-    "statusCode": 200
+    "userId": "sampath"
   },
-  { "statusCode": 400, "message": "message type not supported" }
+  { "statusCode": 400, "message": "message type not supported" },
+  {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://control.kochava.com/track/json",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "action": "event",
+          "kochava_app_id": "<kochava guid goes here>",
+          "kochava_device_id": "00000000000000000000000000",
+          "send_date": "2019-10-14T09:03:17.562Z",
+          "data": {
+            "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "app_short_string": "1.0.0",
+            "screen_dpi": 2,
+            "locale": "en-US",
+            "event_name": "screen view",
+            "event_data": {},
+            "origination_ip": "1.1.1.1"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "00000000000000000000000000"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://control.kochava.com/track/json",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "action": "event",
+          "kochava_app_id": "<kochava guid goes here>",
+          "kochava_device_id": "00000000000000000000000000",
+          "send_date": "2019-10-14T09:03:17.562Z",
+          "data": {
+            "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "app_short_string": "1.0.0",
+            "screen_dpi": 2,
+            "locale": "en-US",
+            "event_name": "screen view Home Screen",
+            "event_data": { "name": "Home Screen" },
+            "origination_ip": "1.1.1.1"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "00000000000000000000000000"
+    }
 ]

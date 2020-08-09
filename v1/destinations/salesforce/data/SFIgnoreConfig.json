@@ -1,10 +1,11 @@
 [
-    "name",
-    "age",
-    "gender",
-    "anonymousId",
-    "createdAt",
-    "id",
-    "birthday",
-    "avatar"
+  "name",
+  "age",
+  "gender",
+  "anonymousId",
+  "createdAt",
+  "id",
+  "birthday",
+  "avatar"
 ]
+

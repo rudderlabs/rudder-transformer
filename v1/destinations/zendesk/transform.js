@@ -15,10 +15,13 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  defaultDeleteRequestConfig
+  defaultDeleteRequestConfig,
+  getFieldValueFromMessage,
+  constructPayload
 } = require("../../util");
 
 let endPoint;
+
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -103,23 +106,20 @@ async function checkAndCreateUserFields(
 
 function getIdentifyPayload(message, category, destinationConfig) {
   mappingJson = mappingConfig[category.name];
-  const payload = {};
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(payload, mappingJson[sourceKey], get(message, sourceKey));
-  });
+  const payload = constructPayload(message, mappingJson);
+  const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 
   if (payload.user.external_id) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
   // send fields not in sourceKeys as user fields
-  const traitKeys = Object.keys(message.context.traits);
-  const userFields = traitKeys.filter(
+  const traits = getFieldValueFromMessage(message, "traits");
+  const userFields = Object.keys(traits).filter(
     trait =>
       !(
-        sourceKeys.includes(`context.traits.${trait}`) ||
-        typeof message.context.traits[trait] === "object"
+        sourceKeys.includes(trait) ||
+        typeof traits[trait] === "object"
       )
   );
   userFields.forEach(field => {
@@ -140,7 +140,8 @@ function getIdentifyPayload(message, category, destinationConfig) {
 }
 
 async function getUserId(message, headers) {
-  const userEmail = message.context.traits.email;
+  const traits = getFieldValueFromMessage(message, "traits");
+  const userEmail = traits.email;
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
@@ -179,9 +180,10 @@ async function isUserAlreadyAssociated(userId, orgId, headers) {
 }
 
 async function createUser(message, headers, destinationConfig) {
-  const { name } = message.context.traits;
+  const traits = getFieldValueFromMessage(message, "traits");
+  const { name, email } = traits;
   const userId = message.userId ? message.userId : message.anonymousId;
-  const { email } = message.context.traits;
+  
 
   const userObject = { name, external_id: userId, email };
   if (destinationConfig.createUsersAsVerified) {
@@ -205,8 +207,8 @@ async function createUser(message, headers, destinationConfig) {
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
     console.log(error);
-    console.log(`Couldn't find user: ${message.context.traits.name}`);
-    throw new Error(`Couldn't find user: ${message.context.traits.name}`);
+    console.log(`Couldn't find user: ${name}`);
+    throw new Error(`Couldn't find user: ${name}`);
   }
 }
 
@@ -218,9 +220,9 @@ async function getUserMembershipPayload(
 ) {
   // let zendeskUserID = await getUserId(message.userId, headers);
   let zendeskUserID = await getUserId(message, headers);
-
+  const traits = getFieldValueFromMessage(message, "traits");
   if (!zendeskUserID) {
-    if (message.context.traits.name && message.context.traits.email) {
+    if (traits.name && traits.email) {
       const { zendeskUserId } = await createUser(
         message,
         headers,
@@ -253,13 +255,10 @@ async function createOrganization(
     headers
   );
   mappingJson = mappingConfig[category.name];
-  const payload = {};
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    set(payload, mappingJson[sourceKey], get(message, sourceKey));
-  });
-  // console.log(payload);
+  const payload = constructPayload(message, mappingJson);
+  const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
+  
   if (payload.organization.external_id) {
     set(
       payload,
@@ -271,8 +270,8 @@ async function createOrganization(
   const organizationFields = traitKeys.filter(
     trait =>
       !(
-        sourceKeys.includes(`traits.${trait}`) ||
-        typeof message.context.traits[trait] === "object"
+        sourceKeys.includes(trait) ||
+        typeof message.traits[trait] === "object"
       )
   );
   organizationFields.forEach(field => {
@@ -321,7 +320,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const category = ConfigCategory.IDENTIFY;
   // create user fields if required
   await checkAndCreateUserFields(
-    message.context.traits,
+    getFieldValueFromMessage(message, "traits"),
     category.userFieldsEndpoint,
     category.userFieldsJson,
     headers
@@ -331,7 +330,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const { traits } = message.context;
+  const  traits  = getFieldValueFromMessage(message, "traits");
   if (
     traits.company &&
     traits.company.remove &&
@@ -358,7 +357,12 @@ async function processIdentify(message, destinationConfig, headers) {
 
             deleteResponse.endpoint = `${endPoint}users/${userId}/organization_memberships/${membershipId}.json`;
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
-            deleteResponse.headers = headers;
+            deleteResponse.headers = {
+              ...headers,
+              "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+              "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+              "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+            };
             deleteResponse.userId = message.userId
               ? message.userId
               : message.anonymousId;
@@ -377,7 +381,8 @@ async function processIdentify(message, destinationConfig, headers) {
 
 async function processTrack(message, destinationConfig, headers) {
   validateUserId(message);
-  let userEmail = message.context.traits.email;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let userEmail = traits.email;
   let zendeskUserID;
   // let url = endPoint + "users/search.json?external_id=" + userId;
   let url = `${endPoint}users/search.json?query=${userEmail}`;

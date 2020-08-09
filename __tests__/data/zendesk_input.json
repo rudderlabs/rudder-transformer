@@ -294,5 +294,72 @@
         },
         "originalTimestamp": "2020-03-17T12:16:56.002Z"
       }
+    },
+    {
+      "destination": {
+        "Config": {
+          "apiToken": "kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60",
+          "createUsersAsVerified": true,
+          "domain": "rudderlabshelp",
+          "email": "prabrisha@rudderlabs.com",
+          "password": "Ey!i@2tn6YhSDpx",
+          "removeUsersFromOrganization": true,
+          "sendGroupCallsWithoutUserId": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Zendesk",
+          "ID": "1YknZ1ENqB8UurJQJE2VrEA61tr",
+          "Name": "ZENDESK"
+        },
+        "Enabled": true,
+        "ID": "1Z3zFXE6zwvNJBVOUzCuJxeO51P",
+        "Name": "zendesk",
+        "Transformations": [
+          
+        ]
+      },
+      "message":{
+      "type": "identify",
+      "sentAt": "2020-03-17T12:16:56.003Z",
+      "userId": "abcd-124",
+      "channel": "web",
+      "context": {
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.0-beta.2",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+      },
+      "traits": {
+        "name": "abcd124",
+        "email": "example124@email.com",
+        "company": {
+          "id": 900001329943,
+          "name": "test",
+          "remove": true
+        }
+      },
+      "messageId": "d26b4de7-8bb5-4554-91aa-c80b8b2182e0",
+      "anonymousId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-03-17T12:16:56.002Z"
     }
+  }
   ]

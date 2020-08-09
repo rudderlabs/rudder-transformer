@@ -3,6 +3,8 @@
     "destKey": "userId",
     "sourceKeys": [
       "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
       "anonymousId"
@@ -11,7 +13,7 @@
   },
   {
     "destKey": "deviceId",
-    "sourceKeys": ["context.device.id"],
+    "sourceKeys": "context.device.id",
     "required": false
   },
   {
@@ -21,58 +23,58 @@
   },
   {
     "destKey": "systemName",
-    "sourceKeys": ["context.os.name"],
+    "sourceKeys": "context.os.name",
     "required": false
   },
   {
     "destKey": "systemVersion",
-    "sourceKeys": ["context.os.version"],
+    "sourceKeys": "context.os.version",
     "required": false
   },
   {
     "destKey": "browserName",
-    "sourceKeys": ["context.browser.name"],
+    "sourceKeys": "context.browser.name",
     "required": false
   },
   {
     "destKey": "browserVersion",
-    "sourceKeys": ["context.browser.version"],
+    "sourceKeys": "context.browser.version",
     "required": false
   },
   {
     "destKey": "deviceName",
-    "sourceKeys": ["context.device.name"],
+    "sourceKeys": "context.device.name",
     "required": false
   },
   {
     "destKey": "deviceModel",
-    "sourceKeys": ["context.device.model"],
+    "sourceKeys": "context.device.model",
     "required": false
   },
   {
     "destKey": "userAttributes",
-    "sourceKeys": ["context.traits"],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
-  { "destKey": "locale", "sourceKeys": ["context.locale"], "required": false },
+  { "destKey": "locale", "sourceKeys": "context.locale", "required": false },
   {
     "destKey": "country",
-    "sourceKeys": ["context.traits.address.country", "context.traits.country"],
+    "sourceKeys": ["traits.address.country", "traits.country", "context.traits.address.country", "context.traits.country"],
     "required": false
   },
   {
     "destKey": "city",
-    "sourceKeys": ["context.traits.address.city", "context.traits.city"],
+    "sourceKeys": ["traits.address.city", "traits.city", "context.traits.address.city", "context.traits.city"],
     "required": false
   },
   {
     "destKey": "timezone",
-    "sourceKeys": ["context.timezone"],
+    "sourceKeys": "context.timezone",
     "required": false
   },
   {
     "destKey": "time",
-    "sourceKeys": ["originalTimestamp"],
+    "sourceKeys": "originalTimestamp",
     "required": false
   }
 ]

@@ -1,48 +1,48 @@
 [
   {
     "destKey": "userId",
-    "sourceKeys": ["anonymousId"],
+    "sourceKeys": "anonymousId",
     "required": true
   },
   {
     "destKey": "newUserId",
-    "sourceKeys": ["userId", "context.traits.userId", "context.traits.id"],
+    "sourceKeys": ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id"],
     "required": false
   },
   {
     "destKey": "deviceId",
-    "sourceKeys": ["context.device.id"],
+    "sourceKeys": "context.device.id",
     "required": false
   },
   {
     "destKey": "userAttributes",
-    "sourceKeys": ["context.traits"],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
   {
     "destKey": "created",
-    "sourceKeys": ["context.traits.createAt"],
+    "sourceKeys":[ "traits.createAt",  "context.traits.createAt"],
     "required": false
   },
-  { "destKey": "locale", "sourceKeys": ["context.locale"], "required": false },
+  { "destKey": "locale", "sourceKeys": "context.locale", "required": false },
   {
     "destKey": "country",
-    "sourceKeys": ["context.traits.address.country", "context.traits.country"],
+    "sourceKeys": ["traits.address.country", "traits.country", "context.traits.address.country", "context.traits.country"],
     "required": false
   },
   {
     "destKey": "city",
-    "sourceKeys": ["context.traits.address.city", "context.traits.city"],
+    "sourceKeys": ["traits.address.city", "traits.city", "context.traits.address.city", "context.traits.city"],
     "required": false
   },
   {
     "destKey": "timezone",
-    "sourceKeys": ["context.timezone"],
+    "sourceKeys": "context.timezone",
     "required": false
   },
   {
     "destKey": "time",
-    "sourceKeys": ["originalTimestamp"],
+    "sourceKeys": "originalTimestamp",
     "required": false
   }
 ]

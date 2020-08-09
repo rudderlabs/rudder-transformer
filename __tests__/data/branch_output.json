@@ -50,9 +50,7 @@
           "anonymousId": "sampath",
           "email": "sampath@gmail.com"
         },
-        "content_items": [
-          {}
-        ],
+        "content_items": [{}],
         "user_data": {
           "os": "",
           "os_version": "",
@@ -66,5 +64,7 @@
     },
     "files": {},
     "userId": "sampath"
-  }
+  },
+  { "statusCode": 400, "error": "Message type is not supported" }
 ]
+

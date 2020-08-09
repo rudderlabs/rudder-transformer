@@ -3,21 +3,22 @@ const name = "Salesforce";
 
 const fs = require("fs");
 const path = require("path");
+const version = "v1";
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
+const transformer = require(`../${version}/destinations/${integration}/transform`);
 jest.setTimeout(30000);
-test(`${name} Tests`, async () => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
-  );
-  const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
-  );
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
 
-  for (const [index, value] of inputData.entries()) {
+const inputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_input.json`)
+);
+const outputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_output.json`)
+);
+const inputData = JSON.parse(inputDataFile);
+const expectedData = JSON.parse(outputDataFile);
+
+inputData.forEach((value, index) => {
+  it(`${name} Tests: payload - ${index}`, async () => {
     try {
       const output = await transformer.process(value);
       output.headers.Authorization = "";
@@ -26,5 +27,5 @@ test(`${name} Tests`, async () => {
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].message);
     }
-  }
+  });
 });

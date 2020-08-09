@@ -20,20 +20,6 @@ const {
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  /* console.log(SF_TOKEN_REQUEST_URL +
-      "?username=" +
-      destination.Config.userName +
-      "&password=" +
-      encodeURIComponent(destination.Config.password) +
-      encodeURIComponent(destination.Config.initialAccessToken) +
-      "&client_id=" +
-      //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
-      "&client_secret=" +
-      //destination.Config.consumerSecret +
-      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
-      "&grant_type=password"); */
-
   const response = await axios.post(
     `${SF_TOKEN_REQUEST_URL}?username=${
       destination.Config.userName
@@ -41,11 +27,7 @@ async function getSFDCHeader(destination) {
       destination.Config.password
     )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
       destination.Config.consumerKey
-      // '3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
-    }&client_secret=${
-      destination.Config.consumerSecret
-      // 'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
-    }&grant_type=password`,
+    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`,
     {}
   );
 
@@ -81,10 +63,8 @@ async function responseBuilderSimple(
   targetEndpoint,
   authorizationData
 ) {
-
   // First name and last name need to be extracted from the name field
   // and inserted into the message
-
   let firstName = "";
   let lastName = "";
   const traits = getFieldValueFromMessage(message, "traits");
@@ -100,15 +80,13 @@ async function responseBuilderSimple(
 
   const rawPayload = constructPayload(message, mappingJson);
 
-  /* if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
-    rawPayload['FirstName'] = 'n/a'
-  */
-
-  if (!rawPayload.LastName || rawPayload.LastName.trim() == "")
+  if (!rawPayload.LastName || rawPayload.LastName.trim() === "") {
     rawPayload.LastName = "n/a";
+  }
 
-  if (!rawPayload.Company || rawPayload.Company.trim() == "")
+  if (!rawPayload.Company || rawPayload.Company.trim() === "") {
     rawPayload.Company = "n/a";
+  }
 
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
@@ -117,7 +95,6 @@ async function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  
   const customKeys = Object.keys(traits);
   customKeys.forEach(key => {
     if (
@@ -136,7 +113,6 @@ async function responseBuilderSimple(
     "Content-Type": "application/json",
     Authorization: authorizationData[0]
   };
-  // console.log(response);
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -196,19 +172,15 @@ async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, destination);
-    // console.log(response);
   } else {
     throw new Error(`message type ${message.type} is not supported`);
   }
-  // console.log(response);
   return response;
 }
 
 async function process(event) {
-  // console.log(JSON.stringify(event));
-  // console.log('==')
-  //   console.log(processSingleMessage(event.message, event.destination))
-  return await processSingleMessage(event.message, event.destination);
+  const response = await processSingleMessage(event.message, event.destination);
+  return response;
 }
 
 exports.process = process;

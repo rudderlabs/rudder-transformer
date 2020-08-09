@@ -5,32 +5,21 @@ const {
   ConfigCategory,
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
-  mappingConfig
+  mappingConfig,
+  defaultTraits
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getFieldValueFromMessage,
+  constructPayload
 } = require("../../util");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  /* console.log(SF_TOKEN_REQUEST_URL +
-      "?username=" +
-      destination.Config.userName +
-      "&password=" +
-      encodeURIComponent(destination.Config.password) +
-      encodeURIComponent(destination.Config.initialAccessToken) +
-      "&client_id=" +
-      //destination.Config.consumerKey +
-      '3MVG9G9pzCUSkzZtwZE5N1o0HSvHGadNDfhB2LYcTHJv6.Y42UyK6I6_OkjXFGNONG5zAjZ1Gqbl5Si0tLoOq'+
-      "&client_secret=" +
-      //destination.Config.consumerSecret +
-      '08306CE675F0DE398C60E26A3D6522578FF6BEADB7F7AA76BD393F4FEF0FA65F' +
-      "&grant_type=password"); */
-
   const response = await axios.post(
     `${SF_TOKEN_REQUEST_URL}?username=${
       destination.Config.userName
@@ -38,11 +27,7 @@ async function getSFDCHeader(destination) {
       destination.Config.password
     )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
       destination.Config.consumerKey
-      // '3MVG9LBJLApeX_PAhbDuhCAuHsOtH3812mWYpu5UxfO5kJqQsLZ95DWaGci5E0rz7KmSilQn9HCSKAdCP5msD'+
-    }&client_secret=${
-      destination.Config.consumerSecret
-      // 'F592C0E06ABAD8CD3FE18D515D8995DCEEC901BB31FA760445D00E0988799A98' +
-    }&grant_type=password`,
+    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`,
     {}
   );
 
@@ -78,45 +63,30 @@ async function responseBuilderSimple(
   targetEndpoint,
   authorizationData
 ) {
-  const rawPayload = {};
-
   // First name and last name need to be extracted from the name field
   // and inserted into the message
-
   let firstName = "";
   let lastName = "";
-  if (message.context.traits.name) {
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (traits.name) {
     // Split by space and then take first and last elements
-    const nameComponents = message.context.traits.name.split(" ");
+    const nameComponents = traits.name.split(" ");
     firstName = nameComponents[0]; // first element
     lastName = nameComponents[nameComponents.length - 1]; // last element
     // Insert first and last names separately into message
-    message.context.traits.firstName = firstName;
-    message.context.traits.lastName = lastName;
+    traits.firstName = firstName;
+    traits.lastName = lastName;
   }
 
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    const val = get(message, sourceKey);
-    if (val) {
-      if (typeof val === "string") {
-        if (val.trim().length > 0)
-          rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
-      } else if (typeof val !== "object") {
-        rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
-      }
-    }
-  });
+  const rawPayload = constructPayload(message, mappingJson);
 
-  /* if(! rawPayload['FirstName'] || rawPayload['FirstName'].trim() == "" )
-    rawPayload['FirstName'] = 'n/a'
-  */
-
-  if (!rawPayload.LastName || rawPayload.LastName.trim() == "")
+  if (!rawPayload.LastName || rawPayload.LastName.trim() === "") {
     rawPayload.LastName = "n/a";
+  }
 
-  if (!rawPayload.Company || rawPayload.Company.trim() == "")
+  if (!rawPayload.Company || rawPayload.Company.trim() === "") {
     rawPayload.Company = "n/a";
+  }
 
   // Remove keys with undefined values
   const payload = removeUndefinedValues(rawPayload);
@@ -125,17 +95,15 @@ async function responseBuilderSimple(
   let customParams = getParamsFromConfig(message, destination);
   customParams = removeUndefinedValues(customParams);
 
-  const customKeys = Object.keys(message.context.traits);
+  const customKeys = Object.keys(traits);
   customKeys.forEach(key => {
-    const keyPath = `context.traits.${key}`;
-    mappingJsonKeys = Object.keys(mappingJson);
     if (
-      !mappingJsonKeys.some(function(k) {
-        return ~k.indexOf(keyPath);
+      !defaultTraits.some(function(k) {
+        return ~k.indexOf(key);
       }) &&
-      !(keyPath in ignoreMapJson)
+      !ignoreMapJson.includes(key)
     ) {
-      const val = message.context.traits[key];
+      const val = traits[key];
       if (val) payload[`${key}__c`] = val;
     }
   });
@@ -145,7 +113,6 @@ async function responseBuilderSimple(
     "Content-Type": "application/json",
     Authorization: authorizationData[0]
   };
-  // console.log(response);
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -168,7 +135,7 @@ async function processIdentify(message, destination) {
 
   // check if the lead exists
   // need to perform a parameterized search for this using email
-  const { email } = message.context.traits;
+  const { email } = getFieldValueFromMessage(message, "traits");
 
   const leadQueryUrl = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
@@ -205,19 +172,15 @@ async function processSingleMessage(message, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, destination);
-    // console.log(response);
   } else {
     throw new Error(`message type ${message.type} is not supported`);
   }
-  // console.log(response);
   return response;
 }
 
 async function process(event) {
-  // console.log(JSON.stringify(event));
-  // console.log('==')
-  //   console.log(processSingleMessage(event.message, event.destination))
-  return await processSingleMessage(event.message, event.destination);
+  const response = await processSingleMessage(event.message, event.destination);
+  return response;
 }
 
 exports.process = process;

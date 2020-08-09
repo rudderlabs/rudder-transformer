@@ -6,7 +6,6 @@ const path = require("path");
 const version = "v1";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -28,6 +27,8 @@ inputData.forEach((input, index) => {
       output = error.message;
       expected = expectedData[index].message;
     }
+    console.log(output);
+    console.log(expected);
     expect(output).toEqual(expected);
   });
 });

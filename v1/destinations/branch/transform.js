@@ -1,14 +1,15 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
-const { destinationConfigKeys, endpoints } = require("./config");
+const { endpoints } = require("./config");
 const { categoriesList } = require("./data/eventMapping");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
-function responseBuilder(payload, message, branchConfig) {
+function responseBuilder(payload, message, destination) {
   const response = defaultRequestConfig();
 
   if (payload.event_data === null && payload.content_items === null) {
@@ -19,19 +20,23 @@ function responseBuilder(payload, message, branchConfig) {
     response.endpoint = endpoints.standardEventUrl;
   }
 
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.body.JSON = removeUndefinedAndNullValues({
+    ...payload,
+    branch_key: destination.Config.branchKey
+  });
+
   return {
     ...response,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json"
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: message.anonymousId
   };
 }
 
 function getCategoryAndName(rudderEventName) {
-  for (let i = 0; i < categoriesList.length; i++) {
+  for (let i = 0; i < categoriesList.length; i += 1) {
     const category = categoriesList[i];
     let requiredName = null;
     let requiredCategory = null;
@@ -61,9 +66,7 @@ function getUserData(message) {
     idfa: get(context, "idfa") ? context.android_id : null,
     idfv: get(context, "idfv") ? context.android_id : null,
     aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: get(message, "anonymousId")
-      ? message.anonymousId
-      : message.userId
+    developer_identity: getFieldValueFromMessage(message, "userId")
   });
 }
 
@@ -73,22 +76,25 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   const custom_data = {};
 
   let valFound = false;
-  Object.keys(category.content_items).find(branchMappingProperty => {
-    if (branchMappingProperty === rudderProperty) {
-      const tmpKeyName = category.content_items[branchMappingProperty];
-      content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
-      valFound = true;
-    }
-  });
-
-  if (!valFound) {
-    category.event_data.find(branchMappingProperty => {
+  if (category.content_items) {
+    Object.keys(category.content_items).find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        event_data[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
       }
     });
+  }
+
+  if (!valFound) {
+    if (category.event_data) {
+      category.event_data.find(branchMappingProperty => {
+        if (branchMappingProperty === rudderProperty) {
+          event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+          valFound = true;
+        }
+      });
+    }
   }
 
   if (!valFound) {
@@ -116,9 +122,7 @@ function commonPayload(message, rawPayload, category) {
         : null;
       break;
     case EventType.IDENTIFY:
-      rudderPropertiesObj = get(message.context, "traits")
-        ? message.context.traits
-        : null;
+      rudderPropertiesObj = getFieldValueFromMessage(message, "traits");
       break;
   }
 
@@ -169,58 +173,41 @@ function commonPayload(message, rawPayload, category) {
   return rawPayload;
 }
 
-function getIdentifyPayload(message, branchConfig) {
-  const rawPayload = {
-    branch_key: branchConfig.BRANCH_KEY
-  };
-  const { name, category } = getCategoryAndName(message.userId);
+function getPayload(message, categoryName) {
+  const rawPayload = {};
+  const { name, category } = getCategoryAndName(categoryName);
   rawPayload.name = name;
 
   return commonPayload(message, rawPayload, category);
 }
 
-function getTrackPayload(message, branchConfig) {
-  const rawPayload = {
-    branch_key: branchConfig.BRANCH_KEY
-  };
-  const { name, category } = getCategoryAndName(message.event);
-  rawPayload.name = name;
+// function getTrackPayload(message) {
+//   const rawPayload = {};
+//   const { name, category } = getCategoryAndName(message.event);
+//   rawPayload.name = name;
+//
+//   return commonPayload(message, rawPayload, category);
+// }
 
-  return commonPayload(message, rawPayload, category);
-}
-
-function getTransformedJSON(message, branchConfig) {
+function getTransformedJSON(message) {
   let rawPayload;
   switch (message.type) {
     case EventType.TRACK:
-      rawPayload = getTrackPayload(message, branchConfig);
+      rawPayload = getPayload(message, message.event);
       break;
     case EventType.IDENTIFY:
-      rawPayload = getIdentifyPayload(message, branchConfig);
+      rawPayload = getPayload(message, message.userId);
       break;
     default:
-      break;
+      throw new Error("Message type is not supported");
   }
   return { ...rawPayload };
 }
 
-function getDestinationKeys(destination) {
-  const branchConfig = {};
-  Object.keys(destination.Config).forEach(key => {
-    // eslint-disable-next-line default-case
-    switch (key) {
-      case destinationConfigKeys.BRANCH_KEY:
-        branchConfig.BRANCH_KEY = `${destination.Config[key]}`;
-        break;
-    }
-  });
-  return branchConfig;
-}
-
 function process(event) {
-  const branchConfig = getDestinationKeys(event.destination);
-  const properties = getTransformedJSON(event.message, branchConfig);
-  return responseBuilder(properties, event.message, branchConfig);
+  const { message, destination } = event;
+  const properties = getTransformedJSON(message, destination);
+  return responseBuilder(properties, message, destination);
 }
 
 exports.process = process;

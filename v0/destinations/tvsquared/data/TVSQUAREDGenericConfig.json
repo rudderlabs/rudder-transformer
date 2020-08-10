@@ -1,0 +1,9 @@
+[
+    {
+      "destKey": "_id",
+      "sourceKeys": 
+        "anonymousId"
+      ,
+      "required": true
+    }
+  ]

@@ -1,0 +1,37 @@
+[
+    {
+        "destKey": "source",
+        "sourceKeys": "",
+        "required": false
+    },
+    {
+        "destKey": "promo",
+        "sourceKeys": "properties.promotion_id",
+        "required": false
+    },
+    {
+        "destKey": "ref",
+        "sourceKeys": "",
+        "required": false
+    },
+    {
+        "destKey": "prod",
+        "sourceKeys": "properties.name",
+        "required": false
+    },
+    {
+        "destKey": "id",
+        "sourceKeys": "properties.order_id",
+        "required": false
+    },
+    {
+        "destKey": "rev",
+        "sourceKeys": "properties.revenue",
+        "required": false
+    },
+    {
+        "destKey": "dev",
+        "sourceKeys": "context.os.name",
+        "required": false
+    }
+]

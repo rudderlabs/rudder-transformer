@@ -1,6 +1,8 @@
 {
   "userId": [
     "userId",
+    "traits.userId",
+    "traits.id",
     "context.traits.userId",
     "context.traits.id",
     "anonymousId"

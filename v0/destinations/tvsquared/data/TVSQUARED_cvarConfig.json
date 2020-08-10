@@ -1,0 +1,26 @@
+[
+    {
+        "destKey": "source",
+        "sourceKeys": "",
+        "required": false
+    },
+    {
+        "destKey": "ip",
+        "sourceKeys": [
+            "context.ip",
+            "traits.ip",
+            "context.traits.ip"
+        ],
+        "required": true
+    },
+    {
+        "destKey": "deviceid",
+        "sourceKeys": "",
+        "required": false
+    },
+    {
+        "destKey": "appid",
+        "sourceKeys": "context.app.name",
+        "required": true
+    }
+]

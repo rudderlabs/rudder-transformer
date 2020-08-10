@@ -14,7 +14,7 @@
     "sourceKeys": "name",
     "required": true,
     "metadata": {
-      "template": "Visited {{value}} page"
+      "template": "Page View"
     }
   },
   { "destKey": "properties", "sourceKeys": "properties", "required": false },

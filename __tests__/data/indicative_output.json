@@ -1,12 +1,17 @@
 [
   [
-   {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/event",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "eventUniqueId": "test_user_id",
@@ -51,10 +56,16 @@
           "eventTime": 1567352811693,
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "test_user_id"
     }
   ],
@@ -64,13 +75,17 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/identify",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "uniqueId": "123456",
           "properties": {
-            "anonymousId": "123456",
             "email": "sayan@gmail.com",
             "address": {
               "city": "kolkata",
@@ -82,10 +97,16 @@
           },
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "123456"
     },
     {
@@ -93,18 +114,29 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/alias",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
-          "previousId": "123456",
+          "previousId": "anon_id",
           "newId": "123456",
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "123456"
     }
   ],
@@ -114,13 +146,17 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/identify",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "uniqueId": "123456",
           "properties": {
-            "anonymousId": "123456",
             "email": "sayan@gmail.com",
             "address": {
               "city": "kolkata",
@@ -134,10 +170,16 @@
           },
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "123456"
     },
     {
@@ -145,18 +187,29 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/alias",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "previousId": "123456",
           "newId": "123456",
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "123456"
     }
   ],
@@ -166,12 +219,17 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/event",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "eventUniqueId": "12345",
-          "eventName": "Visited ApplicationLoaded page",
+          "eventName": "Page View",
           "properties": {
             "path": "/test",
             "referrer": "Rudder",
@@ -182,10 +240,16 @@
           "eventTime": 1571051718299,
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "12345"
     }
   ],
@@ -195,12 +259,17 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/event",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "eventUniqueId": "test_user_id",
-          "eventName": "Visited spin_result screen",
+          "eventName": "Screen View",
           "properties": {
             "additional_bet_index": 0,
             "battle_id": "N/A",
@@ -241,10 +310,16 @@
           "eventTime": 1567352811693,
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "test_user_id"
     }
   ],
@@ -254,18 +329,29 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.indicative.com/service/alias",
-      "headers": { "Content-Type": "application/json" },
-      "params": {},
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
       "body": {
         "JSON": {
           "previousId": "test_previous_id",
           "newId": "test_new_user_id",
           "apiKey": "abcde"
         },
-        "XML": {},
-        "FORM": {}
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
       },
-      "files": {},
+      "files": {
+
+      },
       "userId": "test_new_user_id"
     }
   ],
@@ -273,5 +359,49 @@
     "statusCode": 400,
     "error": "Message Type is not present. Aborting message."
   },
-  { "statusCode": 400, "error": "Message type not supported" }
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/identify",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {
+
+      },
+      "body": {
+        "JSON": {
+          "uniqueId": "test_anon_id",
+          "properties": {
+            "email": "sayan@gmail.com",
+            "address": {
+              "city": "kolkata",
+              "country": "India",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": ""
+            }
+          },
+          "apiKey": "abcde"
+        },
+        "XML": {
+
+        },
+        "FORM": {
+
+        }
+      },
+      "files": {
+
+      },
+      "userId": "test_anon_id"
+    }
+  ]
 ]

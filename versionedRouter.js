@@ -183,7 +183,6 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   transformationVersionId,
-                  groupedBy: dest,
                   processSessions
                 }
               );

@@ -21,26 +21,25 @@ function responseBuilderSimple(payload, segmentConfig) {
   response.headers = header;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.endpoint = batchEndpoint;
-  response.userId = segmentConfig.userId;
+  response.userId = payload.anonymousId;
   response.statusCode = 200;
 
   return response;
 }
 
 function getTransformedJSON(message, segmentConfig) {
-  const { type } = message;
-  const userId = segmentConfig.userId;
-  const traits = get(message, "context.traits")
-    ? message.context.traits
-    : undefined;
+  const { type, anonymousId } = message;
+  const { userId } = segmentConfig;
+  const traits = getFieldValueFromMessage(message, "traits");
   delete traits.anonymousId;
-  const properties = get(message, "context.properties")
-    ? message.context.properties
+  const properties = get(message, "properties")
+    ? message.properties
     : undefined;
   const event = get(message, "event") ? message.event : undefined;
-  const timeStamp = message.originalTimestamp;
+  const timeStamp = getFieldValueFromMessage(message, "timestamp");
 
   return removeUndefinedAndNullValues({
+    anonymousId,
     type,
     userId,
     event,
@@ -82,4 +81,3 @@ function process(event) {
 }
 
 exports.process = process;
-

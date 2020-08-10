@@ -5,5 +5,12 @@
         "anonymousId"
       ,
       "required": true
+    },
+    {
+      "destKey": "rand",
+      "sourceKeys": 
+        "messageId"
+      ,
+      "required": true
     }
   ]

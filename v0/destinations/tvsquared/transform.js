@@ -19,7 +19,6 @@ const responseBuilderSimple = (message, category, destination) => {
   let event;
   payload.idsite = destination.Config.brandId;
   payload.rec = 1;
-  payload.rand = Math.round(Math.random() * 1000).toString();
   let cvarAction;
   const cvarSession = constructPayload(
     message,

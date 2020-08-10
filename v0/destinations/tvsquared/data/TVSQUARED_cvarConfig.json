@@ -11,7 +11,7 @@
             "traits.ip",
             "context.traits.ip"
         ],
-        "required": true
+        "required": false
     },
     {
         "destKey": "deviceid",
@@ -21,6 +21,6 @@
     {
         "destKey": "appid",
         "sourceKeys": "context.app.name",
-        "required": true
+        "required": false
     }
 ]

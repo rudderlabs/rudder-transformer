@@ -194,9 +194,11 @@ const getValueFromMessage = (message, sourceKey) => {
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
 // - - template : need to have a handlebar expression {{value}}
+// - - excludes : fields you want to strip of from the final value (works only for object)
+// - - - - ex: "anonymousId", "userId" from traits
 const handleMetadataForValue = (value, metadata) => {
   let formattedVal = value;
-  const { type, typeFormat, template } = metadata;
+  const { type, typeFormat, template, excludes } = metadata;
 
   // handle type and format
   // skipping check for typeFormat to support default for each type
@@ -214,6 +216,20 @@ const handleMetadataForValue = (value, metadata) => {
   if (template) {
     const hTemplate = Handlebars.compile(template.trim());
     formattedVal = hTemplate({ value });
+  }
+
+  // handle excludes
+  if (excludes) {
+    if (typeof value === "object") {
+      // exlude the fields from the formattedVal
+      excludes.forEach(key => {
+        delete formattedVal[key];
+      });
+    } else {
+      logger.warn(
+        "exludes doesn't work with non-object data type. Ignoring exludes"
+      );
+    }
   }
 
   return formattedVal;
@@ -330,6 +346,31 @@ const setValues = (payload, message, mappingJson) => {
   return payload;
 };
 
+//function to flatten a json
+
+function flattenJson(data) {
+  var result = {};
+  //a recursive function to loop through the array of the data
+  function recurse(cur, prop) {
+    if (Object(cur) !== cur) {
+      result[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      for (var i = 0, l = cur.length; i < l; i++)
+        recurse(cur[i], prop + "[" + i + "]");
+      if (l == 0) result[prop] = [];
+    } else {
+      var isEmpty = true;
+      for (var p in cur) {
+        isEmpty = false;
+        recurse(cur[p], prop ? prop + "." + p : p);
+      }
+      if (isEmpty && prop) result[prop] = {};
+    }
+  }
+  recurse(data, "");
+  return result;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -353,5 +394,6 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload
+  updatePayload,
+  flattenJson
 };

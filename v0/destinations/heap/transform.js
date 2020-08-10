@@ -4,10 +4,11 @@ const { destinationConfigKeys, endpoints } = require("./config");
 const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  defaultRequestConfig
+  defaultRequestConfig,
+  flattenJson
 } = require("../../util");
 
-function responseBuilder(payload, message, heapConfig) {
+function responseBuilder(payload, message) {
   const response = defaultRequestConfig();
 
   switch (message.type) {
@@ -45,24 +46,33 @@ function commonPayload(message, rawPayload, type) {
         ? Object.keys(message.properties)
         : null;
       rudderPropertiesObj = message.properties;
-      rawPayload.identity = message.context.traits.email;
+      rawPayload.identity =
+        message.userId && message.userId.length > 0
+          ? message.userId
+          : message.anonymousId;
       break;
     case EventType.IDENTIFY:
       propsArray = get(message.context, "traits")
         ? Object.keys(message.context.traits)
         : null;
+      rawPayload.identity =
+        message.userId && message.userId.length > 0
+          ? message.userId
+          : message.anonymousId;
+
       rudderPropertiesObj = message.context.traits;
-      rawPayload.identity = message.context.traits.email;
+      break;
+    default:
       break;
   }
 
   propsArray.forEach(property => {
-    if (property != "email") {
+    if (property !== "email") {
       propertiesObj[property] = rudderPropertiesObj[property];
     }
   });
 
-  rawPayload.properties = propertiesObj;
+  rawPayload.properties = flattenJson(propertiesObj);
   return rawPayload;
 }
 
@@ -90,8 +100,10 @@ function getTransformedJSON(message, heapConfig) {
     case EventType.IDENTIFY:
       rawPayload = getIdentifyPayload(message, heapConfig);
       break;
+    case EventType.PAGE:
+      throw Error("Page calls are not supported for Heap.");
     default:
-      break;
+      throw Error("Type of message is not correct");
   }
   return { ...rawPayload };
 }
@@ -114,7 +126,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const heapConfig = getDestinationKeys(event.destination);
   const properties = getTransformedJSON(event.message, heapConfig);
-  return responseBuilder(properties, event.message, heapConfig);
+  return responseBuilder(properties, event.message);
 }
 
 exports.process = process;

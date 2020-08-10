@@ -1,12 +1,15 @@
 [
   {
     "destKey": "uniqueId",
-    "sourceKeys": ["userId", "context.traits.userId", "context.traits.id"],
+    "sourceKeys": ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"],
     "required": true
   },
   {
     "destKey": "properties",
     "sourceKeys": ["traits", "context.traits"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "excludes": ["anonymousId", "userId", "id"]
+    }
   }
 ]

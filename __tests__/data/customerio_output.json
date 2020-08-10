@@ -4,7 +4,6 @@
       "XML": {},
       "JSON": {
         "city": "kolkata",
-        "anonymousId": "123456",
         "ip": "0.0.0.0",
         "age": 26,
         "state": "WB",
@@ -14,7 +13,8 @@
         "country": "India",
         "postalCode": 712136,
         "created_at": 1571043797,
-        "email": "sayan@gmail.com"
+        "email": "sayan@gmail.com",
+        "_timestamp": 1571043797
       },
       "FORM": {}
     },
@@ -68,7 +68,8 @@
           "user_actual_role": "system_admin",
           "user_time_spent": 50000
         },
-        "name": "test track event"
+        "name": "test track event",
+        "timestamp": 1571051718
       },
       "FORM": {}
     },

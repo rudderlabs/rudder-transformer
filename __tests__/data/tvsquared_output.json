@@ -1,0 +1,45 @@
+[
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "GET",
+        "endpoint": "https://collector-xyz.tvsquared.com/tv2track.php",
+        "headers": {},
+        "params": {
+            "_id": "00000000000000000000000000",
+            "idsite": "abc",
+            "rec": 1,
+            "rand": "761",
+            "_cvar": "%7B%225%22%3A%5B%22session%22%2C%7B%22ip%22%3A%220.0.0.0%22%2C%22appid%22%3A%22RudderLabs%20JavaScript%20SDK%22%2C%22medium%22%3A%22app%22%7D%5D%7D"
+        },
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "12345"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "GET",
+        "endpoint": "https://collector-xyz.tvsquared.com/tv2track.php",
+        "headers": {},
+        "params": {
+            "_id": "00000000000000000000000000",
+            "idsite": "abc",
+            "rec": 1,
+            "rand": "973",
+            "cvar": "%7B%225%22%3A%5B%22test%20track%20event%22%2C%7B%22promo%22%3A%22promo123%22%2C%22prod%22%3A%22product%20name%22%2C%22id%22%3A%22order123%22%2C%22rev%22%3A12%2C%22medium%22%3A%22app%22%2C%22dev%22%3A%22%22%7D%5D%7D",
+            "_cvar": "%7B%225%22%3A%5B%22session%22%2C%7B%22appid%22%3A%22RudderLabs%20JavaScript%20SDK%22%2C%22medium%22%3A%22app%22%2C%22user%22%3A%2212345%22%7D%5D%7D"
+        },
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "12345"
+    }
+]

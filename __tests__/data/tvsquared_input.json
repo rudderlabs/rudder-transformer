@@ -1,0 +1,119 @@
+[
+    {
+        "message": {
+            "channel": "web",
+            "context": {
+                "app": {
+                    "build": "1.0.0",
+                    "name": "RudderLabs JavaScript SDK",
+                    "namespace": "com.rudderlabs.javascript",
+                    "version": "1.0.0"
+                },
+                "traits": {
+                    "email": "testtvsquared@email.com",
+                    "name": "Test TvSquared",
+                    "anonymousId": "12345"
+                },
+                "library": {
+                    "name": "RudderLabs JavaScript SDK",
+                    "version": "1.0.0"
+                },
+                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+                "locale": "en-GB",
+                "ip": "0.0.0.0",
+                "os": {
+                    "name": "",
+                    "version": ""
+                },
+                "screen": {
+                    "density": 2
+                },
+                "page": {
+                    "path": "",
+                    "referrer": "",
+                    "search": "",
+                    "title": "",
+                    "url": ""
+                }
+            },
+            "type": "identify",
+            "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+            "originalTimestamp": "2019-10-15T09:35:31.288Z",
+            "anonymousId": "00000000000000000000000000",
+            "userId": "12345",
+            "userProperties": {
+                "test_key": "test value"
+            },
+            "integrations": {
+                "All": true
+            },
+            "sentAt": "2019-10-14T09:03:22.563Z"
+        },
+        "destination": {
+            "Config": {
+                "brandId": "abc",
+                "clientId": "xyz",
+                "eventWhiteList": [],
+                "customMetrics": []
+            },
+            "Enabled": true
+        }
+    },
+    {
+        "message": {
+          "channel": "web",
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.0.0"
+            },
+            "traits": {
+              "email": "sayan@gmail.com"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.0.0"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "locale": "en-US",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            }
+          },
+          "type": "track",
+          "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+          "originalTimestamp": "2019-10-14T11:15:18.300Z",
+          "anonymousId": "00000000000000000000000000",
+          "userId": "12345",
+          "event": "test track event",
+          "properties": {
+            "promotion_id": "promo123",
+            "name":"product name",
+            "revenue": "$12",
+            "order_id":"order123",
+            "category": "test-category",
+            "user_actual_role": "system_admin, system_user",
+            "user_actual_id": 12345
+          },
+          "integrations": {
+            "All": true
+          },
+          "sentAt": "2019-10-14T11:15:53.296Z"
+        },
+            "destination": {
+                "Config": {
+                    "brandId": "abc",
+                    "clientId": "xyz",
+                    "eventWhiteList": [],
+                    "customMetrics": []
+                },
+                "Enabled": true
+            }
+        }
+]

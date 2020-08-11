@@ -17,6 +17,9 @@ const formatRevenue = revenue => {
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   let event;
+  let whitelist;
+  let whitelistlength;
+  let i;
   payload.idsite = destination.Config.brandId;
   payload.rec = 1;
   let cvarAction;
@@ -26,6 +29,20 @@ const responseBuilderSimple = (message, category, destination) => {
   );
   cvarSession.medium = "app";
   if (category.type === "Action") {
+    // as list cannot be deleted so will check for empty inputs
+    whitelist = destination.Config.eventWhiteList.slice();
+
+    whitelist = whitelist.filter(wl => {
+      return wl.event !== "";
+    });
+    for (i = 0; i < whitelist.length; i += 1) {
+      if (message.event.toUpperCase() === whitelist[i].event.toUpperCase()) {
+        break;
+      }
+      if (i === whitelist.length - 1) {
+        throw new Error("Event not whitelisted");
+      }
+    }
     cvarSession.user = getFieldValueFromMessage(message, "userId");
     cvarAction = constructPayload(
       message,

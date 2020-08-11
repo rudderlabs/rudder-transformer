@@ -33,10 +33,9 @@ const responseBuilderSimple = (message, category, destination) => {
   );
   cvarSession.medium = "app";
   cvarSession.source = "RudderStack";
-  if (category.type === "Action") {
+  if (category.type === "Action" || category.type === "Page&Screen") {
     // as list cannot be deleted so will check for empty inputs
     whitelist = destination.Config.eventWhiteList.slice();
-
     whitelist = whitelist.filter(wl => {
       return wl.event !== "";
     });
@@ -84,6 +83,9 @@ const responseBuilderSimple = (message, category, destination) => {
         }
       }
     }
+    if (category.type === "Page&Screen") {
+      event = `Page ${message.name} viewed`;
+    }
     payload.cvar = encodeURIComponent(
       JSON.stringify({
         "5": [event || "", cvarAction]
@@ -120,6 +122,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
+      break;
+    case EventType.PAGE:
+    case EventType.SCREEN:
+      category = CONFIG_CATEGORIES.PAGEandSCREEN;
       break;
     default:
       throw new Error("Message type not supported");

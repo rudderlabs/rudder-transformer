@@ -18,8 +18,12 @@ const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   let event;
   let whitelist;
-  let whitelistlength;
+  let customMetrics;
   let i;
+  let j;
+  let key;
+  let value;
+
   payload.idsite = destination.Config.brandId;
   payload.rec = 1;
   let cvarAction;
@@ -60,6 +64,19 @@ const responseBuilderSimple = (message, category, destination) => {
       event = "app open";
     } else if (event === "Application Installed") {
       event = "install";
+    }
+    customMetrics = destination.Config.customMetrics.slice();
+    customMetrics = customMetrics.filter(cm => {
+      return cm.propertyName !== "";
+    });
+    if (customMetrics.length) {
+      for (j = 0; j < customMetrics.length; j += 1) {
+        key = customMetrics[j].propertyName;
+        value = message.properties[key];
+        if (value) {
+          cvarAction[key] = value;
+        }
+      }
     }
     payload.cvar = encodeURIComponent(
       JSON.stringify({

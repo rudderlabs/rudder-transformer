@@ -6,7 +6,7 @@
     },
     {
         "destKey": "ref",
-        "sourceKeys": "",
+        "sourceKeys": "properties.referrer",
         "required": false
     },
     {
@@ -26,7 +26,7 @@
     },
     {
         "destKey": "dev",
-        "sourceKeys": "context.os.name",
+        "sourceKeys": "context.device.type",
         "required": false
     }
 ]

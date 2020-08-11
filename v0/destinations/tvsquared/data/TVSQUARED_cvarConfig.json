@@ -10,7 +10,7 @@
     },
     {
         "destKey": "deviceid",
-        "sourceKeys": "",
+        "sourceKeys": "context.device.id",
         "required": false
     },
     {

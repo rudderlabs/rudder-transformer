@@ -66,6 +66,10 @@ const responseBuilderSimple = (message, category, destination) => {
       event = "app open";
     } else if (event === "Application Installed") {
       event = "install";
+    } else if (event === "Response" || event === "All response") {
+      throw new Error(
+        `${event} event is a reserved word for tvsquared thus can not be sent.`
+      );
     }
     customMetrics = destination.Config.customMetrics.slice();
     customMetrics = customMetrics.filter(cm => {

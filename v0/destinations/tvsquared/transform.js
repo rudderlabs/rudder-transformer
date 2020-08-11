@@ -32,6 +32,7 @@ const responseBuilderSimple = (message, category, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES._CVAR.name]
   );
   cvarSession.medium = "app";
+  cvarSession.source = "RudderStack";
   if (category.type === "Action") {
     // as list cannot be deleted so will check for empty inputs
     whitelist = destination.Config.eventWhiteList.slice();
@@ -59,6 +60,7 @@ const responseBuilderSimple = (message, category, destination) => {
       ? formatRevenue(cvarAction.rev)
       : null;
     cvarAction.dev = cvarAction.dev || "";
+    cvarAction.source = "RudderStack";
     event = message.event;
     if (event === "Application Opened") {
       event = "app open";

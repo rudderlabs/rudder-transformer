@@ -1,10 +1,5 @@
 [
     {
-        "destKey": "source",
-        "sourceKeys": "",
-        "required": false
-    },
-    {
         "destKey": "promo",
         "sourceKeys": "properties.promotion_id",
         "required": false

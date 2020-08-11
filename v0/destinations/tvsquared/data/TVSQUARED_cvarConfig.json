@@ -1,10 +1,5 @@
 [
     {
-        "destKey": "source",
-        "sourceKeys": "",
-        "required": false
-    },
-    {
         "destKey": "ip",
         "sourceKeys": [
             "context.ip",

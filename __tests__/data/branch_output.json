@@ -36,7 +36,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api2.branch.io/v2/event/standard",
+    "endpoint": "https://api2.branch.io/v2/event/custom",
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json"

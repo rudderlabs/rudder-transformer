@@ -52,7 +52,8 @@
                     "name": "test-org124",
                     "external_id": "abcd-124",
                     "user_fields": {
-                        "id": "abcd-124"
+                        "id": "abcd-124",
+                        "domainNames": "cw124.com"
                     },
                     "verified": true,
                     "organization_id": 900001329943

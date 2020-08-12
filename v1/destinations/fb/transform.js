@@ -6,7 +6,8 @@ const {
   removeUndefinedValues,
   getDateInFormat,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getValueFromMessage
 } = require("../../util");
 const {
   baseMapping,
@@ -16,10 +17,10 @@ const {
 } = require("./config");
 const logger = require("../../../logger");
 
-const funcMap = {
-  integer: parseInt,
-  float: parseFloat
-};
+// const funcMap = {
+//   integer: parseInt,
+//   float: parseFloat
+// };
 
 const extInfoArray = ["", "", 0, 0, "", "", "", "", "", 0, 0, 0.0, 0, 0, 0];
 const userProps = [
@@ -165,9 +166,10 @@ function buildBaseEvent(message) {
 
   baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
   let extInfoIdx;
-  Object.keys(baseMapping).forEach(k => {
-    const inputVal = get(message, k);
-    const splits = baseMapping[k].split(".");
+  baseMapping.forEach(bm => {
+    const { sourceKeys, destKey } = bm;
+    const inputVal = getValueFromMessage(message, sourceKeys);
+    const splits = destKey.split(".");
     if (splits.length > 1 && splits[0] === "extinfo") {
       extInfoIdx = splits[1];
       let outputVal;
@@ -193,9 +195,42 @@ function buildBaseEvent(message) {
       // custom event key
       set(baseEvent.custom_events[0], splits[2], inputVal || "");
     } else {
-      set(baseEvent, baseMapping[k], inputVal || "");
+      set(baseEvent, destKey, inputVal || "");
     }
   });
+
+  // //////////////////////////////
+  // Object.keys(baseMapping).forEach(k => {
+  //   const inputVal = get(message, k);
+  //   const splits = baseMapping[k].split(".");
+  //   if (splits.length > 1 && splits[0] === "extinfo") {
+  //     extInfoIdx = splits[1];
+  //     let outputVal;
+  //     switch (typeof extInfoArray[extInfoIdx]) {
+  //       case "number":
+  //         if (extInfoIdx === 11) {
+  //           // density
+  //           outputVal = parseFloat(inputVal);
+  //           outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
+  //         } else {
+  //           outputVal = parseInt(inputVal, 10);
+  //           outputVal = isNaN(outputVal) ? undefined : outputVal;
+  //         }
+  //         break;
+
+  //       default:
+  //         outputVal = inputVal;
+  //         break;
+  //     }
+  //     baseEvent.extinfo[extInfoIdx] =
+  //       outputVal || baseEvent.extinfo[extInfoIdx];
+  //   } else if (splits.length === 3) {
+  //     // custom event key
+  //     set(baseEvent.custom_events[0], splits[2], inputVal || "");
+  //   } else {
+  //     set(baseEvent, baseMapping[k], inputVal || "");
+  //   }
+  // });
   return baseEvent;
 }
 

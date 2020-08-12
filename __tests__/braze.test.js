@@ -1,11 +1,12 @@
-const integration = "mailchimp";
-const name = "Mailchimp";
+const integration = "braze";
+const name = "Braze";
 
 const fs = require("fs");
 const path = require("path");
 const version = "v1";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+// const { compareJSON } = require("./util");
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -18,10 +19,10 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  it(`${name} Tests: payload - ${index}`, async () => {
+  it(`${name} Tests: payload - ${index}`, () => {
     let output, expected;
     try {
-      output = await transformer.process(input);
+      output = transformer.process(input);
       expected = expectedData[index]
     } catch (error) {
       output = error.message;

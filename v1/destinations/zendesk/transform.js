@@ -126,7 +126,7 @@ function getIdentifyPayload(message, category, destinationConfig) {
     set(
       payload,
       `user.user_fields.${field}`,
-      get(message, `context.traits.${field}`)
+      get(traits, field)
     );
   });
 
@@ -198,7 +198,7 @@ async function createUser(message, headers, destinationConfig) {
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      console.log(`Couldn't create User: ${message.traits.name}`);
+      console.log(`Couldn't create User: ${name}`);
       throw new Error("user not found");
     }
 

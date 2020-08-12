@@ -9,16 +9,15 @@ const {
   getFieldValueFromMessage
 } = require("../../util");
 
-function responseBuilder(payload, message, destination) {
+function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
 
-  if (payload.event_data === null && payload.content_items === null) {
-    response.method = defaultPostRequestConfig.requestMethod;
+  if (category === "custom") {
     response.endpoint = endpoints.customEventUrl;
   } else {
-    response.method = defaultPostRequestConfig.requestMethod;
     response.endpoint = endpoints.standardEventUrl;
   }
+  response.method = defaultPostRequestConfig.requestMethod;
 
   response.body.JSON = removeUndefinedAndNullValues({
     ...payload,
@@ -48,10 +47,10 @@ function getCategoryAndName(rudderEventName) {
       }
     });
     if (requiredName != null && requiredCategory != null) {
-      return { name: requiredName, category: requiredCategory };
+      return { evName: requiredName, category: requiredCategory };
     }
   }
-  return { name: rudderEventName, category: "custom" };
+  return { evName: rudderEventName, category: "custom" };
 }
 
 function getUserData(message) {
@@ -107,7 +106,8 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
   };
 }
 
-function commonPayload(message, rawPayload, category) {
+function getCommonPayload(message, category, evName) {
+  let rawPayload = {};
   let rudderPropertiesObj;
   const content_items = [];
   const event_data = {};
@@ -169,16 +169,9 @@ function commonPayload(message, rawPayload, category) {
       }
     });
   }
-
+  rawPayload.name = evName;
+  
   return rawPayload;
-}
-
-function getPayload(message, categoryName) {
-  const rawPayload = {};
-  const { name, category } = getCategoryAndName(categoryName);
-  rawPayload.name = name;
-
-  return commonPayload(message, rawPayload, category);
 }
 
 // function getTrackPayload(message) {
@@ -189,25 +182,24 @@ function getPayload(message, categoryName) {
 //   return commonPayload(message, rawPayload, category);
 // }
 
-function getTransformedJSON(message) {
-  let rawPayload;
+function processMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
-      rawPayload = getPayload(message, message.event);
+      var { evName, category } = getCategoryAndName(message.event);
       break;
     case EventType.IDENTIFY:
-      rawPayload = getPayload(message, message.userId);
+      var { evName, category } = getCategoryAndName(message.userId);
       break;
     default:
       throw new Error("Message type is not supported");
   }
-  return { ...rawPayload };
+  let rawPayload = getCommonPayload(message, category, evName);
+  return responseBuilder(rawPayload, message, destination, category);
 }
 
 function process(event) {
   const { message, destination } = event;
-  const properties = getTransformedJSON(message, destination);
-  return responseBuilder(properties, message, destination);
+  return processMessage(message, destination);
 }
 
 exports.process = process;

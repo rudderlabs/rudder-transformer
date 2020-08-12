@@ -2,9 +2,9 @@
   {
     "destKey": "email",
     "sourceKeys": [
-      "userId",
       "traits.email",
-      "context.traits.email"
+      "context.traits.email",
+      "userId"
     ],
     "required": true
   },

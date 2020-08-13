@@ -6,5 +6,6 @@
     "context.traits.createdAt":"-",
     "context.traits.id": "-",
     "context.traits.birthday":"-" ,
-    "context.traits.avatar":"-"
+    "context.traits.avatar":"-",
+    "context.traits.LeadSource":"-"
 }

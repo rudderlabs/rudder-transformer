@@ -171,5 +171,82 @@
         "messageId": "37b75e61-9bd2-4fb8-91ed-e3a064905f3a",
         "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW"
       }
+    },
+    {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.1.2"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.2"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36",
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 1
+          },
+          "page": {
+            "path": "/tests/html/ecomm-test.html",
+            "referrer": "http://localhost:1112/tests/html/",
+            "search": "",
+            "title": "GA Ecommerce Test",
+            "url": "http://localhost:1112/tests/html/ecomm-test.html"
+          },
+          "traits": {
+            "email": "test@123.com",
+            "firstName": "testUser",
+            "lastName": "lastName",
+            "company": {
+              "name": "testCompany"
+            },
+            "LeadSource": "testLeadSource"
+          }
+        },
+        "type": "identify",
+        "messageId": "3fcd1507-1010-4b87-8e8d-164ab46ae316",
+        "originalTimestamp": "2020-08-11T13:02:03.776Z",
+        "anonymousId": "4edd47dc-d757-46ec-8eb9-dce44398a5e3",
+        "userId": "qwe",
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2020-08-11T13:02:03.776Z"
+      },
+      "destination": {
+        "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "Name": "Autopilot",
+        "DestinationDefinition": {
+          "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo",
+          "Name": "AUTOPILOT",
+          "DisplayName": "Autopilot",
+          "Config": {
+            "excludeKeys": [],
+            "includeKeys": []
+          }
+        },
+        "Config": {
+          "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+          "customMappings": [
+            {
+              "from": "0001",
+              "to": "Signup"
+            }
+          ],
+          "triggerId": "00XX"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
     }
   ]

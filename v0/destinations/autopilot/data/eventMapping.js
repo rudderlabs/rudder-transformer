@@ -1,9 +1,14 @@
-const AddContactKeys = [
-  { rudderKey: "name", expectedKey: "Name" },
-  { rudderKey: "email", expectedKey: "Email" }
-];
+const AddContactKeys = {
+  email: "Email",
+  firstName: "FirstName",
+  lastName: "LastName",
+  phone: "Phone",
+  "company.name": "Company",
+  LeadSource: "LeadSource",
+  status: "Status"
+};
 
-const TrackProperties = [{ rudderKey: "email", expectedKey: "Email" }];
+const TrackProperties = { email: "Email" };
 
 const mapPayload = {
   track: {

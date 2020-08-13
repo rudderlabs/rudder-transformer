@@ -47,5 +47,33 @@
     "files": {},
     "userId": "user12345",
     "statusCode": 200
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.autopilothq.com/v1/contact",
+    "headers": {
+        "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "contact": {
+                "Email": "test@123.com",
+                "FirstName": "testUser",
+                "LastName": "lastName",
+                "Company": "testCompany",
+                "LeadSource": "testLeadSource"
+            }
+        },
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "qwe",
+    "statusCode": 200
+}
 ]

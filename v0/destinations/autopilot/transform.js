@@ -27,6 +27,9 @@ function responseBuilder(payload, message, autoPilotConfig) {
       break;
     case EventType.TRACK:
       requestConfig = defaultPostRequestConfig;
+      if (!message.context.traits.email) {
+        throw new Error("Email not found in traits, email is a required field to trigger a journey");
+      }
       endpoint = `${endpoints.triggerJourneyUrl}/${autoPilotConfig.triggerId}/contact/${message.context.traits.email}`;
       break;
     default:
@@ -43,42 +46,35 @@ function responseBuilder(payload, message, autoPilotConfig) {
 }
 
 function getIdentifyPayload(message) {
-  const rawPayload = {};
   const contact = {};
+  let val;
 
   const traits = get(message.context.traits) ? message.context.traits : null;
 
   if (traits != null) {
-    Object.keys(traits).forEach(trait => {
-      const value = traits[trait];
-      const replaceKeys = mapPayload.identify.addContact;
-      updatePayload(trait, replaceKeys, value, contact);
+    let mapping = mapPayload.identify.addContact;
+    Object.keys(mapping).forEach(key => {
+      val = get(traits, key);
+      if (val) {
+        contact[mapping[key]] = val;
+      }
     });
   }
 
-  rawPayload.contact = contact;
-  return rawPayload;
+  return {"contact": contact};
 }
 
 function getTrackPayload(message) {
   const rawPayload = {};
-  const propertiesObj = {};
-
-  const properties = get(message.properties)
-    ? Object.keys(message.properties)
-    : null;
-
-  if (properties != null) {
-    properties.forEach(property => {
-      propertiesObj[property] = message.properties[property];
-    });
+  
+  if (message.properties) {
+    rawPayload.property = message.properties;
   }
 
-  rawPayload.property = propertiesObj;
   return rawPayload;
 }
 
-function getTransformedJSON(message, autoPilotConfig) {
+function getTransformedJSON(message) {
   let rawPayload;
   switch (message.type) {
     case EventType.TRACK:
@@ -90,7 +86,7 @@ function getTransformedJSON(message, autoPilotConfig) {
     default:
       throw new Error("message type not supported");
   }
-  return { ...rawPayload };
+  return rawPayload;
 }
 
 function getDestinationKeys(destination) {
@@ -114,7 +110,7 @@ function getDestinationKeys(destination) {
 function process(event) {
   const autoPilotConfig = getDestinationKeys(event.destination);
   // TODO: Implement to accept multiple triggerId's.
-  const properties = getTransformedJSON(event.message, autoPilotConfig);
+  const properties = getTransformedJSON(event.message);
   return responseBuilder(properties, event.message, autoPilotConfig);
 }
 

@@ -19,9 +19,9 @@ const {
   getFieldValueFromMessage,
   constructPayload
 } = require("../../util");
+const logger = require("../../../logger");
 
 let endPoint;
-
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -36,7 +36,7 @@ function responseBuilder(message, headers, payload, endpoint) {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = updatedHeaders;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.anonymousId;
   response.body.JSON = payload;
 
   return response;
@@ -60,11 +60,11 @@ async function createUserFields(url, config, newFields, fieldJson) {
     try {
       const response = await axios.post(url, fieldData, config);
       if (response.status !== 201) {
-        console.log("Failed to create User Field : ", field);
+        logger.debug("Failed to create User Field : ", field);
       }
     } catch (error) {
       if (error.response && error.response.status !== 422) {
-        console.log("Cannot create User field ", field, error);
+        logger.debug("Cannot create User field ", field, error);
       }
     }
   });
@@ -100,12 +100,12 @@ async function checkAndCreateUserFields(
       }
     }
   } catch (error) {
-    console.log("Error :", error.response ? error.response.data : error);
+    logger.debug("Error :", error.response ? error.response.data : error);
   }
 }
 
 function getIdentifyPayload(message, category, destinationConfig) {
-  mappingJson = mappingConfig[category.name];
+  const mappingJson = mappingConfig[category.name];
 
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
@@ -116,18 +116,10 @@ function getIdentifyPayload(message, category, destinationConfig) {
   // send fields not in sourceKeys as user fields
   const traits = getFieldValueFromMessage(message, "traits");
   const userFields = Object.keys(traits).filter(
-    trait =>
-      !(
-        sourceKeys.includes(trait) ||
-        typeof traits[trait] === "object"
-      )
+    trait => !(sourceKeys.includes(trait) || typeof traits[trait] === "object")
   );
   userFields.forEach(field => {
-    set(
-      payload,
-      `user.user_fields.${field}`,
-      get(traits, field)
-    );
+    set(payload, `user.user_fields.${field}`, get(traits, field));
   });
 
   payload.user = removeUndefinedValues(payload.user);
@@ -150,40 +142,39 @@ async function getUserId(message, headers) {
     const resp = await axios.get(url, config);
 
     if (!resp || !resp.data || resp.data.count === 0) {
-      console.log("User not found");
+      logger.debug("User not found");
       return undefined;
     }
 
     const zendeskUserId = resp.data.users[0].id;
     return zendeskUserId;
   } catch (error) {
-    console.log(
-      `Cannot get userId for externalId : ${externalId}`,
-      error.response
-    );
+    // logger.debug(
+    //   `Cannot get userId for externalId : ${externalId}`,
+    //   error.response
+    // );
     return undefined;
   }
 }
 
-async function isUserAlreadyAssociated(userId, orgId, headers) {
-  const url = `${endPoint}/users/${userId}/organization_memberships.json`;
-  const config = { headers };
-  const response = await axios.get(url, config);
-  if (
-    response.data &&
-    response.data.organization_memberships.length > 0 &&
-    response.data.organization_memberships[0].id == orgId
-  ) {
-    return true;
-  }
-  return false;
-}
+// async function isUserAlreadyAssociated(userId, orgId, headers) {
+//   const url = `${endPoint}/users/${userId}/organization_memberships.json`;
+//   const config = { headers };
+//   const response = await axios.get(url, config);
+//   if (
+//     response.data &&
+//     response.data.organization_memberships.length > 0 &&
+//     response.data.organization_memberships[0].id == orgId
+//   ) {
+//     return true;
+//   }
+//   return false;
+// }
 
 async function createUser(message, headers, destinationConfig) {
   const traits = getFieldValueFromMessage(message, "traits");
   const { name, email } = traits;
-  const userId = message.userId ? message.userId : message.anonymousId;
-  
+  const userId = getFieldValueFromMessage(message, "userId");
 
   const userObject = { name, external_id: userId, email };
   if (destinationConfig.createUsersAsVerified) {
@@ -198,7 +189,7 @@ async function createUser(message, headers, destinationConfig) {
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      console.log(`Couldn't create User: ${name}`);
+      logger.debug(`Couldn't create User: ${name}`);
       throw new Error("user not found");
     }
 
@@ -206,41 +197,41 @@ async function createUser(message, headers, destinationConfig) {
     const userEmail = resp.data.user.email;
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
-    console.log(error);
-    console.log(`Couldn't find user: ${name}`);
+    logger.debug(error);
+    logger.debug(`Couldn't find user: ${name}`);
     throw new Error(`Couldn't find user: ${name}`);
   }
 }
 
-async function getUserMembershipPayload(
-  message,
-  headers,
-  orgId,
-  destinationConfig
-) {
-  // let zendeskUserID = await getUserId(message.userId, headers);
-  let zendeskUserID = await getUserId(message, headers);
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (!zendeskUserID) {
-    if (traits.name && traits.email) {
-      const { zendeskUserId } = await createUser(
-        message,
-        headers,
-        destinationConfig
-      );
-      zendeskUserID = zendeskUserId;
-    }
-  }
-
-  const payload = {
-    organization_membership: {
-      user_id: zendeskUserID,
-      organization_id: orgId
-    }
-  };
-
-  return payload;
-}
+// async function getUserMembershipPayload(
+//   message,
+//   headers,
+//   orgId,
+//   destinationConfig
+// ) {
+//   // let zendeskUserID = await getUserId(message.userId, headers);
+//   let zendeskUserID = await getUserId(message, headers);
+//   const traits = getFieldValueFromMessage(message, "traits");
+//   if (!zendeskUserID) {
+//     if (traits.name && traits.email) {
+//       const { zendeskUserId } = await createUser(
+//         message,
+//         headers,
+//         destinationConfig
+//       );
+//       zendeskUserID = zendeskUserId;
+//     }
+//   }
+//
+//   const payload = {
+//     organization_membership: {
+//       user_id: zendeskUserID,
+//       organization_id: orgId
+//     }
+//   };
+//
+//   return payload;
+// }
 
 async function createOrganization(
   message,
@@ -254,11 +245,11 @@ async function createOrganization(
     category.organizationFieldsJson,
     headers
   );
-  mappingJson = mappingConfig[category.name];
+  const mappingJson = mappingConfig[category.name];
 
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
-  
+
   if (payload.organization.external_id) {
     set(
       payload,
@@ -269,10 +260,7 @@ async function createOrganization(
   const traitKeys = Object.keys(message.traits);
   const organizationFields = traitKeys.filter(
     trait =>
-      !(
-        sourceKeys.includes(trait) ||
-        typeof message.traits[trait] === "object"
-      )
+      !(sourceKeys.includes(trait) || typeof message.traits[trait] === "object")
   );
   organizationFields.forEach(field => {
     set(
@@ -295,14 +283,14 @@ async function createOrganization(
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.organization) {
-      console.log(`Couldn't create Organization: ${message.traits.name}`);
+      logger.debug(`Couldn't create Organization: ${message.traits.name}`);
       return undefined;
     }
 
     const orgId = resp.data.organization.id;
     return orgId;
   } catch (error) {
-    console.log(`Couldn't create Organization: ${message.traits.name}`);
+    logger.debug(`Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }
@@ -330,7 +318,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const  traits  = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, "traits");
   if (
     traits.company &&
     traits.company.remove &&
@@ -350,7 +338,7 @@ async function processIdentify(message, destinationConfig, headers) {
           response.data.organization_memberships.length > 0
         ) {
           if (
-            orgId == response.data.organization_memberships[0].organization_id
+            orgId === response.data.organization_memberships[0].organization_id
           ) {
             const membershipId = response.data.organization_memberships[0].id;
             const deleteResponse = defaultRequestConfig();
@@ -363,14 +351,12 @@ async function processIdentify(message, destinationConfig, headers) {
               "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
               "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
             };
-            deleteResponse.userId = message.userId
-              ? message.userId
-              : message.anonymousId;
+            deleteResponse.userId = message.anonymousId;
             returnList.push(deleteResponse);
           }
         }
       } catch (error) {
-        console.log(error);
+        logger.debug(error);
       }
     }
   }
@@ -384,11 +370,11 @@ async function processTrack(message, destinationConfig, headers) {
   const traits = getFieldValueFromMessage(message, "traits");
   let userEmail = traits.email;
   let zendeskUserID;
-  // let url = endPoint + "users/search.json?external_id=" + userId;
+
   let url = `${endPoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   const userResponse = await axios.get(url, config);
-  if (!userResponse || !userResponse.data || userResponse.data.count == 0) {
+  if (!userResponse || !userResponse.data || userResponse.data.count === 0) {
     const { zendeskUserId, email } = await createUser(
       message,
       headers,

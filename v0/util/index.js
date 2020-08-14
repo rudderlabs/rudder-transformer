@@ -48,6 +48,89 @@ const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   return hashMap;
 };
 
+// NEED to decouple value finding and `required` checking
+// NEED TO DEPRECATE
+const setValues = (payload, message, mappingJson) => {
+  if (Array.isArray(mappingJson)) {
+    let val;
+    let sourceKeys;
+    mappingJson.forEach(mapping => {
+      val = undefined;
+      sourceKeys = mapping.sourceKeys;
+      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+        for (let index = 0; index < sourceKeys.length; index += 1) {
+          val = get(message, sourceKeys[index]);
+          if (val) {
+            break;
+          }
+        }
+        if (val) {
+          set(payload, mapping.destKey, val);
+        } else if (mapping.required) {
+          throw new Error(
+            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+          );
+        }
+      }
+    });
+  }
+  return payload;
+};
+
+// function to flatten a json
+function flattenJson(data) {
+  const result = {};
+  let l;
+
+  // a recursive function to loop through the array of the data
+  function recurse(cur, prop) {
+    let i;
+    if (Object(cur) !== cur) {
+      result[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      for (i = 0, l = cur.length; i < l; i += 1) {
+        recurse(cur[i], `${prop}[${i}]`);
+      }
+      if (l === 0) {
+        result[prop] = [];
+      }
+    } else {
+      let isEmpty = true;
+      Object.keys(cur).forEach(key => {
+        isEmpty = false;
+        recurse(cur[key], prop ? `${prop}.${key}` : key);
+      });
+      if (isEmpty && prop) result[prop] = {};
+    }
+  }
+
+  recurse(data, "");
+  return result;
+}
+
+// function flattenJson(data) {
+//   var result = {};
+//
+//   //a recursive function to loop through the array of the data
+//   function recurse(cur, prop) {
+//     if (Object(cur) !== cur) {
+//       result[prop] = cur;
+//     } else if (Array.isArray(cur)) {
+//       for (var i = 0, l = cur.length; i < l; i++)
+//         recurse(cur[i], prop + "[" + i + "]");
+//       if (l == 0) result[prop] = [];
+//     } else {
+//       var isEmpty = true;
+//       for (var p in cur) {
+//         isEmpty = false;
+//         recurse(cur[p], prop ? prop + "." + p : p);
+//       }
+//       if (isEmpty && prop) result[prop] = {};
+//     }
+//   }
+//   recurse(data, "");
+//   return result;
+// }
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE
@@ -207,6 +290,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
+      case "flatJson":
+        formattedVal = flattenJson(formattedVal);
+        break;
       default:
         break;
     }
@@ -316,60 +402,6 @@ const getFieldValueFromMessage = (message, field) => {
   return null;
 };
 
-// Generic methos to find out a value from a message
-// NEED to decouple value finding and `required` checking
-// NEED TO DEPRECATE
-const setValues = (payload, message, mappingJson) => {
-  if (Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index += 1) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new Error(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
-      }
-    });
-  }
-  return payload;
-};
-
-//function to flatten a json
-
-function flattenJson(data) {
-  var result = {};
-  //a recursive function to loop through the array of the data
-  function recurse(cur, prop) {
-    if (Object(cur) !== cur) {
-      result[prop] = cur;
-    } else if (Array.isArray(cur)) {
-      for (var i = 0, l = cur.length; i < l; i++)
-        recurse(cur[i], prop + "[" + i + "]");
-      if (l == 0) result[prop] = [];
-    } else {
-      var isEmpty = true;
-      for (var p in cur) {
-        isEmpty = false;
-        recurse(cur[p], prop ? prop + "." + p : p);
-      }
-      if (isEmpty && prop) result[prop] = {};
-    }
-  }
-  recurse(data, "");
-  return result;
-}
 
 // ========================================================================
 // EXPORTS

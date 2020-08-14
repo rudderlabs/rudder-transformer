@@ -17,7 +17,14 @@
       "template": "Screen View"
     }
   },
-  { "destKey": "properties", "sourceKeys": "properties", "required": false },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "type": "flatJson"
+    }
+  },
   {
     "destKey": "eventTime",
     "sourceKeys": ["originalTimestamp", "timestamp"],

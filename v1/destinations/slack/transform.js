@@ -34,21 +34,26 @@ function stringifyJSON(json, whiteListedTraits) {
 // get the name value from either traits.name/traits.firstName+traits.lastName/traits.username/
 // properties.email/traits.email/userId/anonymousId
 function getName(message) {
-  const { context, anonymousId, userId, properties } = message;
-  const { traits } = context;
-  const { name, firstName, lastName, username, email } = traits;
-  const uName =
-    name ||
-    (firstName
-      ? lastName
-        ? `${firstName}${lastName}`
-        : firstName
-      : undefined) ||
-    username ||
-    (properties ? properties.email : undefined) ||
-    email ||
-    (userId ? `User ${userId}` : undefined) ||
-    `Anonymous user ${anonymousId}`;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let uName;
+  if (traits) {
+    uName =
+      traits.name ||
+      (traits.firstName
+        ? traits.lastName
+          ? `${traits.firstName}${traits.lastName}`
+          : traits.firstName
+        : undefined) ||
+      traits.username ||
+      (message.properties ? message.properties.email : undefined) ||
+      traits.email ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
+  } else {
+    uName = (message.properties ? message.properties.email : undefined) ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
+  }
 
   logger.debug("final name::: ", uName);
   return uName;

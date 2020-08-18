@@ -42,9 +42,11 @@ const formatValue = value => {
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   const hashMap = {};
-  arrays.forEach(array => {
-    hashMap[array[fromKey]] = array[toKey];
-  });
+  if (arrays) {
+    arrays.forEach(array => {
+      hashMap[array[fromKey]] = array[toKey];
+    });
+  }
   return hashMap;
 };
 

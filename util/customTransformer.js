@@ -30,17 +30,12 @@ async function runUserTransform(events, code, eventsMetadata) {
   // console.log("add -> result", addResult);
 
   const moduleSub = await isolate.compileModule(subCode);
+  moduleMapNew.math = { module: moduleSub };
 
   const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
-  console.log(
-    "2nd step SUB -> dependencySpecifiersSub",
-    dependencySpecifiersSub
-  );
 
   await moduleSub.instantiate(context, function(spec) {
     if (spec == "./add") {
-      console.log("add -> spec ADDDDDDD", spec, moduleMapNew.add.module);
-
       return moduleMapNew.add.module;
     }
   });
@@ -58,12 +53,12 @@ async function runUserTransform(events, code, eventsMetadata) {
   //   moduleSub.namespace.getSync("sub")
   // );
 
-  const addImport = await moduleSub.namespace.get("add");
-  const addResultNew = await addImport.apply(null, [2, 4]);
-  // console.log("add -> add result", addResultNew);
+  // const addImport = await moduleSub.namespace.get("add");
+  // const addResultNew = await addImport.apply(null, [2, 4]);
+  // // console.log("add -> add result", addResultNew);
 
-  const subImport = await moduleSub.namespace.get("sub");
-  const subResultNew = await subImport.apply(null, [1234, 4]);
+  // const subImport = await moduleSub.namespace.get("sub");
+  // const subResultNew = await subImport.apply(null, [1234, 4]);
   // console.log("add -> sub result", subResultNew);
 
   // await context.eval(base64func);
@@ -209,21 +204,14 @@ async function runUserTransform(events, code, eventsMetadata) {
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
 
   const customScriptModule = await isolate.compileModule(`${code}`);
-  const dependencySpecifiersFinal = customScriptModule.dependencySpecifiers;
-  console.log(
-    "Dpendency specifiers for the final code",
-    dependencySpecifiersFinal
-  );
 
   await customScriptModule.instantiate(context, function(spec) {
+    // console.log("SPeci  is ", spec);
     if (spec == "./add") {
-      console.log(
-        "add -> spec ADDDDDDD from the final function",
-        spec,
-        moduleMapNew.add.module
-      );
-
       return moduleMapNew.add.module;
+    }
+    if (spec == "./math") {
+      return moduleMapNew.math.module;
     }
   });
 
@@ -236,7 +224,6 @@ async function runUserTransform(events, code, eventsMetadata) {
   await customScriptModule.evaluate(context);
   const fnRef = await customScriptModule.namespace.get("transform");
 
-  console.log("runUserTransform -> fnRef", fnRef);
   // const fnRefOld = await jail.get("transform");
   // console.log("runUserTransform -> fnRefOld", fnRefOld);
   // TODO : check if we can resolve this

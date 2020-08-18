@@ -20,11 +20,13 @@ describe("User transformation", () => {
     const respBody = {
       code: `
       import add from './add';
-      export {add};
+      import { sub} from './math';
       export function transform(events) {
           const filteredEvents = events.map(event => {
-            add(4,5);
-            event.sum = add(4,5);
+            log("Sum is ", add(4,5));
+            log("Diff is ", sub(4,5));
+            // event.sum = add(4,5);
+            // event.diff = sub(4,5);
             return event;
           });
             return filteredEvents;

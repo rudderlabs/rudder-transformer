@@ -13,16 +13,21 @@ describe("User transformation", () => {
     jest.resetAllMocks();
   });
   it(`Simple ${name} Test`, async () => {
-    const inputDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./data/${integration}_input.json`)
-    );
-    const outputDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./data/${integration}_output.json`)
-    );
     const { userTransformHandler } = require("../util/customTransformer");
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_output.json`);
+
     const respBody = {
-      code: `function transform(events) {
-            return events;
+      code: `
+      import add from './add';
+      export {add};
+      export function transform(events) {
+          const filteredEvents = events.map(event => {
+            add(4,5);
+            event.sum = add(4,5);
+            return event;
+          });
+            return filteredEvents;
           }
           `
     };
@@ -30,8 +35,6 @@ describe("User transformation", () => {
       Promise.resolve(new Response(JSON.stringify(respBody)))
     );
 
-    const inputData = JSON.parse(inputDataFile);
-    const expectedData = JSON.parse(outputDataFile);
     const output = await userTransformHandler(inputData, 23);
 
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -43,15 +46,12 @@ describe("User transformation", () => {
   });
 
   it(`Filtering ${name} Test`, async () => {
-    const inputDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./data/${integration}_filter_input.json`)
-    );
-    const outputDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./data/${integration}_filter_output.json`)
-    );
     const { userTransformHandler } = require("../util/customTransformer");
+    const inputData = require(`./data/${integration}_filter_input.json`);
+    const expectedData = require(`./data/${integration}_filter_output.json`);
+
     const respBody = {
-      code: `function transform(events) {
+      code: `export function transform(events) {
                         let filteredEvents = events.filter(event => {
                           const eventType = event.type;
                           return eventType && eventType.match(/track/g);
@@ -62,8 +62,6 @@ describe("User transformation", () => {
                           event.sourceId = eventMetadata.sourceId;
                           return event;
                         })
-                        log(" -- Returning filtered events --");
-                        log(filteredEvents);
                         return filteredEvents;
                       }
                       `
@@ -71,8 +69,6 @@ describe("User transformation", () => {
     fetch.mockReturnValue(
       Promise.resolve(new Response(JSON.stringify(respBody)))
     );
-    const inputData = JSON.parse(inputDataFile);
-    const expectedData = JSON.parse(outputDataFile);
     const output = await userTransformHandler(inputData, 24);
 
     expect(fetch).toHaveBeenCalledTimes(1);

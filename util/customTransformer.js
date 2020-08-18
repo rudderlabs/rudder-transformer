@@ -1,11 +1,72 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
+
 const { getTransformationCode } = require("./customTransforrmationsStore");
+const { addCode, subCode } = require("./math.js");
 
 async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
+  // const base64ModuleCode = await readFile(`util/base64.js`, {
+  //   encoding: "utf-8"
+  // });
+  const moduleMapNew = {};
+  const module = await isolate.compileModule(addCode);
+  moduleMapNew.add = { module };
+
+  await module.instantiate(context, () => {});
+  const evalResult = await module.evaluate();
+  // console.log("add -> evalResult", evalResult);
+
+  // console.log("add -> module.namespace", module.namespace);
+  // console.log(
+  //   "add -> module.namespace.default getSync",
+  //   module.namespace.getSync("default")
+  // );
+
+  const defaultExport = await module.namespace.get("default");
+  const addResult = await defaultExport.apply(null, [2, 4]);
+  // console.log("add -> result", addResult);
+
+  const moduleSub = await isolate.compileModule(subCode);
+
+  const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
+  console.log(
+    "2nd step SUB -> dependencySpecifiersSub",
+    dependencySpecifiersSub
+  );
+
+  await moduleSub.instantiate(context, function(spec) {
+    if (spec == "./add") {
+      console.log("add -> spec ADDDDDDD", spec, moduleMapNew.add.module);
+
+      return moduleMapNew.add.module;
+    }
+  });
+
+  const evalResultAdd = await moduleSub.evaluate();
+  // console.log("add -> evalResultAdd", evalResultAdd);
+
+  // console.log("add -> module.namespace", moduleSub.namespace);
+  // console.log(
+  //   "add -> module.namespace.add getSync",
+  //   moduleSub.namespace.getSync("add")
+  // );
+  // console.log(
+  //   "add -> module.namespace.sub getSync",
+  //   moduleSub.namespace.getSync("sub")
+  // );
+
+  const addImport = await moduleSub.namespace.get("add");
+  const addResultNew = await addImport.apply(null, [2, 4]);
+  // console.log("add -> add result", addResultNew);
+
+  const subImport = await moduleSub.namespace.get("sub");
+  const subResultNew = await subImport.apply(null, [1234, 4]);
+  // console.log("add -> sub result", subResultNew);
+
+  // await context.eval(base64func);
   const jail = context.global;
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
@@ -31,20 +92,27 @@ async function runUserTransform(events, code, eventsMetadata) {
     })
   );
 
-  jail.setSync(
+  await jail.set(
     "_log",
-    new ivm.Reference(() => {
-      // console.log("Log: ", ...args);
+    new ivm.Reference((...args) => {
+      console.log("Log: ", ...args);
     })
   );
 
-  jail.setSync(
+  await jail.set(
     "_metadata",
     new ivm.Reference((...args) => {
       const eventMetadata = eventsMetadata[args[0].messageId] || {};
       return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
   );
+
+  // jail.setSync(
+  //   "_atob",
+  //   new ivm.Reference(arg => {
+  //     return base64.atob(arg).toString(); // this is in node so buffer is available
+  //   })
+  // );
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -100,8 +168,18 @@ async function runUserTransform(events, code, eventsMetadata) {
           return metadata.applySync(
             undefined,
             args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-            );
-          };
+          );
+        };
+
+        // let atob = _atob;
+
+        // global.atob = function (...args) {
+        //   return atob.applySync(
+        //     undefined,
+        //     args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        //   );
+        // };
+        
         
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
@@ -128,10 +206,39 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
+  // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
 
-  const customScript = await isolate.compileScript(`${code}`);
-  await customScript.run(context);
-  const fnRef = await jail.get("transform");
+  const customScriptModule = await isolate.compileModule(`${code}`);
+  const dependencySpecifiersFinal = customScriptModule.dependencySpecifiers;
+  console.log(
+    "Dpendency specifiers for the final code",
+    dependencySpecifiersFinal
+  );
+
+  await customScriptModule.instantiate(context, function(spec) {
+    if (spec == "./add") {
+      console.log(
+        "add -> spec ADDDDDDD from the final function",
+        spec,
+        moduleMapNew.add.module
+      );
+
+      return moduleMapNew.add.module;
+    }
+  });
+
+  // const base64Script = await isolate.compileScript(base64);
+  // const customScriptRunResult = await customScript.run(context);
+  // console.log(
+  //   "runUserTransform -> customScriptRunResult",
+  //   customScriptRunResult
+  // );
+  await customScriptModule.evaluate(context);
+  const fnRef = await customScriptModule.namespace.get("transform");
+
+  console.log("runUserTransform -> fnRef", fnRef);
+  // const fnRefOld = await jail.get("transform");
+  // console.log("runUserTransform -> fnRefOld", fnRefOld);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {

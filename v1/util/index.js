@@ -353,7 +353,9 @@ function flattenJson(data) {
       if (isEmpty && prop) result[prop] = {};
     }
   }
-  recurse(data, "");
+  if (data) {
+    recurse(data, "");
+  }
   return result;
 }
 

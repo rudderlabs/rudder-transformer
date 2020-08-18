@@ -1,25 +1,41 @@
-const { defaultPostRequestConfig, defaultRequestConfig, getHashFromArray, getFieldValueFromMessage } = require("../../util");
+const { defaultPostRequestConfig, defaultGetRequestConfig, defaultRequestConfig, getHashFromArray, getFieldValueFromMessage, flattenJson } = require("../../util");
+const { EventType } = require("../../../constants");
+
+const getPropertyParams = (message) => {
+  if (message.type === EventType.IDENTIFY) {
+    return flattenJson(getFieldValueFromMessage(message, "traits"));
+  }
+  return flattenJson(message.properties);
+}
 
 function process(event){
   const { message, destination } = event;
   const response = defaultRequestConfig();
-  if(destination.Config.webhookUrl){
-    response.endpoint = destination.Config.webhookUrl;
-    response.method = defaultPostRequestConfig.requestMethod;
+  const url = destination.Config.webhookUrl;
+  const method = destination.Config.webhookMethod;
+  const headers = destination.Config.headers;
 
-    response.headers = {
-      "Content-Type" : "application/json"
-    };
+  if(url){
+  
+    if (method === defaultGetRequestConfig.requestMethod) {
+      response.method = defaultGetRequestConfig.requestMethod;
+      // send properties as query params for GET
+      response.params = getPropertyParams(message);
+    } else {
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.body.JSON = message;
+      response.headers = {
+        "Content-Type" : "application/json"
+      };
+    }
 
-    response.headers = getHashFromArray(destination.Config.header);
+    Object.assign(response.headers, getHashFromArray(headers));
     response.userId = getFieldValueFromMessage(message, "userId");
-
-    response.body.JSON = { ...message };
+    response.endpoint = url;
+    
     return response;
   }
-  throw new Error("Invalid Url in destination");
+  throw new Error("Invalid URL in destination config");
 }
 
 exports.process = process;
-
-

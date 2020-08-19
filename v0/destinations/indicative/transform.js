@@ -63,6 +63,8 @@ const handleProperties = properties => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
+      } else {
+        result[prop] = [];
       }
     } else {
       let isEmpty = true;

@@ -34,7 +34,7 @@ const handleProperties = properties => {
 
         // handle primitive element array
         if (pArr.length > 0) {
-          result[prop] = cur.toString();
+          result[prop] = pArr.toString();
         }
 
         // handle object array
@@ -63,35 +63,6 @@ const handleProperties = properties => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
-
-        // const fel = cur[0];
-        // if (Object(fel) !== fel) {
-        //   result[prop] = cur.toString();
-        // } else if (Array.isArray(fel)) {
-        //   // ignore array or arrys
-        // } else {
-        //   const objectMap = {};
-        //   Object.keys(fel).forEach(key => {
-        //     // discarding nested objects and arrays for array of objects
-        //     // only allowing primitive times for array of objects
-        //     if (Object(fel[key]) !== fel[key]) {
-        //       objectMap[key] = [];
-        //     }
-        //   });
-
-        //   for (i = 0, l = cur.length; i < l; i += 1) {
-        //     const el = cur[i];
-        //     Object.keys(el).forEach(k => {
-        //       if (Object.keys(objectMap).indexOf(k) !== -1) {
-        //         objectMap[k].push(el[k]);
-        //       }
-        //     });
-        //   }
-
-        //   Object.keys(objectMap).forEach(key => {
-        //     result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
-        //   });
-        // }
       }
     } else {
       let isEmpty = true;

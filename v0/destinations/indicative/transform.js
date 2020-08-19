@@ -7,9 +7,90 @@ const {
   defaultPostRequestConfig
 } = require("../../util");
 
+const handleProperties = properties => {
+  const result = {};
+  let l;
+
+  const recurse = (cur, prop) => {
+    let i;
+    if (Object(cur) !== cur) {
+      // primitive types
+      result[prop] = cur;
+    } else if (Array.isArray(cur)) {
+      if (cur.length > 0) {
+        const pArr = [];
+        const cArr = [];
+        cur.forEach(item => {
+          if (Object(item) !== item) {
+            // primitive | push too pArr
+            pArr.push(item);
+          } else if (Array.isArray(item)) {
+            // discard array of arrays
+          } else {
+            // object | push to cArr
+            cArr.push(item);
+          }
+        });
+
+        // handle primitive element array
+        if (pArr.length > 0) {
+          result[prop] = pArr.toString();
+        }
+
+        // handle object array
+        if (cArr.length > 0) {
+          const fel = cArr[0];
+          const objectMap = {};
+
+          Object.keys(fel).forEach(key => {
+            // discarding nested objects and arrays for array of objects
+            // only allowing primitive times for array of objects
+            if (Object(fel[key]) !== fel[key]) {
+              objectMap[key] = [];
+            }
+          });
+
+          for (i = 0, l = cArr.length; i < l; i += 1) {
+            const el = cArr[i];
+            Object.keys(el).forEach(k => {
+              if (Object.keys(objectMap).indexOf(k) !== -1) {
+                objectMap[k].push(el[k]);
+              }
+            });
+          }
+
+          Object.keys(objectMap).forEach(key => {
+            result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
+          });
+        }
+      } else {
+        result[prop] = [];
+      }
+    } else {
+      let isEmpty = true;
+      Object.keys(cur).forEach(key => {
+        isEmpty = false;
+        recurse(cur[key], prop ? `${prop}.${key}` : key);
+      });
+
+      if (isEmpty && prop) {
+        result[prop] = {};
+      }
+    }
+  };
+
+  recurse(properties, "");
+  return result;
+};
+
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
+    if (payload.properties) {
+      // keeping this properties handling logic here
+      // If we observe similar expectation from other destination, will move to Utils
+      payload.properties = handleProperties(payload.properties);
+    }
     const responseBody = { ...payload, apiKey: destination.Config.apiKey };
     const response = defaultRequestConfig();
     response.endpoint = category.endPoint;

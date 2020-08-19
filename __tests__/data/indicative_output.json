@@ -9,9 +9,7 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "eventUniqueId": "test_user_id",
@@ -56,16 +54,10 @@
           "eventTime": 1567352811693,
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "test_user_id"
     }
   ],
@@ -79,34 +71,24 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "uniqueId": "123456",
           "properties": {
             "email": "sayan@gmail.com",
-            "address": {
-              "city": "kolkata",
-              "country": "India",
-              "postalCode": 712136,
-              "state": "WB",
-              "street": ""
-            }
+            "address.city": "kolkata",
+            "address.country": "India",
+            "address.postalCode": 712136,
+            "address.state": "WB",
+            "address.street": ""
           },
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "123456"
     },
     {
@@ -118,25 +100,17 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "previousId": "anon_id",
           "newId": "123456",
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "123456"
     }
   ],
@@ -150,36 +124,26 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "uniqueId": "123456",
           "properties": {
             "email": "sayan@gmail.com",
-            "address": {
-              "city": "kolkata",
-              "country": "India",
-              "postalCode": 712136,
-              "state": "WB",
-              "street": ""
-            },
+            "address.city": "kolkata",
+            "address.country": "India",
+            "address.postalCode": 712136,
+            "address.state": "WB",
+            "address.street": "",
             "ip": "0.0.0.0",
             "age": 26
           },
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "123456"
     },
     {
@@ -191,25 +155,17 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "previousId": "123456",
           "newId": "123456",
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "123456"
     }
   ],
@@ -223,9 +179,7 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "eventUniqueId": "12345",
@@ -240,16 +194,10 @@
           "eventTime": 1571051718299,
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "12345"
     }
   ],
@@ -263,9 +211,7 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "eventUniqueId": "test_user_id",
@@ -310,16 +256,10 @@
           "eventTime": 1567352811693,
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "test_user_id"
     }
   ],
@@ -333,25 +273,17 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "previousId": "test_previous_id",
           "newId": "test_new_user_id",
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "test_new_user_id"
     }
   ],
@@ -373,35 +305,197 @@
         "Indicative-Client": "RudderStack",
         "Content-Type": "application/json"
       },
-      "params": {
-
-      },
+      "params": {},
       "body": {
         "JSON": {
           "uniqueId": "test_anon_id",
           "properties": {
             "email": "sayan@gmail.com",
-            "address": {
-              "city": "kolkata",
-              "country": "India",
-              "postalCode": 712136,
-              "state": "WB",
-              "street": ""
-            }
+            "address.city": "kolkata",
+            "address.country": "India",
+            "address.postalCode": 712136,
+            "address.state": "WB",
+            "address.street": ""
           },
           "apiKey": "abcde"
         },
-        "XML": {
-
-        },
-        "FORM": {
-
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files": {
-
-      },
+      "files": {},
       "userId": "test_anon_id"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "test_user_id",
+          "eventName": "spin_result",
+          "properties": {
+            "searchResponse.hits.Vrm": "026067,4527,10007,031983,042012,002743,205536_3895,116265,010159,010178",
+            "searchResponse.hits.Make": "AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI",
+            "searchResponse.hits.Year": "2010,2009,2017,2012,2015,2010,2011,2016,2013,2016",
+            "searchResponse.hits.DName": "PISCA PROFESSIONAL INDUSTRIAL SOLUTION Consulting & Acquisition GmbH,Stephan Walters - Autohaus Walters,ps kfz-vertrieb GmbH,Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\",Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\",Auto Mayer e.K.Inh. Skelcim Imeri,Autohaus Löbau GmbH,Elspass Autoland GmbH & Co. KG,Hermann Meyer GmbH & Co. KG,Hermann Meyer GmbH & Co. KG",
+            "searchResponse.hits.Model": "A5,A5,A5,A5,A5,A5,A5,A1,A1,A1",
+            "searchResponse.hits.Price": "13990,14450,14580,10980,15980,13980,12790,14690,9950,12950",
+            "searchResponse.hits.Mileage": "163000,99990,151500,197335,144205,121015,89236,42800,93996,69454",
+            "searchResponse.hits.DealerId": "1f338e5b-740f-6a38-bee1-ecff97acda69,68c7b5ae-8cf0-6595-9fd2-8644b9682838,a107e9a8-ac3c-6790-bb84-052dd5eed5e8,8a574713-2fbe-6f0c-b1a8-39ba7ee683fc,8a574713-2fbe-6f0c-b1a8-39ba7ee683fc,972258cb-132f-62a9-bd31-e02f9f70fa7b,9e697219-293e-63a0-884a-2d03f77bbbef,00c1bf3f-b19d-6198-a509-c7f2ff73c29a,35d4fe7e-81a0-6e99-a575-6f62bffb8900,35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+            "searchResponse.hits.Derivative": "A5 Cabrio 1.8 TFSI  Cabrio,A5 Cabrio 40 TFSI S tronic S line Cabrio,A5 Sportback 2.0 TDI ultra S tronic  Coupe,A5 2.0 TDI Sportback DPF multitronic  Coupe,A5 Coupe 35 TDI S tronic S line Coupe,A5 Cabrio 2.0 TDI DPF  Cabrio,A5 2.0 TDI Sportback DPF  Coupe,A1 1.0 TFSI ultra  Limousine,A1 1.4 TFSI Ambition Limousine,A1 1.4 TFSI Sportback S tronic Attraction Limousine",
+            "searchResponse.page": 0,
+            "searchResponse.merge.nbHitsMax": 1000,
+            "searchResponse.merge.nbHitslimit": 1000,
+            "searchResponse.merge.nbSearchers": 2,
+            "searchResponse.merge.nbHitsProcessed": 10,
+            "searchResponse.merge.personalization.impact": 100,
+            "searchResponse.merge.personalization.enabled": true,
+            "searchResponse.merge.personalization.profile.time": 0,
+            "searchResponse.merge.personalization.profile.facets": {},
+            "searchResponse.merge.personalization.profile.taskID": 0,
+            "searchResponse.merge.personalization.percentile": 0,
+            "searchResponse.merge.personalization.nbPersoScanned": 0,
+            "searchResponse.merge.personalization.nbPersoSkipped": 0,
+            "searchResponse.merge.personalization.nbPersoReranked": 0,
+            "searchResponse.merge.personalization.nbPersoReturned": 0,
+            "searchResponse.merge.personalization.nbPersoSelected": 0,
+            "searchResponse.merge.personalization.nbRelevanceBuckets": 8,
+            "searchResponse.merge.lastHitToDisplay": 10,
+            "searchResponse.merge.nbHitsNumberingEnd": 10,
+            "searchResponse.nbHits": 13,
+            "searchResponse.nbPages": 2,
+            "searchResponse.queryID": "c5a176f8493236fcbfe69c3298d41659",
+            "searchResponse.indexUsed": "Germany_prod_stock_Finance_0",
+            "searchResponse.serverUsed": "d85-de-1.algolia.net",
+            "searchResponse.hitsPerPage": 10,
+            "searchResponse.parsedQuery": "audi a5",
+            "searchResponse.timeoutHits": false,
+            "searchResponse.appliedRules.objectID": "1539345377254,1548767806494",
+            "searchResponse.facets_stats.Doors.avg": 3,
+            "searchResponse.facets_stats.Doors.max": 5,
+            "searchResponse.facets_stats.Doors.min": 2,
+            "searchResponse.facets_stats.Doors.sum": 48,
+            "searchResponse.facets_stats.Price.avg": 13210,
+            "searchResponse.facets_stats.Price.max": 15980,
+            "searchResponse.facets_stats.Price.min": 9950,
+            "searchResponse.facets_stats.Price.sum": 171730,
+            "searchResponse.facets_stats.VrmYear.avg": 2013,
+            "searchResponse.facets_stats.VrmYear.max": 2017,
+            "searchResponse.facets_stats.VrmYear.min": 2009,
+            "searchResponse.facets_stats.VrmYear.sum": 26171,
+            "searchResponse.timeoutCounts": false
+          },
+          "eventTime": 1567352811693,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "test_user_id"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/identify",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "uniqueId": "user12345",
+          "properties": {
+            "searchResponse.hits.Vrm": "026067,4527,10007,031983,042012,002743,205536_3895,116265,010159,010178",
+            "searchResponse.hits.Make": "AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI,AUDI",
+            "searchResponse.hits.Year": "2010,2009,2017,2012,2015,2010,2011,2016,2013,2016",
+            "searchResponse.hits.DName": "PISCA PROFESSIONAL INDUSTRIAL SOLUTION Consulting & Acquisition GmbH,Stephan Walters - Autohaus Walters,ps kfz-vertrieb GmbH,Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\",Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\",Auto Mayer e.K.Inh. Skelcim Imeri,Autohaus Löbau GmbH,Elspass Autoland GmbH & Co. KG,Hermann Meyer GmbH & Co. KG,Hermann Meyer GmbH & Co. KG",
+            "searchResponse.hits.Model": "A5,A5,A5,A5,A5,A5,A5,A1,A1,A1",
+            "searchResponse.hits.Price": "13990,14450,14580,10980,15980,13980,12790,14690,9950,12950",
+            "searchResponse.hits.Mileage": "163000,99990,151500,197335,144205,121015,89236,42800,93996,69454",
+            "searchResponse.hits.DealerId": "1f338e5b-740f-6a38-bee1-ecff97acda69,68c7b5ae-8cf0-6595-9fd2-8644b9682838,a107e9a8-ac3c-6790-bb84-052dd5eed5e8,8a574713-2fbe-6f0c-b1a8-39ba7ee683fc,8a574713-2fbe-6f0c-b1a8-39ba7ee683fc,972258cb-132f-62a9-bd31-e02f9f70fa7b,9e697219-293e-63a0-884a-2d03f77bbbef,00c1bf3f-b19d-6198-a509-c7f2ff73c29a,35d4fe7e-81a0-6e99-a575-6f62bffb8900,35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+            "searchResponse.hits.Derivative": "A5 Cabrio 1.8 TFSI  Cabrio,A5 Cabrio 40 TFSI S tronic S line Cabrio,A5 Sportback 2.0 TDI ultra S tronic  Coupe,A5 2.0 TDI Sportback DPF multitronic  Coupe,A5 Coupe 35 TDI S tronic S line Coupe,A5 Cabrio 2.0 TDI DPF  Cabrio,A5 2.0 TDI Sportback DPF  Coupe,A1 1.0 TFSI ultra  Limousine,A1 1.4 TFSI Ambition Limousine,A1 1.4 TFSI Sportback S tronic Attraction Limousine",
+            "searchResponse.page": 0,
+            "searchResponse.merge.nbHitsMax": 1000,
+            "searchResponse.merge.nbHitslimit": 1000,
+            "searchResponse.merge.nbSearchers": 2,
+            "searchResponse.merge.nbHitsProcessed": 10,
+            "searchResponse.merge.personalization.impact": 100,
+            "searchResponse.merge.personalization.enabled": true,
+            "searchResponse.merge.personalization.profile.time": 0,
+            "searchResponse.merge.personalization.profile.facets": {},
+            "searchResponse.merge.personalization.profile.taskID": 0,
+            "searchResponse.merge.personalization.percentile": 0,
+            "searchResponse.merge.personalization.nbPersoScanned": 0,
+            "searchResponse.merge.personalization.nbPersoSkipped": 0,
+            "searchResponse.merge.personalization.nbPersoReranked": 0,
+            "searchResponse.merge.personalization.nbPersoReturned": 0,
+            "searchResponse.merge.personalization.nbPersoSelected": 0,
+            "searchResponse.merge.personalization.nbRelevanceBuckets": 8,
+            "searchResponse.merge.lastHitToDisplay": 10,
+            "searchResponse.merge.nbHitsNumberingEnd": 10,
+            "searchResponse.nbHits": 13,
+            "searchResponse.nbPages": 2,
+            "searchResponse.queryID": "c5a176f8493236fcbfe69c3298d41659",
+            "searchResponse.indexUsed": "Germany_prod_stock_Finance_0",
+            "searchResponse.serverUsed": "d85-de-1.algolia.net",
+            "searchResponse.hitsPerPage": 10,
+            "searchResponse.parsedQuery": "audi a5",
+            "searchResponse.timeoutHits": false,
+            "searchResponse.appliedRules.objectID": "1539345377254,1548767806494",
+            "searchResponse.facets_stats.Doors.avg": 3,
+            "searchResponse.facets_stats.Doors.max": 5,
+            "searchResponse.facets_stats.Doors.min": 2,
+            "searchResponse.facets_stats.Doors.sum": 48,
+            "searchResponse.facets_stats.Price.avg": 13210,
+            "searchResponse.facets_stats.Price.max": 15980,
+            "searchResponse.facets_stats.Price.min": 9950,
+            "searchResponse.facets_stats.Price.sum": 171730,
+            "searchResponse.facets_stats.VrmYear.avg": 2013,
+            "searchResponse.facets_stats.VrmYear.max": 2017,
+            "searchResponse.facets_stats.VrmYear.min": 2009,
+            "searchResponse.facets_stats.VrmYear.sum": 26171,
+            "searchResponse.timeoutCounts": false
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user12345"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+          "newId": "user12345"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user12345"
     }
   ]
 ]

@@ -431,5 +431,468 @@
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "searchResponse": {
+          "hits": [
+            {
+              "Vrm": "026067",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "PISCA PROFESSIONAL INDUSTRIAL SOLUTION Consulting & Acquisition GmbH",
+              "Model": "A5",
+              "Price": 13990,
+              "Mileage": 163000,
+              "DealerId": "1f338e5b-740f-6a38-bee1-ecff97acda69",
+              "Derivative": "A5 Cabrio 1.8 TFSI  Cabrio"
+            },
+            {
+              "Vrm": "4527",
+              "Make": "AUDI",
+              "Year": 2009,
+              "DName": "Stephan Walters - Autohaus Walters",
+              "Model": "A5",
+              "Price": 14450,
+              "Mileage": 99990,
+              "DealerId": "68c7b5ae-8cf0-6595-9fd2-8644b9682838",
+              "Derivative": "A5 Cabrio 40 TFSI S tronic S line Cabrio"
+            },
+            {
+              "Vrm": "10007",
+              "Make": "AUDI",
+              "Year": 2017,
+              "DName": "ps kfz-vertrieb GmbH",
+              "Model": "A5",
+              "Price": 14580,
+              "Mileage": 151500,
+              "DealerId": "a107e9a8-ac3c-6790-bb84-052dd5eed5e8",
+              "Derivative": "A5 Sportback 2.0 TDI ultra S tronic  Coupe"
+            },
+            {
+              "Vrm": "031983",
+              "Make": "AUDI",
+              "Year": 2012,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 10980,
+              "Mileage": 197335,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 2.0 TDI Sportback DPF multitronic  Coupe"
+            },
+            {
+              "Vrm": "042012",
+              "Make": "AUDI",
+              "Year": 2015,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 15980,
+              "Mileage": 144205,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 Coupe 35 TDI S tronic S line Coupe"
+            },
+            {
+              "Vrm": "002743",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "Auto Mayer e.K.Inh. Skelcim Imeri",
+              "Model": "A5",
+              "Price": 13980,
+              "Mileage": 121015,
+              "DealerId": "972258cb-132f-62a9-bd31-e02f9f70fa7b",
+              "Derivative": "A5 Cabrio 2.0 TDI DPF  Cabrio"
+            },
+            {
+              "Vrm": "205536_3895",
+              "Make": "AUDI",
+              "Year": 2011,
+              "DName": "Autohaus Löbau GmbH",
+              "Model": "A5",
+              "Price": 12790,
+              "Mileage": 89236,
+              "DealerId": "9e697219-293e-63a0-884a-2d03f77bbbef",
+              "Derivative": "A5 2.0 TDI Sportback DPF  Coupe"
+            },
+            {
+              "Vrm": "116265",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Elspass Autoland GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 14690,
+              "Mileage": 42800,
+              "DealerId": "00c1bf3f-b19d-6198-a509-c7f2ff73c29a",
+              "Derivative": "A1 1.0 TFSI ultra  Limousine"
+            },
+            {
+              "Vrm": "010159",
+              "Make": "AUDI",
+              "Year": 2013,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 9950,
+              "Mileage": 93996,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Ambition Limousine"
+            },
+            {
+              "Vrm": "010178",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 12950,
+              "Mileage": 69454,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Sportback S tronic Attraction Limousine"
+            }
+          ],
+          "page": 0,
+          "merge": {
+            "nbHitsMax": 1000,
+            "nbHitslimit": 1000,
+            "nbSearchers": 2,
+            "nbHitsProcessed": 10,
+            "personalization": {
+              "impact": 100,
+              "enabled": true,
+              "profile": {
+                "time": 0,
+                "facets": {},
+                "taskID": 0
+              },
+              "percentile": 0,
+              "nbPersoScanned": 0,
+              "nbPersoSkipped": 0,
+              "nbPersoReranked": 0,
+              "nbPersoReturned": 0,
+              "nbPersoSelected": 0,
+              "nbRelevanceBuckets": 8
+            },
+            "lastHitToDisplay": 10,
+            "nbHitsNumberingEnd": 10
+          },
+          "nbHits": 13,
+          "nbPages": 2,
+          "queryID": "c5a176f8493236fcbfe69c3298d41659",
+          "indexUsed": "Germany_prod_stock_Finance_0",
+          "serverUsed": "d85-de-1.algolia.net",
+          "hitsPerPage": 10,
+          "parsedQuery": "audi a5",
+          "timeoutHits": false,
+          "appliedRules": [
+            {
+              "objectID": "1539345377254"
+            },
+            {
+              "objectID": "1548767806494"
+            }
+          ],
+          "facets_stats": {
+            "Doors": {
+              "avg": 3,
+              "max": 5,
+              "min": 2,
+              "sum": 48
+            },
+            "Price": {
+              "avg": 13210,
+              "max": 15980,
+              "min": 9950,
+              "sum": 171730
+            },
+            "VrmYear": {
+              "avg": 2013,
+              "max": 2017,
+              "min": 2009,
+              "sum": 26171
+            }
+          },
+          "timeoutCounts": false
+        }
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1afmecIpsJm7D72aRTksxyODrwR",
+      "Name": "Segment",
+      "DestinationDefinition": {
+        "ID": "1afjjahf0X5lSyNze7Xh7aqJs11",
+        "Name": "SEGMENT",
+        "DisplayName": "Segment",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": {
+        "writeKey": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1-rc.2"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1-rc.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index4.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "testmp@email.com",
+          "firstname": "Test Transformer"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+      },
+      "event": "JuhuSearchResults",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "584fde02-901a-4964-a4a0-4078b999d5b2",
+      "originalTimestamp": "2020-04-17T14:55:31.372Z",
+      "traits": {
+        "searchResponse": {
+          "hits": [
+            {
+              "Vrm": "026067",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "PISCA PROFESSIONAL INDUSTRIAL SOLUTION Consulting & Acquisition GmbH",
+              "Model": "A5",
+              "Price": 13990,
+              "Mileage": 163000,
+              "DealerId": "1f338e5b-740f-6a38-bee1-ecff97acda69",
+              "Derivative": "A5 Cabrio 1.8 TFSI  Cabrio"
+            },
+            {
+              "Vrm": "4527",
+              "Make": "AUDI",
+              "Year": 2009,
+              "DName": "Stephan Walters - Autohaus Walters",
+              "Model": "A5",
+              "Price": 14450,
+              "Mileage": 99990,
+              "DealerId": "68c7b5ae-8cf0-6595-9fd2-8644b9682838",
+              "Derivative": "A5 Cabrio 40 TFSI S tronic S line Cabrio"
+            },
+            {
+              "Vrm": "10007",
+              "Make": "AUDI",
+              "Year": 2017,
+              "DName": "ps kfz-vertrieb GmbH",
+              "Model": "A5",
+              "Price": 14580,
+              "Mileage": 151500,
+              "DealerId": "a107e9a8-ac3c-6790-bb84-052dd5eed5e8",
+              "Derivative": "A5 Sportback 2.0 TDI ultra S tronic  Coupe"
+            },
+            {
+              "Vrm": "031983",
+              "Make": "AUDI",
+              "Year": 2012,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 10980,
+              "Mileage": 197335,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 2.0 TDI Sportback DPF multitronic  Coupe"
+            },
+            {
+              "Vrm": "042012",
+              "Make": "AUDI",
+              "Year": 2015,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 15980,
+              "Mileage": 144205,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 Coupe 35 TDI S tronic S line Coupe"
+            },
+            {
+              "Vrm": "002743",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "Auto Mayer e.K.Inh. Skelcim Imeri",
+              "Model": "A5",
+              "Price": 13980,
+              "Mileage": 121015,
+              "DealerId": "972258cb-132f-62a9-bd31-e02f9f70fa7b",
+              "Derivative": "A5 Cabrio 2.0 TDI DPF  Cabrio"
+            },
+            {
+              "Vrm": "205536_3895",
+              "Make": "AUDI",
+              "Year": 2011,
+              "DName": "Autohaus Löbau GmbH",
+              "Model": "A5",
+              "Price": 12790,
+              "Mileage": 89236,
+              "DealerId": "9e697219-293e-63a0-884a-2d03f77bbbef",
+              "Derivative": "A5 2.0 TDI Sportback DPF  Coupe"
+            },
+            {
+              "Vrm": "116265",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Elspass Autoland GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 14690,
+              "Mileage": 42800,
+              "DealerId": "00c1bf3f-b19d-6198-a509-c7f2ff73c29a",
+              "Derivative": "A1 1.0 TFSI ultra  Limousine"
+            },
+            {
+              "Vrm": "010159",
+              "Make": "AUDI",
+              "Year": 2013,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 9950,
+              "Mileage": 93996,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Ambition Limousine"
+            },
+            {
+              "Vrm": "010178",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 12950,
+              "Mileage": 69454,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Sportback S tronic Attraction Limousine"
+            }
+          ],
+          "page": 0,
+          "merge": {
+            "nbHitsMax": 1000,
+            "nbHitslimit": 1000,
+            "nbSearchers": 2,
+            "nbHitsProcessed": 10,
+            "personalization": {
+              "impact": 100,
+              "enabled": true,
+              "profile": {
+                "time": 0,
+                "facets": {},
+                "taskID": 0
+              },
+              "percentile": 0,
+              "nbPersoScanned": 0,
+              "nbPersoSkipped": 0,
+              "nbPersoReranked": 0,
+              "nbPersoReturned": 0,
+              "nbPersoSelected": 0,
+              "nbRelevanceBuckets": 8
+            },
+            "lastHitToDisplay": 10,
+            "nbHitsNumberingEnd": 10
+          },
+          "nbHits": 13,
+          "nbPages": 2,
+          "queryID": "c5a176f8493236fcbfe69c3298d41659",
+          "indexUsed": "Germany_prod_stock_Finance_0",
+          "serverUsed": "d85-de-1.algolia.net",
+          "hitsPerPage": 10,
+          "parsedQuery": "audi a5",
+          "timeoutHits": false,
+          "appliedRules": [
+            {
+              "objectID": "1539345377254"
+            },
+            {
+              "objectID": "1548767806494"
+            }
+          ],
+          "facets_stats": {
+            "Doors": {
+              "avg": 3,
+              "max": 5,
+              "min": 2,
+              "sum": 48
+            },
+            "Price": {
+              "avg": 13210,
+              "max": 15980,
+              "min": 9950,
+              "sum": 171730
+            },
+            "VrmYear": {
+              "avg": 2013,
+              "max": 2017,
+              "min": 2009,
+              "sum": 26171
+            }
+          },
+          "timeoutCounts": false
+        }
+      },
+      "receivedAt": "2020-04-17T20:25:31.401+05:30",
+      "request_ip": "[::1]:57365",
+      "sentAt": "2020-04-17T14:55:31.372Z",
+      "timestamp": "2020-04-17T20:25:31.401+05:30",
+      "name": "test page",
+      "type": "identify",
+      "userId": "user12345"
+    }
   }
 ]

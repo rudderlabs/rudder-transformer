@@ -13,10 +13,7 @@
   {
     "destKey": "properties",
     "sourceKeys": "properties",
-    "required": false,
-    "metadata": {
-      "type": "flatJson"
-    }
+    "required": false
   },
   {
     "destKey": "eventTime",

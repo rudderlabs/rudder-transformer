@@ -9,8 +9,7 @@
     "sourceKeys": ["traits", "context.traits"],
     "required": false,
     "metadata": {
-      "excludes": ["anonymousId", "userId", "id"],
-      "type": "flatJson"
+      "excludes": ["anonymousId", "userId", "id"]
     }
   }
 ]

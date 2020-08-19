@@ -28,5 +28,6 @@
     "context.traits.company":"Company", 
 
     "context.traits.description": "Description",
-    "context.traits.website": "Website"  
+    "context.traits.website": "Website",
+    "context.traits.LeadSource": "LeadSource"  
 }

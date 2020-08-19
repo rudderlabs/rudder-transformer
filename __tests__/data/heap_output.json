@@ -12,7 +12,7 @@
     "body": {
       "JSON": {
         "app_id": "<app id>",
-        "identity": "sampath@gmail.com",
+        "identity": "sampath",
         "properties": { "anonymousId": "sampath" }
       },
       "XML": {},
@@ -35,7 +35,7 @@
       "JSON": {
         "app_id": "<app id>",
         "event": "Send Transactional Email",
-        "identity": "sampath@gmail.com",
+        "identity": "sampath",
         "properties": { "subject": "Welcome to My App!", "variation": "A" }
       },
       "XML": {},

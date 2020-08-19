@@ -1,39 +1,51 @@
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../util");
+const {
+  defaultPostRequestConfig,
+  defaultGetRequestConfig,
+  defaultRequestConfig,
+  getHashFromArray,
+  getFieldValueFromMessage,
+  flattenJson
+} = require("../util");
+const { EventType } = require("../../../constants");
 
-function handleEvent(event) {
-  const { message, destination } = event;
-  const response = defaultRequestConfig();
-  if (destination.Config.webhookUrl) {
-    response.endpoint = destination.Config.webhookUrl;
-    response.method = defaultPostRequestConfig.requestMethod;
-    // add content-type by default as our payload is json
-    response.headers = {
-      "Content-Type": "application/json"
-    };
-
-    const configHeaders = destination.Config.headers;
-    if (configHeaders) {
-      configHeaders.forEach(header => {
-        response.headers[header.from] = header.to;
-      });
-    }
-
-    response.userId = message.userId || message.anonymousId;
-    response.body.JSON = { ...message };
-    return response;
+const getPropertyParams = message => {
+  if (message.type === EventType.IDENTIFY) {
+    return flattenJson(getFieldValueFromMessage(message, "traits"));
   }
-  throw new Error("Invalid Url in destination");
-}
-
-const process = event => {
-  try {
-    return handleEvent(event);
-  } catch (error) {
-    return {
-      statusCode: 400,
-      error: `${error.message}`
-    };
-  }
+  return flattenJson(message.properties);
 };
+
+function process(event) {
+  try {
+    const { message, destination } = event;
+    const response = defaultRequestConfig();
+    const url = destination.Config.webhookUrl;
+    const method = destination.Config.webhookMethod;
+    const headers = destination.Config.headers;
+
+    if (url) {
+      if (method === defaultGetRequestConfig.requestMethod) {
+        response.method = defaultGetRequestConfig.requestMethod;
+        // send properties as query params for GET
+        response.params = getPropertyParams(message);
+      } else {
+        response.method = defaultPostRequestConfig.requestMethod;
+        response.body.JSON = message;
+        response.headers = {
+          "Content-Type": "application/json"
+        };
+      }
+
+      Object.assign(response.headers, getHashFromArray(headers));
+      response.userId = getFieldValueFromMessage(message, "userId");
+      response.endpoint = url;
+
+      return response;
+    }
+    throw new Error("Invalid URL in destination config");
+  } catch (err) {
+    throw new Error(err.message || "[Webhook] Failed to process request");
+  }
+}
 
 exports.process = process;

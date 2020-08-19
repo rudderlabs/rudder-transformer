@@ -18,13 +18,30 @@ const handleProperties = properties => {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       if (cur.length > 0) {
-        const fel = cur[0];
-        if (Object(fel) !== fel) {
+        const pArr = [];
+        const cArr = [];
+        cur.forEach(item => {
+          if (Object(item) !== item) {
+            // primitive | push too pArr
+            pArr.push(item);
+          } else if (Array.isArray(item)) {
+            // discard array of arrays
+          } else {
+            // object | push to cArr
+            cArr.push(item);
+          }
+        });
+
+        // handle primitive element array
+        if (pArr.length > 0) {
           result[prop] = cur.toString();
-        } else if (Array.isArray(fel)) {
-          // ignore array or arrys
-        } else {
+        }
+
+        // handle object array
+        if (cArr.length > 0) {
+          const fel = cArr[0];
           const objectMap = {};
+
           Object.keys(fel).forEach(key => {
             // discarding nested objects and arrays for array of objects
             // only allowing primitive times for array of objects
@@ -33,8 +50,8 @@ const handleProperties = properties => {
             }
           });
 
-          for (i = 0, l = cur.length; i < l; i += 1) {
-            const el = cur[i];
+          for (i = 0, l = cArr.length; i < l; i += 1) {
+            const el = cArr[i];
             Object.keys(el).forEach(k => {
               if (Object.keys(objectMap).indexOf(k) !== -1) {
                 objectMap[k].push(el[k]);
@@ -46,6 +63,35 @@ const handleProperties = properties => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
+
+        // const fel = cur[0];
+        // if (Object(fel) !== fel) {
+        //   result[prop] = cur.toString();
+        // } else if (Array.isArray(fel)) {
+        //   // ignore array or arrys
+        // } else {
+        //   const objectMap = {};
+        //   Object.keys(fel).forEach(key => {
+        //     // discarding nested objects and arrays for array of objects
+        //     // only allowing primitive times for array of objects
+        //     if (Object(fel[key]) !== fel[key]) {
+        //       objectMap[key] = [];
+        //     }
+        //   });
+
+        //   for (i = 0, l = cur.length; i < l; i += 1) {
+        //     const el = cur[i];
+        //     Object.keys(el).forEach(k => {
+        //       if (Object.keys(objectMap).indexOf(k) !== -1) {
+        //         objectMap[k].push(el[k]);
+        //       }
+        //     });
+        //   }
+
+        //   Object.keys(objectMap).forEach(key => {
+        //     result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
+        //   });
+        // }
       }
     } else {
       let isEmpty = true;

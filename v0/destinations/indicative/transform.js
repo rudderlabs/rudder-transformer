@@ -22,7 +22,7 @@ const handleProperties = properties => {
         if (Object(fel) !== fel) {
           result[prop] = cur.toString();
         } else if (Array.isArray(fel)) {
-          // ignore
+          // ignore array or arrys
         } else {
           const objectMap = {};
           Object.keys(fel).forEach(key => {
@@ -43,14 +43,10 @@ const handleProperties = properties => {
           }
 
           Object.keys(objectMap).forEach(key => {
-            result[`${prop}.${key}`] = objectMap[key].toString();
+            result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
       }
-
-      // if (l === 0) {
-      //   result[prop] = [];
-      // }
     } else {
       let isEmpty = true;
       Object.keys(cur).forEach(key => {
@@ -73,7 +69,7 @@ const responseBuilderSimple = (message, category, destination) => {
   if (payload) {
     if (payload.properties) {
       // keeping this properties handling logic here
-      // If we observer similar experctation from other destination, will move to Utils
+      // If we observe similar expectation from other destination, will move to Utils
       payload.properties = handleProperties(payload.properties);
     }
     const responseBody = { ...payload, apiKey: destination.Config.apiKey };

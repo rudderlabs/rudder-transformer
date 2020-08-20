@@ -37,7 +37,7 @@ function process(event) {
       }
 
       Object.assign(response.headers, getHashFromArray(headers));
-      response.userId = getFieldValueFromMessage(message, "userId");
+      response.userId = message.anonymousId;
       response.endpoint = url;
 
       return response;

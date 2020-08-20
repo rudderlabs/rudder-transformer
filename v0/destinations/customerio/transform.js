@@ -32,11 +32,12 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
+  const pathToTraits = message.traits ? "traits" : "context.traits";
   SpecedTraits.forEach(trait => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach(key => {
-      set(payload, key, get(message, mapping[key]));
+      set(payload, key, get(message, `${pathToTraits}.${mapping[`${key}`]}`));
     });
   });
 };
@@ -63,9 +64,12 @@ function responseBuilder(message, evType, evName, destination) {
     }
 
     // populate speced traits
+    const identityTrailts = getFieldValueFromMessage(message, "traits") || {};
     populateSpecedTraits(rawPayload, message);
-    if (message.context.traits) {
-      const traits = Object.keys(message.context.traits);
+
+    if (Object.keys(identityTrailts).length > 0) {
+      const traits = Object.keys(identityTrailts);
+      const pathToTraits = message.traits ? "traits" : "context.traits";
       traits.forEach(trait => {
         // populate keys other than speced traits
         // also don't send anonymousId, userId as we are setting those form the SDK and it's not actually an user property for the customer
@@ -76,7 +80,7 @@ function responseBuilder(message, evType, evName, destination) {
           trait !== "userId" &&
           trait !== "anonymousId"
         ) {
-          set(rawPayload, trait, get(message, `context.traits.${trait}`));
+          set(rawPayload, trait, get(message, `${pathToTraits}.${trait}`));
         }
       });
     }

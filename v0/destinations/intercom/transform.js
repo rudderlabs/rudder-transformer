@@ -8,7 +8,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   updatePayload,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function responseBuilder(payload, message, intercomConfig) {
@@ -41,7 +42,7 @@ function responseBuilder(payload, message, intercomConfig) {
       Authorization: `Bearer ${intercomConfig.accessToken}`,
       Accept: "application/json"
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: message.anonymousId
   };
 
   // console.log(resp);
@@ -81,16 +82,14 @@ function addContext(payload, message) {
   return removeUndefinedAndNullValues(payload);
 }
 
-function getGroupPayload(message, intercomConfig) {
+function getGroupPayload(message) {
   const rawPayload = {};
 
-  const companyFields = get(message, "context.traits")
-    ? Object.keys(message.context.traits)
-    : undefined;
+  const companyFields = getFieldValueFromMessage(message, "traits");
 
   if (companyFields) {
     companyFields.forEach(field => {
-      const value = message.context.traits[field];
+      const value = companyFields[field];
       updatePayload(field, mapPayload.group.main, value, rawPayload);
     });
 
@@ -104,7 +103,7 @@ function getGroupPayload(message, intercomConfig) {
 function getIdentifyPayload(message, intercomConfig) {
   const rawPayload = {};
 
-  const traits = get(message.context, "traits");
+  const traits = getFieldValueFromMessage(message, "traits");
 
   if (get(message.context, "Intercom")) {
     const userHash = get(message.context, "Intercom.user_hash");
@@ -114,8 +113,8 @@ function getIdentifyPayload(message, intercomConfig) {
   }
 
   // unsubscribe user from mail
-  if (get(message.context, "traits.context")) {
-    const context = get(message.context, "traits.context");
+  if (get(traits, "traits.context")) {
+    const context = get(traits, "traits.context");
     const unsubscribe = get(context, "Intercom.unsubscribedFromEmails");
     if (unsubscribe) {
       set(rawPayload, "unsubscribed_from_emails", unsubscribe);

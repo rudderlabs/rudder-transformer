@@ -3,7 +3,7 @@ const name = "Autopilot";
 
 const fs = require("fs");
 const path = require("path");
-const version = "v1";
+const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 

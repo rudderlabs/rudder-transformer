@@ -1,9 +1,9 @@
 {
-  "context.traits.createdat": "$created",
-  "context.traits.email": "$email",
-  "context.traits.firstname": "$firstName",
-  "context.traits.lastname": "$lastName",
-  "context.traits.name": "$name",
-  "context.traits.username": "$username",
-  "context.traits.phone": "$phone"
+  "createdat": "$created",
+  "email": "$email",
+  "firstname": "$firstName",
+  "lastname": "$lastName",
+  "name": "$name",
+  "username": "$username",
+  "phone": "$phone"
 }

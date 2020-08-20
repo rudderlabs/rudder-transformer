@@ -4,7 +4,8 @@ const { EventType } = require("../../../constants");
 const {
   removeUndefinedValues,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -31,9 +32,8 @@ function responseBuilderSimple(parameters, message, eventType) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  response.userId = message.userId || message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = { data: encodedData };
-  response.statusCode = 200;
 
   return response;
 }
@@ -83,15 +83,15 @@ function getTransformedJSON(message, mappingJson) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  if (message.context.traits) {
-    const traits = { ...message.context.traits };
+  let traits = getFieldValueFromMessage(message, "traits");
+  if (traits) {
+    traits = { ...traits };
     const keys = Object.keys(traits);
     keys.forEach(key => {
-      const traitsKey = `context.traits.${key}`;
-      if (sourceKeys.includes(traitsKey)) {
-        set(rawPayload, mappingJson[traitsKey], get(message, traitsKey));
+      if (sourceKeys.includes(key)) {
+        set(rawPayload, mappingJson[key], get(traits, key));
       } else {
-        set(rawPayload, key, get(message, traitsKey));
+        set(rawPayload, key, get(traits, key));
       }
     });
   }

@@ -13,7 +13,8 @@ const {
   defaultGetRequestConfig,
   defaultRequestConfig,
   getParsedIP,
-  formatValue
+  formatValue,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -232,10 +233,7 @@ function responseBuilderSimple(
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
-  response.userId =
-    message.userId && message.userId.length > 0
-      ? message.userId
-      : message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = finalPayload;
 
   return response;
@@ -255,12 +253,12 @@ function processIdentify(message, destination) {
     ea = "User Enriched";
   }
   let ec;
-
+  const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
   if (
     serverSideIdentifyEventAction &&
-    message.context.traits[serverSideIdentifyEventCategory]
+    identifyTraits[serverSideIdentifyEventCategory]
   ) {
-    ec = message.context.traits[serverSideIdentifyEventCategory];
+    ec = identifyTraits[serverSideIdentifyEventCategory];
   } else {
     ec = "All";
   }
@@ -811,7 +809,7 @@ function processSingleMessage(message, destination) {
 }
 
 // Iterate over input batch and generate response for each message
-async function process(event) {
+function process(event) {
   let response;
   try {
     response = processSingleMessage(event.message, event.destination);

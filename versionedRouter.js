@@ -6,7 +6,7 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 
-const versions = ["v0", "v1"];
+const versions = ["v0"];
 const API_VERSION = "1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;

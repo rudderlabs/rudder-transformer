@@ -42,7 +42,7 @@ const formatValue = value => {
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   const hashMap = {};
-  if (arrays) {
+  if (Array.isArray(arrays)) {
     arrays.forEach(array => {
       hashMap[array[fromKey]] = array[toKey];
     });
@@ -335,6 +335,10 @@ const setValues = (payload, message, mappingJson) => {
 // function to flatten a json
 
 function flattenJson(data) {
+  if (isPrimitive(data)) {
+    // return if data is a primitive type
+    return data;
+  }
   const result = {};
   let l;
   // a recursive function to loop through the array of the data

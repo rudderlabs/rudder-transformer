@@ -187,11 +187,11 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = "pageview";
+      evType = `Viewed ${message.name || message.properties.name || ""} Page`;
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = "screenview";
+      evType = `Viewed ${message.name || message.properties.name || ""} Screen`;
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:

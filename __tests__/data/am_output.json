@@ -130,5 +130,49 @@
     "params": {},
     "files": {},
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "userId": "12345",
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "event_properties": {
+            "path": "/test",
+            "name": "ApplicationLoaded",
+            "referrer": "Rudder",
+            "search": "abc",
+            "title": "Test Page",
+            "url": "www.rudderlabs.com"
+          },
+          "ip": "1.1.1.1",
+          "os_name": "",
+          "os_version": "",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "language": "en-US",
+          "event_type": "Viewed ApplicationLoaded Page",
+          "time": 1571051718299,
+          "device_id": "00000000000000000000000000",
+          "user_id": "12345",
+          "session_id": 991701108
+        },
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "params": {},
+    "files": {},
+    "statusCode": 200
   }
 ]

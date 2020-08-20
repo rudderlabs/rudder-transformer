@@ -97,7 +97,6 @@ function responseBuilderSimple(
     set(rawPayload,"device_brand",message.context.device.manufacturer);
   }
 
-
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
@@ -187,18 +186,18 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || message.properties.name || ""} Page`;
+      evType = `Viewed ${message.name || get(message.properties.category) || ""} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || message.properties.name || ""
+        name: message.name || get(message.properties.category)
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${message.name || message.properties.name || ""} Screen`;
+      evType = `Viewed ${message.name || get(message.properties.category) || ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || message.properties.name || ""
+        name: message.name || get(message.properties.category)
       };
       category = ConfigCategory.SCREEN;
       break;

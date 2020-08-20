@@ -335,8 +335,8 @@ const setValues = (payload, message, mappingJson) => {
 // function to flatten a json
 
 function flattenJson(data) {
-  if (isPrimitive(data)) {
-    // return if data is a primitive type
+  if (!data || !(data.constructor === Object)) {
+    // return if data is undefined or not a Object(key value pair)
     return data;
   }
   const result = {};
@@ -359,9 +359,7 @@ function flattenJson(data) {
       if (isEmpty && prop) result[prop] = {};
     }
   }
-  if (data) {
-    recurse(data, "");
-  }
+  recurse(data, "");
   return result;
 }
 

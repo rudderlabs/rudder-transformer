@@ -188,10 +188,18 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = `Viewed ${message.name || message.properties.name || ""} Page`;
+      message.properties = {
+        ...message.properties,
+        name: message.name || message.properties.name || ""
+      };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name || message.properties.name || ""} Screen`;
+      message.properties = {
+        ...message.properties,
+        name: message.name || message.properties.name || ""
+      };
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:

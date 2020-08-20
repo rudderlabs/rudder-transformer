@@ -20,13 +20,19 @@ describe("User transformation", () => {
     const respBody = {
       code: `
       import add from './add';
-      import { sub} from './math';
+      import { sub, increment} from './math';
+      import {max, min, find} from './lodash';
       export function transform(events) {
           const filteredEvents = events.map(event => {
             log("Sum is ", add(4,5));
             log("Diff is ", sub(4,5));
-            // event.sum = add(4,5);
-            // event.diff = sub(4,5);
+            log("lodash max iis ", max([34324,24324]))
+            event.sum = add(4,5);
+            event.diff = sub(4,5);
+            event.inc = increment(22);
+            event.max = max([2,3,5,6,7,8]);
+            event.min = min([-2,3,5,6,7,8]);
+            event.find = find([2,3,5,6,7,8],(x)=>x===6);
             return event;
           });
             return filteredEvents;

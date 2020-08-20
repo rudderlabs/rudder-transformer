@@ -1,8 +1,83 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
+const fs = require("fs");
 
+const lodashFuncs = [
+  "assignIn",
+  "before",
+  "bind",
+  "chain",
+  "compact",
+  "concat",
+  "create",
+  "defaults",
+  "defer",
+  "delay",
+  "filter",
+  "flatten",
+  "flattenDeep",
+  "iteratee",
+  "keys",
+  "map",
+  "matches",
+  "mixin",
+  "negate",
+  "once",
+  "pick",
+  "slice",
+  "sortBy",
+  "tap",
+  "thru",
+  "toArray",
+  "values",
+  "clone",
+  "escape",
+  "every",
+  "find",
+  "forEach",
+  "has",
+  "head",
+  "identity",
+  "indexOf",
+  "isArguments",
+  "isArray",
+  "isBoolean",
+  "isDate",
+  "isEmpty",
+  "isEqual",
+  "isFinite",
+  "isFunction",
+  "isNaN",
+  "isNull",
+  "isNumber",
+  "isObject",
+  "isRegExp",
+  "isString",
+  "isUndefined",
+  "last",
+  "max",
+  "min",
+  "noConflict",
+  "noop",
+  "reduce",
+  "result",
+  "size",
+  "some",
+  "uniqueId"
+];
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { addCode, subCode } = require("./math.js");
+// const { lodash } = require("./lodash-es-core");
+const lodashCode = `${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
+;
+export {${lodashFuncs}};
+// export default function adder(a, b) {
+//   log("lodash is :");
+//   log(max);
+//   return a + b;
+// }
+`;
+console.log(lodashCode.slice(-500));
 
 async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
@@ -25,14 +100,15 @@ async function runUserTransform(events, code, eventsMetadata) {
   //   module.namespace.getSync("default")
   // );
 
-  const defaultExport = await module.namespace.get("default");
-  const addResult = await defaultExport.apply(null, [2, 4]);
+  // const defaultExport = await module.namespace.get("default");
+  // const addResult = await defaultExport.apply(null, [2, 4]);
   // console.log("add -> result", addResult);
 
   const moduleSub = await isolate.compileModule(subCode);
   moduleMapNew.math = { module: moduleSub };
 
-  const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
+  // const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
+  // TODO: Add nodejs sdk to libraries
 
   await moduleSub.instantiate(context, function(spec) {
     if (spec == "./add") {
@@ -40,7 +116,11 @@ async function runUserTransform(events, code, eventsMetadata) {
     }
   });
 
-  const evalResultAdd = await moduleSub.evaluate();
+  const moduleLodash = await isolate.compileModule(lodashCode);
+  await moduleLodash.instantiate(context, () => {});
+  moduleMapNew.lodash = { module: moduleLodash };
+
+  // const evalResultAdd = await moduleSub.evaluate();
   // console.log("add -> evalResultAdd", evalResultAdd);
 
   // console.log("add -> module.namespace", moduleSub.namespace);
@@ -63,6 +143,7 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   // await context.eval(base64func);
   const jail = context.global;
+
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
   await jail.set("global", jail.derefInto());
@@ -212,6 +293,9 @@ async function runUserTransform(events, code, eventsMetadata) {
     }
     if (spec == "./math") {
       return moduleMapNew.math.module;
+    }
+    if (spec == "./lodash") {
+      return moduleMapNew.lodash.module;
     }
   });
 

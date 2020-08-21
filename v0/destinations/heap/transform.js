@@ -42,6 +42,9 @@ const processEvent = (message, destination) => {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
+    case EventType.TRACK:
+      category = CONFIG_CATEGORIES.TRACK;
+      break;
     default:
       throw new Error("Message type not supported");
   }

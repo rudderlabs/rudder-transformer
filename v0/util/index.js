@@ -42,9 +42,11 @@ const formatValue = value => {
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   const hashMap = {};
-  arrays.forEach(array => {
-    hashMap[array[fromKey]] = array[toKey];
-  });
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      hashMap[array[fromKey]] = array[toKey];
+    });
+  }
   return hashMap;
 };
 
@@ -347,9 +349,9 @@ const constructPayload = (message, mappingJson) => {
       if (value) {
         // set the value only if correct
         if (metadata) {
-          payload[destKey] = handleMetadataForValue(value, metadata);
+          set(payload, destKey, handleMetadataForValue(value, metadata));
         } else {
-          payload[destKey] = value;
+          set(payload, destKey, value);
         }
       } else if (required) {
         // throw error if reqired value is missing
@@ -390,6 +392,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  flattenJson,
   formatValue,
   getDateInFormat,
   getFieldValueFromMessage,
@@ -402,6 +405,5 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload,
-  flattenJson
+  updatePayload
 };

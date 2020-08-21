@@ -4,10 +4,8 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "123456",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
     "body": {
       "JSON": {
         "api_key": "abcde",
@@ -23,82 +21,72 @@
             "ip": "0.0.0.0",
             "age": 26
           },
-          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
+          "device_id": "123456",
           "app_name": "RudderLabs JavaScript SDK",
           "app_version": "1.0.0",
           "language": "en-US",
           "event_type": "$identify",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
           "time": 1571043797562,
           "user_id": "123456",
-          "device_id": "123456",
-          "session_id": 991701108
+          "ip": "0.0.0.0"
         },
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
-    "params": {},
     "files": {},
-    "statusCode": 200
+    "userId": "123456"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "12345",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
     "body": {
       "JSON": {
         "api_key": "abcde",
         "events": {
           "event_properties": {
             "path": "/test",
-            "name": "ApplicationLoaded",
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "name": "ApplicationLoaded"
           },
-          "ip": "1.1.1.1",
           "os_name": "",
           "os_version": "",
+          "device_id": "00000000000000000000000000",
           "app_name": "RudderLabs JavaScript SDK",
           "app_version": "1.0.0",
           "language": "en-US",
           "event_type": "Viewed ApplicationLoaded Page",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "ip": "1.1.1.1",
           "time": 1571051718299,
-          "device_id": "00000000000000000000000000",
-          "user_id": "12345",
-          "session_id": 991701108
+          "user_id": "12345"
         },
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
-    "params": {},
     "files": {},
-    "statusCode": 200
+    "userId": "00000000000000000000000000"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "12345",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
     "body": {
       "JSON": {
         "api_key": "abcde",
@@ -108,71 +96,66 @@
             "user_actual_id": 12345,
             "user_time_spent": 50000
           },
-          "ip": "0.0.0.0",
           "os_name": "",
           "os_version": "",
+          "device_id": "00000000000000000000000000",
           "app_name": "RudderLabs JavaScript SDK",
           "app_version": "1.0.0",
           "language": "en-US",
           "event_type": "test track event",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
           "time": 1571051718300,
-          "device_id": "00000000000000000000000000",
           "user_id": "12345",
-          "session_id": 991701108
+          "ip": "0.0.0.0"
         },
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
-    "params": {},
     "files": {},
-    "statusCode": 200
+    "userId": "00000000000000000000000000"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "12345",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
     "body": {
       "JSON": {
         "api_key": "abcde",
         "events": {
-          "event_properties": {
-            "path": "/test",
-            "name": "ApplicationLoaded",
-            "referrer": "Rudder",
-            "search": "abc",
-            "title": "Test Page",
-            "url": "www.rudderlabs.com"
+          "user_properties": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "anonymousId": "123456",
+            "email": "sayan@gmail.com",
+            "ip": "0.0.0.0",
+            "age": 26
           },
-          "ip": "1.1.1.1",
           "os_name": "",
           "os_version": "",
+          "device_id": "123456",
           "app_name": "RudderLabs JavaScript SDK",
           "app_version": "1.0.0",
           "language": "en-US",
-          "event_type": "Viewed ApplicationLoaded Page",
-          "time": 1571051718299,
-          "device_id": "00000000000000000000000000",
-          "user_id": "12345",
-          "session_id": 991701108
+          "event_type": "$identify",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "time": 1571043797562,
+          "user_id": "123456",
+          "ip": "0.0.0.0"
         },
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
-    "params": {},
     "files": {},
-    "statusCode": 200
+    "userId": "123456"
   }
 ]

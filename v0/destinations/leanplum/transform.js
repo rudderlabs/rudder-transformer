@@ -1,6 +1,3 @@
-const get = require("get-value");
-const set = require("set-value");
-
 const { EventType } = require("../../../constants");
 const {
   ConfigCategory,
@@ -11,47 +8,47 @@ const {
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  constructPayload
 } = require("../../util");
 
-function setValues(payload, message, mappingJson) {
-  if (Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index++) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
+// function setValues(payload, message, mappingJson) {
+//   if (Array.isArray(mappingJson)) {
+//     let val;
+//     let sourceKeys;
+//     mappingJson.forEach(mapping => {
+//       val = undefined;
+//       sourceKeys = mapping.sourceKeys;
+//       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+//         for (let index = 0; index < sourceKeys.length; index += 1) {
+//           val = get(message, sourceKeys[index]);
+//           if (val) {
+//             break;
+//           }
+//         }
+//
+//         if (val) {
+//           set(payload, mapping.destKey, val);
+//         } else if (mapping.required) {
+//           throw new Error(
+//             `One of ${JSON.stringify(mapping.sourceKeys)} is required`
+//           );
+//         }
+//       }
+//     });
+//   }
+//   return payload;
+// }
 
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new Error(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
-      }
-    });
-  }
-  // console.log(payload);
-  return payload;
-}
-
-function constructPayload(message, name, destination) {
-  mappingJson = mappingConfig[name];
+function preparePayload(message, name, destination) {
+  const mappingJson = mappingConfig[name];
   let rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: API_VERSION
   };
 
-  rawPayload = setValues(rawPayload, message, mappingJson);
+  rawPayload = constructPayload(message, mappingJson);
 
   if (rawPayload.newUserId === "") {
     delete rawPayload.newUserId;
@@ -82,8 +79,8 @@ function responseBuilderSimple(message, category, destination) {
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.userId = message.userId ? message.userId : message.anonymousId;
-  response.body.JSON = constructPayload(message, category.name, destination);
+  response.userId = message.anonymousId;
+  response.body.JSON = preparePayload(message, category.name, destination);
   response.params = {
     action: category.action
   };

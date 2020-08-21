@@ -12,7 +12,7 @@ function process(event) {
   if (deliveryStreamMapTo) {
     return {
       message: event.message,
-      userId: event.message.userId || event.message.anonymousId,
+      userId: event.message.anonymousId,
       deliveryStreamMapTo
     };
   }

@@ -1,11 +1,11 @@
-{
-    "context.traits.name":"-",
-    "context.traits.age":"-",
-    "context.traits.gender":"-", 
-    "context.traits.anonymousId":"-" ,
-    "context.traits.createdAt":"-",
-    "context.traits.id": "-",
-    "context.traits.birthday":"-" ,
-    "context.traits.avatar":"-",
-    "context.traits.LeadSource":"-"
-}
+[
+  "name",
+  "age",
+  "gender",
+  "anonymousId",
+  "createdAt",
+  "id",
+  "birthday",
+  "avatar"
+]
+

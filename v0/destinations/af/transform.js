@@ -5,7 +5,8 @@ const { EventType } = require("../../../constants");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 
 const {
@@ -62,11 +63,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  if (isMultiSupport && message.products && message.products.length > 0) {
+  if (isMultiSupport && message.properties.products && message.properties.products.length > 0) {
     const contentIds = [];
     const quantities = [];
     const prices = [];
-    message.products.forEach(product => {
+    message.properties.products.forEach(product => {
       contentIds.push(product.product_id);
       quantities.push(product.quantity);
       prices.push(product.price);
@@ -86,7 +87,7 @@ function processNonTrackEvents(message, destination, eventName) {
   return payload;
 }
 
-function processEventTypeTrack(message, destination) {
+function processEventTypeTrack(message) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
   const evType = message.event.toLowerCase();
@@ -150,11 +151,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
-  if (!resp.statusCode) {
-    resp.statusCode = 200;
-  }
-  return resp;
+  return processSingleMessage(event.message, event.destination);
 }
 
 exports.process = process;

@@ -60,7 +60,7 @@ const ContentEventConfig = {
     "Product Shared": "SHARE"
   },
   event_data: ["search_query", "description"],
-  content_items: CommerceEventConfig.product
+  content_items: product
 };
 
 const LifecycleEventConfig = {

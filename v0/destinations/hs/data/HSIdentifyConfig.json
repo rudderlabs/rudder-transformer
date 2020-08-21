@@ -1,12 +1,12 @@
 {
-  "context.traits.email": "email",
-  "context.traits.firstname": "firstname",
-  "context.traits.lastname": "lastname",
-  "context.traits.phone": "phone",
-  "context.traits.address.street": "address",
-  "context.traits.address.city": "city",
-  "context.traits.address.country": "country",
-  "context.traits.address.state": "state",
-  "context.traits.address.postalcode": "zip",
-  "context.traits.company.name": "company"
+  "email": "email",
+  "firstname": "firstname",
+  "lastname": "lastname",
+  "phone": "phone",
+  "address.street": "address",
+  "address.city": "city",
+  "address.country": "country",
+  "address.state": "state",
+  "address.postalcode": "zip",
+  "company.name": "company"
 }

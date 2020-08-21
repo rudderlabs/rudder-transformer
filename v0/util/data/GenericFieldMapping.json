@@ -1,11 +1,14 @@
 {
-  "userIdOnly": [
-    "userId",
-    "traits.userId",
-    "traits.id",
-    "context.traits.userId",
-    "context.traits.id"
+  "address": ["traits.address", "context.traits.address"],
+  "createdAt": [
+    "traits.createdAt",
+    "context.traits.createdAt",
+    "timestamp",
+    "originalTimestamp"
   ],
+  "email": ["traits.email", "context.traits.email", "properties.email"],
+  "timestamp": ["originalTimestamp", "timestamp"],
+  "traits": ["traits", "context.traits"],
   "userId": [
     "userId",
     "traits.userId",
@@ -14,11 +17,11 @@
     "context.traits.id",
     "anonymousId"
   ],
-  "timestamp": "timestamp",
-  "createdAt": [
-    "traits.createdAt",
-    "context.traits.createdAt",
-    "timestamp",
-    "originalTimestamp"
+  "userIdOnly": [
+    "userId",
+    "traits.userId",
+    "traits.id",
+    "context.traits.userId",
+    "context.traits.id"
   ]
 }

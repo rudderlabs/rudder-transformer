@@ -1,14 +1,13 @@
 [
     {
         "destKey": "browserToken",
-        "sourceKeys": [
-            "context.os.token"
-        ],
+        "sourceKeys": "context.os.token",
         "required": true
     },
     {
         "destKey": "email",
         "sourceKeys": [
+            "traits.email",
             "context.traits.email"
         ],
         "required": false
@@ -17,6 +16,9 @@
         "destKey": "userId",
         "sourceKeys": [
             "userId",
+            "traits.userId",
+            "traits.email",
+            "traits.id",
             "context.traits.userId",
             "context.traits.email",
             "context.traits.id"

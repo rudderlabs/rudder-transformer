@@ -136,6 +136,11 @@ function getColumns(options, obj, columnTypes) {
   const columns = {};
   const uuidTS = options.provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
+  // add loaded_at for bq to be segment compatible
+  if (options.provider === "bq") {
+    const loadedAt = "loaded_at";
+    columns[loadedAt] = "datetime";
+  }
   Object.keys(obj).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(obj[key], options);
   });

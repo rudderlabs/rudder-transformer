@@ -1,147 +1,67 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const fs = require("fs");
+const lodashCore = require("lodash/core");
 
-const lodashFuncs = [
-  "assignIn",
-  "before",
-  "bind",
-  "chain",
-  "compact",
-  "concat",
-  "create",
-  "defaults",
-  "defer",
-  "delay",
-  "filter",
-  "flatten",
-  "flattenDeep",
-  "iteratee",
-  "keys",
-  "map",
-  "matches",
-  "mixin",
-  "negate",
-  "once",
-  "pick",
-  "slice",
-  "sortBy",
-  "tap",
-  "thru",
-  "toArray",
-  "values",
-  "clone",
-  "escape",
-  "every",
-  "find",
-  "forEach",
-  "has",
-  "head",
-  "identity",
-  "indexOf",
-  "isArguments",
-  "isArray",
-  "isBoolean",
-  "isDate",
-  "isEmpty",
-  "isEqual",
-  "isFinite",
-  "isFunction",
-  "isNaN",
-  "isNull",
-  "isNumber",
-  "isObject",
-  "isRegExp",
-  "isString",
-  "isUndefined",
-  "last",
-  "max",
-  "min",
-  "noConflict",
-  "noop",
-  "reduce",
-  "result",
-  "size",
-  "some",
-  "uniqueId"
+// TODO: Check why these dont work
+const unsupportedFuncNames = [
+  "_",
+  "extend",
+  "each",
+  "first",
+  "join",
+  "reverse",
+  "split"
 ];
+
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { addCode, subCode } = require("./math.js");
-// const { lodash } = require("./lodash-es-core");
-const lodashCode = `${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
-;
-export {${lodashFuncs}};
-// export default function adder(a, b) {
-//   log("lodash is :");
-//   log(max);
-//   return a + b;
-// }
+
+const lodashCode = `
+  ${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
+  ;
+  // Not exporting the unsupported functions
+  export {${Object.keys(lodashCore).filter(
+    funcName => !unsupportedFuncNames.includes(funcName)
+  )}};
 `;
-console.log(lodashCode.slice(-500));
+
+const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+export default self;
+`;
 
 async function runUserTransform(events, code, eventsMetadata) {
+  const compiledModules = {};
+
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
-  // const base64ModuleCode = await readFile(`util/base64.js`, {
-  //   encoding: "utf-8"
-  // });
-  const moduleMapNew = {};
   const module = await isolate.compileModule(addCode);
-  moduleMapNew.add = { module };
+  compiledModules.add = { module };
 
   await module.instantiate(context, () => {});
-  const evalResult = await module.evaluate();
-  // console.log("add -> evalResult", evalResult);
-
-  // console.log("add -> module.namespace", module.namespace);
-  // console.log(
-  //   "add -> module.namespace.default getSync",
-  //   module.namespace.getSync("default")
-  // );
-
-  // const defaultExport = await module.namespace.get("default");
-  // const addResult = await defaultExport.apply(null, [2, 4]);
-  // console.log("add -> result", addResult);
 
   const moduleSub = await isolate.compileModule(subCode);
-  moduleMapNew.math = { module: moduleSub };
+  compiledModules.math = { module: moduleSub };
 
   // const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
   // TODO: Add nodejs sdk to libraries
 
-  await moduleSub.instantiate(context, function(spec) {
-    if (spec == "./add") {
-      return moduleMapNew.add.module;
+  await moduleSub.instantiate(context, spec => {
+    if (spec === "./add") {
+      return compiledModules.add.module;
     }
+    return undefined;
   });
 
   const moduleLodash = await isolate.compileModule(lodashCode);
   await moduleLodash.instantiate(context, () => {});
-  moduleMapNew.lodash = { module: moduleLodash };
+  compiledModules.lodash = { module: moduleLodash };
 
-  // const evalResultAdd = await moduleSub.evaluate();
-  // console.log("add -> evalResultAdd", evalResultAdd);
+  const moduleURL = await isolate.compileModule(urlCode);
+  await moduleURL.instantiate(context, () => {});
+  compiledModules.url = { module: moduleURL };
 
-  // console.log("add -> module.namespace", moduleSub.namespace);
-  // console.log(
-  //   "add -> module.namespace.add getSync",
-  //   moduleSub.namespace.getSync("add")
-  // );
-  // console.log(
-  //   "add -> module.namespace.sub getSync",
-  //   moduleSub.namespace.getSync("sub")
-  // );
-
-  // const addImport = await moduleSub.namespace.get("add");
-  // const addResultNew = await addImport.apply(null, [2, 4]);
-  // // console.log("add -> add result", addResultNew);
-
-  // const subImport = await moduleSub.namespace.get("sub");
-  // const subResultNew = await subImport.apply(null, [1234, 4]);
-  // console.log("add -> sub result", subResultNew);
-
-  // await context.eval(base64func);
   const jail = context.global;
 
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
@@ -182,13 +102,6 @@ async function runUserTransform(events, code, eventsMetadata) {
       return new ivm.ExternalCopy(eventMetadata).copyInto();
     })
   );
-
-  // jail.setSync(
-  //   "_atob",
-  //   new ivm.Reference(arg => {
-  //     return base64.atob(arg).toString(); // this is in node so buffer is available
-  //   })
-  // );
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -247,15 +160,6 @@ async function runUserTransform(events, code, eventsMetadata) {
           );
         };
 
-        // let atob = _atob;
-
-        // global.atob = function (...args) {
-        //   return atob.applySync(
-        //     undefined,
-        //     args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        //   );
-        // };
-        
         
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
@@ -286,17 +190,22 @@ async function runUserTransform(events, code, eventsMetadata) {
 
   const customScriptModule = await isolate.compileModule(`${code}`);
 
-  await customScriptModule.instantiate(context, function(spec) {
+  await customScriptModule.instantiate(context, spec => {
     // console.log("SPeci  is ", spec);
-    if (spec == "./add") {
-      return moduleMapNew.add.module;
+    if (spec === "./add") {
+      return compiledModules.add.module;
     }
-    if (spec == "./math") {
-      return moduleMapNew.math.module;
+    if (spec === "./math") {
+      return compiledModules.math.module;
     }
-    if (spec == "./lodash") {
-      return moduleMapNew.lodash.module;
+    if (spec === "./lodash" || spec === "rudder-lodash") {
+      return compiledModules.lodash.module;
     }
+    if (spec === "url" || spec === "./url") {
+      return compiledModules.url.module;
+    }
+    console.error(`import from ${spec} failed. Module not found.`);
+    return undefined;
   });
 
   // const base64Script = await isolate.compileScript(base64);

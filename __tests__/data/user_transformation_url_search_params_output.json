@@ -74,7 +74,8 @@
       "referrer": "",
       "search": "",
       "title": "",
-      "url": "client=firefox-b-d&q=url+search+params+nodejs"
+      "url": "client=firefox-b-d&q=url+search+params+nodejs",
+      "client": "firefox-b-d"
     },
     "integrations": {
       "All": true

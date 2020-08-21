@@ -19,20 +19,8 @@ describe("User transformation", () => {
 
     const respBody = {
       code: `
-      import add from './add';
-      import { sub, increment} from './math';
-      import {max, min, find} from './lodash';
       export function transform(events) {
           const filteredEvents = events.map(event => {
-            log("Sum is ", add(4,5));
-            log("Diff is ", sub(4,5));
-            log("lodash max iis ", max([34324,24324]))
-            event.sum = add(4,5);
-            event.diff = sub(4,5);
-            event.inc = increment(22);
-            event.max = max([2,3,5,6,7,8]);
-            event.min = min([-2,3,5,6,7,8]);
-            event.find = find([2,3,5,6,7,8],(x)=>x===6);
             return event;
           });
             return filteredEvents;
@@ -82,6 +70,78 @@ describe("User transformation", () => {
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
       "https://api.rudderlabs.com/transformation/getByVersionId?versionId=24"
+    );
+
+    expect(output).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} Test for lodash functions`, async () => {
+    const versionId = 25;
+    const { userTransformHandler } = require("../util/customTransformer");
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_lodash_output.json`);
+
+    const respBody = {
+      code: `
+      import add from './add';
+      import { sub, increment} from './math';
+      import * as lodash from 'rudder-lodash';
+      export function transform(events) {
+          const modifiedEvents = events.map(event => {
+            event.sum = add(4,5);
+            event.diff = sub(4,5);
+            event.inc = increment(22);
+            event.max = lodash.max([2,3,5,6,7,8]);
+            event.min = lodash.min([-2,3,5,6,7,8]);
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `
+    };
+    fetch.mockReturnValueOnce(
+      Promise.resolve(new Response(JSON.stringify(respBody)))
+    );
+
+    const output = await userTransformHandler(inputData, versionId);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} Test for lodash functions`, async () => {
+    const versionId = 26;
+    const { userTransformHandler } = require("../util/customTransformer");
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_url_search_params_output.json`);
+
+    const respBody = {
+      code: `
+      import url from './url';
+      export function transform(events) {
+          const modifiedEvents = events.map(event => {
+            if(event.properties && event.properties.url){
+              event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `
+    };
+    fetch.mockReturnValueOnce(
+      Promise.resolve(new Response(JSON.stringify(respBody)))
+    );
+
+    const output = await userTransformHandler(inputData, versionId);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
 
     expect(output).toEqual(expectedData);

@@ -7,12 +7,12 @@
       "endpoint": "https://rest.fra-01.braze.eu/users/track",
       "headers": {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
       "params": {},
       "body": {
         "JSON": {
-          "partner": "RudderStack",
           "attributes": [
             {
               "_update_existing_only": false,
@@ -38,7 +38,8 @@
                 "alias_label": "rudder_id"
               }
             }
-          ]
+          ],
+          "partner": "RudderStack"
         },
         "XML": {},
         "FORM": {}
@@ -55,7 +56,8 @@
       "endpoint": "https://rest.fra-01.braze.eu/users/identify",
       "headers": {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
       "params": {},
       "body": {
@@ -82,7 +84,8 @@
       "endpoint": "https://rest.fra-01.braze.eu/users/track",
       "headers": {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
       "params": {},
       "body": {
@@ -114,12 +117,12 @@
       "endpoint": "https://rest.fra-01.braze.eu/users/track",
       "headers": {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
       "params": {},
       "body": {
         "JSON": {
-          "partner": "RudderStack",
           "attributes": [
             {
               "email": "mickey@disney.com",
@@ -144,7 +147,8 @@
                 "alias_label": "rudder_id"
               }
             }
-          ]
+          ],
+          "partner": "RudderStack"
         },
         "XML": {},
         "FORM": {}
@@ -161,12 +165,12 @@
       "endpoint": "https://rest.fra-01.braze.eu/users/track",
       "headers": {
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
       "params": {},
       "body": {
         "JSON": {
-          "partner": "RudderStack",
           "attributes": [
             {
               "email": "mickey@disney.com",
@@ -220,7 +224,8 @@
                 "alias_label": "rudder_id"
               }
             }
-          ]
+          ],
+          "partner": "RudderStack"
         },
         "XML": {},
         "FORM": {}
@@ -230,4 +235,3 @@
     }
   ]
 ]
-

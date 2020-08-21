@@ -6,7 +6,11 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 
-const versions = ["v0"];
+import "reflect-metadata"; // for class transformer
+
+const { getPayload } = require("./typescript/utils");
+
+const versions = ["v1"];
 const API_VERSION = "1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
@@ -47,6 +51,14 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+const processEvent = async (destHandler, event) => {
+  const payload = getPayload(event);
+  if (typeof destHandler[payload.type] === "function") {
+    return await destHandler[payload.type](payload);
+  }
+  throw new Error("Message type not supported");
+};
+
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
@@ -62,7 +74,7 @@ async function handleDest(ctx, version, destination) {
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
-        let respEvents = await destHandler.process(parsedEvent);
+        let respEvents = await processEvent(destHandler, parsedEvent);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }

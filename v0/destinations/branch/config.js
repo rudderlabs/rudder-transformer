@@ -1,8 +1,3 @@
-const destinationConfigKeys = {
-  BRANCH_KEY: "branchKey",
-  BRANCH_SECRET: "branchSecret"
-};
-
 const baseEndpoint = "https://api2.branch.io";
 const endpoints = {
   standardEventUrl: `${baseEndpoint}/v2/event/standard`,
@@ -10,6 +5,5 @@ const endpoints = {
 };
 
 module.exports = {
-  destinationConfigKeys,
   endpoints
 };

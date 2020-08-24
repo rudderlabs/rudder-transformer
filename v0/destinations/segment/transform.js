@@ -3,7 +3,8 @@ const { destinationConfigKeys, batchEndpoint } = require("./config");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function responseBuilderSimple(payload, segmentConfig) {
@@ -20,26 +21,25 @@ function responseBuilderSimple(payload, segmentConfig) {
   response.headers = header;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.endpoint = batchEndpoint;
-  response.userId = segmentConfig.userId;
+  response.userId = payload.anonymousId;
   response.statusCode = 200;
 
   return response;
 }
 
 function getTransformedJSON(message, segmentConfig) {
-  const { type } = message;
-  const userId = get(message, "userId") ? message.userId : message.anonymousId;
-  const traits = get(message, "context.traits")
-    ? message.context.traits
-    : undefined;
+  const { type, anonymousId } = message;
+  const { userId } = segmentConfig;
+  const traits = getFieldValueFromMessage(message, "traits");
   delete traits.anonymousId;
-  const properties = get(message, "context.properties")
-    ? message.context.properties
+  const properties = get(message, "properties")
+    ? message.properties
     : undefined;
   const event = get(message, "event") ? message.event : undefined;
-  const timeStamp = message.originalTimestamp;
+  const timeStamp = getFieldValueFromMessage(message, "timestamp");
 
   return removeUndefinedAndNullValues({
+    anonymousId,
     type,
     userId,
     event,
@@ -62,9 +62,7 @@ function getSegmentConfig(destination, message) {
     }
   });
 
-  segmentConfig.userId = get(message, "userId")
-    ? message.userId
-    : message.anonymousId;
+  segmentConfig.userId = getFieldValueFromMessage(message, "userId");
   return segmentConfig;
 }
 

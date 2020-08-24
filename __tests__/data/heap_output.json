@@ -11,9 +11,12 @@
     "params": {},
     "body": {
       "JSON": {
-        "app_id": "<app id>",
         "identity": "sampath",
-        "properties": { "anonymousId": "sampath" }
+        "properties": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "app_id": "<app id>"
       },
       "XML": {},
       "FORM": {}
@@ -33,15 +36,21 @@
     "params": {},
     "body": {
       "JSON": {
-        "app_id": "<app id>",
-        "event": "Send Transactional Email",
         "identity": "sampath",
-        "properties": { "subject": "Welcome to My App!", "variation": "A" }
+        "event": "Send Transactional Email",
+        "properties": { "subject": "Welcome to My App!", "variation": "A" },
+        "app_id": "<app id>"
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
     "userId": "sampath"
-  }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+  },
+  { "statusCode": 400, "error": "Message type not supported" }
 ]
+

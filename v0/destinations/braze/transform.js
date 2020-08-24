@@ -26,7 +26,7 @@ function formatGender(gender) {
   if (otherGenders.indexOf(gender.toLowerCase()) > -1) return "O";
 }
 
-function buildResponse(message, properties, endpoint) {
+function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
@@ -35,7 +35,8 @@ function buildResponse(message, properties, endpoint) {
     ...response,
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      Accept: "application/json",
+      Authorization: `Bearer ${destination.Config.restApiKey}`
     },
     userId: message.userId || message.anonymousId
   };
@@ -148,15 +149,11 @@ function getUserAttributesObject(message, mappingJson) {
   return data;
 }
 
-function appendApiKey(payload, destination) {
-  payload.api_key = destination.Config.restApiKey;
-  return payload;
-}
-
 function processIdentify(message, destination) {
   return buildResponse(
     message,
-    appendApiKey(getIdentifyPayload(message), destination),
+    destination,
+    getIdentifyPayload(message),
     getIdentifyEndpoint(destination.Config.endPoint)
   );
 }
@@ -166,7 +163,8 @@ function processTrackWithUserAttributes(message, destination, mappingJson) {
   payload = setExternalIdOrAliasObject(payload, message);
   return buildResponse(
     message,
-    appendApiKey({ attributes: [payload] }, destination),
+    destination,
+    { attributes: [payload] },
     getTrackEndPoint(destination.Config.endPoint)
   );
 }
@@ -254,10 +252,10 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   attributePayload = setExternalIdOrAliasObject(attributePayload, message);
 
   if (
-    messageType == EventType.TRACK &&
+    messageType === EventType.TRACK &&
     eventName.toLowerCase() === "order completed"
   ) {
-    purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message);
 
     // del used properties
     delete properties.products;
@@ -269,14 +267,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     payload = setExternalIdOrAliasObject(payload, message);
     return buildResponse(
       message,
-      appendApiKey(
-        {
-          attributes: [attributePayload],
-          purchases: purchaseObjs,
-          partner: BRAZE_PARTNER_NAME
-        },
-        destination
-      ),
+      destination,
+
+      {
+        attributes: [attributePayload],
+        purchases: purchaseObjs,
+        partner: BRAZE_PARTNER_NAME
+      },
       getTrackEndPoint(destination.Config.endPoint)
     );
   }
@@ -290,14 +287,12 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = setExternalIdOrAliasObject(payload, message);
   return buildResponse(
     message,
-    appendApiKey(
-      {
-        attributes: [attributePayload],
-        events: [payload],
-        partner: BRAZE_PARTNER_NAME
-      },
-      destination
-    ),
+    destination,
+    {
+      attributes: [attributePayload],
+      events: [payload],
+      partner: BRAZE_PARTNER_NAME
+    },
     getTrackEndPoint(destination.Config.endPoint)
   );
 }

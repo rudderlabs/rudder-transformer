@@ -1,10 +1,16 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-prototype-builtins */
 const Handlebars = require("handlebars");
 const { EventType } = require("../../../constants");
 
 const logger = require("../../../logger");
 
 const { SLACK_RUDDER_IMAGE_URL, SLACK_USER_NAME } = require("./config");
-const { defaultPostRequestConfig, defaultRequestConfig } = require("../../util");
+const {
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+  getFieldValueFromMessage
+} = require("../../util");
 
 // to string json traits, not using JSON.stringify()
 // always first check for whitelisted traits
@@ -28,21 +34,26 @@ function stringifyJSON(json, whiteListedTraits) {
 // get the name value from either traits.name/traits.firstName+traits.lastName/traits.username/
 // properties.email/traits.email/userId/anonymousId
 function getName(message) {
-  const { context, anonymousId, userId, properties } = message;
-  const { traits } = context;
-  const { name, firstName, lastName, username, email } = traits;
-  const uName =
-    name ||
-    (firstName
-      ? lastName
-        ? `${firstName}${lastName}`
-        : firstName
-      : undefined) ||
-    username ||
-    (properties ? properties.email : undefined) ||
-    email ||
-    (userId ? `User ${userId}` : undefined) ||
-    `Anonymous user ${anonymousId}`;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let uName;
+  if (traits) {
+    uName =
+      traits.name ||
+      (traits.firstName
+        ? traits.lastName
+          ? `${traits.firstName}${traits.lastName}`
+          : traits.firstName
+        : undefined) ||
+      traits.username ||
+      (message.properties ? message.properties.email : undefined) ||
+      traits.email ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
+  } else {
+    uName = (message.properties ? message.properties.email : undefined) ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
+  }
 
   logger.debug("final name::: ", uName);
   return uName;
@@ -76,13 +87,13 @@ function buildDefaultTraitTemplate(traitsList, traits) {
   let templateString = "Identified {{name}} ";
   // build template with whitelisted traits
   traitsList.forEach(trait => {
-    templateString += `${trait}: ` + `{{${trait}}} `;
+    templateString += `${trait}: {{${trait}}} `;
   });
   // else with all traits
-  if (traitsList.length == 0) {
+  if (traitsList.length === 0) {
     Object.keys(traits).forEach(traitKey => {
       if (traits.hasOwnProperty(traitKey)) {
-        templateString += `${traitKey}: ` + `{{${traitKey}}} `;
+        templateString += `${traitKey}: {{${traitKey}}} `;
       }
     });
   }
@@ -93,7 +104,7 @@ function getWhiteListedTraits(destination, traitsList) {
   destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
     if (
       whiteListTrait.trait
-        ? whiteListTrait.trait.trim().length != 0
+        ? whiteListTrait.trait.trim().length !== 0
           ? whiteListTrait.trait
           : undefined
         : undefined
@@ -120,40 +131,38 @@ function processIdentify(message, destination) {
 
   const template = Handlebars.compile(
     (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length == 0
+      ? identifyTemplateConfig.trim().length === 0
         ? undefined
         : identifyTemplateConfig
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.context ? message.context.traits : {}
+        getFieldValueFromMessage(message, "traits") || {}
       )
   );
   logger.debug(
     "identifyTemplateConfig: ",
     (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length == 0
+      ? identifyTemplateConfig.trim().length === 0
         ? undefined
         : identifyTemplateConfig
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        message.context ? message.context.traits : {}
+        getFieldValueFromMessage(message, "traits") || {}
       )
   );
 
   // provide a fat input with flattened traits as well as traits object
   // helps the user to build additional handlebar expressions
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
+
   const templateInput = {
     name: uName,
-    ...message.context.traits,
-    traits: stringifyJSON(
-      message.context ? message.context.traits : {},
-      traitsList
-    ),
-    traitsList: message.context ? message.context.traits : {}
+    ...identityTraits,
+    traits: stringifyJSON(identityTraits, traitsList),
+    traitsList: identityTraits
   };
-  logger.debug("templateInputIdentify: ", templateInput);
 
   const resultText = template(templateInput);
   return buildResponse({ text: resultText }, message, destination);
@@ -207,7 +216,7 @@ function processTrack(message, destination) {
           channelListToSendThisEvent.add(channelConfig.eventChannel);
         }
       }
-      if (channelConfig.eventName == eventName) {
+      if (channelConfig.eventName === eventName) {
         channelListToSendThisEvent.add(channelConfig.eventChannel);
       }
     }
@@ -235,7 +244,7 @@ function processTrack(message, destination) {
         ) {
           templateListForThisEvent.add(templateConfig.eventTemplate);
         }
-      } else if (templateConfig.eventName == eventName) {
+      } else if (templateConfig.eventName === eventName) {
         templateListForThisEvent.add(templateConfig.eventTemplate);
       }
     }
@@ -262,17 +271,15 @@ function processTrack(message, destination) {
   );
 
   // provide flattened properties as well as propertie sobject
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
   const templateInput = {
     name: getName(message),
     event: eventName,
     ...message.properties,
     properties: message.properties,
     propertiesList: stringifyJSON(message.properties || {}),
-    traits: stringifyJSON(
-      message.context ? message.context.traits : {},
-      traitsList
-    ),
-    traitsList: message.context ? message.context.traits : {}
+    traits: stringifyJSON(identityTraits, traitsList),
+    traitsList: identityTraits
   };
 
   logger.debug("templateInputTrack: ", templateInput);
@@ -289,8 +296,8 @@ function processTrack(message, destination) {
 }
 
 function process(event) {
-  logger.info("=====start=====");
-  logger.info(JSON.stringify(event));
+  logger.debug("=====start=====");
+  logger.debug(JSON.stringify(event));
   const respList = [];
   let response;
   const { message, destination } = event;
@@ -312,8 +319,8 @@ function process(event) {
       logger.debug("Message type not supported");
       throw new Error("Message type not supported");
   }
-  logger.info(JSON.stringify(respList));
-  logger.info("=====end======");
+  logger.debug(JSON.stringify(respList));
+  logger.debug("=====end======");
   return respList;
 }
 

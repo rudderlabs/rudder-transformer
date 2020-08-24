@@ -6,7 +6,8 @@ const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedValues
+  removeUndefinedValues,
+  getFieldValueFromMessage
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -39,26 +40,29 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
-  const traitsKeys = Object.keys(message.context.traits);
-  const propertyMap = await getProperties(destination);
-  sourceKeys.forEach(sourceKey => {
-    if (get(message, sourceKey)) {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-    }
-  });
-  traitsKeys.forEach(traitsKey => {
-    const hsSupportedKey = getKey(traitsKey);
-    if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
-      let propValue = message.context.traits[traitsKey];
-      if (propertyMap[hsSupportedKey] == "date") {
-        const time = propValue;
-        const date = new Date(time);
-        date.setUTCHours(0, 0, 0, 0);
-        propValue = date.getTime();
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (traits) {
+    const traitsKeys = Object.keys(traits);
+    const propertyMap = await getProperties(destination);
+    sourceKeys.forEach(sourceKey => {
+      if (get(traits, sourceKey)) {
+        set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
       }
-      rawPayload[hsSupportedKey] = propValue;
-    }
-  });
+    });
+    traitsKeys.forEach(traitsKey => {
+      const hsSupportedKey = getKey(traitsKey);
+      if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
+        let propValue = traits[traitsKey];
+        if (propertyMap[hsSupportedKey] === "date") {
+          const time = propValue;
+          const date = new Date(time);
+          date.setUTCHours(0, 0, 0, 0);
+          propValue = date.getTime();
+        }
+        rawPayload[hsSupportedKey] = propValue;
+      }
+    });
+  }
   return { ...rawPayload };
 }
 
@@ -76,7 +80,8 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   response.method = defaultGetRequestConfig.requestMethod;
 
   if (eventType !== EventType.TRACK) {
-    const { email } = message.context.traits;
+    const traits = getFieldValueFromMessage(message, "traits");
+    const { email } = traits;
     const { apiKey } = destination.Config;
     params = { hapikey: apiKey };
     if (email) {
@@ -93,7 +98,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     "Content-Type": "application/json"
   };
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.anonymousId;
   response.params = params;
   response.statusCode = 200;
 
@@ -124,15 +129,14 @@ async function processTrack(message, destination) {
   );
 }
 
-function handleError(message) {
-  throw new Error(message);
-}
+// function handleError(message) {
+//   throw new Error(message);
+// }
 
 async function processIdentify(message, destination) {
-  if (
-    !(message.context && message.context.traits && message.context.traits.email)
-  ) {
-    return handleError("Identify without email is not supported.");
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (!traits || !traits.email) {
+    throw new Error("Identify without email is not supported.");
   }
   const userProperties = await getTransformedJSON(
     message,
@@ -162,16 +166,12 @@ async function processSingleMessage(message, destination) {
         throw new Error(`message type ${message.type} is not supported`);
     }
   } catch (e) {
-    throw new Error("error occurred while processing payload.");
+    throw new Error(e.message || "error occurred while processing payload.");
   }
   return response;
 }
 
 function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
-  if (!resp.statusCode) {
-    resp.statusCode = 200;
-  }
-  return resp;
+  return processSingleMessage(event.message, event.destination);
 }
 exports.process = process;

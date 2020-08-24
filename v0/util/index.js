@@ -42,9 +42,11 @@ const formatValue = value => {
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   const hashMap = {};
-  arrays.forEach(array => {
-    hashMap[array[fromKey]] = array[toKey];
-  });
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      hashMap[array[fromKey]] = array[toKey];
+    });
+  }
   return hashMap;
 };
 
@@ -347,9 +349,9 @@ const constructPayload = (message, mappingJson) => {
       if (value) {
         // set the value only if correct
         if (metadata) {
-          payload[destKey] = handleMetadataForValue(value, metadata);
+          set(payload, destKey, handleMetadataForValue(value, metadata));
         } else {
-          payload[destKey] = value;
+          set(payload, destKey, value);
         }
       } else if (required) {
         // throw error if reqired value is missing
@@ -379,32 +381,6 @@ const getFieldValueFromMessage = (message, field) => {
   return null;
 };
 
-
-//function to flatten a json
-
-function flattenJson(data) {
-  var result = {};
-  //a recursive function to loop through the array of the data
-  function recurse(cur, prop) {
-    if (Object(cur) !== cur) {
-      result[prop] = cur;
-    } else if (Array.isArray(cur)) {
-      for (var i = 0, l = cur.length; i < l; i++)
-        recurse(cur[i], prop + "[" + i + "]");
-      if (l == 0) result[prop] = [];
-    } else {
-      var isEmpty = true;
-      for (var p in cur) {
-        isEmpty = false;
-        recurse(cur[p], prop ? prop + "." + p : p);
-      }
-      if (isEmpty && prop) result[prop] = {};
-    }
-  }
-  recurse(data, "");
-  return result;
-}
-
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -416,6 +392,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  flattenJson,
   formatValue,
   getDateInFormat,
   getFieldValueFromMessage,
@@ -428,6 +405,5 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload,
-  flattenJson
+  updatePayload
 };

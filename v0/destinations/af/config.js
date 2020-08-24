@@ -67,9 +67,9 @@ events.forEach(event => {
 });
 
 module.exports = {
-  Event,
-  ENDPOINT,
   ConfigCategory,
+  ENDPOINT,
+  Event,
   mappingConfig,
   nameToEventMap
 };

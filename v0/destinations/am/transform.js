@@ -11,7 +11,8 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getParsedIP
+  getParsedIP,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   Event,
@@ -21,16 +22,21 @@ const {
   nameToEventMap
 } = require("./config");
 
+const logger = require("../../../logger");
+
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
-const populateSpecedTraits = (payload, message) => {
-  SpecedTraits.forEach(trait => {
-    const mapping = TraitsMapping[trait];
-    const keys = Object.keys(mapping);
-    keys.forEach(key => {
-      set(payload, `user_properties.${key}`, get(message, mapping[key]));
-    });
-  });
-};
+// const populateSpecedTraits = (payload, message) => {
+//   const traits = getFieldValueFromMessage(message, "traits");
+//   if (traits) {
+//     SpecedTraits.forEach(trait => {
+//       const mapping = TraitsMapping[trait];
+//       const keys = Object.keys(mapping);
+//       keys.forEach(key => {
+//         set(payload, `user_properties.${key}`, get(traits, mapping[key]));
+//       });
+//     });
+//   }
+// };
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
@@ -47,7 +53,7 @@ function createSingleMessageBasicStructure(message) {
 }
 
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
-function stringToHash(string) {
+/* function stringToHash(string) {
   let hash = 0;
 
   if (string.length == 0) return hash;
@@ -59,11 +65,14 @@ function stringToHash(string) {
   }
 
   return Math.abs(hash);
-}
+} */
 
-function fixSessionId(payload) {
-  payload.session_id = payload.session_id
-    ? ((payload.session_id).substr((payload.session_id).lastIndexOf(":") + 1 , (payload.session_id).length))
+function getSessionId(payload) {
+  return payload.session_id
+    ? payload.session_id.substr(
+        payload.session_id.lastIndexOf(":") + 1,
+        payload.session_id.length
+      )
     : -1;
 }
 
@@ -79,7 +88,6 @@ function addMinIdlength() {
 
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
-
 function responseBuilderSimple(
   rootElementName,
   message,
@@ -93,10 +101,9 @@ function responseBuilderSimple(
   set(rawPayload, "event_properties", message.properties);
   set(rawPayload, "user_properties", message.userProperties);
 
-  if(message.channel == "mobile") {
-    set(rawPayload,"device_brand",message.context.device.manufacturer);
+  if (message.channel === "mobile") {
+    set(rawPayload, "device_brand", message.context.device.manufacturer);
   }
-
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -107,35 +114,45 @@ function responseBuilderSimple(
 
   // in case of identify, populate user_properties from traits as well, don't need to send evType
   if (evType === EventType.IDENTIFY) {
-    populateSpecedTraits(rawPayload, message);
-    const traits = Object.keys(message.context.traits);
-    traits.forEach(trait => {
-      if (!SpecedTraits.includes(trait)) {
-        set(
-          rawPayload,
-          `user_properties.${trait}`,
-          get(message, `context.traits.${trait}`)
-        );
-      }
-    });
+    // populateSpecedTraits(rawPayload, message);
+    const traits = getFieldValueFromMessage(message, "traits");
+    if (traits) {
+      Object.keys(traits).forEach(trait => {
+        if (SpecedTraits.includes(trait)) {
+          const mapping = TraitsMapping[trait];
+          Object.keys(mapping).forEach(key => {
+            set(
+              rawPayload,
+              `user_properties.${key}`,
+              get(traits, mapping[key])
+            );
+          });
+        } else {
+          set(rawPayload, `user_properties.${trait}`, get(traits, trait));
+        }
+      });
+    }
     rawPayload.event_type = EventType.IDENTIFY_AM;
   } else {
     rawPayload.event_type = evType;
   }
 
-  rawPayload.time = new Date(message.originalTimestamp).getTime();
+  rawPayload.time = new Date(
+    getFieldValueFromMessage(message, "timestamp")
+  ).getTime();
+
   // send user_id only when present, for anonymous users not required
   if (
     message.userId &&
-    message.userId != "" &&
-    message.userId != "null" &&
-    message.userId != null
+    message.userId !== "" &&
+    message.userId !== "null" &&
+    message.userId !== null
   ) {
     rawPayload.user_id = message.userId;
   }
 
   const payload = removeUndefinedValues(rawPayload);
-  fixSessionId(payload);
+  payload.session_id = getSessionId(payload);
 
   // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
   // for correct versionName
@@ -151,7 +168,7 @@ function responseBuilderSimple(
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.anonymousId;
   response.body.JSON = {
     api_key: destination.Config.apiKey,
     [rootElementName]: payload,
@@ -187,11 +204,19 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = "pageview";
+      evType = `Viewed ${message.name || get(message.properties.category) || ""} Page`;
+      message.properties = {
+        ...message.properties,
+        name: message.name || get(message.properties.category)
+      };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = "screenview";
+      evType = `Viewed ${message.name || get(message.properties.category) || ""} Screen`;
+      message.properties = {
+        ...message.properties,
+        name: message.name || get(message.properties.category)
+      };
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
@@ -229,7 +254,7 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      console.log("could not determine type");
+      logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
 
@@ -287,10 +312,10 @@ function process(event) {
     toSendEvents.push(processProductListAction(message));
   } else if (
     messageType === EventType.TRACK &&
-    (eventType == Event.CHECKOUT_STARTED.name ||
-      eventType == Event.ORDER_UPDATED.name ||
-      eventType == Event.ORDER_COMPLETED.name ||
-      eventType == Event.ORDER_CANCELLED.name)
+    (eventType === Event.CHECKOUT_STARTED.name ||
+      eventType === Event.ORDER_UPDATED.name ||
+      eventType === Event.ORDER_COMPLETED.name ||
+      eventType === Event.ORDER_CANCELLED.name)
   ) {
     toSendEvents.push(processTransaction(message));
   } else {
@@ -298,11 +323,7 @@ function process(event) {
   }
 
   toSendEvents.forEach(sendEvent => {
-    const result = processSingleMessage(sendEvent, destination);
-    if (!result.statusCode) {
-      result.statusCode = 200;
-    }
-    respList.push(result);
+    respList.push(processSingleMessage(sendEvent, destination));
   });
   return respList;
 }

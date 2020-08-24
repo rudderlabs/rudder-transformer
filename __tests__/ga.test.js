@@ -4,25 +4,31 @@ const name = "Google Analytics";
 
 const fs = require("fs");
 const path = require("path");
-const transformer = require("../v0/destinations/ga/transform");
+const version = "v0";
 
-test(`${name} Tests`, async () => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
-  );
+const transformer = require(`../${version}/destinations/ga/transform`);
 
-  const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
-  );
+const inputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_input.json`)
+);
 
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
-  inputData.forEach(async (input, index) => {
+const outputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_output.json`)
+);
+
+const inputData = JSON.parse(inputDataFile);
+const expectedData = JSON.parse(outputDataFile);
+
+inputData.forEach((input, index) => {
+  test(`${name} Tests : payload: ${index}`, () => {
+    let output, expected;
     try {
-      const output = await transformer.process(input);
-      expect(output).toEqual(expectedData[index]);
+      output = transformer.process(input);
+      expected = expectedData[index];
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      output = error.message;
+      expected = expectedData[index].message;
     }
+    expect(output).toEqual(expected);
   });
 });

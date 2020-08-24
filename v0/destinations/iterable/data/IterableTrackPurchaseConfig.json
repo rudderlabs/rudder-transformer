@@ -1,44 +1,32 @@
 [
   {
     "destKey": "dataFields",
-    "sourceKeys": [
-      "properties"
-    ],
+    "sourceKeys": "properties",
     "required": false
   },
   {
     "destKey": "id",
-    "sourceKeys": [
-      "properties.orderId"
-    ],
+    "sourceKeys": "properties.orderId",
     "required": false
   },
   {
     "destKey": "createdAt",
-    "sourceKeys": [
-      "originalTimestamp"
-    ],
+    "sourceKeys": "originalTimestamp",
     "required": false
   },
   {
     "destKey": "campaignId",
-    "sourceKeys": [
-      "properties.campaignId"
-    ],
+    "sourceKeys": "properties.campaignId",
     "required": false
   },
   {
     "destKey": "templateId",
-    "sourceKeys": [
-      "properties.templateId"
-    ],
+    "sourceKeys": "properties.templateId",
     "required": false
   },
   {
     "destKey": "total",
-    "sourceKeys": [
-      "properties.total"
-    ],
+    "sourceKeys": "properties.total",
     "required": true
   }
 ]

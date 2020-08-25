@@ -4,12 +4,12 @@ const _ = require("lodash");
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
 
-const whDefaultConfigJson = require("./config/WHDefaultConfig.json");
-const whTrackConfigJson = require("./config/WHTrackConfig.json");
-const whPageConfigJson = require("./config/WHPageConfig.json");
-const whScreenConfigJson = require("./config/WHScreenConfig.json");
-const whGroupConfigJson = require("./config/WHGroupConfig.json");
-const whAliasConfigJson = require("./config/WHAliasConfig.json");
+const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
+const whTrackColumnMapping = require("./config/WHTrackConfig.json");
+const whPageColumnMapping = require("./config/WHPageConfig.json");
+const whScreenColumnMapping = require("./config/WHScreenConfig.json");
+const whGroupColumnMapping = require("./config/WHGroupConfig.json");
+const whAliasColumnMapping = require("./config/WHAliasConfig.json");
 
 const isObject = value => {
   const type = typeof value;
@@ -78,8 +78,37 @@ function excludeRudderCreatedTableNames(name) {
   return name;
 }
 
-function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
-  Object.keys(configJson).forEach(key => {
+/*
+  setDataFromColumnMappingAndComputeColumnTypes takes in input object and 
+    1. reads columnMapping and adds corresponding data from message to output object
+    2. computes and sets the datatype of the added data to output in columnTypes object
+
+  Note: this function mutates output, columnTypes args for sake of perf
+    
+  eg.
+  input = {messageId: "m1", anonymousId: "a1"}
+  output = {}
+  columnMapping = {messageId: "id", anonymousId: "anonymous_id"}
+  columnTypes = {}
+  options = {}
+
+  setDataFromColumnMappingAndComputeColumnTypes(utils, output, input, configJson, columnTypes, options)
+
+  ----After in-place edit, the objects mutate to----
+
+  output = {id: "m1", anonymous_id: "a1"}
+  columnTypes = {id: "string", anonymous_id: "string"}
+*/
+
+function setDataFromColumnMappingAndComputeColumnTypes(
+  utils,
+  output,
+  input,
+  columnMapping,
+  columnTypes,
+  options
+) {
+  Object.keys(columnMapping).forEach(key => {
     let val = get(input, key);
     if (val === null || val === undefined) {
       return;
@@ -88,16 +117,41 @@ function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
     if (datatype === "datetime") {
       val = new Date(val).toISOString();
     }
-    const prop = configJson[key];
+    const prop = columnMapping[key];
     const columnName = utils.safeColumnName(options.provider, prop);
-    resp[columnName] = val;
+    // eslint-disable-next-line no-param-reassign
+    output[columnName] = val;
+    // eslint-disable-next-line no-param-reassign
     columnTypes[columnName] = datatype;
   });
 }
 
-function setFromProperties(
+/*
+  setDataFromInputAndComputeColumnTypes takes in input object and 
+    1. adds the key/values in input (recursively in case of keys with value of type object) to output object (prefix is added to all keys)
+    2. computes and sets the datatype of the added data to output in columnTypes object
+
+  Note: this function mutates output, columnTypes args for sake of perf
+
+  eg.
+  output = {}
+  input = { library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' } }
+  columnTypes = {}
+  options = {}
+  prefix = "context_"
+
+  setDataFromInputAndComputeColumnTypes(utils, output, input, columnTypes, options, prefix)
+
+  ----After in-place edit, the objects mutate to----
+
+  output = {context_library_name: 'rudder-sdk-ruby-sync', context_library_version: '1.0.6'}
+  columnTypes = {context_library_name: 'string', context_library_version: 'string'}
+
+*/
+
+function setDataFromInputAndComputeColumnTypes(
   utils,
-  resp,
+  output,
   input,
   columnTypes,
   options,
@@ -106,9 +160,9 @@ function setFromProperties(
   if (!input) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
-        resp,
+        output,
         input[key],
         columnTypes,
         options,
@@ -126,7 +180,9 @@ function setFromProperties(
       let safeKey = utils.transformColumnName(prefix + key);
       if (safeKey != "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
-        resp[safeKey] = val;
+        // eslint-disable-next-line no-param-reassign
+        output[safeKey] = val;
+        // eslint-disable-next-line no-param-reassign
         columnTypes[safeKey] = datatype;
       }
     }
@@ -159,6 +215,186 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
+/*
+  Examples:
+
+  1. track event
+  input: {
+    "message": {
+      "type": "track",
+      "event": "Example Event",
+      "sentAt": "2020-08-24T20:19:05.560Z",
+      "userId": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+      "context": {
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+      "timestamp": "2020-08-24T20:19:05.560Z",
+      "properties": {
+        "id": true,
+        "is_anonymous_user": true,
+        "score": 5
+      },
+      "anonymousId": "26508834-c290-4354-9303-11c9b339a58a",
+      "integrations": {
+        "All": true
+      }
+    }
+  }
+  output: [
+    {
+      "output": {
+        "metadata": {
+          "table": "tracks",
+          "columns": {
+            "uuid_ts": "datetime",
+            "context_library_name": "string",
+            "context_library_version": "string",
+            "event_text": "string",
+            "id": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "sent_at": "datetime",
+            "timestamp": "datetime",
+            "event": "string"
+          }
+        },
+        "data": {
+          "context_library_name": "rudder-sdk-ruby-sync",
+          "context_library_version": "1.0.6",
+          "event_text": "Example Event",
+          "id": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "sent_at": "2020-08-24T20:19:05.560Z",
+          "timestamp": "2020-08-24T20:19:05.560Z",
+          "event": "example_event"
+        }
+    },
+    "statusCode": 200
+    },
+    {
+      "output": {
+        "metadata": {
+          "table": "example_event",
+          "columns": {
+            "uuid_ts": "datetime",
+            "id": "string",
+            "is_anonymous_user": "boolean",
+            "score": "int",
+            "context_library_name": "string",
+            "context_library_version": "string",
+            "event_text": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "sent_at": "datetime",
+            "timestamp": "datetime",
+            "event": "string"
+          }
+        },
+        "data": {
+          "id": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+          "is_anonymous_user": true,
+          "score": 5,
+          "context_library_name": "rudder-sdk-ruby-sync",
+          "context_library_version": "1.0.6",
+          "event_text": "Example Event",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "sent_at": "2020-08-24T20:19:05.560Z",
+          "timestamp": "2020-08-24T20:19:05.560Z",
+          "event": "example_event"
+        }
+      },
+      "statusCode": 200
+    }
+
+  ]
+
+  2.identify event
+  input: {
+    "message": {
+      "type": "identify",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0"
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "anonymousId": "26508834-c290-4354-9303-11c9b339a58a",
+      "userId": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+      "traits": {
+        "name": "srikanth",
+        "email": "srikanth@rudderlabs.com",
+        "userId": "u1"
+      },
+      "sentAt": "2006-01-02T15:04:05.000Z07:00"
+    }
+  }
+
+  output: [
+    {
+      "output": {
+        "metadata": {
+          "table": "identifies",
+          "columns": {
+            "uuid_ts": "datetime",
+            "name": "string",
+            "email": "string",
+            "context_app_build": "string",
+            "_user_id": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "context_ip": "string",
+            "sent_at": "string",
+            "channel": "string"
+          }
+        },
+        "data": {
+          "name": "srikanth",
+          "email": "srikanth@rudderlabs.com",
+          "context_app_build": "1.0.0",
+          "_user_id": "u1",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "context_ip": "1.1.1.1",
+          "sent_at": "2006-01-02T15:04:05.000Z07:00",
+          "channel": "web"
+        }
+      },
+      "statusCode": 200
+    },
+    {
+      "output": {
+        "metadata": {
+          "table": "users",
+          "columns": {
+            "uuid_ts": "datetime",
+            "name": "string",
+            "email": "string",
+            "context_app_build": "string",
+            "_user_id": "string",
+            "id": "string",
+            "received_at": "datetime"
+          }
+        },
+        "data": {
+          "name": "srikanth",
+          "email": "srikanth@rudderlabs.com",
+          "context_app_build": "1.0.0",
+          "_user_id": "u1",
+          "id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "received_at": "2020-08-25T07:21:48.481Z"
+        }
+      },
+      "statusCode": 200
+    }
+  ]
+*/
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   const responses = [];
@@ -170,7 +406,7 @@ function processWarehouseMessage(message, options) {
       const commonProps = {};
       const commonColumnTypes = {};
 
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         commonProps,
         message.context,
@@ -179,19 +415,19 @@ function processWarehouseMessage(message, options) {
         "context_"
       );
 
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         commonProps,
         message,
-        whTrackConfigJson,
+        whTrackColumnMapping,
         commonColumnTypes,
         options
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         commonProps,
         message,
-        whDefaultConfigJson,
+        whDefaultColumnMapping,
         commonColumnTypes,
         options
       );
@@ -232,14 +468,14 @@ function processWarehouseMessage(message, options) {
       const trackProps = {};
       const eventTableColumnTypes = {};
 
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         trackProps,
         message.properties,
         eventTableColumnTypes,
         options
       );
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         trackProps,
         message.userProperties,
@@ -270,23 +506,24 @@ function processWarehouseMessage(message, options) {
       break;
     }
     case "identify": {
+      // set properties common to both identifies and users table
       const commonProps = {};
       const commonColumnTypes = {};
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         commonProps,
         message.userProperties,
         commonColumnTypes,
         options
       );
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         commonProps,
         message.context ? message.context.traits : {},
         commonColumnTypes,
         options
       );
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         commonProps,
         message.traits,
@@ -296,7 +533,7 @@ function processWarehouseMessage(message, options) {
       );
 
       // set context props
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         commonProps,
         message.context,
@@ -305,7 +542,7 @@ function processWarehouseMessage(message, options) {
         "context_"
       );
 
-      // TODO: create a list of reserved keywords and append underscore for all in setFromProperties
+      // TODO: create a list of reserved keywords and append underscore for all in setDataFromInputAndComputeColumnTypes
       const userIdColumn = utils.safeColumnName(options.provider, "user_id");
       if (_.has(commonProps, userIdColumn)) {
         const newUserIdColumn = `_${userIdColumn}`;
@@ -318,11 +555,11 @@ function processWarehouseMessage(message, options) {
       // -----start: identifies table------
       const identifiesEvent = { ...commonProps };
       const identifiesColumnTypes = {};
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         identifiesEvent,
         message,
-        whDefaultConfigJson,
+        whDefaultColumnMapping,
         identifiesColumnTypes,
         options
       );
@@ -331,7 +568,7 @@ function processWarehouseMessage(message, options) {
         columns: getColumns(options, identifiesEvent, {
           ...commonColumnTypes,
           ...identifiesColumnTypes
-        }), // override commonColumnTypes with columnTypes from setFromConfig
+        }), // override commonColumnTypes with columnTypes from setDataFromColumnMappingAndComputeColumnTypes
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -364,7 +601,7 @@ function processWarehouseMessage(message, options) {
         columns: getColumns(options, usersEvent, {
           ...commonColumnTypes,
           ...usersColumnTypes
-        }), // override commonColumnTypes with columnTypes from setFromConfig
+        }), // override commonColumnTypes with columnTypes from setDataFromColumnMappingAndComputeColumnTypes
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -379,9 +616,15 @@ function processWarehouseMessage(message, options) {
     case "screen": {
       const event = {};
       const columnTypes = {};
-      setFromProperties(utils, event, message.properties, columnTypes, options);
+      setDataFromInputAndComputeColumnTypes(
+        utils,
+        event,
+        message.properties,
+        columnTypes,
+        options
+      );
       // set rudder properties after user set properties to prevent overwriting
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
         utils,
         event,
         message.context,
@@ -389,30 +632,30 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         event,
         message,
-        whDefaultConfigJson,
+        whDefaultColumnMapping,
         columnTypes,
         options
       );
 
       if (eventType === "page") {
-        setFromConfig(
+        setDataFromColumnMappingAndComputeColumnTypes(
           utils,
           event,
           message,
-          whPageConfigJson,
+          whPageColumnMapping,
           columnTypes,
           options
         );
       } else if (eventType === "screen") {
-        setFromConfig(
+        setDataFromColumnMappingAndComputeColumnTypes(
           utils,
           event,
           message,
-          whScreenConfigJson,
+          whScreenColumnMapping,
           columnTypes,
           options
         );
@@ -429,8 +672,13 @@ function processWarehouseMessage(message, options) {
     case "group": {
       const event = {};
       const columnTypes = {};
-      setFromProperties(event, message.traits, columnTypes, options);
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
+        event,
+        message.traits,
+        columnTypes,
+        options
+      );
+      setDataFromInputAndComputeColumnTypes(
         utils,
         event,
         message.context,
@@ -438,19 +686,19 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         event,
         message,
-        whDefaultConfigJson,
+        whDefaultColumnMapping,
         columnTypes,
         options
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         event,
         message,
-        whGroupConfigJson,
+        whGroupColumnMapping,
         columnTypes,
         options
       );
@@ -466,8 +714,13 @@ function processWarehouseMessage(message, options) {
     case "alias": {
       const event = {};
       const columnTypes = {};
-      setFromProperties(event, message.traits, columnTypes, options);
-      setFromProperties(
+      setDataFromInputAndComputeColumnTypes(
+        event,
+        message.traits,
+        columnTypes,
+        options
+      );
+      setDataFromInputAndComputeColumnTypes(
         utils,
         event,
         message.context,
@@ -475,19 +728,19 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         event,
         message,
-        whDefaultConfigJson,
+        whDefaultColumnMapping,
         columnTypes,
         options
       );
-      setFromConfig(
+      setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         event,
         message,
-        whAliasConfigJson,
+        whAliasColumnMapping,
         columnTypes,
         options
       );

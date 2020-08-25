@@ -159,6 +159,186 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
+/*
+  Examples:
+
+  1. track event
+  input: {
+    "message": {
+      "type": "track",
+      "event": "Example Event",
+      "sentAt": "2020-08-24T20:19:05.560Z",
+      "userId": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+      "context": {
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+      "timestamp": "2020-08-24T20:19:05.560Z",
+      "properties": {
+        "id": true,
+        "is_anonymous_user": true,
+        "score": 5
+      },
+      "anonymousId": "26508834-c290-4354-9303-11c9b339a58a",
+      "integrations": {
+        "All": true
+      }
+    }
+  }
+  output: [
+    {
+      "output": {
+        "metadata": {
+          "table": "tracks",
+          "columns": {
+            "uuid_ts": "datetime",
+            "context_library_name": "string",
+            "context_library_version": "string",
+            "event_text": "string",
+            "id": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "sent_at": "datetime",
+            "timestamp": "datetime",
+            "event": "string"
+          }
+        },
+        "data": {
+          "context_library_name": "rudder-sdk-ruby-sync",
+          "context_library_version": "1.0.6",
+          "event_text": "Example Event",
+          "id": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "sent_at": "2020-08-24T20:19:05.560Z",
+          "timestamp": "2020-08-24T20:19:05.560Z",
+          "event": "example_event"
+        }
+    },
+    "statusCode": 200
+    },
+    {
+      "output": {
+        "metadata": {
+          "table": "example_event",
+          "columns": {
+            "uuid_ts": "datetime",
+            "id": "string",
+            "is_anonymous_user": "boolean",
+            "score": "int",
+            "context_library_name": "string",
+            "context_library_version": "string",
+            "event_text": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "sent_at": "datetime",
+            "timestamp": "datetime",
+            "event": "string"
+          }
+        },
+        "data": {
+          "id": "e8e5d7e7-d9e2-4f49-833b-5b01bafa3933",
+          "is_anonymous_user": true,
+          "score": 5,
+          "context_library_name": "rudder-sdk-ruby-sync",
+          "context_library_version": "1.0.6",
+          "event_text": "Example Event",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "sent_at": "2020-08-24T20:19:05.560Z",
+          "timestamp": "2020-08-24T20:19:05.560Z",
+          "event": "example_event"
+        }
+      },
+      "statusCode": 200
+    }
+
+  ]
+
+  2.identify event
+  input: {
+    "message": {
+      "type": "identify",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0"
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "anonymousId": "26508834-c290-4354-9303-11c9b339a58a",
+      "userId": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+      "traits": {
+        "name": "srikanth",
+        "email": "srikanth@rudderlabs.com",
+        "userId": "u1"
+      },
+      "sentAt": "2006-01-02T15:04:05.000Z07:00"
+    }
+  }
+
+  output: [
+    {
+      "output": {
+        "metadata": {
+          "table": "identifies",
+          "columns": {
+            "uuid_ts": "datetime",
+            "name": "string",
+            "email": "string",
+            "context_app_build": "string",
+            "_user_id": "string",
+            "anonymous_id": "string",
+            "user_id": "string",
+            "context_ip": "string",
+            "sent_at": "string",
+            "channel": "string"
+          }
+        },
+        "data": {
+          "name": "srikanth",
+          "email": "srikanth@rudderlabs.com",
+          "context_app_build": "1.0.0",
+          "_user_id": "u1",
+          "anonymous_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "user_id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "context_ip": "1.1.1.1",
+          "sent_at": "2006-01-02T15:04:05.000Z07:00",
+          "channel": "web"
+        }
+      },
+      "statusCode": 200
+    },
+    {
+      "output": {
+        "metadata": {
+          "table": "users",
+          "columns": {
+            "uuid_ts": "datetime",
+            "name": "string",
+            "email": "string",
+            "context_app_build": "string",
+            "_user_id": "string",
+            "id": "string",
+            "received_at": "datetime"
+          }
+        },
+        "data": {
+          "name": "srikanth",
+          "email": "srikanth@rudderlabs.com",
+          "context_app_build": "1.0.0",
+          "_user_id": "u1",
+          "id": "fec930b2-ab00-4b9d-a912-ed48ab5a5b52",
+          "received_at": "2020-08-25T07:21:48.481Z"
+        }
+      },
+      "statusCode": 200
+    }
+  ]
+*/
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   const responses = [];

@@ -164,15 +164,17 @@ function processWarehouseMessage(message, options) {
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
-  const columnTypes = {};
   switch (eventType) {
     case "track": {
+      // set properties common to both tracks and event table
       const commonProps = {};
+      const commonColumnTypes = {};
+
       setFromProperties(
         utils,
         commonProps,
         message.context,
-        columnTypes,
+        commonColumnTypes,
         options,
         "context_"
       );
@@ -182,7 +184,7 @@ function processWarehouseMessage(message, options) {
         commonProps,
         message,
         whTrackConfigJson,
-        columnTypes,
+        commonColumnTypes,
         options
       );
       setFromConfig(
@@ -190,22 +192,28 @@ function processWarehouseMessage(message, options) {
         commonProps,
         message,
         whDefaultConfigJson,
-        columnTypes,
+        commonColumnTypes,
         options
       );
 
+      // -----start: tracks table------
+
+      const tracksColumnTypes = {};
       // set event column based on event_text in the tracks table
       const eventColName = utils.safeColumnName(options.provider, "event");
       commonProps[eventColName] = utils.transformTableName(
         commonProps[utils.safeColumnName(options.provider, "event_text")]
       );
-      columnTypes[eventColName] = "string";
+      tracksColumnTypes[eventColName] = "string";
 
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       const tracksMetadata = {
         table: utils.safeTableName(options.provider, "tracks"),
-        columns: getColumns(options, tracksEvent, columnTypes),
+        columns: getColumns(options, tracksEvent, {
+          ...tracksColumnTypes,
+          ...commonColumnTypes
+        }), // override tracksColumnTypes with columnTypes from commonColumnTypes
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -213,64 +221,76 @@ function processWarehouseMessage(message, options) {
         data: tracksEvent
       });
 
+      // -----end: tracks table------
+
+      // -----start: event table------
+
       // do not create event table in case of empty event name (after utils.transformColumnName)
       if (_.toString(tracksEvent[eventColName]).trim() === "") {
         break;
       }
       const trackProps = {};
+      const eventTableColumnTypes = {};
+
       setFromProperties(
         utils,
         trackProps,
         message.properties,
-        columnTypes,
+        eventTableColumnTypes,
         options
       );
       setFromProperties(
         utils,
         trackProps,
         message.userProperties,
-        columnTypes,
+        eventTableColumnTypes,
         options
       );
       // always set commonProps last so that they are not overwritten
-      const trackEvent = { ...trackProps, ...commonProps };
-      const trackEventMetadata = {
+      const eventTableEvent = { ...trackProps, ...commonProps };
+      const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options.provider,
-            utils.transformColumnName(trackEvent[eventColName])
+            utils.transformColumnName(eventTableEvent[eventColName])
           )
         ),
-        columns: getColumns(options, trackEvent, columnTypes),
+        columns: getColumns(options, eventTableEvent, {
+          ...eventTableColumnTypes,
+          ...commonColumnTypes
+        }), // override tracksColumnTypes with columnTypes from commonColumnTypes
         receivedAt: message.receivedAt
       };
       responses.push({
-        metadata: trackEventMetadata,
-        data: trackEvent
+        metadata: eventTableMetadata,
+        data: eventTableEvent
       });
+      // -----end: event table------
+
       break;
     }
     case "identify": {
       const commonProps = {};
+      const commonColumnTypes = {};
       setFromProperties(
         utils,
         commonProps,
         message.userProperties,
-        columnTypes,
+        commonColumnTypes,
         options
       );
       setFromProperties(
         utils,
         commonProps,
         message.context ? message.context.traits : {},
-        columnTypes,
+        commonColumnTypes,
         options
       );
       setFromProperties(
         utils,
         commonProps,
         message.traits,
-        columnTypes,
+        commonColumnTypes,
         options,
         ""
       );
@@ -280,7 +300,7 @@ function processWarehouseMessage(message, options) {
         utils,
         commonProps,
         message.context,
-        columnTypes,
+        commonColumnTypes,
         options,
         "context_"
       );
@@ -291,23 +311,27 @@ function processWarehouseMessage(message, options) {
         const newUserIdColumn = `_${userIdColumn}`;
         commonProps[newUserIdColumn] = commonProps[userIdColumn];
         delete commonProps[userIdColumn];
-        columnTypes[newUserIdColumn] = columnTypes[userIdColumn];
-        delete columnTypes[userIdColumn];
+        commonColumnTypes[newUserIdColumn] = commonColumnTypes[userIdColumn];
+        delete commonColumnTypes[userIdColumn];
       }
 
       // -----start: identifies table------
       const identifiesEvent = { ...commonProps };
+      const identifiesColumnTypes = {};
       setFromConfig(
         utils,
         identifiesEvent,
         message,
         whDefaultConfigJson,
-        columnTypes,
+        identifiesColumnTypes,
         options
       );
       const identifiesMetadata = {
         table: utils.safeTableName(options.provider, "identifies"),
-        columns: getColumns(options, identifiesEvent, columnTypes),
+        columns: getColumns(options, identifiesEvent, {
+          ...commonColumnTypes,
+          ...identifiesColumnTypes
+        }), // override commonColumnTypes with columnTypes from setFromConfig
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -322,17 +346,25 @@ function processWarehouseMessage(message, options) {
         break;
       }
       const usersEvent = { ...commonProps };
+      const usersColumnTypes = {};
+      // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
+      usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
+      // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")
       ] = message.receivedAt
         ? new Date(message.receivedAt).toISOString()
-        : null;
-      columnTypes[utils.safeColumnName(options.provider, "received_at")] =
+        : new Date().toISOString();
+      usersColumnTypes[utils.safeColumnName(options.provider, "received_at")] =
         "datetime";
+
       const usersMetadata = {
         table: utils.safeTableName(options.provider, "users"),
-        columns: getColumns(options, usersEvent, columnTypes),
+        columns: getColumns(options, usersEvent, {
+          ...commonColumnTypes,
+          ...usersColumnTypes
+        }), // override commonColumnTypes with columnTypes from setFromConfig
         receivedAt: message.receivedAt
       };
       responses.push({
@@ -346,6 +378,7 @@ function processWarehouseMessage(message, options) {
     case "page":
     case "screen": {
       const event = {};
+      const columnTypes = {};
       setFromProperties(utils, event, message.properties, columnTypes, options);
       // set rudder properties after user set properties to prevent overwriting
       setFromProperties(
@@ -395,6 +428,7 @@ function processWarehouseMessage(message, options) {
     }
     case "group": {
       const event = {};
+      const columnTypes = {};
       setFromProperties(event, message.traits, columnTypes, options);
       setFromProperties(
         utils,
@@ -431,6 +465,7 @@ function processWarehouseMessage(message, options) {
     }
     case "alias": {
       const event = {};
+      const columnTypes = {};
       setFromProperties(event, message.traits, columnTypes, options);
       setFromProperties(
         utils,

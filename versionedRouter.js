@@ -140,7 +140,7 @@ if (startDestTransformer) {
       if (processSessions) {
         groupedEvents = _.groupBy(
           events,
-          event => `${event.destination.ID}_${event.message.anonymousId}`
+          event => `${event.destination.ID}_${event.metadata.rudderId}`
         );
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);

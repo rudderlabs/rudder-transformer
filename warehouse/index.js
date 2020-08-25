@@ -78,6 +78,27 @@ function excludeRudderCreatedTableNames(name) {
   return name;
 }
 
+/*
+  setFromConfig takes in input object and 
+    1. adds the corresponding key/values from configJson passed  to resp output object
+    2. sets the datatype of the key in configJson in columnTypes
+
+  Note: this function mutates resp, columnTypes args for sake of perf
+
+  eg.
+  setFromProperties(utils, {messageId: "m1", anonymousId: "a1"}, whDefaultConfigJson, {}, {})
+  output:
+    resp: {
+      id: 'm1',
+      anonymous_id: 'a1'
+    },
+    columnTypes: {
+      id: 'string',
+      anonymous_id: 'string'
+    }
+
+*/
+
 function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
   Object.keys(configJson).forEach(key => {
     let val = get(input, key);
@@ -94,6 +115,27 @@ function setFromConfig(utils, resp, input, configJson, columnTypes, options) {
     columnTypes[columnName] = datatype;
   });
 }
+
+/*
+  setFromProperties takes in input object and 
+    1. adds the key/values in it (recursively) to resp output object (prefix is added to all keys)
+    2. sets the datatype of the key in input object in columnTypes
+
+  Note: this function mutates resp, columnTypes args for sake of perf
+
+  eg.
+  setFromProperties(utils, {}, { library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' } }, {}, {}, "context_")
+  output:
+    resp: {
+      context_library_name: 'rudder-sdk-ruby-sync',
+      context_library_version: '1.0.6'
+    },
+    columnTypes: {
+      context_library_name: 'string',
+      context_library_version: 'string'
+    }
+
+*/
 
 function setFromProperties(
   utils,

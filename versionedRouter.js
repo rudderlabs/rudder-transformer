@@ -7,8 +7,11 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 
 import "reflect-metadata"; // for class transformer
+const get = require("get-value");
 
 const { getPayload } = require("./typescript/utils");
+
+const { schemas, validateSchema} = require("./typescript/schema");
 
 const versions = ["v1"];
 const API_VERSION = "1";
@@ -52,11 +55,26 @@ const userTransformHandler = () => {
 };
 
 const processEvent = async (destHandler, event) => {
-  const payload = getPayload(event);
-  if (typeof destHandler[payload.type] === "function") {
-    return await destHandler[payload.type](payload);
+  const evType = get(event, "message.type");
+  evType = evType ? evType.toLowerCase() : undefined;
+  
+  if (evType) {
+    // validate event
+    const [err, _] = validateSchema(event.message, schemas[evType]);
+    if (err) {
+      throw new Error(err.message);
+    }
+
+    // get payload object
+    const payload = getPayload(event);
+
+    // finally process event
+    if (typeof destHandler[payload.type] === "function") {
+      return await destHandler[payload.type](payload);
+    }
+    throw new Error("Message type not supported");
   }
-  throw new Error("Message type not supported");
+  throw new Error("Message type missing from event");
 };
 
 async function handleDest(ctx, version, destination) {

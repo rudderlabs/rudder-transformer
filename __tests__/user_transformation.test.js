@@ -83,9 +83,9 @@ describe("User transformation", () => {
 
     const respBody = {
       code: `
-      import add from './add';
-      import { sub, increment} from './math';
-      import * as lodash from 'rudder-lodash';
+      import add from 'add';
+      import { sub, increment} from 'math';
+      import * as lodash from 'lodash';
       export function transform(events) {
           const modifiedEvents = events.map(event => {
             event.sum = add(4,5);
@@ -113,7 +113,7 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
-  it(`Simple ${name} Test for lodash functions`, async () => {
+  it(`Simple ${name} Test for URLSearchParams library`, async () => {
     const versionId = 26;
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
@@ -121,7 +121,7 @@ describe("User transformation", () => {
 
     const respBody = {
       code: `
-      import url from './url';
+      import url from 'url';
       export function transform(events) {
           const modifiedEvents = events.map(event => {
             if(event.properties && event.properties.url){

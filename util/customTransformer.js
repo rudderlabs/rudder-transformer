@@ -30,37 +30,33 @@ const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
 export default self;
 `;
 
-async function runUserTransform(events, code, eventsMetadata) {
-  const compiledModules = {};
+const compiledModules = {};
 
+async function loadModule(isolate, context, moduleName, moduleCode) {
+  const module = await isolate.compileModule(moduleCode);
+  await module.instantiate(context, () => {});
+  compiledModules[moduleName] = { module };
+}
+
+async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
-  const module = await isolate.compileModule(addCode);
-  compiledModules.add = { module };
 
-  await module.instantiate(context, () => {});
+  const libraries = {
+    add: addCode,
+    math: subCode,
+    lodash: lodashCode,
+    url: urlCode
+  };
 
-  const moduleSub = await isolate.compileModule(subCode);
-  compiledModules.math = { module: moduleSub };
+  await Promise.all(
+    Object.entries(libraries).map(async ([moduleName, moduleCode]) => {
+      await loadModule(isolate, context, moduleName, moduleCode);
+    })
+  );
 
-  // const dependencySpecifiersSub = moduleSub.dependencySpecifiers;
-  // TODO: Add nodejs sdk to libraries
-
-  await moduleSub.instantiate(context, spec => {
-    if (spec === "./add") {
-      return compiledModules.add.module;
-    }
-    return undefined;
-  });
-
-  const moduleLodash = await isolate.compileModule(lodashCode);
-  await moduleLodash.instantiate(context, () => {});
-  compiledModules.lodash = { module: moduleLodash };
-
-  const moduleURL = await isolate.compileModule(urlCode);
-  await moduleURL.instantiate(context, () => {});
-  compiledModules.url = { module: moduleURL };
+  // TODO: Add rudder nodejs sdk to libraries
 
   const jail = context.global;
 
@@ -191,18 +187,10 @@ async function runUserTransform(events, code, eventsMetadata) {
   const customScriptModule = await isolate.compileModule(`${code}`);
 
   await customScriptModule.instantiate(context, spec => {
-    // console.log("SPeci  is ", spec);
-    if (spec === "./add") {
-      return compiledModules.add.module;
-    }
-    if (spec === "./math") {
-      return compiledModules.math.module;
-    }
-    if (spec === "./lodash" || spec === "rudder-lodash") {
-      return compiledModules.lodash.module;
-    }
-    if (spec === "url" || spec === "./url") {
-      return compiledModules.url.module;
+    console.log(spec);
+    console.log(!!libraries[spec]);
+    if (libraries[spec]) {
+      return compiledModules[spec].module;
     }
     console.error(`import from ${spec} failed. Module not found.`);
     return undefined;

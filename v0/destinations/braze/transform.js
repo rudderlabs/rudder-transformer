@@ -4,12 +4,13 @@ const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues
-} = require("../util");
+} = require("../../util");
 const {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,
-  getTrackEndPoint
+  getTrackEndPoint,
+  BRAZE_PARTNER_NAME
 } = require("./config");
 
 function formatGender(gender) {
@@ -25,18 +26,19 @@ function formatGender(gender) {
   if (otherGenders.indexOf(gender.toLowerCase()) > -1) return "O";
 }
 
-function buildResponse(message, properties, endpoint) {
+function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.userId = message.userId ? message.userId : message.anonymousId;
+  response.userId = message.userId || message.anonymousId;
   response.body.JSON = removeUndefinedAndNullValues(properties);
   return {
     ...response,
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      Accept: "application/json",
+      Authorization: `Bearer ${destination.Config.restApiKey}`
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: message.userId || message.anonymousId
   };
 }
 
@@ -49,12 +51,16 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) payload.external_id = message.userId;
+  if (message.userId) {
+    payload.external_id = message.userId;
+  }
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
-  if (message.userId) return setExternalId(payload, message);
+  if (message.userId) {
+    return setExternalId(payload, message);
+  }
 
   payload._update_existing_only = false;
   return setAliasObjectWithAnonId(payload, message);
@@ -68,18 +74,40 @@ function getIdentifyPayload(message) {
 }
 
 function getUserAttributesObject(message, mappingJson) {
-  const sourceKeys = Object.keys(mappingJson);
   const data = {};
-  sourceKeys.forEach(sourceKey => {
-    const value = get(message, sourceKey);
+  const destKeys = Object.keys(mappingJson);
+  destKeys.forEach(destKey => {
+    const sourceKeys = mappingJson[destKey];
+
+    let value;
+    for (let index = 0; index < sourceKeys.length; index += 1) {
+      value = get(message, sourceKeys[index]);
+
+      if (value) {
+        break;
+      }
+    }
+
     if (value) {
-      if (mappingJson[sourceKey] === "gender") {
-        data[mappingJson[sourceKey]] = formatGender(value);
+      if (destKey === "gender") {
+        data[destKey] = formatGender(value);
       } else {
-        data[mappingJson[sourceKey]] = value;
+        data[destKey] = value;
       }
     }
   });
+
+  // const sourceKeys = Object.keys(mappingJson);
+  // sourceKeys.forEach(sourceKey => {
+  //   const value = get(message, sourceKey);
+  //   if (value) {
+  //     if (mappingJson[sourceKey] === "gender") {
+  //       data[mappingJson[sourceKey]] = formatGender(value);
+  //     } else {
+  //       data[mappingJson[sourceKey]] = value;
+  //     }
+  //   }
+  // });
 
   const reserved = [
     "avatar",
@@ -105,28 +133,27 @@ function getUserAttributesObject(message, mappingJson) {
     "email_subscribe",
     "push_subscribe"
   ];
-  if (message.context && message.context.traits) {
+
+  const traits = message.traits || message.context.traits;
+
+  if (traits) {
     reserved.forEach(element => {
-      delete message.context.traits[element];
+      delete traits[element];
     });
 
-    Object.keys(message.context.traits).forEach(key => {
-      data[key] = message.context.traits[key];
+    Object.keys(traits).forEach(key => {
+      data[key] = traits[key];
     });
   }
 
   return data;
 }
 
-function appendApiKey(payload, destination) {
-  payload.api_key = destination.Config.restApiKey;
-  return payload;
-}
-
 function processIdentify(message, destination) {
   return buildResponse(
     message,
-    appendApiKey(getIdentifyPayload(message), destination),
+    destination,
+    getIdentifyPayload(message),
     getIdentifyEndpoint(destination.Config.endPoint)
   );
 }
@@ -136,7 +163,8 @@ function processTrackWithUserAttributes(message, destination, mappingJson) {
   payload = setExternalIdOrAliasObject(payload, message);
   return buildResponse(
     message,
-    appendApiKey({ attributes: [payload] }, destination),
+    destination,
+    { attributes: [payload] },
     getTrackEndPoint(destination.Config.endPoint)
   );
 }
@@ -224,10 +252,10 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   attributePayload = setExternalIdOrAliasObject(attributePayload, message);
 
   if (
-    messageType == EventType.TRACK &&
+    messageType === EventType.TRACK &&
     eventName.toLowerCase() === "order completed"
   ) {
-    purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message);
 
     // del used properties
     delete properties.products;
@@ -239,10 +267,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     payload = setExternalIdOrAliasObject(payload, message);
     return buildResponse(
       message,
-      appendApiKey(
-        { attributes: [attributePayload], purchases: purchaseObjs },
-        destination
-      ),
+      destination,
+
+      {
+        attributes: [attributePayload],
+        purchases: purchaseObjs,
+        partner: BRAZE_PARTNER_NAME
+      },
       getTrackEndPoint(destination.Config.endPoint)
     );
   }
@@ -256,10 +287,12 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = setExternalIdOrAliasObject(payload, message);
   return buildResponse(
     message,
-    appendApiKey(
-      { attributes: [attributePayload], events: [payload] },
-      destination
-    ),
+    destination,
+    {
+      attributes: [attributePayload],
+      events: [payload],
+      partner: BRAZE_PARTNER_NAME
+    },
     getTrackEndPoint(destination.Config.endPoint)
   );
 }
@@ -268,7 +301,6 @@ function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  // console.log(JSON.stringify(message, null, 4));
 
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
@@ -317,7 +349,6 @@ function process(event) {
       break;
   }
 
-  // console.log(JSON.stringify(respList, null, 4));
   return respList;
 }
 

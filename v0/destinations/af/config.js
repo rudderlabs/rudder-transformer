@@ -1,4 +1,4 @@
-const { getMappingConfig } = require("../util");
+const { getMappingConfig } = require("../../util");
 
 const ConfigCategory = {
   CART_OR_WISHLIST: {
@@ -67,9 +67,9 @@ events.forEach(event => {
 });
 
 module.exports = {
-  Event,
-  ENDPOINT,
   ConfigCategory,
+  ENDPOINT,
+  Event,
   mappingConfig,
   nameToEventMap
 };

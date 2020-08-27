@@ -1,4 +1,4 @@
-const { getMappingConfig } = require("../util");
+const { getMappingConfig } = require("../../util");
 
 const BASE_URL = "https://api.iterable.com/api/";
 

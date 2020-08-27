@@ -74,14 +74,6 @@
       "timestamp": "2020-04-17T20:25:31.381+05:30",
       "type": "page",
       "userId": "user12345"
-    },
-    "metadata": {
-      "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
-      "destinationId": "1afmecIpsJm7D72aRTksxyODrwR",
-      "destinationType": "SEGMENT",
-      "jobId": 1,
-      "messageId": "258b77c6-442d-4bdc-8729-f0e4cef41353",
-      "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW"
     }
   },
   {
@@ -151,14 +143,6 @@
       "timestamp": "2020-04-17T20:25:31.401+05:30",
       "type": "identify",
       "userId": "user12345"
-    },
-    "metadata": {
-      "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
-      "destinationId": "1afmecIpsJm7D72aRTksxyODrwR",
-      "destinationType": "SEGMENT",
-      "jobId": 2,
-      "messageId": "023a3a48-190a-4968-9394-a8e99b81a3c0",
-      "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW"
     }
   },
   {
@@ -233,14 +217,6 @@
       "timestamp": "2020-04-17T20:25:31.401+05:30",
       "type": "track",
       "userId": "user12345"
-    },
-    "metadata": {
-      "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
-      "destinationId": "1afmecIpsJm7D72aRTksxyODrwR",
-      "destinationType": "SEGMENT",
-      "jobId": 3,
-      "messageId": "584fde02-901a-4964-a4a0-4078b999d5b2",
-      "sourceId": "1afjLW184k0nlnvtRlNcTO4TexW"
     }
   }
 ]

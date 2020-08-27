@@ -161,6 +161,12 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
+      "traits": {
+        "country": "USA",
+        "email": "test@domain.com",
+        "hiji": "hulala-1",
+        "name": "my-name-1"
+      },
       "integrations": { "All": true },
       "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
       "originalTimestamp": "2020-03-23T03:41:46.122Z",
@@ -204,7 +210,7 @@
           {
             "eventName": "is",
             "eventRegex": true,
-            "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
+            "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}} and traits {{traitsList.hiji}}"
           },
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],

@@ -10,11 +10,11 @@ const EventType = {
 };
 
 const Address = {
-  city: "context.traits.address.city",
-  country: "context.traits.address.country",
-  postalCode: "context.traits.address.postalCode",
-  state: "context.traits.address.state",
-  street: "context.traits.address.street"
+  city: "address.city",
+  country: "address.country",
+  postalCode: "address.postalCode",
+  state: "address.state",
+  street: "address.street"
 };
 
 const TraitsMapping = {

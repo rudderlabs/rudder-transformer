@@ -173,5 +173,137 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message" : {
+      "anonymousId": "5094f5704b9cf2b3",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "LeanPlumIntegrationAndroid",
+          "namespace": "com.android.SampleLeanPlum",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "5094f5704b9cf2b3",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.1-beta.1"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5094f5704b9cf2b3"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "MainActivity",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "id1",
+      "properties": {
+        "name": "MainActivity",
+        "automatic": true
+      },
+      "originalTimestamp": "2020-03-12T09:05:03.421Z",
+      "type": "screen",
+      "sentAt": "2020-03-12T09:05:13.042Z"
+    },
+    "destination": {
+      "Config": {
+        "devKey": "ef1d42390426e3f7c90ac78272e74344"
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "checkout started",
+      "properties": {
+        "currency": "CAD",
+        "products": [
+          {
+            "product_id": "pr1",
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "product_id": "pr2",
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "step": 1,
+        "paymentMethod": "Visa",
+        "testDimension": true,
+        "testMetric": true
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination":{
+      "Config": {
+        "devKey": "ef1d42390426e3f7c90ac78272e74344"
+      },
+      "Enabled": true
+    }
   }
 ]

@@ -187,12 +187,10 @@ async function runUserTransform(events, code, eventsMetadata) {
   const customScriptModule = await isolate.compileModule(`${code}`);
 
   await customScriptModule.instantiate(context, spec => {
-    console.log(spec);
-    console.log(!!libraries[spec]);
     if (libraries[spec]) {
       return compiledModules[spec].module;
     }
-    console.error(`import from ${spec} failed. Module not found.`);
+    console.log(`import from ${spec} failed. Module not found.`);
     return undefined;
   });
 

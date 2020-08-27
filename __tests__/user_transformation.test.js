@@ -8,11 +8,17 @@ const name = "User Transformations";
 const fs = require("fs");
 const path = require("path");
 
+const randomID = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15);
+
 describe("User transformation", () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
   it(`Simple ${name} Test`, async () => {
+    const versionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_output.json`);
@@ -31,17 +37,18 @@ describe("User transformation", () => {
       Promise.resolve(new Response(JSON.stringify(respBody)))
     );
 
-    const output = await userTransformHandler(inputData, 23);
+    const output = await userTransformHandler(inputData, versionId);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.rudderlabs.com/transformation/getByVersionId?versionId=23"
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
 
     expect(output).toEqual(expectedData);
   });
 
   it(`Filtering ${name} Test`, async () => {
+    const versionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_filter_input.json`);
     const expectedData = require(`./data/${integration}_filter_output.json`);
@@ -65,18 +72,18 @@ describe("User transformation", () => {
     fetch.mockReturnValue(
       Promise.resolve(new Response(JSON.stringify(respBody)))
     );
-    const output = await userTransformHandler(inputData, 24);
+    const output = await userTransformHandler(inputData, versionId);
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.rudderlabs.com/transformation/getByVersionId?versionId=24"
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
 
     expect(output).toEqual(expectedData);
   });
 
   it(`Simple ${name} Test for lodash functions`, async () => {
-    const versionId = 25;
+    const versionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_lodash_output.json`);
@@ -114,7 +121,7 @@ describe("User transformation", () => {
   });
 
   it(`Simple ${name} Test for URLSearchParams library`, async () => {
-    const versionId = 26;
+    const versionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_url_search_params_output.json`);
@@ -145,5 +152,42 @@ describe("User transformation", () => {
     );
 
     expect(output).toEqual(expectedData);
+  });
+
+  it(`Test for timeout`, async () => {
+    const versionId = randomID();
+    const { userTransformHandler } = require("../util/customTransformer");
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_url_search_params_output.json`);
+
+    const respBody = {
+      code: `
+      export function transform(events) {
+          while(true){
+            
+          }
+          const modifiedEvents = events.map(event => {
+            if(event.properties && event.properties.url){
+              event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `
+    };
+    fetch.mockReturnValueOnce(
+      Promise.resolve(new Response(JSON.stringify(respBody)))
+    );
+    // const output = await userTransformHandler(inputData, versionId);
+    await expect(async () => {
+      const output = await userTransformHandler(inputData, versionId);
+    }).rejects.toThrow("Timed out");
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+    // expect(output).toEqual(expectedData);
   });
 });

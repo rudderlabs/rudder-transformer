@@ -85,7 +85,7 @@
           "name": "test-name"
         },
         "userId": "12345",
-        "eventName": "test-name page",
+        "eventName": "ApplicationLoaded page",
         "createdAt": 1571051718299
       },
       "XML": {},
@@ -208,7 +208,7 @@
           "name": "test-name"
         },
         "userId": "12345",
-        "eventName": "test-name screen",
+        "eventName": "ApplicationLoaded screen",
         "createdAt": 1571051718299
       },
       "XML": {},
@@ -614,6 +614,10 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "message" : "userId or email is mandatory for this request"
+  }
 ]
 

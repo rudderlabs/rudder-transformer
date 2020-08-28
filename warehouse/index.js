@@ -2,8 +2,12 @@
 const get = require("get-value");
 const _ = require("lodash");
 
-const v0 = require("./v0/util");
-const v1 = require("./v1/util");
+const {
+  isObject,
+  validTimestamp,
+  getVersionedUtils,
+  getMergeRuleEvent
+} = require("./util");
 
 const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
 const whTrackColumnMapping = require("./config/WHTrackConfig.json");
@@ -11,29 +15,6 @@ const whPageColumnMapping = require("./config/WHPageConfig.json");
 const whScreenColumnMapping = require("./config/WHScreenConfig.json");
 const whGroupColumnMapping = require("./config/WHGroupConfig.json");
 const whAliasColumnMapping = require("./config/WHAliasConfig.json");
-
-const identityEnabledWarehouses = ["snowflake"];
-
-const isObject = value => {
-  const type = typeof value;
-  return (
-    value != null &&
-    (type === "object" || type === "function") &&
-    !Array.isArray(value)
-  );
-};
-
-// https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
-// make sure to disable prettier for regex expression
-// prettier-ignore
-const timestampRegex = new RegExp(
-  // eslint-disable-next-line no-useless-escape
-  /^([\+-]?\d{4})((-)((0[1-9]|1[0-2])(-([12]\d|0[1-9]|3[01])))([T\s]((([01]\d|2[0-3])((:)[0-5]\d))([\:]\d+)?)?(:[0-5]\d([\.]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)$/
-);
-
-function validTimestamp(input) {
-  return timestampRegex.test(input);
-}
 
 // // older implementation with fallback to new Date()
 // function validTimestamp(input) {
@@ -192,7 +173,11 @@ function setDataFromInputAndComputeColumnTypes(
   });
 }
 
-function getColumns(options, obj, columnTypes) {
+/*
+ * uuid_ts and loaded_at datatypes are passed from here to create appropriate columns.
+ * Corresponding values are inserted when loading into the warehouse
+ */
+function getColumns(options, event, columnTypes) {
   const columns = {};
   const uuidTS = options.provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
@@ -201,76 +186,10 @@ function getColumns(options, obj, columnTypes) {
     const loadedAt = "loaded_at";
     columns[loadedAt] = "datetime";
   }
-  Object.keys(obj).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(obj[key], options);
+  Object.keys(event).forEach(key => {
+    columns[key] = columnTypes[key] || getDataType(event[key], options);
   });
   return columns;
-}
-
-function getMergeRuleEvent(message = {}, utils, isAlias, provider) {
-  if (!identityEnabledWarehouses.includes(provider)) {
-    return null;
-  }
-
-  // TODO: Should we add rule if userId is present for track calls,
-  // does it always guarantee identify was made?
-  // if (!message.anonymousId || !_.isEmpty(_.toString(message.userId))) {
-  //   return null;
-  // }
-
-  const prop1 = isAlias
-    ? { name: "user_id", value: message.userId }
-    : { name: "anonymous_id", value: message.anonymousId };
-  const prop2 = isAlias
-    ? { name: "user_id", value: message.previousId }
-    : { name: "user_id", value: message.userId };
-
-  if (_.isEmpty(_.toString(prop1.value))) {
-    return null;
-  }
-
-  // add prop1 to merge rule
-  const mergeRule = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: prop1.name,
-    [utils.safeColumnName(provider, "merge_property_1_value")]: prop1.value
-  };
-  const mergeColumns = {
-    [utils.safeColumnName(provider, "merge_property_1_type")]: "string",
-    [utils.safeColumnName(provider, "merge_property_1_value")]: "string"
-  };
-
-  // add prop2 to merge rule
-  if (!_.isEmpty(_.toString(prop2.value))) {
-    mergeRule[utils.safeColumnName(provider, "merge_property_2_type")] =
-      prop2.name;
-    mergeRule[utils.safeColumnName(provider, "merge_property_2_value")] =
-      prop2.value;
-    mergeColumns[utils.safeColumnName(provider, "merge_property_2_type")] =
-      "string";
-    mergeColumns[utils.safeColumnName(provider, "merge_property_2_value")] =
-      "string";
-  }
-
-  const mergeRulesMetadata = {
-    table: utils.safeTableName(provider, "rudder_identity_merge_rules"),
-    columns: mergeColumns,
-    receivedAt: message.receivedAt,
-    isMergeRule: true,
-    anonymousId: message.anonymousId,
-    userId: message.userId
-  };
-  return { metadata: mergeRulesMetadata, data: mergeRule };
-}
-
-function getVersionedUtils(schemaVersion) {
-  switch (schemaVersion) {
-    case "v0":
-      return v0;
-    case "v1":
-      return v1;
-    default:
-      return v1;
-  }
 }
 
 /*
@@ -453,8 +372,11 @@ function getVersionedUtils(schemaVersion) {
     }
   ]
 */
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
+  options.utils = utils;
+
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
@@ -561,12 +483,7 @@ function processWarehouseMessage(message, options) {
       });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(
-        message,
-        utils,
-        false,
-        options.provider
-      );
+      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -680,12 +597,7 @@ function processWarehouseMessage(message, options) {
       // -----end: users table------
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(
-        message,
-        utils,
-        false,
-        options.provider
-      );
+      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -750,12 +662,7 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(
-        message,
-        utils,
-        false,
-        options.provider
-      );
+      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -805,12 +712,7 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(
-        message,
-        utils,
-        false,
-        options.provider
-      );
+      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -860,12 +762,7 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(
-        message,
-        utils,
-        true,
-        options.provider
-      );
+      const mergeRuleEvent = getMergeRuleEvent(message, true, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }

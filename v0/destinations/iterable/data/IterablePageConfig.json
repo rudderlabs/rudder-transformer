@@ -27,8 +27,8 @@
   {
     "destKey": "eventName",
     "sourceKeys": [
-      "properties.name",
-      "name"
+      "name",
+      "properties.name"
     ],
     "required": false
   },

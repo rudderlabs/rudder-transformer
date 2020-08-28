@@ -53,15 +53,19 @@ function constructPayloadItem(message, category, destination) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
-        message.properties.category
+        ((message.properties && message.properties.category) ||
+          message.category)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
-        message.properties.name
+        ((message.properties && message.properties.name) || message.name)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
+      } else {
+        throw new Error("Invalid page call");
       }
+      validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Page";
       } else {
@@ -74,22 +78,25 @@ function constructPayloadItem(message, category, destination) {
       if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       }
-      validateMandatoryField(rawPayload);
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
-        message.properties.category
+        ((message.properties && message.properties.category) ||
+          message.category)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
-        message.properties.name
+        ((message.properties && message.properties.name) || message.name)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
+      } else {
+        throw new Error("Invalid screen call");
       }
+      validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Screen";
       } else {
@@ -102,10 +109,10 @@ function constructPayloadItem(message, category, destination) {
       if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       }
-      validateMandatoryField(rawPayload);
       break;
     case "track":
       rawPayload = constructPayload(message, mappingConfig[category.name]);
+      validateMandatoryField(rawPayload);
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
       if (rawPayload.campaignId) {
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
@@ -113,7 +120,6 @@ function constructPayloadItem(message, category, destination) {
       if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
       }
-      validateMandatoryField(rawPayload);
       break;
     case "trackPurchase":
       rawPayload = constructPayload(message, mappingConfig[category.name]);

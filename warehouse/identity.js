@@ -52,7 +52,12 @@ function getMergeRulesTableName(version, provider) {
 
 // Get Merge rule event from any given event
 function getMergeRuleEvent(message = {}, isAlias, options) {
-  const { whSchemaVersion, provider } = options;
+  const { whSchemaVersion, provider, whIDResolve } = options;
+
+  if (!whIDResolve) {
+    return null;
+  }
+
   if (!identityEnabledWarehouses.includes(provider)) {
     return null;
   }

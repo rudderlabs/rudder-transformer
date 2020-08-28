@@ -2,12 +2,8 @@
 const get = require("get-value");
 const _ = require("lodash");
 
-const {
-  isObject,
-  validTimestamp,
-  getVersionedUtils,
-  getMergeRuleEvent
-} = require("./util");
+const { isObject, validTimestamp, getVersionedUtils } = require("./util");
+const { getMergeRuleEvent } = require("./identity");
 
 const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
 const whTrackColumnMapping = require("./config/WHTrackConfig.json");

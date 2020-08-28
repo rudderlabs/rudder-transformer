@@ -112,6 +112,7 @@ const processEvent = (message, destination) => {
     throw Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
+  const formattedMessage = message;
 
   let category;
   const respList = [];
@@ -135,17 +136,33 @@ const processEvent = (message, destination) => {
       throw new Error("Message type not supported");
   }
 
+  // append context.page to properties for page, track
+  if (
+    (messageType === EventType.PAGE || messageType === EventType.TRACK) &&
+    formattedMessage.context &&
+    formattedMessage.context.page
+  ) {
+    formattedMessage.properties = {
+      ...formattedMessage.context.page,
+      ...formattedMessage.properties
+    };
+  }
+
   // build the response
-  respList.push(responseBuilderSimple(message, category, destination));
+  respList.push(responseBuilderSimple(formattedMessage, category, destination));
 
   if (messageType === EventType.IDENTIFY) {
-    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    const userId = getFieldValueFromMessage(formattedMessage, "userIdOnly");
     // append the alias call only if a valid value of "userId" is present
     // otherwise its a request with only anonymousId with traits. alias call isn't ideal
     if (userId) {
       // append an alias call with anonymousId and userId for identity resolution
       respList.push(
-        responseBuilderSimple(message, CONFIG_CATEGORIES.ALIAS, destination)
+        responseBuilderSimple(
+          formattedMessage,
+          CONFIG_CATEGORIES.ALIAS,
+          destination
+        )
       );
     }
   }

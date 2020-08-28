@@ -139,6 +139,7 @@ const processEvent = (message, destination) => {
   // append context.page to properties for page, track
   if (
     (messageType === EventType.PAGE || messageType === EventType.TRACK) &&
+    formattedMessage.context &&
     formattedMessage.context.page
   ) {
     formattedMessage.properties = {

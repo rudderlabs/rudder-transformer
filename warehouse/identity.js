@@ -57,8 +57,8 @@ function getMergeRuleEvent(message = {}, isAlias, options) {
     return null;
   }
 
-  let mergeProp1;
-  let mergeProp2;
+  let mergeProp1 = {};
+  let mergeProp2 = {};
   if (isAlias) {
     mergeProp1 = { name: "user_id", value: message.userId };
     mergeProp2 = { name: "user_id", value: message.previousId };
@@ -96,8 +96,8 @@ function getMergeRuleEvent(message = {}, isAlias, options) {
     columns: mergeColumnTypes,
     isMergeRule: true,
     receivedAt: message.receivedAt,
-    anonymousId: message.anonymousId,
-    userId: message.userId
+    mergePropOne: mergeProp1.value,
+    mergePropTwo: mergeProp2.value
   };
   return { metadata: mergeRulesMetadata, data: mergeRule };
 }

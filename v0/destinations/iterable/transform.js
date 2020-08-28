@@ -9,7 +9,7 @@ const {
 const logger = require("../../../logger");
 
 function validateMandatoryField(payload) {
-  if (payload.email === undefined && payload.userId === undefined) {
+  if (payload.email === undefined || payload.userId === undefined) {
     throw new Error("userId or email is mandatory for this request");
   }
 }

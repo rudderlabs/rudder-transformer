@@ -3,10 +3,9 @@
     "destKey": "email",
     "sourceKeys": [
       "traits.email",
-      "context.traits.email",
-      "userId"
+      "context.traits.email"
     ],
-    "required": true
+   "required": false
   },
   {
     "destKey": "dataFields",
@@ -23,7 +22,8 @@
       "traits.userId",
       "traits.id",
       "context.traits.userId",
-      "context.traits.id"
+      "context.traits.id",
+      "anonymousId"
     ],
     "required": false
   }

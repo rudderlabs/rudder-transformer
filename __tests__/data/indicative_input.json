@@ -894,5 +894,449 @@
       "type": "identify",
       "userId": "user12345"
     }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "http://localhost/tests/html/index4.html"
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": { "All": true },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "http://localhost/tests/html/index4.html"
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "integrations": { "All": true },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "http://localhost/tests/html/index4.html"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "http://localhost/tests/html/index4.html"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "searchResponse": {
+          "hits": [
+            {
+              "Vrm": "026067",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "PISCA PROFESSIONAL INDUSTRIAL SOLUTION Consulting & Acquisition GmbH",
+              "Model": "A5",
+              "Price": 13990,
+              "Mileage": 163000,
+              "DealerId": "1f338e5b-740f-6a38-bee1-ecff97acda69",
+              "Derivative": "A5 Cabrio 1.8 TFSI  Cabrio"
+            },
+            {
+              "Vrm": "4527",
+              "Make": "AUDI",
+              "Year": 2009,
+              "DName": "Stephan Walters - Autohaus Walters",
+              "Model": "A5",
+              "Price": 14450,
+              "Mileage": 99990,
+              "DealerId": "68c7b5ae-8cf0-6595-9fd2-8644b9682838",
+              "Derivative": "A5 Cabrio 40 TFSI S tronic S line Cabrio"
+            },
+            {
+              "Vrm": "10007",
+              "Make": "AUDI",
+              "Year": 2017,
+              "DName": "ps kfz-vertrieb GmbH",
+              "Model": "A5",
+              "Price": 14580,
+              "Mileage": 151500,
+              "DealerId": "a107e9a8-ac3c-6790-bb84-052dd5eed5e8",
+              "Derivative": "A5 Sportback 2.0 TDI ultra S tronic  Coupe"
+            },
+            {
+              "Vrm": "031983",
+              "Make": "AUDI",
+              "Year": 2012,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 10980,
+              "Mileage": 197335,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 2.0 TDI Sportback DPF multitronic  Coupe"
+            },
+            {
+              "Vrm": "042012",
+              "Make": "AUDI",
+              "Year": 2015,
+              "DName": "Hüseyin Zan Fahrzeughandel \"Autopark Grendelmatt\"",
+              "Model": "A5",
+              "Price": 15980,
+              "Mileage": 144205,
+              "DealerId": "8a574713-2fbe-6f0c-b1a8-39ba7ee683fc",
+              "Derivative": "A5 Coupe 35 TDI S tronic S line Coupe"
+            },
+            {
+              "Vrm": "002743",
+              "Make": "AUDI",
+              "Year": 2010,
+              "DName": "Auto Mayer e.K.Inh. Skelcim Imeri",
+              "Model": "A5",
+              "Price": 13980,
+              "Mileage": 121015,
+              "DealerId": "972258cb-132f-62a9-bd31-e02f9f70fa7b",
+              "Derivative": "A5 Cabrio 2.0 TDI DPF  Cabrio"
+            },
+            {
+              "Vrm": "205536_3895",
+              "Make": "AUDI",
+              "Year": 2011,
+              "DName": "Autohaus Löbau GmbH",
+              "Model": "A5",
+              "Price": 12790,
+              "Mileage": 89236,
+              "DealerId": "9e697219-293e-63a0-884a-2d03f77bbbef",
+              "Derivative": "A5 2.0 TDI Sportback DPF  Coupe"
+            },
+            {
+              "Vrm": "116265",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Elspass Autoland GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 14690,
+              "Mileage": 42800,
+              "DealerId": "00c1bf3f-b19d-6198-a509-c7f2ff73c29a",
+              "Derivative": "A1 1.0 TFSI ultra  Limousine"
+            },
+            {
+              "Vrm": "010159",
+              "Make": "AUDI",
+              "Year": 2013,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 9950,
+              "Mileage": 93996,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Ambition Limousine"
+            },
+            {
+              "Vrm": "010178",
+              "Make": "AUDI",
+              "Year": 2016,
+              "DName": "Hermann Meyer GmbH & Co. KG",
+              "Model": "A1",
+              "Price": 12950,
+              "Mileage": 69454,
+              "DealerId": "35d4fe7e-81a0-6e99-a575-6f62bffb8900",
+              "Derivative": "A1 1.4 TFSI Sportback S tronic Attraction Limousine"
+            }
+          ],
+          "page": 0,
+          "merge": {
+            "nbHitsMax": 1000,
+            "nbHitslimit": 1000,
+            "nbSearchers": 2,
+            "nbHitsProcessed": 10,
+            "personalization": {
+              "impact": 100,
+              "enabled": true,
+              "profile": {
+                "time": 0,
+                "facets": {},
+                "taskID": 0
+              },
+              "percentile": 0,
+              "nbPersoScanned": 0,
+              "nbPersoSkipped": 0,
+              "nbPersoReranked": 0,
+              "nbPersoReturned": 0,
+              "nbPersoSelected": 0,
+              "nbRelevanceBuckets": 8
+            },
+            "lastHitToDisplay": 10,
+            "nbHitsNumberingEnd": 10
+          },
+          "nbHits": 13,
+          "nbPages": 2,
+          "queryID": "c5a176f8493236fcbfe69c3298d41659",
+          "indexUsed": "Germany_prod_stock_Finance_0",
+          "serverUsed": "d85-de-1.algolia.net",
+          "hitsPerPage": 10,
+          "parsedQuery": "audi a5",
+          "timeoutHits": false,
+          "appliedRules": [
+            {
+              "objectID": "1539345377254"
+            },
+            {
+              "objectID": "1548767806494"
+            }
+          ],
+          "facets_stats": {
+            "Doors": {
+              "avg": 3,
+              "max": 5,
+              "min": 2,
+              "sum": 48
+            },
+            "Price": {
+              "avg": 13210,
+              "max": 15980,
+              "min": 9950,
+              "sum": 171730
+            },
+            "VrmYear": {
+              "avg": 2013,
+              "max": 2017,
+              "min": 2009,
+              "sum": 26171
+            }
+          },
+          "timeoutCounts": false
+        }
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "page": {
+          "path": "/tests/html/index4.html",
+          "referrer": "",
+          "search": "abc",
+          "title": "Test Page",
+          "url": "http://localhost/tests/html/index4.html"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "searchResponse": {
+          "primitiveArr1": ["abc", "def"],
+          "primitiveArr2": [1, 2, 3],
+          "arrOfArr": [
+            ["abc", "def"],
+            [1, 2, 3]
+          ],
+          "emptyArr": [],
+                    "complexArr1" : [
+            {
+              "crr1K1" : {
+                "discardK1": "discardV1"
+              }
+            }
+          ]
+        }
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
   }
 ]
+

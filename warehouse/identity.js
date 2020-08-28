@@ -51,7 +51,7 @@ function getMergeRulesTableName(version, provider) {
 }
 
 // Get Merge rule event from any given event
-function getMergeRuleEvent(message = {}, isAlias, options) {
+function getMergeRuleEvent(message = {}, eventType, options) {
   const { whSchemaVersion, provider, whIDResolve } = options;
 
   if (!whIDResolve) {
@@ -64,7 +64,34 @@ function getMergeRuleEvent(message = {}, isAlias, options) {
 
   let mergeProp1 = {};
   let mergeProp2 = {};
-  if (isAlias) {
+  if (eventType === "merge") {
+    if (
+      !_.has(message, "mergeProperties.identifier1") ||
+      !_.has(message, "mergeProperties.identifier2")
+    ) {
+      throw new Error("either or both identifiers missing in mergeProperties");
+    }
+
+    if (
+      _.isEmpty(message.mergeProperties.identifier1.type) ||
+      _.isEmpty(message.mergeProperties.identifier1.value) ||
+      _.isEmpty(message.mergeProperties.identifier2.type) ||
+      _.isEmpty(message.mergeProperties.identifier2.value)
+    ) {
+      throw new Error(
+        "mergeProperties contains null values for expected inputs"
+      );
+    }
+
+    mergeProp1 = {
+      name: message.mergeProperties.identifier1.type,
+      value: message.mergeProperties.identifier1.value
+    };
+    mergeProp2 = {
+      name: message.mergeProperties.identifier2.type,
+      value: message.mergeProperties.identifier2.value
+    };
+  } else if (eventType === "merge") {
     mergeProp1 = { name: "user_id", value: message.userId };
     mergeProp2 = { name: "user_id", value: message.previousId };
   } else {
@@ -91,7 +118,7 @@ function getMergeRuleEvent(message = {}, isAlias, options) {
   // add prop2 to merge rule
   if (!_.isEmpty(_.toString(mergeProp2.value))) {
     mergeRule[mergePropColumns.prop2Type] = mergeProp2.name;
-    mergeRule[mergePropColumns.prop1Value] = mergeProp2.value;
+    mergeRule[mergePropColumns.prop2Value] = mergeProp2.value;
     mergeColumnTypes[mergePropColumns.prop2Type] = "string";
     mergeColumnTypes[mergePropColumns.prop2Value] = "string";
   }

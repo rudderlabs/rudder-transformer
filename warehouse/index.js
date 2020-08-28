@@ -479,7 +479,7 @@ function processWarehouseMessage(message, options) {
       });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -593,7 +593,7 @@ function processWarehouseMessage(message, options) {
       // -----end: users table------
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -658,7 +658,7 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -708,7 +708,7 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, false, options);
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
@@ -758,12 +758,19 @@ function processWarehouseMessage(message, options) {
       responses.push({ metadata, data: event });
 
       // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, true, options);
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
       }
       // -----end: identity_merge_rules table------
 
+      break;
+    }
+    case "merge": {
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
       break;
     }
     default:

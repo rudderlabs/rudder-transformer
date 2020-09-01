@@ -1,8 +1,8 @@
 [
-  [{
-      "statusCode": 400,
-      "error": "Invalid page call"
-  }],
+  {
+    "statusCode": 400,
+    "message": "Invalid page call"
+  },
   {
     "body": {
       "XML": {},
@@ -675,6 +675,7 @@
   ],
   {
     "statusCode": 400,
-    "message" : "userId or email is mandatory for this request"
+    "message": "userId or email is mandatory for this request"
   }
 ]
+

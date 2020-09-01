@@ -2,6 +2,7 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const fs = require("fs");
 const lodashCore = require("lodash/core");
+const _ = require("lodash");
 
 // TODO: Check why these dont work
 const unsupportedFuncNames = [
@@ -14,7 +15,10 @@ const unsupportedFuncNames = [
   "split"
 ];
 
-const { getTransformationCode } = require("./customTransforrmationsStore");
+const {
+  getTransformationCode,
+  getLibraryCode
+} = require("./customTransforrmationsStore");
 const { addCode, subCode } = require("./math.js");
 
 const lodashCode = `
@@ -38,17 +42,18 @@ async function loadModule(isolate, context, moduleName, moduleCode) {
   compiledModules[moduleName] = { module };
 }
 
-async function runUserTransform(events, code, eventsMetadata) {
-  // TODO: Decide on the right value for memory limit
+async function runUserTransform(events, libraries, code, eventsMetadata) {
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
 
-  const libraries = {
-    add: addCode,
-    math: subCode,
-    lodash: lodashCode,
-    url: urlCode
-  };
+  // For local testing
+  // TODO: Remove before merging
+  // const libraries = {
+  //   add: addCode,
+  //   math: subCode,
+  //   lodash: lodashCode,
+  //   url: urlCode
+  // };
 
   await Promise.all(
     Object.entries(libraries).map(async ([moduleName, moduleCode]) => {
@@ -243,10 +248,23 @@ async function runUserTransform(events, code, eventsMetadata) {
 
 async function userTransformHandler(events, versionId) {
   if (versionId) {
-    const res = await getTransformationCode(versionId);
-    if (res) {
+    const transformation = await getTransformationCode(versionId);
+    const libraryVersionIds = [
+      "1gtnPXkwSZGFm0ZATfM4yG1Na92",
+      "1gtnXEh8C5Em1OP4j6heawXB4Z7"
+    ];
+    const libraries = await Promise.all(
+      libraryVersionIds.map(async libraryVersionId =>
+        getLibraryCode(libraryVersionId)
+      )
+    );
+    if (transformation && libraries) {
+      const librariesMap = {};
+      libraries.forEach(library => {
+        librariesMap[_.camelCase(library.name)] = library.code;
+      });
       // Events contain message and destination. We take the message part of event and run transformation on it.
-      // And put back the destination after transforrmation
+      // And put back the destination after transforrmatio
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
       events.forEach(ev => {
@@ -255,7 +273,8 @@ async function userTransformHandler(events, versionId) {
 
       const userTransformedEvents = await runUserTransform(
         eventMessages,
-        res.code,
+        librariesMap,
+        transformation.code,
         eventsMetadata
       );
       return userTransformedEvents;

@@ -11,17 +11,18 @@ function process(event) {
   const topicPath = getTopic(event);
   if (topicPath) {
     const splitPath = topicPath.split("/");
-    const topicId = splitPath[3];
-    console.log({
-      message: event.message,
-      userId: event.message.anonymousId,
-      topicId
-    })
-    return {
-      message: event.message,
-      userId: event.message.anonymousId,
-      topicId
-    };
+    if (splitPath && splitPath.length === 4) {
+      const topicId = splitPath[3];
+      if (topicId) {
+        return {
+          message: event.message,
+          userId: event.message.anonymousId,
+          topicId
+        };
+      }
+      throw new Error("Topic id cannot be null.");
+    }
+    throw new Error("Topic path without topic id.");
   }
   throw new Error("No topic set for this event");
 }

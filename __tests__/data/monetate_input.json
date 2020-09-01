@@ -1,0 +1,473 @@
+[
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "product_id": "prodId"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product List Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "products": [
+          {
+            "product_id": 1
+          },
+          {
+            "product_id": 2
+          }
+        ]
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product Added",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "currency": "INR",
+        "product_id": 1,
+        "quantity": 1,
+        "cart_value": 250
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Signed Up",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "plan": "trial",
+        "source": "social"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "name": "Homepage",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "path": "/homepage",
+        "referrer": "https://google.com"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "screen",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "name": "Homepage",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "path": "/homepage",
+        "referrer": "https://google.com",
+        "url": "https://example.com/homepage"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "page",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "page": {
+          "url": "https://example.com/homepage",
+          "referrer": "https://google.com"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "name": "Homepage",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "path": "/homepage",
+        "referrer": "https://google.com",
+        "url": "https://example.com/homepage"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "page",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  }
+]

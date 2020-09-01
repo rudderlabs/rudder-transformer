@@ -1,0 +1,37 @@
+[
+    {
+        "destKey": "events",
+        "sourceKeys": [
+            "properties.url",
+            "context.page.url"
+        ],
+        "metadata": {
+            "targetType": "Array",
+            "isTargetTypePrimitive": false,
+            "targetChildType": "object",
+            "targetFormat": {
+                "eventType": "monetate:context:PageView",
+                "url": "sourceKeyValue"
+            },
+            "action": "push"
+        }
+    },
+    {
+        "destKey": "events",
+        "sourceKeys": [
+            "properties.referrer",
+            "context.page.referrer",
+            "context.referrer.url"
+        ],
+        "metadata": {
+            "targetType": "Array",
+            "isTargetTypePrimitive": false,
+            "targetChildType": "object",
+            "targetFormat": {
+                "eventType": "monetate:context:Referrer",
+                "url": "sourceKeyValue"
+            },
+            "action": "push"
+        }
+    }
+]

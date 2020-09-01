@@ -195,7 +195,9 @@
             "events": [
                 {
                     "eventType": "monetate:context:PageView",
-                    "url": "https://example.com/homepage"
+                    "url": "https://example.com/homepage",
+                    "categories": ["category"],
+                    "path": "/homepage"
                 },
                 {
                     "eventType": "monetate:context:Referrer",

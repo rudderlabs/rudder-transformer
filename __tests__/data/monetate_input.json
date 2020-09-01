@@ -336,8 +336,11 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-        "path": "/homepage",
-        "referrer": "https://google.com"
+        "page": {
+          "url": "https://example.com/homepage",
+          "path": "/homepage",
+          "referrer": "https://google.com"
+        }
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen",
@@ -393,9 +396,12 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-        "path": "/homepage",
-        "referrer": "https://google.com",
-        "url": "https://example.com/homepage"
+        "page": {
+          "url": "https://example.com/homepage",
+          "path": "/homepage",
+          "referrer": "https://google.com",
+          "category": "category"
+        }
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "page",

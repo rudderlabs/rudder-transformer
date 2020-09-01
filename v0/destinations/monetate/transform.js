@@ -22,19 +22,56 @@ const createObject = type => {
   }
 };
 
+const getStringValue = (value, key) => {
+  let val;
+  if (key === "sourceKeyValue") {
+    val = value;
+  } else if (key.startsWith("sourceKeyValue.")) {
+    // gets the substring after the first .
+    // sourceKeyValue.page.url => page.url
+    const k = key.substring(key.indexOf(".") + 1);
+    val = get(value, k);
+  } else {
+    // leave the sourceKey as it is if cannot be replaced
+    val = key;
+  }
+  return val;
+};
+
+const getValue = (value, key) => {
+  let val;
+  if (typeof key === "string") {
+    val = getStringValue(value, key);
+  } else if (Array.isArray(key)) {
+    val = [];
+    key.forEach(k => {
+      if (typeof k === "string") {
+        const v = getStringValue(value, k);
+        if (v) {
+          val.push(v);
+        }
+      } else {
+        // if child element of array is not a string, push it as it is
+        // TODO : add support for more types
+        val.push(k);
+      }
+    });
+    if (val.length == 0) {
+      val = undefined;
+    }
+  }
+  return val;
+};
+
 const formatValue = (value, format) => {
   let formattedVal = {};
   // format is an object in this case
+  // TODO : Add generic support for more types
   if (value && format) {
-    let val;
+    let sourceKey, val;
     Object.keys(format).forEach(key => {
-      val = format[key];
-      if (val === "sourceKeyValue") {
-        val = value;
-      } else if (val.startsWith("sourceKeyValue.")) {
-        const k = val.substring(val.indexOf(".") + 1);
-        val = get(value, k);
-      }
+      sourceKey = format[key];
+      val = getValue(value, sourceKey);
       formattedVal[key] = val;
     });
   }
@@ -104,12 +141,13 @@ function track(message, destination) {
   if (evName) {
     if (evName == "Product Viewed") {
       if (properties.product_id) {
+        const sku = properties.sku || "";
         rawPayload.events.push({
           eventType: "monetate:context:ProductDetailView",
           products: [
             {
               productId: properties.product_id,
-              sku: ""
+              sku: sku
             }
           ]
         });
@@ -122,13 +160,14 @@ function track(message, destination) {
         });
       }
     } else if (evName == "Product Added") {
-      let currency = properties.currency ? properties.currency : "USD";
+      let currency = properties.currency || "USD";
+      const sku = properties.sku || "";
       rawPayload.events.push({
         eventType: "monetate:context:Cart",
         cartLines: [
           {
             pid: properties.product_id,
-            sku: "",
+            sku: sku,
             quantity: properties.quantity,
             value: properties.cart_value,
             currency: currency
@@ -141,10 +180,11 @@ function track(message, destination) {
           eventType: "monetate:context:Cart",
           cartLines: properties.products.map(product => {
             let cartValue = (product.quantity * product.price).toFixed(2);
-            let currency = properties.currency ? properties.currency : "USD";
+            let currency = (product.currency || properties.currency) || "USD";
+            const sku = product.sku || "";
             return {
               pid: product.product_id,
-              sku: "",
+              sku: sku,
               quantity: product.quantity,
               value: cartValue,
               currency: currency
@@ -165,9 +205,10 @@ function track(message, destination) {
           purchaseLines: purchaseLines.map(product => {
             let valueStr = (product.quantity * product.price).toFixed(2);
             let currency = properties.currency ? properties.currency : "USD";
+            const sku = product.sku || "";
             return {
               pid: product.product_id,
-              sku: "",
+              sku: sku,
               quantity: product.quantity,
               value: valueStr,
               currency: currency
@@ -176,12 +217,12 @@ function track(message, destination) {
         });
       }
     } else {
-        // The Engine API does not currently support custom events.
-        // For lifecycle events, we would prefer to add them to our spec,
-        // rather than support free-form custom events.  Nevertheless, if
-        // custom event support is added to the Engine API, the following
-        // block can be uncommented.
-        /*
+      // The Engine API does not currently support custom events.
+      // For lifecycle events, we would prefer to add them to our spec,
+      // rather than support free-form custom events.  Nevertheless, if
+      // custom event support is added to the Engine API, the following
+      // block can be uncommented.
+      /*
         rawPayload.events.push({
           "eventType": "monetate:context:CustomEvents",
           "customEvents": [{
@@ -189,7 +230,7 @@ function track(message, destination) {
               value: true,
           }],
         });
-        */
+      */
     }
   }
 
@@ -220,8 +261,6 @@ function responseBuilder(body, destination) {
   // TODO : uncomment stringify
   response.body = body;
   response.headers = {
-    Authentication:
-      "Basic " + Buffer.from(destinationConfig.apiKey).toString("base64"),
     "Content-Type": "application/json"
   };
 

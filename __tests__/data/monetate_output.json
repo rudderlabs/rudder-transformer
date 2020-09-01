@@ -5,7 +5,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -42,7 +41,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -70,7 +68,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -105,7 +102,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -126,7 +122,7 @@
                     "cartLines": [
                         {
                             "pid": 1,
-                            "sku": "",
+                            "sku": "sku",
                             "quantity": 1,
                             "value": 250,
                             "currency": "INR"
@@ -145,7 +141,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -172,7 +167,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -194,7 +188,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -219,7 +212,6 @@
         "method": "POST",
         "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
         "headers": {
-            "Authentication": "Basic YXBpLWtleQ==",
             "Content-Type": "application/json"
         },
         "params": {},
@@ -235,6 +227,54 @@
                 }
             ],
             "channel": "channel"
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "events": [
+                {
+                    "eventType": "monetate:context:IpAddress",
+                    "ipAddress": "0.0.0.0"
+                },
+                {
+                    "eventType": "monetate:context:PageView",
+                    "url": "url",
+                    "path": "path",
+                    "categories": [
+                        "category"
+                    ],
+                    "breadcrumbs": [
+                        "breadcrumbs"
+                    ]
+                },
+                {
+                    "eventType": "monetate:context:ScreenSize",
+                    "height": 22,
+                    "width": 11
+                },
+                {
+                    "eventType": "monetate:context:Cart",
+                    "cartLines": [
+                        {
+                            "pid": 1,
+                            "sku": "",
+                            "quantity": 1,
+                            "value": 250,
+                            "currency": "INR"
+                        }
+                    ]
+                }
+            ],
+            "customerId": "newUser"
         },
         "files": {}
     }

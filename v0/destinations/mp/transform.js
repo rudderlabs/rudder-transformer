@@ -15,14 +15,21 @@ function getEventTime(message) {
   return new Date(message.originalTimestamp).toISOString();
 }
 
-function responseBuilderSimple(parameters, message, eventType) {
+function responseBuilderSimple(parameters, message, eventType, destConfig) {
   let endpoint = "https://api.mixpanel.com/engage/";
+  if (destConfig.dataResidency === "eu") {
+    endpoint = "https://api-eu.mixpanel.com/engage/";
+  }
+
   if (
     eventType !== EventType.IDENTIFY &&
     eventType !== EventType.GROUP &&
     eventType !== "revenue"
   ) {
     endpoint = "https://api.mixpanel.com/track/";
+    if (destConfig.dataResidency === "eu") {
+      endpoint = "https://api-eu.mixpanel.com/track/";
+    }
   }
 
   const encodedData = Buffer.from(
@@ -50,7 +57,12 @@ function processRevenueEvents(message, destination) {
     $distinct_id: message.userId || message.anonymousId
   };
 
-  return responseBuilderSimple(parameters, message, "revenue");
+  return responseBuilderSimple(
+    parameters,
+    message,
+    "revenue",
+    destination.Config
+  );
 }
 
 function getEventValueForTrackEvent(message, destination) {
@@ -67,7 +79,12 @@ function getEventValueForTrackEvent(message, destination) {
     properties
   };
 
-  return responseBuilderSimple(parameters, message, EventType.TRACK);
+  return responseBuilderSimple(
+    parameters,
+    message,
+    EventType.TRACK,
+    destination.Config
+  );
 }
 
 function processTrack(message, destination) {
@@ -116,7 +133,9 @@ function processIdentifyEvents(message, type, destination) {
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId
   };
-  returnValue.push(responseBuilderSimple(parameters, message, type));
+  returnValue.push(
+    responseBuilderSimple(parameters, message, type, destination.Config)
+  );
 
   if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
@@ -134,6 +153,9 @@ function processIdentifyEvents(message, type, destination) {
       type
     );
     identifyTrackResponse.endpoint = "https://api.mixpanel.com/track/";
+    if (destonation.Config.dataResidency === "eu") {
+      identifyTrackResponse.endpoint = "https://api-eu.mixpanel.com/track/";
+    }
     returnValue.push(identifyTrackResponse); */
 
     const trackParameters = {
@@ -146,9 +168,14 @@ function processIdentifyEvents(message, type, destination) {
     const identifyTrackResponse = responseBuilderSimple(
       trackParameters,
       message,
-      type
+      type,
+      destination.Config
     );
+
     identifyTrackResponse.endpoint = "https://api.mixpanel.com/import";
+    if (destination.Config.dataResidency === "eu") {
+      identifyTrackResponse.endpoint = "https://api-eu.mixpanel.com/import";
+    }
     identifyTrackResponse.headers = {
       Authorization: `Basic ${Buffer.from(
         destination.Config.apiSecret
@@ -173,7 +200,7 @@ function processPageOrScreenEvents(message, type, destination) {
     event: type,
     properties
   };
-  return responseBuilderSimple(parameters, message, type);
+  return responseBuilderSimple(parameters, message, type, destination.Config);
 }
 
 function processAliasEvents(message, type, destination) {
@@ -185,7 +212,7 @@ function processAliasEvents(message, type, destination) {
       token: destination.Config.token
     }
   };
-  return responseBuilderSimple(parameters, message, type);
+  return responseBuilderSimple(parameters, message, type, destination.Config);
 }
 
 function processGroupEvents(message, type, destination) {
@@ -200,7 +227,12 @@ function processGroupEvents(message, type, destination) {
         ]
       }
     };
-    const response = responseBuilderSimple(parameters, message, type);
+    const response = responseBuilderSimple(
+      parameters,
+      message,
+      type,
+      destination.Config
+    );
     returnValue.push(response);
 
     const groupParameters = {
@@ -212,8 +244,17 @@ function processGroupEvents(message, type, destination) {
       }
     };
 
-    const groupResponse = responseBuilderSimple(groupParameters, message, type);
+    const groupResponse = responseBuilderSimple(
+      groupParameters,
+      message,
+      type,
+      destination.Config
+    );
+
     groupResponse.endpoint = "https://api.mixpanel.com/groups/";
+    if (destination.Config.dataResidency === "eu") {
+      groupResponse.endpoint = "https://api-eu.mixpanel.com/groups/";
+    }
     returnValue.push(groupResponse);
   } else {
     throw new Error("config is not supported");
@@ -242,7 +283,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const resp = processSingleMessage(event.message, event.destination);
-  return resp;
+  return processSingleMessage(event.message, event.destination);
 }
+
 exports.process = process;

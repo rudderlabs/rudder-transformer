@@ -16,20 +16,29 @@ function getEventTime(message) {
 }
 
 function responseBuilderSimple(parameters, message, eventType, destConfig) {
-  let endpoint = "https://api.mixpanel.com/engage/";
-  if (destConfig.dataResidency === "eu") {
-    endpoint = "https://api-eu.mixpanel.com/engage/";
-  }
+  let endpoint =
+    destConfig.dataResidency === "eu"
+      ? "https://api-eu.mixpanel.com/engage/"
+      : "https://api.mixpanel.com/engage/";
+
+  // if (destConfig.dataResidency === "eu") {
+  //   endpoint = "https://api-eu.mixpanel.com/engage/";
+  // }
 
   if (
     eventType !== EventType.IDENTIFY &&
     eventType !== EventType.GROUP &&
     eventType !== "revenue"
   ) {
-    endpoint = "https://api.mixpanel.com/track/";
-    if (destConfig.dataResidency === "eu") {
-      endpoint = "https://api-eu.mixpanel.com/track/";
-    }
+    endpoint =
+      destConfig.dataResidency === "eu"
+        ? "https://api-eu.mixpanel.com/track/"
+        : "https://api.mixpanel.com/track/";
+
+    // endpoint = "https://api.mixpanel.com/track/";
+    // if (destConfig.dataResidency === "eu") {
+    //   endpoint = "https://api-eu.mixpanel.com/track/";
+    // }
   }
 
   const encodedData = Buffer.from(
@@ -152,10 +161,11 @@ function processIdentifyEvents(message, type, destination) {
       message,
       type
     );
-    identifyTrackResponse.endpoint = "https://api.mixpanel.com/track/";
-    if (destonation.Config.dataResidency === "eu") {
-      identifyTrackResponse.endpoint = "https://api-eu.mixpanel.com/track/";
-    }
+    identifyTrackResponse.endpoint =
+      destination.Config.dataResidency === "eu"
+        ? "https://api-eu.mixpanel.com/engage/"
+        : "https://api.mixpanel.com/engage/";
+
     returnValue.push(identifyTrackResponse); */
 
     const trackParameters = {
@@ -172,10 +182,16 @@ function processIdentifyEvents(message, type, destination) {
       destination.Config
     );
 
-    identifyTrackResponse.endpoint = "https://api.mixpanel.com/import";
-    if (destination.Config.dataResidency === "eu") {
-      identifyTrackResponse.endpoint = "https://api-eu.mixpanel.com/import";
-    }
+    identifyTrackResponse.endpoint =
+      destination.Config.dataResidency === "eu"
+        ? "https://api-eu.mixpanel.com/import/"
+        : "https://api.mixpanel.com/import/";
+
+    // identifyTrackResponse.endpoint = "https://api.mixpanel.com/import";
+    // if (destination.Config.dataResidency === "eu") {
+    //   identifyTrackResponse.endpoint = "https://api-eu.mixpanel.com/import";
+    // }
+
     identifyTrackResponse.headers = {
       Authorization: `Basic ${Buffer.from(
         destination.Config.apiSecret
@@ -251,10 +267,15 @@ function processGroupEvents(message, type, destination) {
       destination.Config
     );
 
-    groupResponse.endpoint = "https://api.mixpanel.com/groups/";
-    if (destination.Config.dataResidency === "eu") {
-      groupResponse.endpoint = "https://api-eu.mixpanel.com/groups/";
-    }
+    groupResponse.endpoint =
+      destination.Config.dataResidency === "eu"
+        ? "https://api-eu.mixpanel.com/groups/"
+        : "https://api.mixpanel.com/groups/";
+
+    // groupResponse.endpoint = "https://api.mixpanel.com/groups/";
+    // if (destination.Config.dataResidency === "eu") {
+    //   groupResponse.endpoint = "https://api-eu.mixpanel.com/groups/";
+    // }
     returnValue.push(groupResponse);
   } else {
     throw new Error("config is not supported");

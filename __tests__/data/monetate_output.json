@@ -8,31 +8,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "monetateId": "1234",
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                },
-                {
-                    "eventType": "monetate:context:ProductDetailView",
-                    "products": [
-                        {
-                            "productId": "prodId",
-                            "sku": ""
-                        }
-                    ]
-                }
-            ],
-            "customerId": "newUser",
-            "channel": "channel"
-        },
+        "body": "{\"monetateId\":\"1234\",\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11},{\"eventType\":\"monetate:context:ProductDetailView\",\"products\":[{\"productId\":\"prodId\",\"sku\":\"\"}]}],\"customerId\":\"newUser\",\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -44,22 +20,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "monetateId": "1234",
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                }
-            ],
-            "customerId": "newUser",
-            "channel": "channel"
-        },
+        "body": "{\"monetateId\":\"1234\",\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11}],\"customerId\":\"newUser\",\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -71,29 +32,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "monetateId": "1234",
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                },
-                {
-                    "eventType": "monetate:context:ProductThumbnailView",
-                    "products": [
-                        1,
-                        2
-                    ]
-                }
-            ],
-            "customerId": "newUser",
-            "channel": "channel"
-        },
+        "body": "{\"monetateId\":\"1234\",\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11},{\"eventType\":\"monetate:context:ProductThumbnailView\",\"products\":[1,2]}],\"customerId\":\"newUser\",\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -105,34 +44,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "monetateId": "1234",
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                },
-                {
-                    "eventType": "monetate:context:Cart",
-                    "cartLines": [
-                        {
-                            "pid": 1,
-                            "sku": "sku",
-                            "quantity": 1,
-                            "value": 250,
-                            "currency": "INR"
-                        }
-                    ]
-                }
-            ],
-            "customerId": "newUser",
-            "channel": "channel"
-        },
+        "body": "{\"monetateId\":\"1234\",\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11},{\"eventType\":\"monetate:context:Cart\",\"cartLines\":[{\"pid\":1,\"sku\":\"sku\",\"quantity\":1,\"value\":250,\"currency\":\"INR\"}]}],\"customerId\":\"newUser\",\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -144,21 +56,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                }
-            ],
-            "customerId": "newUser",
-            "channel": "channel"
-        },
+        "body": "{\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11}],\"customerId\":\"newUser\",\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -170,16 +68,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "events": [
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                }
-            ],
-            "channel": "channel"
-        },
+        "body": "{\"events\":[{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11}],\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -191,21 +80,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "events": [
-                {
-                    "eventType": "monetate:context:PageView",
-                    "url": "https://example.com/homepage",
-                    "categories": ["category"],
-                    "path": "/homepage"
-                },
-                {
-                    "eventType": "monetate:context:Referrer",
-                    "url": "https://google.com"
-                }
-            ],
-            "channel": "channel"
-        },
+        "body": "{\"events\":[{\"eventType\":\"monetate:context:PageView\",\"url\":\"https://example.com/homepage\",\"path\":\"/homepage\",\"categories\":[\"category\"]},{\"eventType\":\"monetate:context:Referrer\",\"url\":\"https://google.com\"}],\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -217,19 +92,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "events": [
-                {
-                    "eventType": "monetate:context:PageView",
-                    "url": "https://example.com/homepage"
-                },
-                {
-                    "eventType": "monetate:context:Referrer",
-                    "url": "https://google.com"
-                }
-            ],
-            "channel": "channel"
-        },
+        "body": "{\"events\":[{\"eventType\":\"monetate:context:PageView\",\"url\":\"https://example.com/homepage\"},{\"eventType\":\"monetate:context:Referrer\",\"url\":\"https://google.com\"}],\"channel\":\"channel\"}",
         "files": {}
     },
     {
@@ -241,43 +104,7 @@
             "Content-Type": "application/json"
         },
         "params": {},
-        "body": {
-            "events": [
-                {
-                    "eventType": "monetate:context:IpAddress",
-                    "ipAddress": "0.0.0.0"
-                },
-                {
-                    "eventType": "monetate:context:PageView",
-                    "url": "url",
-                    "path": "path",
-                    "categories": [
-                        "category"
-                    ],
-                    "breadcrumbs": [
-                        "breadcrumbs"
-                    ]
-                },
-                {
-                    "eventType": "monetate:context:ScreenSize",
-                    "height": 22,
-                    "width": 11
-                },
-                {
-                    "eventType": "monetate:context:Cart",
-                    "cartLines": [
-                        {
-                            "pid": 1,
-                            "sku": "",
-                            "quantity": 1,
-                            "value": 250,
-                            "currency": "INR"
-                        }
-                    ]
-                }
-            ],
-            "customerId": "newUser"
-        },
+        "body": "{\"events\":[{\"eventType\":\"monetate:context:IpAddress\",\"ipAddress\":\"0.0.0.0\"},{\"eventType\":\"monetate:context:PageView\",\"url\":\"url\",\"path\":\"path\",\"categories\":[\"category\"],\"breadcrumbs\":[\"breadcrumbs\"]},{\"eventType\":\"monetate:context:ScreenSize\",\"height\":22,\"width\":11},{\"eventType\":\"monetate:context:Cart\",\"cartLines\":[{\"pid\":1,\"sku\":\"\",\"quantity\":1,\"value\":250,\"currency\":\"INR\"}]}],\"customerId\":\"newUser\"}",
         "files": {}
     }
 ]

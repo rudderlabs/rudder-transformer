@@ -36,7 +36,7 @@ function getMergeRulesTableName(version, provider) {
     versionedMergeRuleTableNames[version] !== undefined &&
     versionedMergeRuleTableNames[version][provider] !== undefined
   ) {
-    return versionedMergeRuleTableNames[version];
+    return versionedMergeRuleTableNames[version][provider];
   }
 
   if (versionedMergeRuleTableNames[version] === undefined) {

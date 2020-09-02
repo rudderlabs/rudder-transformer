@@ -559,6 +559,13 @@ function processWarehouseMessage(message, options) {
       });
       // -----end: identifies table------
 
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
+
       // -----start: users table------
       // do not create a user record if userId is not present in payload
       if (_.toString(message.userId).trim() === "") {
@@ -591,14 +598,6 @@ function processWarehouseMessage(message, options) {
         data: usersEvent
       });
       // -----end: users table------
-
-      // -----start: identity_merge_rules table------
-      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
-      if (mergeRuleEvent) {
-        responses.push(mergeRuleEvent);
-      }
-      // -----end: identity_merge_rules table------
-
       break;
     }
     case "page":

@@ -12,7 +12,7 @@ function getMergePropColumns(version, provider) {
     versionedMergePropColumns[version] !== undefined &&
     versionedMergePropColumns[version][provider] !== undefined
   ) {
-    return versionedMergePropColumns[version];
+    return versionedMergePropColumns[version][provider];
   }
 
   if (versionedMergePropColumns[version] === undefined) {
@@ -91,7 +91,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
       name: message.mergeProperties.identifier2.type,
       value: message.mergeProperties.identifier2.value
     };
-  } else if (eventType === "merge") {
+  } else if (eventType === "alias") {
     mergeProp1 = { name: "user_id", value: message.userId };
     mergeProp2 = { name: "user_id", value: message.previousId };
   } else {

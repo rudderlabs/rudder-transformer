@@ -10,8 +10,9 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  defaultRequestConfig
-} = require("../util");
+  defaultRequestConfig,
+  getFieldValueFromMessage
+} = require("../../util");
 const {
   IDENTITY_ENDPOINT,
   USER_EVENT_ENDPOINT,
@@ -31,11 +32,12 @@ const deviceDeleteRelatedEventName = "Application Uninstalled";
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // populate the list of spec'd traits in constants.js
 const populateSpecedTraits = (payload, message) => {
+  const pathToTraits = message.traits ? "traits" : "context.traits";
   SpecedTraits.forEach(trait => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach(key => {
-      set(payload, key, get(message, mapping[key]));
+      set(payload, key, get(message, `${pathToTraits}.${mapping[`${key}`]}`));
     });
   });
 };
@@ -56,14 +58,18 @@ function responseBuilder(message, evType, evName, destination) {
   };
 
   if (evType === EventType.IDENTIFY) {
+    // if userId is not there simply drop the payload
     if (!userId) {
       throw new Error("userId not present");
     }
 
     // populate speced traits
+    const identityTrailts = getFieldValueFromMessage(message, "traits") || {};
     populateSpecedTraits(rawPayload, message);
-    if (message.context.traits) {
-      const traits = Object.keys(message.context.traits);
+
+    if (Object.keys(identityTrailts).length > 0) {
+      const traits = Object.keys(identityTrailts);
+      const pathToTraits = message.traits ? "traits" : "context.traits";
       traits.forEach(trait => {
         // populate keys other than speced traits
         // also don't send anonymousId, userId as we are setting those form the SDK and it's not actually an user property for the customer
@@ -74,11 +80,12 @@ function responseBuilder(message, evType, evName, destination) {
           trait !== "userId" &&
           trait !== "anonymousId"
         ) {
-          set(rawPayload, trait, get(message, `context.traits.${trait}`));
+          set(rawPayload, trait, get(message, `${pathToTraits}.${trait}`));
         }
       });
     }
 
+    // populate user_properties (DEPRECATED)
     if (message.user_properties) {
       const userProps = Object.keys(message.user_properties);
       userProps.forEach(prop => {
@@ -87,28 +94,36 @@ function responseBuilder(message, evType, evName, destination) {
       });
     }
 
-    if (message.context.traits.createdAt) {
+    // make user creation time
+    set(
+      rawPayload,
+      "created_at",
+      Math.floor(
+        new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
+          1000
+      )
+    );
+
+    // Impportant for historical import
+    if (getFieldValueFromMessage(message, "timestamp")) {
       set(
         rawPayload,
-        "created_at",
-        Math.floor(new Date(message.context.traits.createdAt).getTime() / 1000)
-      );
-    } else {
-      set(
-        rawPayload,
-        "created_at",
-        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+        "_timestamp",
+        Math.floor(
+          new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
+            1000
+        )
       );
     }
-
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
+    // any other event type except identify
     const token = get(message, "context.device.token");
 
     if (message.properties) {
       // use this if only top level keys are to be sent
-
+      // DEVICE DELETE from CustomerIO
       if (deviceDeleteRelatedEventName === evName) {
         if (userId && token) {
           endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
@@ -124,6 +139,7 @@ function responseBuilder(message, evType, evName, destination) {
         throw new Error("userId or device_token not present");
       }
 
+      // DEVICE registration
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
@@ -144,6 +160,16 @@ function responseBuilder(message, evType, evName, destination) {
     if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
+      if (getFieldValueFromMessage(message, "timestamp")) {
+        set(
+          rawPayload,
+          "timestamp",
+          Math.floor(
+            new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
+              1000
+          )
+        );
+      }
     }
 
     if (userId) {

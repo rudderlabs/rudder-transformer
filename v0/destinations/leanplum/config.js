@@ -1,4 +1,4 @@
-const { getMappingConfig } = require("../util");
+const { getMappingConfig } = require("../../util");
 
 const ConfigCategory = {
   PAGE: {

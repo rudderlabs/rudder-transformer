@@ -1,5 +1,63 @@
 [
   {
+    "statusCode": 400,
+    "message": "Invalid page call"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email": "manashi@website.com",
+        "userId": "abcdeeeeeeeexxxx102",
+        "dataFields": {
+          "city": "Bangalore",
+          "name": "manashi",
+          "email": "manashi@website.com",
+          "country": "India"
+        },
+        "preferUserId": true,
+        "mergeNestedObjects": true
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.iterable.com/api/users/update"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "userId": "abcdeeeeeeeexxxx102",
+        "createdAt": 1598631966468,
+        "eventName": "Email Opened",
+        "dataFields": {
+          "subject": "resume validate",
+          "sendtime": "2020-01-01",
+          "sendlocation": "akashdeep@gmail.com"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.iterable.com/api/events/track"
+  },
+  {
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -27,8 +85,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -62,8 +119,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -87,14 +143,13 @@
           "name": "test-name"
         },
         "userId": "12345",
-        "eventName": "test-name page",
+        "eventName": "ApplicationLoaded page",
         "createdAt": 1571051718299
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -123,8 +178,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -154,8 +208,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -189,8 +242,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -214,14 +266,13 @@
           "name": "test-name"
         },
         "userId": "12345",
-        "eventName": "test-name screen",
+        "eventName": "ApplicationLoaded screen",
         "createdAt": 1571051718299
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -250,8 +301,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -281,8 +331,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     },
     {
       "version": "1",
@@ -303,8 +352,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     }
   ],
   [
@@ -331,8 +379,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     },
     {
       "version": "1",
@@ -358,8 +405,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     }
   ],
   [
@@ -386,8 +432,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     },
     {
       "version": "1",
@@ -413,8 +458,7 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "userId": "123456"
+      "files": {}
     }
   ],
   {
@@ -464,8 +508,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -549,8 +592,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
   },
   {
     "version": "1",
@@ -581,7 +623,59 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "12345"
+    "files": {}
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/users/update",
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "ruchira@rudderlabs.com",
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userId": "123456",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "browserToken": "some_device_token",
+          "email": "ruchira@rudderlabs.com",
+          "userId": "123456"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  {
+    "statusCode": 400,
+    "message": "userId or email is mandatory for this request"
   }
 ]
+

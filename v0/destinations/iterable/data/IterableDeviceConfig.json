@@ -1,23 +1,17 @@
 [
     {
         "destKey": "token",
-        "sourceKeys": [
-            "context.device.token"
-        ],
+        "sourceKeys": "context.device.token",
         "required": true
     },
     {
         "destKey": "applicationName",
-        "sourceKeys": [
-            "context.device.name"
-        ],
+        "sourceKeys": "context.device.name",
         "required": false
     },
     {
         "destKey": "dataFields",
-        "sourceKeys": [
-            "properties"
-        ],
+        "sourceKeys": "properties",
         "required": false
     }
 ]

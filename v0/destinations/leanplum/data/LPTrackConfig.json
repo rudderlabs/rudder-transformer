@@ -3,28 +3,30 @@
     "destKey": "userId",
     "sourceKeys": [
       "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
       "anonymousId"
     ],
     "required": true
   },
-  { "destKey": "event", "sourceKeys": ["event"], "required": true },
+  { "destKey": "event", "sourceKeys": "event", "required": true },
   {
     "destKey": "deviceId",
-    "sourceKeys": ["context.device.id"],
+    "sourceKeys": "context.device.id",
     "required": false
   },
-  { "destKey": "params", "sourceKeys": ["properties"], "required": false },
-  { "destKey": "value", "sourceKeys": ["properties.total"], "required": false },
+  { "destKey": "params", "sourceKeys": "properties", "required": false },
+  { "destKey": "value", "sourceKeys": "properties.total", "required": false },
   {
     "destKey": "currencyCode",
-    "sourceKeys": ["properties.currency"],
+    "sourceKeys": "properties.currency",
     "required": false
   },
   {
     "destKey": "time",
-    "sourceKeys": ["originalTimestamp"],
+    "sourceKeys": "originalTimestamp",
     "required": false
   }
 ]

@@ -257,8 +257,6 @@ function responseBuilder(body, destination) {
   body["channel"] = destinationConfig.monetateChannel;
 
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  // response.body = JSON.stringify(body);
-  // TODO : uncomment stringify
   response.body = body;
   response.headers = {
     "Content-Type": "application/json"

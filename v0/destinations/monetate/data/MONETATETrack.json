@@ -43,7 +43,7 @@
             "targetChildType": "object",
             "targetFormat": {
                 "eventType": "monetate:context:Referrer",
-                "url": "sourceKeyValue"
+                "referrer": "sourceKeyValue"
             },
             "action": "push"
         }

@@ -86,8 +86,8 @@
                 {
                     "eventType": "monetate:context:ProductThumbnailView",
                     "products": [
-                        1,
-                        2
+                        "1",
+                        "2"
                     ]
                 }
             ],
@@ -121,10 +121,10 @@
                     "eventType": "monetate:context:Cart",
                     "cartLines": [
                         {
-                            "pid": 1,
+                            "pid": "1",
                             "sku": "sku",
                             "quantity": 1,
-                            "value": 250,
+                            "value": "250",
                             "currency": "INR"
                         }
                     ]
@@ -203,7 +203,7 @@
                 },
                 {
                     "eventType": "monetate:context:Referrer",
-                    "url": "https://google.com"
+                    "referrer": "https://google.com"
                 }
             ],
             "channel": "channel"
@@ -227,7 +227,7 @@
                 },
                 {
                     "eventType": "monetate:context:Referrer",
-                    "url": "https://google.com"
+                    "referrer": "https://google.com"
                 }
             ],
             "channel": "channel"
@@ -269,10 +269,10 @@
                     "eventType": "monetate:context:Cart",
                     "cartLines": [
                         {
-                            "pid": 1,
+                            "pid": "1",
                             "sku": "",
                             "quantity": 1,
-                            "value": 250,
+                            "value": "250",
                             "currency": "INR"
                         }
                     ]

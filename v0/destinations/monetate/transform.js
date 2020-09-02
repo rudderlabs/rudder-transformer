@@ -156,7 +156,9 @@ function track(message, destination) {
       if (properties.products && Array.isArray(properties.products)) {
         rawPayload.events.push({
           eventType: "monetate:context:ProductThumbnailView",
-          products: properties.products.map(product => product.product_id)
+          products: properties.products.map(product =>
+            product.product_id ? product.product_id.toString() : ""
+          )
         });
       }
     } else if (evName == "Product Added") {
@@ -166,10 +168,12 @@ function track(message, destination) {
         eventType: "monetate:context:Cart",
         cartLines: [
           {
-            pid: properties.product_id,
+            pid: properties.product_id ? properties.product_id.toString() : "",
             sku: sku,
             quantity: properties.quantity,
-            value: properties.cart_value,
+            value: properties.cart_value
+              ? properties.cart_value.toString()
+              : "",
             currency: currency
           }
         ]
@@ -180,13 +184,13 @@ function track(message, destination) {
           eventType: "monetate:context:Cart",
           cartLines: properties.products.map(product => {
             let cartValue = (product.quantity * product.price).toFixed(2);
-            let currency = (product.currency || properties.currency) || "USD";
+            let currency = product.currency || properties.currency || "USD";
             const sku = product.sku || "";
             return {
-              pid: product.product_id,
+              pid: product.product_id ? product.product_id.toString() : "",
               sku: sku,
               quantity: product.quantity,
-              value: cartValue,
+              value: cartValue ? cartValue.toString() : "",
               currency: currency
             };
           })
@@ -207,10 +211,10 @@ function track(message, destination) {
             let currency = properties.currency ? properties.currency : "USD";
             const sku = product.sku || "";
             return {
-              pid: product.product_id,
+              pid: product.product_id ? product.product_id.toString() : "",
               sku: sku,
               quantity: product.quantity,
-              value: valueStr,
+              value: valueStr ? valueStr.toString() : "",
               currency: currency
             };
           })

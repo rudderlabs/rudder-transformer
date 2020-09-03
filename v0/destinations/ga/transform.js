@@ -439,6 +439,8 @@ function processSharingEvent(message) {
   // URL will be there for Product Shared event, hence that can be used as share target
   // For Cart Shared, the list of product ids can be shared
   const eventTypeString = message.event;
+  parameters.ea = eventTypeString;
+  parameters.ec = message.properties.category || "All";
   switch (eventTypeString.toLowerCase()) {
     case Event.PRODUCT_SHARED.name:
       parameters.st = message.properties.url;
@@ -519,7 +521,8 @@ function processProductListEvent(message, destination) {
         parameters[`il1pi${prodIndex}nm`] = value.name;
         parameters[`il1pi${prodIndex}ca`] = value.category;
         parameters[`il1pi${prodIndex}br`] = value.brand;
-        parameters[`il1pi${prodIndex}va`] = `${filters}::${sorts}`;
+        parameters[`il1pi${prodIndex}va`] =
+          filters || sorts ? `${filters}::${sorts}` : undefined;
         parameters[`il1pi${prodIndex}cc`] = value.coupon;
         parameters[`il1pi${prodIndex}ps`] = value.position;
         parameters[`il1pi${prodIndex}pr`] = value.price;

@@ -10,7 +10,7 @@ const {
 } = require("./config");
 const {
   removeUndefinedValues,
-  defaultGetRequestConfig,
+  defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP,
   formatValue,
@@ -120,14 +120,12 @@ function responseBuilderSimple(
     enhancedLinkAttribution,
     dimensions,
     metrics,
-    contentGroupings,
-    enhancedEcommerce
+    contentGroupings
   } = destination.Config;
   const { trackingID } = destination.Config;
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
-  enhancedEcommerce = enhancedEcommerce || false;
   contentGroupings = contentGroupings || [];
 
   // for backward compatibility with old config
@@ -183,7 +181,12 @@ function responseBuilderSimple(
       rawPayload.ck = message.context.campaign.term;
     }
   }
-
+  if (message.context.userAgent) {
+    rawPayload.ua = message.userAgent;
+  }
+  if (message.context.locale) {
+    rawPayload.ul = message.locale;
+  }
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
@@ -225,13 +228,11 @@ function responseBuilderSimple(
   }
 
   finalPayload.cid = message.anonymousId;
-  if (enhancedEcommerce && finalPayload.ni === undefined) {
-    finalPayload.ni = 1;
-  }
+
   finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
-  response.method = defaultGetRequestConfig.requestMethod;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
   response.userId = message.anonymousId;
   response.params = finalPayload;
@@ -265,7 +266,8 @@ function processIdentify(message, destination) {
 
   return {
     ea,
-    ec
+    ec,
+    ni: 1
   };
 }
 
@@ -728,31 +730,55 @@ function processSingleMessage(message, destination) {
           ? nameToEventMap[eventName].category
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
-
+        customParams.ni = 1;
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
-            customParams = processProductListEvent(message, destination);
+            Object.assign(
+              customParams,
+              processProductListEvent(message, destination)
+            );
             break;
           case ConfigCategory.PROMOTION.name:
-            customParams = processPromotionEvent(message, destination);
+            Object.assign(
+              customParams,
+              processPromotionEvent(message, destination)
+            );
             break;
           case ConfigCategory.PRODUCT.name:
-            customParams = processProductEvent(message, destination);
+            Object.assign(
+              customParams,
+              processProductEvent(message, destination)
+            );
             break;
           case ConfigCategory.TRANSACTION.name:
-            customParams = processTransactionEvent(message, destination);
+            Object.assign(
+              customParams,
+              processTransactionEvent(message, destination)
+            );
             break;
           case ConfigCategory.PAYMENT.name:
-            customParams = processPaymentRelatedEvent(message, destination);
+            Object.assign(
+              customParams,
+              processPaymentRelatedEvent(message, destination)
+            );
             break;
           case ConfigCategory.REFUND.name:
-            customParams = processRefundEvent(message, destination);
+            Object.assign(
+              customParams,
+              processRefundEvent(message, destination)
+            );
             break;
           case ConfigCategory.ECOM_GENERIC.name:
-            customParams = processEComGenericEvent(message, destination);
+            Object.assign(
+              customParams,
+              processEComGenericEvent(message, destination)
+            );
             break;
           default:
-            customParams = processNonEComGenericEvent(message, destination);
+            Object.assign(
+              customParams,
+              processNonEComGenericEvent(message, destination)
+            );
             break;
         }
       } else {

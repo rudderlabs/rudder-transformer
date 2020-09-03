@@ -152,6 +152,9 @@ if (startDestTransformer) {
       );
 
       const transformedEvents = [];
+      const librariesVersionIDs = events[0].libraries.map(
+        library => library.VersionID
+      );
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
           logger.debug(`dest: ${dest}`);
@@ -188,7 +191,8 @@ if (startDestTransformer) {
               );
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
-                transformationVersionId
+                transformationVersionId,
+                librariesVersionIDs
               );
 
               transformedEvents.push(

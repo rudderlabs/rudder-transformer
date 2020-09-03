@@ -76,7 +76,7 @@ async function transform(isolatevm, events) {
 
 async function userTransformHandler(events, versionId, libraryVersionIds) {
   if (versionId) {
-    const isolatevmPool = await getPool(versionId);
+    const isolatevmPool = await getPool(versionId, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
     const transformedEvents = await transform(isolatevm, events);
     isolatevmPool.release(isolatevm);

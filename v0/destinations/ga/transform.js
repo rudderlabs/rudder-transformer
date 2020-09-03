@@ -185,7 +185,7 @@ function responseBuilderSimple(
     rawPayload.ua = message.userAgent;
   }
   if (message.context.locale) {
-    rawPayload.ul = message.locale;
+    rawPayload.ul = message.context.locale;
   }
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {

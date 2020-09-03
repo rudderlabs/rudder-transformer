@@ -4,7 +4,6 @@
   "properties.step": "cos",
   "properties.payment_method": "col",
   "request_ip": "uip",
-  "context.userAgent": "ua",
   "properties.total": "tr",
   "properties.shipping": "ts",
   "properties.tax": "tt"

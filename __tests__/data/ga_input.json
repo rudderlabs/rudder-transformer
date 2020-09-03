@@ -2159,7 +2159,7 @@
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "event": "order starterefundedd",
+      "event": "order refunded",
       "properties": {
         "products": [
           {

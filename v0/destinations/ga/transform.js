@@ -10,7 +10,7 @@ const {
 } = require("./config");
 const {
   removeUndefinedValues,
-  defaultPostRequestConfig,
+  defaultGetRequestConfig,
   defaultRequestConfig,
   getParsedIP,
   formatValue,
@@ -182,7 +182,7 @@ function responseBuilderSimple(
     }
   }
   if (message.context.userAgent) {
-    rawPayload.ua = message.userAgent;
+    rawPayload.ua = message.context.userAgent;
   }
   if (message.context.locale) {
     rawPayload.ul = message.context.locale;
@@ -232,7 +232,7 @@ function responseBuilderSimple(
   finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
   response.userId = message.anonymousId;
   response.params = finalPayload;
@@ -304,6 +304,7 @@ function processNonEComGenericEvent(message, destination) {
       ? !!message.properties.nonInteraction
       : !!nonInteraction;
   const parameters = {
+    ea: message.event,
     ev: formatValue(eventValue),
     ec:
       message.properties !== undefined &&
@@ -360,11 +361,20 @@ function processPromotionEvent(message, destination) {
 function processPaymentRelatedEvent(message, destination) {
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
+  let pa;
+  switch (message.event.toLowerCase()) {
+    case Event.CHECKOUT_STEP_COMPLETED.name:
+      pa = "checkout_option";
+      break;
+    default:
+      pa = "checkout";
+      break;
+  }
   if (enhancedEcommerce) {
     return {
-      pa: "checkout",
+      pa,
       ea: message.event,
-      ec: message.properties.category || message.event
+      ec: message.properties.category || "EnhancedEcommerce"
     };
   }
   return {
@@ -417,7 +427,7 @@ function processRefundEvent(message, destination) {
   }
   if (enhancedEcommerce) {
     parameters.ea = message.event;
-    parameters.ec = message.properties.categories || message.event;
+    parameters.ec = message.properties.category || "EnhancedEcommerce";
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -474,8 +484,20 @@ function processProductListEvent(message, destination) {
       default:
         throw new Error("unknown ProductListEvent type");
     }
-
     const { products } = message.properties;
+    let { filters, sorts } = message.properties;
+    filters = filters || [];
+    sorts = sorts || [];
+    filters = filters
+      .map(obj => {
+        return `${obj.type}:${obj.value}`;
+      })
+      .join();
+    sorts = sorts
+      .map(obj => {
+        return `${obj.type}:${obj.value}`;
+      })
+      .join();
     if (products && products.length > 0) {
       const customParamKeys = getCustomParamKeys(destination.Config);
       for (let i = 0; i < products.length; i += 1) {
@@ -497,10 +519,11 @@ function processProductListEvent(message, destination) {
         parameters[`il1pi${prodIndex}nm`] = value.name;
         parameters[`il1pi${prodIndex}ca`] = value.category;
         parameters[`il1pi${prodIndex}br`] = value.brand;
-        parameters[`il1pi${prodIndex}va`] = value.variant;
+        parameters[`il1pi${prodIndex}va`] = `${filters}::${sorts}`;
         parameters[`il1pi${prodIndex}cc`] = value.coupon;
         parameters[`il1pi${prodIndex}ps`] = value.position;
         parameters[`il1pi${prodIndex}pr`] = value.price;
+        parameters[`il1pi${prodIndex}qt`] = value.quantity || 1;
       }
     } else {
       // throw error, empty Product List in Product List Viewed event payload
@@ -515,6 +538,12 @@ function processProductListEvent(message, destination) {
 // Function for processing product viewed or clicked events
 function processProductEvent(message, destination) {
   const eventString = message.event;
+  let category;
+  if (message.properties && message.properties.category) {
+    category = message.properties.category;
+  } else {
+    category = "All";
+  }
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
 
@@ -523,9 +552,7 @@ function processProductEvent(message, destination) {
 
   const parameters = {
     ea: eventString,
-    ec:
-      message.properties.category ||
-      (enhancedEcommerce ? "EnhancedEcommerce" : "All")
+    ec: enhancedEcommerce ? "EnhancedEcommerce" : category
   };
 
   // Set product action to click or detail depending on event
@@ -642,6 +669,7 @@ function processTransactionEvent(message, destination) {
       parameters[`pr${prodIndex}cc`] = product.coupon;
       parameters[`pr${prodIndex}ps`] = product.position;
       parameters[`pr${prodIndex}pr`] = product.price;
+      parameters[`pr${prodIndex}qt`] = product.quantity || 1;
     }
   } else {
     // throw error, empty Product List in Product List Viewed event payload
@@ -650,7 +678,7 @@ function processTransactionEvent(message, destination) {
 
   if (enhancedEcommerce) {
     parameters.ea = message.event;
-    parameters.ec = message.properties.category || message.event;
+    parameters.ec = message.properties.category || "EnhancedEcommerce";
   }
   return parameters;
 }
@@ -660,11 +688,12 @@ function processEComGenericEvent(message, destination) {
   const eventString = message.event;
   const parameters = {
     ea: eventString,
-    ec: message.properties.category || eventString
+    ec: message.properties.category
   };
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
   if (enhancedEcommerce) {
+    parameters.ec = message.properties.category || "EnhancedEcommerce";
     // Set product action as per event
     switch (eventString.toLowerCase()) {
       case Event.CART_VIEWED.name:
@@ -773,6 +802,9 @@ function processSingleMessage(message, destination) {
               customParams,
               processEComGenericEvent(message, destination)
             );
+            break;
+          case ConfigCategory.SHARING.name:
+            Object.assign(customParams, processSharingEvent(message));
             break;
           default:
             Object.assign(

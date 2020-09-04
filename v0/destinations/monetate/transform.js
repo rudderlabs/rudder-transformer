@@ -208,7 +208,7 @@ function track(message, destination) {
           purchaseId: purchaseId,
           purchaseLines: purchaseLines.map(product => {
             let valueStr = (product.quantity * product.price).toFixed(2);
-            let currency = properties.currency ? properties.currency : "USD";
+            let currency = product.currency || properties.currency || "USD";
             const sku = product.sku || "";
             return {
               pid: product.product_id ? product.product_id.toString() : "",

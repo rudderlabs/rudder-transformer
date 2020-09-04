@@ -134,7 +134,7 @@ function getUserAttributesObject(message, mappingJson) {
     "push_subscribe"
   ];
 
-  const traits = message.traits || message.context.traits;
+  const traits = message.traits || (message.context && message.context.traits);
 
   if (traits) {
     reserved.forEach(element => {

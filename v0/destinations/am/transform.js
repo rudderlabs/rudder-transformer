@@ -68,12 +68,14 @@ function createSingleMessageBasicStructure(message) {
 } */
 
 function getSessionId(payload) {
-  return payload.session_id
-    ? payload.session_id.substr(
-        payload.session_id.lastIndexOf(":") + 1,
-        payload.session_id.length
-      )
-    : -1;
+  const sessionId = payload.session_id;
+  if (sessionId) {
+    if (typeof sessionId === "string") {
+      return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);
+    }
+    return sessionId;
+  }
+  return -1;
 }
 
 // function fixVersion(payload, message) {

@@ -10,7 +10,7 @@ const opts = {
 };
 
 async function getPool(versionId, libraryVersionIds) {
-  if (!poolCache[versionId]) {
+  if (!poolCache[versionId]) { //TODO, do a combo of libraryVersionIds and versionId instead of just versionId
     const factory = await getFactory(versionId, libraryVersionIds);
     poolCache[versionId] = genericPool.createPool(factory, opts);
     logger.debug("spool created");

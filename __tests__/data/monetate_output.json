@@ -281,5 +281,359 @@
             "customerId": "newUser"
         },
         "files": {}
+    }, 
+    {
+        "statusCode": 400,
+        "message": "Message type identify not supported"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "11.0.0.0"
+            },
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize"
+            },
+            {
+              "eventType": "monetate:context:UserAgent",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            },
+            {
+              "cartLines": [
+                {
+                  "pid": "pp10001900011",
+                  "sku": "",
+                  "value": "30",
+                  "currency": "USD"
+                }
+              ],
+              "eventType": "monetate:context:Cart"
+            }
+          ],
+          "channel": "channel",
+          "customerId": "user101"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "https://google.com",
+              "path": "https://google.com",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "referrer": "google",
+              "eventType": "monetate:context:Referrer"
+            }
+          ],
+          "channel": "channel"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "https://geeks.com",
+              "path": "https://geeks.com",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "referrer": "geeksforgeeks",
+              "eventType": "monetate:context:Referrer"
+            }
+          ],
+          "channel": "channel"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "22.0.0.0"
+            },
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize"
+            },
+            {
+              "eventType": "monetate:context:UserAgent",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            },
+            {
+              "cartLines": [
+                {
+                  "pid": "p2022222",
+                  "sku": "",
+                  "value": "NaN",
+                  "currency": "INR",
+                  "quantity": "1"
+                },
+                {
+                  "pid": "p201111",
+                  "sku": "",
+                  "value": "180.00",
+                  "currency": "USD",
+                  "quantity": "2"
+                }
+              ],
+              "eventType": "monetate:context:Cart"
+            }
+          ],
+          "channel": "channel",
+          "customerId": "user202"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "11.0.0.0"
+            },
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize"
+            },
+            {
+              "eventType": "monetate:context:UserAgent",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            }
+          ],
+          "channel": "channel",
+          "customerId": "user202"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "https://geeks.com",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "referrer": "geeksforgeeks",
+              "eventType": "monetate:context:Referrer"
+            }
+          ],
+          "channel": "channel"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize"
+            },
+            {
+              "eventType": "monetate:context:UserAgent",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            },
+            {
+              "products": [
+                {
+                  "sku": "123",
+                  "productId": "P303333333"
+                }
+              ],
+              "eventType": "monetate:context:ProductDetailView"
+            }
+          ],
+          "channel": "channel",
+          "customerId": "user202"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "referrer": "http://localhost:1111/",
+              "eventType": "monetate:context:Referrer"
+            }
+          ],
+          "channel": "channel"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "11.0.0.0"
+            },
+            {
+              "url": "http://localhost:1111/monetateRudder.html",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize"
+            },
+            {
+              "eventType": "monetate:context:UserAgent",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+            },
+            {
+              "eventType": "monetate:context:Purchase",
+              "purchaseId": "orderCompleted101",
+              "purchaseLines": [
+                {
+                  "pid": "p2022222",
+                  "sku": "sku 1 for order completed",
+                  "value": "8900.00",
+                  "currency": "INR",
+                  "quantity": "1"
+                },
+                {
+                  "pid": "p201111",
+                  "sku": "sku 2 for order completed",
+                  "value": "180.00",
+                  "currency": "USD",
+                  "quantity": "2"
+                }
+              ]
+            }
+          ],
+          "channel": "channel",
+          "customerId": "user202"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "body": {
+          "events": [
+            {
+              "url": "https://facebook.com",
+              "path": "/monetateRudder.html",
+              "eventType": "monetate:context:PageView"
+            },
+            {
+              "referrer": "http://localhost:1111/",
+              "eventType": "monetate:context:Referrer"
+            }
+          ],
+          "channel": "channel"
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer"
+    },
+    {
+        "statusCode": 400,
+        "message": "Message type identify not supported"
     }
+           
 ]

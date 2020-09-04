@@ -4,6 +4,5 @@
   "properties.creative": "promo1cr",
   "properties.position": "promo1ps",
   "properties.name": "promo1nm",
-  "request_ip": "uip",
-  "context.userAgent": "ua"
+  "request_ip": "uip"
 }

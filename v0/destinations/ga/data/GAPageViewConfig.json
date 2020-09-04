@@ -3,6 +3,5 @@
   "properties.title": "dt",
   "properties.url": "dl",
   "properties.referrer": "dr",
-  "request_ip": "uip",
-  "context.userAgent": "ua"
+  "request_ip": "uip"
 }

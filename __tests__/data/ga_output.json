@@ -11,7 +11,7 @@
       "cd1": "ruchira moitra",
       "content1": "ruchira/plan",
       "v": "1",
-      "t": "",
+      "t": "event",
       "tid": "UA-165994240-1",
       "ds": "web",
       "an": "RudderLabs JavaScript SDK",
@@ -22,7 +22,9 @@
       "uid": "123456",
       "cid": "00000000000000000000000000",
       "ni": 1,
-      "uip": "0.0.0.0"
+      "uip": "0.0.0.0",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -55,8 +57,8 @@
       "dr": "",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1,
-      "uip": "0.0.0.0"
+      "uip": "0.0.0.0",
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -88,7 +90,8 @@
       "cid": "00000000000000000000000000",
       "ea": "test track event GA3",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
+      "uid": "12345",
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -116,7 +119,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "order completed",
-      "ec": "order completed",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -133,7 +136,10 @@
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1
+      "ni": 1,
+      "pr1qt": 1,
+      "pr2qt": 3,
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -151,7 +157,7 @@
     "headers": {},
     "params": {
       "ea": "product added",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "add",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -174,7 +180,8 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1
+      "ni": 1,
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -192,7 +199,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -215,6 +222,7 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -233,7 +241,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -256,6 +264,7 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -274,7 +283,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -297,6 +306,7 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -315,7 +325,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -338,6 +348,7 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -372,6 +383,9 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "il1pi1qt": 1,
+      "il1pi1va": "department:beauty,price:under::price:desc",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -409,6 +423,11 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "il1pi1qt": 1,
+      "il1pi1va": "department:beauty,price:under::price:desc",
+      "il1pi2qt": 1,
+      "il1pi2va": "department:beauty,price:under::price:desc",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -427,7 +446,7 @@
     "headers": {},
     "params": {
       "ea": "product clicked",
-      "ec": "cat 1",
+      "ec": "EnhancedEcommerce",
       "pa": "click",
       "pr1cd1": "my product",
       "pr1id": "p-298",
@@ -449,6 +468,8 @@
       "pr1qt": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "pal": "search results",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -488,6 +509,7 @@
       "promo1nm": "my product",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -527,6 +549,7 @@
       "promo1nm": "my product",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -554,7 +577,7 @@
       "pr2nm": "my product 2",
       "pr2pr": 24.75,
       "ea": "checkout started",
-      "ec": "checkout started",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -568,6 +591,10 @@
       "cu": "CAD",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "cos": 1,
+      "pr1qt": 1,
+      "pr2qt": 1,
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -595,7 +622,7 @@
       "pr2nm": "my product 2",
       "pr2pr": 24.75,
       "ea": "order updated",
-      "ec": "order updated",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -609,6 +636,10 @@
       "cu": "CAD",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "cos": 1,
+      "pr1qt": 1,
+      "pr2qt": 1,
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -628,7 +659,7 @@
     "params": {
       "pa": "checkout",
       "ea": "checkout step viewed",
-      "ec": "checkout step viewed",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -642,6 +673,7 @@
       "cos": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -659,9 +691,9 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "pa": "checkout",
+      "pa": "checkout_option",
       "ea": "checkout step completed",
-      "ec": "checkout step completed",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -675,6 +707,7 @@
       "cos": 1,
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -692,6 +725,171 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
+      "ni": 1,
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "cid": "00000000000000000000000000",
+      "ea": "order refunded",
+      "ec": "EnhancedEcommerce",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uid": "12345",
+      "pa": "refund",
+      "pr1id": "p-298",
+      "pr1qt": 1,
+      "pr2id": "p-299",
+      "ul": "en-US",
+      "pr2qt": 1
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ev": 0,
+      "ul": "en-US",
+      "ec": "All",
+      "ni": 1,
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "cid": "00000000000000000000000000",
+      "ea": "order starterefundedd",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uid": "12345"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ul": "en-US",
+      "ev": 0,
+      "ec": "All",
+      "ni": 1,
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "npa": 1,
+      "aip": 1,
+      "cid": "00000000000000000000000000",
+      "ea": "order starterefundedd",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uid": "12345"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ul": "en-US",
+      "ev": 0,
+      "ec": "All",
+      "ni": 1,
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "aip": 1,
+      "cid": "00000000000000000000000000",
+      "ea": "order starterefundedd",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uid": "12345"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ul": "en-US",
+      "ev": 0,
+      "ec": "All",
+      "ni": 1,
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "cid": "00000000000000000000000000",
+      "ea": "order starterefundedd",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "uid": "12345"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ul": "en-US",
       "ev": 0,
       "ec": "All",
       "ni": 1,
@@ -724,161 +922,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
-      "ec": "All",
-      "ni": 1,
-      "v": "1",
-      "t": "event",
-      "tid": "UA-165994240-1",
-      "ds": "web",
-      "an": "RudderLabs JavaScript SDK",
-      "av": "1.0.0",
-      "aiid": "com.rudderlabs.javascript",
-      "npa": 1,
-      "aip": 1,
-      "cid": "00000000000000000000000000",
-      "ea": "order starterefundedd",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "params": {
-      "ev": 0,
-      "ec": "All",
-      "ni": 1,
-      "v": "1",
-      "t": "event",
-      "tid": "UA-165994240-1",
-      "ds": "web",
-      "npa": 1,
-      "aip": 1,
-      "cid": "00000000000000000000000000",
-      "ea": "order starterefundedd",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "params": {
-      "ev": 0,
-      "ec": "All",
-      "ni": 1,
-      "v": "1",
-      "t": "event",
-      "tid": "UA-165994240-1",
-      "ds": "web",
-      "an": "RudderLabs JavaScript SDK",
-      "av": "1.0.0",
-      "aiid": "com.rudderlabs.javascript",
-      "aip": 1,
-      "cid": "00000000000000000000000000",
-      "ea": "order starterefundedd",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "params": {
-      "ev": 0,
-      "ec": "All",
-      "ni": 1,
-      "v": "1",
-      "t": "event",
-      "tid": "UA-165994240-1",
-      "ds": "web",
-      "an": "RudderLabs JavaScript SDK",
-      "av": "1.0.0",
-      "aiid": "com.rudderlabs.javascript",
-      "npa": 1,
-      "cid": "00000000000000000000000000",
-      "ea": "order starterefundedd",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "params": {
-      "ev": 0,
-      "ec": "All",
-      "ni": 1,
-      "v": "1",
-      "t": "event",
-      "tid": "UA-165994240-1",
-      "ds": "web",
-      "an": "RudderLabs JavaScript SDK",
-      "av": "1.0.0",
-      "aiid": "com.rudderlabs.javascript",
-      "npa": 1,
-      "aip": 1,
-      "cid": "00000000000000000000000000",
-      "ea": "order starterefundedd",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
-    },
-    "body": {
-      "JSON": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "params": {
+      "ul": "en-US",
       "ev": 0,
       "ec": "All",
       "ni": 1,
@@ -911,6 +955,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
+      "ul": "en-US",
       "ev": 0,
       "ec": "All",
       "ni": 1,
@@ -947,6 +992,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
+      "ul": "en-US",
       "ev": 0,
       "ec": "All",
       "ni": 1,
@@ -982,6 +1028,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
+      "ul": "en-US",
       "ev": 0,
       "ec": "All",
       "ni": 1,
@@ -1020,7 +1067,7 @@
       "ea": "User Enriched",
       "ec": "All",
       "v": "1",
-      "t": "",
+      "t": "event",
       "tid": "UA-165994240-1",
       "ds": "web",
       "an": "RudderLabs JavaScript SDK",
@@ -1029,7 +1076,9 @@
       "npa": 1,
       "uid": "123",
       "cid": "38e169a1-3234-46f7-9ceb-c1a6a69005fe",
-      "ni": 1
+      "ni": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+      "ul": "en-GB"
     },
     "body": {
       "JSON": {},
@@ -1058,7 +1107,7 @@
       "cid": "00000000000000000000000000",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1,
+      "ul": "en-US",
       "uip": "0.0.0.0"
     },
     "body": {
@@ -1092,7 +1141,7 @@
       "dr": "",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1,
+      "ul": "en-US",
       "uip": "0.0.0.0"
     },
     "body": {
@@ -1126,6 +1175,7 @@
       "ea": "sample event",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
       "uip": "0.0.0.0"
     },
     "body": {
@@ -1155,7 +1205,7 @@
       "pr2pr": 24.75,
       "pr2qt": 3,
       "ea": "Order Refunded",
-      "ec": "Order Refunded",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1169,6 +1219,7 @@
       "cid": "00000000000000000000000000",
       "ti": "ruchiraorder1",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -1189,7 +1240,7 @@
       "pa": "refund",
       "ti": "ruchiraorder1",
       "ea": "Order Refunded",
-      "ec": "Order Refunded",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1202,6 +1253,7 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -1222,7 +1274,7 @@
       "pa": "refund",
       "ti": "ruchiraorder1",
       "ea": "Order Refunded",
-      "ec": "Order Refunded",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1235,6 +1287,7 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -1264,7 +1317,7 @@
       "pr2pr": 24.75,
       "pr2qt": 3,
       "ea": "Order Refunded",
-      "ec": "Order Refunded",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1278,6 +1331,7 @@
       "cid": "00000000000000000000000000",
       "ti": "ruchiraorder1",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -1295,7 +1349,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
+      "ea": "Cart Shared",
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1309,7 +1363,9 @@
       "aip": 1,
       "cid": "00000000000000000000000000",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
+      "uid": "12345",
+      "st": " 1 2",
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -1326,7 +1382,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
+      "ea": "Product Shared",
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1340,7 +1396,9 @@
       "aip": 1,
       "cid": "00000000000000000000000000",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345"
+      "uid": "12345",
+      "st": "www.example.com",
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -1381,7 +1439,10 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
-      "ni": 1
+      "ni": 1,
+      "il1pi2qt": 3,
+      "il1pi1qt": 1,
+      "ul": "en-US"
     },
     "body": {
       "JSON": {},
@@ -1422,6 +1483,9 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "ul": "en-US",
+      "il1pi2qt": 3,
+      "il1pi1qt": 1,
       "ni": 1
     },
     "body": {
@@ -1454,7 +1518,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "Order Cancelled",
-      "ec": "Order Cancelled",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1470,7 +1534,10 @@
       "tt": 20.99,
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345",
+      "uid": "12345", 
+      "ul": "en-US",
+      "pr1qt": 1,
+      "pr2qt": 3,
       "ni": 1
     },
     "body": {
@@ -1499,7 +1566,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "Order Cancelled",
-      "ec": "Order Cancelled",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1516,6 +1583,9 @@
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
+      "pr1qt": 1,
+      "pr2qt": 3,
       "ni": 1
     },
     "body": {
@@ -1544,7 +1614,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "Order Cancelled",
-      "ec": "Order Cancelled",
+      "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -1561,6 +1631,9 @@
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
+      "ul": "en-US",
+      "pr1qt": 1,
+      "pr2qt": 3,
       "ni": 1
     },
     "body": {
@@ -1583,7 +1656,7 @@
     "headers": {},
     "params": {
       "ea": "Cart Viewed",
-      "ec": "Cart Viewed",
+      "ec": "EnhancedEcommerce",
       "pa": "detail",
       "v": "1",
       "t": "event",
@@ -1597,6 +1670,7 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "cid": "00000000000000000000000000",
       "uid": "12345",
+      "ul": "en-US",
       "ni": 1
     },
     "body": {
@@ -1632,7 +1706,7 @@
       "cd": "homescreen",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "ni": 1,
+      "ul": "en-US",
       "uip": "0.0.0.0"
     },
     "body": {
@@ -1648,4 +1722,3 @@
     "message": "message type not supported"
   }
 ]
-

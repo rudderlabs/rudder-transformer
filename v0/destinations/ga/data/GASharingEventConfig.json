@@ -2,6 +2,5 @@
   "anonymousId": "cid",
   "properties.share_via": "sn",
   "properties.share_message": "sa",
-  "request_ip": "uip",
-  "context.userAgent": "ua"
+  "request_ip": "uip"
 }

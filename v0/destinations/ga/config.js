@@ -3,7 +3,7 @@ const { getMappingConfig } = require("../../util");
 const ConfigCategory = {
   IDENTIFY: {
     name: "GAIdentifyConfig",
-    hitType: ""
+    hitType: "event"
   },
   PAGE: {
     name: "GAPageViewConfig",

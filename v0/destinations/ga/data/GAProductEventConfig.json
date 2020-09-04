@@ -10,5 +10,5 @@
   "properties.price": "pr1pr",
   "properties.quantity": "pr1qt",
   "request_ip": "uip",
-  "context.userAgent": "ua"
+  "properties.list": "pal"
 }

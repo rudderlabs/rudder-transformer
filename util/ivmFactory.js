@@ -8,10 +8,10 @@ const {
 
 async function createIvm(versionId, libraryVersionIds) {
   const transformation = await getTransformationCode(versionId);
-  libraryVersionIds = [
-    "1gtnPXkwSZGFm0ZATfM4yG1Na92",
-    "1gtnXEh8C5Em1OP4j6heawXB4Z7"
-  ];
+  // libraryVersionIds = [
+  //   "1gtnPXkwSZGFm0ZATfM4yG1Na92",
+  //   "1gtnXEh8C5Em1OP4j6heawXB4Z7"
+  // ];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCode(libraryVersionId)
@@ -237,10 +237,10 @@ function transform(fullEvents) {
   return { isolate, jail, bootstrapScriptResult, context, fnRef };
 }
 
-async function getFactory(versionId) {
+async function getFactory(versionId, libraryVersionIds) {
   const factory = {
     create: () => {
-      return createIvm(versionId);
+      return createIvm(versionId, libraryVersionIds);
     },
     destroy: client => {
       client.isolate.dispose();

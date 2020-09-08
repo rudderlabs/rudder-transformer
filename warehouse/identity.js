@@ -66,17 +66,17 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   let mergeProp2 = {};
   if (eventType === "merge") {
     if (
-      !_.has(message, "mergeProperties.identifier1") ||
-      !_.has(message, "mergeProperties.identifier2")
+      !_.has(message, "mergeProperties[0]") ||
+      !_.has(message, "mergeProperties[1]")
     ) {
       throw new Error("either or both identifiers missing in mergeProperties");
     }
 
     if (
-      _.isEmpty(message.mergeProperties.identifier1.type) ||
-      _.isEmpty(message.mergeProperties.identifier1.value) ||
-      _.isEmpty(message.mergeProperties.identifier2.type) ||
-      _.isEmpty(message.mergeProperties.identifier2.value)
+      _.isEmpty(message.mergeProperties[0].type) ||
+      _.isEmpty(message.mergeProperties[0].value) ||
+      _.isEmpty(message.mergeProperties[1].type) ||
+      _.isEmpty(message.mergeProperties[1].value)
     ) {
       throw new Error(
         "mergeProperties contains null values for expected inputs"
@@ -84,12 +84,12 @@ function getMergeRuleEvent(message = {}, eventType, options) {
     }
 
     mergeProp1 = {
-      name: message.mergeProperties.identifier1.type,
-      value: message.mergeProperties.identifier1.value
+      name: message.mergeProperties[0].type,
+      value: message.mergeProperties[0].value
     };
     mergeProp2 = {
-      name: message.mergeProperties.identifier2.type,
-      value: message.mergeProperties.identifier2.value
+      name: message.mergeProperties[1].type,
+      value: message.mergeProperties[1].value
     };
   } else if (eventType === "alias") {
     mergeProp1 = { name: "user_id", value: message.userId };

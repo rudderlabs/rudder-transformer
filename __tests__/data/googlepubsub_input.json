@@ -48,7 +48,7 @@
         "eventToTopicMap": [
           {
             "from": "track",
-            "to": "projects/big-query-integration-poc/topics/test"
+            "to": "test"
           }
         ]
       }
@@ -103,7 +103,7 @@
         "eventToTopicMap": [
           {
             "from": "product added",
-            "to": "projects/big-query-integration-poc/topics/test"
+            "to": "test"
           }
         ]
       }
@@ -158,7 +158,7 @@
         "eventToTopicMap": [
           {
             "from": "*",
-            "to": "projects/big-query-integration-poc/topics/test"
+            "to": "test"
           }
         ]
       }
@@ -213,7 +213,7 @@
         "eventToTopicMap": [
           {
             "from": "test event",
-            "to": "projects/big-query-integration-poc/topics/test"
+            "to": "test"
           }
         ]
       }
@@ -249,7 +249,7 @@
         "eventToTopicMap": [
           {
             "from": "track",
-            "to": "projects/big-query-integration-poc/topics"
+            "to": ""
           }
         ]
       }
@@ -285,7 +285,7 @@
         "eventToTopicMap": [
           {
             "from": "track",
-            "to": "projects/big-query-integration-poc/topics/"
+            "to": ""
           }
         ]
       }

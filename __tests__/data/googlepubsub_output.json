@@ -143,10 +143,10 @@
   },
   {
     "statusCode": 400,
-    "error": "Topic path without topic id."
+    "error": "No topic set for this event"
   },
   {
     "statusCode": 400,
-    "error": "Topic id cannot be null."
+    "error": "No topic set for this event"
   }
 ]

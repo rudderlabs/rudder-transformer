@@ -36,14 +36,6 @@ const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
 export default self;
 `;
 
-const compiledModules = {};
-
-async function loadModule(isolate, context, moduleName, moduleCode) {
-  const module = await isolate.compileModule(moduleCode);
-  await module.instantiate(context, () => {});
-  compiledModules[moduleName] = { module };
-}
-
 async function transform(isolatevm, events) {
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor

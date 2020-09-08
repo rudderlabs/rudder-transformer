@@ -4,7 +4,11 @@ function getTopic(event) {
   const { message } = event;
   const { eventToTopicMap } = event.destination.Config;
   const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
-  return hashMap["*"] || hashMap[message.type] || hashMap[message.event];
+  return (
+    hashMap["*"] ||
+    hashMap[message.type.toLowerCase()] ||
+    hashMap[message.event.toLowerCase()]
+  );
 }
 
 function process(event) {

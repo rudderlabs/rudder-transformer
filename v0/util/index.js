@@ -44,7 +44,7 @@ const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      hashMap[array[fromKey]] = array[toKey];
+      hashMap[array[fromKey].toLowerCase()] = array[toKey].toLowerCase();
     });
   }
   return hashMap;

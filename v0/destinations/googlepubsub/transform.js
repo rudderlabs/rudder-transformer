@@ -6,9 +6,9 @@ function getTopic(event) {
   const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
 
   return (
-    hashMap["*"] ||
+    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
     hashMap[message.type.toLowerCase()] ||
-    (message.event ? hashMap[message.event.toLowerCase()] : null)
+    hashMap["*"]
   );
 }
 

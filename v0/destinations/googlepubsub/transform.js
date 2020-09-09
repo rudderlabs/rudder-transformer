@@ -1,9 +1,10 @@
 const { getHashFromArray } = require("../../util");
 
-function getDeliveryStreamMapTo(event) {
+function getTopic(event) {
   const { message } = event;
-  const { mapEvents } = event.destination.Config;
-  const hashMap = getHashFromArray(mapEvents, "from", "to");
+  const { eventToTopicMap } = event.destination.Config;
+  const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
+
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||
     hashMap[message.type.toLowerCase()] ||
@@ -12,14 +13,14 @@ function getDeliveryStreamMapTo(event) {
 }
 
 function process(event) {
-  const deliveryStreamMapTo = getDeliveryStreamMapTo(event);
-  if (deliveryStreamMapTo) {
+  const topicId = getTopic(event);
+  if (topicId) {
     return {
       message: event.message,
       userId: event.message.anonymousId,
-      deliveryStreamMapTo
+      topicId
     };
   }
-  throw new Error("No delivery stream set for this event");
+  throw new Error("No topic set for this event");
 }
 exports.process = process;

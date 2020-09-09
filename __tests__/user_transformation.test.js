@@ -33,7 +33,6 @@ describe("User transformation", () => {
           }
           `
     };
-
     fetch.mockResolvedValue({
       json: jest.fn().mockResolvedValue(respBody)
     });
@@ -47,6 +46,7 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
+  // TODO: Fix the rest of the tests
   it(`Filtering ${name} Test`, async () => {
     const versionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
@@ -90,11 +90,11 @@ describe("User transformation", () => {
     const respBody = {
       code: `
       import add from 'add';
-      import { sub, increment} from 'math';
+      import * as LibraryMath from 'LibraryMath';
       import * as lodash from 'lodash';
       function transform(events) {
           const modifiedEvents = events.map(event => {
-            event.sum = add(4,5);
+            event.sum = LibraryMath.add(4,5);
             event.diff = sub(4,5);
             event.inc = increment(22);
             event.max = lodash.max([2,3,5,6,7,8]);
@@ -161,7 +161,7 @@ describe("User transformation", () => {
       code: `
       function transform(events) {
           while(true){
-            
+
           }
           const modifiedEvents = events.map(event => {
             if(event.properties && event.properties.url){
@@ -184,6 +184,5 @@ describe("User transformation", () => {
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
-    // expect(output).toEqual(expectedData);
   });
 });

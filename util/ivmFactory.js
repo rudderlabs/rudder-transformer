@@ -26,7 +26,8 @@ async function createIvm(versionId, libraryVersionIds) {
       getLibraryCode(libraryVersionId)
     )
   );
-  if (transformation && libraries) { //TODO: Check if this should this be &&
+  if (transformation && libraries) {
+    //TODO: Check if this should this be &&
     const librariesMap = {};
     libraries.forEach(library => {
       librariesMap[_.camelCase(library.name)] = library.code;
@@ -232,6 +233,7 @@ export function transform(fullEvents) {
     })
   );
 
+  // TODO: Figure out how to check for the correct function name
   // if (supportedFuncs.length !== 1) {
   //   throw new Error(
   //     `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(
@@ -248,11 +250,11 @@ export function transform(fullEvents) {
 
 async function getFactory(versionId, libraryVersionIds) {
   const factory = {
-    create: () => {
+    create: async () => {
       return createIvm(versionId, libraryVersionIds);
     },
-    destroy: client => {
-      client.isolate.dispose();
+    destroy: async client => {
+      await client.isolate.dispose();
     }
   };
 

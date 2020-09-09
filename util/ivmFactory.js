@@ -1,5 +1,6 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
+const _ = require("lodash");
 const logger = require("../logger");
 const {
   getTransformationCode,
@@ -16,18 +17,14 @@ async function loadModule(isolate, context, moduleName, moduleCode) {
 
 async function createIvm(versionId, libraryVersionIds) {
   const transformation = await getTransformationCode(versionId);
-  // libraryVersionIds = [
-  //   "1gtnPXkwSZGFm0ZATfM4yG1Na92",
-  //   "1gtnXEh8C5Em1OP4j6heawXB4Z7"
-  // ];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCode(libraryVersionId)
     )
   );
+  const librariesMap = {};
   if (transformation && libraries) {
     //TODO: Check if this should this be &&
-    const librariesMap = {};
     libraries.forEach(library => {
       librariesMap[_.camelCase(library.name)] = library.code;
     });
@@ -36,8 +33,7 @@ async function createIvm(versionId, libraryVersionIds) {
   let { code } = transformation;
   code = code.replace("metadata(", "metadata(eventsMetadata, ");
 
-  const match = `function transform(events) {
-`;
+  const match = `function transform(events) {`;
   const replacement = `
 function metadata(eventsMetadata, event) {
     log("Inside modified code");
@@ -57,17 +53,8 @@ export function transform(fullEvents) {
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
 
-  // For local testing
-  // TODO: Remove before merging
-  // const libraries = {
-  //   add: addCode,
-  //   math: subCode,
-  //   lodash: lodashCode,
-  //   url: urlCode
-  // };
-
   await Promise.all(
-    Object.entries(libraries).map(async ([moduleName, moduleCode]) => {
+    Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       await loadModule(isolate, context, moduleName, moduleCode);
     })
   );
@@ -124,7 +111,7 @@ export function transform(fullEvents) {
       // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let fetch = _fetch;
@@ -141,7 +128,7 @@ export function transform(fullEvents) {
           ]);
         });
       };
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let log = _log;
@@ -172,7 +159,7 @@ export function transform(fullEvents) {
           );
         };
 
-        
+
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -192,18 +179,16 @@ export function transform(fullEvents) {
             });
           });
         }
-         
+
         `
   );
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-
   const customScriptModule = await isolate.compileModule(`${code}`);
-
   await customScriptModule.instantiate(context, spec => {
-    if (libraries[spec]) {
+    if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
     console.log(`import from ${spec} failed. Module not found.`);

@@ -25,7 +25,7 @@ describe("User transformation", () => {
 
     const respBody = {
       code: `
-       function transform(events) {
+      function transform(events) {
           const filteredEvents = events.map(event => {
             return event;
           });
@@ -33,15 +33,15 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockReturnValue(
-      Promise.resolve(new Response(JSON.stringify(respBody)))
-    );
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(respBody)
+    });
 
     const output = await userTransformHandler(inputData, versionId, []);
-    // expect(fetch).toHaveBeenCalledTimes(1);
-    // expect(fetch).toHaveBeenCalledWith(
-    //   `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-    // );
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
 
     expect(output).toEqual(expectedData);
   });
@@ -54,7 +54,7 @@ describe("User transformation", () => {
     const expectedData = require(`./data/${integration}_filter_output.json`);
 
     const respBody = {
-      code: `export function transform(events) {
+      code: `function transform(events) {
                         let filteredEvents = events.filter(event => {
                           const eventType = event.type;
                           return eventType && eventType.match(/track/g);
@@ -69,12 +69,11 @@ describe("User transformation", () => {
                       }
                       `
     };
-    fetch.mockReturnValue(
-      Promise.resolve(new Response(JSON.stringify(respBody)))
-    );
-    const output = await userTransformHandler(inputData, versionId);
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+    const output = await userTransformHandler(inputData, versionId, []);
 
-    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -93,7 +92,7 @@ describe("User transformation", () => {
       import add from 'add';
       import * as LibraryMath from 'LibraryMath';
       import * as lodash from 'lodash';
-      export function transform(events) {
+      function transform(events) {
           const modifiedEvents = events.map(event => {
             event.sum = LibraryMath.add(4,5);
             event.diff = sub(4,5);
@@ -106,13 +105,12 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockReturnValueOnce(
-      Promise.resolve(new Response(JSON.stringify(respBody)))
-    );
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(respBody)
+    });
 
-    const output = await userTransformHandler(inputData, versionId);
+    const output = await userTransformHandler(inputData, versionId, []);
 
-    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -129,7 +127,7 @@ describe("User transformation", () => {
     const respBody = {
       code: `
       import url from 'url';
-      export function transform(events) {
+      function transform(events) {
           const modifiedEvents = events.map(event => {
             if(event.properties && event.properties.url){
               event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
@@ -140,13 +138,12 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockReturnValueOnce(
-      Promise.resolve(new Response(JSON.stringify(respBody)))
-    );
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(respBody)
+    });
 
-    const output = await userTransformHandler(inputData, versionId);
+    const output = await userTransformHandler(inputData, versionId, []);
 
-    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -162,7 +159,7 @@ describe("User transformation", () => {
 
     const respBody = {
       code: `
-      export function transform(events) {
+      function transform(events) {
           while(true){
 
           }
@@ -176,15 +173,14 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockReturnValueOnce(
-      Promise.resolve(new Response(JSON.stringify(respBody)))
-    );
-    // const output = await userTransformHandler(inputData, versionId);
+    fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+    // const output = await userTransformHandler(inputData, versionId, []);
     await expect(async () => {
-      const output = await userTransformHandler(inputData, versionId);
+      const output = await userTransformHandler(inputData, versionId, []);
     }).rejects.toThrow("Timed out");
 
-    expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );

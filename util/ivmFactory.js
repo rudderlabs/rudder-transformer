@@ -16,6 +16,7 @@ async function loadModule(isolate, context, moduleName, moduleCode) {
 }
 
 async function createIvm(versionId, libraryVersionIds) {
+  console.log("createIvm")
   const transformation = await getTransformationCode(versionId);
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
@@ -217,7 +218,7 @@ export function transform(fullEvents) {
     })
   );
 
-  // TODO: Figutre out how to check for the correct function name
+  // TODO: Figure out how to check for the correct function name
   // if (supportedFuncs.length !== 1) {
   //   throw new Error(
   //     `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(

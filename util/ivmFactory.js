@@ -6,7 +6,16 @@ const {
   getLibraryCode
 } = require("./customTransforrmationsStore");
 
+const compiledModules = {};
+
+async function loadModule(isolate, context, moduleName, moduleCode) {
+  const module = await isolate.compileModule(moduleCode);
+  await module.instantiate(context, () => {});
+  compiledModules[moduleName] = { module };
+}
+
 async function createIvm(versionId, libraryVersionIds) {
+  console.log("createIvm")
   const transformation = await getTransformationCode(versionId);
   // libraryVersionIds = [
   //   "1gtnPXkwSZGFm0ZATfM4yG1Na92",
@@ -36,7 +45,7 @@ function metadata(eventsMetadata, event) {
     return eventsMetadata[event.messageId] || {};
 }
 
-function transform(fullEvents) {
+export function transform(fullEvents) {
   const events = fullEvents.map(event => event.message);
   const eventsMetadata = {};
   fullEvents.forEach(ev => {
@@ -216,20 +225,20 @@ function transform(fullEvents) {
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
-      const funcRef = await jail.get(sName);
+      const funcRef = await customScriptModule.namespace.get(sName);
       if (funcRef) {
         supportedFuncs.push(funcRef);
       }
     })
   );
 
-  if (supportedFuncs.length !== 1) {
-    throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(
-        sFunc => sFunc.name
-      )}`
-    );
-  }
+  // if (supportedFuncs.length !== 1) {
+  //   throw new Error(
+  //     `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(
+  //       sFunc => sFunc.name
+  //     )}`
+  //   );
+  // }
 
   const fnRef = supportedFuncs[0];
   // TODO : check if we can resolve this

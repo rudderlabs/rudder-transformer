@@ -1,17 +1,18 @@
 [
-    {
-        "destKey": "events",
-        "sourceKeys": "context.screen",
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimitive": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:ScreenSize",
-                "height": "sourceKeyValue.height",
-                "width": "sourceKeyValue.width"
-            },
-            "action": "push"
-        }
+  {
+    "destKey": "events",
+    "sourceKeys": "context.screen",
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimitive": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:ScreenSize",
+        "height": "sourceKeyValue.height",
+        "width": "sourceKeyValue.width"
+      },
+      "action": "push"
     }
+  }
 ]
+

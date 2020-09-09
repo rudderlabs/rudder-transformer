@@ -1,80 +1,81 @@
 [
-    {
-        "destKey": "monetateId",
-        "sourceKeys": "properties.monetateId"
-    },
-    {
-        "destKey": "events",
-        "sourceKeys": "context.ip",
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimite": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:IpAddress",
-                "ipAddress": "sourceKeyValue"
-            },
-            "action": "push"
-        }
-    },
-    {
-        "destKey": "events",
-        "sourceKeys": ["properties.page", "context.page"],
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimitive": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:PageView",
-                "url": "sourceKeyValue.url",
-                "path": "sourceKeyValue.path",
-                "categories": ["sourceKeyValue.category"],
-                "breadcrumbs": ["sourceKeyValue.breadcrumbs"]
-            },
-            "action": "push"
-        }
-    },
-    {
-        "destKey": "events",
-        "sourceKeys": "context.referrer.url",
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimitive": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:Referrer",
-                "referrer": "sourceKeyValue"
-            },
-            "action": "push"
-        }
-    },
-    {
-        "destKey": "events",
-        "sourceKeys": "context.screen",
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimitive": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:ScreenSize",
-                "height": "sourceKeyValue.height",
-                "width": "sourceKeyValue.width"
-            },
-            "action": "push"
-        }
-    },
-    {
-        "destKey": "events",
-        "sourceKeys": "context.userAgent",
-        "metadata": {
-            "targetType": "Array",
-            "isTargetTypePrimitive": false,
-            "targetChildType": "object",
-            "targetFormat": {
-                "eventType": "monetate:context:UserAgent",
-                "userAgent": "sourceKeyValue"
-            },
-            "action": "push"
-        }
+  {
+    "destKey": "monetateId",
+    "sourceKeys": "properties.monetateId"
+  },
+  {
+    "destKey": "events",
+    "sourceKeys": "context.ip",
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimite": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:IpAddress",
+        "ipAddress": "sourceKeyValue"
+      },
+      "action": "push"
     }
+  },
+  {
+    "destKey": "events",
+    "sourceKeys": ["properties.page", "context.page"],
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimitive": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:PageView",
+        "url": "sourceKeyValue.url",
+        "path": "sourceKeyValue.path",
+        "categories": ["sourceKeyValue.category"],
+        "breadcrumbs": ["sourceKeyValue.breadcrumbs"]
+      },
+      "action": "push"
+    }
+  },
+  {
+    "destKey": "events",
+    "sourceKeys": "context.referrer.url",
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimitive": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:Referrer",
+        "referrer": "sourceKeyValue"
+      },
+      "action": "push"
+    }
+  },
+  {
+    "destKey": "events",
+    "sourceKeys": "context.screen",
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimitive": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:ScreenSize",
+        "height": "sourceKeyValue.height",
+        "width": "sourceKeyValue.width"
+      },
+      "action": "push"
+    }
+  },
+  {
+    "destKey": "events",
+    "sourceKeys": "context.userAgent",
+    "metadata": {
+      "targetType": "Array",
+      "isTargetTypePrimitive": false,
+      "targetChildType": "object",
+      "targetFormat": {
+        "eventType": "monetate:context:UserAgent",
+        "userAgent": "sourceKeyValue"
+      },
+      "action": "push"
+    }
+  }
 ]
+

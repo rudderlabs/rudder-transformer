@@ -94,6 +94,9 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   } else if (eventType === "alias") {
     mergeProp1 = { name: "user_id", value: message.userId };
     mergeProp2 = { name: "user_id", value: message.previousId };
+  } else if (_.isEmpty(_.toString(message.anonymousId))) {
+    // handle messages with only userId and no anonymousId
+    mergeProp1 = { name: "user_id", value: message.userId };
   } else {
     mergeProp1 = { name: "anonymous_id", value: message.anonymousId };
     mergeProp2 = { name: "user_id", value: message.userId };

@@ -26,7 +26,7 @@ inputData.forEach((input, index) => {
       expected = expectedData[index]
     } catch (error) {
       output = error.message;
-      expected = expectedData[index].message;
+      expected = expectedData[index].error;
     }
     expect(output).toEqual(expected);
   });

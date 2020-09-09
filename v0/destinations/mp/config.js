@@ -3,6 +3,9 @@ const { getMappingConfig } = require("../../util");
 const ConfigCategory = {
   IDENTIFY: {
     name: "MPIdentifyConfig"
+  },
+  TRACK: {
+    name: "MPTrackConfig"
   }
 };
 

@@ -1,0 +1,12 @@
+{
+    "context.ip": "ip",
+    "context.library.name": "mp_lib",
+    "context.browser.name": "$browser",
+    "context.browser.version": "$browser_version",
+    "context.os.name" : "$os",
+    "context.os.version" : "$os_version",
+    "context.app.build": "$app_release",
+    "context.app.version": "$app_version_string",
+    "context.traits.email": "$email",
+    "context.traits.firstname": "$first_name"
+}

@@ -10,6 +10,7 @@ const {
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+const mPTrackConfigJson = mappingConfig[ConfigCategory.TRACK.name];
 
 function getEventTime(message) {
   return new Date(message.originalTimestamp).toISOString();
@@ -54,7 +55,8 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId
+    $distinct_id: message.userId || message.anonymousId,
+    ip: message.context ? message.context.ip : undefined
   };
 
   return responseBuilderSimple(
@@ -66,12 +68,39 @@ function processRevenueEvents(message, destination) {
 }
 
 function getEventValueForTrackEvent(message, destination) {
-  const properties = {
+  let val,properties = {};
+  Object.keys(mPTrackConfigJson).forEach(sourceKey => {
+    val = get(message, sourceKey);
+    if (val) {
+      properties[mPTrackConfigJson[sourceKey]] = val;
+    }
+  });
+
+  const traits = message.context.traits;
+
+  // add mp_name_tag
+  properties["mp_name_tag"] = traits.email || message.anonymousId;
+
+  // add timestamp in mixpanel foramt(UNIX timestamp)
+  if (message.timestamp) {
+    properties["time"] = Math.round(
+      new Date(message.timestamp).getTime() / 1000
+    );
+    // delete time if there was a formatting error
+    if (isNaN(properties["time"])) {
+      delete properties["time"];
+    }
+  }
+
+  // remove email from traits(as if it exists, it will already be populated as $email/$mp_name_tag)
+  delete traits["email"];
+
+  properties = {
+    ...properties,
     ...message.properties,
-    ...message.context.traits,
+    ...traits,
     token: destination.Config.token,
-    distinct_id: message.userId || message.anonymousId,
-    time: message.timestamp
+    distinct_id: message.userId || message.anonymousId
   };
 
   const parameters = {

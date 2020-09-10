@@ -172,35 +172,65 @@ function track(message, destination) {
             }
           ]
         });
+      } else {
+        throw new Error("'product_id' is a required field for Product Viewed");
       }
     } else if (evName === "Product List Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
+        const viewedProducts = properties.products.filter(
+          product => product.product_id
+        );
+        if (viewedProducts.length !== properties.products.length) {
+          throw new Error(
+            "'product_id' is a required field for all products for Product List Viewed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:ProductThumbnailView",
           products: properties.products.map(product =>
-            product.product_id ? product.product_id.toString() : ""
+            product.product_id.toString()
           )
         });
       }
     } else if (evName === "Product Added") {
       const currency = properties.currency || "USD";
       const sku = properties.sku || "";
-      rawPayload.events.push({
-        eventType: "monetate:context:Cart",
-        cartLines: [
-          {
-            pid: properties.product_id ? properties.product_id.toString() : "",
-            sku,
-            quantity: properties.quantity,
-            value: properties.cart_value
-              ? properties.cart_value.toString()
-              : "",
-            currency
-          }
-        ]
-      });
+      if (
+        properties.product_id &&
+        properties.quantity &&
+        properties.cart_value
+      ) {
+        rawPayload.events.push({
+          eventType: "monetate:context:Cart",
+          cartLines: [
+            {
+              pid: properties.product_id
+                ? properties.product_id.toString()
+                : "",
+              sku,
+              quantity: properties.quantity,
+              value: properties.cart_value
+                ? properties.cart_value.toString()
+                : "",
+              currency
+            }
+          ]
+        });
+      } else {
+        throw new Error(
+          "'product_id', 'quantity', 'cart_value' are required fields for Product Added"
+        );
+      }
     } else if (evName === "Cart Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
+        const cartProducts = properties.products.filter(
+          product => product.quantity && product.price && product.product_id
+        );
+        if (cartProducts.length !== properties.product.length) {
+          throw new Error(
+            "'quantity', 'price' and 'product_id' are required fields for all products for Cart Viewed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:Cart",
           cartLines: properties.products.map(product => {
@@ -224,6 +254,11 @@ function track(message, destination) {
         const purchaseLines = products.filter(
           product => product.quantity && product.price && product.product_id
         );
+        if (purchaseLines.length !== products.length) {
+          throw new Error(
+            "'quantity', 'price' and 'product_id' are required fields for all products for Order Completed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:Purchase",
           purchaseId,

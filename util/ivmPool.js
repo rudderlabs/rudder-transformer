@@ -10,12 +10,22 @@ const opts = {
 };
 
 async function getPool(versionId, libraryVersionIds) {
-  if (!poolCache[versionId]) { //TODO, do a combo of libraryVersionIds and versionId instead of just versionId
+  // TODO: Do Base64 encode
+  const poolId = versionId + libraryVersionIds;
+  if (!poolCache[poolId]) {
     const factory = await getFactory(versionId, libraryVersionIds);
-    poolCache[versionId] = genericPool.createPool(factory, opts);
+    poolCache[poolId] = genericPool.createPool(factory, opts);
+
+    // Added to stop retrying and infinite loop on error
+    // TODO: Figure out if we should we do this
+    poolCache[poolId].on("factoryCreateError", error => {
+      // eslint-disable-next-line no-underscore-dangle
+      poolCache[poolId]._waitingClientsQueue.dequeue().reject(error);
+    });
+
     logger.debug("pool created");
   }
-  return poolCache[versionId];
+  return poolCache[poolId];
 }
 
 exports.getPool = getPool;

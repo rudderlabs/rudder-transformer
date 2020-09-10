@@ -638,7 +638,6 @@
       },
       "messageId": "0189ef26-5b64-47af-bd4a-f369155b74b0",
       "properties": {
-        "currency": "USD",
         "cart_value": 30,
         "product_id": "pp10001900011",
         "user_actual_id": 12345
@@ -1241,6 +1240,60 @@
   {
     "message": {
       "type": "identify",
+      "sentAt": "2020-09-04T08:59:41.568Z",
+      "userId": "user202",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.3",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/monetateRudder.html",
+          "path": "/monetateRudder.html",
+          "title": "MIxpanel Test",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Bangalore",
+          "name": "Manashi",
+          "email": "arucha@mysite.com",
+          "country": "India"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.3"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+      },
+      "messageId": "6debe993-9b1e-40ca-b2de-9054e86bcdd0",
+      "anonymousId": "RudderEncrypt:U2FsdGVkX19Iqki3tnJjjeUzFWOegZjPY3iYQOPJJSQaTUxTWedGBeEOyFE/hfddGtmaZJnf/HBtc/EDoRjKEA==",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-04T08:59:41.567Z"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
       "sentAt": "2020-09-04T08:59:41.568Z",
       "userId": "user202",
       "channel": "web",

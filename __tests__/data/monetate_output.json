@@ -710,5 +710,8 @@
     {
         "statusCode": 400,
         "error": "Message type identify not supported"
+    },
+    {
+        "error": "Message type missing from event"
     }
 ]

@@ -723,5 +723,9 @@
     {
         "statusCode": 400,
         "error": "'product_id' is a required field for Product Viewed"
+    },
+    {
+        "statusCode": 400,
+        "error": "'products' missing or not array in Product List Viewed"
     }
 ]

@@ -119,6 +119,22 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
   }
 };
 
+function responseBuilder(body, destination) {
+  const destinationConfig = destination.Config || {};
+  const response = defaultRequestConfig();
+
+  // adding monetate channel to body
+  body.channel = destinationConfig.monetateChannel;
+
+  response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
+  response.body.JSON = body;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+
+  return response;
+}
+
 const constructPayload = (message, mappingJson) => {
   // Mapping JSON should be an array
   if (Array.isArray(mappingJson) && mappingJson.length > 0) {
@@ -191,6 +207,10 @@ function track(message, destination) {
             product.product_id.toString()
           )
         });
+      } else {
+        throw new Error(
+          "'products' missing or not array in Product List Viewed"
+        );
       }
     } else if (evName === "Product Added") {
       const currency = properties.currency || "USD";
@@ -198,6 +218,7 @@ function track(message, destination) {
       if (
         properties.product_id &&
         properties.quantity &&
+        Number.isInteger(properties.quantity) &&
         properties.cart_value
       ) {
         rawPayload.events.push({
@@ -218,17 +239,22 @@ function track(message, destination) {
         });
       } else {
         throw new Error(
-          "'product_id', 'quantity', 'cart_value' are required fields for Product Added"
+          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
         );
       }
     } else if (evName === "Cart Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
         const cartProducts = properties.products.filter(
-          product => product.quantity && product.price && product.product_id
+          product =>
+            product.quantity &&
+            Number.isInteger(product.quantity) &&
+            product.price &&
+            typeof product.price === "number" &&
+            product.product_id
         );
-        if (cartProducts.length !== properties.product.length) {
+        if (cartProducts.length !== properties.products.length) {
           throw new Error(
-            "'quantity', 'price' and 'product_id' are required fields for all products for Cart Viewed"
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed"
           );
         }
         rawPayload.events.push({
@@ -250,13 +276,18 @@ function track(message, destination) {
     } else if (evName === "Order Completed") {
       const purchaseId = properties.order_id;
       const { products } = properties;
-      if (purchaseId && products) {
+      if (purchaseId && products && Array.isArray(products)) {
         const purchaseLines = products.filter(
-          product => product.quantity && product.price && product.product_id
+          product =>
+            product.quantity &&
+            Number.isInteger(product.quantity) &&
+            product.price &&
+            typeof product.price === "number" &&
+            product.product_id
         );
         if (purchaseLines.length !== products.length) {
           throw new Error(
-            "'quantity', 'price' and 'product_id' are required fields for all products for Order Completed"
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed"
           );
         }
         rawPayload.events.push({
@@ -307,22 +338,6 @@ function screen(message, destination) {
   const rawPayload = constructPayload(message, mappingConfig.MONETATEScreen);
 
   return responseBuilder(removeUndefinedValues(rawPayload), destination);
-}
-
-function responseBuilder(body, destination) {
-  const destinationConfig = destination.Config || {};
-  const response = defaultRequestConfig();
-
-  // adding monetate channel to body
-  body.channel = destinationConfig.monetateChannel;
-
-  response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  response.body.JSON = body;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-
-  return response;
 }
 
 function process(event) {

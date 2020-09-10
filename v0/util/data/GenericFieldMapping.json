@@ -8,6 +8,7 @@
   ],
   "email": ["traits.email", "context.traits.email", "properties.email"],
   "timestamp": ["originalTimestamp", "timestamp"],
+  "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
   "userId": [
     "userId",

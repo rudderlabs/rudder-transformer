@@ -691,6 +691,63 @@
             "JSON": {
                 "events": [
                     {
+                        "eventType": "monetate:context:IpAddress",
+                        "ipAddress": "11.0.0.0"
+                    },
+                    {
+                        "eventType": "monetate:context:PageView",
+                        "url": "http://localhost:1111/monetateRudder.html",
+                        "path": "/monetateRudder.html"
+                    },
+                    {
+                        "eventType": "monetate:context:ScreenSize"
+                    },
+                    {
+                        "eventType": "monetate:context:UserAgent",
+                        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+                    },
+                    {
+                        "eventType": "monetate:context:Purchase",
+                        "purchaseId": "orderCompleted101",
+                        "purchaseLines": [
+                            {
+                                "pid": "p2022222",
+                                "sku": "sku 1 for order completed",
+                                "quantity": "1",
+                                "value": "8900.00",
+                                "currency": "INR"
+                            },
+                            {
+                                "pid": "p201111",
+                                "sku": "sku 2 for order completed",
+                                "quantity": "2",
+                                "value": "180.00",
+                                "currency": "USD"
+                            }
+                        ]
+                    }
+                ],
+                "deviceId": "anony11111111",
+                "channel": "channel"
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "events": [
+                    {
                         "eventType": "monetate:context:PageView",
                         "url": "https://facebook.com",
                         "path": "/monetateRudder.html"

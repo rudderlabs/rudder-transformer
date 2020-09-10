@@ -261,7 +261,7 @@ function responseBuilder(body, destination) {
   body["channel"] = destinationConfig.monetateChannel;
 
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  response.body = body;
+  response.body.JSON = body;
   response.headers = {
     "Content-Type": "application/json"
   };

@@ -14,12 +14,17 @@ const createObject = type => {
   if (!type) {
     throw new Error("[createObject] type not defined");
   }
+  // TODO: check if default makes sense
+  let retObj = {};
   switch (type.toLowerCase()) {
     case "array":
-      return [];
+      retObj = [];
+      break;
     case "object":
-      return {};
+      retObj = {};
+      break;
   }
+  return retObj;
 };
 
 const getStringValue = (value, key) => {
@@ -56,7 +61,7 @@ const getValue = (value, key) => {
         val.push(k);
       }
     });
-    if (val.length == 0) {
+    if (val.length === 0) {
       val = undefined;
     }
   }
@@ -64,11 +69,12 @@ const getValue = (value, key) => {
 };
 
 const formatValue = (value, format) => {
-  let formattedVal = {};
+  const formattedVal = {};
   // format is an object in this case
   // TODO : Add generic support for more types
   if (value && format) {
-    let sourceKey, val;
+    let sourceKey;
+    let val;
     Object.keys(format).forEach(key => {
       sourceKey = format[key];
       val = getValue(value, sourceKey);
@@ -90,6 +96,7 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
     set(payload, destKey, value);
   } else {
     // value is not a primitive type
+    // TODO: add else or refactor for better code cov
     if (metadata.action && payload[destKey][metadata.action]) {
       payload[destKey][metadata.action](
         formatValue(value, metadata.targetFormat)
@@ -127,7 +134,7 @@ const constructPayload = (message, mappingJson) => {
 };
 
 function track(message, destination) {
-  let rawPayload = constructPayload(message, mappingConfig["MONETATETrack"]);
+  const rawPayload = constructPayload(message, mappingConfig.MONETATETrack);
 
   if (message.userId) {
     rawPayload.customerId = message.userId;
@@ -136,10 +143,10 @@ function track(message, destination) {
   }
 
   // Add Ecomm Events if applicable
-  let evName = message.event;
-  let properties = message.properties || {};
+  const evName = message.event;
+  const properties = message.properties || {};
   if (evName) {
-    if (evName == "Product Viewed") {
+    if (evName === "Product Viewed") {
       if (properties.product_id) {
         const sku = properties.sku || "";
         rawPayload.events.push({
@@ -147,12 +154,12 @@ function track(message, destination) {
           products: [
             {
               productId: properties.product_id,
-              sku: sku
+              sku
             }
           ]
         });
       }
-    } else if (evName == "Product List Viewed") {
+    } else if (evName === "Product List Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
         rawPayload.events.push({
           eventType: "monetate:context:ProductThumbnailView",
@@ -161,61 +168,61 @@ function track(message, destination) {
           )
         });
       }
-    } else if (evName == "Product Added") {
-      let currency = properties.currency || "USD";
+    } else if (evName === "Product Added") {
+      const currency = properties.currency || "USD";
       const sku = properties.sku || "";
       rawPayload.events.push({
         eventType: "monetate:context:Cart",
         cartLines: [
           {
             pid: properties.product_id ? properties.product_id.toString() : "",
-            sku: sku,
+            sku,
             quantity: properties.quantity,
             value: properties.cart_value
               ? properties.cart_value.toString()
               : "",
-            currency: currency
+            currency
           }
         ]
       });
-    } else if (evName == "Cart Viewed") {
+    } else if (evName === "Cart Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
         rawPayload.events.push({
           eventType: "monetate:context:Cart",
           cartLines: properties.products.map(product => {
-            let cartValue = (product.quantity * product.price).toFixed(2);
-            let currency = product.currency || properties.currency || "USD";
+            const cartValue = (product.quantity * product.price).toFixed(2);
+            const currency = product.currency || properties.currency || "USD";
             const sku = product.sku || "";
             return {
               pid: product.product_id ? product.product_id.toString() : "",
-              sku: sku,
+              sku,
               quantity: product.quantity,
               value: cartValue ? cartValue.toString() : "",
-              currency: currency
+              currency
             };
           })
         });
       }
-    } else if (evName == "Order Completed") {
-      let purchaseId = properties.order_id;
-      let products = properties.products;
+    } else if (evName === "Order Completed") {
+      const purchaseId = properties.order_id;
+      const { products } = properties;
       if (purchaseId && products) {
-        let purchaseLines = products.filter(
+        const purchaseLines = products.filter(
           product => product.quantity && product.price && product.product_id
         );
         rawPayload.events.push({
           eventType: "monetate:context:Purchase",
-          purchaseId: purchaseId,
+          purchaseId,
           purchaseLines: purchaseLines.map(product => {
-            let valueStr = (product.quantity * product.price).toFixed(2);
-            let currency = product.currency || properties.currency || "USD";
+            const valueStr = (product.quantity * product.price).toFixed(2);
+            const currency = product.currency || properties.currency || "USD";
             const sku = product.sku || "";
             return {
               pid: product.product_id ? product.product_id.toString() : "",
-              sku: sku,
+              sku,
               quantity: product.quantity,
               value: valueStr ? valueStr.toString() : "",
-              currency: currency
+              currency
             };
           })
         });
@@ -242,26 +249,26 @@ function track(message, destination) {
 }
 
 function page(message, destination) {
-  let rawPayload = constructPayload(message, mappingConfig["MONETATEPage"]);
+  const rawPayload = constructPayload(message, mappingConfig.MONETATEPage);
 
   return responseBuilder(removeUndefinedValues(rawPayload), destination);
 }
 
 function screen(message, destination) {
-  let rawPayload = constructPayload(message, mappingConfig["MONETATEScreen"]);
+  const rawPayload = constructPayload(message, mappingConfig.MONETATEScreen);
 
   return responseBuilder(removeUndefinedValues(rawPayload), destination);
 }
 
 function responseBuilder(body, destination) {
   const destinationConfig = destination.Config || {};
-  let response = defaultRequestConfig();
+  const response = defaultRequestConfig();
 
   // adding monetate channel to body
-  body["channel"] = destinationConfig.monetateChannel;
+  body.channel = destinationConfig.monetateChannel;
 
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  response.body = body;
+  response.body.JSON = body;
   response.headers = {
     "Content-Type": "application/json"
   };

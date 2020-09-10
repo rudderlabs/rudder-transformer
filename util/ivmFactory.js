@@ -7,16 +7,14 @@ const {
   getLibraryCode
 } = require("./customTransforrmationsStore");
 
-const compiledModules = {};
-
-async function loadModule(isolate, context, moduleName, moduleCode) {
-  const module = await isolate.compileModule(moduleCode);
-  await module.instantiate(context, () => {});
-  compiledModules[moduleName] = { module };
+async function loadModule(isolateInternal, contextInternal, moduleCode) {
+  const module = await isolateInternal.compileModule(moduleCode);
+  await module.instantiate(contextInternal, () => {});
+  return module;
 }
 
 async function createIvm(versionId, libraryVersionIds) {
-  console.log("createIvm")
+  console.log("createIvm");
   const transformation = await getTransformationCode(versionId);
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
@@ -25,7 +23,7 @@ async function createIvm(versionId, libraryVersionIds) {
   );
   const librariesMap = {};
   if (transformation && libraries) {
-    //TODO: Check if this should this be &&
+    // TODO: Check if this should this be &&
     libraries.forEach(library => {
       librariesMap[_.camelCase(library.name)] = library.code;
     });
@@ -54,9 +52,13 @@ export function transform(fullEvents) {
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
 
+  const compiledModules = {};
+
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
-      await loadModule(isolate, context, moduleName, moduleCode);
+      compiledModules[moduleName] = {
+        module: await loadModule(isolate, context, moduleCode)
+      };
     })
   );
 

@@ -60,6 +60,7 @@
         "height": "sourceKeyValue.height",
         "width": "sourceKeyValue.width"
       },
+      "targetFormatRequired": true,
       "action": "push"
     }
   },

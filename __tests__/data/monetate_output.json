@@ -344,9 +344,6 @@
                         "path": "/monetateRudder.html"
                     },
                     {
-                        "eventType": "monetate:context:ScreenSize"
-                    },
-                    {
                         "eventType": "monetate:context:UserAgent",
                         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
                     },
@@ -450,9 +447,6 @@
                         "path": "/monetateRudder.html"
                     },
                     {
-                        "eventType": "monetate:context:ScreenSize"
-                    },
-                    {
                         "eventType": "monetate:context:UserAgent",
                         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
                     },
@@ -504,9 +498,6 @@
                         "eventType": "monetate:context:PageView",
                         "url": "http://localhost:1111/monetateRudder.html",
                         "path": "/monetateRudder.html"
-                    },
-                    {
-                        "eventType": "monetate:context:ScreenSize"
                     },
                     {
                         "eventType": "monetate:context:UserAgent",
@@ -566,9 +557,6 @@
                         "eventType": "monetate:context:PageView",
                         "url": "http://localhost:1111/monetateRudder.html",
                         "path": "/monetateRudder.html"
-                    },
-                    {
-                        "eventType": "monetate:context:ScreenSize"
                     },
                     {
                         "eventType": "monetate:context:UserAgent",
@@ -643,9 +631,6 @@
                         "path": "/monetateRudder.html"
                     },
                     {
-                        "eventType": "monetate:context:ScreenSize"
-                    },
-                    {
                         "eventType": "monetate:context:UserAgent",
                         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
                     },
@@ -698,9 +683,6 @@
                         "eventType": "monetate:context:PageView",
                         "url": "http://localhost:1111/monetateRudder.html",
                         "path": "/monetateRudder.html"
-                    },
-                    {
-                        "eventType": "monetate:context:ScreenSize"
                     },
                     {
                         "eventType": "monetate:context:UserAgent",
@@ -770,5 +752,24 @@
     },
     {
         "error": "Message type missing from event"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "events": [],
+                "channel": "channel"
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
     }
 ]

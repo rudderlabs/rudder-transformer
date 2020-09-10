@@ -68,18 +68,29 @@ const getValue = (value, key) => {
   return val;
 };
 
-const formatValue = (value, format) => {
-  const formattedVal = {};
+const formatValue = (value, format, required) => {
+  let formattedVal = {};
   // format is an object in this case
   // TODO : Add generic support for more types
   if (value && format) {
     let sourceKey;
+    let key;
     let val;
-    Object.keys(format).forEach(key => {
+    const formatKeys = Object.keys(format);
+    for (let i = 0; i < formatKeys.length; i += 1) {
+      key = formatKeys[i];
+      // Object.keys(format).forEach(key => {
       sourceKey = format[key];
       val = getValue(value, sourceKey);
-      formattedVal[key] = val;
-    });
+      if (val) {
+        formattedVal[key] = val;
+      } else if (required) {
+        // return undefined if val doesn't exist.All keys for targetFormat are required.
+        // TODO : make this configurable from JSON
+        formattedVal = undefined;
+        break;
+      }
+    }
   }
   return formattedVal;
 };
@@ -97,10 +108,13 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
   } else {
     // value is not a primitive type
     // TODO: add else or refactor for better code cov
-    if (metadata.action && payload[destKey][metadata.action]) {
-      payload[destKey][metadata.action](
-        formatValue(value, metadata.targetFormat)
-      );
+    const targetValue = formatValue(
+      value,
+      metadata.targetFormat,
+      metadata.targetFormatRequired
+    );
+    if (metadata.action && payload[destKey][metadata.action] && targetValue) {
+      payload[destKey][metadata.action](targetValue);
     }
   }
 };

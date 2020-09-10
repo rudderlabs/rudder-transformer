@@ -208,7 +208,7 @@ if (startDestTransformer) {
               logger.error(error);
               transformedEvents.push({
                 statusCode: 400,
-                error: error.message,
+                error: error.toString(),
                 metadata: commonMetadata
               });
               stats.counter("user_transform_errors", destEvents.length, {

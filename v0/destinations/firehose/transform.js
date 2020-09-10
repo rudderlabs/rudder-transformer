@@ -4,7 +4,11 @@ function getDeliveryStreamMapTo(event) {
   const { message } = event;
   const { mapEvents } = event.destination.Config;
   const hashMap = getHashFromArray(mapEvents, "from", "to");
-  return hashMap["*"] || hashMap[message.type] || hashMap[message.event];
+  return (
+    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
+    hashMap[message.type.toLowerCase()] ||
+    hashMap["*"]
+  );
 }
 
 function process(event) {
@@ -12,7 +16,7 @@ function process(event) {
   if (deliveryStreamMapTo) {
     return {
       message: event.message,
-      userId: event.message.userId || event.message.anonymousId,
+      userId: event.message.anonymousId,
       deliveryStreamMapTo
     };
   }

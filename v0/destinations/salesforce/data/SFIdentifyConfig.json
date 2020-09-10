@@ -1,33 +1,97 @@
-{
-    "context.traits.email":"Email",
-    "context.traits.phone":"Phone",
+[
+  {
+    "destKey": "Email",
+    "sourceKeys": ["traits.email", "context.traits.email"]
+  },
+  {
+    "destKey": "Phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"]
+  },
+  {
+    "destKey": "Rating",
+    "sourceKeys": ["traits.rating", "context.traits.rating"]
+  },
+  {
+    "destKey": "Title",
+    "sourceKeys": ["traits.title", "context.traits.title"]
+  },
+  {
+    "destKey": "FirstName",
+    "sourceKeys": ["traits.firstName", "context.traits.firstName"]
+  },
+  {
+    "destKey": "LastName",
+    "sourceKeys": ["traits.lastName", "context.traits.lastName"]
+  },
+  {
+    "destKey": "PostalCode",
+    "sourceKeys": [
+      "traits.address.postalCode",
+      "context.traits.address.postalCode"
+    ]
+  },
+  {
+    "destKey": "City",
+    "sourceKeys": ["traits.address.city", "context.traits.address.city"]
+  },
+  {
+    "destKey": "Country",
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"]
+  },
+  {
+    "destKey": "State",
+    "sourceKeys": ["traits.address.state", "context.traits.address.state"]
+  },
+  {
+    "destKey": "Street",
+    "sourceKeys": ["traits.address.street", "context.traits.address.street"]
+  },
+  {
+    "destKey": "Country",
+    "sourceKeys": ["traits.country", "context.traits.country"]
+  },
+  {
+    "destKey": "PostalCode",
+    "sourceKeys": ["traits.postalCode", "context.traits.postalCode"]
+  },
+  {
+    "destKey": "State",
+    "sourceKeys": ["traits.state", "context.traits.state"]
+  },
+  {
+    "destKey": "Street",
+    "sourceKeys": ["traits.street", "context.traits.street"]
+  },
+  {
+    "destKey": "City",
+    "sourceKeys": ["traits.city", "context.traits.city"]
+  },
+  {
+    "destKey": "Industry",
+    "sourceKeys": ["traits.company.industry", "context.traits.company.industry"]
+  },
+  {
+    "destKey": "NumberOfEmployees",
+    "sourceKeys": [
+      "traits.company.employee_count",
+      "context.traits.company.employee_count"
+    ]
+  },
+  {
+    "destKey": "Company",
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"]
+  },
+  {
+    "destKey": "Company",
+    "sourceKeys": ["traits.company", "context.traits.company"]
+  },
+  {
+    "destKey": "Description",
+    "sourceKeys": ["traits.description", "context.traits.description"]
+  },
+  {
+    "destKey": "Website",
+    "sourceKeys": ["traits.website", "context.traits.website"]
+  }
+]
 
-    "context.traits.rating":"Rating",
-    "context.traits.title":"Title",
-    "context.traits.firstName":"FirstName",
-    "context.traits.lastName":"LastName",
-
-
-    "context.traits.address.postalCode":"PostalCode", 
-    "context.traits.address.city":"City",
-    "context.traits.address.country":"Country", 
-    "context.traits.address.state":"State",
-    "context.traits.address.street":"Street",
-
-
-    "context.traits.country":"Country", 
-    "context.traits.postalCode":"PostalCode", 
-    "context.traits.state":"State",
-    "context.traits.street":"Street",
-    "context.traits.city":"City",
-
-    "context.traits.company.industry":"Industry",  
-    "context.traits.company.employee_count":"NumberOfEmployees",
-    "context.traits.company.name":"Company",  
-    
-    "context.traits.company":"Company", 
-
-    "context.traits.description": "Description",
-    "context.traits.website": "Website",
-    "context.traits.LeadSource": "LeadSource"  
-}

@@ -1,229 +1,237 @@
 [
   [
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track",
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "attributes": [
-          {
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ],
-        "events": [
-          {
-            "time": "2020-01-24T11:59:02.402+05:30",
-            "properties": {
-              "path": "/tests/html/index2.html",
-              "referrer": "",
-              "search": "",
-              "title": "",
-              "url": "http://localhost/tests/html/index2.html"
-            },
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ]
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  }
-],
-[
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://rest.fra-01.braze.eu/users/identify",
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "aliases_to_identify": [
-          {
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
             }
-          }
-        ]
+          ],
+          "events": [
+            {
+              "time": "2020-01-24T11:59:02.402+05:30",
+              "properties": {
+                "path": "/tests/html/index2.html",
+                "referrer": "",
+                "search": "",
+                "title": "",
+                "url": "http://localhost/tests/html/index2.html"
+              },
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track",
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "attributes": [
-          {
-            "email": "mickey@disney.com",
-            "city": "Disney",
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ]
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/identify",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  }
-],
-[
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track",
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "attributes": [
-          {
-            "email": "mickey@disney.com",
-            "city": "Disney",
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
+      "params": {},
+      "body": {
+        "JSON": {
+          "aliases_to_identify": [
+            {
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
             }
-          }
-        ],
-        "events": [
-          {
-            "name": "braze revenue test",
-            "time": "2020-01-24T11:59:02.403+05:30",
-            "properties": {
-              "revenue": 50
-            },
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ]
+          ]
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  }
-],
-[
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track",
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "attributes": [
-          {
-            "email": "mickey@disney.com",
-            "city": "Disney",
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ],
-        "events": [
-          {
-            "name": "KM Order Completed",
-            "time": "2020-01-24T11:59:02.402+05:30",
-            "properties": {
-              "affiliation": "Google Store",
-              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-              "coupon": "hasbros",
-              "discount": 2.5,
-              "order_id": "50314b8e9bcf000000000000",
-              "products": [
-                {
-                  "category": "Games",
-                  "image_url": "https:///www.example.com/product/path.jpg",
-                  "name": "Monopoly: 3rd Edition",
-                  "price": 19,
-                  "product_id": "507f1f77bcf86cd799439011",
-                  "quantity": 1,
-                  "sku": "45790-32",
-                  "url": "https://www.example.com/product/path"
-                },
-                {
-                  "category": "Games",
-                  "name": "Uno Card Game",
-                  "price": 3,
-                  "product_id": "505bd76785ebb509fc183733",
-                  "quantity": 2,
-                  "sku": "46493-32"
-                }
-              ],
-              "revenue": 25,
-              "shipping": 3,
-              "subtotal": 22.5,
-              "tax": 2,
-              "total": 27.5
-            },
-            "_update_existing_only": false,
-            "user_alias": {
-              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "alias_label": "rudder_id"
-            }
-          }
-        ]
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  }
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "email": "mickey@disney.com",
+              "city": "Disney",
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "email": "mickey@disney.com",
+              "city": "Disney",
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "braze revenue test",
+              "time": "2020-01-24T11:59:02.403+05:30",
+              "properties": {
+                "revenue": 50
+              },
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "email": "mickey@disney.com",
+              "city": "Disney",
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "KM Order Completed",
+              "time": "2020-01-24T11:59:02.402+05:30",
+              "properties": {
+                "affiliation": "Google Store",
+                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+                "coupon": "hasbros",
+                "discount": 2.5,
+                "order_id": "50314b8e9bcf000000000000",
+                "products": [
+                  {
+                    "category": "Games",
+                    "image_url": "https:///www.example.com/product/path.jpg",
+                    "name": "Monopoly: 3rd Edition",
+                    "price": 19,
+                    "product_id": "507f1f77bcf86cd799439011",
+                    "quantity": 1,
+                    "sku": "45790-32",
+                    "url": "https://www.example.com/product/path"
+                  },
+                  {
+                    "category": "Games",
+                    "name": "Uno Card Game",
+                    "price": 3,
+                    "product_id": "505bd76785ebb509fc183733",
+                    "quantity": 2,
+                    "sku": "46493-32"
+                  }
+                ],
+                "revenue": 25,
+                "shipping": 3,
+                "subtotal": 22.5,
+                "tax": 2,
+                "total": 27.5
+              },
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              }
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
   ]
 ]

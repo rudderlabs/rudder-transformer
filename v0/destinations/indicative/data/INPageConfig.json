@@ -17,7 +17,11 @@
       "template": "Page View"
     }
   },
-  { "destKey": "properties", "sourceKeys": "properties", "required": false },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
   {
     "destKey": "eventTime",
     "sourceKeys": "originalTimestamp",

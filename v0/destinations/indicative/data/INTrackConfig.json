@@ -10,7 +10,11 @@
     "required": true
   },
   { "destKey": "eventName", "sourceKeys": "event", "required": true },
-  { "destKey": "properties", "sourceKeys": "properties", "required": false },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
   {
     "destKey": "eventTime",
     "sourceKeys": ["originalTimestamp", "timestamp"],

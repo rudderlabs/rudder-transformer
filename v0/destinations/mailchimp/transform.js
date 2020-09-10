@@ -1,6 +1,5 @@
 const get = require("get-value");
 const axios = require("axios");
-const set = require("set-value");
 const md5 = require("md5");
 const { EventType } = require("../../../constants");
 const {
@@ -11,8 +10,10 @@ const {
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
+const logger = require("../../../logger");
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {
@@ -44,7 +45,9 @@ async function checkIfMailExists(mailChimpConfig, email) {
       }
     });
     status = true;
-  } catch (error) {}
+  } catch (error) {
+    logger.error("axios error");
+  }
   return status;
 }
 
@@ -71,7 +74,7 @@ function getUpdateUserTraitsUrl(mailChimpConfig, email) {
 }
 
 async function responseBuilderSimple(payload, message, mailChimpConfig) {
-  const { email } = message.context.traits;
+  const email = getFieldValueFromMessage(message, "email");
   const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
   const response = defaultRequestConfig();
@@ -83,9 +86,9 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
     response.method = defaultPostRequestConfig.requestMethod;
   }
   response.body.JSON = payload;
-  const basicAuth = Buffer.from(
-    "apiKey" + ":" + `${mailChimpConfig.apiKey}`
-  ).toString("base64");
+  const basicAuth = Buffer.from(`apiKey:${mailChimpConfig.apiKey}`).toString(
+    "base64"
+  );
   return {
     ...response,
     headers: {
@@ -103,7 +106,7 @@ async function getPayload(
   emailExists,
   mailChimpConfig
 ) {
-  if (updateSubscription != undefined && emailExists) {
+  if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
@@ -112,24 +115,25 @@ async function getPayload(
         rawPayload[field] = message.integrations.MailChimp[field];
       }
     });
-    Object.keys(message.context.traits).forEach(trait => {
+    Object.keys(traits).forEach(trait => {
       if (trait === "email") {
-        rawPayload.email_address = message.context.traits[trait];
+        rawPayload.email_address = traits[trait];
       }
     });
     return rawPayload;
   }
 
-  if (traits && message.context.traits.email) {
+  const email = getFieldValueFromMessage(message, "email");
+  if (email) {
     const rawPayload = {};
     rawPayload.merge_fields = {};
 
-    Object.keys(message.context.traits).forEach(trait => {
+    Object.keys(traits).forEach(trait => {
       if (trait === "email") {
-        rawPayload.email_address = message.context.traits[trait];
+        rawPayload.email_address = traits[trait];
       } else {
         const tag = filterTagValue(trait);
-        rawPayload.merge_fields[tag] = message.context.traits[trait];
+        rawPayload.merge_fields[tag] = traits[trait];
       }
     });
     if (!emailExists) {
@@ -140,19 +144,18 @@ async function getPayload(
     }
     return rawPayload;
   }
+  return null;
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
-  const traits = get(message, "context.traits");
+  const traits = getFieldValueFromMessage(message, "traits");
 
   const updateSubscription = get(message, "integrations.MailChimp")
     ? message.integrations.MailChimp
     : undefined;
 
-  const emailExists = await checkIfMailExists(
-    mailChimpConfig,
-    message.context.traits.email
-  );
+  const email = getFieldValueFromMessage(message, "email");
+  const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
   const rawPayload = await getPayload(
     traits,
@@ -179,7 +182,7 @@ function getMailChimpConfig(message, destination) {
         mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
         break;
       default:
-        console.log("MailChimp: Unknown key type: ", key);
+        logger.debug("MailChimp: Unknown key type: ", key);
         break;
     }
   });

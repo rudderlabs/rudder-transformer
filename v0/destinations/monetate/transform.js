@@ -1,6 +1,3 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-use-before-define */
 const get = require("get-value");
 const set = require("set-value");
 
@@ -19,7 +16,6 @@ const createObject = type => {
   }
   // TODO: check if default makes sense
   let retObj = {};
-  // eslint-disable-next-line default-case
   switch (type.toLowerCase()) {
     case "array":
       retObj = [];
@@ -101,7 +97,6 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
   } else {
     // value is not a primitive type
     // TODO: add else or refactor for better code cov
-    // eslint-disable-next-line no-lonely-if
     if (metadata.action && payload[destKey][metadata.action]) {
       payload[destKey][metadata.action](
         formatValue(value, metadata.targetFormat)

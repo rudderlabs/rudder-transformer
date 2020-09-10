@@ -61,7 +61,7 @@ const getValue = (value, key) => {
         val.push(k);
       }
     });
-    if (val.length == 0) {
+    if (val.length === 0) {
       val = undefined;
     }
   }
@@ -146,7 +146,7 @@ function track(message, destination) {
   const evName = message.event;
   const properties = message.properties || {};
   if (evName) {
-    if (evName == "Product Viewed") {
+    if (evName === "Product Viewed") {
       if (properties.product_id) {
         const sku = properties.sku || "";
         rawPayload.events.push({
@@ -159,7 +159,7 @@ function track(message, destination) {
           ]
         });
       }
-    } else if (evName == "Product List Viewed") {
+    } else if (evName === "Product List Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
         rawPayload.events.push({
           eventType: "monetate:context:ProductThumbnailView",
@@ -168,7 +168,7 @@ function track(message, destination) {
           )
         });
       }
-    } else if (evName == "Product Added") {
+    } else if (evName === "Product Added") {
       const currency = properties.currency || "USD";
       const sku = properties.sku || "";
       rawPayload.events.push({
@@ -185,7 +185,7 @@ function track(message, destination) {
           }
         ]
       });
-    } else if (evName == "Cart Viewed") {
+    } else if (evName === "Cart Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
         rawPayload.events.push({
           eventType: "monetate:context:Cart",
@@ -203,7 +203,7 @@ function track(message, destination) {
           })
         });
       }
-    } else if (evName == "Order Completed") {
+    } else if (evName === "Order Completed") {
       const purchaseId = properties.order_id;
       const { products } = properties;
       if (purchaseId && products) {

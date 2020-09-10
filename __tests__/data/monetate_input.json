@@ -1144,15 +1144,15 @@
         "products": [
           {
             "sku": "sku 1 for order completed",
-            "price": "8900",
+            "price": 8900,
             "currency": "INR",
-            "quantity": "1",
+            "quantity": 1,
             "product_id": "p2022222"
           },
           {
             "sku": "sku 2 for order completed",
-            "price": "90",
-            "quantity": "2",
+            "price": 90,
+            "quantity": 2,
             "product_id": "p201111"
           }
         ]
@@ -1216,15 +1216,15 @@
         "products": [
           {
             "sku": "sku 1 for order completed",
-            "price": "8900",
+            "price": 8900,
             "currency": "INR",
-            "quantity": "1",
+            "quantity": 1,
             "product_id": "p2022222"
           },
           {
             "sku": "sku 2 for order completed",
-            "price": "90",
-            "quantity": "2",
+            "price": 90,
+            "quantity": 2,
             "product_id": "p201111"
           }
         ]
@@ -1409,6 +1409,447 @@
         "All": true
       },
       "originalTimestamp": "2020-09-04T08:59:41.567Z"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "density": 2
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "name": "Homepage",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "page": {
+          "url": "https://example.com/homepage",
+          "path": "/homepage",
+          "referrer": "https://google.com"
+        }
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "screen",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-09-03T05:48:50.824Z",
+      "userId": "user202",
+      "channel": "web",
+      "context": {
+        "ip": "11.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.3",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/monetateRudder.html",
+          "path": "/monetateRudder.html",
+          "title": "MIxpanel Test",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "email": "arucha@mysite.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.3"
+        },
+        "moneateId": "Monetate10111111",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+      },
+      "messageId": "19ef9a4e-fb49-42f2-8eba-b0bb7c934289",
+      "properties": {
+        "order_id": "orderCompleted101",
+        "products": [
+          {
+            "sku": "sku 1 for order completed",
+            "price": "8900",
+            "currency": "INR",
+            "quantity": "1"
+          },
+          {
+            "sku": "sku 2 for order completed",
+            "price": "90",
+            "quantity": "2",
+            "product_id": "p201111"
+          }
+        ]
+      },
+      "anonymousId": "anony11111111",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-03T05:48:50.824Z"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Cart Viewed",
+      "sentAt": "2020-09-03T05:48:50.820Z",
+      "userId": "user202",
+      "channel": "web",
+      "context": {
+        "ip": "22.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.3",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/monetateRudder.html",
+          "path": "/monetateRudder.html",
+          "title": "MIxpanel Test",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "email": "arucha@mysite.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.3"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+      },
+      "messageId": "21e78620-748a-4c1c-8570-385206fc61d6",
+      "properties": {
+        "products": [
+          {
+            "details": "Apple iphone 7",
+            "currency": "INR",
+            "quantity": 1,
+            "price": 2345,
+            "product_id": "p2022222"
+          },
+          {
+            "price": 90,
+            "details": "Apple iphone 8",
+            "quantity": 2,
+            "product_id": "p201111"
+          }
+        ]
+      },
+      "anonymousId": "anony222222222",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-03T05:48:50.820Z"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product Added",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "currency": "INR",
+        "quantity": 1,
+        "cart_value": 250,
+        "sku": "sku"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product List Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "products": [
+          {
+            
+          },
+          {
+            "product_id": 2
+          }
+        ]
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
+    },
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "screen": {
+          "height": 22,
+          "width": 11
+        },
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "ip": "0.0.0.0"
+      },
+      "traits": {
+        "address": {
+          "city": "Kol",
+          "country": "Ind"
+        }
+      },
+      "event": "Product List Viewed",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "monetateId": "1234",
+        "products": {
+            "product_id": "1"
+        }
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track",
+      "userId": "newUser"
     },
     "destination": {
       "Config": {

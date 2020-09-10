@@ -68,18 +68,29 @@ const getValue = (value, key) => {
   return val;
 };
 
-const formatValue = (value, format) => {
-  const formattedVal = {};
+const formatValue = (value, format, required) => {
+  let formattedVal = {};
   // format is an object in this case
   // TODO : Add generic support for more types
   if (value && format) {
     let sourceKey;
+    let key;
     let val;
-    Object.keys(format).forEach(key => {
+    const formatKeys = Object.keys(format);
+    for (let i = 0; i < formatKeys.length; i += 1) {
+      key = formatKeys[i];
+      // Object.keys(format).forEach(key => {
       sourceKey = format[key];
       val = getValue(value, sourceKey);
-      formattedVal[key] = val;
-    });
+      if (val) {
+        formattedVal[key] = val;
+      } else if (required) {
+        // return undefined if val doesn't exist.All keys for targetFormat are required.
+        // TODO : make this configurable from JSON
+        formattedVal = undefined;
+        break;
+      }
+    }
   }
   return formattedVal;
 };
@@ -97,13 +108,32 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
   } else {
     // value is not a primitive type
     // TODO: add else or refactor for better code cov
-    if (metadata.action && payload[destKey][metadata.action]) {
-      payload[destKey][metadata.action](
-        formatValue(value, metadata.targetFormat)
-      );
+    const targetValue = formatValue(
+      value,
+      metadata.targetFormat,
+      metadata.targetFormatRequired
+    );
+    if (metadata.action && payload[destKey][metadata.action] && targetValue) {
+      payload[destKey][metadata.action](targetValue);
     }
   }
 };
+
+function responseBuilder(body, destination) {
+  const destinationConfig = destination.Config || {};
+  const response = defaultRequestConfig();
+
+  // adding monetate channel to body
+  body.channel = destinationConfig.monetateChannel;
+
+  response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
+  response.body.JSON = body;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+
+  return response;
+}
 
 const constructPayload = (message, mappingJson) => {
   // Mapping JSON should be an array
@@ -158,35 +188,75 @@ function track(message, destination) {
             }
           ]
         });
+      } else {
+        throw new Error("'product_id' is a required field for Product Viewed");
       }
     } else if (evName === "Product List Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
+        const viewedProducts = properties.products.filter(
+          product => product.product_id
+        );
+        if (viewedProducts.length !== properties.products.length) {
+          throw new Error(
+            "'product_id' is a required field for all products for Product List Viewed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:ProductThumbnailView",
           products: properties.products.map(product =>
-            product.product_id ? product.product_id.toString() : ""
+            product.product_id.toString()
           )
         });
+      } else {
+        throw new Error(
+          "'products' missing or not array in Product List Viewed"
+        );
       }
     } else if (evName === "Product Added") {
       const currency = properties.currency || "USD";
       const sku = properties.sku || "";
-      rawPayload.events.push({
-        eventType: "monetate:context:Cart",
-        cartLines: [
-          {
-            pid: properties.product_id ? properties.product_id.toString() : "",
-            sku,
-            quantity: properties.quantity,
-            value: properties.cart_value
-              ? properties.cart_value.toString()
-              : "",
-            currency
-          }
-        ]
-      });
+      if (
+        properties.product_id &&
+        properties.quantity &&
+        Number.isInteger(properties.quantity) &&
+        properties.cart_value
+      ) {
+        rawPayload.events.push({
+          eventType: "monetate:context:Cart",
+          cartLines: [
+            {
+              pid: properties.product_id
+                ? properties.product_id.toString()
+                : "",
+              sku,
+              quantity: properties.quantity,
+              value: properties.cart_value
+                ? properties.cart_value.toString()
+                : "",
+              currency
+            }
+          ]
+        });
+      } else {
+        throw new Error(
+          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
+        );
+      }
     } else if (evName === "Cart Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
+        const cartProducts = properties.products.filter(
+          product =>
+            product.quantity &&
+            Number.isInteger(product.quantity) &&
+            product.price &&
+            typeof product.price === "number" &&
+            product.product_id
+        );
+        if (cartProducts.length !== properties.products.length) {
+          throw new Error(
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:Cart",
           cartLines: properties.products.map(product => {
@@ -206,10 +276,20 @@ function track(message, destination) {
     } else if (evName === "Order Completed") {
       const purchaseId = properties.order_id;
       const { products } = properties;
-      if (purchaseId && products) {
+      if (purchaseId && products && Array.isArray(products)) {
         const purchaseLines = products.filter(
-          product => product.quantity && product.price && product.product_id
+          product =>
+            product.quantity &&
+            Number.isInteger(product.quantity) &&
+            product.price &&
+            typeof product.price === "number" &&
+            product.product_id
         );
+        if (purchaseLines.length !== products.length) {
+          throw new Error(
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed"
+          );
+        }
         rawPayload.events.push({
           eventType: "monetate:context:Purchase",
           purchaseId,
@@ -258,22 +338,6 @@ function screen(message, destination) {
   const rawPayload = constructPayload(message, mappingConfig.MONETATEScreen);
 
   return responseBuilder(removeUndefinedValues(rawPayload), destination);
-}
-
-function responseBuilder(body, destination) {
-  const destinationConfig = destination.Config || {};
-  const response = defaultRequestConfig();
-
-  // adding monetate channel to body
-  body.channel = destinationConfig.monetateChannel;
-
-  response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  response.body.JSON = body;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-
-  return response;
 }
 
 function process(event) {

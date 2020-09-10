@@ -40,35 +40,8 @@
         "files": {}
     },
     {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "params": {},
-        "body": {
-            "JSON": {
-                "monetateId": "1234",
-                "events": [
-                    {
-                        "eventType": "monetate:context:IpAddress",
-                        "ipAddress": "0.0.0.0"
-                    },
-                    {
-                        "eventType": "monetate:context:ScreenSize",
-                        "height": 22,
-                        "width": 11
-                    }
-                ],
-                "customerId": "newUser",
-                "channel": "channel"
-            },
-            "XML": {},
-            "FORM": {}
-        },
-        "files": {}
+        "statusCode": 400,
+        "error": "'product_id' is a required field for Product Viewed"
     },
     {
         "version": "1",
@@ -323,49 +296,8 @@
         "error": "Message type identify not supported"
     },
     {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "params": {},
-        "body": {
-            "JSON": {
-                "events": [
-                    {
-                        "eventType": "monetate:context:IpAddress",
-                        "ipAddress": "11.0.0.0"
-                    },
-                    {
-                        "eventType": "monetate:context:PageView",
-                        "url": "http://localhost:1111/monetateRudder.html",
-                        "path": "/monetateRudder.html"
-                    },
-                    {
-                        "eventType": "monetate:context:UserAgent",
-                        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
-                    },
-                    {
-                        "eventType": "monetate:context:Cart",
-                        "cartLines": [
-                            {
-                                "pid": "pp10001900011",
-                                "sku": "",
-                                "value": "30",
-                                "currency": "USD"
-                            }
-                        ]
-                    }
-                ],
-                "customerId": "user101",
-                "channel": "channel"
-            },
-            "XML": {},
-            "FORM": {}
-        },
-        "files": {}
+        "statusCode": 400,
+        "error": "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
     },
     {
         "version": "1",
@@ -426,57 +358,8 @@
         "files": {}
     },
     {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "params": {},
-        "body": {
-            "JSON": {
-                "events": [
-                    {
-                        "eventType": "monetate:context:IpAddress",
-                        "ipAddress": "22.0.0.0"
-                    },
-                    {
-                        "eventType": "monetate:context:PageView",
-                        "url": "http://localhost:1111/monetateRudder.html",
-                        "path": "/monetateRudder.html"
-                    },
-                    {
-                        "eventType": "monetate:context:UserAgent",
-                        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
-                    },
-                    {
-                        "eventType": "monetate:context:Cart",
-                        "cartLines": [
-                            {
-                                "pid": "p2022222",
-                                "sku": "",
-                                "quantity": "1",
-                                "value": "NaN",
-                                "currency": "INR"
-                            },
-                            {
-                                "pid": "p201111",
-                                "sku": "",
-                                "quantity": "2",
-                                "value": "180.00",
-                                "currency": "USD"
-                            }
-                        ]
-                    }
-                ],
-                "customerId": "user202",
-                "channel": "channel"
-            },
-            "XML": {},
-            "FORM": {}
-        },
-        "files": {}
+        "statusCode": 400,
+        "error": "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed"
     },
     {
         "version": "1",
@@ -641,14 +524,14 @@
                             {
                                 "pid": "p2022222",
                                 "sku": "sku 1 for order completed",
-                                "quantity": "1",
+                                "quantity": 1,
                                 "value": "8900.00",
                                 "currency": "INR"
                             },
                             {
                                 "pid": "p201111",
                                 "sku": "sku 2 for order completed",
-                                "quantity": "2",
+                                "quantity": 2,
                                 "value": "180.00",
                                 "currency": "USD"
                             }
@@ -695,14 +578,14 @@
                             {
                                 "pid": "p2022222",
                                 "sku": "sku 1 for order completed",
-                                "quantity": "1",
+                                "quantity": 1,
                                 "value": "8900.00",
                                 "currency": "INR"
                             },
                             {
                                 "pid": "p201111",
                                 "sku": "sku 2 for order completed",
-                                "quantity": "2",
+                                "quantity": 2,
                                 "value": "180.00",
                                 "currency": "USD"
                             }
@@ -771,5 +654,74 @@
             "FORM": {}
         },
         "files": {}
+    },
+    {
+        "statusCode": 400,
+        "error": "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "events": [
+                    {
+                        "eventType": "monetate:context:IpAddress",
+                        "ipAddress": "22.0.0.0"
+                    },
+                    {
+                        "eventType": "monetate:context:PageView",
+                        "url": "http://localhost:1111/monetateRudder.html",
+                        "path": "/monetateRudder.html"
+                    },
+                    {
+                        "eventType": "monetate:context:UserAgent",
+                        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
+                    },
+                    {
+                        "eventType": "monetate:context:Cart",
+                        "cartLines": [
+                            {
+                                "pid": "p2022222",
+                                "sku": "",
+                                "quantity": 1,
+                                "value": "2345.00",
+                                "currency": "INR"
+                            },
+                            {
+                                "pid": "p201111",
+                                "sku": "",
+                                "quantity": 2,
+                                "value": "180.00",
+                                "currency": "USD"
+                            }
+                        ]
+                    }
+                ],
+                "customerId": "user202",
+                "channel": "channel"
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "statusCode": 400,
+        "error": "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
+    },
+    {
+        "statusCode": 400,
+        "error": "'product_id' is a required field for all products for Product List Viewed"
+    },
+    {
+        "statusCode": 400,
+        "error": "'product_id' is a required field for Product Viewed"
     }
 ]

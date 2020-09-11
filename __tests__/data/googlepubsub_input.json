@@ -31,7 +31,7 @@
           "density": 2
         }
       },
-     "type": "track",
+      "type": "track",
       "event": "product added",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
@@ -44,13 +44,11 @@
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
           {
             "from": "track",
-            "to": "ruchira-test-firehose"
+            "to": "test"
           }
         ]
       }
@@ -88,7 +86,7 @@
           "density": 2
         }
       },
-     "type": "track",
+      "type": "track",
       "event": "product added",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
@@ -101,13 +99,11 @@
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
           {
             "from": "product added",
-            "to": "ruchira-test-firehose"
+            "to": "test"
           }
         ]
       }
@@ -145,7 +141,7 @@
           "density": 2
         }
       },
-     "type": "track",
+      "type": "track",
       "event": "product added",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
@@ -158,13 +154,11 @@
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
+            "to": "test"
           }
         ]
       }
@@ -202,7 +196,7 @@
           "density": 2
         }
       },
-     "type": "track",
+      "type": "track",
       "event": "product added",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
@@ -215,13 +209,11 @@
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
           {
             "from": "test event",
-            "to": "ruchira-test-firehose"
+            "to": "test"
           }
         ]
       }
@@ -229,129 +221,159 @@
   },
   {
     "message": {
-      "channel": "web",
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "ruchira@rudderlabs.com"
-        },
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "id": "72e528f869711c3d",
-          "manufacturer": "Google",
-          "model": "sdk_gphone_x86",
-          "name": "generic_x86_arm",
-          "token": "some_device_token",
-          "type": "android"
-        },
-        "screen": {
-          "density": 2
+          "name": "analytics-node",
+          "version": "0.0.3"
         }
       },
-     "type": "track",
-      "event": "product added",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "123456",
-      "integrations": {
-        "All": true
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
       },
-      "sentAt": "2019-10-14T09:03:22.563Z"
+      "type": "track",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
           {
-            "from": "*",
-            "to": "ruchira-test-firehose"
-          },
-           {
             "from": "track",
-            "to": "ruchira-test-firehose-1"
-          },
-           {
-            "from": "product added",
-            "to": "ruchira-test-firehose-2"
+            "to": ""
           }
         ]
       }
     }
   },
-     {
+  {
     "message": {
-      "channel": "web",
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "ruchira@rudderlabs.com"
-        },
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "id": "72e528f869711c3d",
-          "manufacturer": "Google",
-          "model": "sdk_gphone_x86",
-          "name": "generic_x86_arm",
-          "token": "some_device_token",
-          "type": "android"
-        },
-        "screen": {
-          "density": 2
+          "name": "analytics-node",
+          "version": "0.0.3"
         }
       },
-     "type": "track",
-      "event": "product added",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "123456",
-      "integrations": {
-        "All": true
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
       },
-      "sentAt": "2019-10-14T09:03:22.563Z"
+      "type": "track",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
     },
     "destination": {
       "Config": {
-        "region": "us-east-1",
-        "accessKeyID": "abc",
-        "accessKey": "xyz",
-        "mapEvents": [
+        "credentials": "abc",
+        "eventToTopicMap": [
+          {
+            "from": "track",
+            "to": ""
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "type": "track",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
+    },
+    "destination": {
+      "Config": {
+        "credentials": "abc",
+        "eventToTopicMap": [
+          {
+            "from": "track",
+            "to": "test"
+          },
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
-          },
-           {
+            "to": "test a"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "type": "track",
+      "event":"product added",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
+    },
+    "destination": {
+      "Config": {
+        "credentials": "abc",
+        "eventToTopicMap": [
+          {
             "from": "track",
-            "to": "ruchira-test-firehose-1"
+            "to": "test"
+          },
+          {
+            "from": "*",
+            "to": "test a"
+          },
+          {
+            "from": "product added",
+            "to": "test b"
           }
         ]
       }
     }
   }
 ]
-

@@ -1,5 +1,5 @@
-const integration = "iterable";
-const name = "Iterable";
+const integration = "googlepubsub";
+const name = "GOOGLEPUBSUB";
 
 const fs = require("fs");
 const path = require("path");
@@ -18,12 +18,12 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  it(`${name} Tests: payload: ${index}`, async () => {
+  it(`${name} Tests: payload: ${index}`, () => {
     try {
       const output = transformer.process(input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });

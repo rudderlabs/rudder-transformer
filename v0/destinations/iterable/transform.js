@@ -8,6 +8,12 @@ const {
 } = require("../../util");
 const logger = require("../../../logger");
 
+function validateMandatoryField(payload) {
+  if (payload.email === undefined && payload.userId === undefined) {
+    throw new Error("userId or email is mandatory for this request");
+  }
+}
+
 function constructPayloadItem(message, category, destination) {
   const rawPayloadItemArr = [];
   let rawPayload = {};
@@ -23,78 +29,97 @@ function constructPayloadItem(message, category, destination) {
         mappingConfig[ConfigCategory.DEVICE.name]
       );
       rawPayload.preferUserId = true;
-      if (message.context.device.type === "ios")
+      if (message.context.device.type === "ios") {
         rawPayload.device.platform = "APNS";
-      else rawPayload.device.platform = "GCM";
+      } else {
+        rawPayload.device.platform = "GCM";
+      }
       break;
     case "identifyBrowser":
       rawPayload = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY_BROWSER.name]
       );
+      validateMandatoryField(rawPayload);
       break;
     case "identify":
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
+      validateMandatoryField(rawPayload);
       break;
     case "page":
       if (destination.Config.trackAllPages) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
-        message.properties.category
+        ((message.properties && message.properties.category) ||
+          message.category)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
-        message.properties.name
+        ((message.properties && message.properties.name) || message.name)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
+      } else {
+        throw new Error("Invalid page call");
       }
+      validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Page";
       } else {
         rawPayload.eventName += " page";
       }
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId)
+      if (rawPayload.campaignId) {
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      if (rawPayload.templateId)
+      }
+      if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
+      }
       break;
     case "screen":
       if (destination.Config.trackAllPages) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackCategorisedPages &&
-        message.properties.category
+        ((message.properties && message.properties.category) ||
+          message.category)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else if (
         destination.Config.trackNamedPages &&
-        message.properties.name
+        ((message.properties && message.properties.name) || message.name)
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
+      } else {
+        throw new Error("Invalid screen call");
       }
+      validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
         rawPayload.eventName = "Loaded a Screen";
       } else {
         rawPayload.eventName += " screen";
       }
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId)
+      if (rawPayload.campaignId) {
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      if (rawPayload.templateId)
+      }
+      if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
+      }
       break;
     case "track":
       rawPayload = constructPayload(message, mappingConfig[category.name]);
+      validateMandatoryField(rawPayload);
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId)
+      if (rawPayload.campaignId) {
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      if (rawPayload.templateId)
+      }
+      if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
+      }
       break;
     case "trackPurchase":
       rawPayload = constructPayload(message, mappingConfig[category.name]);
@@ -102,6 +127,7 @@ function constructPayloadItem(message, category, destination) {
         message,
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
+      validateMandatoryField(rawPayload.user);
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
@@ -125,16 +151,19 @@ function constructPayloadItem(message, category, destination) {
       if (rawPayload.id) {
         rawPayload.id = rawPayload.id.toString();
       }
-      if (rawPayload.campaignId)
+      if (rawPayload.campaignId) {
         rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      if (rawPayload.templateId)
+      }
+      if (rawPayload.templateId) {
         rawPayload.templateId = parseInt(rawPayload.templateId, 10);
+      }
       break;
     case "updateCart":
       rawPayload.user = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
+      validateMandatoryField(rawPayload.user);
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;

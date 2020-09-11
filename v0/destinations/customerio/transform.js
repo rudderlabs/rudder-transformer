@@ -105,13 +105,14 @@ function responseBuilder(message, evType, evName, destination) {
     );
 
     // Impportant for historical import
-    if (getFieldValueFromMessage(message, "timestamp")) {
+    if (getFieldValueFromMessage(message, "historicalTimestamp")) {
       set(
         rawPayload,
         "_timestamp",
         Math.floor(
-          new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
-            1000
+          new Date(
+            getFieldValueFromMessage(message, "historicalTimestamp")
+          ).getTime() / 1000
         )
       );
     }
@@ -160,13 +161,14 @@ function responseBuilder(message, evType, evName, destination) {
     if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
-      if (getFieldValueFromMessage(message, "timestamp")) {
+      if (getFieldValueFromMessage(message, "historicalTimestamp")) {
         set(
           rawPayload,
           "timestamp",
           Math.floor(
-            new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
-              1000
+            new Date(
+              getFieldValueFromMessage(message, "historicalTimestamp")
+            ).getTime() / 1000
           )
         );
       }

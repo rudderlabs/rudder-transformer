@@ -7,5 +7,5 @@
   "properties.coupon": "tcc",
   "properties.currency": "cu",
   "request_ip": "uip",
-  "context.userAgent": "ua"
+  "properties.step": "cos"
 }

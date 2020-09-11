@@ -144,7 +144,10 @@ function responseBuilder(message, evType, evName, destination) {
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
-        set(devProps, "platform", get(message, "context.device.type"));
+        const deviceType = get(message, "context.device.type");
+        if (deviceType) {
+          set(devProps, "platform", deviceType.toLowerCase());
+        }
         set(
           devProps,
           "last_used",

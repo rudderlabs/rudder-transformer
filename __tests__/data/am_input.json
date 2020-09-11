@@ -214,5 +214,100 @@
         "apiKey": "abcde"
       }
     }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "userId": "ubcdfghi0001",
+      "session_id": "1598597129",
+      "context": {
+        "traits": {
+          "device_id": "adddd0001",
+          "device_os": "ios",
+          "device_make": "apple iphone",
+          "app_version": "v1.0",
+          "timestamp": "2020-08-28 09:00:00"
+        },
+        "library": {
+          "name": "http"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "userId": "ubcdfghi0001",
+      "session_id": "user:1598597129",
+      "context": {
+        "traits": {
+          "device_id": "adddd0001",
+          "device_os": "ios",
+          "device_make": "apple iphone",
+          "app_version": "v1.0",
+          "timestamp": "2020-08-28 09:00:00"
+        },
+        "library": {
+          "name": "http"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "userId": "ubcdfghi0001",
+      "session_id": 1598597129,
+      "context": {
+        "traits": {
+          "device_id": "adddd0001",
+          "device_os": "ios",
+          "device_make": "apple iphone",
+          "app_version": "v1.0",
+          "timestamp": "2020-08-28 09:00:00"
+        },
+        "library": {
+          "name": "http"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "userId": "ubcdfghi0001",
+      "context": {
+        "traits": {
+          "device_id": "adddd0001",
+          "device_os": "ios",
+          "device_make": "apple iphone",
+          "app_version": "v1.0",
+          "timestamp": "2020-08-28 09:00:00"
+        },
+        "library": {
+          "name": "http"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
   }
 ]

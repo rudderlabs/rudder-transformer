@@ -323,7 +323,7 @@
       "method": "GET",
       "endpoint": "https://6b0e6a60.",
       "headers": {
-          "X-customHeader": "customHeaderVal"
+          "x-customheader": "customHeaderVal"
       },
       "params": {
           "k1": "v1",

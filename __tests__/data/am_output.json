@@ -157,5 +157,125 @@
     },
     "files": {},
     "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "device_id": "adddd0001",
+            "device_os": "ios",
+            "device_make": "apple iphone",
+            "app_version": "v1.0",
+            "timestamp": "2020-08-28 09:00:00"
+          },
+          "event_type": "$identify",
+          "session_id": "1598597129",
+          "time": 0,
+          "user_id": "ubcdfghi0001"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "device_id": "adddd0001",
+            "device_os": "ios",
+            "device_make": "apple iphone",
+            "app_version": "v1.0",
+            "timestamp": "2020-08-28 09:00:00"
+          },
+          "event_type": "$identify",
+          "session_id": "1598597129",
+          "time": 0,
+          "user_id": "ubcdfghi0001"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "device_id": "adddd0001",
+            "device_os": "ios",
+            "device_make": "apple iphone",
+            "app_version": "v1.0",
+            "timestamp": "2020-08-28 09:00:00"
+          },
+          "event_type": "$identify",
+          "session_id": 1598597129,
+          "time": 0,
+          "user_id": "ubcdfghi0001"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": {
+          "user_properties": {
+            "device_id": "adddd0001",
+            "device_os": "ios",
+            "device_make": "apple iphone",
+            "app_version": "v1.0",
+            "timestamp": "2020-08-28 09:00:00"
+          },
+          "event_type": "$identify",
+          "session_id": -1,
+          "time": 0,
+          "user_id": "ubcdfghi0001"
+        },
+        "options": { "min_id_length": 1 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

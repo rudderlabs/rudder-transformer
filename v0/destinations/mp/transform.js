@@ -121,9 +121,9 @@ function processIdentifyEvents(message, type, destination) {
   const properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const { device } = message.context;
   if (device && device.token) {
-    if (device.type === "ios") {
+    if (device.type.toLowerCase() === "ios") {
       properties.$ios_devices = [device.token];
-    } else if (device.type === "android") {
+    } else if (device.type.toLowerCase() === "android") {
       properties.$android_devices = [device.token];
     }
   }

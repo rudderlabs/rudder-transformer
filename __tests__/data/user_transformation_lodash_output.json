@@ -31,11 +31,8 @@
     "originalTimestamp": "2019-10-14T09:03:17.562Z",
     "anonymousId": "123456",
     "userId": "123456",
-    "diff": -1,
-    "inc": 23,
     "max": 8,
     "min": -2,
-    "sum": 9,
     "integrations": {
       "All": true
     },
@@ -74,11 +71,8 @@
     "originalTimestamp": "2019-10-14T11:15:18.299Z",
     "anonymousId": "00000000000000000000000000",
     "userId": "12345",
-    "diff": -1,
-    "inc": 23,
     "max": 8,
     "min": -2,
-    "sum": 9,
     "properties": {
       "path": "/abc",
       "referrer": "",
@@ -125,11 +119,8 @@
     "originalTimestamp": "2019-10-14T11:15:18.300Z",
     "anonymousId": "00000000000000000000000000",
     "userId": "12345",
-    "diff": -1,
-    "inc": 23,
     "max": 8,
     "min": -2,
-    "sum": 9,
     "event": "test track event GA3",
     "properties": {
       "user_actual_role": "system_admin, system_user",

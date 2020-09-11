@@ -10,8 +10,7 @@ const opts = {
 };
 
 async function getPool(versionId, libraryVersionIds) {
-  // TODO: Do Base64 encode
-  const poolId = versionId + libraryVersionIds;
+  const poolId = versionId + libraryVersionIds.sort().toString();
   if (!poolCache[poolId]) {
     const factory = await getFactory(versionId, libraryVersionIds);
     poolCache[poolId] = genericPool.createPool(factory, opts);

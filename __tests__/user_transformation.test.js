@@ -1,6 +1,17 @@
+const { when } = require('jest-when')
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
 const { Response } = jest.requireActual("node-fetch");
+const lodashCore = require("lodash/core");
+const unsupportedFuncNames = [
+  "_",
+  "extend",
+  "each",
+  "first",
+  "join",
+  "reverse",
+  "split"
+];
 
 const integration = "user_transformation";
 const name = "User Transformations";
@@ -83,20 +94,16 @@ describe("User transformation", () => {
 
   it(`Simple ${name} Test for lodash functions`, async () => {
     const versionId = randomID();
+    const libraryVersionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_lodash_output.json`);
 
     const respBody = {
       code: `
-      import add from 'add';
-      import * as LibraryMath from 'LibraryMath';
       import * as lodash from 'lodash';
       function transform(events) {
           const modifiedEvents = events.map(event => {
-            event.sum = LibraryMath.add(4,5);
-            event.diff = sub(4,5);
-            event.inc = increment(22);
             event.max = lodash.max([2,3,5,6,7,8]);
             event.min = lodash.min([-2,3,5,6,7,8]);
             return event;
@@ -105,11 +112,26 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockResolvedValue({
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    when(fetch).calledWith(transformerUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue(respBody)
     });
 
-    const output = await userTransformHandler(inputData, versionId, []);
+    const lodashCode = `
+      ${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
+      ;
+      // Not exporting the unsupported functions
+      export {${Object.keys(lodashCore).filter(
+        funcName => !unsupportedFuncNames.includes(funcName)
+      )}};
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+    when(fetch).calledWith(libraryUrl).mockResolvedValue({
+      json: jest.fn().mockResolvedValue({"code":lodashCode,"name":"lodash"})
+    });
+
+    const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
 
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -120,6 +142,7 @@ describe("User transformation", () => {
 
   it(`Simple ${name} Test for URLSearchParams library`, async () => {
     const versionId = randomID();
+    const libraryVersionId = randomID();
     const { userTransformHandler } = require("../util/customTransformer");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_url_search_params_output.json`);
@@ -138,12 +161,21 @@ describe("User transformation", () => {
           }
           `
     };
-    fetch.mockResolvedValue({
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    when(fetch).calledWith(transformerUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue(respBody)
     });
 
-    const output = await userTransformHandler(inputData, versionId, []);
+    const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+    export default self;
+    `;
 
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+    when(fetch).calledWith(libraryUrl).mockResolvedValue({
+      json: jest.fn().mockResolvedValue({"code":urlCode,"name":"url"})
+    });
+
+    const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );

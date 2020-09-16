@@ -259,16 +259,12 @@ async function handleSource(ctx, version, source) {
   await Promise.all(
     events.map(async event => {
       try {
-        let respEvents = await sourceHandler.process(event);
-        respEvents = [respEvents];
-        respList.push(
-          ...respEvents.map(ev => {
-            if (!Array.isArray(ev)) {
-              return { output: { batch: [ev] } };
-            }
-            return { output: { batch: ev } };
-          })
-        );
+        const respEvents = await sourceHandler.process(event);
+        if (Array.isArray(respEvents)) {
+          respList.push({ output: { batch: respEvents } });
+        } else {
+          respList.push({ output: { batch: [respEvents] } });
+        }
       } catch (error) {
         logger.error(error);
         respList.push({

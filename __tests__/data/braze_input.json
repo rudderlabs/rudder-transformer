@@ -60,14 +60,6 @@
       "timestamp": "2020-01-24T11:59:02.402+05:30",
       "type": "page",
       "userId": ""
-    },
-    "metadata": {
-      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "BRAZE",
-      "jobId": 1,
-      "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
     }
   },
   {
@@ -129,14 +121,6 @@
       "timestamp": "2020-01-24T11:59:02.402+05:30",
       "type": "identify",
       "userId": ""
-    },
-    "metadata": {
-      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "BRAZE",
-      "jobId": 2,
-      "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
-      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
     }
   },
   {
@@ -203,14 +187,6 @@
       "timestamp": "2020-01-24T11:59:02.403+05:30",
       "type": "track",
       "userId": ""
-    },
-    "metadata": {
-      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "BRAZE",
-      "jobId": 3,
-      "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
-      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
     }
   },
   {
@@ -306,14 +282,96 @@
       "timestamp": "2020-01-24T11:59:02.402+05:30",
       "type": "track",
       "userId": ""
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-09-14T12:09:37.491Z",
+      "userId": "Randomuser2222",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.3",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html",
+          "path": "/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html",
+          "title": "Fullstory Test",
+          "search": "",
+          "referrer": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "manashi@gmaiol.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.3"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
+      },
+      "messageId": "24ecc509-ce3e-473c-8483-ba1ea2c195cb",
+      "properties": {
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "key1": {
+              "key11": "value1",
+              "key22": "value2"
+            },
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "currency78": "USD",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price23": 3,
+            "category": "Games",
+            "quantity": 2,
+            "currency78": "USD",
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "anonymousId": "c6ff1462-b692-43d6-8f6a-659efedc99ea",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-14T12:09:37.491Z"
     },
-    "metadata": {
-      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "destinationId": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "destinationType": "BRAZE",
-      "jobId": 5,
-      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-      "sourceId": "1WjrlZIy1d41MCceOrFbDVPnOPY"
+    "destination": {
+      "Config": {
+        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
     }
   }
 ]

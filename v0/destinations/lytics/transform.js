@@ -4,7 +4,8 @@ const {
     constructPayload,
     defaultPostRequestConfig,
     removeUndefinedAndNullValues,
-    defaultRequestConfig
+    defaultRequestConfig,
+    flattenJson
   } = require("../../util");
 function responseBuilderSimple(message, category, destination) {
     const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -16,18 +17,7 @@ function responseBuilderSimple(message, category, destination) {
     response.method = defaultPostRequestConfig.requestMethod;
     
     response.userId = message.anonymousId;
-    const _e = payload["_e"];
-    const user_id = payload["user_id"]
-    let finalPayload;
-    if(_e){
-        finalPayload = {_e,...payload[""]}
-    }else if(user_id){
-        finalPayload = {user_id,...payload[""]}
-    }
-    else{
-        finalPayload = payload[""]
-    }
-    response.body.JSON = removeUndefinedAndNullValues(finalPayload);
+    response.body.JSON = removeUndefinedAndNullValues(flattenJson(payload));
     response.headers = {
         "Content-Type": "application/json",
         Authorization: apiKey

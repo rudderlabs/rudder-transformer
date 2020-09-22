@@ -51,16 +51,30 @@ function setAliasObjectWithAnonId(payload, message) {
   return payload;
 }
 
-function setExternalId(payload, message) {
-  if (message.userId) {
-    payload.external_id = message.userId;
+function getBrazeExternalID(message) {
+  let externalIdArray = null;
+  let brazeExternalId = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
   }
+  if (externalIdArray) {
+    externalIdArray.forEach(array => {
+      if (array.type === "brazeExternalId") {
+        brazeExternalId = array.id;
+      }
+    });
+  }
+  console.log(brazeExternalId)
+  return brazeExternalId;
+}
+function setExternalId(payload, message) {
+  payload.external_id = getBrazeExternalID(message) || message.userId;
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  if (userId) {
+  if (userId || getBrazeExternalID(message)) {
     return setExternalId(payload, message);
   }
 

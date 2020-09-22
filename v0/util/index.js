@@ -380,6 +380,22 @@ const getFieldValueFromMessage = (message, field) => {
   }
   return null;
 };
+// to get destination specific external id passed in context.
+function getDestinationExternalID(message, type) {
+  let externalIdArray = null;
+  let destinationExternalId = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(array => {
+      if (array.type === type) {
+        destinationExternalId = array.id;
+      }
+    });
+  }
+  return destinationExternalId;
+}
 
 // ========================================================================
 // EXPORTS
@@ -405,5 +421,6 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload
+  updatePayload,
+  getDestinationExternalID
 };

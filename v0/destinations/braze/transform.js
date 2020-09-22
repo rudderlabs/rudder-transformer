@@ -4,7 +4,8 @@ const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 const {
   ConfigCategory,
@@ -51,30 +52,16 @@ function setAliasObjectWithAnonId(payload, message) {
   return payload;
 }
 
-function getBrazeExternalID(message) {
-  let externalIdArray = null;
-  let brazeExternalId = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
-  }
-  if (externalIdArray) {
-    externalIdArray.forEach(array => {
-      if (array.type === "brazeExternalId") {
-        brazeExternalId = array.id;
-      }
-    });
-  }
-  console.log(brazeExternalId)
-  return brazeExternalId;
-}
+
 function setExternalId(payload, message) {
-  payload.external_id = getBrazeExternalID(message) || message.userId;
+  payload.external_id =
+  getDestinationExternalID(message, "brazeExternalId") || message.userId;
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  if (userId || getBrazeExternalID(message)) {
+  if (userId || getDestinationExternalID(message, "brazeExternalId")) {
     return setExternalId(payload, message);
   }
 

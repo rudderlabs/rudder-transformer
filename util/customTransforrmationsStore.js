@@ -5,7 +5,7 @@ const stats = require("./stats");
 const transformationCache = {};
 const libraryCache = {};
 const CONFIG_BACKEND_URL =
-  process.env.CONFIG_BACKEND_URL || "http://fa99aeccd680.ngrok.io";
+  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
 
@@ -25,7 +25,7 @@ async function getTransformationCode(versionId) {
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime);
     const myJson = await response.json();
-    transformation[versionId] = myJson;
+    transformationCache[versionId] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);

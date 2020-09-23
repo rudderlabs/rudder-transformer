@@ -1,7 +1,7 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
-const logger = require("../logger");
+const stats = require("./stats");
 const {
   getTransformationCode,
   getLibraryCode
@@ -14,7 +14,7 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
 }
 
 async function createIvm(versionId, libraryVersionIds) {
-  console.log("createIvm");
+  const createIvmStartTime =  new Date()
   const transformation = await getTransformationCode(versionId);
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
@@ -230,6 +230,7 @@ export function transform(fullEvents) {
   // }
 
   const fnRef = supportedFuncs[0];
+  stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   return { isolate, jail, bootstrapScriptResult, context, fnRef };

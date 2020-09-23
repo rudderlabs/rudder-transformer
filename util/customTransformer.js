@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
+const stats = require("./stats");
 
 // TODO: Check why these dont work
 const unsupportedFuncNames = [
@@ -70,8 +71,10 @@ async function userTransformHandler(events, versionId, libraryVersionIds) {
   if (versionId) {
     const isolatevmPool = await getPool(versionId, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
+    stats.increment("isolatevm_count");
     const transformedEvents = await transform(isolatevm, events);
     isolatevmPool.release(isolatevm);
+    stats.decrement("isolatevm_count");
     //TODO: add stats for capturing ivm pools
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.

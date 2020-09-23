@@ -14,8 +14,6 @@ const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersio
 // VersionId is updated any time user changes the code in transformation, so there wont be any stale code issues.
 async function getTransformationCode(versionId) {
   const transformation = transformationCache[versionId];
-  console.log("came here")
-  console.log(transformation)
   if (transformation) return transformation;
   try {
     const startTime = new Date();

@@ -6,7 +6,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage
+  getDestinationExternalID
 } = require("../../util");
 
 const {
@@ -19,21 +19,22 @@ const {
 
 function responseBuilderSimple(payload, message, destination) {
   const endpoint = ENDPOINT + message.context.app.namespace;
-
-  let appsflyer_id = message.destination_props
-    ? message.destination_props.AF
-      ? message.destination_props.AF.af_uid
+  const afId = message.integrations
+    ? message.integrations.AF
+      ? message.integrations.AF.af_uid
       : undefined
     : undefined;
-
-  appsflyer_id = appsflyer_id || destination.Config.appsFlyerId;
+  const appsflyerId =
+    getDestinationExternalID(message, "appsflyerExternalId") ||
+    afId ||
+    destination.Config.appsFlyerId;
 
   const updatedPayload = {
     ...payload,
     af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
-    appsflyer_id
+    appsflyer_id: appsflyerId
   };
 
   const response = defaultRequestConfig();
@@ -63,7 +64,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  if (isMultiSupport && message.properties.products && message.properties.products.length > 0) {
+  if (
+    isMultiSupport &&
+    message.properties.products &&
+    message.properties.products.length > 0
+  ) {
     const contentIds = [];
     const quantities = [];
     const prices = [];

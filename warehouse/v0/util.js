@@ -13,7 +13,7 @@ const toSnakeCase = str => {
 
 const toSafeDBString = str => {
   let parsedStr = str;
-  if (parseInt(str[0], 10) > 0) {
+  if (parseInt(str[0], 10) >= 0) {
     parsedStr = `_${str}`;
   }
   parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");

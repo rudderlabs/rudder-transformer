@@ -380,6 +380,7 @@ const getFieldValueFromMessage = (message, field) => {
   }
   return null;
 };
+
 // to get destination specific external id passed in context.
 function getDestinationExternalID(message, type) {
   let externalIdArray = null;
@@ -388,9 +389,9 @@ function getDestinationExternalID(message, type) {
     externalIdArray = message.context.externalId;
   }
   if (externalIdArray) {
-    externalIdArray.forEach(array => {
-      if (array.type === type) {
-        destinationExternalId = array.id;
+    externalIdArray.forEach(extIdObj => {
+      if (extIdObj.type === type) {
+        destinationExternalId = extIdObj.id;
       }
     });
   }
@@ -411,6 +412,7 @@ module.exports = {
   flattenJson,
   formatValue,
   getDateInFormat,
+  getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
@@ -421,6 +423,5 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload,
-  getDestinationExternalID
+  updatePayload
 };

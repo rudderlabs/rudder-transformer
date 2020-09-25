@@ -12,7 +12,7 @@ const rejectParams = ["revenue", "currency"];
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const { appToken, customMappings } = destination.Config;
+  const { appToken, customMappings, environment } = destination.Config;
   rejectParams.forEach(rejectParam => {
     delete payload.callback_params[rejectParam];
   });
@@ -42,6 +42,7 @@ function responseBuilderSimple(message, category, destination) {
     payload.s2s = 1;
     payload.app_token = appToken;
     payload.event_token = hashMap[message.event];
+    payload.environment = environment;
     response.params = removeUndefinedAndNullValues(payload);
     return response;
   }

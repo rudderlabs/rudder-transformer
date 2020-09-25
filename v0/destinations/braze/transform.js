@@ -53,8 +53,11 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  payload.external_id =
+  const externalId =
     getDestinationExternalID(message, "brazeExternalId") || message.userId;
+  if (externalId) {
+    payload.external_id = externalId;
+  }
   return payload;
 }
 

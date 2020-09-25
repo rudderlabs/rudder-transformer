@@ -2,12 +2,46 @@
   {
     "destKey": "Email",
     "sourceKeys": ["traits.email", "context.traits.email"],
-    "required": true
+    "required": false
   },
   {
-    "destKey": "Name",
-    "sourceKeys": ["traits.name", "context.traits.name"],
+    "destKey": "FirstName",
+    "sourceKeys": [
+      "traits.firstName",
+      "context.traits.firstName",
+      "traits.firstname",
+      "context.traits.firstname"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "LastName",
+    "sourceKeys": [
+      "traits.lastName",
+      "context.traits.lastName",
+      "traits.lastname",
+      "context.traits.lastname"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "Phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "Company",
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"],
+    "required": false
+  },
+  {
+    "destKey": "Status",
+    "sourceKeys": ["traits.status", "context.traits.status"],
+    "required": false
+  },
+  {
+    "destKey": "LeadSource",
+    "sourceKeys": ["traits.LeadSource", "context.traits.LeadSource"],
     "required": false
   }
 ]
-

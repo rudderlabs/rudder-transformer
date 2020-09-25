@@ -1,0 +1,31 @@
+[
+    {
+      "destKey": "callback_params",
+      "sourceKeys": "properties",
+      "required": false,
+      "metadata": {
+        "type": "encodeURIComponent"
+      }
+    },
+    {
+        "destKey": "revenue",
+        "sourceKeys": "properties.revenue",
+        "required": false
+      },
+      {
+        "destKey": "currency",
+        "sourceKeys": "properties.currency",
+        "required": false
+      },
+      {
+        "destKey": "android_id",
+        "sourceKeys": "context.device.id",
+        "required": false
+      },
+      {
+        "destKey": "idfv",
+        "sourceKeys": "context.device.id",
+        "required": false
+      }
+
+  ]

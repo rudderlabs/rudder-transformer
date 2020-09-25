@@ -272,6 +272,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
         break;
+      case "encodeURIComponent":
+        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+        break;
       default:
         break;
     }

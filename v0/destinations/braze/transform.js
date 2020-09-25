@@ -4,7 +4,8 @@ const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 const {
   ConfigCategory,
@@ -52,15 +53,17 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) {
-    payload.external_id = message.userId;
+  const externalId =
+    getDestinationExternalID(message, "brazeExternalId") || message.userId;
+  if (externalId) {
+    payload.external_id = externalId;
   }
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  if (userId) {
+  if (userId || getDestinationExternalID(message, "brazeExternalId")) {
     return setExternalId(payload, message);
   }
 

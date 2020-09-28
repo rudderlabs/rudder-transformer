@@ -11,6 +11,8 @@ const whScreenConfigJson = require("./config/WHScreenConfig.json");
 const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
+const minTimestamp = "0001-01-01T00:00:00Z";
+const maxTimestamp = "9999-12-31T23:59:59.999Z";
 const isObject = value => {
   const type = typeof value;
   return (
@@ -29,7 +31,17 @@ const timestampRegex = new RegExp(
 );
 
 function validTimestamp(input) {
-  return timestampRegex.test(input);
+  if (timestampRegex.test(input)) {
+    // check if date value lies in between min time and max time. if not then it's not a valid timestamp
+    const date = new Date(input).toISOString();
+    if (
+      Date.parse(minTimestamp) <= Date.parse(date) &&
+      Date.parse(date) <= Date.parse(maxTimestamp)
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // // older implementation with fallback to new Date()

@@ -25,10 +25,11 @@ function responseBuilderSimple(payload, message, destination) {
       : undefined
     : undefined;
   const appsflyerId =
-    getDestinationExternalID(message, "appsflyerExternalId") ||
-    afId ||
-    destination.Config.appsFlyerId;
-
+    getDestinationExternalID(message, "appsflyerExternalId") || afId;
+    console.log(appsflyerId)
+  if (!appsflyerId) {
+    throw new Error("Appsflyer id is not set. Rejecting the event");
+  }
   const updatedPayload = {
     ...payload,
     af_events_api: "true",

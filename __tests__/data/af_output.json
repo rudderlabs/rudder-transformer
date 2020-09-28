@@ -59,76 +59,10 @@
     "files": {}
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api2.appsflyer.com/inappevent/com.android.SampleLeanPlum",
-    "headers": {
-      "Content-Type": "application/json",
-      "authentication": "ef1d42390426e3f7c90ac78272e74344"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "eventValue": { "name": "MainActivity", "automatic": true },
-        "eventName": "screen",
-        "af_events_api": "true"
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "5094f5704b9cf2b3"
+    "error": "Appsflyer id is not set. Rejecting the event"
   },
   {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
-      "headers": {
-        "Content-Type": "application/json",
-        "authentication": "ef1d42390426e3f7c90ac78272e74344"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "properties": {
-            "currency": "CAD",
-            "products": [
-              {
-                "product_id": "pr1",
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product",
-                "sku": "p-298"
-              },
-              {
-                "product_id": "pr2",
-                "quantity": 1,
-                "price": 24.75,
-                "name": "my product 2",
-                "sku": "p-299"
-              }
-            ],
-            "step": 1,
-            "paymentMethod": "Visa",
-            "testDimension": true,
-            "testMetric": true
-          },
-          "af_currency": "CAD",
-          "eventValue": {
-            "af_content_id": ["pr1", "pr2"],
-            "af_quantity": [1, 1],
-            "af_price": [24.75, 24.75]
-          },
-          "eventName": "checkout started",
-          "af_events_api": "true"
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "00000000000000000000000000"
+    "error": "Appsflyer id is not set. Rejecting the event"   
     },
     {
       "version": "1",

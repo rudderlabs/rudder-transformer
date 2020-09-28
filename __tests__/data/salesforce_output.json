@@ -62,6 +62,110 @@
     "files": {},
     "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "Email": "peter.gibbons@initech.com",
+        "Phone": "570-690-4150",
+        "Rating": "Hot",
+        "Title": "VP of Derp",
+        "FirstName": "Peter",
+        "LastName": "Gibbons",
+        "PostalCode": "94115",
+        "City": "east greenwich",
+        "Country": "USA",
+        "State": "California",
+        "Street": "19123 forest lane",
+        "Company": "Initech",
+        "LeadSource": "RudderLabs"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "message": "message type track is not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "Email": "peter.gibbons@initech.com",
+        "Phone": "570-690-4150",
+        "Rating": "Hot",
+        "Title": "VP of Derp",
+        "FirstName": "Peter",
+        "LastName": "Gibbons",
+        "PostalCode": "94115",
+        "City": "east greenwich",
+        "Country": "USA",
+        "State": "California",
+        "Street": "19123 forest lane",
+        "Company": "Initech",
+        "LeadSource": "RudderLabs",
+        "customKey__c": "customValue"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://ap15.salesforce.com/services/data/v47.0/sobjects/Lead",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "Email": "peter.gibbons@initech.com",
+        "Phone": "570-690-4150",
+        "Rating": "Hot",
+        "Title": "VP of Derp",
+        "PostalCode": "94115",
+        "LastName": "n/a",
+        "City": "east greenwich",
+        "Country": "USA",
+        "State": "California",
+        "Street": "19123 forest lane",
+        "Company": "n/a",
+        "LeadSource": "RudderLabs",
+        "customKey__c": "customValue"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+    "statusCode": 200
   }
 ]
 

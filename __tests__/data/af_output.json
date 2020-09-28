@@ -62,35 +62,35 @@
     "error": "Appsflyer id is not set. Rejecting the event"
   },
   {
-    "error": "Appsflyer id is not set. Rejecting the event"   
+    "error": "Appsflyer id is not set. Rejecting the event"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
-      "headers": {
-          "Content-Type": "application/json",
-          "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        },
+        "eventName": "page",
+        "af_events_api": "true",
+        "appsflyer_id": "some_other2345_sample_external_id"
       },
-      "params": {},
-      "body": {
-          "JSON": {
-              "eventValue": {
-                  "path": "",
-                  "referrer": "",
-                  "search": "",
-                  "title": "",
-                  "url": ""
-              },
-              "eventName": "page",
-              "af_events_api": "true",
-              "appsflyer_id": "some_other2345_sample_external_id"
-          },
-          "XML": {},
-          "FORM": {}
-      },
-      "files": {},
-      "userId": "00000000000000000000000000"
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   }
 ]

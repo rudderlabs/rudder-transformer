@@ -169,7 +169,7 @@
     }
   },
   {
-    "message" : {
+    "message": {
       "anonymousId": "5094f5704b9cf2b3",
       "channel": "mobile",
       "context": {
@@ -293,17 +293,18 @@
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
-    "destination":{
+    "destination": {
       "Config": {
         "devKey": "ef1d42390426e3f7c90ac78272e74344"
       },
       "Enabled": true
     }
-  }, 
+  },
   {
     "message": {
       "channel": "web",
-      "context": {  "externalId": [
+      "context": {
+        "externalId": [
           {
             "id": "some_other2345_sample_external_id",
             "type": "appsflyerExternalId"

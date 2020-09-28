@@ -92,6 +92,10 @@
   {
     "destKey": "Website",
     "sourceKeys": ["traits.website", "context.traits.website"]
+  },
+  {
+    "destKey": "LeadSource",
+    "sourceKeys": ["traits.LeadSource", "context.traits.LeadSource"]
   }
 ]
 

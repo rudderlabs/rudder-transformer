@@ -6,6 +6,7 @@
   "createdAt",
   "id",
   "birthday",
-  "avatar"
+  "avatar",
+  "LeadSource"
 ]
 

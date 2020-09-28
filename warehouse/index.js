@@ -11,8 +11,8 @@ const whScreenConfigJson = require("./config/WHScreenConfig.json");
 const whGroupConfigJson = require("./config/WHGroupConfig.json");
 const whAliasConfigJson = require("./config/WHAliasConfig.json");
 
-const minTimeInMs = -62135596800000; // Date.parse("0001-01-01T00:00:00Z");
-const maxTimeInMs = 253402300799999; // Date.parse("9999-12-31T23:59:59.999Z");
+const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
+const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
 const isObject = value => {
   const type = typeof value;
   return (

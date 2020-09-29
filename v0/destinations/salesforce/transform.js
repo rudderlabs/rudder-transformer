@@ -34,6 +34,7 @@ async function getSFDCHeader(destination) {
   return [`Bearer ${response.data.access_token}`, response.data.instance_url];
 }
 
+// not supported from the dashboard
 function getParamsFromConfig(message, destination) {
   const params = {};
 
@@ -104,7 +105,9 @@ async function responseBuilderSimple(
       !ignoreMapJson.includes(key)
     ) {
       const val = traits[key];
-      if (val) payload[`${key}__c`] = val;
+      if (val) {
+        payload[`${key}__c`] = val;
+      }
     }
   });
 

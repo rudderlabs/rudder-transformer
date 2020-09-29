@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "callback_params",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "revenue",
+    "sourceKeys": "properties.revenue",
+    "required": false,
+    "metadata": {
+      "type": "numberForRevenue"
+    }
+  },
+  {
+    "destKey": "android_id",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "destKey": "idfv",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "destKey": "gps_adid",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "idfa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  }
+]
+

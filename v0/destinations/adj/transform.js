@@ -43,10 +43,13 @@ function responseBuilderSimple(message, category, destination) {
       rejectParams.forEach(rejectParam => {
         delete payload.callback_params[rejectParam];
       });
+      payload.callback_params = JSON.stringify(
+        flattenJson(payload.callback_params)
+      );
+    } else {
+      payload.callback_params = null;
     }
-    payload.callback_params = JSON.stringify(
-      flattenJson(payload.callback_params)
-    );
+
     response.endpoint = baseEndpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.userId = message.anonymousId;

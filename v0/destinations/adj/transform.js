@@ -28,7 +28,7 @@ function responseBuilderSimple(message, category, destination) {
     delete payload.android_id;
     delete payload.gps_adid;
   } else {
-    throw new Error("Device type not not valid");
+    throw new Error("Device type not valid");
   }
   if (payload.revenue) {
     payload.currency = message.properties.currency || "USD";
@@ -58,9 +58,7 @@ function responseBuilderSimple(message, category, destination) {
     return response;
   }
   // fail-safety for developer error
-  if (!payload) {
-    throw new Error("Payload could not be constructed");
-  } else if (!message.event || !hashMap[message.event]) {
+  if (!message.event || !hashMap[message.event]) {
     throw new Error("No event token mapped for this event");
   } else {
     throw new Error("Payload could not be constructed");

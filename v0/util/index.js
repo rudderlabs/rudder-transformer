@@ -19,7 +19,7 @@ const logger = require("../../logger");
 // ========================================================================
 
 const isDefined = x => !_.isUndefined(x);
-const isNotNull = x => !_.isNil(x);
+const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);

@@ -1,0 +1,159 @@
+[
+    {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://s2s.adjust.com/event",
+    "headers": {
+        "Accept": "*/*"
+    },
+    "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "gps_adid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "EUR",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "21e13f4bc7ceddad"
+},{
+    "statusCode": 400,
+"error": "Device type/id  not present"
+},
+{"statusCode": 400,
+    "error": "Device type not valid"
+},
+{
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://s2s.adjust.com/event",
+    "headers": {
+        "Accept": "*/*"
+    },
+    "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "EUR",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "21e13f4bc7ceddad"
+},
+{"statusCode": 400,
+    "error": "No event token mapped for this event"
+},
+{
+    "statusCode": 400,
+        "error": "Message type not supported"
+},
+{
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+},
+{
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://s2s.adjust.com/event",
+    "headers": {
+        "Accept": "*/*"
+    },
+    "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "gps_adid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "EUR",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "21e13f4bc7ceddad"
+},
+{
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://s2s.adjust.com/event",
+    "headers": {
+        "Accept": "*/*"
+    },
+    "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "gps_adid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "USD",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "21e13f4bc7ceddad"
+},
+{
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://s2s.adjust.com/event",
+    "headers": {
+        "Accept": "*/*"
+    },
+    "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.37,
+        "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "gps_adid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "USD",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "21e13f4bc7ceddad"
+},
+{
+    "statusCode": 400,
+    "error": "Revenue is not in the correct format"
+}
+
+]

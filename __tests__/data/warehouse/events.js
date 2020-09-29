@@ -1,3 +1,4 @@
+// TODO: also include events with whSchemaVersions v0
 const sampleEvents = {
   track: {
     input: {
@@ -1129,8 +1130,11 @@ const sampleEvents = {
         type: "group",
         messageId: "84e26acc-56a5-4835-8233-591137fca468",
         originalTimestamp: "2019-10-14T09:03:17.562Z",
+        timestamp: "2020-01-24T11:59:02.403+05:30",
+        receivedAt: "2020-01-24T11:59:02.403+05:30",
         anonymousId: "00000000000000000000000000",
         userId: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+        groupId: "g1",
         integrations: {
           All: true
         },
@@ -1179,8 +1183,11 @@ const sampleEvents = {
               id: "string",
               anonymous_id: "string",
               user_id: "string",
+              group_id: "string",
               sent_at: "datetime",
+              received_at: "datetime",
               original_timestamp: "datetime",
+              timestamp: "datetime",
               channel: "string"
             }
           },
@@ -1206,8 +1213,11 @@ const sampleEvents = {
             id: "84e26acc-56a5-4835-8233-591137fca468",
             anonymous_id: "00000000000000000000000000",
             user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            group_id: "g1",
             sent_at: "2019-10-14T09:03:22.563Z",
             original_timestamp: "2019-10-14T09:03:17.562Z",
+            timestamp: "2020-01-24T11:59:02.403Z",
+            received_at: "2020-01-24T11:59:02.403Z",
             channel: "web"
           }
         }
@@ -1238,8 +1248,11 @@ const sampleEvents = {
               ID: "string",
               ANONYMOUS_ID: "string",
               USER_ID: "string",
+              GROUP_ID: "string",
               SENT_AT: "datetime",
+              RECEIVED_AT: "datetime",
               ORIGINAL_TIMESTAMP: "datetime",
+              TIMESTAMP: "datetime",
               CHANNEL: "string"
             }
           },
@@ -1265,8 +1278,11 @@ const sampleEvents = {
             ID: "84e26acc-56a5-4835-8233-591137fca468",
             ANONYMOUS_ID: "00000000000000000000000000",
             USER_ID: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            GROUP_ID: "g1",
             SENT_AT: "2019-10-14T09:03:22.563Z",
             ORIGINAL_TIMESTAMP: "2019-10-14T09:03:17.562Z",
+            TIMESTAMP: "2020-01-24T11:59:02.403Z",
+            RECEIVED_AT: "2020-01-24T11:59:02.403Z",
             CHANNEL: "web"
           }
         }

@@ -673,6 +673,7 @@ function processWarehouseMessage(message, options) {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,
@@ -715,6 +716,7 @@ function processWarehouseMessage(message, options) {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,

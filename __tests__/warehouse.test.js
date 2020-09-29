@@ -24,7 +24,7 @@ describe("event types", () => {
 
   describe("identify", () => {
     it("should generate two events for every identify call", () => {
-      // also verfies priority order between traits and context.traits
+      // also verifies priority order between traits and context.traits
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("identify"));
         expect(received).toMatchObject(output("identify", integrations[index]));

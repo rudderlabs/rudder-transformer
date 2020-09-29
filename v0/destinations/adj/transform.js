@@ -31,7 +31,6 @@ function responseBuilderSimple(message, category, destination) {
     throw new Error("Device type not not valid");
   }
   if (payload.revenue) {
-    console.log(message.properties.currency)
     payload.currency = message.properties.currency || "USD";
   }
   const hashMap = getHashFromArray(customMappings, "from", "to", false);
@@ -54,8 +53,7 @@ function responseBuilderSimple(message, category, destination) {
     payload.s2s = 1;
     payload.app_token = appToken;
     payload.event_token = hashMap[message.event];
-    payload.environment = environment;
-    console.log(payload);
+    payload.environment = environment ? "production" : "sandbox";
     response.params = removeUndefinedAndNullValues(payload);
     return response;
   }

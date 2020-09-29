@@ -2,20 +2,15 @@
     {
       "destKey": "callback_params",
       "sourceKeys": "properties",
-      "required": false,
-      "metadata": {
-        "type": "encodeURIComponent"
-      }
+      "required": false
     },
     {
         "destKey": "revenue",
         "sourceKeys": "properties.revenue",
-        "required": false
-      },
-      {
-        "destKey": "currency",
-        "sourceKeys": "properties.currency",
-        "required": false
+        "required": false,
+        "metadata": {
+          "type": "numberForRevenue"
+        }
       },
       {
         "destKey": "android_id",
@@ -25,6 +20,16 @@
       {
         "destKey": "idfv",
         "sourceKeys": "context.device.id",
+        "required": false
+      },
+      {
+        "destKey": "gps_adid",
+        "sourceKeys": "context.device.advertisingId",
+        "required": false
+      },
+      {
+        "destKey": "idfa",
+        "sourceKeys": "context.device.advertisingId",
         "required": false
       }
 

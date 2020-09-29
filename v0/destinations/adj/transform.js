@@ -5,7 +5,8 @@ const {
   getHashFromArray,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  flattenJson
 } = require("../../util");
 
 const rejectParams = ["revenue", "currency"];
@@ -13,9 +14,6 @@ const rejectParams = ["revenue", "currency"];
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { appToken, customMappings, environment } = destination.Config;
-  rejectParams.forEach(rejectParam => {
-    delete payload.callback_params[rejectParam];
-  });
   if (
     !message.context.device ||
     !message.context.device.type ||
@@ -25,17 +23,31 @@ function responseBuilderSimple(message, category, destination) {
   }
   if (message.context.device.type.toLowerCase() === "android") {
     delete payload.idfv;
+    delete payload.idfa;
   } else if (message.context.device.type.toLowerCase() === "ios") {
     delete payload.android_id;
+    delete payload.gps_adid;
   } else {
     throw new Error("Device type not not valid");
   }
-  const hashMap = getHashFromArray(customMappings, "from", "to");
+  if (payload.revenue) {
+    console.log(message.properties.currency)
+    payload.currency = message.properties.currency || "USD";
+  }
+  const hashMap = getHashFromArray(customMappings, "from", "to", false);
   if (payload && message.event && hashMap[message.event]) {
     const response = defaultRequestConfig();
     response.headers = {
       Accept: "*/*"
     };
+    if (payload.callback_params) {
+      rejectParams.forEach(rejectParam => {
+        delete payload.callback_params[rejectParam];
+      });
+    }
+    payload.callback_params = JSON.stringify(
+      flattenJson(payload.callback_params)
+    );
     response.endpoint = baseEndpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.userId = message.anonymousId;
@@ -43,6 +55,7 @@ function responseBuilderSimple(message, category, destination) {
     payload.app_token = appToken;
     payload.event_token = hashMap[message.event];
     payload.environment = environment;
+    console.log(payload);
     response.params = removeUndefinedAndNullValues(payload);
     return response;
   }

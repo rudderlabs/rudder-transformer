@@ -19,7 +19,7 @@ const logger = require("../../logger");
 // ========================================================================
 
 const isDefined = x => !_.isUndefined(x);
-const isNotNull = x => x != null;
+const isNotNull = x => !_.isNil(x);
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
@@ -40,11 +40,17 @@ const formatValue = value => {
 };
 
 // Format the destination.Config.dynamicMap arrays to hashMap
-const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
+const getHashFromArray = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      hashMap[array[fromKey].toLowerCase()] = array[toKey];
+      hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
+        array[toKey];
     });
   }
   return hashMap;
@@ -274,6 +280,25 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "encodeURIComponent":
         formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+        break;
+      case "jsonStringify":
+        formattedVal = JSON.stringify(formattedVal);
+        break;
+      case "jsonStringifyOnFlatten":
+        formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "numberForRevenue":
+        if (
+          (typeof formattedVal === "string" ||
+            formattedVal instanceof String) &&
+          formattedVal.charAt(0) === "$"
+        ) {
+          formattedVal = formattedVal.substring(1);
+        }
+        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
+        if (isNaN(formattedVal)) {
+          throw new Error("Revenue is not in the correct format");
+        }
         break;
       default:
         break;

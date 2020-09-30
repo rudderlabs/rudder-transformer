@@ -11,7 +11,6 @@ const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );
 const eventTypes = ["track", "identify", "page", "screen", "group", "alias"];
-<<<<<<< HEAD
 // get key of user set properties in the event
 // eg. for identify call, user sets the custom properties inside traits
 const propsKeyMap = {
@@ -23,8 +22,6 @@ const propsKeyMap = {
   group: "traits",
   alias: "traits"
 };
-=======
->>>>>>> origin/master
 
 describe("event types", () => {
   describe("track", () => {
@@ -38,11 +35,7 @@ describe("event types", () => {
 
   describe("identify", () => {
     it("should generate two events for every identify call", () => {
-<<<<<<< HEAD
       // also verfies priority order between traits and context.traits
-=======
-      // also verifies priority order between traits and context.traits
->>>>>>> origin/master
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("identify"));
         expect(received).toMatchObject(output("identify", integrations[index]));
@@ -51,11 +44,7 @@ describe("event types", () => {
   });
 
   describe("page", () => {
-<<<<<<< HEAD
     it("should generate one event for every page call", () => {
-=======
-    it("should generate one events for every page call", () => {
->>>>>>> origin/master
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("page"));
         expect(received).toMatchObject(output("page", integrations[index]));
@@ -64,11 +53,7 @@ describe("event types", () => {
   });
 
   describe("screen", () => {
-<<<<<<< HEAD
     it("should generate one event for every screen call", () => {
-=======
-    it("should generate one events for every screen call", () => {
->>>>>>> origin/master
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("screen"));
         expect(received).toMatchObject(output("screen", integrations[index]));
@@ -77,11 +62,7 @@ describe("event types", () => {
   });
 
   describe("alias", () => {
-<<<<<<< HEAD
     it("should generate one event for every alias call", () => {
-=======
-    it("should generate one events for every alias call", () => {
->>>>>>> origin/master
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("alias"));
         expect(received).toMatchObject(output("alias", integrations[index]));
@@ -121,7 +102,6 @@ describe("column & table names", () => {
   });
 });
 
-<<<<<<< HEAD
 // tests case where properties set by user match the columns set by rudder(id, recevied etc)
 // https://docs.rudderstack.com/data-warehouse-integrations/warehouse-schemas#standard-rudderstack-properties
 describe("conflict between rudder set props and user set props", () => {
@@ -130,31 +110,13 @@ describe("conflict between rudder set props and user set props", () => {
       let i = input(evType);
 
       const propsKey = propsKeyMap[evType];
-=======
-describe("conflict between rudder set props and user set props", () => {
-  it("should override user set props with rudder prop", () => {
-    eventTypes.forEach(evType => {
-      if (evType === "alias" || evType === "group") return;
-
-      let i = input(evType);
-
-      let propsKey = "properties";
-      if (evType === "identify") {
-        propsKey = "traits";
-      }
-
->>>>>>> origin/master
       rudderProps = _.compact(
         rudderProperties.default.concat(rudderProperties[evType])
       );
 
       rudderProps.forEach(prop => {
-<<<<<<< HEAD
         // _.set creates inner object if not present
         _.set(i.message, `${propsKey}.${prop}`, "test prop");
-=======
-        i.message[propsKey][prop] = "test prop";
->>>>>>> origin/master
       });
 
       transformers.forEach(transformer => {
@@ -168,32 +130,16 @@ describe("conflict between rudder set props and user set props", () => {
 
   it("should set data type of rudder prop and not user set prop", () => {
     eventTypes.forEach(evType => {
-<<<<<<< HEAD
       let i = input(evType);
 
       const propsKey = propsKeyMap[evType];
-=======
-      if (evType === "alias" || evType === "group") return;
-
-      let i = input(evType);
-
-      let propsKey = "properties";
-      if (evType === "identify") {
-        propsKey = "traits";
-      }
-
->>>>>>> origin/master
       transformers.forEach((transformer, index) => {
         let sampleRudderPropKey = "id";
         if (integrations[index] === "snowflake") {
           sampleRudderPropKey = "ID";
         }
 
-<<<<<<< HEAD
         _.set(i.message, `${propsKey}.${sampleRudderPropKey}`, true);
-=======
-        i.message[propsKey][sampleRudderPropKey] = true;
->>>>>>> origin/master
         const received = transformer.process(i);
         // TODO: snowflake specific
         expect(received[0].metadata.columns[sampleRudderPropKey]).not.toBe(
@@ -209,7 +155,6 @@ describe("conflict between rudder set props and user set props", () => {
   describe("handle reserved words", () => {
     it("prepend underscore", () => {
       eventTypes.forEach(evType => {
-<<<<<<< HEAD
         let i = input(evType);
 
         let propsKey = "properties";
@@ -217,34 +162,12 @@ describe("conflict between rudder set props and user set props", () => {
           propsKey = "traits";
         }
 
-=======
-        if (evType === "alias" || evType === "group") return;
-        let i = input(evType);
-
-        let propsKey = "properties";
-        if (evType === "identify") {
-          propsKey = "traits";
-        }
-
-        rudderProps = _.compact(
-          rudderProperties.default.concat(rudderProperties[evType])
-        );
-
-        rudderProps.forEach(prop => {
-          i.message[propsKey][prop] = "test prop";
-        });
-
->>>>>>> origin/master
         transformers.forEach((transformer, index) => {
           const reserverdKeywordsMap =
             reservedANSIKeywordsMap[integrations[index].toUpperCase()];
 
           i.message[propsKey] = Object.assign(
-<<<<<<< HEAD
             i.message[propsKey] || {},
-=======
-            i.message[propsKey],
->>>>>>> origin/master
             reserverdKeywordsMap
           );
 
@@ -258,7 +181,6 @@ describe("conflict between rudder set props and user set props", () => {
           Object.keys(reserverdKeywordsMap).forEach(k => {
             expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
             expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
-<<<<<<< HEAD
             snakeCasedKey = _.snakeCase(k).toUpperCase();
             if (k === snakeCasedKey) {
               k = `_${k}`;
@@ -270,8 +192,6 @@ describe("conflict between rudder set props and user set props", () => {
             } else {
               expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
             }
-=======
->>>>>>> origin/master
           });
         });
       });

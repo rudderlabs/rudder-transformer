@@ -72,6 +72,7 @@ async function userTransformHandler(events, versionId, libraryVersionIds) {
     const isolatevmPool = await getPool(versionId, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
     stats.increment("isolatevm_count");
+    stats.counter("events_into_vm", events.length);
     const transformedEvents = await transform(isolatevm, events);
     isolatevmPool.release(isolatevm);
     stats.decrement("isolatevm_count");

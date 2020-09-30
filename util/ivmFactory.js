@@ -7,6 +7,7 @@ const {
   getLibraryCode
 } = require("./customTransforrmationsStore");
 
+const isolateVmMem = 64;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -49,7 +50,7 @@ export function transform(fullEvents) {
 `;
   code = code.replace(match, replacement);
   // TODO: Decide on the right value for memory limit
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
   const context = await isolate.createContext();
 
   const compiledModules = {};

@@ -11,6 +11,17 @@ const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );
 const eventTypes = ["track", "identify", "page", "screen", "group", "alias"];
+// get key of user set properties in the event
+// eg. for identify call, user sets the custom properties inside traits
+const propsKeyMap = {
+  track: "properties",
+  page: "properties",
+  screen: "properties",
+
+  identify: "traits",
+  group: "traits",
+  alias: "traits"
+};
 
 describe("event types", () => {
   describe("track", () => {
@@ -24,7 +35,7 @@ describe("event types", () => {
 
   describe("identify", () => {
     it("should generate two events for every identify call", () => {
-      // also verifies priority order between traits and context.traits
+      // also verfies priority order between traits and context.traits
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("identify"));
         expect(received).toMatchObject(output("identify", integrations[index]));
@@ -33,7 +44,7 @@ describe("event types", () => {
   });
 
   describe("page", () => {
-    it("should generate one events for every page call", () => {
+    it("should generate one event for every page call", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("page"));
         expect(received).toMatchObject(output("page", integrations[index]));
@@ -42,7 +53,7 @@ describe("event types", () => {
   });
 
   describe("screen", () => {
-    it("should generate one events for every screen call", () => {
+    it("should generate one event for every screen call", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("screen"));
         expect(received).toMatchObject(output("screen", integrations[index]));
@@ -51,7 +62,7 @@ describe("event types", () => {
   });
 
   describe("alias", () => {
-    it("should generate one events for every alias call", () => {
+    it("should generate one event for every alias call", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(input("alias"));
         expect(received).toMatchObject(output("alias", integrations[index]));
@@ -91,24 +102,21 @@ describe("column & table names", () => {
   });
 });
 
+// tests case where properties set by user match the columns set by rudder(id, recevied etc)
+// https://docs.rudderstack.com/data-warehouse-integrations/warehouse-schemas#standard-rudderstack-properties
 describe("conflict between rudder set props and user set props", () => {
   it("should override user set props with rudder prop", () => {
     eventTypes.forEach(evType => {
-      if (evType === "alias" || evType === "group") return;
-
       let i = input(evType);
 
-      let propsKey = "properties";
-      if (evType === "identify") {
-        propsKey = "traits";
-      }
-
+      const propsKey = propsKeyMap[evType];
       rudderProps = _.compact(
         rudderProperties.default.concat(rudderProperties[evType])
       );
 
       rudderProps.forEach(prop => {
-        i.message[propsKey][prop] = "test prop";
+        // _.set creates inner object if not present
+        _.set(i.message, `${propsKey}.${prop}`, "test prop");
       });
 
       transformers.forEach(transformer => {
@@ -122,22 +130,16 @@ describe("conflict between rudder set props and user set props", () => {
 
   it("should set data type of rudder prop and not user set prop", () => {
     eventTypes.forEach(evType => {
-      if (evType === "alias" || evType === "group") return;
-
       let i = input(evType);
 
-      let propsKey = "properties";
-      if (evType === "identify") {
-        propsKey = "traits";
-      }
-
+      const propsKey = propsKeyMap[evType];
       transformers.forEach((transformer, index) => {
         let sampleRudderPropKey = "id";
         if (integrations[index] === "snowflake") {
           sampleRudderPropKey = "ID";
         }
 
-        i.message[propsKey][sampleRudderPropKey] = true;
+        _.set(i.message, `${propsKey}.${sampleRudderPropKey}`, true);
         const received = transformer.process(i);
         // TODO: snowflake specific
         expect(received[0].metadata.columns[sampleRudderPropKey]).not.toBe(
@@ -153,28 +155,15 @@ describe("conflict between rudder set props and user set props", () => {
   describe("handle reserved words", () => {
     it("prepend underscore", () => {
       eventTypes.forEach(evType => {
-        if (evType === "alias" || evType === "group") return;
         let i = input(evType);
 
-        let propsKey = "properties";
-        if (evType === "identify") {
-          propsKey = "traits";
-        }
-
-        rudderProps = _.compact(
-          rudderProperties.default.concat(rudderProperties[evType])
-        );
-
-        rudderProps.forEach(prop => {
-          i.message[propsKey][prop] = "test prop";
-        });
-
+        const propsKey = propsKeyMap[evType];
         transformers.forEach((transformer, index) => {
           const reserverdKeywordsMap =
             reservedANSIKeywordsMap[integrations[index].toUpperCase()];
 
           i.message[propsKey] = Object.assign(
-            i.message[propsKey],
+            i.message[propsKey] || {},
             reserverdKeywordsMap
           );
 
@@ -188,6 +177,17 @@ describe("conflict between rudder set props and user set props", () => {
           Object.keys(reserverdKeywordsMap).forEach(k => {
             expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
             expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
+            snakeCasedKey = _.snakeCase(k).toUpperCase();
+            if (k === snakeCasedKey) {
+              k = `_${k}`;
+            } else {
+              k = snakeCasedKey;
+            }
+            if (integrations[index] === "snowflake") {
+              expect(out.metadata.columns).toHaveProperty(k);
+            } else {
+              expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
+            }
           });
         });
       });

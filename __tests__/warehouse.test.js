@@ -157,11 +157,7 @@ describe("conflict between rudder set props and user set props", () => {
       eventTypes.forEach(evType => {
         let i = input(evType);
 
-        let propsKey = "properties";
-        if (["identify", "alias", "group"].includes(evType)) {
-          propsKey = "traits";
-        }
-
+        const propsKey = propsKeyMap[evType];
         transformers.forEach((transformer, index) => {
           const reserverdKeywordsMap =
             reservedANSIKeywordsMap[integrations[index].toUpperCase()];

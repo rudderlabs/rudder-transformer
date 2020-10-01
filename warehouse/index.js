@@ -13,6 +13,7 @@ const whAliasColumnMapping = require("./config/WHAliasConfig.json");
 
 const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
 const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
+
 const isObject = value => {
   const type = typeof value;
   return (
@@ -20,6 +21,10 @@ const isObject = value => {
     (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
+};
+
+const isBlank = value => {
+  return _.isEmpty(_.toString(value));
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -40,13 +45,6 @@ function validTimestamp(input) {
   }
   return false;
 }
-
-// // older implementation with fallback to new Date()
-// function validTimestamp(input) {
-//   // eslint-disable-next-line no-restricted-globals
-//   if (!isNaN(input)) return false;
-//   return new Date(input).getTime() > 0;
-// }
 
 const getDataType = (val, options) => {
   const type = typeof val;
@@ -80,6 +78,7 @@ const rudderCreatedTables = [
   "groups",
   "accounts"
 ];
+
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
     return `_${name}`;
@@ -119,7 +118,8 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   Object.keys(columnMapping).forEach(key => {
     let val = get(input, key);
-    if (val === null || val === undefined) {
+    // do not set column if val is null/empty
+    if (isBlank(val)) {
       return;
     }
     const datatype = getDataType(val, options);
@@ -179,7 +179,8 @@ function setDataFromInputAndComputeColumnTypes(
       );
     } else {
       let val = input[key];
-      if (val === null || val === undefined) {
+      // do not set column if val is null/empty
+      if (isBlank(val)) {
         return;
       }
       const datatype = getDataType(val, options);
@@ -187,7 +188,7 @@ function setDataFromInputAndComputeColumnTypes(
         val = new Date(val).toISOString();
       }
       let safeKey = utils.transformColumnName(prefix + key);
-      if (safeKey != "") {
+      if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
         // eslint-disable-next-line no-param-reassign
         output[safeKey] = val;

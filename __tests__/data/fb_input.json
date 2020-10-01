@@ -365,7 +365,8 @@
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
           "model": "Redmi 6",
-          "name": "xiaomi"
+          "name": "xiaomi",
+          "advertisingId": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R"
         },
         "network": {
           "carrier": "Banglalink"
@@ -380,7 +381,11 @@
         },
         "traits": {
           "email": "abc@gmail.com",
-          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+          "firstName": "test",
+          "lastName": "last",
+          "gender": "Male",
+          "phone": "+91-9831311135"
         }
       },
       "event": "spin_result",
@@ -389,6 +394,7 @@
         "All": false,
         "GA": true
       },
+      "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
         "revenue": 400,

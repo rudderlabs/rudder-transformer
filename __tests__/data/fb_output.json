@@ -31,5 +31,56 @@
     "type": "REST",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "version": "1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
+        "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Screen\",\"fb_description\":\"Main.1233\"}]",
+        "app_user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
+        "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Main Screen\",\"fb_description\":\"Main\"}]",
+        "app_user_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "statusCode": 200
+  },
+  {
+    "message": "Event name New.Event is not a valid FB APP event name.It must match the regex ^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$."
   }
 ]

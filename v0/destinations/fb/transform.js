@@ -103,37 +103,38 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   };
   set(updatedEvent.custom_events[0], "_eventName", fbEventName);
 
-  Object.keys(message.properties).forEach(k => {
-    if (eventPropsToPathMapping[k]) {
-      let rudderEventPath = eventPropsToPathMapping[k];
-      let fbEventPath = eventPropsMapping[rudderEventPath];
+  if (message.properties) {
+    Object.keys(message.properties).forEach(k => {
+      if (eventPropsToPathMapping[k]) {
+        let rudderEventPath = eventPropsToPathMapping[k];
+        let fbEventPath = eventPropsMapping[rudderEventPath];
 
-      if (rudderEventPath.indexOf("sub") > -1) {
-        const [prefixSlice, suffixSlice] = rudderEventPath.split(".sub.");
-        const parentArray = get(message, prefixSlice);
-        updatedEvent.custom_events[0][fbEventPath] = [];
+        if (rudderEventPath.indexOf("sub") > -1) {
+          const [prefixSlice, suffixSlice] = rudderEventPath.split(".sub.");
+          const parentArray = get(message, prefixSlice);
+          updatedEvent.custom_events[0][fbEventPath] = [];
 
-        let length = 0;
-        let count = parentArray.length;
-        while (count > 0) {
-          const intendValue = get(parentArray[length], suffixSlice);
-          updatedEvent.custom_events[0][fbEventPath][length] =
-            intendValue || "";
+          let length = 0;
+          let count = parentArray.length;
+          while (count > 0) {
+            const intendValue = get(parentArray[length], suffixSlice);
+            updatedEvent.custom_events[0][fbEventPath][length] =
+              intendValue || "";
 
-          length++;
-          count--;
+            length += 1;
+            count -= 1;
+          }
+        } else {
+          rudderEventPath = eventPropsToPathMapping[k];
+          fbEventPath = eventPropsMapping[rudderEventPath];
+          const intendValue = get(message, rudderEventPath);
+          set(updatedEvent.custom_events[0], fbEventPath, intendValue || "");
         }
       } else {
-        rudderEventPath = eventPropsToPathMapping[k];
-        fbEventPath = eventPropsMapping[rudderEventPath];
-        const intendValue = get(message, rudderEventPath);
-        set(updatedEvent.custom_events[0], fbEventPath, intendValue || "");
+        set(updatedEvent.custom_events[0], k, message.properties[k]);
       }
-    } else {
-      set(updatedEvent.custom_events[0], k, message.properties[k]);
-    }
-  });
-
+    });
+  }
   return updatedEvent;
 }
 

@@ -1,8 +1,8 @@
 {
-  "_valueToSum": "float",
+  "_valueToSum": "number",
   "fb_currency": "string",
   "fb_content_id": "string",
   "fb_content_type": "string",
   "fb_search_string": "string",
-  "fb_num_items": "int"
+  "fb_num_items": "number"
 }

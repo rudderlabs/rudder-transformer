@@ -111,16 +111,34 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   updatedEvent.event = "CUSTOM_APP_EVENTS";
 }
 
+function getCorrectedTypedValue(pathToKey, value, originalPath) {
+  const type = eventPropToTypeMapping[pathToKey];
+  // TODO: we should remove this eslint rule or comeup with a better way
+  if (typeof value === type) {
+    return value;
+  }
+
+  throw new Error(
+    `${
+      typeof originalPath === "object"
+        ? JSON.stringify(originalPath)
+        : originalPath
+    } is not of valid type`
+  );
+}
+
 function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const updatedEvent = {
     ...baseEvent
   };
   set(updatedEvent.custom_events[0], "_eventName", fbEventName);
 
-  const properties = message.properties;
+  const { properties } = message;
   if (properties) {
     if (properties.revenue && !properties.currency) {
-      throw new Error("If properties.revenue is present, properties.currency is required.")
+      throw new Error(
+        "If properties.revenue is present, properties.currency is required."
+      );
     }
     Object.keys(properties).forEach(k => {
       if (eventPropsToPathMapping[k]) {
@@ -137,7 +155,11 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           while (count > 0) {
             const intendValue = get(parentArray[length], suffixSlice);
             updatedEvent.custom_events[0][fbEventPath][length] =
-              getCorrectedTypedValue(intendValue) || "";
+              getCorrectedTypedValue(
+                fbEventPath,
+                intendValue,
+                parentArray[length]
+              ) || "";
 
             length += 1;
             count -= 1;
@@ -149,7 +171,8 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           set(
             updatedEvent.custom_events[0],
             fbEventPath,
-            getCorrectedTypedValue(intendValue) || ""
+            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath) ||
+              ""
           );
         }
       } else {

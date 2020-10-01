@@ -19,9 +19,14 @@ const eventPropsToPathMapping = JSON.parse(
   fs.readFileSync(getPath("./data/FbAppEventPropPathMapping.json"))
 );
 
+const eventPropToTypeMapping = JSON.parse(
+  fs.readFileSync(getPath("FbAppEventPropToTypeMapping.json"))
+);
+
 module.exports = {
   baseMapping,
   eventNameMapping,
   eventPropsMapping,
-  eventPropsToPathMapping
+  eventPropsToPathMapping,
+  eventPropToTypeMapping
 };

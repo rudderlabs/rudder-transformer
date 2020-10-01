@@ -13,7 +13,8 @@ const {
   baseMapping,
   eventNameMapping,
   eventPropsMapping,
-  eventPropsToPathMapping
+  eventPropsToPathMapping,
+  eventPropToTypeMapping
 } = require("./config");
 const logger = require("../../../logger");
 
@@ -136,7 +137,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           while (count > 0) {
             const intendValue = get(parentArray[length], suffixSlice);
             updatedEvent.custom_events[0][fbEventPath][length] =
-              intendValue || "";
+              getCorrectedTypedValue(intendValue) || "";
 
             length += 1;
             count -= 1;
@@ -145,7 +146,11 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           rudderEventPath = eventPropsToPathMapping[k];
           fbEventPath = eventPropsMapping[rudderEventPath];
           const intendValue = get(message, rudderEventPath);
-          set(updatedEvent.custom_events[0], fbEventPath, intendValue || "");
+          set(
+            updatedEvent.custom_events[0],
+            fbEventPath,
+            getCorrectedTypedValue(intendValue) || ""
+          );
         }
       } else {
         set(updatedEvent.custom_events[0], k, properties[k]);

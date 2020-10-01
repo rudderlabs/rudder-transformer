@@ -37,6 +37,10 @@ const userProps = [
 ];
 
 function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
+  // remove anon_id if app_user_id present
+  if (updatedEvent.app_user_id) {
+    delete updatedEvent.anon_id;
+  }
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
   set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
@@ -93,9 +97,9 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   });
 
   // TODO : send anon_id
-  if (!isUDSet && !updatedEvent.advertiser_id) {
+  if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
     throw new Error(
-      "Either context.device.advertiser_id or traits must be present for all events"
+      "Either context.device.advertiser_id or traits or anonymousId must be present for all events"
     );
   }
 
@@ -307,6 +311,11 @@ function processSingleMessage(message, destination) {
         fbEventName = "Viewed Screen";
       } else {
         fbEventName = `Viewed ${name} Screen`;
+        if (!eventRegex.test(fbEventName)) {
+          throw new Error(
+            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+          );
+        }
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;

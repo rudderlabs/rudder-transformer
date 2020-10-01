@@ -1,7 +1,11 @@
 [
   {
-    "sourceKeys": "anonymousId",
+    "sourceKeys": "userId",
     "destKey": "app_user_id"
+  },
+  {
+    "sourceKeys": "anonymousId",
+    "destKey": "anon_id"
   },
   {
     "sourceKeys": "integrations.Fb.advertiser_tracking_enabled",

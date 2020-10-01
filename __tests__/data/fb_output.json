@@ -6,6 +6,9 @@
     "message": "{\"product_id\":123} is not of valid type"
   },
   {
+    "message": "properties.revenue is not of valid type"
+  },
+  {
     "body": {
       "XML": {},
       "FORM": {

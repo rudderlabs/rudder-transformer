@@ -24,7 +24,7 @@ const isObject = value => {
 };
 
 const isBlank = value => {
-  return _.isEmpty(_.trim(_.toString(value)));
+  return _.isEmpty(_.toString(value));
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/

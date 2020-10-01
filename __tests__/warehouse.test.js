@@ -202,7 +202,7 @@ describe("null/empty values", () => {
       const propsKey = propsKeyMap[evType];
       const emptyValsMap = {
         empty_val_1: "",
-        empty_val_2: "  ",
+        empty_val_2: [],
         empty_val_3: null,
         empty_val_4: undefined
       };

@@ -45,6 +45,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   num = Number(updatedEvent.application_tracking_enabled);
   updatedEvent.application_tracking_enabled = isNaN(num) ? "0" : `${num}`;
 
+  let isUDSet = false;
   userProps.forEach(prop => {
     switch (prop) {
       case "ud[em]":
@@ -53,16 +54,19 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case "ud[st]":
       case "ud[zp]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          isUDSet = true;
           updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
         }
         break;
       case "ud[ph]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          isUDSet = true;
           updatedEvent[prop] = sha256(updatedEvent[prop]);
         }
         break;
       case "ud[ge]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          isUDSet = true;
           updatedEvent[prop] = sha256(
             updatedEvent[prop] === "Female" ? "f" : "m"
           );
@@ -70,11 +74,13 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         break;
       case "ud[db]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          isUDSet = true;
           updatedEvent[prop] = sha256(getDateInFormat(updatedEvent[prop]));
         }
         break;
       case "ud[ct]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
+          isUDSet = true;
           updatedEvent[prop] = sha256(
             updatedEvent[prop].toLowerCase().replace(/ /g, "")
           );
@@ -84,6 +90,13 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         break;
     }
   });
+
+  // TODO : send anon_id
+  if (!isUDSet && !updatedEvent.advertiser_id) {
+    throw new Error(
+      "Either context.device.advertiser_id or traits must be present for all events"
+    );
+  }
 
   if (updatedEvent.custom_events) {
     updatedEvent.custom_events = JSON.stringify(updatedEvent.custom_events);
@@ -103,8 +116,12 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   };
   set(updatedEvent.custom_events[0], "_eventName", fbEventName);
 
-  if (message.properties) {
-    Object.keys(message.properties).forEach(k => {
+  const properties = message.properties;
+  if (properties) {
+    if (properties.revenue && !properties.currency) {
+      throw new Error("If properties.revenue is present, properties.currency is required.")
+    }
+    Object.keys(properties).forEach(k => {
       if (eventPropsToPathMapping[k]) {
         let rudderEventPath = eventPropsToPathMapping[k];
         let fbEventPath = eventPropsMapping[rudderEventPath];
@@ -131,7 +148,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           set(updatedEvent.custom_events[0], fbEventPath, intendValue || "");
         }
       } else {
-        set(updatedEvent.custom_events[0], k, message.properties[k]);
+        set(updatedEvent.custom_events[0], k, properties[k]);
       }
     });
   }
@@ -170,33 +187,35 @@ function buildBaseEvent(message) {
   baseMapping.forEach(bm => {
     const { sourceKeys, destKey } = bm;
     const inputVal = getValueFromMessage(message, sourceKeys);
-    const splits = destKey.split(".");
-    if (splits.length > 1 && splits[0] === "extinfo") {
-      extInfoIdx = splits[1];
-      let outputVal;
-      switch (typeof extInfoArray[extInfoIdx]) {
-        case "number":
-          if (extInfoIdx === 11) {
-            // density
-            outputVal = parseFloat(inputVal);
-            outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
-          } else {
-            outputVal = parseInt(inputVal, 10);
-            outputVal = isNaN(outputVal) ? undefined : outputVal;
-          }
-          break;
+    if (inputVal) {
+      const splits = destKey.split(".");
+      if (splits.length > 1 && splits[0] === "extinfo") {
+        extInfoIdx = splits[1];
+        let outputVal;
+        switch (typeof extInfoArray[extInfoIdx]) {
+          case "number":
+            if (extInfoIdx === 11) {
+              // density
+              outputVal = parseFloat(inputVal);
+              outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
+            } else {
+              outputVal = parseInt(inputVal, 10);
+              outputVal = isNaN(outputVal) ? undefined : outputVal;
+            }
+            break;
 
-        default:
-          outputVal = inputVal;
-          break;
+          default:
+            outputVal = inputVal;
+            break;
+        }
+        baseEvent.extinfo[extInfoIdx] =
+          outputVal || baseEvent.extinfo[extInfoIdx];
+      } else if (splits.length === 3) {
+        // custom event key
+        set(baseEvent.custom_events[0], splits[2], inputVal || "");
+      } else {
+        set(baseEvent, destKey, inputVal || "");
       }
-      baseEvent.extinfo[extInfoIdx] =
-        outputVal || baseEvent.extinfo[extInfoIdx];
-    } else if (splits.length === 3) {
-      // custom event key
-      set(baseEvent.custom_events[0], splits[2], inputVal || "");
-    } else {
-      set(baseEvent, destKey, inputVal || "");
     }
   });
 
@@ -239,16 +258,24 @@ function processSingleMessage(message, destination) {
   let fbEventName;
   const baseEvent = buildBaseEvent(message);
   const eventName = message.event;
+  const eventRegexPattern = "^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$";
+  const eventRegex = new RegExp(eventRegexPattern);
   let updatedEvent = {};
 
   switch (message.type) {
     case EventType.TRACK:
       fbEventName = eventNameMapping[eventName] || eventName;
+      if (!eventRegex.test(fbEventName)) {
+        throw new Error(
+          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+        );
+      }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     case EventType.SCREEN: {
       const { name } = message.properties;
-      if (!name) {
+      if (!name || !eventRegex.test(name)) {
+        // TODO : log if name does not match regex
         fbEventName = "Viewed Screen";
       } else {
         fbEventName = `Viewed ${name} Screen`;

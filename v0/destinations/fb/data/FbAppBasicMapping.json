@@ -4,15 +4,15 @@
     "destKey": "app_user_id"
   },
   {
-    "sourceKeys": "destination_props.Fb.advertiser_tracking_enabled",
+    "sourceKeys": "integrations.Fb.advertiser_tracking_enabled",
     "destKey": "advertiser_tracking_enabled"
   },
   {
-    "sourceKeys": "destination_props.Fb.application_tracking_enabled",
+    "sourceKeys": "integrations.Fb.application_tracking_enabled",
     "destKey": "application_tracking_enabled"
   },
   {
-    "sourceKeys": "context.device.advertiser_id",
+    "sourceKeys": "context.device.advertisingId",
     "destKey": "advertiser_id"
   },
   {

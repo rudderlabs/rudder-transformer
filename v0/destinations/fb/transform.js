@@ -220,7 +220,7 @@ function buildBaseEvent(message) {
   baseEvent.extinfo = extInfoArray;
   baseEvent.custom_events = [{}];
 
-  let sourceSDK = get(message, "context.os.name") || "";
+  let sourceSDK = get(message, "context.device.type") || "";
   sourceSDK = sourceSDK.toLowerCase();
   if ( sourceSDK === "android") {
     sourceSDK = "a2";

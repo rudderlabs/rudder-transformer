@@ -36,12 +36,10 @@ const userProps = [
   "ud[st]",
   "ud[zp]"
 ];
+const eventAndPropRegexPattern = "^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$";
+const eventAndPropRegex = new RegExp(eventAndPropRegexPattern);
 
 function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
-  // remove anon_id if app_user_id present
-  if (updatedEvent.app_user_id) {
-    delete updatedEvent.anon_id;
-  }
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
   set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
@@ -97,7 +95,11 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
     }
   });
 
-  // TODO : send anon_id
+  // remove anon_id if user data or advertiser_id present
+  if (isUDSet || updatedEvent.advertiser_id) {
+    delete updatedEvent.anon_id;
+  }
+
   if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
     throw new Error(
       "Either context.device.advertiser_id or traits or anonymousId must be present for all events"
@@ -146,6 +148,9 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
       );
     }
     Object.keys(properties).forEach(k => {
+      if (!eventAndPropRegex.test(k)) {
+        throw new Error("Event property keys should be alphanumeric and have atmost 40 characters");
+      }
       if (eventPropsToPathMapping[k]) {
         let rudderEventPath = eventPropsToPathMapping[k];
         let fbEventPath = eventPropsMapping[rudderEventPath];
@@ -302,30 +307,28 @@ function processSingleMessage(message, destination) {
   let fbEventName;
   const baseEvent = buildBaseEvent(message);
   const eventName = message.event;
-  const eventRegexPattern = "^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$";
-  const eventRegex = new RegExp(eventRegexPattern);
   let updatedEvent = {};
 
   switch (message.type) {
     case EventType.TRACK:
       fbEventName = eventNameMapping[eventName] || eventName;
-      if (!eventRegex.test(fbEventName)) {
+      if (!eventAndPropRegex.test(fbEventName)) {
         throw new Error(
-          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
         );
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     case EventType.SCREEN: {
       const { name } = message.properties;
-      if (!name || !eventRegex.test(name)) {
+      if (!name || !eventAndPropRegex.test(name)) {
         // TODO : log if name does not match regex
         fbEventName = "Viewed Screen";
       } else {
         fbEventName = `Viewed ${name} Screen`;
-        if (!eventRegex.test(fbEventName)) {
+        if (!eventAndPropRegex.test(fbEventName)) {
           throw new Error(
-            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
           );
         }
       }

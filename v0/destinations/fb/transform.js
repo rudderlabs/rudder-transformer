@@ -17,6 +17,7 @@ const {
   eventPropToTypeMapping
 } = require("./config");
 const logger = require("../../../logger");
+const { SourceCode } = require("eslint");
 
 // const funcMap = {
 //   integer: parseInt,
@@ -214,7 +215,18 @@ function buildBaseEvent(message) {
   baseEvent.extinfo = extInfoArray;
   baseEvent.custom_events = [{}];
 
-  baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
+  let sourceSDK = get(message, "context.os.name") || "";
+  sourceSDK = sourceSDK.toLowerCase();
+  if ( sourceSDK === "android") {
+    sourceSDK = "a2";
+  } else if (sourceSDK === "ios") {
+    sourceSDK = "i2";
+  } else {
+    // if the sourceSDK is not android or ios, send an empty string
+    sourceSDK = "";
+  }
+
+  baseEvent.extinfo[0] = sourceSDK;
   let extInfoIdx;
   baseMapping.forEach(bm => {
     const { sourceKeys, destKey } = bm;

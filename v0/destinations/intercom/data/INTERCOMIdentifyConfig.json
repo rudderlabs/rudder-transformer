@@ -1,0 +1,62 @@
+[
+  {
+    "destKey": "external_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "signed_up_at",
+    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "last_request_at",
+    "sourceKeys": "originalTimestamp",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "last_seen_at",
+    "sourceKeys": "originalTimestamp",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "last_seen_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": false
+  }
+]

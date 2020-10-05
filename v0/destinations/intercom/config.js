@@ -1,20 +1,50 @@
-const destinationConfigKeys = {
-  accessToken: "apiKey",
-  appId: "appId",
-  mobileApiKey: "mobileApiKey",
-  collectContext: "collectContext"
+const { getMappingConfig } = require("../../util");
+
+const BASE_ENDPOINT = "https://api.intercom.io";
+
+// track events | Track
+const TRACK_ENDPOINT = `${BASE_ENDPOINT}/events`;
+// Create, Update a user with a company | Identify
+const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/contacts`;
+// create, update, delete a company | Group
+const GROUP_ENDPOINT = `${BASE_ENDPOINT}/companies`;
+
+const ConfigCategory = {
+  TRACK: {
+    endpoint: TRACK_ENDPOINT,
+    name: "INTERCOMTrackConfig"
+  },
+  IDENTIFY: {
+    endpoint: IDENTIFY_ENDPOINT,
+    name: "INTERCOMIdentifyConfig"
+  }
+  // ,
+  // GROUP: {
+  //   endpoint: GROUP_ENDPOINT,
+  //   name: "INTERCOMGroupConfig"
+  // }
 };
 
-const baseEndpoint = "https://api.intercom.io";
-const endpoints = {
-  userUrl: `${baseEndpoint}/contacts`, // Create, Update a user with a company | Identify
-  eventsUrl: `${baseEndpoint}/events`, // track events | Track
-  companyUrl: `${baseEndpoint}/companies`, // create, update, delete a company | Group
-  conversationsUrl: `${baseEndpoint}/conversations?open=true` // get all conversations | Page
-  // identityVerificationUrl: `${baseEndpoint}`
-};
+const MappingConfig = getMappingConfig(ConfigCategory, __dirname);
+
+const ReservedTraitsProperties = [
+  "userId",
+  "email",
+  "phone",
+  "name",
+  "createdAt",
+  "firstName",
+  "lastName",
+  "firstname",
+  "lastname",
+  "company"
+];
+
+const ReservedCompanyProperties = ["id", "name", "industry"];
 
 module.exports = {
-  destinationConfigKeys,
-  endpoints
+  ConfigCategory,
+  MappingConfig,
+  ReservedCompanyProperties,
+  ReservedTraitsProperties
 };

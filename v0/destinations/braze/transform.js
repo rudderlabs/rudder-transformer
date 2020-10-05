@@ -45,10 +45,12 @@ function buildResponse(message, destination, properties, endpoint) {
 }
 
 function setAliasObjectWithAnonId(payload, message) {
-  payload.user_alias = {
-    alias_name: message.anonymousId,
-    alias_label: "rudder_id"
-  };
+  if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
+      alias_label: "rudder_id"
+    };
+  }
   return payload;
 }
 

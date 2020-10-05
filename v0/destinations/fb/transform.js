@@ -17,7 +17,6 @@ const {
   eventPropToTypeMapping
 } = require("./config");
 const logger = require("../../../logger");
-const { SourceCode } = require("eslint");
 
 // const funcMap = {
 //   integer: parseInt,
@@ -102,7 +101,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 
   if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
     throw new Error(
-      "Either context.device.advertiser_id or traits or anonymousId must be present for all events"
+      "Either context.device.advertisingId or traits or anonymousId must be present for all events"
     );
   }
 

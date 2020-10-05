@@ -50,7 +50,6 @@
       "FORM": {
         "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
         "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Screen\",\"fb_description\":\"Main.1233\"}]",
-        "anon_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
         "advertiser_tracking_enabled": "0",
         "application_tracking_enabled": "0",
@@ -74,7 +73,6 @@
       "FORM": {
         "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
         "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Main Screen\",\"fb_description\":\"Main\"}]",
-        "anon_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
         "advertiser_tracking_enabled": "0",
         "application_tracking_enabled": "0",
@@ -101,7 +99,6 @@
       "FORM": {
         "extinfo": "[\"i2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
         "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Screen\",\"fb_description\":\"Viewed Main Screen1 by expicit call Screen\"}]",
-        "anon_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
         "advertiser_tracking_enabled": "0",
         "application_tracking_enabled": "0",
@@ -125,7 +122,6 @@
       "FORM": {
         "extinfo": "[\"a2\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
         "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Screen\",\"fb_description\":\"Viewed Main Screen1 by expicit call Screen\"}]",
-        "anon_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
         "advertiser_tracking_enabled": "0",
         "application_tracking_enabled": "0",
@@ -149,7 +145,6 @@
       "FORM": {
         "extinfo": "[\"\",\"\",0,0,\"8.1.0\",\"Redmi 6\",\"\",\"\",\"Banglalink\",0,100,50,0,0,0]",
         "custom_events": "[{\"_logTime\":1567333011693,\"_eventName\":\"Viewed Screen\",\"fb_description\":\"Viewed Main Screen1 by expicit call Screen\"}]",
-        "anon_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "ud[em]": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
         "advertiser_tracking_enabled": "0",
         "application_tracking_enabled": "0",

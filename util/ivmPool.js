@@ -16,6 +16,12 @@ async function getPool(versionId, libraryVersionIds) {
     (transformationPoolCache[versionId] &&
       transformationLibraryCache[versionId] !== sortedLibrariesIdString)
   ) {
+    if (transformationPoolCache[versionId]) {
+      // draining resources
+      transformationPoolCache[versionId].drain().then(function() {
+        transformationPoolCache[versionId].clear();
+      });
+    }
     const factory = await getFactory(versionId, libraryVersionIds);
     transformationPoolCache[versionId] = genericPool.createPool(factory, opts);
     transformationLibraryCache[versionId] = sortedLibrariesIdString;

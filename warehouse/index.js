@@ -116,6 +116,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   columnTypes,
   options
 ) {
+  if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
     let val = get(input, key);
     // do not set column if val is null/empty
@@ -166,7 +167,7 @@ function setDataFromInputAndComputeColumnTypes(
   options,
   prefix = ""
 ) {
-  if (!input) return;
+  if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setDataFromInputAndComputeColumnTypes(

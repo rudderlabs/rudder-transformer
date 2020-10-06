@@ -14,6 +14,8 @@ const whAliasColumnMapping = require("./config/WHAliasConfig.json");
 const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
 const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
 
+const maxColumnsInEvent = 200;
+
 const isObject = value => {
   const type = typeof value;
   return (
@@ -212,6 +214,13 @@ function getColumns(options, obj, columnTypes) {
   Object.keys(obj).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(obj[key], options);
   });
+  // throw error if too many columns in an event just in case
+  // to avoid creating too many columns in warehouse due to a spurious event
+  if (Object.keys(columns).length > maxColumnsInEvent) {
+    throw new Error(
+      `${options.provider} transfomer: Too many columns outputted from the event`
+    );
+  }
   return columns;
 }
 

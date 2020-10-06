@@ -55,23 +55,28 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case "ud[fn]":
       case "ud[ln]":
       case "ud[st]":
-      case "ud[zp]":
+      case "ud[cn]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
           updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
         }
         break;
+      case "ud[zp]":
       case "ud[ph]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
-          updatedEvent[prop] = sha256(updatedEvent[prop]);
+          // remove all non-numerical characters
+          let processedVal = updatedEvent[prop].replace(/[^0-9]/g, "");
+          if (processedVal.length) {
+            updatedEvent[prop] = sha256(processedVal);
+          }
         }
         break;
       case "ud[ge]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
           updatedEvent[prop] = sha256(
-            updatedEvent[prop] === "Female" ? "f" : "m"
+            updatedEvent[prop].toLowerCase() === "female" ? "f" : "m"
           );
         }
         break;
@@ -146,9 +151,21 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
         "If properties.revenue is present, properties.currency is required."
       );
     }
+    let processedKey;
     Object.keys(properties).forEach(k => {
+      processedKey = k;
       if (!eventAndPropRegex.test(k)) {
-        throw new Error("Event property keys should be alphanumeric and have atmost 40 characters");
+        if (k.length > 40) {
+          // trim key if length is greater than 40
+          processedKey = k.substring(0, 40);
+        }
+        // replace all non alphanumeric characters with ''
+        processedKey = processedKey.replace(/[^0-9a-z _-]/gi, "");
+        if (processedKey.length === 0) {
+          throw new Error(
+            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`
+          );
+        }
       }
       if (eventPropsToPathMapping[k]) {
         let rudderEventPath = eventPropsToPathMapping[k];
@@ -185,7 +202,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           );
         }
       } else {
-        set(updatedEvent.custom_events[0], k, properties[k]);
+        set(updatedEvent.custom_events[0], processedKey, properties[k]);
       }
     });
   }
@@ -221,7 +238,7 @@ function buildBaseEvent(message) {
 
   let sourceSDK = get(message, "context.device.type") || "";
   sourceSDK = sourceSDK.toLowerCase();
-  if ( sourceSDK === "android") {
+  if (sourceSDK === "android") {
     sourceSDK = "a2";
   } else if (sourceSDK === "ios") {
     sourceSDK = "i2";

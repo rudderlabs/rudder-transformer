@@ -1,3 +1,7 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable vars-on-top */
+/* eslint-disable block-scoped-var */
+/* eslint-disable no-var */
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
@@ -5,11 +9,15 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  constructPayload
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
+const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
+const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
 function getEventTime(message) {
   return new Date(message.originalTimestamp).toISOString();
@@ -66,7 +74,12 @@ function processRevenueEvents(message, destination) {
 }
 
 function getEventValueForTrackEvent(message, destination) {
+  const mappedProperties = constructPayload(
+    message,
+    mPEventPropertiesConfigJson
+  );
   const properties = {
+    ...mappedProperties,
     ...message.properties,
     ...message.context.traits,
     token: destination.Config.token,
@@ -118,20 +131,24 @@ function getTransformedJSON(message, mappingJson) {
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
 
-  const properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  let properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const { device } = message.context;
   if (device && device.token) {
     if (device.type.toLowerCase() === "ios") {
+      var payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {
+      payload = constructPayload(message, mPProfileAndroidConfigJson);
       properties.$android_devices = [device.token];
     }
+    properties = { ...properties, ...payload };
   }
 
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId
+    $distinct_id: message.userId || message.anonymousId,
+    $ip: message.context.ip
   };
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)
@@ -139,7 +156,7 @@ function processIdentifyEvents(message, type, destination) {
 
   if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
-    /* const trackParameters = {
+    const trackParameters = {
       event: "$identify",
       properties: {
         $identified_id: message.userId,
@@ -150,16 +167,17 @@ function processIdentifyEvents(message, type, destination) {
     const identifyTrackResponse = responseBuilderSimple(
       trackParameters,
       message,
-      type
+      type,
+      destination.Config
     );
     identifyTrackResponse.endpoint =
       destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/engage/"
-        : "https://api.mixpanel.com/engage/";
+        ? "https://api-eu.mixpanel.com/track/"
+        : "https://api.mixpanel.com/track/";
 
-    returnValue.push(identifyTrackResponse); */
+    returnValue.push(identifyTrackResponse);
 
-    const trackParameters = {
+    /* const trackParameters = {
       event: "$merge",
       properties: {
         $distinct_ids: [message.userId, message.anonymousId],
@@ -183,7 +201,7 @@ function processIdentifyEvents(message, type, destination) {
         destination.Config.apiSecret
       ).toString("base64")}`
     };
-    returnValue.push(identifyTrackResponse);
+    returnValue.push(identifyTrackResponse); */
   }
 
   return returnValue;
@@ -198,8 +216,9 @@ function processPageOrScreenEvents(message, type, destination) {
     time: message.timestamp
   };
 
+  const eventName = type == "page" ? "Loaded a page" : "Loaded a screen";
   const parameters = {
-    event: type,
+    event: eventName,
     properties
   };
   return responseBuilderSimple(parameters, message, type, destination.Config);

@@ -35,12 +35,10 @@ const userProps = [
   "ud[st]",
   "ud[zp]"
 ];
+const eventAndPropRegexPattern = "^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$";
+const eventAndPropRegex = new RegExp(eventAndPropRegexPattern);
 
 function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
-  // remove anon_id if app_user_id present
-  if (updatedEvent.app_user_id) {
-    delete updatedEvent.anon_id;
-  }
   // Conversion required fields
   const dateTime = new Date(get(updatedEvent.custom_events[0], "_logTime"));
   set(updatedEvent.custom_events[0], "_logTime", dateTime.getTime());
@@ -57,23 +55,28 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case "ud[fn]":
       case "ud[ln]":
       case "ud[st]":
-      case "ud[zp]":
+      case "ud[cn]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
           updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
         }
         break;
+      case "ud[zp]":
       case "ud[ph]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
-          updatedEvent[prop] = sha256(updatedEvent[prop]);
+          // remove all non-numerical characters
+          let processedVal = updatedEvent[prop].replace(/[^0-9]/g, "");
+          if (processedVal.length) {
+            updatedEvent[prop] = sha256(processedVal);
+          }
         }
         break;
       case "ud[ge]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
           updatedEvent[prop] = sha256(
-            updatedEvent[prop] === "Female" ? "f" : "m"
+            updatedEvent[prop].toLowerCase() === "female" ? "f" : "m"
           );
         }
         break;
@@ -96,10 +99,14 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
     }
   });
 
-  // TODO : send anon_id
+  // remove anon_id if user data or advertiser_id present
+  if (isUDSet || updatedEvent.advertiser_id) {
+    delete updatedEvent.anon_id;
+  }
+
   if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
     throw new Error(
-      "Either context.device.advertiser_id or traits or anonymousId must be present for all events"
+      "Either context.device.advertisingId or traits or anonymousId must be present for all events"
     );
   }
 
@@ -144,7 +151,22 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
         "If properties.revenue is present, properties.currency is required."
       );
     }
+    let processedKey;
     Object.keys(properties).forEach(k => {
+      processedKey = k;
+      if (!eventAndPropRegex.test(k)) {
+        // replace all non alphanumeric characters with ''
+        processedKey = processedKey.replace(/[^0-9a-z _-]/gi, "");
+        if (k.length > 40) {
+          // trim key if length is greater than 40
+          processedKey = k.substring(0, 40);
+        }
+        if (processedKey.length === 0) {
+          throw new Error(
+            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`
+          );
+        }
+      }
       if (eventPropsToPathMapping[k]) {
         let rudderEventPath = eventPropsToPathMapping[k];
         let fbEventPath = eventPropsMapping[rudderEventPath];
@@ -180,7 +202,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           );
         }
       } else {
-        set(updatedEvent.custom_events[0], k, properties[k]);
+        set(updatedEvent.custom_events[0], processedKey, properties[k]);
       }
     });
   }
@@ -214,7 +236,18 @@ function buildBaseEvent(message) {
   baseEvent.extinfo = extInfoArray;
   baseEvent.custom_events = [{}];
 
-  baseEvent.extinfo[0] = "a2"; // keeping it fixed to android for now
+  let sourceSDK = get(message, "context.device.type") || "";
+  sourceSDK = sourceSDK.toLowerCase();
+  if (sourceSDK === "android") {
+    sourceSDK = "a2";
+  } else if (sourceSDK === "ios") {
+    sourceSDK = "i2";
+  } else {
+    // if the sourceSDK is not android or ios, send an empty string
+    sourceSDK = "";
+  }
+
+  baseEvent.extinfo[0] = sourceSDK;
   let extInfoIdx;
   baseMapping.forEach(bm => {
     const { sourceKeys, destKey } = bm;
@@ -290,30 +323,28 @@ function processSingleMessage(message, destination) {
   let fbEventName;
   const baseEvent = buildBaseEvent(message);
   const eventName = message.event;
-  const eventRegexPattern = "^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$";
-  const eventRegex = new RegExp(eventRegexPattern);
   let updatedEvent = {};
 
   switch (message.type) {
     case EventType.TRACK:
       fbEventName = eventNameMapping[eventName] || eventName;
-      if (!eventRegex.test(fbEventName)) {
+      if (!eventAndPropRegex.test(fbEventName)) {
         throw new Error(
-          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
         );
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     case EventType.SCREEN: {
       const { name } = message.properties;
-      if (!name || !eventRegex.test(name)) {
+      if (!name || !eventAndPropRegex.test(name)) {
         // TODO : log if name does not match regex
         fbEventName = "Viewed Screen";
       } else {
         fbEventName = `Viewed ${name} Screen`;
-        if (!eventRegex.test(fbEventName)) {
+        if (!eventAndPropRegex.test(fbEventName)) {
           throw new Error(
-            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventRegexPattern}.`
+            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
           );
         }
       }

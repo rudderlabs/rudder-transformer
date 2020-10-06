@@ -1,7 +1,14 @@
 [
   {
     "destKey": "uniqueId",
-    "sourceKeys": ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"],
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
     "required": true
   },
   {

@@ -8,11 +8,11 @@
     "destKey": "anon_id"
   },
   {
-    "sourceKeys": "integrations.Fb.advertiser_tracking_enabled",
+    "sourceKeys": "context.device.adTrackingEnabled",
     "destKey": "advertiser_tracking_enabled"
   },
   {
-    "sourceKeys": "integrations.Fb.application_tracking_enabled",
+    "sourceKeys": "properties.application_tracking_enabled",
     "destKey": "application_tracking_enabled"
   },
   {

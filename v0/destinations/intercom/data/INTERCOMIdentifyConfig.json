@@ -1,6 +1,6 @@
 [
   {
-    "destKey": "external_id",
+    "destKey": "user_id",
     "sourceKeys": [
       "userId",
       "traits.userId",
@@ -28,22 +28,6 @@
   {
     "destKey": "signed_up_at",
     "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
-    "required": false,
-    "metadata": {
-      "type": "timestamp"
-    }
-  },
-  {
-    "destKey": "last_request_at",
-    "sourceKeys": "originalTimestamp",
-    "required": false,
-    "metadata": {
-      "type": "timestamp"
-    }
-  },
-  {
-    "destKey": "last_seen_at",
-    "sourceKeys": "originalTimestamp",
     "required": false,
     "metadata": {
       "type": "timestamp"

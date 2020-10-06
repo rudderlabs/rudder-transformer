@@ -3,28 +3,26 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "external_id": "test_user_id_1",
         "email": "test_1@test.com",
         "phone": "9876543210",
         "name": "Test Name",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "user_id": "test_user_id_1",
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
-        },
-        "role": "user"
+        }
       },
       "XML": {},
       "FORM": {}
@@ -36,10 +34,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -48,15 +46,13 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
         "name": "Test Name",
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
-        },
-        "role": "user"
+        }
       },
       "XML": {},
       "FORM": {}
@@ -68,10 +64,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -80,14 +76,12 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
-        "role": "user",
         "name": "Name"
       },
       "XML": {},
@@ -100,10 +94,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -112,14 +106,12 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
-        "role": "user",
         "name": "Name"
       },
       "XML": {},
@@ -136,10 +128,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -148,14 +140,12 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
-        "role": "user",
         "name": "Name",
         "companies": [
           {
@@ -176,10 +166,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -188,14 +178,12 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
-        "role": "user",
         "name": "Name",
         "companies": [
           {
@@ -216,10 +204,10 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
@@ -228,14 +216,12 @@
         "email": "test_1@test.com",
         "phone": "9876543210",
         "signed_up_at": 1601493060337,
-        "last_request_at": 1601493060337,
-        "last_seen_at": 1601493060337,
         "last_seen_user_agent": "unknown",
-        "custom_attributes": {
+        "update_last_request_at": true,
+         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
-        "role": "user",
         "name": "Name",
         "companies": []
       },
@@ -252,7 +238,7 @@
       "endpoint": "https://api.intercom.io/events",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer undefined",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
         "Accept": "application/json"
       },
       "params": {},
@@ -261,7 +247,7 @@
           "user_id": "test_user_id_1",
           "email": "test_1@test.com",
           "event_name": "Test Event 2",
-          "created": 1601493060337,
+          "created": 1601493060,
           "metadata": {
             "property1": 1,
             "property2": "test",
@@ -283,7 +269,7 @@
       "endpoint": "https://api.intercom.io/events",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer undefined",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
         "Accept": "application/json"
       },
       "params": {},
@@ -291,7 +277,7 @@
         "JSON": {
           "email": "test_1@test.com",
           "event_name": "Test Event 2",
-          "created": 1601493060337,
+          "created": 1601493060,
           "metadata": {
 
           }

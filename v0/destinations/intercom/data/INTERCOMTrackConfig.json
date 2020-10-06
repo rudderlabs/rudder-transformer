@@ -24,7 +24,7 @@
     "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
-      "type": "timestamp"
+      "type": "secondTimestamp"
     }
   }
 ]

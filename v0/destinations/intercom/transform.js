@@ -250,7 +250,7 @@ function getCompanyAttribute(company) {
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
         if (val) {
-          customAttributes[key] = company[key];
+          customAttributes[key] = val;
         }
       }
     });
@@ -268,8 +268,8 @@ function getCompanyAttribute(company) {
 function validateIdentify(message, payload) {
   const finalPayload = payload;
 
-  finalPayload.role = "user";
-  if (payload.external_id || payload.email) {
+  finalPayload.update_last_request_at = true;
+  if (payload.user_id || payload.email) {
     if (payload.name === undefined || payload.name === "") {
       const firstName = getFieldValueFromMessage(message, "firstName");
       const lastName = getFieldValueFromMessage(message, "lastName");
@@ -333,7 +333,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.endpoint = category.endpoint;
   response.headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${destination.Config.accessToken}`,
+    Authorization: `Bearer ${destination.Config.apiKey}`,
     Accept: "application/json"
   };
   response.userId = message.anonymousId;

@@ -5,7 +5,7 @@ const BASE_ENDPOINT = "https://api.intercom.io";
 // track events | Track
 const TRACK_ENDPOINT = `${BASE_ENDPOINT}/events`;
 // Create, Update a user with a company | Identify
-const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/contacts`;
+const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/users`;
 // create, update, delete a company | Group
 const GROUP_ENDPOINT = `${BASE_ENDPOINT}/companies`;
 

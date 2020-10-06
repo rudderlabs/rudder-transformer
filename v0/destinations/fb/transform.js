@@ -155,12 +155,12 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
     Object.keys(properties).forEach(k => {
       processedKey = k;
       if (!eventAndPropRegex.test(k)) {
+        // replace all non alphanumeric characters with ''
+        processedKey = processedKey.replace(/[^0-9a-z _-]/gi, "");
         if (k.length > 40) {
           // trim key if length is greater than 40
           processedKey = k.substring(0, 40);
         }
-        // replace all non alphanumeric characters with ''
-        processedKey = processedKey.replace(/[^0-9a-z _-]/gi, "");
         if (processedKey.length === 0) {
           throw new Error(
             `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`

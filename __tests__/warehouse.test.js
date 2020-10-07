@@ -229,3 +229,30 @@ describe("null/empty values", () => {
     });
   });
 });
+
+describe("invalid context", () => {
+  it("should skip setting context fields if context is not an object", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      i.message.context = "{{invalid object}}";
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        let columns = Object.keys(received[0].metadata.columns);
+        if (received[1]) {
+          columns = columns.concat(Object.keys(received[1].metadata.columns));
+        }
+        columns.forEach(c => {
+          expect(c).not.toMatch(/^context_\d/g);
+        });
+        let data = Object.keys(received[0].data);
+        if (received[1]) {
+          data = data.concat(Object.keys(received[1].data));
+        }
+        data.forEach(d => {
+          expect(d).not.toMatch(/^context_\d/g);
+        });
+      });
+    });
+  });
+});

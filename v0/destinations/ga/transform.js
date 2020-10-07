@@ -225,7 +225,7 @@ function responseBuilderSimple(
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
-  response.userId = message.anonymousId;
+  response.userId = message.anonymousId || message.userId;
   response.params = finalPayload;
 
   return response;

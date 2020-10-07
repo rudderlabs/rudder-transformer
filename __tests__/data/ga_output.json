@@ -1720,5 +1720,107 @@
   {
     "statusCode": 400,
     "message": "message type not supported"
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+        "ea": "action1",
+        "ec": "Ruchira",
+        "ni": 1,
+        "cd1": "ruchira moitra",
+        "content1": "ruchira/plan",
+        "v": "1",
+        "t": "event",
+        "tid": "UA-165994240-1",
+        "ds": "web",
+        "an": "RudderLabs JavaScript SDK",
+        "av": "1.0.0",
+        "aiid": "com.rudderlabs.javascript",
+        "npa": 1,
+        "aip": 1,
+        "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "ul": "en-US",
+        "uid": "12345",
+        "cid": "827ccb0eea8a706c4c34a16891f84e7b",
+        "uip": "0.0.0.0"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {}
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "GET",
+  "endpoint": "https://www.google-analytics.com/collect",
+  "headers": {},
+  "params": {
+      "ea": "action1",
+      "ec": "Ruchira",
+      "ni": 1,
+      "cd1": "ruchira moitra",
+      "content1": "ruchira/plan",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "uid": "12345",
+      "cid": "clientId",
+      "uip": "0.0.0.0"
+  },
+  "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {}
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "GET",
+  "endpoint": "https://www.google-analytics.com/collect",
+  "headers": {},
+  "params": {
+      "ea": "action1",
+      "ec": "Ruchira",
+      "ni": 1,
+      "cd1": "ruchira moitra",
+      "content1": "ruchira/plan",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "uid": "12345",
+      "cid": "externalClientId",
+      "uip": "0.0.0.0"
+  },
+  "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {}
+}
 ]

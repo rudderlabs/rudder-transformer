@@ -1724,7 +1724,10 @@
   {
     "version": "1",
     "type": "REST",
+<<<<<<< HEAD
     "userId": "12345",
+=======
+>>>>>>> changes for anonymousId in GA
     "method": "GET",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
@@ -1759,7 +1762,10 @@
 {
   "version": "1",
   "type": "REST",
+<<<<<<< HEAD
   "userId": "12345",
+=======
+>>>>>>> changes for anonymousId in GA
   "method": "GET",
   "endpoint": "https://www.google-analytics.com/collect",
   "headers": {},
@@ -1794,7 +1800,6 @@
 {
   "version": "1",
   "type": "REST",
-  "userId": "12345",
   "method": "GET",
   "endpoint": "https://www.google-analytics.com/collect",
   "headers": {},

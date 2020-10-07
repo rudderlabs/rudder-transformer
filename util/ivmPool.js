@@ -5,8 +5,8 @@ const logger = require("../logger");
 const transformationPoolCache = {};
 const transformationLibraryCache = {};
 const opts = {
-  min: 2, // minimum size of the pool
-  max: 10 // maximum size of the pool
+  min: 1, // minimum size of the pool
+  max: 5 // maximum size of the pool
 };
 
 async function getPool(versionId, libraryVersionIds) {
@@ -16,12 +16,12 @@ async function getPool(versionId, libraryVersionIds) {
     (transformationPoolCache[versionId] &&
       transformationLibraryCache[versionId] !== sortedLibrariesIdString)
   ) {
-    if (transformationPoolCache[versionId]) {
-      // draining resources
-      transformationPoolCache[versionId].drain().then(function() {
-        transformationPoolCache[versionId].clear();
-      });
-    }
+    // if (transformationPoolCache[versionId]) {
+    //   // draining resources
+    //   transformationPoolCache[versionId].drain().then(function() {
+    //     transformationPoolCache[versionId].clear();
+    //   });
+    // }
     const factory = await getFactory(versionId, libraryVersionIds);
     transformationPoolCache[versionId] = genericPool.createPool(factory, opts);
     transformationLibraryCache[versionId] = sortedLibrariesIdString;
@@ -29,7 +29,9 @@ async function getPool(versionId, libraryVersionIds) {
     // TODO: Figure out if we should we do this
     transformationPoolCache[versionId].on("factoryCreateError", error => {
       // eslint-disable-next-line no-underscore-dangle
-      transformationPoolCache[versionId]._waitingClientsQueue.dequeue().reject(error);
+      transformationPoolCache[versionId]._waitingClientsQueue
+        .dequeue()
+        .reject(error);
     });
     logger.debug("pool created");
   }

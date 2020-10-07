@@ -71,11 +71,10 @@ async function userTransformHandler(events, versionId, libraryVersionIds) {
   if (versionId) {
     const isolatevmPool = await getPool(versionId, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
-    stats.increment("isolatevm_count");
+    stats.gauge("isolate_vm_pool_size", isolatevmPool.size);
     stats.counter("events_into_vm", events.length);
     const transformedEvents = await transform(isolatevm, events);
     isolatevmPool.release(isolatevm);
-    stats.decrement("isolatevm_count");
     //TODO: add stats for capturing ivm pools
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.

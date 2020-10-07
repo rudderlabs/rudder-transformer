@@ -14,7 +14,10 @@ const whAliasColumnMapping = require("./config/WHAliasConfig.json");
 const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
 const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
 
-const maxColumnsInEvent = 200;
+const maxColumnsInEvent = parseInt(
+  process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
+  10
+);
 
 const isObject = value => {
   const type = typeof value;

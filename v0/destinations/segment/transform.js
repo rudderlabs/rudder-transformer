@@ -21,7 +21,7 @@ function responseBuilderSimple(payload, segmentConfig) {
   response.headers = header;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.endpoint = batchEndpoint;
-  response.userId = payload.anonymousId;
+  response.userId = segmentConfig.userId;
   response.statusCode = 200;
 
   return response;

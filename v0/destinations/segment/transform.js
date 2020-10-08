@@ -31,7 +31,9 @@ function getTransformedJSON(message, segmentConfig) {
   const { type, anonymousId } = message;
   const { userId } = segmentConfig;
   const traits = getFieldValueFromMessage(message, "traits");
-  delete traits.anonymousId;
+  if (traits && traits.anonymousId) {
+    delete traits.anonymousId;
+  }
   const properties = get(message, "properties")
     ? message.properties
     : undefined;

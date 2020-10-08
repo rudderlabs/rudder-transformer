@@ -40,11 +40,17 @@ const formatValue = value => {
 };
 
 // Format the destination.Config.dynamicMap arrays to hashMap
-const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
+const getHashFromArray = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      hashMap[array[fromKey].toLowerCase()] = array[toKey];
+      hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
+        array[toKey];
     });
   }
   return hashMap;
@@ -269,8 +275,35 @@ const handleMetadataForValue = (value, metadata) => {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
+      case "secondTimestamp":
+        formattedVal = Math.floor(
+          formatTimeStamp(formattedVal, typeFormat) / 1000
+        );
+        break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
+        break;
+      case "encodeURIComponent":
+        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+        break;
+      case "jsonStringify":
+        formattedVal = JSON.stringify(formattedVal);
+        break;
+      case "jsonStringifyOnFlatten":
+        formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "numberForRevenue":
+        if (
+          (typeof formattedVal === "string" ||
+            formattedVal instanceof String) &&
+          formattedVal.charAt(0) === "$"
+        ) {
+          formattedVal = formattedVal.substring(1);
+        }
+        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
+        if (isNaN(formattedVal)) {
+          throw new Error("Revenue is not in the correct format");
+        }
         break;
       default:
         break;
@@ -381,6 +414,23 @@ const getFieldValueFromMessage = (message, field) => {
   return null;
 };
 
+// to get destination specific external id passed in context.
+function getDestinationExternalID(message, type) {
+  let externalIdArray = null;
+  let destinationExternalId = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      if (extIdObj.type === type) {
+        destinationExternalId = extIdObj.id;
+      }
+    });
+  }
+  return destinationExternalId;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -395,6 +445,7 @@ module.exports = {
   flattenJson,
   formatValue,
   getDateInFormat,
+  getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,

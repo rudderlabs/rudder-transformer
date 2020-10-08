@@ -1,5 +1,10 @@
+const _ = require("lodash");
+
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
+
+const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
+const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
 
 const isObject = value => {
   const type = typeof value;
@@ -8,6 +13,10 @@ const isObject = value => {
     (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
+};
+
+const isBlank = value => {
+  return _.isEmpty(_.toString(value));
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -19,7 +28,14 @@ const timestampRegex = new RegExp(
 );
 
 function validTimestamp(input) {
-  return timestampRegex.test(input);
+  if (timestampRegex.test(input)) {
+    // check if date value lies in between min time and max time. if not then it's not a valid timestamp
+    const dateInMs = Date.parse(new Date(input).toISOString());
+    if (minTimeInMs <= dateInMs && dateInMs <= maxTimeInMs) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function getVersionedUtils(schemaVersion) {
@@ -35,6 +51,7 @@ function getVersionedUtils(schemaVersion) {
 
 module.exports = {
   isObject,
+  isBlank,
   timestampRegex,
   validTimestamp,
   getVersionedUtils

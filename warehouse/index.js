@@ -2,7 +2,12 @@
 const get = require("get-value");
 const _ = require("lodash");
 
-const { isObject, validTimestamp, getVersionedUtils } = require("./util");
+const {
+  isObject,
+  isBlank,
+  validTimestamp,
+  getVersionedUtils
+} = require("./util");
 const { getMergeRuleEvent } = require("./identity");
 
 const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
@@ -12,12 +17,10 @@ const whScreenColumnMapping = require("./config/WHScreenConfig.json");
 const whGroupColumnMapping = require("./config/WHGroupConfig.json");
 const whAliasColumnMapping = require("./config/WHAliasConfig.json");
 
-// // older implementation with fallback to new Date()
-// function validTimestamp(input) {
-//   // eslint-disable-next-line no-restricted-globals
-//   if (!isNaN(input)) return false;
-//   return new Date(input).getTime() > 0;
-// }
+const maxColumnsInEvent = parseInt(
+  process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
+  10
+);
 
 const getDataType = (val, options) => {
   const type = typeof val;
@@ -51,6 +54,7 @@ const rudderCreatedTables = [
   "groups",
   "accounts"
 ];
+
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
     return `_${name}`;
@@ -88,9 +92,11 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   columnTypes,
   options
 ) {
+  if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
     let val = get(input, key);
-    if (val === null || val === undefined) {
+    // do not set column if val is null/empty
+    if (isBlank(val)) {
       return;
     }
     const datatype = getDataType(val, options);
@@ -137,7 +143,7 @@ function setDataFromInputAndComputeColumnTypes(
   options,
   prefix = ""
 ) {
-  if (!input) return;
+  if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setDataFromInputAndComputeColumnTypes(
@@ -150,7 +156,8 @@ function setDataFromInputAndComputeColumnTypes(
       );
     } else {
       let val = input[key];
-      if (val === null || val === undefined) {
+      // do not set column if val is null/empty
+      if (isBlank(val)) {
         return;
       }
       const datatype = getDataType(val, options);
@@ -185,6 +192,13 @@ function getColumns(options, event, columnTypes) {
   Object.keys(event).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(event[key], options);
   });
+  // throw error if too many columns in an event just in case
+  // to avoid creating too many columns in warehouse due to a spurious event
+  if (Object.keys(columns).length > maxColumnsInEvent) {
+    throw new Error(
+      `${options.provider} transfomer: Too many columns outputted from the event`
+    );
+  }
   return columns;
 }
 
@@ -669,6 +683,7 @@ function processWarehouseMessage(message, options) {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,
@@ -719,6 +734,7 @@ function processWarehouseMessage(message, options) {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,

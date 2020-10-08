@@ -24,5 +24,18 @@
     "traits.id",
     "context.traits.userId",
     "context.traits.id"
+  ],
+  "firstName": [
+    "traits.firstName",
+    "traits.firstname",
+    "context.traits.firstName",
+    "context.traits.firstname"
+  ],
+  "lastName": [
+    "traits.lastName",
+    "traits.lastname",
+    "context.traits.lastName",
+    "context.traits.lastname"
   ]
+
 }

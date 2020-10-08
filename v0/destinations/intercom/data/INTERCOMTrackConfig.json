@@ -1,0 +1,30 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": [
+      "traits.email",
+      "context.traits.email"
+    ],
+    "required": false
+  },
+  { "destKey": "event_name", "sourceKeys": "event", "required": true },
+  {
+    "destKey": "created",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  }
+]

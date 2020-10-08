@@ -3,7 +3,9 @@ const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 const {
   ConfigCategory,
@@ -51,14 +53,17 @@ function setAliasObjectWithAnonId(payload, message) {
 }
 
 function setExternalId(payload, message) {
-  if (message.userId) {
-    payload.external_id = message.userId;
+  const externalId =
+    getDestinationExternalID(message, "brazeExternalId") || message.userId;
+  if (externalId) {
+    payload.external_id = externalId;
   }
   return payload;
 }
 
 function setExternalIdOrAliasObject(payload, message) {
-  if (message.userId) {
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  if (userId || getDestinationExternalID(message, "brazeExternalId")) {
     return setExternalId(payload, message);
   }
 
@@ -194,19 +199,28 @@ function addMandatoryEventProperties(payload, message) {
 }
 
 function addMandatoryPurchaseProperties(
-  payload,
   productId,
   price,
   currencyCode,
   quantity,
   timestamp
 ) {
-  payload.price = price;
-  payload.product_id = productId;
-  payload.currency = currencyCode;
-  payload.quantity = quantity;
-  payload.time = timestamp;
-  return payload;
+  if (currencyCode) {
+    return {
+      product_id: productId,
+      price,
+      currency: currencyCode,
+      quantity,
+      time: timestamp
+    };
+  }
+  return null;
+  // payload.price = price;
+  // payload.product_id = productId;
+  // payload.currency = currencyCode;
+  // payload.quantity = quantity;
+  // payload.time = timestamp;
+  // return payload;
 }
 
 function getPurchaseObjs(message) {
@@ -218,26 +232,28 @@ function getPurchaseObjs(message) {
   if (products) {
     // we have to make a separate call to appboy for each product
     products.forEach(product => {
-      const productId = product.product_id;
-      const { price } = product;
-      const { quantity } = product;
-      if (quantity && price && productId) {
-        let purchaseObj = {};
-        purchaseObj = addMandatoryPurchaseProperties(
-          purchaseObj,
+      const productId = product.product_id || product.sku;
+      const { price, quantity, currency } = product;
+      if (productId && price && quantity) {
+        if (Number.isNaN(price) || Number.isNaN(quantity)) {
+          return;
+        }
+        let purchaseObj = addMandatoryPurchaseProperties(
           productId,
           price,
-          currencyCode,
+          currencyCode || currency,
           quantity,
           message.timestamp
         );
-        purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
-        purchaseObjs.push(purchaseObj);
+        if (purchaseObj) {
+          purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
+          purchaseObjs.push(purchaseObj);
+        }
       }
     });
   }
 
-  return purchaseObjs;
+  return purchaseObjs.length === 0 ? null : purchaseObjs;
 }
 
 function processTrackEvent(messageType, message, destination, mappingJson) {
@@ -257,25 +273,28 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   ) {
     const purchaseObjs = getPurchaseObjs(message);
 
-    // del used properties
-    delete properties.products;
-    delete properties.currency;
+    if (purchaseObjs) {
+      // del used properties
+      delete properties.products;
+      delete properties.currency;
 
-    let payload = {};
-    payload.properties = properties;
+      let payload = {};
+      payload.properties = properties;
 
-    payload = setExternalIdOrAliasObject(payload, message);
-    return buildResponse(
-      message,
-      destination,
+      payload = setExternalIdOrAliasObject(payload, message);
+      return buildResponse(
+        message,
+        destination,
+        {
+          attributes: [attributePayload],
+          purchases: purchaseObjs,
+          partner: BRAZE_PARTNER_NAME
+        },
+        getTrackEndPoint(destination.Config.endPoint)
+      );
+    }
 
-      {
-        attributes: [attributePayload],
-        purchases: purchaseObjs,
-        partner: BRAZE_PARTNER_NAME
-      },
-      getTrackEndPoint(destination.Config.endPoint)
-    );
+    throw new Error("Invalid Order Completed event");
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -347,6 +366,8 @@ function process(event) {
       );
       respList.push(response);
       break;
+    default:
+      throw new Error("Message type is not supported");
   }
 
   return respList;

@@ -12,6 +12,7 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+const uaParser = require("ua-parser-js");
 const logger = require("../../logger");
 
 // ========================================================================
@@ -24,6 +25,7 @@ const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+
 
 // ========================================================================
 // GENERIC UTLITY
@@ -426,6 +428,11 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+function getBrowserInfo(userAgent) {
+  const ua = uaParser(userAgent);
+  return { name: ua.browser.name, version: ua.browser.version };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -451,5 +458,6 @@ module.exports = {
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
-  updatePayload
+  updatePayload,
+  getBrowserInfo
 };

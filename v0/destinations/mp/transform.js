@@ -10,7 +10,8 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  constructPayload
+  constructPayload,
+  getBrowserInfo
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -106,6 +107,12 @@ function getEventValueForTrackEvent(message, destination) {
     time: message.timestamp
   };
 
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
+  }
+
   const parameters = {
     event: message.event,
     properties
@@ -121,6 +128,7 @@ function getEventValueForTrackEvent(message, destination) {
 
 function processTrack(message, destination) {
   const returnValue = [];
+  getBrowserInfo(message.context.userAgent);
   if (message.properties && message.properties.revenue) {
     returnValue.push(processRevenueEvents(message, destination));
   }
@@ -161,6 +169,11 @@ function processIdentifyEvents(message, type, destination) {
       properties.$android_devices = [device.token];
     }
     properties = { ...properties, ...payload };
+  }
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
   }
 
   const parameters = {
@@ -227,6 +240,7 @@ function processIdentifyEvents(message, type, destination) {
 }
 
 function processPageOrScreenEvents(message, type, destination) {
+  getBrowserInfo(message.context.userAgent);
   const properties = {
     ...message.properties,
     ...message.context.traits,
@@ -234,6 +248,15 @@ function processPageOrScreenEvents(message, type, destination) {
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
+
+  if (message.properties.name) {
+    properties.page_name = message.properties.name;
+  }
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
+  }
 
   const eventName = type == "page" ? "Loaded a page" : "Loaded a screen";
   const parameters = {

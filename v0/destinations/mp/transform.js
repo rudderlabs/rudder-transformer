@@ -19,6 +19,25 @@ const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
+function getGroupKeys(config) {
+  const groupKeys = [];
+  const groupKeyConfig = config.groupKeySettings;
+  if (
+    groupKeyConfig &&
+    Array.isArray(groupKeyConfig) &&
+    groupKeyConfig.length > 0
+  ) {
+    let groupKey;
+    groupKeyConfig.forEach(groupKeyObj => {
+      groupKey = groupKeyObj["groupKey"];
+      if (groupKey) {
+        groupKeys.push(groupKey);
+      }
+    });
+  }
+  return groupKeys;
+}
+
 function getEventTime(message) {
   return new Date(message.originalTimestamp).toISOString();
 }
@@ -238,46 +257,51 @@ function processAliasEvents(message, type, destination) {
 
 function processGroupEvents(message, type, destination) {
   const returnValue = [];
-  if (destination.Config.groupKey) {
-    const parameters = {
-      $token: destination.Config.token,
-      $distinct_id: message.userId || message.anonymousId,
-      $set: {
-        [destination.Config.groupKey]: [
-          get(message.traits, destination.Config.groupKey)
-        ]
+  const groupKeys = getGroupKeys(destination.Config);
+  let groupKeyVal;
+  if (groupKeys.length > 0) {
+    groupKeys.forEach(groupKey => {
+      groupKeyVal = get(message.traits, groupKey);
+      if (groupKeyVal) {
+        const parameters = {
+          $token: destination.Config.token,
+          $distinct_id: message.userId || message.anonymousId,
+          $set: {
+            [groupKey]: [get(message.traits, groupKey)]
+          }
+        };
+        const response = responseBuilderSimple(
+          parameters,
+          message,
+          type,
+          destination.Config
+        );
+        returnValue.push(response);
+
+        const groupParameters = {
+          $token: destination.Config.token,
+          $group_key: groupKey,
+          $group_id: get(message.traits, groupKey),
+          $set: {
+            ...message.traits
+          }
+        };
+
+        const groupResponse = responseBuilderSimple(
+          groupParameters,
+          message,
+          type,
+          destination.Config
+        );
+
+        groupResponse.endpoint =
+          destination.Config.dataResidency === "eu"
+            ? "https://api-eu.mixpanel.com/groups/"
+            : "https://api.mixpanel.com/groups/";
+
+        returnValue.push(groupResponse);
       }
-    };
-    const response = responseBuilderSimple(
-      parameters,
-      message,
-      type,
-      destination.Config
-    );
-    returnValue.push(response);
-
-    const groupParameters = {
-      $token: destination.Config.token,
-      $group_key: destination.Config.groupKey,
-      $group_id: get(message.traits, destination.Config.groupKey),
-      $set: {
-        ...message.traits
-      }
-    };
-
-    const groupResponse = responseBuilderSimple(
-      groupParameters,
-      message,
-      type,
-      destination.Config
-    );
-
-    groupResponse.endpoint =
-      destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/groups/"
-        : "https://api.mixpanel.com/groups/";
-
-    returnValue.push(groupResponse);
+    });
   } else {
     throw new Error("config is not supported");
   }

@@ -4,15 +4,21 @@ const _ = require("lodash");
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
 
-const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
-const whTrackColumnMapping = require("./config/WHTrackConfig.json");
-const whPageColumnMapping = require("./config/WHPageConfig.json");
-const whScreenColumnMapping = require("./config/WHScreenConfig.json");
-const whGroupColumnMapping = require("./config/WHGroupConfig.json");
-const whAliasColumnMapping = require("./config/WHAliasConfig.json");
+const whDefaultColumnMappingRules = require("./config/WHDefaultConfig.js");
+const whTrackColumnMappingRules = require("./config/WHTrackConfig.js");
+const whUserColumnMappingRules = require("./config/WHUserConfig.js");
+const whPageColumnMappingRules = require("./config/WHPageConfig.js");
+const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
+const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
+const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
 
 const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
 const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
+
+const maxColumnsInEvent = parseInt(
+  process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
+  10
+);
 
 const isObject = value => {
   const type = typeof value;
@@ -116,18 +122,30 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   columnTypes,
   options
 ) {
+  if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
-    let val = get(input, key);
+    let val;
+    if (_.isFunction(columnMapping[key])) {
+      val = columnMapping[key](input);
+    } else {
+      val = get(input, columnMapping[key]);
+    }
+
+    const columnName = utils.safeColumnName(options.provider, key);
     // do not set column if val is null/empty
     if (isBlank(val)) {
+      // delete in output and columnTypes, so as to remove if we user
+      // has set property with same name
+      // eslint-disable-next-line no-param-reassign
+      delete output[columnName];
+      // eslint-disable-next-line no-param-reassign
+      delete columnTypes[columnName];
       return;
     }
     const datatype = getDataType(val, options);
     if (datatype === "datetime") {
       val = new Date(val).toISOString();
     }
-    const prop = columnMapping[key];
-    const columnName = utils.safeColumnName(options.provider, prop);
     // eslint-disable-next-line no-param-reassign
     output[columnName] = val;
     // eslint-disable-next-line no-param-reassign
@@ -166,7 +184,7 @@ function setDataFromInputAndComputeColumnTypes(
   options,
   prefix = ""
 ) {
-  if (!input) return;
+  if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setDataFromInputAndComputeColumnTypes(
@@ -211,6 +229,13 @@ function getColumns(options, obj, columnTypes) {
   Object.keys(obj).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(obj[key], options);
   });
+  // throw error if too many columns in an event just in case
+  // to avoid creating too many columns in warehouse due to a spurious event
+  if (Object.keys(columns).length > maxColumnsInEvent) {
+    throw new Error(
+      `${options.provider} transfomer: Too many columns outputted from the event`
+    );
+  }
   return columns;
 }
 
@@ -429,7 +454,7 @@ function processWarehouseMessage(message, options) {
         utils,
         commonProps,
         message,
-        whTrackColumnMapping,
+        whTrackColumnMappingRules,
         commonColumnTypes,
         options
       );
@@ -437,7 +462,7 @@ function processWarehouseMessage(message, options) {
         utils,
         commonProps,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         commonColumnTypes,
         options
       );
@@ -569,7 +594,7 @@ function processWarehouseMessage(message, options) {
         utils,
         identifiesEvent,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         identifiesColumnTypes,
         options
       );
@@ -594,6 +619,14 @@ function processWarehouseMessage(message, options) {
       }
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        usersEvent,
+        message,
+        whUserColumnMappingRules,
+        usersColumnTypes,
+        options
+      );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
@@ -646,7 +679,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
@@ -656,7 +689,7 @@ function processWarehouseMessage(message, options) {
           utils,
           event,
           message,
-          whPageColumnMapping,
+          whPageColumnMappingRules,
           columnTypes,
           options
         );
@@ -665,7 +698,7 @@ function processWarehouseMessage(message, options) {
           utils,
           event,
           message,
-          whScreenColumnMapping,
+          whScreenColumnMappingRules,
           columnTypes,
           options
         );
@@ -701,7 +734,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
@@ -709,7 +742,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whGroupColumnMapping,
+        whGroupColumnMappingRules,
         columnTypes,
         options
       );
@@ -744,7 +777,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
@@ -752,7 +785,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whAliasColumnMapping,
+        whAliasColumnMappingRules,
         columnTypes,
         options
       );

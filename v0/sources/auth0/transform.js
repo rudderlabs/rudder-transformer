@@ -45,7 +45,10 @@ function processEvent(event) {
       message.userId = message.context.traits.userId;
     }
 
-    return message;
+    if (message.userId && message.userId !== "") {
+      return message;
+    }
+    return null;
   }
   throw new Error("Unknwon event type from Auth0");
 }
@@ -54,7 +57,10 @@ function process(events) {
   const responses = [];
   events.forEach(event => {
     try {
-      responses.push(removeUndefinedAndNullValues(processEvent(event)));
+      const resp = processEvent(event);
+      if (resp) {
+        responses.push(removeUndefinedAndNullValues(resp));
+      }
     } catch (error) {
       // TODO: figure out a way to handle partial failures within batch
       // responses.push({

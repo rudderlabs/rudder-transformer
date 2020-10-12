@@ -275,6 +275,11 @@ const handleMetadataForValue = (value, metadata) => {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
+      case "secondTimestamp":
+        formattedVal = Math.floor(
+          formatTimeStamp(formattedVal, typeFormat) / 1000
+        );
+        break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
         break;

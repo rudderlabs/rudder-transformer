@@ -1,7 +1,5 @@
 const rules = {
-  direct: {
-    event: "event_text"
-  }
+  event_text: "event"
 };
 
 module.exports = rules;

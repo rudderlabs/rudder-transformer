@@ -1,7 +1,5 @@
 const rules = {
-  direct: {
-    groupId: "group_id"
-  }
+  group_id: "groupId"
 };
 
 module.exports = rules;

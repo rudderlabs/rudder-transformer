@@ -1,7 +1,5 @@
 const rules = {
-  direct: {
-    previousId: "previous_id"
-  }
+  previous_id: "previousId"
 };
 
 module.exports = rules;

@@ -6,6 +6,7 @@ const v1 = require("./v1/util");
 
 const whDefaultColumnMappingRules = require("./config/WHDefaultConfig.js");
 const whTrackColumnMappingRules = require("./config/WHTrackConfig.js");
+const whUserColumnMappingRules = require("./config/WHUserConfig.js");
 const whPageColumnMappingRules = require("./config/WHPageConfig.js");
 const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
 const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
@@ -122,41 +123,32 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   options
 ) {
   if (!isObject(columnMapping)) return;
+  Object.keys(columnMapping).forEach(key => {
+    let val;
+    if (_.isFunction(columnMapping[key])) {
+      val = columnMapping[key](input);
+    } else {
+      val = get(input, columnMapping[key]);
+    }
 
-  const setInOutput = (key, val) => {
+    const columnName = utils.safeColumnName(options.provider, key);
     // do not set column if val is null/empty
     if (isBlank(val)) {
+      // eslint-disable-next-line no-param-reassign
+      delete output[columnName];
+      // eslint-disable-next-line no-param-reassign
+      delete columnTypes[columnName];
       return;
     }
     const datatype = getDataType(val, options);
     if (datatype === "datetime") {
-      // eslint-disable-next-line no-param-reassign
       val = new Date(val).toISOString();
     }
-    const columnName = utils.safeColumnName(options.provider, key);
     // eslint-disable-next-line no-param-reassign
     output[columnName] = val;
     // eslint-disable-next-line no-param-reassign
     columnTypes[columnName] = datatype;
-  };
-
-  const directRules = columnMapping.direct;
-  const customRules = columnMapping.custom;
-
-  if (isObject(directRules)) {
-    Object.keys(directRules).forEach(key => {
-      const keyInOutput = directRules[key];
-      const valInOutput = get(input, key);
-      setInOutput(keyInOutput, valInOutput);
-    });
-  }
-
-  if (isObject(customRules)) {
-    Object.keys(customRules).forEach(keyInOutput => {
-      const valInOutput = customRules[keyInOutput](input);
-      setInOutput(keyInOutput, valInOutput);
-    });
-  }
+  });
 }
 
 /*
@@ -625,6 +617,14 @@ function processWarehouseMessage(message, options) {
       }
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        usersEvent,
+        message,
+        whUserColumnMappingRules,
+        usersColumnTypes,
+        options
+      );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";

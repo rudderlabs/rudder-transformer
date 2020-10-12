@@ -1,7 +1,5 @@
 const rules = {
-  direct: {
-    name: "name"
-  }
+  name: "name"
 };
 
 module.exports = rules;

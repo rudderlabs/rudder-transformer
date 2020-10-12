@@ -134,6 +134,8 @@ function setDataFromColumnMappingAndComputeColumnTypes(
     const columnName = utils.safeColumnName(options.provider, key);
     // do not set column if val is null/empty
     if (isBlank(val)) {
+      // delete in output and columnTypes, so as to remove if we user
+      // has set property with same name
       // eslint-disable-next-line no-param-reassign
       delete output[columnName];
       // eslint-disable-next-line no-param-reassign

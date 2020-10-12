@@ -4,10 +4,6 @@
     "destKey": "$ip"
   },
   {
-    "sourceKeys": "context.userAgent",
-    "destKey": "$browser"
-  },
-  {
     "sourceKeys": "context.campaign.name",
     "destKey": "campaign_id"
   },

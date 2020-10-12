@@ -99,9 +99,9 @@ function getEventValueForTrackEvent(message, destination) {
     mPEventPropertiesConfigJson
   );
   const properties = {
-    ...mappedProperties,
     ...message.properties,
     ...message.context.traits,
+    ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
@@ -128,7 +128,6 @@ function getEventValueForTrackEvent(message, destination) {
 
 function processTrack(message, destination) {
   const returnValue = [];
-  getBrowserInfo(message.context.userAgent);
   if (message.properties && message.properties.revenue) {
     returnValue.push(processRevenueEvents(message, destination));
   }
@@ -240,10 +239,14 @@ function processIdentifyEvents(message, type, destination) {
 }
 
 function processPageOrScreenEvents(message, type, destination) {
-  getBrowserInfo(message.context.userAgent);
+  const mappedProperties = constructPayload(
+    message,
+    mPEventPropertiesConfigJson
+  );
   const properties = {
     ...message.properties,
     ...message.context.traits,
+    ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp

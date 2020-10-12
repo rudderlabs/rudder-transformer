@@ -93,12 +93,12 @@ function excludeRudderCreatedTableNames(name) {
 }
 
 /*
-  setDataFromColumnMappingAndComputeColumnTypes takes in input object and 
+  setDataFromColumnMappingAndComputeColumnTypes takes in input object and
     1. reads columnMapping and adds corresponding data from message to output object
     2. computes and sets the datatype of the added data to output in columnTypes object
 
   Note: this function mutates output, columnTypes args for sake of perf
-    
+
   eg.
   input = {messageId: "m1", anonymousId: "a1"}
   output = {}
@@ -154,7 +154,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 }
 
 /*
-  setDataFromInputAndComputeColumnTypes takes in input object and 
+  setDataFromInputAndComputeColumnTypes takes in input object and
     1. adds the key/values in input (recursively in case of keys with value of type object) to output object (prefix is added to all keys)
     2. computes and sets the datatype of the added data to output in columnTypes object
 

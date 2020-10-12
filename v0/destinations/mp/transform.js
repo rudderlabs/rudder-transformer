@@ -252,7 +252,7 @@ function processPageOrScreenEvents(message, type, destination) {
     time: message.timestamp
   };
 
-  if (message.properties.name) {
+  if (message.properties && message.properties.name) {
     properties.page_name = message.properties.name;
   }
   if (message.channel === "web" && message.context.userAgent) {

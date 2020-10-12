@@ -342,7 +342,7 @@ describe("context ip", () => {
 });
 
 describe("remove rudder property if rudder property is null", () => {
-  it("should remove anonymous_id set by user in properties if missing in event", () => {
+  it("should remove context_ip set by user in properties if missing in event", () => {
     eventTypes.forEach(evType => {
       let i = input(evType);
       delete i.message.context.ip;

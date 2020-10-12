@@ -9,16 +9,19 @@ const isBlank = value => {
   return _.isEmpty(_.toString(value));
 };
 
-const coalesce = (message, props) => {
+const getFirstValidValue = (message, props) => {
+  let currVal = null;
   for (let index = 0; index < props.length; index += 1) {
-    if (!isBlank(get(message, props[index]))) {
-      return get(message, props[index]);
+    currVal = get(message, props[index]);
+    if (!isBlank(currVal)) {
+      break;
     }
   }
-  return get(message, props[props.length - 1]);
+
+  return currVal;
 };
 
 module.exports = {
   isNull,
-  coalesce
+  getFirstValidValue
 };

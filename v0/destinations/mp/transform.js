@@ -180,7 +180,7 @@ function processIdentifyEvents(message, type, destination) {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: message.context.ip
+    $ip: message.request_ip
   };
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)

@@ -1,17 +1,20 @@
-const whDefaultColumnMapping = require("../../../warehouse/config/WHDefaultConfig.json");
-const whTrackColumnMapping = require("../../../warehouse/config/WHTrackConfig.json");
-const whPageColumnMapping = require("../../../warehouse/config/WHPageConfig.json");
-const whScreenColumnMapping = require("../../../warehouse/config/WHScreenConfig.json");
-const whGroupColumnMapping = require("../../../warehouse/config/WHGroupConfig.json");
-const whAliasColumnMapping = require("../../../warehouse/config/WHAliasConfig.json");
+const util = require("util");
+const whDefaultColumnMapping = require("../../../warehouse/config/WHDefaultConfig.js");
+const whTrackColumnMapping = require("../../../warehouse/config/WHTrackConfig.js");
+const whUserColumnMapping = require("../../../warehouse/config/WHUserConfig.js");
+const whPageColumnMapping = require("../../../warehouse/config/WHPageConfig.js");
+const whScreenColumnMapping = require("../../../warehouse/config/WHScreenConfig.js");
+const whGroupColumnMapping = require("../../../warehouse/config/WHGroupConfig.js");
+const whAliasColumnMapping = require("../../../warehouse/config/WHAliasConfig.js");
 
 const rudderProperties = {
-  default: Object.values(whDefaultColumnMapping),
-  track: Object.values(whTrackColumnMapping),
-  page: Object.values(whPageColumnMapping),
-  screen: Object.values(whScreenColumnMapping),
-  group: Object.values(whGroupColumnMapping),
-  alias: Object.values(whAliasColumnMapping)
+  default: Object.keys(whDefaultColumnMapping),
+  track: Object.keys(whTrackColumnMapping),
+  identify: Object.keys(whUserColumnMapping),
+  page: Object.keys(whPageColumnMapping),
+  screen: Object.keys(whScreenColumnMapping),
+  group: Object.keys(whGroupColumnMapping),
+  alias: Object.keys(whAliasColumnMapping)
 };
 
 module.exports = { rudderProperties };

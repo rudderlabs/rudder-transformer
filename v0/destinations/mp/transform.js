@@ -46,6 +46,12 @@ function getEventTime(message) {
   return new Date(message.timestamp).toISOString();
 }
 
+function toUnixTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const unixTimestamp = Math.floor(date.getTime() / 1000);
+  return unixTimestamp;
+}
+
 function getTimeDifference(message) {
   const currentTime = new Date();
   const eventTime = new Date(message.timestamp);
@@ -133,13 +139,14 @@ function getEventValueForTrackEvent(message, destination) {
     message,
     mPEventPropertiesConfigJson
   );
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
     ...message.properties,
     ...message.context.traits,
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
-    time: message.timestamp
+    time: unixTimestamp
   };
 
   if (message.channel === "web" && message.context.userAgent) {
@@ -209,12 +216,14 @@ function processIdentifyEvents(message, type, destination) {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
 
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: message.request_ip
+    $ip: message.request_ip,
+    $time: unixTimestamp
   };
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)
@@ -278,13 +287,14 @@ function processPageOrScreenEvents(message, type, destination) {
     message,
     mPEventPropertiesConfigJson
   );
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
     ...message.context.traits,
     ...message.properties,
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
-    time: message.timestamp
+    time: unixTimestamp
   };
 
   if (message.name) {

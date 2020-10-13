@@ -244,16 +244,19 @@ function processPageOrScreenEvents(message, type, destination) {
     mPEventPropertiesConfigJson
   );
   const properties = {
-    ...message.properties,
     ...message.context.traits,
+    ...message.properties,
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: message.timestamp
   };
 
-  if (message.properties && message.properties.name) {
-    properties.page_name = message.properties.name;
+  if (message.name) {
+    properties.name = message.name;
+  }
+  if (message.category) {
+    properties.category = message.category;
   }
   if (message.channel === "web" && message.context.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);

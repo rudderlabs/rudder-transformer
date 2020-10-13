@@ -1,7 +1,7 @@
 [
   {
     "sourceKeys": "request_ip",
-    "destKey": "$ip"
+    "destKey": "ip"
   },
   {
     "sourceKeys": "context.campaign.name",
@@ -18,10 +18,6 @@
   {
     "sourceKeys": "context.os.name",
     "destKey": "$os"
-  },
-  {
-    "sourceKeys": "context.page.referrer",
-    "destKey": "$referrer"
   },
   {
     "sourceKeys": "context.page.referrer",

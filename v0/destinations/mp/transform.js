@@ -3,6 +3,7 @@
 /* eslint-disable block-scoped-var */
 /* eslint-disable no-var */
 const get = require("get-value");
+const moment = require("moment");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
@@ -16,9 +17,11 @@ const {
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
+const mPProfileAndroidConfigJson =
+  mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
-const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
+const mPEventPropertiesConfigJson =
+  mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
 function getGroupKeys(config) {
   const groupKeys = [];
@@ -40,10 +43,20 @@ function getGroupKeys(config) {
 }
 
 function getEventTime(message) {
-  return new Date(message.originalTimestamp).toISOString();
+  return new Date(message.timestamp).toISOString();
+}
+
+function getTimeDifference(message) {
+  const currentTime = new Date();
+  const eventTime = new Date(message.timestamp);
+  const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
+  const days = duration.asDays();
+  const years = duration.asYears();
+  return { days, years };
 }
 
 function responseBuilderSimple(parameters, message, eventType, destConfig) {
+  let headers = {};
   let endpoint =
     destConfig.dataResidency === "eu"
       ? "https://api-eu.mixpanel.com/engage/"
@@ -54,10 +67,31 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
     eventType !== EventType.GROUP &&
     eventType !== "revenue"
   ) {
-    endpoint =
-      destConfig.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/track/"
-        : "https://api.mixpanel.com/track/";
+    const duration = getTimeDifference(message);
+    if (duration.days <= 5) {
+      endpoint =
+        destConfig.dataResidency === "eu"
+          ? "https://api-eu.mixpanel.com/track/"
+          : "https://api.mixpanel.com/track/";
+    } else if (duration.years > 5) {
+      throw new Error("Event timestamp should be within last 5 years");
+    } else {
+      endpoint =
+        destConfig.dataResidency === "eu"
+          ? "https://api-eu.mixpanel.com/import/"
+          : "https://api.mixpanel.com/import/";
+      if (destConfig.apiSecret) {
+        headers = {
+          Authorization: `Basic ${Buffer.from(destConfig.apiSecret).toString(
+            "base64"
+          )}`
+        };
+      } else {
+        throw new Error(
+          "Event timestamp is older than 5 days and no apisecret is provided in destination config."
+        );
+      }
+    }
   }
 
   const encodedData = Buffer.from(
@@ -67,6 +101,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
+  response.headers = headers;
   response.userId = message.anonymousId;
   response.params = { data: encodedData };
 
@@ -187,7 +222,7 @@ function processIdentifyEvents(message, type, destination) {
 
   if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
-    const trackParameters = {
+    /* const trackParameters = {
       event: "$identify",
       properties: {
         $identified_id: message.userId,
@@ -206,9 +241,9 @@ function processIdentifyEvents(message, type, destination) {
         ? "https://api-eu.mixpanel.com/track/"
         : "https://api.mixpanel.com/track/";
 
-    returnValue.push(identifyTrackResponse);
+    returnValue.push(identifyTrackResponse); */
 
-    /* const trackParameters = {
+    const trackParameters = {
       event: "$merge",
       properties: {
         $distinct_ids: [message.userId, message.anonymousId],
@@ -232,7 +267,7 @@ function processIdentifyEvents(message, type, destination) {
         destination.Config.apiSecret
       ).toString("base64")}`
     };
-    returnValue.push(identifyTrackResponse); */
+    returnValue.push(identifyTrackResponse);
   }
 
   return returnValue;

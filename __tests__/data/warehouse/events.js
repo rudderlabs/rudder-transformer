@@ -71,7 +71,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },
@@ -414,7 +414,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },
@@ -748,7 +748,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },
@@ -938,7 +938,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },
@@ -1126,7 +1126,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },
@@ -1332,7 +1332,7 @@ const sampleEvents = {
       },
       request: {
         query: {
-          whSchemaVersions: "v1"
+          whSchemaVersion: "v1"
         }
       }
     },

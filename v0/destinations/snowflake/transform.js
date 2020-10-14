@@ -10,7 +10,7 @@ function getDataTypeOverride(val, options) {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
-  const whStoreEvent = event.destination.Config.storeFullEvent;
+  const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const provider = snowflake;
   return processSingleMessage(event.message, {
     whSchemaVersion,

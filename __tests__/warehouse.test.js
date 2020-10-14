@@ -365,7 +365,7 @@ describe("remove rudder property if rudder property is null", () => {
 });
 
 describe("store full rudder event", () => {
-  it("should store if query param is present", () => {
+  it("should store if configured in dest settings", () => {
     eventTypes.forEach(evType => {
       let i = input(evType);
       _.set(i.destination, `Config.storeFullEvent`, true);

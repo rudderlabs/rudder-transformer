@@ -4,6 +4,7 @@ const { input, output } = require(`./data/warehouse/events.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
+const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
 const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake"];
@@ -358,6 +359,34 @@ describe("remove rudder property if rudder property is null", () => {
         expect(received[0].data).not.toHaveProperty(
           integrationCasedString(integrations[index], "context_ip")
         );
+      });
+    });
+  });
+});
+
+describe("store full rudder event", () => {
+  it("should store if configured in dest settings", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      _.set(i.destination, `Config.storeFullEvent`, true);
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        const columnName = integrationCasedString(
+          integrations[index],
+          "rudder_event"
+        );
+
+        expect(received[0].metadata.columns).toHaveProperty(columnName);
+        expect(received[0].metadata.columns[columnName]).toEqual(
+          fullEventColumnTypeByProvider[integrations[index]]
+        );
+        expect(received[0].data[columnName]).toEqual(JSON.stringify(i.message));
+
+        if (received[1]) {
+          expect(received[1].metadata.columns).not.toHaveProperty(columnName);
+          expect(received[1].data).not.toHaveProperty(columnName);
+        }
       });
     });
   });

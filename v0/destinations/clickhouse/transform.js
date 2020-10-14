@@ -9,7 +9,7 @@ function getDataTypeOverride(val, options) {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
-  const whStoreEvent = event.request.query.whStoreEvent === "true";
+  const whStoreEvent = event.destination.Config.storeFullEvent;
   const provider = clickhouse;
   return processSingleMessage(event.message, {
     whSchemaVersion,

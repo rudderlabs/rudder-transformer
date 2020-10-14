@@ -368,7 +368,7 @@ describe("store full rudder event", () => {
   it("should store if query param is present", () => {
     eventTypes.forEach(evType => {
       let i = input(evType);
-      i.request.query.whStoreEvent = "true";
+      _.set(i.destination, `Config.storeFullEvent`, true);
 
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);

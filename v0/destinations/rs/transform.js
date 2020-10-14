@@ -19,7 +19,7 @@ function getDataTypeOverride(val, options) {
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
-  const whStoreEvent = event.request.query.whStoreEvent === "true";
+  const whStoreEvent = event.destination.Config.storeFullEvent;
   const rsAlterStringToText =
     event.request.query.rsAlterStringToText || "false";
   const provider = redshift;

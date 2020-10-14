@@ -65,10 +65,10 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case "ud[ph]":
         if (updatedEvent[prop] && updatedEvent[prop] !== "") {
           isUDSet = true;
-          // remove all leading zeros
-          let processedVal = updatedEvent[prop].replace(/^0+/g, "")
           // remove all non-numerical characters
-          processedVal = updatedEvent[prop].replace(/[^0-9]/g, "");
+          let processedVal = updatedEvent[prop].replace(/[^0-9]/g, "");
+          // remove all leading zeros
+          processedVal = processedVal.replace(/^0+/g, "");
           if (processedVal.length) {
             updatedEvent[prop] = sha256(processedVal);
           }

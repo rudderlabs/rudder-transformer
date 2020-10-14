@@ -1,0 +1,14 @@
+[
+    {
+        "destKey": "customer_id",
+        "sourceKeys":  [
+            "userId",
+            "traits.userId",
+            "traits.id",
+            "context.traits.userId",
+            "context.traits.id",
+            "anonymousId"
+          ],
+        "required": true
+    }
+]

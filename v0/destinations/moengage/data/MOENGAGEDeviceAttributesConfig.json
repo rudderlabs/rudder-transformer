@@ -1,0 +1,46 @@
+[
+    
+    {
+        "destKey": "platform",
+        "sourceKeys": "context.device.type",
+        "required": true
+    },
+    {
+        "destKey": "push_id",
+        "sourceKeys": "context.device.token",
+        "required": true
+    },
+    {
+        "destKey": "model",
+        "sourceKeys": "context.device.model",
+        "required": false
+    },
+    {
+        "destKey": "push_preference",
+        "sourceKeys": "properties.push_preference",
+        "required": false
+    },
+    {
+        "destKey": "app_version",
+        "sourceKeys": "context.app.version",
+        "required": false
+    },
+    {
+        "destKey": "os_version",
+        "sourceKeys": "context.os.version",
+        "required": false
+    },
+    {
+        "destKey": "active",
+        "sourceKeys": "properties.active",
+        "required": false
+    },
+    {
+        "destKey": "",
+        "sourceKeys": "properties",
+        "required": false,
+        "metadata": {
+            "excludes": ["active", "push_preference","id","_id"]
+          }
+    }
+]

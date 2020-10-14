@@ -1,0 +1,20 @@
+[
+    {
+        "destKey": "customer_id",
+        "sourceKeys":  [
+            "userId",
+            "traits.userId",
+            "traits.id",
+            "context.traits.userId",
+            "context.traits.id",
+            "anonymousId"
+          ],
+        "required": true
+    },
+    {
+        "destKey": "device_id",
+        "sourceKeys": "context.device.id",
+        "required": false
+    }
+
+]

@@ -31,15 +31,15 @@ const integrationCasedString = (integration, str) => {
 };
 
 describe("event types", () => {
-   describe("track", () => {
-     it("should generate two events for every track call", () => {
-       const i = input("track");
-       transformers.forEach((transformer, index) => {
-         const received = transformer.process(i);
-         expect(received).toMatchObject(output("track", integrations[index]));
-       });
-     });
-   });
+  describe("track", () => {
+    it("should generate two events for every track call", () => {
+      const i = input("track");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toMatchObject(output("track", integrations[index]));
+      });
+    });
+  });
 
   describe("identify", () => {
     it("should generate two events for every identify call", () => {

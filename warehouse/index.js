@@ -259,7 +259,7 @@ const fullEventColumnTypeByProvider = {
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
-  if (options.whStoreEvent) {
+  if (options.whStoreEvent === true) {
     const colName = utils.safeColumnName(options.provider, "rudder_event");
     // eslint-disable-next-line no-param-reassign
     output[colName] = JSON.stringify(message);

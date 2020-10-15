@@ -59,6 +59,10 @@ function responseBuilderSimple(message, category, destination) {
         break;
       case "track":
         payload.type = "event";
+        payload.actions = [
+          constructPayload(message,MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]
+            )
+        ]
         break;
       default:
         throw new Error("Call type is not valid");

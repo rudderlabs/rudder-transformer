@@ -1,0 +1,27 @@
+[
+    {
+        "destKey": "action",
+        "sourceKeys": "event",
+        "required": true
+    },
+    {
+        "destKey": "attributes",
+        "sourceKeys": "properties",
+        "required": false
+    },
+    {
+        "destKey": "platform",
+        "sourceKeys": "context.device.type",
+        "required": false
+    },
+    {
+        "destKey": "app_version",
+        "sourceKeys": "context.app.version",
+        "required": false
+    },
+    {
+        "destKey": "user_time",
+        "sourceKeys": "originalTimestamp",
+        "required": false
+    }
+]

@@ -29,6 +29,10 @@ const CONFIG_CATEGORIES = {
   DEVICE_ATTR: {
     type: "deviceAttr",
     name: "MOENGAGEDeviceAttributesConfig"
+  },
+  TRACK_ATTR: {
+    type: "trackAttr",
+    name: "MOENGAGETrackAttributesConfig"
   }
 };
 

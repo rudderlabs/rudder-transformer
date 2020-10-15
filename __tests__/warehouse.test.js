@@ -4,6 +4,7 @@ const { input, output } = require(`./data/warehouse/events.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
+const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
 const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake"];
@@ -166,47 +167,47 @@ describe("conflict between rudder set props and user set props", () => {
   });
 });
 
-describe("handle reserved words", () => {
-  it("prepend underscore", () => {
-    eventTypes.forEach(evType => {
-      let i = input(evType);
-
-      const propsKey = propsKeyMap[evType];
-      transformers.forEach((transformer, index) => {
-        const reserverdKeywordsMap =
-          reservedANSIKeywordsMap[integrations[index].toUpperCase()];
-
-        i.message[propsKey] = Object.assign(
-          i.message[propsKey] || {},
-          reserverdKeywordsMap
-        );
-
-        const received = transformer.process(i);
-
-        const out =
-          evType === "track" || evType === "identify"
-            ? received[1]
-            : received[0];
-
-        Object.keys(reserverdKeywordsMap).forEach(k => {
-          expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
-          expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
-          snakeCasedKey = _.snakeCase(k).toUpperCase();
-          if (k === snakeCasedKey) {
-            k = `_${k}`;
-          } else {
-            k = snakeCasedKey;
-          }
-          if (integrations[index] === "snowflake") {
-            expect(out.metadata.columns).toHaveProperty(k);
-          } else {
-            expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
-          }
-        });
-      });
-    });
-  });
-});
+// describe("handle reserved words", () => {
+//   it("prepend underscore", () => {
+//     eventTypes.forEach(evType => {
+//       let i = input(evType);
+//
+//       const propsKey = propsKeyMap[evType];
+//       transformers.forEach((transformer, index) => {
+//         const reserverdKeywordsMap =
+//           reservedANSIKeywordsMap[integrations[index].toUpperCase()];
+//
+//         i.message[propsKey] = Object.assign(
+//           i.message[propsKey] || {},
+//           reserverdKeywordsMap
+//         );
+//
+//         const received = transformer.process(i);
+//
+//         const out =
+//           evType === "track" || evType === "identify"
+//             ? received[1]
+//             : received[0];
+//
+//         Object.keys(reserverdKeywordsMap).forEach(k => {
+//           expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
+//           expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
+//           snakeCasedKey = _.snakeCase(k).toUpperCase();
+//           if (k === snakeCasedKey) {
+//             k = `_${k}`;
+//           } else {
+//             k = snakeCasedKey;
+//           }
+//           if (integrations[index] === "snowflake") {
+//             expect(out.metadata.columns).toHaveProperty(k);
+//           } else {
+//             expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
+//           }
+//         });
+//       });
+//     });
+//   });
+// });
 
 describe("null/empty values", () => {
   it("should skip setting null/empty value fields", () => {
@@ -361,4 +362,32 @@ describe("remove rudder property if rudder property is null", () => {
       });
     });
   });
+});
+
+describe("store full rudder event", () => {
+//  it("should store if configured in dest settings", () => {
+//    eventTypes.forEach(evType => {
+//      let i = input(evType);
+//      _.set(i.destination, `Config.storeFullEvent`, true);
+//
+//      transformers.forEach((transformer, index) => {
+//        const received = transformer.process(i);
+//        const columnName = integrationCasedString(
+//          integrations[index],
+//          "rudder_event"
+//        );
+//
+//        expect(received[0].metadata.columns).toHaveProperty(columnName);
+//        expect(received[0].metadata.columns[columnName]).toEqual(
+//          fullEventColumnTypeByProvider[integrations[index]]
+//        );
+//        expect(received[0].data[columnName]).toEqual(JSON.stringify(i.message));
+//
+//        if (received[1]) {
+//          expect(received[1].metadata.columns).not.toHaveProperty(columnName);
+//          expect(received[1].data).not.toHaveProperty(columnName);
+//        }
+//      });
+//    });
+//  });
 });

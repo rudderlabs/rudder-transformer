@@ -314,4 +314,18 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
+router.post("/batch", ctx => {
+  const { destType, input } = ctx.request.body;
+  const destHandler = getDestHandler("v0", destType);
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+
+  const response = { batchedRequests: [] };
+  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+    const destBatchedRequests = destHandler.batch(destEvents);
+    response.batchedRequests.push(...destBatchedRequests);
+  });
+
+  ctx.body = response.batchedRequests;
+});
+
 module.exports = router;

@@ -83,7 +83,11 @@ const processEvent = (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
-      if (message.context.device.type && message.context.device.token) {
+      if (
+        message.context.device &&
+        message.context.device.type &&
+        message.context.device.token
+      ) {
         // build the response
         response = [
           responseBuilderSimple(message, category, destination),

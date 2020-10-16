@@ -3,7 +3,6 @@
 /* eslint-disable block-scoped-var */
 /* eslint-disable no-var */
 const get = require("get-value");
-const moment = require("moment");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
@@ -12,7 +11,10 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  getBrowserInfo
+  getBrowserInfo,
+  getValuesAsArrayFromConfig,
+  toUnixTimestamp,
+  getTimeDifference
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -23,42 +25,8 @@ const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 const mPEventPropertiesConfigJson =
   mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
-function getGroupKeys(config) {
-  const groupKeys = [];
-  const groupKeyConfig = config.groupKeySettings;
-  if (
-    groupKeyConfig &&
-    Array.isArray(groupKeyConfig) &&
-    groupKeyConfig.length > 0
-  ) {
-    let groupKey;
-    groupKeyConfig.forEach(groupKeyObj => {
-      groupKey = groupKeyObj["groupKey"];
-      if (groupKey) {
-        groupKeys.push(groupKey);
-      }
-    });
-  }
-  return groupKeys;
-}
-
 function getEventTime(message) {
   return new Date(message.timestamp).toISOString();
-}
-
-function toUnixTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  const unixTimestamp = Math.floor(date.getTime() / 1000);
-  return unixTimestamp;
-}
-
-function getTimeDifference(message) {
-  const currentTime = new Date();
-  const eventTime = new Date(message.timestamp);
-  const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
-  const days = duration.asDays();
-  const years = duration.asYears();
-  return { days, years };
 }
 
 function responseBuilderSimple(parameters, message, eventType, destConfig) {
@@ -73,7 +41,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
     eventType !== EventType.GROUP &&
     eventType !== "revenue"
   ) {
-    const duration = getTimeDifference(message);
+    const duration = getTimeDifference(message.timestamp);
     if (duration.days <= 5) {
       endpoint =
         destConfig.dataResidency === "eu"
@@ -222,7 +190,7 @@ function processIdentifyEvents(message, type, destination) {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: message.request_ip,
+    $ip: (message.context && message.context.ip) || message.request_ip,
     $time: unixTimestamp
   };
   returnValue.push(
@@ -331,7 +299,10 @@ function processAliasEvents(message, type, destination) {
 
 function processGroupEvents(message, type, destination) {
   const returnValue = [];
-  const groupKeys = getGroupKeys(destination.Config);
+  const groupKeys = getValuesAsArrayFromConfig(
+    destination.Config.groupKeySettings,
+    "groupKey"
+  );
   let groupKeyVal;
   if (groupKeys.length > 0) {
     groupKeys.forEach(groupKey => {

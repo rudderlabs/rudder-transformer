@@ -1,6 +1,6 @@
 [
   {
-    "sourceKeys": "request_ip",
+    "sourceKeys": ["context.ip", "request_ip"],
     "destKey": "ip"
   },
   {

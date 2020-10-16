@@ -7,6 +7,8 @@ const {
   flattenJson
 } = require("../../util");
 const { EventType } = require("../../../constants");
+const get = require("get-value");
+const set = require("set-value");
 
 const getPropertyParams = message => {
   if (message.type === EventType.IDENTIFY) {
@@ -18,6 +20,10 @@ const getPropertyParams = message => {
 function process(event) {
   try {
     const { message, destination } = event;
+    // set context.ip from request_ip if it is missing
+    if (!get(message, "context.ip")) {
+      set(message, "context.ip", message.request_ip);
+    }
     const response = defaultRequestConfig();
     const url = destination.Config.webhookUrl;
     const method = destination.Config.webhookMethod;

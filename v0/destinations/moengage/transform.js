@@ -84,7 +84,7 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new Error("Message Type is not present. Aborting message.");
   }
 
   const messageType = message.type.toLowerCase();

@@ -250,5 +250,94 @@
     {
         "statusCode": 400,
         "error": "Message type not supported"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+        "headers": {
+            "Content-Type": "application/json",
+            "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+            "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "customer_id": "ruchu123",
+                "type": "event",
+                "actions": [
+                    {
+                        "action": "Order Completed",
+                        "attributes": {
+                            "checkout_id": "what is checkout id here??",
+                            "coupon": "APPARELSALE",
+                            "currency": "GBP",
+                            "order_id": "transactionId",
+                            "products": [
+                                {
+                                    "brand": "",
+                                    "category": "Merch",
+                                    "currency": "GBP",
+                                    "image_url": "https://www.example.com/product/bacon-jam.jpg",
+                                    "name": "Food/Drink",
+                                    "position": 1,
+                                    "price": 3,
+                                    "product_id": "product-bacon-jam",
+                                    "quantity": 2,
+                                    "sku": "sku-1",
+                                    "typeOfProduct": "Food",
+                                    "url": "https://www.example.com/product/bacon-jam",
+                                    "value": 6,
+                                    "variant": "Extra topped"
+                                },
+                                {
+                                    "brand": "Levis",
+                                    "category": "Merch",
+                                    "currency": "GBP",
+                                    "image_url": "https://www.example.com/product/t-shirt.jpg",
+                                    "name": "T-Shirt",
+                                    "position": 2,
+                                    "price": 12.99,
+                                    "product_id": "product-t-shirt",
+                                    "quantity": 1,
+                                    "sku": "sku-2",
+                                    "typeOfProduct": "Shirt",
+                                    "url": "https://www.example.com/product/t-shirt",
+                                    "value": 12.99,
+                                    "variant": "White"
+                                },
+                                {
+                                    "brand": "Levis",
+                                    "category": "Merch",
+                                    "coupon": "APPARELSALE",
+                                    "currency": "GBP",
+                                    "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+                                    "name": "T-Shirt-on-offer",
+                                    "position": 1,
+                                    "price": 12.99,
+                                    "product_id": "offer-t-shirt",
+                                    "quantity": 1,
+                                    "sku": "sku-3",
+                                    "typeOfProduct": "Shirt",
+                                    "url": "https://www.example.com/product/offer-t-shirt",
+                                    "value": 12.99,
+                                    "variant": "Black"
+                                }
+                            ],
+                            "revenue": 31.98,
+                            "shipping": 4,
+                            "value": 31.98
+                        },
+                        "app_version": "1.1.6",
+                        "user_time": "2020-10-16T08:10:12.782Z"
+                    }
+                ]
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "ruchu123"
     }
 ]

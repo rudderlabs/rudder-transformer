@@ -205,7 +205,7 @@ export function transform(fullEvents) {
   //   "runUserTransform -> customScriptRunResult",
   //   customScriptRunResult
   // );
-  await customScriptModule.evaluate(context);
+  await customScriptModule.evaluate();
   // const fnRefOld = await customScriptModule.namespace.get("transform");
   // console.log("runUserTransform -> fnRefOld", fnRefOld);
 

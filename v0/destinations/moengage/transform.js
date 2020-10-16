@@ -19,6 +19,7 @@ function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { apiId, region, apiKey } = destination.Config;
   const response = defaultRequestConfig();
+  // check the region and which api end point should be used
   switch (region) {
     case "EU":
       response.endpoint = `${endpointEU[category.type]}${apiId}`;
@@ -36,33 +37,38 @@ function responseBuilderSimple(message, category, destination) {
   response.headers = {
     "Content-Type": "application/json",
     "MOE-APPKEY": apiId,
-    Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}`
+    Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}` // Basic Authentication encodes a 'username:password' using base64 and prepends it with the string 'Basic '.
   };
   response.userId = message.anonymousId || message.userId;
   if (payload) {
     switch (category.type) {
       case "identify":
         payload.type = "customer";
+        // https://docs.moengage.com/docs/data-import-apis#user-api
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name]
         );
-        payload.attributes = flattenJson(payload.attributes);
+        payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
         break;
       case "device":
         payload.type = "device";
+        // https://docs.moengage.com/docs/data-import-apis#device-api
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name]
         );
-        payload.attributes = flattenJson(payload.attributes);
+        payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
         break;
       case "track":
         payload.type = "event";
+        // https://docs.moengage.com/docs/data-import-apis#event-api
         payload.actions = [
-          constructPayload(message,MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]
-            )
-        ]
+          constructPayload(
+            message,
+            MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]
+          )
+        ];
         break;
       default:
         throw new Error("Call type is not valid");
@@ -87,6 +93,7 @@ const processEvent = (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
+      // only if device information is present device info will be added/updated with an identify call otherwise only user info will be added/updated
       if (
         message.context.device &&
         message.context.device.type &&
@@ -94,7 +101,9 @@ const processEvent = (message, destination) => {
       ) {
         // build the response
         response = [
+          // user api payload
           responseBuilderSimple(message, category, destination),
+          // device api payload
           responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination)
         ];
       } else {

@@ -317,6 +317,11 @@ router.get("/health", ctx => {
 router.post("/batch", ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
+  if (!destHandler || !destHandler.batch) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support batching`;
+    return;
+  }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
   const response = { batchedRequests: [] };

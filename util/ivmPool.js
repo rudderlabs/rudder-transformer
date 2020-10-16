@@ -6,7 +6,7 @@ const transformationPoolCache = {};
 const transformationLibraryCache = {};
 const opts = {
   min: 1, // minimum size of the pool
-  max: 5 // maximum size of the pool
+  max: 20 // maximum size of the pool
 };
 
 async function getPool(versionId, libraryVersionIds) {

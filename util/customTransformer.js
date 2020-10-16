@@ -75,6 +75,7 @@ async function userTransformHandler(events, versionId, libraryVersionIds) {
     stats.gauge("isolate_vm_pool_available", isolatevmPool.available);
     console.log(isolatevmPool.size)
     console.log(isolatevmPool.available)
+    await new Promise(r => setTimeout(r, 2000));
     stats.counter("events_into_vm", events.length);
     const transformedEvents = await transform(isolatevm, events);
     isolatevmPool.release(isolatevm);

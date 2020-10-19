@@ -212,25 +212,22 @@ export function transform(fullEvents) {
   // console.log("runUserTransform -> fnRefOld", fnRefOld);
 
   const supportedFuncNames = ["transform", "transformEvent", "transformBatch"];
-  let supportedFuncs = [];
+  let supportedFuncs = {};
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
       const funcRef = await customScriptModule.namespace.get(sName);
       if (funcRef) {
-        supportedFuncs.push(funcRef);
+        supportedFuncs[sName] = funcRef;
       }
     })
   );
 
-  // TODO: Figure out how to check for the correct function name
-  // if (supportedFuncs.length !== 1) {
-  //   throw new Error(
-  //     `Expected one of ${supportedFuncNames}. Found ${supportedFuncs.map(
-  //       sFunc => sFunc.name
-  //     )}`
-  //   );
-  // }
+  if (Object.keys(supportedFuncs).length !== 1) {
+      throw new Error(
+      `Expected one of ${supportedFuncNames}. Found ${Object.keys(supportedFuncs)}`
+    );
+  }
 
   const fnRef = supportedFuncs[0];
   stats.timing("createivm_duration", createIvmStartTime);

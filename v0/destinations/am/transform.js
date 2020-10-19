@@ -182,8 +182,15 @@ function responseBuilderSimple(
   set(rawPayload, "groups", groups);
   const payload = removeUndefinedValues(rawPayload);
 
+  let unmapUserId;
   switch (evType) {
     case EventType.ALIAS:
+      unmapUserId = get(message, "integrations.Amplitude.unmap");
+      if (unmapUserId) {
+        payload.user_id = unmapUserId;
+        delete payload.global_user_id;
+        payload.unmap = true;
+      }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
       aliasResponse.endpoint = ALIAS_ENDPOINT;
       aliasResponse.userId = message.anonymousId;

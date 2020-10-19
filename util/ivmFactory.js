@@ -7,7 +7,7 @@ const {
   getLibraryCode
 } = require("./customTransforrmationsStore");
 
-const isolateVmMem = 64;
+const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});

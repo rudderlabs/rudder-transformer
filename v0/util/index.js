@@ -431,6 +431,19 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+const isObject = value => {
+  const type = typeof value;
+  return (
+    value != null &&
+    (type === "object" || type === "function") &&
+    !Array.isArray(value)
+  );
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -451,6 +464,8 @@ module.exports = {
   getMappingConfig,
   getParsedIP,
   getValueFromMessage,
+  isEmpty,
+  isObject,
   isPrimitive,
   removeNullValues,
   removeUndefinedAndNullValues,

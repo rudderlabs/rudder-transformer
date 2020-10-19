@@ -434,7 +434,7 @@ function getBrowserInfo(userAgent) {
 }
 
 /** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
-For example, 
+For example,
     Config{
       "groupKeySettings": [
         {
@@ -445,7 +445,7 @@ For example,
         }
       ]
     }
-This will return an array as ["companyid", "accountid"] 
+This will return an array as ["companyid", "accountid"]
 The correcponding call is: getValuesAsArrayFromConfig(Config.groupKeySettings, "groupKey")
 * */
 function getValuesAsArrayFromConfig(configObject, key) {
@@ -471,7 +471,7 @@ function toUnixTimestamp(timestamp) {
 
 // Accecpts timestamp as a parameter and returns the difference of the same with current time.
 function getTimeDifference(timestamp) {
-  const currentTime = new Date();
+  const currentTime = Date.now();
   const eventTime = new Date(timestamp);
   const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
   const days = duration.asDays();

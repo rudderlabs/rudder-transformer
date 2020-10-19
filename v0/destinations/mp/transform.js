@@ -1,7 +1,3 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable vars-on-top */
-/* eslint-disable block-scoped-var */
-/* eslint-disable no-var */
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
@@ -170,8 +166,9 @@ function processIdentifyEvents(message, type, destination) {
   let properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const { device } = message.context;
   if (device && device.token) {
+    let payload;
     if (device.type.toLowerCase() === "ios") {
-      var payload = constructPayload(message, mPProfileIosConfigJson);
+      payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {
       payload = constructPayload(message, mPProfileAndroidConfigJson);
@@ -199,26 +196,25 @@ function processIdentifyEvents(message, type, destination) {
 
   if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
-    /* const trackParameters = {
-      event: "$identify",
-      properties: {
-        $identified_id: message.userId,
-        $anon_id: message.anonymousId,
-        token: destination.Config.token
-      }
-    };
-    const identifyTrackResponse = responseBuilderSimple(
-      trackParameters,
-      message,
-      type,
-      destination.Config
-    );
-    identifyTrackResponse.endpoint =
-      destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/track/"
-        : "https://api.mixpanel.com/track/";
-
-    returnValue.push(identifyTrackResponse); */
+    // const trackParameters = {
+    //   event: "$identify",
+    //   properties: {
+    //     $identified_id: message.userId,
+    //     $anon_id: message.anonymousId,
+    //     token: destination.Config.token
+    //   }
+    // };
+    // const identifyTrackResponse = responseBuilderSimple(
+    //   trackParameters,
+    //   message,
+    //   type,
+    //   destination.Config
+    // );
+    // identifyTrackResponse.endpoint =
+    //   destination.Config.dataResidency === "eu"
+    //     ? "https://api-eu.mixpanel.com/track/"
+    //     : "https://api.mixpanel.com/track/";
+    // returnValue.push(identifyTrackResponse);
 
     const trackParameters = {
       event: "$merge",
@@ -277,7 +273,7 @@ function processPageOrScreenEvents(message, type, destination) {
     properties.$browser_version = browser.version;
   }
 
-  const eventName = type == "page" ? "Loaded a page" : "Loaded a screen";
+  const eventName = type === "page" ? "Loaded a page" : "Loaded a screen";
   const parameters = {
     event: eventName,
     properties

@@ -51,6 +51,8 @@ export function transform(fullEvents) {
   code = code.replace(match, replacement);
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
+  const isolateStartWallTime = isolate.wallTime;
+  const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
 
   const compiledModules = {};
@@ -234,8 +236,18 @@ export function transform(fullEvents) {
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  return { isolate, jail, bootstrapScriptResult, context, fnRef };
+  return {
+    isolate,
+    jail,
+    bootstrapScriptResult,
+    context,
+    fnRef,
+    isolateStartWallTime,
+    isolateStartCPUTime
+  };
 }
+
+
 
 async function getFactory(versionId, libraryVersionIds) {
   const factory = {

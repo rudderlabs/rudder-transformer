@@ -138,10 +138,11 @@ if (startDestTransformer) {
       });
       let groupedEvents;
       if (processSessions) {
-        groupedEvents = _.groupBy(
-          events,
-          event => `${event.destination.ID}_${event.message.anonymousId}`
-        );
+        groupedEvents = _.groupBy(events, event => {
+          // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
+          const rudderId = event.metadata.rudderId || event.message.anonymousId;
+          return `${event.destination.ID}_${rudderId}`;
+        });
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }

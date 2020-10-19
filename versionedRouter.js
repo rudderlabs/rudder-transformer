@@ -326,6 +326,8 @@ router.post("/batch", ctx => {
 
   const response = { batchedRequests: [] };
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+    // TODO: check await needed?
+    // TODO: implement error handling
     const destBatchedRequests = destHandler.batch(destEvents);
     response.batchedRequests.push(...destBatchedRequests);
   });

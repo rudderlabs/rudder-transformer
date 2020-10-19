@@ -47,6 +47,13 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+const userTransformHandlerV1 = () => {
+  if (functionsEnabled()) {
+    return require("./util/customTransformer-v1").userTransformHandlerV1;
+  }
+  throw new Error("Functions are not enabled");
+};
+
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
@@ -152,9 +159,12 @@ if (startDestTransformer) {
       );
 
       const transformedEvents = [];
-      const librariesVersionIDs = events[0].libraries.map(
-        library => library.VersionID
-      );
+      const librariesVersionIDs = [];
+      if (events[0].libraries) {
+        librariesVersionIDs = events[0].libraries.map(
+          library => library.VersionID
+        );
+      }
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
           logger.debug(`dest: ${dest}`);
@@ -164,6 +174,13 @@ if (startDestTransformer) {
             destEvents[0].destination.Transformations &&
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
+
+          const codeVersion =
+            destEvents[0] &&
+            destEvents[0].destination &&
+            destEvents[0].destination.Transformations &&
+            destEvents[0].destination.Transformations[0] &&
+            destEvents[0].destination.Transformations[0].codeVersion;
 
           const messageIds = destEvents.map(
             ev => ev.metadata && ev.metadata.messageId
@@ -189,11 +206,20 @@ if (startDestTransformer) {
                   processSessions
                 }
               );
-              destTransformedEvents = await userTransformHandler()(
-                destEvents,
-                transformationVersionId,
-                librariesVersionIDs
-              );
+              if (codeVersion) {
+                if (codeVersion == "1") {
+                  destTransformedEvents = await userTransformHandlerV1()(
+                    destEvents,
+                    transformationVersionId,
+                    librariesVersionIDs
+                  );
+                }
+              } else {
+                destTransformedEvents = await userTransformHandler()(
+                  destEvents,
+                  transformationVersionId
+                );
+              }
 
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {

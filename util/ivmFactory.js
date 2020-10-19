@@ -3,9 +3,9 @@ const fetch = require("node-fetch");
 const _ = require("lodash");
 const stats = require("./stats");
 const {
-  getTransformationCode,
-  getLibraryCode
-} = require("./customTransforrmationsStore");
+  getTransformationCodeV1,
+  getLibraryCodeV1
+} = require("./customTransforrmationsStore-v1");
 
 const isolateVmMem = 64;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -16,10 +16,10 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
 
 async function createIvm(versionId, libraryVersionIds) {
   const createIvmStartTime =  new Date()
-  const transformation = await getTransformationCode(versionId);
+  const transformation = await getTransformationCodeV1(versionId);
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
-      getLibraryCode(libraryVersionId)
+      getLibraryCodeV1(libraryVersionId)
     )
   );
   const librariesMap = {};
@@ -211,12 +211,14 @@ export function transform(fullEvents) {
 
   const supportedFuncNames = ["transform", "transformEvent", "transformBatch"];
   let supportedFuncs = {};
+  let supportedFunc = "";
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
       const funcRef = await customScriptModule.namespace.get(sName);
       if (funcRef) {
         supportedFuncs[sName] = funcRef;
+        supportedFunc = sName;
       }
     })
   );
@@ -231,7 +233,7 @@ export function transform(fullEvents) {
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  return { isolate, jail, bootstrapScriptResult, context, fnRef };
+  return { isolate, jail, bootstrapScriptResult, context, fnRef, supportedFunc };
 }
 
 async function getFactory(versionId, libraryVersionIds) {

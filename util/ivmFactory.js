@@ -56,6 +56,8 @@ async function createIvm(versionId, libraryVersionIds) {
   `
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
+  const isolateStartWallTime = isolate.wallTime;
+  const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
 
   const compiledModules = {};
@@ -216,8 +218,19 @@ async function createIvm(versionId, libraryVersionIds) {
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  return { isolate, jail, bootstrapScriptResult, context, fnRef, fName };
+  return {
+    isolate,
+    jail,
+    bootstrapScriptResult,
+    context,
+    fnRef,
+    isolateStartWallTime,
+    isolateStartCPUTime,
+    fName
+  };
 }
+
+
 
 async function getFactory(versionId, libraryVersionIds) {
   const factory = {

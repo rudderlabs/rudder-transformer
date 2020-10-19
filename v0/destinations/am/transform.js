@@ -20,6 +20,8 @@ const {
   Event,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
+  ALIAS_ENDPOINT,
+  GROUP_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap,
@@ -54,6 +56,7 @@ function createSingleMessageBasicStructure(message) {
     "context",
     "userId",
     "originalTimestamp",
+    "request_ip",
     "integrations",
     "session_id"
   ]);
@@ -98,6 +101,7 @@ function addMinIdlength() {
 // Build response for Amplitude. In this case, endpoint will be different depending
 // on the event type being sent to Amplitude
 function responseBuilderSimple(
+  groupInfo,
   rootElementName,
   message,
   evType,
@@ -106,84 +110,143 @@ function responseBuilderSimple(
 ) {
   const rawPayload = {};
   const addOptions = "options";
+  const respList = [];
+  const response = defaultRequestConfig();
+  const groupResponse = defaultRequestConfig();
+  const aliasResponse = defaultRequestConfig();
 
-  set(rawPayload, "event_properties", message.properties);
-  set(rawPayload, "user_properties", message.userProperties);
+  let groups;
 
-  if (message.channel === "mobile") {
-    set(rawPayload, "device_brand", message.context.device.manufacturer);
-  }
+  let endpoint = ENDPOINT;
+  let traits;
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
-  const endpoint = ENDPOINT; // evType === EventType.IDENTIFY ? IDENTIFY_ENDPOINT : ENDPOINT; // identify on same endpoint also works
+  const campaign = get(message, "context.campaign") || {};
 
-  // in case of identify, populate user_properties from traits as well, don't need to send evType
-  if (evType === EventType.IDENTIFY) {
-    // populateSpecedTraits(rawPayload, message);
-    const traits = getFieldValueFromMessage(message, "traits");
-    if (traits) {
-      Object.keys(traits).forEach(trait => {
-        if (SpecedTraits.includes(trait)) {
-          const mapping = TraitsMapping[trait];
-          Object.keys(mapping).forEach(key => {
-            set(
-              rawPayload,
-              `user_properties.${key}`,
-              get(traits, mapping[key])
-            );
+  switch (evType) {
+    case EventType.IDENTIFY:
+    case EventType.GROUP:
+      endpoint = ENDPOINT;
+      rawPayload.event_type = EventType.IDENTIFY_AM;
+
+      if (evType === EventType.IDENTIFY) {
+        set(rawPayload, "user_properties", message.userProperties);
+        traits = getFieldValueFromMessage(message, "traits");
+        if (traits) {
+          Object.keys(traits).forEach(trait => {
+            if (SpecedTraits.includes(trait)) {
+              const mapping = TraitsMapping[trait];
+              Object.keys(mapping).forEach(key => {
+                set(
+                  rawPayload,
+                  `user_properties.${key}`,
+                  get(traits, mapping[key])
+                );
+              });
+            } else {
+              set(rawPayload, `user_properties.${trait}`, get(traits, trait));
+            }
           });
-        } else {
-          set(rawPayload, `user_properties.${trait}`, get(traits, trait));
         }
-      });
-    }
-    rawPayload.event_type = EventType.IDENTIFY_AM;
-  } else {
-    rawPayload.event_type = evType;
+        rawPayload.user_properties = rawPayload.user_properties || {};
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...campaign
+        };
+      }
+
+      if (evType === EventType.GROUP) {
+        if (groupInfo && groupInfo.group_type && groupInfo.group_value) {
+          groups = {};
+          groups[groupInfo.group_type] = groupInfo.group_value;
+          set(
+            rawPayload,
+            `user_properties.${[groupInfo.group_type]}`,
+            groupInfo.group_value
+          );
+        }
+      }
+      break;
+    case EventType.ALIAS:
+      endpoint = ALIAS_ENDPOINT;
+      break;
+    default:
+      set(rawPayload, "event_properties", message.properties);
+      rawPayload.event_type = evType;
+      groups = groupInfo && Object.assign(groupInfo);
   }
-
-  rawPayload.time = new Date(
-    getFieldValueFromMessage(message, "timestamp")
-  ).getTime();
-
-  // send user_id only when present, for anonymous users not required
-  if (
-    message.userId &&
-    message.userId !== "" &&
-    message.userId !== "null" &&
-    message.userId !== null
-  ) {
-    rawPayload.user_id = message.userId;
-  }
-
+  set(rawPayload, "groups", groups);
   const payload = removeUndefinedValues(rawPayload);
-  payload.session_id = getSessionId(payload);
 
-  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
-  // for correct versionName
-  // ====================
-  // fixVersion(payload, message);
+  switch (evType) {
+    case EventType.ALIAS:
+      aliasResponse.method = defaultPostRequestConfig.requestMethod;
+      aliasResponse.endpoint = ALIAS_ENDPOINT;
+      aliasResponse.userId = message.anonymousId;
+      aliasResponse.body.FORM = {
+        api_key: destination.Config.apiKey,
+        [rootElementName]: [JSON.stringify(payload)]
+      };
+      respList.push(aliasResponse);
+      break;
+    default:
+      if (message.channel === "mobile") {
+        set(payload, "device_brand", message.context.device.manufacturer);
+      }
 
-  payload.ip = getParsedIP(message);
+      payload.time = new Date(
+        getFieldValueFromMessage(message, "timestamp")
+      ).getTime();
 
-  // console.log(payload);
-  const response = defaultRequestConfig();
-  response.endpoint = endpoint;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.userId = message.anonymousId;
-  response.body.JSON = {
-    api_key: destination.Config.apiKey,
-    [rootElementName]: payload,
-    [addOptions]: addMinIdlength()
-  };
-  return response;
+      // send user_id only when present, for anonymous users not required
+      if (
+        message.userId &&
+        message.userId !== "" &&
+        message.userId !== "null" &&
+        message.userId !== null
+      ) {
+        payload.user_id = message.userId;
+      }
+      payload.session_id = getSessionId(payload);
+
+      // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+      // for correct versionName
+      // ====================
+      // fixVersion(payload, message);
+
+      payload.ip = getParsedIP(message);
+
+      response.endpoint = endpoint;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.headers = {
+        "Content-Type": "application/json"
+      };
+      response.userId = message.anonymousId;
+      response.body.JSON = {
+        api_key: destination.Config.apiKey,
+        [rootElementName]: [payload],
+        [addOptions]: addMinIdlength()
+      };
+      respList.push(response);
+
+      if (evType === EventType.GROUP && groupInfo) {
+        groupResponse.method = defaultPostRequestConfig.requestMethod;
+        groupResponse.endpoint = GROUP_ENDPOINT;
+        const groupPayload = Object.assign(groupInfo);
+        groupResponse.userId = message.anonymousId;
+        groupResponse.body.FORM = {
+          api_key: destination.Config.apiKey,
+          identification: [JSON.stringify(groupPayload)]
+        };
+        respList.push(groupResponse);
+      }
+      break;
+  }
+  return respList;
 }
 
 const isRevenueEvent = product => {
@@ -201,14 +264,18 @@ const isRevenueEvent = product => {
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  const payloadObjectName = "events";
+  let payloadObjectName = "events";
   let evType;
+  let groupTraits;
+  let groupTypeTrait;
+  let groupValueTrait;
+  let groupInfo = get(message, "integrations.Amplitude.groups") || undefined;
   let category = ConfigCategory.DEFAULT;
 
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      // payloadObjectName = "identification"; // identify same as events
+      payloadObjectName = "events"; // identify same as events
       evType = "identify";
       category = ConfigCategory.IDENTIFY;
       break;
@@ -231,6 +298,39 @@ function processSingleMessage(message, destination) {
         name: message.name || get(message.properties.category)
       };
       category = ConfigCategory.SCREEN;
+      break;
+    case EventType.GROUP:
+      evType = "group";
+      payloadObjectName = "events";
+      category = ConfigCategory.GROUP;
+      groupTraits = getFieldValueFromMessage(message, "groupTraits");
+      groupTypeTrait = get(destination, "Config.groupTypeTrait");
+      groupValueTrait = get(destination, "Config.groupValueTrait");
+      if (groupTypeTrait && groupValueTrait) {
+        const groupTypeValue = get(groupTraits, groupTypeTrait);
+        const groupNameValue = get(groupTraits, groupValueTrait);
+        if (
+          groupTypeValue &&
+          typeof groupTypeValue === "string" &&
+          groupNameValue &&
+          (typeof groupNameValue === "string" ||
+            typeof groupNameValue === "number")
+        ) {
+          groupInfo = {};
+          groupInfo.group_type = groupTypeValue;
+          groupInfo.group_value = groupNameValue;
+          // passing the entire group traits without deleting the above keys
+          groupInfo.group_properties = groupTraits;
+        } else {
+          logger.debug("Group call parameters are not valid");
+          throw new Error("message type not supported");
+        }
+      }
+      break;
+    case EventType.ALIAS:
+      evType = "alias";
+      payloadObjectName = "mapping";
+      category = ConfigCategory.ALIAS;
       break;
     case EventType.TRACK:
       evType = message.event;
@@ -272,6 +372,7 @@ function processSingleMessage(message, destination) {
   }
 
   return responseBuilderSimple(
+    groupInfo,
     payloadObjectName,
     message,
     evType,
@@ -336,7 +437,7 @@ function process(event) {
   }
 
   toSendEvents.forEach(sendEvent => {
-    respList.push(processSingleMessage(sendEvent, destination));
+    respList.push(...processSingleMessage(sendEvent, destination));
   });
   return respList;
 }

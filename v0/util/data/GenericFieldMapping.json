@@ -10,6 +10,7 @@
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
+  "groupTraits": ["traits"],
   "userId": [
     "userId",
     "traits.userId",

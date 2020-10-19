@@ -89,6 +89,7 @@ const processEvent = (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
+      response = responseBuilderSimple(message, category, destination);
       // only if device information is present device info will be added/updated with an identify call otherwise only user info will be added/updated
       if (
         message.context.device &&
@@ -97,11 +98,9 @@ const processEvent = (message, destination) => {
       ) {
         response = [
           // build the response
-          responseBuilderSimple(message, category, destination), // user api payload
+          response, // user api payload
           responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination) // device api payload
         ];
-      } else {
-        response = responseBuilderSimple(message, category, destination);
       }
       break;
     case EventType.TRACK:

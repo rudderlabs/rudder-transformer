@@ -7,7 +7,10 @@
   {
     "destKey": "attributes",
     "sourceKeys": "properties",
-    "required": false
+    "required": false,
+    "metadata": {
+        "type": "flatJson"
+      }
   },
   {
     "destKey": "platform",

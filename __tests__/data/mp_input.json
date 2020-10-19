@@ -3,6 +3,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -68,6 +69,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -134,6 +136,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -194,6 +197,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -259,6 +263,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -316,6 +321,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -377,6 +383,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -443,6 +450,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -505,6 +513,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -600,6 +609,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -702,6 +712,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -803,6 +814,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -904,6 +916,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -968,6 +981,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1029,9 +1043,14 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "groupKey": "page"
+        "groupKeySettings": [
+          {
+            "groupKey": "company"
+          }
+        ]
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1082,6 +1101,9 @@
         "title": "",
         "url": "http://localhost/tests/html/index2.html"
       },
+      "traits": {
+        "company": "testComp"
+      },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53708",
       "sentAt": "2020-01-24T06:29:02.359Z",
@@ -1093,11 +1115,16 @@
   {
     "destination": {
       "Config": {
-        "apikey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "prefixproperties": true,
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
         "usenativesdk": false,
         "dataResidency": "eu",
-        "groupKey": "page"
+        "groupKeySettings": [
+          {
+            "groupKey": "company"
+          }
+        ]
       },
       "destinationdefinition": {
         "displayname": "kiss metrics",
@@ -1141,6 +1168,9 @@
       },
       "messageid": "dd266c67-9199-4a52-ba32-f46ddde67312",
       "originaltimestamp": "2020-01-24t06:29:02.358z",
+      "traits": {
+        "company": "testComp"
+      },
       "properties": {
         "path": "/tests/html/index2.html",
         "referrer": "",
@@ -1160,6 +1190,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "dataResidency": "eu",
         "useNativeSDK": false
@@ -1256,6 +1287,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "dataResidency": "eu",
         "useNativeSDK": false
@@ -1332,6 +1364,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
@@ -1377,7 +1410,7 @@
           "wifi": true
         },
         "os": {
-          "name": "Android",
+          "name": "iOS",
           "version": "8.1.0"
         },
         "screen": {
@@ -1411,6 +1444,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1475,6 +1509,7 @@
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1533,4 +1568,3 @@
     }
   }
 ]
-

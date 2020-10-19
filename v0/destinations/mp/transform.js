@@ -5,17 +5,28 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  constructPayload,
+  getBrowserInfo,
+  getValuesAsArrayFromConfig,
+  toUnixTimestamp,
+  getTimeDifference
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+const mPProfileAndroidConfigJson =
+  mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
+const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
+const mPEventPropertiesConfigJson =
+  mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
 function getEventTime(message) {
-  return new Date(message.originalTimestamp).toISOString();
+  return new Date(message.timestamp).toISOString();
 }
 
 function responseBuilderSimple(parameters, message, eventType, destConfig) {
+  let headers = {};
   let endpoint =
     destConfig.dataResidency === "eu"
       ? "https://api-eu.mixpanel.com/engage/"
@@ -26,10 +37,31 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
     eventType !== EventType.GROUP &&
     eventType !== "revenue"
   ) {
-    endpoint =
-      destConfig.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/track/"
-        : "https://api.mixpanel.com/track/";
+    const duration = getTimeDifference(message.timestamp);
+    if (duration.days <= 5) {
+      endpoint =
+        destConfig.dataResidency === "eu"
+          ? "https://api-eu.mixpanel.com/track/"
+          : "https://api.mixpanel.com/track/";
+    } else if (duration.years > 5) {
+      throw new Error("Event timestamp should be within last 5 years");
+    } else {
+      endpoint =
+        destConfig.dataResidency === "eu"
+          ? "https://api-eu.mixpanel.com/import/"
+          : "https://api.mixpanel.com/import/";
+      if (destConfig.apiSecret) {
+        headers = {
+          Authorization: `Basic ${Buffer.from(destConfig.apiSecret).toString(
+            "base64"
+          )}`
+        };
+      } else {
+        throw new Error(
+          "Event timestamp is older than 5 days and no apisecret is provided in destination config."
+        );
+      }
+    }
   }
 
   const encodedData = Buffer.from(
@@ -39,6 +71,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
+  response.headers = headers;
   response.userId = message.anonymousId;
   response.params = { data: encodedData };
 
@@ -66,13 +99,25 @@ function processRevenueEvents(message, destination) {
 }
 
 function getEventValueForTrackEvent(message, destination) {
+  const mappedProperties = constructPayload(
+    message,
+    mPEventPropertiesConfigJson
+  );
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
     ...message.properties,
     ...message.context.traits,
+    ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
-    time: message.timestamp
+    time: unixTimestamp
   };
+
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
+  }
 
   const parameters = {
     event: message.event,
@@ -118,20 +163,32 @@ function getTransformedJSON(message, mappingJson) {
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
 
-  const properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  let properties = getTransformedJSON(message, mPIdentifyConfigJson);
   const { device } = message.context;
   if (device && device.token) {
+    let payload;
     if (device.type.toLowerCase() === "ios") {
+      payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {
+      payload = constructPayload(message, mPProfileAndroidConfigJson);
       properties.$android_devices = [device.token];
     }
+    properties = { ...properties, ...payload };
   }
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
+  }
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
 
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: message.userId || message.anonymousId
+    $distinct_id: message.userId || message.anonymousId,
+    $ip: (message.context && message.context.ip) || message.request_ip,
+    $time: unixTimestamp
   };
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)
@@ -139,25 +196,25 @@ function processIdentifyEvents(message, type, destination) {
 
   if (message.userId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
-    /* const trackParameters = {
-      event: "$identify",
-      properties: {
-        $identified_id: message.userId,
-        $anon_id: message.anonymousId,
-        token: destination.Config.token
-      }
-    };
-    const identifyTrackResponse = responseBuilderSimple(
-      trackParameters,
-      message,
-      type
-    );
-    identifyTrackResponse.endpoint =
-      destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/engage/"
-        : "https://api.mixpanel.com/engage/";
-
-    returnValue.push(identifyTrackResponse); */
+    // const trackParameters = {
+    //   event: "$identify",
+    //   properties: {
+    //     $identified_id: message.userId,
+    //     $anon_id: message.anonymousId,
+    //     token: destination.Config.token
+    //   }
+    // };
+    // const identifyTrackResponse = responseBuilderSimple(
+    //   trackParameters,
+    //   message,
+    //   type,
+    //   destination.Config
+    // );
+    // identifyTrackResponse.endpoint =
+    //   destination.Config.dataResidency === "eu"
+    //     ? "https://api-eu.mixpanel.com/track/"
+    //     : "https://api.mixpanel.com/track/";
+    // returnValue.push(identifyTrackResponse);
 
     const trackParameters = {
       event: "$merge",
@@ -190,16 +247,35 @@ function processIdentifyEvents(message, type, destination) {
 }
 
 function processPageOrScreenEvents(message, type, destination) {
+  const mappedProperties = constructPayload(
+    message,
+    mPEventPropertiesConfigJson
+  );
+  const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
-    ...message.properties,
     ...message.context.traits,
+    ...message.properties,
+    ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
-    time: message.timestamp
+    time: unixTimestamp
   };
 
+  if (message.name) {
+    properties.name = message.name;
+  }
+  if (message.category) {
+    properties.category = message.category;
+  }
+  if (message.channel === "web" && message.context.userAgent) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
+  }
+
+  const eventName = type === "page" ? "Loaded a page" : "Loaded a screen";
   const parameters = {
-    event: type,
+    event: eventName,
     properties
   };
   return responseBuilderSimple(parameters, message, type, destination.Config);
@@ -219,46 +295,54 @@ function processAliasEvents(message, type, destination) {
 
 function processGroupEvents(message, type, destination) {
   const returnValue = [];
-  if (destination.Config.groupKey) {
-    const parameters = {
-      $token: destination.Config.token,
-      $distinct_id: message.userId || message.anonymousId,
-      $set: {
-        [destination.Config.groupKey]: [
-          get(message.traits, destination.Config.groupKey)
-        ]
+  const groupKeys = getValuesAsArrayFromConfig(
+    destination.Config.groupKeySettings,
+    "groupKey"
+  );
+  let groupKeyVal;
+  if (groupKeys.length > 0) {
+    groupKeys.forEach(groupKey => {
+      groupKeyVal = get(message.traits, groupKey);
+      if (groupKeyVal) {
+        const parameters = {
+          $token: destination.Config.token,
+          $distinct_id: message.userId || message.anonymousId,
+          $set: {
+            [groupKey]: [get(message.traits, groupKey)]
+          }
+        };
+        const response = responseBuilderSimple(
+          parameters,
+          message,
+          type,
+          destination.Config
+        );
+        returnValue.push(response);
+
+        const groupParameters = {
+          $token: destination.Config.token,
+          $group_key: groupKey,
+          $group_id: get(message.traits, groupKey),
+          $set: {
+            ...message.traits
+          }
+        };
+
+        const groupResponse = responseBuilderSimple(
+          groupParameters,
+          message,
+          type,
+          destination.Config
+        );
+
+        groupResponse.endpoint =
+          destination.Config.dataResidency === "eu"
+            ? "https://api-eu.mixpanel.com/groups/"
+            : "https://api.mixpanel.com/groups/";
+
+        returnValue.push(groupResponse);
       }
-    };
-    const response = responseBuilderSimple(
-      parameters,
-      message,
-      type,
-      destination.Config
-    );
-    returnValue.push(response);
-
-    const groupParameters = {
-      $token: destination.Config.token,
-      $group_key: destination.Config.groupKey,
-      $group_id: get(message.traits, destination.Config.groupKey),
-      $set: {
-        ...message.traits
-      }
-    };
-
-    const groupResponse = responseBuilderSimple(
-      groupParameters,
-      message,
-      type,
-      destination.Config
-    );
-
-    groupResponse.endpoint =
-      destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/groups/"
-        : "https://api.mixpanel.com/groups/";
-
-    returnValue.push(groupResponse);
+    });
   } else {
     throw new Error("config is not supported");
   }

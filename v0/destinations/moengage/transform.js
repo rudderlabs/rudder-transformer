@@ -43,8 +43,7 @@ function responseBuilderSimple(message, category, destination) {
   if (payload) {
     switch (category.type) {
       case "identify":
-        payload.type = "customer";
-        // https://docs.moengage.com/docs/data-import-apis#user-api
+        payload.type = "customer"; // https://docs.moengage.com/docs/data-import-apis#user-api
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name]
@@ -52,8 +51,7 @@ function responseBuilderSimple(message, category, destination) {
         payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
         break;
       case "device":
-        payload.type = "device";
-        // https://docs.moengage.com/docs/data-import-apis#device-api
+        payload.type = "device"; // https://docs.moengage.com/docs/data-import-apis#device-api
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name]
@@ -61,8 +59,7 @@ function responseBuilderSimple(message, category, destination) {
         payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
         break;
       case "track":
-        payload.type = "event";
-        // https://docs.moengage.com/docs/data-import-apis#event-api
+        payload.type = "event"; // https://docs.moengage.com/docs/data-import-apis#event-api
         payload.actions = [
           constructPayload(
             message,
@@ -76,8 +73,7 @@ function responseBuilderSimple(message, category, destination) {
 
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
-    // fail-safety for developer error
-    throw new Error("Payload could not be constructed");
+    throw new Error("Payload could not be constructed"); // fail-safety for developer error
   }
   return response;
 }
@@ -99,12 +95,10 @@ const processEvent = (message, destination) => {
         message.context.device.type &&
         message.context.device.token
       ) {
-        // build the response
         response = [
-          // user api payload
-          responseBuilderSimple(message, category, destination),
-          // device api payload
-          responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination)
+          // build the response
+          responseBuilderSimple(message, category, destination), // user api payload
+          responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination) // device api payload
         ];
       } else {
         response = responseBuilderSimple(message, category, destination);

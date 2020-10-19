@@ -5,5 +5,6 @@
   "lastname": "$lastName",
   "name": "$name",
   "username": "$username",
-  "phone": "$phone"
+  "phone": "$phone",
+  "avator":"$avator"
 }

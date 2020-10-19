@@ -11,18 +11,22 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  defaultBatchRequestConfig,
   getParsedIP,
   getFieldValueFromMessage
 } = require("../../util");
 const {
   Event,
   ENDPOINT,
+  BATCH_EVENT_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap
 } = require("./config");
 
 const logger = require("../../../logger");
+const AMBatchSizeLimit = 20 * 1024 * 1024;
+const AMBatchEventLimit = 2000;
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // const populateSpecedTraits = (payload, message) => {
@@ -334,4 +338,66 @@ function process(event) {
   return respList;
 }
 
+function getBatchEvents(message, metadata, batchEventResponse) {
+  let batchComplete = false;
+  let batchEventArray = get(batchEventResponse, "batchedRequest.body.JSON.events") || []
+  let batchEventJobs = get(batchEventResponse, "jobs") || []
+  let batchPayloadJSON = get(batchEventResponse, "batchedRequest.body.JSON") || {}
+  let incomingMessageJSON = get(message, "body.JSON")
+  let incomingMessageEvent = get(message, "body.JSON.events")
+  incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
+  set(message, "body.JSON.events", [incomingMessageEvent])
+  if(batchEventArray.length == 0) {
+    if(JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
+      delete message.body.JSON.options
+      batchEventResponse = Object.assign(batchEventResponse, {batchedRequest: message})
+      set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT)
+      batchEventResponse.jobs = [metadata.job_id]
+    } else {
+      // batchComplete = true;
+    }
+  } else {
+    if(batchEventArray.length < AMBatchEventLimit && (JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length < AMBatchSizeLimit)) {
+
+      batchEventArray.push(incomingMessageEvent);  // set value
+      batchEventJobs.push(metadata.job_id)
+      set(batchEventResponse, "batchedRequest.body.JSON.events", batchEventArray);
+      set(batchEventResponse, "jobs", batchEventJobs);
+    } else {
+      batchComplete = true;
+    }
+  }
+  return batchComplete;
+}
+
+function batch(destEvents) {
+  const respList = [];
+  let batchEventResponse = defaultBatchRequestConfig();
+  let response, isBatchComplete, jsonBody, userId, messageEvent;
+  destEvents.forEach(ev => {
+    const {message, metadata, destination} = ev;
+    jsonBody = get(message, "body.JSON");
+    messageEvent = get(message, "body.JSON.events");
+    userId = messageEvent && Array.isArray(messageEvent) ? messageEvent[0].user_id : messageEvent ? messageEvent.user_id : undefined;
+    if(Object.keys(jsonBody).length == 0 || !userId || userId.length < 5) {
+      response = defaultBatchRequestConfig();
+      response = Object.assign(response, {batchedRequest: message})
+      response.jobs = [metadata.job_id]
+      respList.push(response);
+    } else {
+      isBatchComplete = getBatchEvents(message,metadata,batchEventResponse)
+      if(isBatchComplete) {
+        respList.push(Object.assign({}, batchEventResponse));
+        batchEventResponse = defaultBatchRequestConfig();
+        isBatchComplete = getBatchEvents(message,metadata,batchEventResponse)
+      }
+    }
+  })
+  if(isBatchComplete !== undefined && isBatchComplete === false) {
+    respList.push(batchEventResponse)
+  }
+  return respList;
+}
+
 exports.process = process;
+exports.batch = batch;

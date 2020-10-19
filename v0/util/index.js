@@ -188,6 +188,26 @@ const defaultRequestConfig = () => {
   };
 };
 
+const defaultBatchRequestConfig = () => {
+  return {
+    "batchedRequest": {
+      version: "1",
+      type: "REST",
+      method: "POST",
+      endpoint: "",
+      headers: {},
+      params: {},
+      body: {
+        JSON: {},
+        XML: {},
+        FORM: {}
+      },
+      files: {}
+    },
+    "jobs": []
+  };
+}
+
 // ========================================================================
 // TRANSFORMER UTILITIES
 // ========================================================================
@@ -519,6 +539,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  defaultBatchRequestConfig,
   flattenJson,
   formatValue,
   getBrowserInfo,

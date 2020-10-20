@@ -11,5 +11,6 @@
   "context.locale": "language",
   "properties.category": "event_type",
   "session_id": "session_id",
+  "messageId": "insert_id",
   "request_ip": "ip"
 }

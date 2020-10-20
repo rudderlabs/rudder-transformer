@@ -9,6 +9,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -37,6 +40,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -60,6 +66,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key__",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -88,6 +97,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key__",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -111,6 +123,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -139,6 +154,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -162,6 +180,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -190,6 +211,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -213,6 +237,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -241,6 +268,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "Test Page Name",
           "deviceId": "5094f5704b9cf2b3",
@@ -264,6 +294,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -292,6 +325,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -315,6 +351,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -343,6 +382,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -369,6 +411,9 @@
       "params": { "action": "setUserAttributes" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "00000000000000000000000000",
           "newUserId": "some_developer_id",
           "userAttributes": {
@@ -401,6 +446,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -429,6 +477,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -452,6 +503,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -480,6 +534,9 @@
       "params": { "action": "advance" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "state": "MainActivity",
           "deviceId": "5094f5704b9cf2b3",
@@ -507,6 +564,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -535,6 +595,9 @@
       "params": { "action": "track" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "event": "account: logged out",
           "deviceId": "5094f5704b9cf2b3",
@@ -559,6 +622,9 @@
       "params": { "action": "start" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "deviceId": "5094f5704b9cf2b3",
           "appVersion": "1.0",
@@ -587,6 +653,9 @@
       "params": { "action": "track" },
       "body": {
         "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
           "userId": "5094f5704b9cf2b3",
           "event": "account: logged out",
           "deviceId": "5094f5704b9cf2b3",

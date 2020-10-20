@@ -51,7 +51,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
-      "jobs": [1]
+      "metadata": [{"job_id": 1}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -74,7 +75,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
-      "jobs": [6]
+      "metadata": [{"job_id": 6}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -97,7 +99,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/usermap"
       },
-      "jobs": [7]
+      "metadata": [{"job_id": 7}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -191,7 +194,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/batch"
       },
-      "jobs": [2, 3, 4, 5]
+      "metadata": [{"job_id": 2}, {"job_id": 3}, {"job_id": 4}, {"job_id": 5}],
+      "destination": {"ID": "a", "url": "a"}
     }
   ],
   [
@@ -244,7 +248,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
-      "jobs": [1]
+      "metadata": [{"job_id": 1}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -267,7 +272,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
-      "jobs": [6]
+      "metadata": [{"job_id": 6}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -290,7 +296,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/usermap"
       },
-      "jobs": [7]
+      "metadata": [{"job_id": 7}],
+      "destination": {"ID": "a", "url": "a"}
     },
     {
       "batchedRequest": {
@@ -384,7 +391,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/batch"
       },
-      "jobs": [2, 3, 4, 5]
+      "metadata": [{"job_id": 2}, {"job_id": 3}, {"job_id": 4}, {"job_id": 5}],
+      "destination": {"ID": "a", "url": "a"}
     }
   ]
 ]

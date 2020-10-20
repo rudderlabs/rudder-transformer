@@ -202,7 +202,8 @@ const defaultBatchRequestConfig = () => {
       },
       files: {}
     },
-    "jobs": []
+    "metadata": [],
+    "destination": {}
   };
 }
 

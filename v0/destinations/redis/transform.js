@@ -39,7 +39,7 @@ function setKeys(output, input, prefix = "") {
 }
 
 const process = event => {
-  const { message } = event;
+  const { message, destination } = event;
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
@@ -50,8 +50,11 @@ const process = event => {
     throw new Error("Blank userId passed in identify event");
   }
 
+  const { prefix } = destination.Config;
+  const keyPrefix = isEmpty(prefix) ? "" : `${transformColumnName(prefix)}:`;
+
   const hmap = {
-    key: `user:${_.toString(event.message.userId)}`,
+    key: `${keyPrefix}user:${_.toString(event.message.userId)}`,
     fields: {}
   };
 

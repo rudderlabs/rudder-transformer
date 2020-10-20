@@ -341,11 +341,10 @@ function process(event) {
 function getBatchEvents(message, metadata, batchEventResponse) {
   let batchComplete = false;
   let batchEventArray = get(batchEventResponse, "batchedRequest.body.JSON.events") || []
-  let batchEventJobs = get(batchEventResponse, "jobs") || []
+  let batchEventJobs = get(batchEventResponse, "metadata") || []
   let batchPayloadJSON = get(batchEventResponse, "batchedRequest.body.JSON") || {}
   let incomingMessageJSON = get(message, "body.JSON")
   let incomingMessageEvent = get(message, "body.JSON.events")
-  let eventJobId = metadata.jobId || metadata.job_id
   // check if the incoming singular event is an array or not
   // and set it back to array 
   incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
@@ -356,7 +355,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
       delete message.body.JSON.options
       batchEventResponse = Object.assign(batchEventResponse, {batchedRequest: message})
       set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT)
-      batchEventResponse.jobs = [eventJobId]
+      batchEventResponse.metadata = [metadata]
     } else {
       // check not required as max individual event size is always less than 20MB
       // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
@@ -366,9 +365,9 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
     if(batchEventArray.length < AMBatchEventLimit && (JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length < AMBatchSizeLimit)) {
       batchEventArray.push(incomingMessageEvent);  // set value
-      batchEventJobs.push(eventJobId)
+      batchEventJobs.push(metadata)
       set(batchEventResponse, "batchedRequest.body.JSON.events", batchEventArray);
-      set(batchEventResponse, "jobs", batchEventJobs);
+      set(batchEventResponse, "metadata", batchEventJobs);
     } else {
       // event could not be pushed 
       // it will be pushed again by a call from the caller of this method
@@ -381,9 +380,10 @@ function getBatchEvents(message, metadata, batchEventResponse) {
 function batch(destEvents) {
   const respList = [];
   let batchEventResponse = defaultBatchRequestConfig();
-  let response, isBatchComplete, jsonBody, userId, messageEvent;
+  let response, isBatchComplete, jsonBody, userId, messageEvent, destinationObject;
   destEvents.forEach(ev => {
     const {message, metadata, destination} = ev;
+    destinationObject = Object.assign({}, destination)
     jsonBody = get(message, "body.JSON");
     messageEvent = get(message, "body.JSON.events");
     userId = messageEvent && Array.isArray(messageEvent) ? messageEvent[0].user_id : messageEvent ? messageEvent.user_id : undefined;
@@ -391,7 +391,8 @@ function batch(destEvents) {
     if(Object.keys(jsonBody).length == 0 || !userId || userId.length < 5) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, {batchedRequest: message})
-      response.jobs = [metadata.jobId || metadata.job_id]
+      response.metadata = [metadata]
+      response.destination = destinationObject
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch
@@ -399,14 +400,17 @@ function batch(destEvents) {
       if(isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
+        batchEventResponse.destination = destinationObject
         respList.push(Object.assign({}, batchEventResponse));
         batchEventResponse = defaultBatchRequestConfig();
+        batchEventResponse.destination = destinationObject
         isBatchComplete = getBatchEvents(message,metadata,batchEventResponse)
       }
     }
   })
   // if there is some unfinished batch push it to response list
   if(isBatchComplete !== undefined && isBatchComplete === false) {
+    batchEventResponse.destination = destinationObject
     respList.push(batchEventResponse)
   }
   return respList;

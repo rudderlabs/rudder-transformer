@@ -120,20 +120,29 @@ function responseBuilderSimple(
   let endpoint = ENDPOINT;
   let traits;
 
+  // 1. first populate the dest keys from the config files.
+  // Group config file is similar to Identify config file
+  // because we need to make an identify call too along with group entity update
+  // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
+  // Additionally, we will update the user_properties with groupName:groupValue
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
   });
 
+  // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
 
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
       endpoint = ENDPOINT;
+      // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
       if (evType === EventType.IDENTIFY) {
+        // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
+        // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         set(rawPayload, "user_properties", message.userProperties);
         traits = getFieldValueFromMessage(message, "traits");
         if (traits) {
@@ -152,6 +161,9 @@ function responseBuilderSimple(
             }
           });
         }
+        // append campaign info extracted above(2.) to user_properties.
+        // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+        // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
         rawPayload.user_properties = rawPayload.user_properties || {};
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
@@ -160,6 +172,8 @@ function responseBuilderSimple(
       }
 
       if (evType === EventType.GROUP) {
+        // for Rudder group call, update the user_properties with group info
+        // Refer (1.)
         if (groupInfo && groupInfo.group_type && groupInfo.group_value) {
           groups = {};
           groups[groupInfo.group_type] = groupInfo.group_value;
@@ -179,12 +193,18 @@ function responseBuilderSimple(
       rawPayload.event_type = evType;
       groups = groupInfo && Object.assign(groupInfo);
   }
+  // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
+  // refer (1.) for passing "groups" for Rudder group call
+  // https://developers.amplitude.com/docs/http-api-v2#schemaevent
   set(rawPayload, "groups", groups);
   let payload = removeUndefinedValues(rawPayload);
 
   let unmapUserId;
   switch (evType) {
     case EventType.ALIAS:
+      // By default (1.), Alias config file populates user_id and global_user_id
+      // if the alias Rudder call has unmap set, delete the global_user_id key from AM event payload
+      // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
       unmapUserId = get(message, "integrations.Amplitude.unmap");
       if (unmapUserId) {
         payload.user_id = unmapUserId;
@@ -241,6 +261,8 @@ function responseBuilderSimple(
       };
       respList.push(response);
 
+      // https://developers.amplitude.com/docs/group-identify-api
+      // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
         groupResponse.endpoint = GROUP_ENDPOINT;
@@ -278,6 +300,8 @@ function processSingleMessage(message, destination) {
   let groupTraits;
   let groupTypeTrait;
   let groupValueTrait;
+  // It is expected that Rudder alias. identify group calls won't have this set
+  // To be used for track/page calls to associate the event to a group in AM
   let groupInfo = get(message, "integrations.Amplitude.groups") || undefined;
   let category = ConfigCategory.DEFAULT;
 
@@ -312,12 +336,21 @@ function processSingleMessage(message, destination) {
       evType = "group";
       payloadObjectName = "events";
       category = ConfigCategory.GROUP;
+      // read from group traits from message
+      // groupTraits => top level "traits" for JS SDK
+      // groupTraits => "context.traits" for mobile SDKs
       groupTraits = getFieldValueFromMessage(message, "groupTraits");
+      // read destination config related group settings
+      // https://developers.amplitude.com/docs/group-identify-api
       groupTypeTrait = get(destination, "Config.groupTypeTrait");
       groupValueTrait = get(destination, "Config.groupValueTrait");
       if (groupTypeTrait && groupValueTrait) {
         const groupTypeValue = get(groupTraits, groupTypeTrait);
         const groupNameValue = get(groupTraits, groupValueTrait);
+        // since the property updates on group at https://api2.amplitude.com/groupidentify
+        // expects a string group name and value , so error out if the keys are not primitive
+        // Note: This different for groups object at https://api.amplitude.com/2/httpapi where the
+        // group value can be array of strings as well.
         if (
           groupTypeValue &&
           typeof groupTypeValue === "string" &&
@@ -338,6 +371,8 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.ALIAS:
       evType = "alias";
+      // the alias call params end up under "mapping" params
+      // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
       payloadObjectName = "mapping";
       category = ConfigCategory.ALIAS;
       break;

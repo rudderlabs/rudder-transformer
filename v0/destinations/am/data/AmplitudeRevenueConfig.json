@@ -15,5 +15,6 @@
   "properties.revenue": "revenue",
   "properties.revenue_type": "revenueType",
   "properties.category": "event_type",
+  "messageId": "insert_id",
   "request_ip": "ip"
 }

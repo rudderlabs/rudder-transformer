@@ -50,7 +50,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde"
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
       }
     }
   },
@@ -98,6 +100,61 @@
       },
       "integrations": {
         "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": {
+        "All": false,
+        "Amplitude":{"groups":{"Company": "ABC"}}
       },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
@@ -219,6 +276,7 @@
     "message": {
       "type": "identify",
       "userId": "ubcdfghi0001",
+      "anonymousId": "123456",
       "session_id": "1598597129",
       "context": {
         "traits": {
@@ -243,6 +301,7 @@
     "message": {
       "type": "identify",
       "userId": "ubcdfghi0001",
+      "anonymousId": "123456",
       "session_id": "user:1598597129",
       "context": {
         "traits": {
@@ -267,6 +326,7 @@
     "message": {
       "type": "identify",
       "userId": "ubcdfghi0001",
+      "anonymousId": "123456",
       "session_id": 1598597129,
       "context": {
         "traits": {
@@ -291,6 +351,7 @@
     "message": {
       "type": "identify",
       "userId": "ubcdfghi0001",
+      "anonymousId": "123456",
       "context": {
         "traits": {
           "device_id": "adddd0001",
@@ -303,6 +364,238 @@
           "name": "http"
         }
       }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 0.8999999761581421 },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/html/sajal.html",
+          "referrer": "",
+          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "title": "",
+          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": { "All": true },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "KEY_2": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 0.8999999761581421 },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/html/sajal.html",
+          "referrer": "",
+          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "title": "",
+          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": { "All": true },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "KEY_2": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "name_trait": "Company",
+        "value_trait": ["Comapny-ABC"]
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 0.8999999761581421 },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/html/sajal.html",
+          "referrer": "",
+          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "title": "",
+          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "newUserIdAlias",
+      "integrations": { "All": true },
+      "previousId": "sampleusrRudder3",
+      "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 0.8999999761581421 },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/html/sajal.html",
+          "referrer": "",
+          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "title": "",
+          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "newUserIdAlias",
+      "integrations": { "All": false, "Amplitude":{"unmap": "sampleusrRudder3"} },
+      "previousId": "sampleusrRudder3",
+      "sentAt": "2020-10-20T08:14:28.778Z"
     },
     "destination": {
       "Config": {

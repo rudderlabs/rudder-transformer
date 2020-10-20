@@ -4,36 +4,254 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "",
+            "os_version": "",
+            "device_id": "123456",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "event_type": "$identify",
+            "user_properties": {
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "city": "kolkata",
+              "country": "India",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26
+            },
+            "time": 1571043797562,
+            "user_id": "123456",
+            "ip": "0.0.0.0"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "",
+            "os_version": "",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "Viewed ApplicationLoaded Page",
+            "event_properties": {
+              "path": "/test",
+              "referrer": "Rudder",
+              "search": "abc",
+              "title": "Test Page",
+              "url": "www.rudderlabs.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "ip": "1.1.1.1",
+            "time": 1571051718299,
+            "user_id": "12345"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "",
+            "os_version": "",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "Viewed ApplicationLoaded Page",
+            "event_properties": {
+              "path": "/test",
+              "referrer": "Rudder",
+              "search": "abc",
+              "title": "Test Page",
+              "url": "www.rudderlabs.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "ip": "1.1.1.1",
+            "groups": {
+              "Company": "ABC"
+            },
+            "time": 1571051718299,
+            "user_id": "12345"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
     "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
         "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "city": "kolkata",
-            "country": "India",
-            "postalCode": 712136,
-            "state": "WB",
-            "street": "",
-            "anonymousId": "123456",
-            "email": "sayan@gmail.com",
-            "ip": "0.0.0.0",
-            "age": 26
-          },
-          "os_name": "",
-          "os_version": "",
-          "device_id": "123456",
-          "app_name": "RudderLabs JavaScript SDK",
-          "app_version": "1.0.0",
-          "language": "en-US",
-          "event_type": "$identify",
-          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-          "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
-          "time": 1571043797562,
-          "user_id": "123456",
-          "ip": "0.0.0.0"
-        },
+        "events": [
+          {
+            "os_name": "",
+            "os_version": "",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "test track event",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "event_properties": {
+              "user_actual_role": "system_admin",
+              "user_actual_id": 12345,
+              "user_time_spent": 50000
+            },
+            "time": 1571051718300,
+            "user_id": "12345",
+            "ip": "0.0.0.0"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "",
+            "os_version": "",
+            "device_id": "123456",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "event_type": "$identify",
+            "user_properties": {
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "city": "kolkata",
+              "country": "India",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26
+            },
+            "time": 1571043797562,
+            "user_id": "123456",
+            "ip": "0.0.0.0"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": { "Content-Type": "application/json" },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "123456",
+            "user_properties": {
+              "device_id": "adddd0001",
+              "device_os": "ios",
+              "device_make": "apple iphone",
+              "app_version": "v1.0",
+              "timestamp": "2020-08-28 09:00:00"
+            },
+            "event_type": "$identify",
+            "session_id": "1598597129",
+            "time": 0,
+            "user_id": "ubcdfghi0001"
+          }
+        ],
         "options": { "min_id_length": 1 }
       },
       "XML": {},
@@ -52,109 +270,25 @@
     "body": {
       "JSON": {
         "api_key": "abcde",
-        "events": {
-          "event_properties": {
-            "path": "/test",
-            "referrer": "Rudder",
-            "search": "abc",
-            "title": "Test Page",
-            "url": "www.rudderlabs.com",
-            "name": "ApplicationLoaded"
-          },
-          "os_name": "",
-          "os_version": "",
-          "device_id": "00000000000000000000000000",
-          "app_name": "RudderLabs JavaScript SDK",
-          "app_version": "1.0.0",
-          "language": "en-US",
-          "event_type": "Viewed ApplicationLoaded Page",
-          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-          "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-          "ip": "1.1.1.1",
-          "time": 1571051718299,
-          "user_id": "12345"
-        },
-        "options": { "min_id_length": 1 }
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": { "Content-Type": "application/json" },
-    "params": {},
-    "body": {
-      "JSON": {
-        "api_key": "abcde",
-        "events": {
-          "event_properties": {
-            "user_actual_role": "system_admin",
-            "user_actual_id": 12345,
-            "user_time_spent": 50000
-          },
-          "os_name": "",
-          "os_version": "",
-          "device_id": "00000000000000000000000000",
-          "app_name": "RudderLabs JavaScript SDK",
-          "app_version": "1.0.0",
-          "language": "en-US",
-          "event_type": "test track event",
-          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-          "insert_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-          "time": 1571051718300,
-          "user_id": "12345",
-          "ip": "0.0.0.0"
-        },
-        "options": { "min_id_length": 1 }
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "00000000000000000000000000"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": { "Content-Type": "application/json" },
-    "params": {},
-    "body": {
-      "JSON": {
-        "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "city": "kolkata",
-            "country": "India",
-            "postalCode": 712136,
-            "state": "WB",
-            "street": "",
-            "anonymousId": "123456",
-            "email": "sayan@gmail.com",
-            "ip": "0.0.0.0",
-            "age": 26
-          },
-          "os_name": "",
-          "os_version": "",
-          "device_id": "123456",
-          "app_name": "RudderLabs JavaScript SDK",
-          "app_version": "1.0.0",
-          "language": "en-US",
-          "event_type": "$identify",
-          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-          "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
-          "time": 1571043797562,
-          "user_id": "123456",
-          "ip": "0.0.0.0"
-        },
-        "options": { "min_id_length": 1 }
+        "events": [
+          {
+            "device_id": "123456",
+            "session_id": "1598597129",
+            "event_type": "$identify",
+            "user_properties": {
+              "device_id": "adddd0001",
+              "device_os": "ios",
+              "device_make": "apple iphone",
+              "app_version": "v1.0",
+              "timestamp": "2020-08-28 09:00:00"
+            },
+            "time": 0,
+            "user_id": "ubcdfghi0001"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
       },
       "XML": {},
       "FORM": {}
@@ -172,25 +306,31 @@
     "body": {
       "JSON": {
         "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "device_id": "adddd0001",
-            "device_os": "ios",
-            "device_make": "apple iphone",
-            "app_version": "v1.0",
-            "timestamp": "2020-08-28 09:00:00"
-          },
-          "event_type": "$identify",
-          "session_id": "1598597129",
-          "time": 0,
-          "user_id": "ubcdfghi0001"
-        },
-        "options": { "min_id_length": 1 }
+        "events": [
+          {
+            "device_id": "123456",
+            "session_id": 1598597129,
+            "event_type": "$identify",
+            "user_properties": {
+              "device_id": "adddd0001",
+              "device_os": "ios",
+              "device_make": "apple iphone",
+              "app_version": "v1.0",
+              "timestamp": "2020-08-28 09:00:00"
+            },
+            "time": 0,
+            "user_id": "ubcdfghi0001"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "userId": "123456"
   },
   {
     "version": "1",
@@ -202,84 +342,135 @@
     "body": {
       "JSON": {
         "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "device_id": "adddd0001",
-            "device_os": "ios",
-            "device_make": "apple iphone",
-            "app_version": "v1.0",
-            "timestamp": "2020-08-28 09:00:00"
-          },
-          "event_type": "$identify",
-          "session_id": "1598597129",
-          "time": 0,
-          "user_id": "ubcdfghi0001"
-        },
-        "options": { "min_id_length": 1 }
+        "events": [
+          {
+            "device_id": "123456",
+            "session_id": -1,
+            "event_type": "$identify",
+            "user_properties": {
+              "device_id": "adddd0001",
+              "device_os": "ios",
+              "device_make": "apple iphone",
+              "app_version": "v1.0",
+              "timestamp": "2020-08-28 09:00:00"
+            },
+            "time": 0,
+            "user_id": "ubcdfghi0001"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "userId": "123456"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "",
+              "os_version": "",
+              "device_id": "my-anonymous-id-new",
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_version": "1.1.5",
+              "language": "en-US",
+              "event_type": "$identify",
+              "user_properties": {
+                "Company": "Comapny-ABC"
+              },
+              "groups": {
+                "Company": "Comapny-ABC"
+              },
+              "time": 1603180498983,
+              "user_id": "sampleusrRudder3",
+              "session_id": -1
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/groupidentify",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "api_key": "abcde",
+          "identification": [
+            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+          ]
+        }
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    }
+  ],
+  {
+    "error": "Group call parameters are not valid"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": { "Content-Type": "application/json" },
+    "endpoint": "https://api.amplitude.com/usermap",
+    "headers": {},
     "params": {},
     "body": {
-      "JSON": {
-        "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "device_id": "adddd0001",
-            "device_os": "ios",
-            "device_make": "apple iphone",
-            "app_version": "v1.0",
-            "timestamp": "2020-08-28 09:00:00"
-          },
-          "event_type": "$identify",
-          "session_id": 1598597129,
-          "time": 0,
-          "user_id": "ubcdfghi0001"
-        },
-        "options": { "min_id_length": 1 }
-      },
+      "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {
+        "api_key": "abcde",
+        "mapping": [
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+        ]
+      }
     },
-    "files": {}
+    "files": {},
+    "userId": "my-anonymous-id-new"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": { "Content-Type": "application/json" },
+    "endpoint": "https://api.amplitude.com/usermap",
+    "headers": {},
     "params": {},
     "body": {
-      "JSON": {
-        "api_key": "abcde",
-        "events": {
-          "user_properties": {
-            "device_id": "adddd0001",
-            "device_os": "ios",
-            "device_make": "apple iphone",
-            "app_version": "v1.0",
-            "timestamp": "2020-08-28 09:00:00"
-          },
-          "event_type": "$identify",
-          "session_id": -1,
-          "time": 0,
-          "user_id": "ubcdfghi0001"
-        },
-        "options": { "min_id_length": 1 }
-      },
+      "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {
+        "api_key": "abcde",
+        "mapping": ["{\"user_id\":\"sampleusrRudder3\",\"unmap\":true}"]
+      }
     },
-    "files": {}
+    "files": {},
+    "userId": "my-anonymous-id-new"
   }
 ]

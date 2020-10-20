@@ -180,7 +180,7 @@ function responseBuilderSimple(
       groups = groupInfo && Object.assign(groupInfo);
   }
   set(rawPayload, "groups", groups);
-  const payload = removeUndefinedValues(rawPayload);
+  let payload = removeUndefinedValues(rawPayload);
 
   let unmapUserId;
   switch (evType) {
@@ -194,6 +194,7 @@ function responseBuilderSimple(
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
       aliasResponse.endpoint = ALIAS_ENDPOINT;
       aliasResponse.userId = message.anonymousId;
+      payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
         api_key: destination.Config.apiKey,
         [rootElementName]: [JSON.stringify(payload)]
@@ -226,7 +227,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
-
+      payload = removeUndefinedValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
       response.headers = {
@@ -243,8 +244,9 @@ function responseBuilderSimple(
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
         groupResponse.endpoint = GROUP_ENDPOINT;
-        const groupPayload = Object.assign(groupInfo);
+        let groupPayload = Object.assign(groupInfo);
         groupResponse.userId = message.anonymousId;
+        groupPayload = removeUndefinedValues(groupPayload);
         groupResponse.body.FORM = {
           api_key: destination.Config.apiKey,
           identification: [JSON.stringify(groupPayload)]
@@ -330,7 +332,7 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new Error("message type not supported");
+          throw new Error("Group call parameters are not valid");
         }
       }
       break;

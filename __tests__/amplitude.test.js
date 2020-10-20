@@ -29,8 +29,16 @@ const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
   test(`${name} Tests ${input.message.type}: payload - ${index}`, () => {
-    const output = transformer.process(input);
-    expect(output).toEqual([expectedData[index]]);
+    try {
+      const output = transformer.process(input);
+      if (output.length > 1) {
+        expect(output).toEqual(expectedData[index]);
+      } else {
+        expect(output).toEqual([expectedData[index]]);
+      }
+    } catch (error) {
+      expect(error.message).toEqual(expectedData[index].error)
+    }
   });
 });
 

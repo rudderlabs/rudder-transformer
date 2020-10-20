@@ -124,25 +124,25 @@
     "required": false,
     "metadata": {
       "excludes": [
-        "moe_unsubscribe",
-        "moeUnsubscribe",
-        "revenue",
-        "transactions",
+        "_id",
         "age",
-        "last_seen",
-        "lastSeen",
-        "mobile",
         "email",
-        "lastname",
-        "lastName",
-        "last_name",
+        "firstName",
         "first_name",
         "firstname",
-        "firstName",
-        "source",
         "gender",
         "id",
-        "_id"
+        "lastName",
+        "lastSeen",
+        "last_name",
+        "last_seen",
+        "lastname",
+        "mobile",
+        "moeUnsubscribe",
+        "moe_unsubscribe",
+        "revenue",
+        "source",
+        "transactions"
       ]
     }
   }

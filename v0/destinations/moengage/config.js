@@ -1,20 +1,23 @@
 const { getMappingConfig } = require("../../util");
 
 const endpointUS = {
-  identify: `https://api.moengage.com/v1/customer/`, // track properties, | Track
-  track: `https://api.moengage.com/v1/event/`, // identify a user| Identify
+  // track properties, | Track
+  identify: `https://api.moengage.com/v1/customer/`,
+  // identify a user| Identify
+  track: `https://api.moengage.com/v1/event/`,
+  // identify a user| Device
   device: `https://api.moengage.com/v1/device/`
 };
 
 const endpointEU = {
-  identify: `https://api-eu.moengage.com/v1/customer/`, // track properties, | Track
-  track: `https://api-eu.moengage.com/v1/event/`, // identify a user| Identify
+  identify: `https://api-eu.moengage.com/v1/customer/`,
+  track: `https://api-eu.moengage.com/v1/event/`,
   device: `https://api-eu.moengage.com/v1/device/`
 };
 
 const endpointIND = {
-  identify: `https://api-serv3.moengage.com/v1/customer/`, // track properties, | Track
-  track: `https://api-serv3.moengage.com/v1/event/`, // identify a user| Identify
+  identify: `https://api-serv3.moengage.com/v1/customer/`,
+  track: `https://api-serv3.moengage.com/v1/event/`,
   device: `https://api-serv3.moengage.com/v1/device/`
 };
 
@@ -42,6 +45,6 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   endpointEU,
-  endpointUS,
-  endpointIND
+  endpointIND,
+  endpointUS
 };

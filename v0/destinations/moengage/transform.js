@@ -37,29 +37,36 @@ function responseBuilderSimple(message, category, destination) {
   response.headers = {
     "Content-Type": "application/json",
     "MOE-APPKEY": apiId,
-    Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}` // Basic Authentication encodes a 'username:password' using base64 and prepends it with the string 'Basic '.
+    // Basic Authentication encodes a 'username:password'
+    // using base64 and prepends it with the string 'Basic '.
+    Authorization: `Basic ${btoa(`${apiId}:${apiKey}`)}`
   };
   response.userId = message.anonymousId || message.userId;
   if (payload) {
     switch (category.type) {
       case "identify":
-        payload.type = "customer"; // https://docs.moengage.com/docs/data-import-apis#user-api
+        // Ref: https://docs.moengage.com/docs/data-import-apis#user-api
+        payload.type = "customer";
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY_ATTR.name]
         );
-        payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
+        // nested attributes are not by moengage so it is falttened
+        payload.attributes = flattenJson(payload.attributes);
         break;
       case "device":
-        payload.type = "device"; // https://docs.moengage.com/docs/data-import-apis#device-api
+        // Ref: https://docs.moengage.com/docs/data-import-apis#device-api
+        payload.type = "device";
         payload.attributes = constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.DEVICE_ATTR.name]
         );
-        payload.attributes = flattenJson(payload.attributes); // nested attributes are not shown on dashboard of moengage so it is falttened
+        // nested attributes are not by moengage so it is falttened
+        payload.attributes = flattenJson(payload.attributes);
         break;
       case "track":
-        payload.type = "event"; // https://docs.moengage.com/docs/data-import-apis#event-api
+        // Ref: https://docs.moengage.com/docs/data-import-apis#event-api
+        payload.type = "event";
         payload.actions = [
           constructPayload(
             message,
@@ -73,7 +80,8 @@ function responseBuilderSimple(message, category, destination) {
 
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
-    throw new Error("Payload could not be constructed"); // fail-safety for developer error
+    // fail-safety for developer error
+    throw new Error("Payload could not be constructed");
   }
   return response;
 }
@@ -90,16 +98,19 @@ const processEvent = (message, destination) => {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       response = responseBuilderSimple(message, category, destination);
-      // only if device information is present device info will be added/updated with an identify call otherwise only user info will be added/updated
+      // only if device information is present device info will be added/updated
+      // with an identify call otherwise only user info will be added/updated
       if (
         message.context.device &&
         message.context.device.type &&
         message.context.device.token
       ) {
+        // build the response
         response = [
-          // build the response
-          response, // user api payload
-          responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination) // device api payload
+          // user api payload (output for identify)
+          response,
+          // device api payload
+          responseBuilderSimple(message, CONFIG_CATEGORIES.DEVICE, destination)
         ];
       }
       break;

@@ -9,8 +9,8 @@
     "sourceKeys": "properties",
     "required": false,
     "metadata": {
-        "type": "flatJson"
-      }
+      "type": "flatJson"
+    }
   },
   {
     "destKey": "platform",

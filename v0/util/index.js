@@ -336,7 +336,7 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
-  
+
   return formattedVal;
 };
 

@@ -16,6 +16,7 @@
   "properties.search": "event_properties.search",
   "properties.keywords": "event_properties.keywords",
   "session_id": "session_id",
+  "messageId": "insert_id",
   "request_ip": "ip",
   "name" : "event_properties.name"
 }

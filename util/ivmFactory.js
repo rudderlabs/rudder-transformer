@@ -31,24 +31,29 @@ async function createIvm(versionId, libraryVersionIds) {
   }
 
   let { code } = transformation;
-  code = code.replace("metadata(", "metadata(eventsMetadata, ");
+  code = code + `
+    export function transformWrapper(events, transformType) {
+      let outputEvents = []
+      const eventMessages = events.map(event => event.message);
+      const eventsMetadata = {};
+      events.forEach(ev => {
+        eventsMetadata[ev.message.messageId] = ev.metadata;
+      });
 
-  const match = `function transform(events) {`;
-  const replacement = `
-function metadata(eventsMetadata, event) {
-    log("Inside modified code");
-    log(eventsMetadata);
-    return eventsMetadata[event.messageId] || {};
-}
-
-export function transform(fullEvents) {
-  const events = fullEvents.map(event => event.message);
-  const eventsMetadata = {};
-  fullEvents.forEach(ev => {
-    eventsMetadata[ev.message.messageId] = ev.metadata;
-  });
-`;
-  code = code.replace(match, replacement);
+      var metadata = function(event) {
+        const eventMetadata = eventsMetadata[event.messageId] || {};
+        return eventMetadata
+      }
+      switch(transformType) {
+        case "Batch":
+          outputEvents = transformBatch(eventMessages, metadata)
+          break;
+        case "Event":
+          eventMessages.map(ev => {var oE = transformEvent(ev, metadata); outputEvents.push(oE); })
+          break;
+      }
+    }  
+  `
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
   const context = await isolate.createContext();
@@ -98,14 +103,6 @@ export function transform(fullEvents) {
     })
   );
 
-  await jail.set(
-    "_metadata",
-    new ivm.Reference((...args) => {
-      const eventMetadata = eventsMetadata[args[0].messageId] || {};
-      return new ivm.ExternalCopy(eventMetadata).copyInto();
-    })
-  );
-
   const bootstrap = await isolate.compileScript(
     "new " +
       `
@@ -147,22 +144,6 @@ export function transform(fullEvents) {
           args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           );
         };
-
-        // Now we create the other half of the 'metadata' function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to metadata log function above.
-        let metadata = _metadata;
-        delete _metadata;
-        global.metadata = function(...args) {
-          // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // 'applyIgnored' calls 'metadata' asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from 'metadata'.
-          return metadata.applySync(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          );
-        };
-
 
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
@@ -223,17 +204,19 @@ export function transform(fullEvents) {
     })
   );
 
-  if (Object.keys(supportedFuncs).length !== 1) {
+  var availableFuncNames = Object.keys(supportedFuncs)
+  if (availableFuncNames.length !== 1) {
       throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${Object.keys(supportedFuncs)}`
+      `Expected one of ${supportedFuncNames}. Found ${Object.keys(availableFuncNames)}`
     );
   }
 
-  const fnRef = supportedFuncs[0];
+  const fnRef = await customScriptModule.namespace.get("transformWrapper");
+  const fName = availableFuncNames[0];
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  return { isolate, jail, bootstrapScriptResult, context, fnRef, supportedFunc };
+  return { isolate, jail, bootstrapScriptResult, context, fnRef, fName };
 }
 
 async function getFactory(versionId, libraryVersionIds) {

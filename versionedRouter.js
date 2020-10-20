@@ -324,14 +324,21 @@ router.post("/batch", ctx => {
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
-  const response = { batchedRequests: [] };
+  const response = { batchedRequests: [], errors: [] };
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
-    // TODO: implement error handling
-    const destBatchedRequests = destHandler.batch(destEvents);
-    response.batchedRequests.push(...destBatchedRequests);
+    try {
+      const destBatchedRequests = destHandler.batch(destEvents);
+      response.batchedRequests.push(...destBatchedRequests);
+    } catch(error) {
+      response.errors.push(error.message || "Error occurred while processing payload.")
+    }
   });
-
+  if(response.errors.length > 0) {
+    ctx.status = 500;
+    ctx.body = response.errors;
+    return;
+  }
   ctx.body = response.batchedRequests;
 });
 

@@ -345,6 +345,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
   let batchPayloadJSON = get(batchEventResponse, "batchedRequest.body.JSON") || {}
   let incomingMessageJSON = get(message, "body.JSON")
   let incomingMessageEvent = get(message, "body.JSON.events")
+  let eventJobId = metadata.jobId || metadata.job_id
   // check if the incoming singular event is an array or not
   // and set it back to array 
   incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
@@ -355,7 +356,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
       delete message.body.JSON.options
       batchEventResponse = Object.assign(batchEventResponse, {batchedRequest: message})
       set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT)
-      batchEventResponse.jobs = [metadata.job_id]
+      batchEventResponse.jobs = [eventJobId]
     } else {
       // check not required as max individual event size is always less than 20MB
       // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
@@ -365,7 +366,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
     if(batchEventArray.length < AMBatchEventLimit && (JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length < AMBatchSizeLimit)) {
       batchEventArray.push(incomingMessageEvent);  // set value
-      batchEventJobs.push(metadata.job_id)
+      batchEventJobs.push(eventJobId)
       set(batchEventResponse, "batchedRequest.body.JSON.events", batchEventArray);
       set(batchEventResponse, "jobs", batchEventJobs);
     } else {
@@ -390,7 +391,7 @@ function batch(destEvents) {
     if(Object.keys(jsonBody).length == 0 || !userId || userId.length < 5) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, {batchedRequest: message})
-      response.jobs = [metadata.job_id]
+      response.jobs = [metadata.jobId || metadata.job_id]
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch

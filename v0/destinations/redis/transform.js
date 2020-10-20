@@ -1,30 +1,18 @@
 const _ = require("lodash");
+const get = require("get-value");
 const { isEmpty, isObject } = require("../../util");
 const { transformColumnName } = require("../../../warehouse/v1/util");
 const { EventType } = require("../../../constants");
+const { getFirstValidValue } = require("../../../warehouse/config/helpers");
 
-/*
-  setKeys takes in input object and 
-  adds the key/values in input (recursively in case of keys with value of type object) to output object (prefix is added to all keys)
-
-  Note: this function mutates output arg for sake of perf
-  eg.
-  output = {}
-  input = { library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' } }
-  prefix = "context_"
-
-  setKeys(utils, output, input, columnTypes, options, prefix)
-
-  ----After in-place edit, the objects mutate to----
-
-  output = {context_library_name: 'rudder-sdk-ruby-sync', context_library_version: '1.0.6'}
-
-*/
-function setKeys(output, input, prefix = "") {
+// Set fields in user hash map with same names as in warehouse
+// Refer to functions setDataFromInputAndComputeColumnTypes and setDataFromColumnMappingAndComputeColumnTypes
+// in warehouse transformer for examples
+function setFields(output, input, prefix = "") {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setKeys(output, input[key], `${prefix + key}_`);
+      setFields(output, input[key], `${prefix + key}_`);
     } else {
       const val = input[key];
       // do not set column if val is null/empty
@@ -37,6 +25,37 @@ function setKeys(output, input, prefix = "") {
     }
   });
 }
+
+function setFieldsFromMapping(output, input, mapping) {
+  if (!isObject(mapping)) return;
+  Object.keys(mapping).forEach(key => {
+    let val;
+    if (_.isFunction(mapping[key])) {
+      val = mapping[key](input);
+    } else {
+      val = get(input, mapping[key]);
+    }
+
+    const columnName = transformColumnName(key);
+    // do not set column if val is null/empty
+    if (isEmpty(val)) {
+      // delete in output
+      // eslint-disable-next-line no-param-reassign
+      delete output[columnName];
+      // eslint-disable-next-line no-param-reassign
+      return;
+    }
+    // eslint-disable-next-line no-param-reassign
+    output[columnName] = val;
+  });
+}
+
+const contextIPMapping = {
+  context_ip: message =>
+    getFirstValidValue(message, ["context.ip", "request_ip"]),
+  context_request_ip: "request_ip",
+  context_passed_ip: "context.ip"
+};
 
 const process = event => {
   const { message, destination } = event;
@@ -58,8 +77,10 @@ const process = event => {
     fields: {}
   };
 
-  setKeys(hmap.fields, message.context, "context_");
-  setKeys(hmap.fields, message.traits);
+  setFields(hmap.fields, message.traits);
+  setFields(hmap.fields, message.context, "context_");
+  // handle special case where additonal logic is need to set context_ip
+  setFieldsFromMapping(hmap.fields, message, contextIPMapping);
 
   const result = {
     message: hmap,

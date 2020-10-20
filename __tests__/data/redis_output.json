@@ -1,0 +1,109 @@
+[
+  {
+    "message": {
+      "key": "user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "UK",
+        "lastname": "Mouse",
+        "omega": "test",
+        "omega_v_2": "test",
+        "_9_mega": "test",
+        "mega": "test",
+        "ome_ga": "test",
+        "alpha": "test",
+        "_9_mega_90": "test",
+        "c_z": "test",
+        "camel_case_123_key": "test",
+        "_1_c_comega": "test",
+        "context_app_build": "1.0.0",
+        "context_app_name": "RudderLabs JavaScript SDK",
+        "context_app_namespace": "com.rudderlabs.javascript",
+        "context_app_version": "1.0.5",
+        "context_ip": "0.0.0.0",
+        "context_passed_ip": "0.0.0.0",
+        "context_request_ip": "[::1]:53708",
+        "context_library_name": "RudderLabs JavaScript SDK",
+        "context_library_version": "1.0.5",
+        "context_locale": "en-GB",
+        "context_screen_density": "2",
+        "context_traits_city": "Disney",
+        "context_traits_country": "USA",
+        "context_traits_email": "mickey@disney.com",
+        "context_traits_firstname": "Mickey",
+        "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
+    "message": {
+      "key": "test_prefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "UK",
+        "lastname": "Mouse",
+        "omega": "test",
+        "omega_v_2": "test",
+        "_9_mega": "test",
+        "mega": "test",
+        "ome_ga": "test",
+        "alpha": "test",
+        "_9_mega_90": "test",
+        "c_z": "test",
+        "camel_case_123_key": "test",
+        "_1_c_comega": "test",
+        "context_app_build": "1.0.0",
+        "context_app_name": "RudderLabs JavaScript SDK",
+        "context_app_namespace": "com.rudderlabs.javascript",
+        "context_app_version": "1.0.5",
+        "context_ip": "0.0.0.0",
+        "context_passed_ip": "0.0.0.0",
+        "context_request_ip": "[::1]:53708",
+        "context_library_name": "RudderLabs JavaScript SDK",
+        "context_library_version": "1.0.5",
+        "context_locale": "en-GB",
+        "context_screen_density": "2",
+        "context_traits_city": "Disney",
+        "context_traits_country": "USA",
+        "context_traits_email": "mickey@disney.com",
+        "context_traits_firstname": "Mickey",
+        "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
+    "message": {
+      "key": "test_prefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "UK",
+        "lastname": "Mouse",
+        "omega": "test",
+        "omega_v_2": "test",
+        "_9_mega": "test",
+        "mega": "test",
+        "ome_ga": "test",
+        "alpha": "test",
+        "_9_mega_90": "test",
+        "c_z": "test",
+        "camel_case_123_key": "test",
+        "_1_c_comega": "test",
+        "context_app_build": "1.0.0",
+        "context_app_name": "RudderLabs JavaScript SDK",
+        "context_app_namespace": "com.rudderlabs.javascript",
+        "context_app_version": "1.0.5",
+        "context_ip": "[::1]:53708",
+        "context_request_ip": "[::1]:53708",
+        "context_library_name": "RudderLabs JavaScript SDK",
+        "context_library_version": "1.0.5",
+        "context_locale": "en-GB",
+        "context_screen_density": "2",
+        "context_traits_city": "Disney",
+        "context_traits_country": "USA",
+        "context_traits_email": "mickey@disney.com",
+        "context_traits_firstname": "Mickey",
+        "context_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  }
+]

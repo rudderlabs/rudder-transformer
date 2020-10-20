@@ -307,6 +307,13 @@ const handleMetadataForValue = (value, metadata) => {
           throw new Error("Revenue is not in the correct format");
         }
         break;
+      case "toString":
+        formattedVal = String(formattedVal);
+        break;
+      case "toNumber":
+        formattedVal = Number(formattedVal);
+
+        break;
       default:
         break;
     }

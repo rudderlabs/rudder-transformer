@@ -1,9 +1,7 @@
 const _ = require("lodash");
-const get = require("get-value");
+
 const { isEmpty, isObject } = require("../../util");
-const { transformColumnName } = require("../../../warehouse/v1/util");
 const { EventType } = require("../../../constants");
-// const { getFirstValidValue } = require("../../../warehouse/config/helpers");
 
 // Set fields in user hash map with same names as in warehouse
 // Refer to functions setDataFromInputAndComputeColumnTypes and setDataFromColumnMappingAndComputeColumnTypes
@@ -12,14 +10,14 @@ function setFields(output, input, prefix = "") {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
-      setFields(output, input[key], `${prefix + key}_`);
+      setFields(output, input[key], `${prefix + key}.`);
     } else {
       const val = input[key];
       // do not set column if val is null/empty
       if (isEmpty(val)) {
         return;
       }
-      const safeKey = transformColumnName(prefix + key);
+      const safeKey = prefix + key;
       // eslint-disable-next-line no-param-reassign
       output[safeKey] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
     }
@@ -78,7 +76,7 @@ const process = event => {
   };
 
   setFields(hmap.fields, message.traits);
-  setFields(hmap.fields, message.context, "context_");
+  // setFields(hmap.fields, message.context, "context_");
   // handle special case where additonal logic is need to set context_ip
   // setFieldsFromMapping(hmap.fields, message, contextIPMapping);
 

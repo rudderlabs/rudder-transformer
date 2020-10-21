@@ -40,15 +40,18 @@ export default self;
 async function transform(isolatevm, events) {
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
+  let transformationPayload = {}
+  transformationPayload["events"] = events
+  transformationPayload["transformType"] = isolatevm.fName
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
       transferIn: true
     });
     try {
       await isolatevm.bootstrapScriptResult.apply(undefined, [
         isolatevm.fnRef,
         new ivm.Reference(resolve),
-        sharedMessagesList
+        sharedTransformationPayload
       ]);
     } catch (error) {
       reject(error.message);

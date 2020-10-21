@@ -95,14 +95,14 @@ describe("User transformation", () => {
   it(`Simple ${name} Test for lodash functions`, async () => {
     const versionId = randomID();
     const libraryVersionId = randomID();
-    const { userTransformHandler } = require("../util/customTransformer");
+    const { userTransformHandlerV1 } = require("../util/customTransformer-v1");
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_lodash_output.json`);
 
     const respBody = {
       code: `
       import * as lodash from 'lodash';
-      function transform(events) {
+      export function transformBatch(events) {
           const modifiedEvents = events.map(event => {
             event.max = lodash.max([2,3,5,6,7,8]);
             event.min = lodash.min([-2,3,5,6,7,8]);
@@ -131,7 +131,7 @@ describe("User transformation", () => {
       json: jest.fn().mockResolvedValue({"code":lodashCode,"name":"lodash"})
     });
 
-    const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    const output = await userTransformHandlerV1(inputData, versionId, [libraryVersionId]);
 
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

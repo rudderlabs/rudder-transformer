@@ -32,7 +32,9 @@ async function createIvm(versionId, libraryVersionIds) {
 
   let { code } = transformation;
   code = code + `
-    export function transformWrapper(events, transformType) {
+    export function transformWrapper(transformationPayload) {
+      let events = transformationPayload.events
+      let transformType = transformationPayload.transformationType
       let outputEvents = []
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
@@ -229,8 +231,6 @@ async function createIvm(versionId, libraryVersionIds) {
     fName
   };
 }
-
-
 
 async function getFactory(versionId, libraryVersionIds) {
   const factory = {

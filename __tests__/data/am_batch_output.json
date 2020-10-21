@@ -51,8 +51,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
-      "metadata": [{"job_id": 1}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 1 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -75,8 +75,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
-      "metadata": [{"job_id": 6}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 6 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -99,8 +99,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/usermap"
       },
-      "metadata": [{"job_id": 7}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 7 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -194,8 +194,13 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/batch"
       },
-      "metadata": [{"job_id": 2}, {"job_id": 3}, {"job_id": 4}, {"job_id": 5}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [
+        { "job_id": 2 },
+        { "job_id": 3 },
+        { "job_id": 4 },
+        { "job_id": 5 }
+      ],
+      "destination": { "ID": "a", "url": "a" }
     }
   ],
   [
@@ -248,8 +253,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
-      "metadata": [{"job_id": 1}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 1 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -272,8 +277,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
-      "metadata": [{"job_id": 6}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 6 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -296,8 +301,8 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/usermap"
       },
-      "metadata": [{"job_id": 7}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [{ "job_id": 7 }],
+      "destination": { "ID": "a", "url": "a" }
     },
     {
       "batchedRequest": {
@@ -391,8 +396,216 @@
         "version": "1",
         "endpoint": "https://api.amplitude.com/batch"
       },
-      "metadata": [{"job_id": 2}, {"job_id": 3}, {"job_id": 4}, {"job_id": 5}],
-      "destination": {"ID": "a", "url": "a"}
+      "metadata": [
+        { "job_id": 2 },
+        { "job_id": 3 },
+        { "job_id": 4 },
+        { "job_id": 5 }
+      ],
+      "destination": { "ID": "a", "url": "a" }
+    }
+  ],
+  [
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "events": [
+              {
+                "ip": "[::1]",
+                "time": 1565586510909,
+                "carrier": "Android",
+                "app_name": "RudderAndroidClient",
+                "language": "en-US",
+                "device_id": "anon_id",
+                "insert_id": "dd4c4493-a3ff-49c9-9071-6cb72e37cd55",
+                "event_type": "Demo Track",
+                "session_id": -1,
+                "app_version": "1.0",
+                "device_model": "Android SDK built for x86",
+                "event_properties": {
+                  "label": "Demo Label",
+                  "value": 5,
+                  "category": "Demo Category"
+                },
+                "device_manufacturer": "Google"
+              },
+              {
+                "ip": "[::1]",
+                "time": 1565586510909,
+                "carrier": "Android",
+                "app_name": "RudderAndroidClient",
+                "language": "en-US",
+                "device_id": "anon_id",
+                "insert_id": "69283c05-bbe9-4aba-bb98-3f065d39cf54",
+                "event_type": "Demo Track",
+                "session_id": -1,
+                "app_version": "1.0",
+                "device_model": "Android SDK built for x86",
+                "event_properties": {
+                  "label": "Demo Label",
+                  "value": 5,
+                  "category": "Demo Category"
+                },
+                "device_manufacturer": "Google"
+              },
+              {
+                "ip": "[::1]",
+                "time": 1565586510909,
+                "carrier": "Android",
+                "app_name": "RudderAndroidClient",
+                "language": "en-US",
+                "device_id": "anon_id",
+                "insert_id": "39f7a1fa-ff79-4fd1-a329-d637f018de7e",
+                "event_type": "Demo Track",
+                "session_id": -1,
+                "app_version": "1.0",
+                "device_model": "Android SDK built for x86",
+                "event_properties": {
+                  "label": "Demo Label",
+                  "value": 5,
+                  "category": "Demo Category"
+                },
+                "device_manufacturer": "Google"
+              },
+              {
+                "ip": "[::1]",
+                "time": 1565586510909,
+                "carrier": "Android",
+                "app_name": "RudderAndroidClient",
+                "language": "en-US",
+                "device_id": "anon_id",
+                "insert_id": "4314aa01-46a3-4f45-b67d-debe4bc01717",
+                "event_type": "Demo Track",
+                "session_id": -1,
+                "app_version": "1.0",
+                "device_model": "Android SDK built for x86",
+                "event_properties": {
+                  "label": "Demo Label",
+                  "value": 5,
+                  "category": "Demo Category"
+                },
+                "device_manufacturer": "Google"
+              },
+              {
+                "ip": "[::1]",
+                "time": 1565586510909,
+                "carrier": "Android",
+                "app_name": "RudderAndroidClient",
+                "language": "en-US",
+                "device_id": "anon_id",
+                "insert_id": "4d958d40-2762-44aa-bf83-d47f881bc615",
+                "event_type": "Demo Track",
+                "session_id": -1,
+                "app_version": "1.0",
+                "device_model": "Android SDK built for x86",
+                "event_properties": {
+                  "label": "Demo Label",
+                  "value": 5,
+                  "category": "Demo Category"
+                },
+                "device_manufacturer": "Google"
+              }
+            ],
+            "api_key": "afasf"
+          }
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "userId": "anon_id",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://api.amplitude.com/batch"
+      },
+      "metadata": [
+        {
+          "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
+          "jobId": 12,
+          "sourceId": "1fMCVYZboDlYlauh4GFsEo2JU77",
+          "destinationId": "1gXSYmSd7vkfFfJ4vtMCL0i43Lb",
+          "attemptNum": 0,
+          "receivedAt": "2020-10-20T23:47:29.633+05:30",
+          "createdAt": "2020-10-20T18:17:32.465Z"
+        },
+        {
+          "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
+          "jobId": 13,
+          "sourceId": "1fMCVYZboDlYlauh4GFsEo2JU77",
+          "destinationId": "1gXSYmSd7vkfFfJ4vtMCL0i43Lb",
+          "attemptNum": 0,
+          "receivedAt": "2020-10-20T23:47:29.914+05:30",
+          "createdAt": "2020-10-20T18:17:32.465Z"
+        },
+        {
+          "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
+          "jobId": 14,
+          "sourceId": "1fMCVYZboDlYlauh4GFsEo2JU77",
+          "destinationId": "1gXSYmSd7vkfFfJ4vtMCL0i43Lb",
+          "attemptNum": 0,
+          "receivedAt": "2020-10-20T23:47:30.166+05:30",
+          "createdAt": "2020-10-20T18:17:32.465Z"
+        },
+        {
+          "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
+          "jobId": 15,
+          "sourceId": "1fMCVYZboDlYlauh4GFsEo2JU77",
+          "destinationId": "1gXSYmSd7vkfFfJ4vtMCL0i43Lb",
+          "attemptNum": 0,
+          "receivedAt": "2020-10-20T23:47:30.424+05:30",
+          "createdAt": "2020-10-20T18:17:32.465Z"
+        },
+        {
+          "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
+          "jobId": 16,
+          "sourceId": "1fMCVYZboDlYlauh4GFsEo2JU77",
+          "destinationId": "1gXSYmSd7vkfFfJ4vtMCL0i43Lb",
+          "attemptNum": 0,
+          "receivedAt": "2020-10-20T23:47:30.668+05:30",
+          "createdAt": "2020-10-20T18:17:32.465Z"
+        }
+      ],
+      "destination": {
+        "ID": "1iuPwfigf4Fk5F5OBF2T3EVTGlY",
+        "Name": "braze dev",
+        "DestinationDefinition": {
+          "ID": "1XQoHKJnI6Uf67wN20RlvAQSUB9",
+          "Name": "BRAZE",
+          "DisplayName": "Braze",
+          "Config": {
+            "destConfig": {
+              "android": ["useNativeSDK"],
+              "defaultConfig": ["appKey", "dataCenter", "restApiKey"],
+              "ios": ["useNativeSDK"],
+              "web": ["useNativeSDK"]
+            },
+            "excludeKeys": [],
+            "includeKeys": ["appKey", "dataCenter"],
+            "secretKeys": ["restApiKey"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative"
+            ]
+          }
+        },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": false
+      }
     }
   ]
 ]

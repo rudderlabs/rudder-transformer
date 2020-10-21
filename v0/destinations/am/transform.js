@@ -388,7 +388,7 @@ function batch(destEvents) {
     messageEvent = get(message, "body.JSON.events");
     userId = messageEvent && Array.isArray(messageEvent) ? messageEvent[0].user_id : messageEvent ? messageEvent.user_id : undefined;
     // check if not a JSON body or userId length < 5, send the event as is after batching
-    if(Object.keys(jsonBody).length == 0 || !userId || userId.length < 5) {
+    if(Object.keys(jsonBody).length == 0 || (userId && userId.length < 5)) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, {batchedRequest: message})
       response.metadata = [metadata]

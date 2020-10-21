@@ -206,21 +206,11 @@ if (startDestTransformer) {
                   processSessions
                 }
               );
-              if (codeVersion) {
-                if (codeVersion == "1") {
-                  destTransformedEvents = await userTransformHandlerV1()(
-                    destEvents,
-                    transformationVersionId,
-                    librariesVersionIDs
-                  );
-                }
-              } else {
-                destTransformedEvents = await userTransformHandler()(
-                  destEvents,
-                  transformationVersionId
-                );
-              }
-
+              destTransformedEvents = await userTransformHandler()(
+                destEvents,
+                transformationVersionId,
+                librariesVersionIDs
+              );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   return {

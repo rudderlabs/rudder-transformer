@@ -74,9 +74,9 @@ function calculateMsFromIvmTime(value) {
   return (value[0] + value[1] / 1e9) * 1000;
 }
 
-async function userTransformHandlerV1(events, versionId, libraryVersionIds) {
-  if (versionId) {
-    const isolatevmPool = await getPool(versionId, libraryVersionIds);
+async function userTransformHandlerV1(events, userTransformation, libraryVersionIds) {
+  if (userTransformation.versionId) {
+    const isolatevmPool = await getPool(userTransformation, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
     stats.gauge("isolate_vm_pool_size", isolatevmPool.size);
     stats.gauge("isolate_vm_pool_available", isolatevmPool.available);

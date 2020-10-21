@@ -9,7 +9,8 @@ const opts = {
   max: 20 // maximum size of the pool
 };
 
-async function getPool(versionId, libraryVersionIds) {
+async function getPool(userTransformation, libraryVersionIds) {
+  const versionId = userTransformation.versionId
   const sortedLibrariesIdString = libraryVersionIds.sort().toString();
   if (
     !transformationPoolCache[versionId] ||
@@ -22,7 +23,7 @@ async function getPool(versionId, libraryVersionIds) {
     //     transformationPoolCache[versionId].clear();
     //   });
     // }
-    const factory = await getFactory(versionId, libraryVersionIds);
+    const factory = await getFactory(userTransformation.code, libraryVersionIds);
     transformationPoolCache[versionId] = genericPool.createPool(factory, opts);
     transformationLibraryCache[versionId] = sortedLibrariesIdString;
     // Added to stop retrying and infinite loop on error

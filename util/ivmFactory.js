@@ -14,9 +14,8 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
   return module;
 }
 
-async function createIvm(versionId, libraryVersionIds) {
+async function createIvm(code, libraryVersionIds) {
   const createIvmStartTime =  new Date()
-  const transformation = await getTransformationCodeV1(versionId);
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCodeV1(libraryVersionId)
@@ -30,7 +29,6 @@ async function createIvm(versionId, libraryVersionIds) {
     });
   }
 
-  let { code } = transformation;
   code = code + `
     export function transformWrapper(transformationPayload) {
       let events = transformationPayload.events

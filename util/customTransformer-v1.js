@@ -24,25 +24,12 @@ const { addCode, subCode } = require("./math.js");
 
 const { getPool } = require("./ivmPool");
 
-const lodashCode = `
-  ${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
-  ;
-  // Not exporting the unsupported functions
-  export {${Object.keys(lodashCore).filter(
-    funcName => !unsupportedFuncNames.includes(funcName)
-  )}};
-`;
-
-const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
-export default self;
-`;
-
 async function transform(isolatevm, events) {
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   let transformationPayload = {}
   transformationPayload["events"] = events
-  transformationPayload["transformType"] = isolatevm.fName
+  transformationPayload["transformationType"] = isolatevm.fName
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
       transferIn: true

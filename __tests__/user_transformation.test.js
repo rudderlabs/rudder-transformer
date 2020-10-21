@@ -113,6 +113,7 @@ describe("User transformation", () => {
           `,
       codeVersion: 1
     };
+    respBody["versionId"] = versionId
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     when(fetch).calledWith(transformerUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue(respBody)
@@ -127,6 +128,8 @@ describe("User transformation", () => {
       )}};
     `;
 
+    const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
+
     const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
     when(fetch).calledWith(libraryUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue({"code":lodashCode,"name":"lodash"})
@@ -138,10 +141,6 @@ describe("User transformation", () => {
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
 
-    console.log("output")
-    console.log(output)
-    console.log("expectedData")
-    console.log(expectedData)
     expect(output).toEqual(expectedData);
   });
 
@@ -167,6 +166,7 @@ describe("User transformation", () => {
           `,
       codeVersion: 1
     };
+    respBody["versionId"] = versionId
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     when(fetch).calledWith(transformerUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue(respBody)

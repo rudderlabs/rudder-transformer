@@ -2,12 +2,9 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
 const stats = require("./stats");
-const {
-  getTransformationCodeV1,
-  getLibraryCodeV1
-} = require("./customTransforrmationsStore-v1");
+const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
-const isolateVmMem = 8;
+const isolateVmMem = 128;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -21,8 +18,9 @@ async function createIvm(code, libraryVersionIds) {
       getLibraryCodeV1(libraryVersionId)
     )
   );
+
   const librariesMap = {};
-  if (transformation && libraries) {
+  if (code && libraries) {
     // TODO: Check if this should this be &&
     libraries.forEach(library => {
       librariesMap[_.camelCase(library.name)] = library.code;
@@ -32,7 +30,7 @@ async function createIvm(code, libraryVersionIds) {
   code = code + `
     export function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
-      let transformType = transformationPayload.transformationType
+      let transformType = transformationPayload["transformationType"]
       let outputEvents = []
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
@@ -45,13 +43,14 @@ async function createIvm(code, libraryVersionIds) {
         return eventMetadata
       }
       switch(transformType) {
-        case "Batch":
+        case "transformBatch":
           outputEvents = transformBatch(eventMessages, metadata)
           break;
-        case "Event":
-          eventMessages.map(ev => {var oE = transformEvent(ev, metadata); outputEvents.push(oE); })
+        case "transformEvent":
+          outputEvents = eventMessages.map(ev => transformEvent(ev, metadata))
           break;
       }
+      return outputEvents
     }  
   `
   // TODO: Decide on the right value for memory limit
@@ -192,7 +191,7 @@ async function createIvm(code, libraryVersionIds) {
   // const fnRefOld = await customScriptModule.namespace.get("transform");
   // console.log("runUserTransform -> fnRefOld", fnRefOld);
 
-  const supportedFuncNames = ["transform", "transformEvent", "transformBatch"];
+  const supportedFuncNames = ["transformEvent", "transformBatch"];
   let supportedFuncs = {};
   let supportedFunc = "";
 
@@ -218,6 +217,7 @@ async function createIvm(code, libraryVersionIds) {
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
+
   return {
     isolate,
     jail,
@@ -230,10 +230,10 @@ async function createIvm(code, libraryVersionIds) {
   };
 }
 
-async function getFactory(versionId, libraryVersionIds) {
+async function getFactory(code, libraryVersionIds) {
   const factory = {
     create: async () => {
-      return createIvm(versionId, libraryVersionIds);
+      return createIvm(code, libraryVersionIds);
     },
     destroy: async client => {
       await client.isolate.dispose();

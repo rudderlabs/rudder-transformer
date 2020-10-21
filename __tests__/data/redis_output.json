@@ -37,7 +37,7 @@
   },
   {
     "message": {
-      "key": "test_prefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "key": "TestPrefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
       "fields": {
         "country": "UK",
         "lastname": "Mouse",
@@ -73,7 +73,7 @@
   },
   {
     "message": {
-      "key": "test_prefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "key": "TestPrefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
       "fields": {
         "country": "UK",
         "lastname": "Mouse",

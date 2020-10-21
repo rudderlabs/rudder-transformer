@@ -17,7 +17,7 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  it(`${name} Tests: payload - ${index}`, () => {
+  fit(`${name} Tests: payload - ${index}`, () => {
     try {
       const output = transformer.process(input);
       expect(output).toEqual(expectedData[index]);

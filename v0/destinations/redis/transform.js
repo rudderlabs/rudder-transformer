@@ -70,7 +70,7 @@ const process = event => {
   }
 
   const { prefix } = destination.Config;
-  const keyPrefix = isEmpty(prefix) ? "" : `${transformColumnName(prefix)}:`;
+  const keyPrefix = isEmpty(prefix) ? "" : `${prefix.trim()}:`;
 
   const hmap = {
     key: `${keyPrefix}user:${_.toString(event.message.userId)}`,

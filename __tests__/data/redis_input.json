@@ -40,31 +40,25 @@
           "density": 2
         },
         "traits": {
-          "city": "Disney",
-          "country": "USA",
-          "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "country": "UK",
+          "lastname": "Mouse",
+          "omega": "test",
+          "omega v2": "test",
+          "9mega": "test",
+          "mega&": "test",
+          "ome$ga": "test",
+          "alpha$": "test",
+          "ome_ ga": "test",
+          "9mega________-________90": "test",
+          "Cízǔ": "test",
+          "CamelCase123Key": "test",
+          "1CComega": "test",
+          "nestedProp": {
+            "innerProp1": "innerPropVal1",
+            "innerProp2": "innerPropVal2"
+          }
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
-      },
-      "traits": {
-        "country": "UK",
-        "lastname": "Mouse",
-        "omega": "test",
-        "omega v2": "test",
-        "9mega": "test",
-        "mega&": "test",
-        "ome$ga": "test",
-        "alpha$": "test",
-        "ome_ ga": "test",
-        "9mega________-________90": "test",
-        "Cízǔ": "test",
-        "CamelCase123Key": "test",
-        "1CComega": "test",
-        "nestedProp": {
-          "innerProp1": "innerPropVal1",
-          "innerProp2": "innerPropVal2"
-        }
       },
       "integrations": {
         "All": true
@@ -121,31 +115,25 @@
           "density": 2
         },
         "traits": {
-          "city": "Disney",
-          "country": "USA",
-          "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "country": "UK",
+          "lastname": "Mouse",
+          "omega": "test",
+          "omega v2": "test",
+          "9mega": "test",
+          "mega&": "test",
+          "ome$ga": "test",
+          "alpha$": "test",
+          "ome_ ga": "test",
+          "9mega________-________90": "test",
+          "Cízǔ": "test",
+          "CamelCase123Key": "test",
+          "1CComega": "test",
+          "nestedProp": {
+            "innerProp1": "innerPropVal1",
+            "innerProp2": "innerPropVal2"
+          }
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
-      },
-      "traits": {
-        "country": "UK",
-        "lastname": "Mouse",
-        "omega": "test",
-        "omega v2": "test",
-        "9mega": "test",
-        "mega&": "test",
-        "ome$ga": "test",
-        "alpha$": "test",
-        "ome_ ga": "test",
-        "9mega________-________90": "test",
-        "Cízǔ": "test",
-        "CamelCase123Key": "test",
-        "1CComega": "test",
-        "nestedProp": {
-          "innerProp1": "innerPropVal1",
-          "innerProp2": "innerPropVal2"
-        }
       },
       "integrations": {
         "All": true

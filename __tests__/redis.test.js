@@ -1,4 +1,3 @@
-const util = require("util");
 const integration = "redis";
 const name = "Redis";
 
@@ -18,10 +17,9 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  fit(`${name} Tests: payload - ${index}`, () => {
+  it(`${name} Tests: payload - ${index}`, () => {
     try {
       const output = transformer.process(input);
-      console.log(util.inspect(output, false, null, true));
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].error);

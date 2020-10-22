@@ -75,7 +75,11 @@ const process = event => {
     fields: {}
   };
 
-  setFields(hmap.fields, message.traits);
+  if (!isObject(message.context) || !isObject(message.context.traits)) {
+    throw new Error("context or context.traits is empty");
+  }
+
+  setFields(hmap.fields, message.context.traits);
   // setFields(hmap.fields, message.context, "context_");
   // handle special case where additonal logic is need to set context_ip
   // setFieldsFromMapping(hmap.fields, message, contextIPMapping);

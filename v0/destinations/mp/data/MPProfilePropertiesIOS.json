@@ -1,0 +1,22 @@
+[
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "$os"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "$ios_device_model"
+  },
+  {
+    "sourceKeys": "context.os.version",
+    "destKey": "$ios_version"
+  },
+  {
+    "sourceKeys": "context.app.build",
+    "destKey": "$ios_app_release"
+  },
+  {
+    "sourceKeys": "context.app.version",
+    "destKey": "$ios_app_version"
+  }
+]

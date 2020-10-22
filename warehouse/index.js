@@ -250,6 +250,24 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
+const fullEventColumnTypeByProvider = {
+  snowflake: "json",
+  rs: "text",
+  bq: "string",
+  postgres: "json",
+  clickhouse: "string"
+};
+
+function storeRudderEvent(utils, message, output, columnTypes, options) {
+  if (options.whStoreEvent === true) {
+    const colName = utils.safeColumnName(options.provider, "rudder_event");
+    // eslint-disable-next-line no-param-reassign
+    output[colName] = JSON.stringify(message);
+    // eslint-disable-next-line no-param-reassign
+    columnTypes[colName] = fullEventColumnTypeByProvider[options.provider];
+  }
+}
+
 /*
   Examples:
 
@@ -449,7 +467,6 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         commonProps,
@@ -479,6 +496,7 @@ function processWarehouseMessage(message, options) {
 
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
+      storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
       const tracksMetadata = {
         table: utils.safeTableName(options.provider, "tracks"),
         columns: getColumns(options, tracksEvent, {
@@ -598,6 +616,13 @@ function processWarehouseMessage(message, options) {
         identifiesColumnTypes,
         options
       );
+      storeRudderEvent(
+        utils,
+        message,
+        identifiesEvent,
+        identifiesColumnTypes,
+        options
+      );
       const identifiesMetadata = {
         table: utils.safeTableName(options.provider, "identifies"),
         columns: getColumns(options, identifiesEvent, {
@@ -683,6 +708,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       if (eventType === "page") {
         setDataFromColumnMappingAndComputeColumnTypes(
@@ -746,6 +772,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
         table: utils.safeTableName(options.provider, "groups"),
@@ -789,6 +816,7 @@ function processWarehouseMessage(message, options) {
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
         table: utils.safeTableName(options.provider, "aliases"),
@@ -805,5 +833,6 @@ function processWarehouseMessage(message, options) {
 }
 
 module.exports = {
-  processWarehouseMessage
+  processWarehouseMessage,
+  fullEventColumnTypeByProvider
 };

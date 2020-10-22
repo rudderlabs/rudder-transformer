@@ -1,0 +1,103 @@
+[
+  {
+    "sourceKeys": ["context.ip", "request_ip"],
+    "destKey": "ip"
+  },
+  {
+    "sourceKeys": "context.campaign.name",
+    "destKey": "campaign_id"
+  },
+  {
+    "sourceKeys": "userId",
+    "destKey": "$user_id"
+  },
+  {
+    "sourceKeys": "context.page.url",
+    "destKey": "$current_url"
+  },
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "$os"
+  },
+  {
+    "sourceKeys": "context.page.referrer",
+    "destKey": "$referrer"
+  },
+  {
+    "sourceKeys": "context.screen.height",
+    "destKey": "$screen_height"
+  },
+  {
+    "sourceKeys": "context.screen.width",
+    "destKey": "$screen_width"
+  },
+  {
+    "sourceKeys": "context.screen.density",
+    "destKey": "$screen_dpi"
+  },
+  {
+    "sourceKeys": "context.campaign.name",
+    "destKey": "utm_name"
+  },
+  {
+    "sourceKeys": "context.campaign.source",
+    "destKey": "utm_source"
+  },
+  {
+    "sourceKeys": "context.campaign.medium",
+    "destKey": "utm_medium"
+  },
+  {
+    "sourceKeys": "context.campaign.term",
+    "destKey": "utm_term"
+  },
+  {
+    "sourceKeys": "context.campaign.content",
+    "destKey": "utm_content"
+  },
+  {
+    "sourceKeys": "context.campaign.test",
+    "destKey": "utm_test"
+  },
+  {
+    "sourceKeys": "context.network.carrier",
+    "destKey": "$carrier"
+  },
+  {
+    "sourceKeys": "context.os.version",
+    "destKey": "$os_version"
+  },
+  {
+    "sourceKeys": "context.device.name",
+    "destKey": "$device"
+  },
+  {
+    "sourceKeys": "context.device.manufacturer",
+    "destKey": "$manufacturer"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "$model"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "mp_device_model"
+  },
+  {
+    "sourceKeys": "context.network.wifi",
+    "destKey": "$wifi"
+  },
+  {
+    "sourceKeys": "context.network.bluetooth",
+    "destKey": "$bluetooth_enabled"
+  },
+  {
+    "sourceKeys": "context.network.bluetooth",
+    "destKey": "$bluetooth_enabled"
+  },
+  {
+    "sourceKeys": "context.library.name",
+    "destKey": "mp_lib"
+  }
+  
+]

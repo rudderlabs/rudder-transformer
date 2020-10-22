@@ -12,7 +12,7 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
-const uaParser = require("ua-parser-js");
+// const uaParser = require("ua-parser-js");
 const moment = require("moment");
 const logger = require("../../logger");
 
@@ -433,10 +433,10 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
-function getBrowserInfo(userAgent) {
-  const ua = uaParser(userAgent);
-  return { name: ua.browser.name, version: ua.browser.version };
-}
+// function getBrowserInfo(userAgent) {
+//   const ua = uaParser(userAgent);
+//   return { name: ua.browser.name, version: ua.browser.version };
+// }
 
 /** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
 For example,
@@ -501,7 +501,7 @@ module.exports = {
   defaultRequestConfig,
   flattenJson,
   formatValue,
-  getBrowserInfo,
+//  getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
   getFieldValueFromMessage,

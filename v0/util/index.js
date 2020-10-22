@@ -105,12 +105,12 @@ function flattenJson(data) {
         result[prop] = [];
       }
     } else {
-      let isEmpty = true;
+      let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
-        isEmpty = false;
+        isEmptyFlag = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
-      if (isEmpty && prop) result[prop] = {};
+      if (isEmptyFlag && prop) result[prop] = {};
     }
   }
 
@@ -530,9 +530,9 @@ module.exports = {
   getParsedIP,
   getTimeDifference,
   getValueFromMessage,
+  getValuesAsArrayFromConfig,
   isEmpty,
   isObject,
-  getValuesAsArrayFromConfig,
   isPrimitive,
   removeNullValues,
   removeUndefinedAndNullValues,

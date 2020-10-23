@@ -14,6 +14,8 @@ phases:
     commands:
       - VERSION="$(date '+%d%m%Y.%H%M%S')"
       - ls
+      - npm install --unsafe-perm
+      - npm test
       - docker build -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
       - docker tag rudderlabs/rudder-transformer:$VERSION rudderlabs/rudder-transformer:latest
   post_build:

@@ -11,6 +11,8 @@ phases:
     commands:
       - VERSION=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///g' | tr "/" .)
       - ls
+      - npm install --unsafe-perm
+      - npm test
       - echo build Docker image on `date`
       - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
   post_build:

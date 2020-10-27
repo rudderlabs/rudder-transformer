@@ -159,7 +159,7 @@ if (startDestTransformer) {
       );
 
       const transformedEvents = [];
-      const librariesVersionIDs = [];
+      let librariesVersionIDs = [];
       if (events[0].libraries) {
         librariesVersionIDs = events[0].libraries.map(
           library => library.VersionID
@@ -174,14 +174,6 @@ if (startDestTransformer) {
             destEvents[0].destination.Transformations &&
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
-
-          const codeVersion =
-            destEvents[0] &&
-            destEvents[0].destination &&
-            destEvents[0].destination.Transformations &&
-            destEvents[0].destination.Transformations[0] &&
-            destEvents[0].destination.Transformations[0].codeVersion;
-
           const messageIds = destEvents.map(
             ev => ev.metadata && ev.metadata.messageId
           );

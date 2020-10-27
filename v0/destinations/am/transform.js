@@ -206,7 +206,9 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || get(message.properties.category) || ""} Page`;
+      evType = `Viewed ${message.name ||
+        get(message.properties.category) ||
+        ""} Page`;
       message.properties = {
         ...message.properties,
         name: message.name || get(message.properties.category)
@@ -214,7 +216,9 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${message.name || get(message.properties.category) || ""} Screen`;
+      evType = `Viewed ${message.name ||
+        get(message.properties.category) ||
+        ""} Screen`;
       message.properties = {
         ...message.properties,
         name: message.name || get(message.properties.category)

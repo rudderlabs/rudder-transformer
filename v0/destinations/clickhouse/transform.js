@@ -1,4 +1,5 @@
 const { processWarehouseMessage } = require("../../../warehouse");
+
 const clickhouse = "clickhouse";
 
 function processSingleMessage(message, options) {

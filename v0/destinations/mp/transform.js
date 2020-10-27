@@ -72,7 +72,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
   response.headers = headers;
-  response.userId = message.anonymousId;
+  response.userId = message.anonymousId || message.userId;
   response.params = { data: encodedData };
 
   return response;
@@ -194,7 +194,7 @@ function processIdentifyEvents(message, type, destination) {
     responseBuilderSimple(parameters, message, type, destination.Config)
   );
 
-  if (message.userId && destination.Config.apiSecret) {
+  if (message.userId && message.anonymousId && destination.Config.apiSecret) {
     // Use this block when our userids are changed to UUID V4.
     // const trackParameters = {
     //   event: "$identify",
@@ -282,6 +282,11 @@ function processPageOrScreenEvents(message, type, destination) {
 }
 
 function processAliasEvents(message, type, destination) {
+  if (!(message.previousId || message.anonymousId)) {
+    throw new Error(
+      "Either previous id or anonymous id should be present in alias payload"
+    );
+  }
   const parameters = {
     event: "$create_alias",
     properties: {

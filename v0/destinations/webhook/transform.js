@@ -1,3 +1,5 @@
+const get = require("get-value");
+const set = require("set-value");
 const {
   defaultPostRequestConfig,
   defaultGetRequestConfig,
@@ -7,8 +9,6 @@ const {
   flattenJson
 } = require("../../util");
 const { EventType } = require("../../../constants");
-const get = require("get-value");
-const set = require("set-value");
 
 const getPropertyParams = message => {
   if (message.type === EventType.IDENTIFY) {
@@ -27,7 +27,7 @@ function process(event) {
     const response = defaultRequestConfig();
     const url = destination.Config.webhookUrl;
     const method = destination.Config.webhookMethod;
-    const headers = destination.Config.headers;
+    const { headers } = destination.Config;
 
     if (url) {
       if (method === defaultGetRequestConfig.requestMethod) {

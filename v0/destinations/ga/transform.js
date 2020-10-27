@@ -1,5 +1,5 @@
 const get = require("get-value");
-
+const md5 = require("md5");
 const { EventType } = require("../../../constants");
 const {
   Event,
@@ -14,7 +14,8 @@ const {
   defaultRequestConfig,
   getParsedIP,
   formatValue,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -208,15 +209,23 @@ function responseBuilderSimple(
   if (message.userId && message.userId.length > 0 && sendUserId) {
     finalPayload.uid = message.userId;
   }
-
-  finalPayload.cid = message.anonymousId;
+  const integrationsClientId = message.integrations
+    ? message.integrations.GA
+      ? message.integrations.GA.clientId
+      : undefined
+    : undefined;
+  finalPayload.cid =
+    integrationsClientId ||
+    getDestinationExternalID(message, "gaExternalId") ||
+    message.anonymousId ||
+    md5(message.userId);
 
   finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
-  response.userId = message.anonymousId;
+  response.userId = message.anonymousId || message.userId;
   response.params = finalPayload;
 
   return response;

@@ -4,7 +4,7 @@ const _ = require("lodash");
 const stats = require("./stats");
 const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
-const isolateVmMem = 128;
+const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -51,7 +51,7 @@ async function createIvm(code, libraryVersionIds) {
           break;
       }
       return outputEvents
-    }  
+    }
   `
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });

@@ -40,13 +40,27 @@ const process = event => {
     fields: {}
   };
 
-  if (!isObject(message.context) || !isObject(message.context.traits)) {
-    throw new Error("context or context.traits is empty");
+  if (isObject(message.context) && isObject(message.context.traits)) {
+    hmap.fields = flatten(message.context.traits, {
+      delimiter: ".",
+      safe: true
+    });
   }
 
-  hmap.fields = flatten(message.context.traits, {
-    safe: true
-  });
+  if (isObject(message.traits)) {
+    hmap.fields = Object.assign(
+      hmap.fields,
+      flatten(message.traits, {
+        delimiter: ".",
+        safe: true
+      })
+    );
+  }
+
+  if (Object.keys(hmap.fields).length === 0) {
+    throw new Error("context or context.traits or traits is empty");
+  }
+
   processValues(hmap.fields);
 
   const result = {

@@ -11,8 +11,7 @@ phases:
     commands:
       - VERSION=saas-dev
       - ls
-      - npm install --unsafe-perm
-      - npm test
+      - npm install
       - echo build Docker image on `date`
       - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
   post_build:

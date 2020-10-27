@@ -7,9 +7,9 @@ RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 WORKDIR /home/node/app
 USER node
 
-COPY package*.json ./
-COPY build.js ./
-RUN npm install --unsafe-perm
+ADD . /home/node/app
+RUN npm install
+RUN npm run buildTest
 
 COPY --chown=node:node . .
 

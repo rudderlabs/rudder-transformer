@@ -7,10 +7,7 @@
     "dependency": "npm install",
     "start": "node destTransformer.js",
     "test": "npx jest --runInBand --detectOpenHandles --coverage --notify",
-<<<<<<< HEAD
-=======
     "buildTest": "npx jest --runInBand --detectOpenHandles",
->>>>>>> Addressed review comments, moved test from buildspec to dockerfile
     "lint-check": "eslint . --fix; exit 0",
     "lint": "eslint . || exit 0",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
@@ -41,7 +38,7 @@
     "handlebars": "^4.7.6",
     "is": "^3.1.0",
     "is-ip": "^3.1.0",
-    "isolated-vm": "^2.0.1",
+    "isolated-vm": "2.0.1",
     "json-query": "^2.2.2",
     "koa": "^2.12.1",
     "koa-bodyparser": "^4.3.0",

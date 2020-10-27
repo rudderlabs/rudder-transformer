@@ -1,59 +1,24 @@
 const _ = require("lodash");
+const flatten = require("flat");
 
 const { isEmpty, isObject } = require("../../util");
 const { EventType } = require("../../../constants");
 
-// Set fields in user hash map with same names as in warehouse
-// Refer to functions setDataFromInputAndComputeColumnTypes and setDataFromColumnMappingAndComputeColumnTypes
-// in warehouse transformer for examples
-function setFields(output, input, prefix = "") {
-  if (!input || !isObject(input)) return;
-  Object.keys(input).forEach(key => {
-    if (isObject(input[key])) {
-      setFields(output, input[key], `${prefix + key}.`);
-    } else {
-      const val = input[key];
-      // do not set column if val is null/empty
-      if (isEmpty(val)) {
-        return;
-      }
-      const safeKey = prefix + key;
+// processValues:
+// 1. removes keys with empty values
+// 2. stringifies the values to set them in redis
+const processValues = obj => {
+  Object.keys(obj).forEach(key => {
+    if (isEmpty(obj[key])) {
       // eslint-disable-next-line no-param-reassign
-      output[safeKey] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
+      delete obj[key];
+      return;
     }
+    const val = obj[key];
+    // eslint-disable-next-line no-param-reassign
+    obj[key] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
   });
-}
-
-// function setFieldsFromMapping(output, input, mapping) {
-//   if (!isObject(mapping)) return;
-//   Object.keys(mapping).forEach(key => {
-//     let val;
-//     if (_.isFunction(mapping[key])) {
-//       val = mapping[key](input);
-//     } else {
-//       val = get(input, mapping[key]);
-//     }
-
-//     const columnName = transformColumnName(key);
-//     // do not set column if val is null/empty
-//     if (isEmpty(val)) {
-//       // delete in output
-//       // eslint-disable-next-line no-param-reassign
-//       delete output[columnName];
-//       // eslint-disable-next-line no-param-reassign
-//       return;
-//     }
-//     // eslint-disable-next-line no-param-reassign
-//     output[columnName] = val;
-//   });
-// }
-
-// const contextIPMapping = {
-//   context_ip: message =>
-//     getFirstValidValue(message, ["context.ip", "request_ip"]),
-//   context_request_ip: "request_ip",
-//   context_passed_ip: "context.ip"
-// };
+};
 
 const process = event => {
   const { message, destination } = event;
@@ -79,10 +44,10 @@ const process = event => {
     throw new Error("context or context.traits is empty");
   }
 
-  setFields(hmap.fields, message.context.traits);
-  // setFields(hmap.fields, message.context, "context_");
-  // handle special case where additonal logic is need to set context_ip
-  // setFieldsFromMapping(hmap.fields, message, contextIPMapping);
+  hmap.fields = flatten(message.context.traits, {
+    safe: true
+  });
+  processValues(hmap.fields);
 
   const result = {
     message: hmap,

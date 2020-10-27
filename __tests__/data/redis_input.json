@@ -53,6 +53,7 @@
           "Cízǔ": "test",
           "CamelCase123Key": "test",
           "1CComega": "test",
+          "arrayProp": [{"x": 1, "y":2}],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
             "innerProp2": "innerPropVal2"
@@ -128,6 +129,7 @@
           "Cízǔ": "test",
           "CamelCase123Key": "test",
           "1CComega": "test",
+          "arrayProp": [{"x": 1, "y":2}],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
             "innerProp2": "innerPropVal2"

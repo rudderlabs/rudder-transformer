@@ -167,7 +167,21 @@ describe("conflict between rudder set props and user set props", () => {
 });
 
 describe("handle reserved words", () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+    process.env.WH_MAX_COLUMNS_IN_EVENT = 500;
+    jest.resetModules();
+  });
+  afterAll(() => {
+    process.env = OLD_ENV; // restore old env
+  });
   it("prepend underscore", () => {
+    console.log(process.env.WH_MAX_COLUMNS_IN_EVENT);
+    // re-import transformer modules so that new env values are used
+    const transformers = integrations.map(integration =>
+      require(`../${version}/destinations/${integration}/transform`)
+    );
     eventTypes.forEach(evType => {
       let i = input(evType);
 

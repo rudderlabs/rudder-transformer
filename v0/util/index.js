@@ -440,6 +440,19 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+const isObject = value => {
+  const type = typeof value;
+  return (
+    value != null &&
+    (type === "object" || type === "function") &&
+    !Array.isArray(value)
+  );
+};
+
 function getBrowserInfo(userAgent) {
   const ua = uaParser(userAgent);
   return { name: ua.browser.name, version: ua.browser.version };
@@ -517,6 +530,8 @@ module.exports = {
   getParsedIP,
   getTimeDifference,
   getValueFromMessage,
+  isEmpty,
+  isObject,
   getValuesAsArrayFromConfig,
   isPrimitive,
   removeNullValues,

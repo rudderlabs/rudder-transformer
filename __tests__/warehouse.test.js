@@ -167,47 +167,61 @@ describe("conflict between rudder set props and user set props", () => {
   });
 });
 
-// describe("handle reserved words", () => {
-//   it("prepend underscore", () => {
-//     eventTypes.forEach(evType => {
-//       let i = input(evType);
-//
-//       const propsKey = propsKeyMap[evType];
-//       transformers.forEach((transformer, index) => {
-//         const reserverdKeywordsMap =
-//           reservedANSIKeywordsMap[integrations[index].toUpperCase()];
-//
-//         i.message[propsKey] = Object.assign(
-//           i.message[propsKey] || {},
-//           reserverdKeywordsMap
-//         );
-//
-//         const received = transformer.process(i);
-//
-//         const out =
-//           evType === "track" || evType === "identify"
-//             ? received[1]
-//             : received[0];
-//
-//         Object.keys(reserverdKeywordsMap).forEach(k => {
-//           expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
-//           expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
-//           snakeCasedKey = _.snakeCase(k).toUpperCase();
-//           if (k === snakeCasedKey) {
-//             k = `_${k}`;
-//           } else {
-//             k = snakeCasedKey;
-//           }
-//           if (integrations[index] === "snowflake") {
-//             expect(out.metadata.columns).toHaveProperty(k);
-//           } else {
-//             expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
-//           }
-//         });
-//       });
-//     });
-//   });
-// });
+describe("handle reserved words", () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    process.env = { ...OLD_ENV };
+    process.env.WH_MAX_COLUMNS_IN_EVENT = 500;
+    jest.resetModules();
+  });
+  afterAll(() => {
+    process.env = OLD_ENV; // restore old env
+  });
+  it("prepend underscore", () => {
+    console.log(process.env.WH_MAX_COLUMNS_IN_EVENT);
+    // re-import transformer modules so that new env values are used
+    const transformers = integrations.map(integration =>
+      require(`../${version}/destinations/${integration}/transform`)
+    );
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+
+      const propsKey = propsKeyMap[evType];
+      transformers.forEach((transformer, index) => {
+        const reserverdKeywordsMap =
+          reservedANSIKeywordsMap[integrations[index].toUpperCase()];
+
+        i.message[propsKey] = Object.assign(
+          i.message[propsKey] || {},
+          reserverdKeywordsMap
+        );
+
+        const received = transformer.process(i);
+
+        const out =
+          evType === "track" || evType === "identify"
+            ? received[1]
+            : received[0];
+
+        Object.keys(reserverdKeywordsMap).forEach(k => {
+          expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
+          expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
+          snakeCasedKey = _.snakeCase(k).toUpperCase();
+          if (k === snakeCasedKey) {
+            k = `_${k}`;
+          } else {
+            k = snakeCasedKey;
+          }
+          if (integrations[index] === "snowflake") {
+            expect(out.metadata.columns).toHaveProperty(k);
+          } else {
+            expect(out.metadata.columns).toHaveProperty(k.toLowerCase());
+          }
+        });
+      });
+    });
+  });
+});
 
 describe("null/empty values", () => {
   it("should skip setting null/empty value fields", () => {

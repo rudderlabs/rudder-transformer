@@ -188,7 +188,7 @@ const defaultRequestConfig = () => {
 
 const defaultBatchRequestConfig = () => {
   return {
-    "batchedRequest": {
+    batchedRequest: {
       version: "1",
       type: "REST",
       method: "POST",
@@ -202,10 +202,9 @@ const defaultBatchRequestConfig = () => {
       },
       files: {}
     },
-    "metadata": [],
-    "destination": {}
+    jobs: []
   };
-}
+};
 
 // ========================================================================
 // TRANSFORMER UTILITIES

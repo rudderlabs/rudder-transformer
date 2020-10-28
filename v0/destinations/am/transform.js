@@ -342,7 +342,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
   let incomingMessageJSON = get(message, "body.JSON")
   let incomingMessageEvent = get(message, "body.JSON.events")
   // check if the incoming singular event is an array or not
-  // and set it back to array 
+  // and set it back to array
   incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
   set(message, "body.JSON.events", [incomingMessageEvent])
   // if this is the first event, push to batch and return
@@ -365,7 +365,7 @@ function getBatchEvents(message, metadata, batchEventResponse) {
       set(batchEventResponse, "batchedRequest.body.JSON.events", batchEventArray);
       set(batchEventResponse, "metadata", batchEventJobs);
     } else {
-      // event could not be pushed 
+      // event could not be pushed
       // it will be pushed again by a call from the caller of this method
       batchComplete = true;
     }

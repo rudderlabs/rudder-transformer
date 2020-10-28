@@ -1,0 +1,149 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": [
+      "traits.firstname",
+      "traits.first_name",
+      "traits.firstName",
+      "context.traits.firstname",
+      "context.traits.first_name",
+      "context.traits.firstName"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": [
+      "traits.lastname",
+      "traits.last_name",
+      "traits.lastName",
+      "context.traits.lastname",
+      "context.traits.last_name",
+      "context.traits.lastName"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "age",
+    "sourceKeys": ["traits.age", "context.traits.age"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "mobile",
+    "sourceKeys": ["traits.mobile", "context.traits.mobile"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "source",
+    "sourceKeys": ["traits.source", "context.traits.source"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "created_time",
+    "sourceKeys": "originalTimestamp",
+    "required": false
+  },
+  {
+    "destKey": "last_seen",
+    "sourceKeys": [
+      "traits.last_seen",
+      "context.traits.last_seen",
+      "traits.lastSeen",
+      "context.traits.lastSeen"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "transactions",
+    "sourceKeys": ["traits.transactions", "context.traits.transactions"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "revenue",
+    "sourceKeys": ["traits.revenue", "context.traits.revenue"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "moe_unsubscribe",
+    "sourceKeys": [
+      "traits.moe_unsubscribe",
+      "context.traits.moe_unsubscribe",
+      "traits.moeUnsubscribe",
+      "context.traits.moeUnsubscribe"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "context.traits",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "_id",
+        "age",
+        "email",
+        "firstName",
+        "first_name",
+        "firstname",
+        "gender",
+        "id",
+        "lastName",
+        "lastSeen",
+        "last_name",
+        "last_seen",
+        "lastname",
+        "mobile",
+        "moeUnsubscribe",
+        "moe_unsubscribe",
+        "revenue",
+        "source",
+        "transactions"
+      ]
+    }
+  }
+]

@@ -6,7 +6,7 @@ const transformationPoolCache = {};
 const transformationLibraryCache = {};
 const opts = {
   min: 1, // minimum size of the pool
-  max: 20 // maximum size of the pool
+  max: 10 // maximum size of the pool
 };
 
 async function getPool(userTransformation, libraryVersionIds) {
@@ -17,12 +17,11 @@ async function getPool(userTransformation, libraryVersionIds) {
     (transformationPoolCache[versionId] &&
       transformationLibraryCache[versionId] !== sortedLibrariesIdString)
   ) {
-    // if (transformationPoolCache[versionId]) {
-    //   // draining resources
-    //   transformationPoolCache[versionId].drain().then(function() {
-    //     transformationPoolCache[versionId].clear();
-    //   });
-    // }
+    if (transformationPoolCache[versionId]) {
+      await transformationPoolCache[versionId].drain().then(function() {
+        return transformationPoolCache[versionId].clear();
+      });
+    }
     const factory = await getFactory(
       userTransformation.code,
       libraryVersionIds

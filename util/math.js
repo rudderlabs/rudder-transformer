@@ -13,11 +13,10 @@ const subCode = `
       console.log("NONOONONON");
       console.log(...args);
     };
-    
+
     export function increment(a) {
       return a+INCREMENT_VALUE;
     }
   `;
-console.log(_.max([4, 2, 8, 6]));
 
 module.exports = { addCode, subCode };

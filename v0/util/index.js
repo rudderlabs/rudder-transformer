@@ -12,6 +12,8 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+const uaParser = require("ua-parser-js");
+const moment = require("moment");
 const logger = require("../../logger");
 
 // ========================================================================
@@ -305,6 +307,13 @@ const handleMetadataForValue = (value, metadata) => {
           throw new Error("Revenue is not in the correct format");
         }
         break;
+      case "toString":
+        formattedVal = String(formattedVal);
+        break;
+      case "toNumber":
+        formattedVal = Number(formattedVal);
+
+        break;
       default:
         break;
     }
@@ -431,6 +440,74 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+const isObject = value => {
+  const type = typeof value;
+  return (
+    value != null &&
+    (type === "object" || type === "function") &&
+    !Array.isArray(value)
+  );
+};
+
+function getBrowserInfo(userAgent) {
+  const ua = uaParser(userAgent);
+  return { name: ua.browser.name, version: ua.browser.version };
+}
+
+/** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
+For example,
+    Config{
+      "groupKeySettings": [
+        {
+          "groupKey": "companyid"
+        },
+        {
+          "groupKey": "accountid"
+        }
+      ]
+    }
+This will return an array as ["companyid", "accountid"]
+The correcponding call is: getValuesAsArrayFromConfig(Config.groupKeySettings, "groupKey")
+* */
+function getValuesAsArrayFromConfig(configObject, key) {
+  const returnArray = [];
+  if (configObject && Array.isArray(configObject) && configObject.length > 0) {
+    let value;
+    configObject.forEach(element => {
+      value = element[key];
+      if (value) {
+        returnArray.push(value);
+      }
+    });
+  }
+  return returnArray;
+}
+
+// Accepts a timestamp and returns the corresponding unix timestamp
+function toUnixTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const unixTimestamp = Math.floor(date.getTime() / 1000);
+  return unixTimestamp;
+}
+
+// Accecpts timestamp as a parameter and returns the difference of the same with current time.
+function getTimeDifference(timestamp) {
+  const currentTime = Date.now();
+  const eventTime = new Date(timestamp);
+  const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
+  const days = duration.asDays();
+  const years = duration.asYears();
+  const months = duration.asMonths();
+  const hours = duration.asHours();
+  const minutes = duration.asMinutes();
+  const seconds = duration.asSeconds();
+  return { days, months, years, hours, minutes, seconds };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -444,17 +521,23 @@ module.exports = {
   defaultRequestConfig,
   flattenJson,
   formatValue,
+  getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getTimeDifference,
   getValueFromMessage,
+  isEmpty,
+  isObject,
+  getValuesAsArrayFromConfig,
   isPrimitive,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
+  toUnixTimestamp,
   updatePayload
 };

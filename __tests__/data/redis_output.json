@@ -1,0 +1,67 @@
+[
+  {
+    "message": {
+      "key": "user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "UK",
+        "lastname": "Mouse",
+        "omega": "test",
+        "omega v2": "test",
+        "9mega": "test",
+        "mega&": "test",
+        "ome$ga": "test",
+        "alpha$": "test",
+        "ome_ ga": "test",
+        "9mega________-________90": "test",
+        "Cízǔ": "test",
+        "CamelCase123Key": "test",
+        "1CComega": "test",
+        "arrayProp": "[{\"x\":1,\"y\":2}]",
+        "nestedProp.innerProp1": "innerPropVal1",
+        "nestedProp.innerProp2": "innerPropVal2"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
+    "message": {
+      "key": "TestPrefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "UK",
+        "lastname": "Mouse",
+        "omega": "test",
+        "omega v2": "test",
+        "9mega": "test",
+        "mega&": "test",
+        "ome$ga": "test",
+        "alpha$": "test",
+        "ome_ ga": "test",
+        "9mega________-________90": "test",
+        "Cízǔ": "test",
+        "CamelCase123Key": "test",
+        "1CComega": "test",
+        "arrayProp": "[{\"x\":1,\"y\":2}]",
+        "nestedProp.innerProp1": "innerPropVal1",
+        "nestedProp.innerProp2": "innerPropVal2"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
+    "message": {
+      "key": "TestPrefix:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "USA",
+        "firstname": "Mickey",
+        "lastname": "Mouse",
+        "arrayProp": "[{\"x\":1,\"y\":2}]",
+        "nestedProp.innerProp1": "innerPropVal1",
+        "nestedProp.innerProp2": "innerPropVal2"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
+    "error": "context or context.traits or traits is empty"
+  }
+]

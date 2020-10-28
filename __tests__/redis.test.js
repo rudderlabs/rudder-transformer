@@ -1,12 +1,11 @@
-const integration = "mp";
-const name = "Mixpanel";
+const integration = "redis";
+const name = "Redis";
 
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
-// const { compareJSON } = require("./util");
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -14,22 +13,16 @@ const inputDataFile = fs.readFileSync(
 const outputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_output.json`)
 );
-
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
-// 2020-01-24T06:29:02.358Z
-Date.now = jest.fn(() => new Date(Date.UTC(2020, 0, 25)).valueOf())
 inputData.forEach((input, index) => {
-  test(`${name} Tests: payload - ${index}`, () => {
-    let output, expected;
+  it(`${name} Tests: payload - ${index}`, () => {
     try {
-      output = transformer.process(input);
-      expected = expectedData[index]
+      const output = transformer.process(input);
+      expect(output).toEqual(expectedData[index]);
     } catch (error) {
-      output = error.message;
-      expected = expectedData[index].message;
+      expect(error.message).toEqual(expectedData[index].error);
     }
-    expect(output).toEqual(expected);
   });
 });

@@ -33,6 +33,7 @@
     "component-each": "^0.2.6",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
+    "flat": "^5.0.2",
     "get-value": "^3.0.1",
     "handlebars": "^4.7.6",
     "is": "^3.1.0",
@@ -51,6 +52,7 @@
     "set-value": "^3.0.2",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
+    "ua-parser-js": "^0.7.22",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

@@ -103,7 +103,8 @@ const IDENTIFY_ENDPOINT = "https://api.amplitude.com/identify";
 const BATCH_EVENT_ENDPOINT = "https://api.amplitude.com/batch";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-
+const batchEventsWithUserIdLengthLowerThanFive =
+  process.env.BATCH_NOT_MET_CRITERIA_USER === "true" || false;
 const nameToEventMap = {};
 const events = Object.keys(Event);
 events.forEach(event => {
@@ -117,5 +118,6 @@ module.exports = {
   BATCH_EVENT_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
+  batchEventsWithUserIdLengthLowerThanFive
 };

@@ -7,6 +7,7 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
+  getBrowserInfo,
   getValuesAsArrayFromConfig,
   toUnixTimestamp,
   getTimeDifference
@@ -267,9 +268,9 @@ function processPageOrScreenEvents(message, type, destination) {
     properties.category = message.category;
   }
   if (message.channel === "web" && message.context.userAgent) {
-//    const browser = getBrowserInfo(message.context.userAgent);
-//     properties.$browser = browser.name;
-//     properties.$browser_version = browser.version;
+    const browser = getBrowserInfo(message.context.userAgent);
+    properties.$browser = browser.name;
+    properties.$browser_version = browser.version;
   }
 
   const eventName = type === "page" ? "Loaded a page" : "Loaded a screen";

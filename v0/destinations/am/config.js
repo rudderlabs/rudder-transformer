@@ -100,6 +100,7 @@ const Event = {
 
 const ENDPOINT = "https://api.amplitude.com/2/httpapi";
 const IDENTIFY_ENDPOINT = "https://api.amplitude.com/identify";
+const BATCH_EVENT_ENDPOINT = "https://api.amplitude.com/batch";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -113,6 +114,7 @@ module.exports = {
   Event,
   ENDPOINT,
   IDENTIFY_ENDPOINT,
+  BATCH_EVENT_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap

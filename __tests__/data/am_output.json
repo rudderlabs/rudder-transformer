@@ -29,6 +29,7 @@
           "language": "en-US",
           "event_type": "$identify",
           "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
           "time": 1571043797562,
           "user_id": "123456",
           "ip": "0.0.0.0"
@@ -68,6 +69,7 @@
           "language": "en-US",
           "event_type": "Viewed ApplicationLoaded Page",
           "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
           "ip": "1.1.1.1",
           "time": 1571051718299,
           "user_id": "12345"
@@ -104,6 +106,7 @@
           "language": "en-US",
           "event_type": "test track event",
           "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "insert_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "time": 1571051718300,
           "user_id": "12345",
           "ip": "0.0.0.0"
@@ -146,6 +149,7 @@
           "language": "en-US",
           "event_type": "$identify",
           "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+          "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
           "time": 1571043797562,
           "user_id": "123456",
           "ip": "0.0.0.0"

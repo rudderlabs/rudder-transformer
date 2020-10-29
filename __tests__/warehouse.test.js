@@ -178,7 +178,6 @@ describe("handle reserved words", () => {
     process.env = OLD_ENV; // restore old env
   });
   it("prepend underscore", () => {
-    console.log(process.env.WH_MAX_COLUMNS_IN_EVENT);
     // re-import transformer modules so that new env values are used
     const transformers = integrations.map(integration =>
       require(`../${version}/destinations/${integration}/transform`)

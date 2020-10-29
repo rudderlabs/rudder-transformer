@@ -8,8 +8,7 @@ WORKDIR /home/node/app
 USER node
 
 COPY package*.json ./
-COPY build.js ./
-RUN npm install --unsafe-perm
+RUN npm install
 
 COPY --chown=node:node . .
 

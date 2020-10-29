@@ -13,6 +13,8 @@ phases:
       - ls
       - echo build Docker image on `date`
       - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
+      - docker run rudderlabs/develop-rudder-transformer:$VERSION npm test
+      - echo $?
   post_build:
     commands:
       - echo build Docker image complete `date`

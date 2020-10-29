@@ -1,7 +1,8 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-lonely-if */
 const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
-
 const {
   EventType,
   SpecedTraits,
@@ -21,12 +22,14 @@ const {
   BATCH_EVENT_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
+  batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
 
 const logger = require("../../../logger");
+
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
-const AMBatchEventLimit = 500;  // event size limit from sdk is 32KB => 15MB
+const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
 // const populateSpecedTraits = (payload, message) => {
@@ -340,22 +343,47 @@ function process(event) {
 
 function getBatchEvents(message, metadata, batchEventResponse) {
   let batchComplete = false;
-  let batchEventArray = get(batchEventResponse, "batchedRequest.body.JSON.events") || []
-  let batchEventJobs = get(batchEventResponse, "metadata") || []
-  let batchPayloadJSON = get(batchEventResponse, "batchedRequest.body.JSON") || {}
-  let incomingMessageJSON = get(message, "body.JSON")
-  let incomingMessageEvent = get(message, "body.JSON.events")
+  const batchEventArray =
+    get(batchEventResponse, "batchedRequest.body.JSON.events") || [];
+  const batchEventJobs = get(batchEventResponse, "metadata") || [];
+  const batchPayloadJSON =
+    get(batchEventResponse, "batchedRequest.body.JSON") || {};
+  const incomingMessageJSON = get(message, "body.JSON");
+  let incomingMessageEvent = get(message, "body.JSON.events");
   // check if the incoming singular event is an array or not
-  // and set it back to array 
-  incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
-  set(message, "body.JSON.events", [incomingMessageEvent])
+  // and set it back to array
+  incomingMessageEvent = Array.isArray(incomingMessageEvent)
+    ? incomingMessageEvent[0]
+    : incomingMessageEvent;
+  const userId = incomingMessageEvent.user_id;
+
+  // delete the userId as it is less than 5 as AM is giving 400
+  // that is not a documented behviour where it states if either deviceid or userid is present
+  // batch request won't return 400
+  //   {
+  //     "code": 400,
+  //     "events_with_invalid_id_lengths": {
+  //         "user_id": [
+  //             0
+  //         ]
+  //     },
+  //     "error": "Invalid id length for user_id or device_id"
+  // }
+  if (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) {
+    delete incomingMessageEvent.user_id;
+  }
+
+  set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-  if(batchEventArray.length == 0) {
-    if(JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
-      delete message.body.JSON.options
-      batchEventResponse = Object.assign(batchEventResponse, {batchedRequest: message})
-      set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT)
-      batchEventResponse.metadata = [metadata]
+
+  if (batchEventArray.length === 0) {
+    if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
+      delete message.body.JSON.options;
+      batchEventResponse = Object.assign(batchEventResponse, {
+        batchedRequest: message
+      });
+      set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
+      batchEventResponse.metadata = [metadata];
     } else {
       // check not required as max individual event size is always less than 20MB
       // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
@@ -363,13 +391,22 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     }
   } else {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
-    if(batchEventArray.length < AMBatchEventLimit && (JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length < AMBatchSizeLimit)) {
-      batchEventArray.push(incomingMessageEvent);  // set value
-      batchEventJobs.push(metadata)
-      set(batchEventResponse, "batchedRequest.body.JSON.events", batchEventArray);
+    if (
+      batchEventArray.length < AMBatchEventLimit &&
+      JSON.stringify(batchPayloadJSON).length +
+        JSON.stringify(incomingMessageEvent).length <
+        AMBatchSizeLimit
+    ) {
+      batchEventArray.push(incomingMessageEvent); // set value
+      batchEventJobs.push(metadata);
+      set(
+        batchEventResponse,
+        "batchedRequest.body.JSON.events",
+        batchEventArray
+      );
       set(batchEventResponse, "metadata", batchEventJobs);
     } else {
-      // event could not be pushed 
+      // event could not be pushed
       // it will be pushed again by a call from the caller of this method
       batchComplete = true;
     }
@@ -380,38 +417,71 @@ function getBatchEvents(message, metadata, batchEventResponse) {
 function batch(destEvents) {
   const respList = [];
   let batchEventResponse = defaultBatchRequestConfig();
-  let response, isBatchComplete, jsonBody, userId, messageEvent, destinationObject;
+  let response;
+  let isBatchComplete;
+  let jsonBody;
+  let userId;
+  let deviceId;
+  let messageEvent;
+  let destinationObject;
   destEvents.forEach(ev => {
-    const {message, metadata, destination} = ev;
-    destinationObject = Object.assign({}, destination)
+    const { message, metadata, destination } = ev;
+    destinationObject = { ...destination };
     jsonBody = get(message, "body.JSON");
     messageEvent = get(message, "body.JSON.events");
-    userId = messageEvent && Array.isArray(messageEvent) ? messageEvent[0].user_id : messageEvent ? messageEvent.user_id : undefined;
-    // check if not a JSON body or userId length < 5, send the event as is after batching
-    if(Object.keys(jsonBody).length == 0 || (userId && userId.length < 5)) {
+    userId =
+      messageEvent && Array.isArray(messageEvent)
+        ? messageEvent[0].user_id
+        : messageEvent
+        ? messageEvent.user_id
+        : undefined;
+    deviceId =
+      messageEvent && Array.isArray(messageEvent)
+        ? messageEvent[0].device_id
+        : messageEvent
+        ? messageEvent.device_id
+        : undefined;
+    // this case shold not happen and should be filtered already
+    // by the first pass of single event transformation
+    if (messageEvent && !userId && !deviceId) {
+      return;
+    }
+    // check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or
+    // (batchEventsWithUserIdLengthLowerThanFive is true and userId is less than 5 but deviceId not present)
+    // , send the event as is after batching
+    if (
+      Object.keys(jsonBody).length === 0 ||
+      (!batchEventsWithUserIdLengthLowerThanFive &&
+        userId &&
+        userId.length < 5) ||
+      (batchEventsWithUserIdLengthLowerThanFive &&
+        userId &&
+        userId.length < 5 &&
+        !deviceId)
+    ) {
       response = defaultBatchRequestConfig();
-      response = Object.assign(response, {batchedRequest: message})
-      response.metadata = [metadata]
-      response.destination = destinationObject
+      response = Object.assign(response, { batchedRequest: message });
+      response.metadata = [metadata];
+      response.destination = destinationObject;
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch
-      isBatchComplete = getBatchEvents(message,metadata,batchEventResponse)
-      if(isBatchComplete) {
+      isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+      if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
-        batchEventResponse.destination = destinationObject
-        respList.push(Object.assign({}, batchEventResponse));
+        batchEventResponse.destination = destinationObject;
+        respList.push({ ...batchEventResponse });
         batchEventResponse = defaultBatchRequestConfig();
-        batchEventResponse.destination = destinationObject
-        isBatchComplete = getBatchEvents(message,metadata,batchEventResponse)
+        batchEventResponse.destination = destinationObject;
+        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
       }
     }
-  })
+  });
   // if there is some unfinished batch push it to response list
-  if(isBatchComplete !== undefined && isBatchComplete === false) {
-    batchEventResponse.destination = destinationObject
-    respList.push(batchEventResponse)
+  if (isBatchComplete !== undefined && isBatchComplete === false) {
+    batchEventResponse.destination = destinationObject;
+    respList.push(batchEventResponse);
   }
   return respList;
 }

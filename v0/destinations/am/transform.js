@@ -27,6 +27,14 @@ const {
   nameToEventMap,
   batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
+// const {
+//   getOSName,
+//   getOSVersion,
+//   getDeviceModel,
+//   getDeviceManufacturer
+// } = require("./utils");
+
+const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
 
@@ -127,7 +135,14 @@ function responseBuilderSimple(
   // Additionally, we will update the user_properties with groupName:groupValue
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    if (typeof mappingJson[sourceKey] === "object") {
+      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+      if (isFunc) {
+        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
+      }
+    } else {
+      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    }
   });
 
   // 2. get campaign info (only present for JS sdk and http calls)

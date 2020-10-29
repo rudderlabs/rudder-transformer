@@ -13,8 +13,10 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "",
-            "os_version": "",
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "platform": "Web",
+            "device_model": "Mac",
             "device_id": "123456",
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
@@ -61,8 +63,10 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "",
-            "os_version": "",
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "platform": "Web",
+            "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
@@ -106,8 +110,10 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "",
-            "os_version": "",
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "platform": "Web",
+            "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
@@ -152,8 +158,10 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "",
-            "os_version": "",
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "platform": "Web",
+            "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
@@ -192,8 +200,10 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "",
-            "os_version": "",
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "platform": "Web",
+            "device_model": "Mac",
             "device_id": "123456",
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
@@ -383,8 +393,10 @@
           "api_key": "abcde",
           "events": [
             {
-              "os_name": "",
-              "os_version": "",
+              "os_name": "Chrome",
+              "os_version": "85.0.4183.121",
+              "platform": "Web",
+              "device_model": "Mac",
               "device_id": "my-anonymous-id-new",
               "app_name": "RudderLabs JavaScript SDK",
               "app_version": "1.1.5",
@@ -472,5 +484,46 @@
     },
     "files": {},
     "userId": "my-anonymous-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "9",
+            "device_model": "AOSP on IA Emulator",
+            "device_manufacturer": "Google",
+            "platform": "Android",
+            "device_id": "0572f78fa49c648e",
+            "carrier": "Android",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "device_brand": "Google",
+            "time": 1600355223515,
+            "user_id": "0572f78fa49c648e",
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
   }
 ]

@@ -3,7 +3,8 @@ const name = "Amplitude";
 
 const fs = require("fs");
 const path = require("path");
-const { forEach } = require("lodash");
+const mockedEnv = require('mocked-env')
+
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
@@ -37,13 +38,53 @@ const batchInputData = JSON.parse(batchInputDataFile);
 const batchExpectedData = JSON.parse(batchOutputDataFile);
 
 batchInputData.forEach((input, index) => {
-  test(`test batching ${index}`, () => {
-    const output = transformer.batch(input);
-    expect(Array.isArray(output)).toEqual(true)
-    expect(output.length).toEqual(batchExpectedData[index].length)
-    output.forEach((input, indexInner) => {
-      expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-    })
-    
-  });
+  if(index < batchInputData.length - 2) {
+    test(`test batching ${index}`, () => {
+      const output = transformer.batch(input);
+      expect(Array.isArray(output)).toEqual(true)
+      expect(output.length).toEqual(batchExpectedData[index].length)
+      output.forEach((input, indexInner) => {
+        expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
+      })
+      
+    });
+  }
+  
 });
+
+let restore = mockedEnv({
+  BATCH_NOT_MET_CRITERIA_USER: 'true'
+})
+
+test(`test batching ${batchInputData.length - 2}`, () => {
+  // reset module and load in new transformer with added env
+  jest.resetModules()
+  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
+  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
+  const output = transformerNew.batch(batchInputData[batchInputData.length - 2]);
+  expect(Array.isArray(output)).toEqual(true)
+  expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 2].length)
+  output.forEach((input, indexInner) => {
+    expect(output[indexInner]).toEqual(batchExpectedData[batchExpectedData.length - 2][indexInner]);
+  })
+  
+});
+
+restore = mockedEnv({
+  BATCH_NOT_MET_CRITERIA_USER: 'true'
+})
+
+test(`test batching ${batchInputData.length - 1}`, () => {
+  // reset module and load in new transformer with added env
+  jest.resetModules()
+  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
+  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
+  const output = transformerNew.batch(batchInputData[batchInputData.length - 1]);
+  expect(Array.isArray(output)).toEqual(true)
+  expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 1].length)
+  output.forEach((input, indexInner) => {
+    expect(output[indexInner]).toEqual(batchExpectedData[batchExpectedData.length - 1][indexInner]);
+  })
+  
+});
+

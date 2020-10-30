@@ -10,6 +10,12 @@ const ConfigCategory = {
   SCREEN: {
     name: "AmplitudeScreenConfig"
   },
+  GROUP: {
+    name: "AmplitudeGroupConfig"
+  },
+  ALIAS: {
+    name: "AmplitudeAliasConfig"
+  },
   PROMOTION_VIEWED: {
     name: "AmplitudePromotionViewedConfig"
   },
@@ -101,6 +107,8 @@ const Event = {
 const ENDPOINT = "https://api.amplitude.com/2/httpapi";
 const IDENTIFY_ENDPOINT = "https://api.amplitude.com/identify";
 const BATCH_EVENT_ENDPOINT = "https://api.amplitude.com/batch";
+const GROUP_ENDPOINT = "https://api.amplitude.com/groupidentify";
+const ALIAS_ENDPOINT = "https://api.amplitude.com/usermap";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const batchEventsWithUserIdLengthLowerThanFive =
@@ -116,6 +124,8 @@ module.exports = {
   ENDPOINT,
   IDENTIFY_ENDPOINT,
   BATCH_EVENT_ENDPOINT,
+  GROUP_ENDPOINT,
+  ALIAS_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   nameToEventMap,

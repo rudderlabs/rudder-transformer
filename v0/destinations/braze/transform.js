@@ -1,4 +1,5 @@
 const get = require("get-value");
+const _ = require("lodash");
 
 const { EventType } = require("../../../constants");
 const {
@@ -45,10 +46,12 @@ function buildResponse(message, destination, properties, endpoint) {
 }
 
 function setAliasObjectWithAnonId(payload, message) {
-  payload.user_alias = {
-    alias_name: message.anonymousId,
-    alias_label: "rudder_id"
-  };
+  if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
+      alias_label: "rudder_id"
+    };
+  }
   return payload;
 }
 
@@ -373,4 +376,66 @@ function process(event) {
   return respList;
 }
 
-exports.process = process;
+/* 
+ *
+  input: [
+   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
+  ]
+  output: [
+    { batchedRequest: {}, jobs: [1, 3]},
+    { batchedRequest: {}, jobs: [2, 4]},
+  ]
+*/
+
+function batch(events) {
+  // Replace this with destination specific batching logic
+  const perChunk = 2;
+  const batchedEvents = events.reduce((resultArray, item, index) => {
+    const chunkIndex = Math.floor(index / perChunk);
+
+    if (!resultArray[chunkIndex]) {
+      resultArray[chunkIndex] = []; // start a new chunk
+    }
+
+    resultArray[chunkIndex].push(item);
+
+    return resultArray;
+  }, []);
+
+  // Create response for every batch
+  const finalResponse = [];
+  for (let i = 0; i < batchedEvents.length; i += 1) {
+    const batchedRequests = getBatchedRequests(batchedEvents[i]);
+    if (batchedRequests.length > 0) {
+      finalResponse.push(...batchedRequests);
+    }
+  }
+
+  return finalResponse;
+}
+
+// This function can return one or more batched events
+function getBatchedRequests(events) {
+  const response = defaultRequestConfig();
+  response.endpoint = events[0].destination.url;
+  response.method = "POST";
+  response.body.JSON = {
+    type: "batch",
+    data: events.map(ev => ev.message)
+  };
+
+  return [
+    {
+      batchedRequest: response,
+      jobs: events.map(ev => ev.metadata.job_id)
+    }
+  ];
+}
+
+module.exports = {
+  process,
+  batch
+};

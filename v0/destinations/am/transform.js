@@ -135,9 +135,11 @@ function responseBuilderSimple(
   // Additionally, we will update the user_properties with groupName:groupValue
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
+    // check if custom processing is required on the payload sourceKey ==> destKey
     if (typeof mappingJson[sourceKey] === "object") {
       const { isFunc, funcName, outKey } = mappingJson[sourceKey];
       if (isFunc) {
+        // get the destKey/outKey value from calling the util function
         set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
       }
     } else {

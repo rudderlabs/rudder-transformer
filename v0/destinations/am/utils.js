@@ -1,4 +1,13 @@
 /* eslint-disable no-nested-ternary */
+// We want to send the following kind of device properties from web platform
+// which is not readily available, so have to parse the user-agent
+// using similar  ua parsing logic used by AM native web sdk
+// "platform": "Web",
+// "os_name": "Chrome",
+// "os_version": "85",
+// "device_model": "Mac"
+// Note: for http source still the direct mapping from payload sourceKeys is used to
+// populate these dest keys
 const get = require("get-value");
 const uaParser = require("@amplitude/ua-parser-js");
 

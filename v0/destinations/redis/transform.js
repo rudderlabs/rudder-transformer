@@ -5,11 +5,11 @@ const { isEmpty, isObject } = require("../../util");
 const { EventType } = require("../../../constants");
 
 // processValues:
-// 1. removes keys with empty values
+// 1. removes keys with empty values or still an object(empty) after flattening
 // 2. stringifies the values to set them in redis
 const processValues = obj => {
   Object.keys(obj).forEach(key => {
-    if (isEmpty(obj[key])) {
+    if (isEmpty(obj[key]) || isObject(obj[key])) {
       // eslint-disable-next-line no-param-reassign
       delete obj[key];
       return;

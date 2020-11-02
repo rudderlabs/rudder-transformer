@@ -56,7 +56,8 @@
           "arrayProp": [{"x": 1, "y":2}],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
-            "innerProp2": "innerPropVal2"
+            "innerProp2": "innerPropVal2",
+            "innerProp3": {}
           }
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
@@ -132,7 +133,8 @@
           "arrayProp": [{"x": 1, "y":2}],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
-            "innerProp2": "innerPropVal2"
+            "innerProp2": "innerPropVal2",
+            "innerProp3": {}
           }
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
@@ -197,7 +199,8 @@
           "arrayProp": [{"x": 1, "y":2}],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
-            "innerProp2": "innerPropVal2"
+            "innerProp2": "innerPropVal2",
+            "innerProp3": {}
           }
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"

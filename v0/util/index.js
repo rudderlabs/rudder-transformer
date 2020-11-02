@@ -203,8 +203,7 @@ const defaultBatchRequestConfig = () => {
         FORM: {}
       },
       files: {}
-    },
-    jobs: []
+    }
   };
 };
 

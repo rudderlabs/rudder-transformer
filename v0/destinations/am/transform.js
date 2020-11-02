@@ -514,8 +514,28 @@ function getBatchEvents(message, metadata, batchEventResponse) {
   let incomingMessageEvent = get(message, "body.JSON.events");
   // check if the incoming singular event is an array or not
   // and set it back to array
-  incomingMessageEvent = Array.isArray(incomingMessageEvent) ? incomingMessageEvent[0] : incomingMessageEvent
-  set(message, "body.JSON.events", [incomingMessageEvent])
+  incomingMessageEvent = Array.isArray(incomingMessageEvent)
+    ? incomingMessageEvent[0]
+    : incomingMessageEvent;
+  const userId = incomingMessageEvent.user_id;
+
+  // delete the userId as it is less than 5 as AM is giving 400
+  // that is not a documented behviour where it states if either deviceid or userid is present
+  // batch request won't return 400
+  //   {
+  //     "code": 400,
+  //     "events_with_invalid_id_lengths": {
+  //         "user_id": [
+  //             0
+  //         ]
+  //     },
+  //     "error": "Invalid id length for user_id or device_id"
+  // }
+  if (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) {
+    delete incomingMessageEvent.user_id;
+  }
+
+  set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
 
   if (batchEventArray.length === 0) {

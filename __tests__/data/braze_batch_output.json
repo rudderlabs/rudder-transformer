@@ -2389,6 +2389,40 @@
       { "job_id": 100 }
     ],
     "destination": { "ID": "a" }
-  }
+  },
+  {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "JSON": {
+            "aliases_to_identify": [
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "d49d901c-85ee-4c2d-aceb-85bfd6af4bb9"
+                },
+                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9"
+              }
+            ]
+          },
+          "FORM": {}
+        },
+        "files": {},
+        "endpoint": "https://rest.iad-01.braze.com/users/identify",
+        "userId": "1df80683-ca18-492e-930d-be338cd4fcc9",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
+          "Accept": "application/json"
+        },
+        "version": "1",
+        "params": {},
+        "type": "REST",
+        "method": "POST"
+      },
+      "jobs": [],
+      "metadata": [{ "job_id": 101 }],
+      "destination": { "ID": "a" }
+    }
 ]
 ]

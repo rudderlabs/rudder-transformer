@@ -378,78 +378,6 @@ function process(event) {
   return respList;
 }
 
-// This function can return one or more batched events
-// function getBatchedRequests(events) {
-//   const response = defaultRequestConfig();
-//   response.endpoint = events[0].destination.url;
-//   response.method = "POST";
-//   response.body.JSON = {
-//     type: "batch",
-//     data: events.map(ev => ev.message)
-//   };
-//
-//   return [
-//     {
-//       batchedRequest: response,
-//       jobs: events.map(ev => ev.metadata.job_id)
-//     }
-//   ];
-// }
-
-// function getBatchEvents(message, metadata, batchEventResponse) {
-//   let batchComplete = false;
-//   let batchEventArray =
-//     get(batchEventResponse, "batchedRequest.body.JSON.events") || [];
-//   let batchEventJobs = get(batchEventResponse, "metadata") || [];
-//   let batchPayloadJSON =
-//     get(batchEventResponse, "batchedRequest.body.JSON") || {};
-//   let incomingMessageJSON = get(message, "body.JSON");
-//   let incomingMessageEvent = get(message, "body.JSON.events");
-//   // check if the incoming singular event is an array or not
-//   // and set it back to array
-//   incomingMessageEvent = Array.isArray(incomingMessageEvent)
-//     ? incomingMessageEvent[0]
-//     : incomingMessageEvent;
-//   set(message, "body.JSON.events", [incomingMessageEvent]);
-//   // if this is the first event, push to batch and return
-//   if (batchEventArray.length == 0) {
-//     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
-//       delete message.body.JSON.options;
-//       batchEventResponse = Object.assign(batchEventResponse, {
-//         batchedRequest: message
-//       });
-//       set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
-//       batchEventResponse.metadata = [metadata];
-//     } else {
-//       // check not required as max individual event size is always less than 20MB
-//       // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
-//       // batchComplete = true;
-//     }
-//   } else {
-//     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
-//     if (
-//       batchEventArray.length < AMBatchEventLimit &&
-//       JSON.stringify(batchPayloadJSON).length +
-//         JSON.stringify(incomingMessageEvent).length <
-//         AMBatchSizeLimit
-//     ) {
-//       batchEventArray.push(incomingMessageEvent); // set value
-//       batchEventJobs.push(metadata);
-//       set(
-//         batchEventResponse,
-//         "batchedRequest.body.JSON.events",
-//         batchEventArray
-//       );
-//       set(batchEventResponse, "metadata", batchEventJobs);
-//     } else {
-//       // event could not be pushed
-//       // it will be pushed again by a call from the caller of this method
-//       batchComplete = true;
-//     }
-//   }
-//   return batchComplete;
-// }
-
 function formatBatchResponse(batchPayload, metadataList, destination) {
   const response = defaultBatchRequestConfig();
   response.batchedRequest = batchPayload;
@@ -464,13 +392,13 @@ function batch(destEvents) {
   let jsonBody;
   let endPoint;
   let type;
-  let counter = 0;
   let attributesBatch = [];
   let eventsBatch = [];
   let purchasesBatch = [];
   let metadataBatch = [];
+  let index = 0;
 
-  for (let index = 0; index < destEvents.length; index += 1) {
+  while (index < destEvents.length) {
     // take out a single event
     const ev = destEvents[index];
     const { message, metadata, destination } = ev;
@@ -481,6 +409,8 @@ function batch(destEvents) {
     // get the type
     endPoint = get(message, "endpoint");
     type = endPoint && endPoint.includes("track") ? "track" : "identify";
+
+    index += 1;
 
     // if it is a track keep on adding to the existing track list
     // keep a count of event, attribute, purchases - 75 is the cap
@@ -493,31 +423,15 @@ function batch(destEvents) {
       // look for events, attributes, purchases
       const { events, attributes, purchases } = jsonBody;
 
-      // add only if present
-      if (attributes) {
-        attributesBatch.push(...attributes);
-      }
+      // if total count = 75 form a new batch
 
-      if (events) {
-        eventsBatch.push(...events);
-      }
-
-      if (purchases) {
-        purchasesBatch.push(...purchases);
-      }
-
-      // set the counter to max of len(attributesBatch), len(eventsBatch), len(purchasesBatch)
-      counter = Math.max(
-        attributesBatch.length,
-        eventsBatch.length,
-        purchasesBatch.length
+      const maxCount = Math.max(
+        attributesBatch.length + (attributes ? attributes.length : 0),
+        eventsBatch.length + (events ? events.length : 0),
+        purchasesBatch.length + (purchases ? purchases.length : 0)
       );
 
-      // keep the original metadata object. needed later to form the batch
-      metadataBatch.push(metadata);
-
-      // put the cap on 75 or look for the last index
-      if (counter >= BRAZE_MAX_REQ_COUNT || index === destEvents.length - 1) {
+      if (maxCount > BRAZE_MAX_REQ_COUNT) {
         // form a batch and start over
         // reuse the last message response for the auth and endpoint
         // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -551,6 +465,22 @@ function batch(destEvents) {
         }
         // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
       }
+
+      // add only if present
+      if (attributes) {
+        attributesBatch.push(...attributes);
+      }
+
+      if (events) {
+        eventsBatch.push(...events);
+      }
+
+      if (purchases) {
+        purchasesBatch.push(...purchases);
+      }
+
+      // keep the original metadata object. needed later to form the batch
+      metadataBatch.push(metadata);
     } else {
       // identify
       // form a batch with whatever we have till now
@@ -592,49 +522,31 @@ function batch(destEvents) {
     }
   }
 
+  const ev = destEvents[index - 1];
+  const { message, metadata, destination } = ev;
+  if (
+    attributesBatch.length > 0 ||
+    eventsBatch.length > 0 ||
+    purchasesBatch.length > 0
+  ) {
+    const batchResponse = defaultRequestConfig();
+    batchResponse.headers = message.headers;
+    batchResponse.endpoint = trackEndpoint;
+    batchResponse.body.JSON = {
+      attributes: attributesBatch,
+      events: eventsBatch,
+      purchases: purchasesBatch,
+      partner: BRAZE_PARTNER_NAME
+    };
+    // modify the endpoint to track endpoint
+    batchResponse.endpoint = trackEndpoint;
+    respList.push(
+      formatBatchResponse(batchResponse, metadataBatch, destination)
+    );
+  }
+
   return respList;
 }
-
-/*
- *
-  input: [
-   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
-  ]
-  output: [
-    { batchedRequest: {}, jobs: [1, 3]},
-    { batchedRequest: {}, jobs: [2, 4]},
-  ]
-*/
-
-// function batch(events) {
-//   // Replace this with destination specific batching logic
-//   const perChunk = 2;
-//   const batchedEvents = events.reduce((resultArray, item, index) => {
-//     const chunkIndex = Math.floor(index / perChunk);
-//
-//     if (!resultArray[chunkIndex]) {
-//       resultArray[chunkIndex] = []; // start a new chunk
-//     }
-//
-//     resultArray[chunkIndex].push(item);
-//
-//     return resultArray;
-//   }, []);
-//
-//   // Create response for every batch
-//   const finalResponse = [];
-//   for (let i = 0; i < batchedEvents.length; i += 1) {
-//     const batchedRequests = getBatchedRequests(batchedEvents[i]);
-//     if (batchedRequests.length > 0) {
-//       finalResponse.push(...batchedRequests);
-//     }
-//   }
-//
-//   return finalResponse;
-// }
 
 module.exports = {
   process,

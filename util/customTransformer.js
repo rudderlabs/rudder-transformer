@@ -56,7 +56,7 @@ async function runUserTransform(events, code, eventsMetadata) {
       // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let fetch = _fetch;
@@ -73,7 +73,7 @@ async function runUserTransform(events, code, eventsMetadata) {
           ]);
         });
       };
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let log = _log;
@@ -103,7 +103,7 @@ async function runUserTransform(events, code, eventsMetadata) {
             args.map(arg => new ivm.ExternalCopy(arg).copyInto())
             );
           };
-        
+
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -123,7 +123,7 @@ async function runUserTransform(events, code, eventsMetadata) {
             });
           });
         }
-         
+
         `
   );
 
@@ -181,10 +181,10 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
-      let userTransformedEvents = []
-      if (res.codeVersion && res.codeVersion == 1) {
+      let userTransformedEvents = [];
+      if (res.codeVersion && res.codeVersion === "1") {
         userTransformedEvents = await userTransformHandlerV1(
-          events, 
+          events,
           res,
           libraryVersionIDs
         );
@@ -193,7 +193,7 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
           eventMessages,
           res.code,
           eventsMetadata
-        );      
+        );
       }
       return userTransformedEvents;
     }

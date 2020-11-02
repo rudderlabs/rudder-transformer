@@ -9,7 +9,7 @@ USER node
 
 ARG version
 ENV transformer_build_version=$version
-COPY package*.json ./
+COPY package.json ./
 COPY build.js ./
 RUN npm install --unsafe-perm
 

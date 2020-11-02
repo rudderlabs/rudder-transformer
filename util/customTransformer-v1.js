@@ -16,22 +16,19 @@ const unsupportedFuncNames = [
   "split"
 ];
 
-const {
-  getTransformationCodeV1,
-  getLibraryCodeV1
-} = require("./customTransforrmationsStore-v1");
 const { addCode, subCode } = require("./math.js");
-
 const { getPool } = require("./ivmPool");
 
 async function transform(isolatevm, events) {
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
-  let transformationPayload = {}
-  transformationPayload["events"] = events
-  transformationPayload["transformationType"] = isolatevm.fName
+  const transformationPayload = {};
+  transformationPayload.events = events;
+  transformationPayload.transformationType = isolatevm.fName;
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
+    const sharedTransformationPayload = new ivm.ExternalCopy(
+      transformationPayload
+    ).copyInto({
       transferIn: true
     });
     try {
@@ -61,7 +58,11 @@ function calculateMsFromIvmTime(value) {
   return (value[0] + value[1] / 1e9) * 1000;
 }
 
-async function userTransformHandlerV1(events, userTransformation, libraryVersionIds) {
+async function userTransformHandlerV1(
+  events,
+  userTransformation,
+  libraryVersionIds
+) {
   if (userTransformation.versionId) {
     const isolatevmPool = await getPool(userTransformation, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
@@ -87,7 +88,7 @@ async function userTransformHandlerV1(events, userTransformation, libraryVersion
     isolatevmPool.release(isolatevm);
     stats.gauge("isolate_vm_pool_size", isolatevmPool.size);
     stats.gauge("isolate_vm_pool_available", isolatevmPool.available);
-    //TODO: add stats for capturing ivm pools
+    // TODO: add stats for capturing ivm pools
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation

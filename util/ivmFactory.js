@@ -4,7 +4,7 @@ const _ = require("lodash");
 const stats = require("./stats");
 const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
-const isolateVmMem = 128;
+const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -51,7 +51,7 @@ async function createIvm(code, libraryVersionIds) {
           break;
       }
       return outputEvents
-    }  
+    }
   `
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
@@ -192,23 +192,23 @@ async function createIvm(code, libraryVersionIds) {
   // console.log("runUserTransform -> fnRefOld", fnRefOld);
 
   const supportedFuncNames = ["transformEvent", "transformBatch"];
-  let supportedFuncs = {};
-  let supportedFunc = "";
+  const supportedFuncs = {};
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
       const funcRef = await customScriptModule.namespace.get(sName);
-      if (funcRef) {
+      if (funcRef && funcRef.typeof === "function") {
         supportedFuncs[sName] = funcRef;
-        supportedFunc = sName;
       }
     })
   );
 
-  var availableFuncNames = Object.keys(supportedFuncs)
+  const availableFuncNames = Object.keys(supportedFuncs);
   if (availableFuncNames.length !== 1) {
-      throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${Object.keys(availableFuncNames)}`
+    throw new Error(
+      `Expected one of ${supportedFuncNames}. Found ${Object.values(
+        availableFuncNames
+      )}`
     );
   }
 

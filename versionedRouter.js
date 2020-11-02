@@ -333,6 +333,10 @@ router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
 
+router.get("/transformerBuildVersion", ctx => {
+  ctx.body = process.env.transformer_build_version || "Version Info not found";
+});
+
 router.get("/health", ctx => {
   ctx.body = "OK";
 });

@@ -297,18 +297,6 @@ function responseBuilderSimple(
   return respList;
 }
 
-const isRevenueEvent = product => {
-  if (
-    product.quantity &&
-    product.quantity.length > 0 &&
-    product.price &&
-    product.price.length > 0
-  ) {
-    return true;
-  }
-  return false;
-};
-
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
@@ -396,17 +384,15 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = message.event;
 
-      if (message.products && message.products.length > 0) {
-        let isRevenue = false;
-        message.products.forEach(product => {
-          if (isRevenueEvent(product)) {
-            isRevenue = true;
-          }
-        });
-        if (isRevenue) {
-          category = ConfigCategory.REVENUE;
-          break;
-        }
+      if (
+        message.properties &&
+        message.properties.revenue &&
+        message.properties.revenue_type
+      ) {
+        // if properties has revenue and revenue_type fields
+        // consider the event as revenue event directly
+        category = ConfigCategory.REVENUE;
+        break;
       }
 
       switch (evType) {

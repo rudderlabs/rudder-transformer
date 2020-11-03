@@ -30,7 +30,7 @@ async function createIvm(code, libraryVersionIds) {
   code = code + `
     export function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
-      let transformType = transformationPayload["transformationType"]
+      let transformType = transformationPayload.transformationType
       let outputEvents = []
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
@@ -44,10 +44,13 @@ async function createIvm(code, libraryVersionIds) {
       }
       switch(transformType) {
         case "transformBatch":
-          outputEvents = transformBatch(eventMessages, metadata)
+          outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => {transformedEvent, metadata: metadata(ev)})
           break;
         case "transformEvent":
-          outputEvents = eventMessages.map(ev => transformEvent(ev, metadata))
+          outputEvents = eventMessages.map(ev => {
+            transformedEvent = transformEvent(ev, metadata)
+            return {transformedEvent, metadata: metadata(ev)}
+          }).filter(function (e) {return e != null;});
           break;
       }
       return outputEvents

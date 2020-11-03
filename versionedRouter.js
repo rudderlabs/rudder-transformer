@@ -47,13 +47,6 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-const userTransformHandlerV1 = () => {
-  if (functionsEnabled()) {
-    return require("./util/customTransformer-v1").userTransformHandlerV1;
-  }
-  throw new Error("Functions are not enabled");
-};
-
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
@@ -206,8 +199,8 @@ if (startDestTransformer) {
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   return {
-                    output: ev,
-                    metadata: commonMetadata,
+                    output: ev.transformedEvent,
+                    metadata: (ev.metadata == {})?commonMetadata:ev.metadata,
                     statusCode: 200
                   };
                 })
@@ -217,7 +210,7 @@ if (startDestTransformer) {
               transformedEvents.push({
                 statusCode: 400,
                 error: error.toString(),
-                metadata: commonMetadata
+                metadata: (ev.metadata == {})?commonMetadata:ev.metadata
               });
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,

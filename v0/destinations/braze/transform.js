@@ -3,17 +3,19 @@ const _ = require("lodash");
 
 const { EventType } = require("../../../constants");
 const {
+  defaultBatchRequestConfig,
   defaultRequestConfig,
-  removeUndefinedAndNullValues,
+  getDestinationExternalID,
   getFieldValueFromMessage,
-  getDestinationExternalID
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,
   getTrackEndPoint,
-  BRAZE_PARTNER_NAME
+  BRAZE_PARTNER_NAME,
+  BRAZE_MAX_REQ_COUNT
 } = require("./config");
 
 function formatGender(gender) {
@@ -376,63 +378,174 @@ function process(event) {
   return respList;
 }
 
-/* 
- *
-  input: [
-   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
-  ]
-  output: [
-    { batchedRequest: {}, jobs: [1, 3]},
-    { batchedRequest: {}, jobs: [2, 4]},
-  ]
-*/
+function formatBatchResponse(batchPayload, metadataList, destination) {
+  const response = defaultBatchRequestConfig();
+  response.batchedRequest = batchPayload;
+  response.metadata = metadataList;
+  response.destination = destination;
+  return response;
+}
 
-function batch(events) {
-  // Replace this with destination specific batching logic
-  const perChunk = 2;
-  const batchedEvents = events.reduce((resultArray, item, index) => {
-    const chunkIndex = Math.floor(index / perChunk);
+function batch(destEvents) {
+  const respList = [];
+  let trackEndpoint;
+  let jsonBody;
+  let endPoint;
+  let type;
+  let attributesBatch = [];
+  let eventsBatch = [];
+  let purchasesBatch = [];
+  let metadataBatch = [];
+  let index = 0;
 
-    if (!resultArray[chunkIndex]) {
-      resultArray[chunkIndex] = []; // start a new chunk
-    }
+  while (index < destEvents.length) {
+    // take out a single event
+    const ev = destEvents[index];
+    const { message, metadata, destination } = ev;
 
-    resultArray[chunkIndex].push(item);
+    // get the JSON body
+    jsonBody = get(message, "body.JSON");
 
-    return resultArray;
-  }, []);
+    // get the type
+    endPoint = get(message, "endpoint");
+    type = endPoint && endPoint.includes("track") ? "track" : "identify";
 
-  // Create response for every batch
-  const finalResponse = [];
-  for (let i = 0; i < batchedEvents.length; i += 1) {
-    const batchedRequests = getBatchedRequests(batchedEvents[i]);
-    if (batchedRequests.length > 0) {
-      finalResponse.push(...batchedRequests);
+    index += 1;
+
+    // if it is a track keep on adding to the existing track list
+    // keep a count of event, attribute, purchases - 75 is the cap
+    if (type === "track") {
+      // keep the trackEndpoint for reuse later
+      if (!trackEndpoint) {
+        trackEndpoint = endPoint;
+      }
+
+      // look for events, attributes, purchases
+      const { events, attributes, purchases } = jsonBody;
+
+      // if total count = 75 form a new batch
+
+      const maxCount = Math.max(
+        attributesBatch.length + (attributes ? attributes.length : 0),
+        eventsBatch.length + (events ? events.length : 0),
+        purchasesBatch.length + (purchases ? purchases.length : 0)
+      );
+
+      if (maxCount > BRAZE_MAX_REQ_COUNT) {
+        // form a batch and start over
+        // reuse the last message response for the auth and endpoint
+        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        //  TODO: Need to think about reusing the code
+        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        if (
+          attributesBatch.length > 0 ||
+          eventsBatch.length > 0 ||
+          purchasesBatch.length > 0
+        ) {
+          const batchResponse = defaultRequestConfig();
+          batchResponse.headers = message.headers;
+          batchResponse.endpoint = trackEndpoint;
+          batchResponse.body.JSON = {
+            attributes: attributesBatch,
+            events: eventsBatch,
+            purchases: purchasesBatch,
+            partner: BRAZE_PARTNER_NAME
+          };
+          // modify the endpoint to track endpoint
+          batchResponse.endpoint = trackEndpoint;
+          respList.push(
+            formatBatchResponse(batchResponse, metadataBatch, destination)
+          );
+
+          // clear the arrays and reuse
+          attributesBatch = [];
+          eventsBatch = [];
+          purchasesBatch = [];
+          metadataBatch = [];
+        }
+        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+      }
+
+      // add only if present
+      if (attributes) {
+        attributesBatch.push(...attributes);
+      }
+
+      if (events) {
+        eventsBatch.push(...events);
+      }
+
+      if (purchases) {
+        purchasesBatch.push(...purchases);
+      }
+
+      // keep the original metadata object. needed later to form the batch
+      metadataBatch.push(metadata);
+    } else {
+      // identify
+      // form a batch with whatever we have till now
+      // reuse the last message response for the auth and endpoint
+      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+      //  TODO: Need to think about reusing the code
+      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+      // don't add the response if everything is empty
+      if (
+        attributesBatch.length > 0 ||
+        eventsBatch.length > 0 ||
+        purchasesBatch.length > 0
+      ) {
+        const batchResponse = defaultRequestConfig();
+        batchResponse.headers = message.headers;
+        batchResponse.endpoint = trackEndpoint;
+        batchResponse.body.JSON = {
+          attributes: attributesBatch,
+          events: eventsBatch,
+          purchases: purchasesBatch,
+          partner: BRAZE_PARTNER_NAME
+        };
+        // modify the endpoint as message object will have identify endpoint
+        batchResponse.endpoint = trackEndpoint;
+        respList.push(
+          formatBatchResponse(batchResponse, metadataBatch, destination)
+        );
+
+        // clear the arrays and reuse
+        attributesBatch = [];
+        eventsBatch = [];
+        purchasesBatch = [];
+        metadataBatch = [];
+      }
+      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+      // separate out the identify request
+      respList.push(formatBatchResponse(message, [metadata], destination));
     }
   }
 
-  return finalResponse;
-}
+  const ev = destEvents[index - 1];
+  const { message, metadata, destination } = ev;
+  if (
+    attributesBatch.length > 0 ||
+    eventsBatch.length > 0 ||
+    purchasesBatch.length > 0
+  ) {
+    const batchResponse = defaultRequestConfig();
+    batchResponse.headers = message.headers;
+    batchResponse.endpoint = trackEndpoint;
+    batchResponse.body.JSON = {
+      attributes: attributesBatch,
+      events: eventsBatch,
+      purchases: purchasesBatch,
+      partner: BRAZE_PARTNER_NAME
+    };
+    // modify the endpoint to track endpoint
+    batchResponse.endpoint = trackEndpoint;
+    respList.push(
+      formatBatchResponse(batchResponse, metadataBatch, destination)
+    );
+  }
 
-// This function can return one or more batched events
-function getBatchedRequests(events) {
-  const response = defaultRequestConfig();
-  response.endpoint = events[0].destination.url;
-  response.method = "POST";
-  response.body.JSON = {
-    type: "batch",
-    data: events.map(ev => ev.message)
-  };
-
-  return [
-    {
-      batchedRequest: response,
-      jobs: events.map(ev => ev.metadata.job_id)
-    }
-  ];
+  return respList;
 }
 
 module.exports = {

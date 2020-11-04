@@ -7,7 +7,7 @@ const libraryCache = {};
 // TODO: change config backend url to api.rudderlabs.com
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL ||
-  "http://ab400c1cdfcf911eaa73c0a945daac7b-1323099422.us-east-1.elb.amazonaws.com:5000";
+  "https://api.rudderlabs.com";
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
 

@@ -9,9 +9,8 @@ USER node
 
 ARG version
 ENV transformer_build_version=$version
-COPY package.json ./
-COPY build.js ./
-RUN npm install --unsafe-perm
+COPY package*.json ./
+RUN npm install
 
 COPY --chown=node:node . .
 

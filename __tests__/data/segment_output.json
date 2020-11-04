@@ -3,6 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
+    "userId": "user12345",
     "endpoint": "https://api.segment.io/v1/batch",
     "headers": {
       "Content-Type": "application/json",
@@ -41,6 +42,7 @@
   {
     "version": "1",
     "type": "REST",
+    "userId": "user12345",
     "method": "POST",
     "endpoint": "https://api.segment.io/v1/batch",
     "headers": {
@@ -73,6 +75,7 @@
   {
     "version": "1",
     "type": "REST",
+    "userId": "user12345",
     "method": "POST",
     "endpoint": "https://api.segment.io/v1/batch",
     "headers": {
@@ -103,6 +106,78 @@
     },
     "files": {},
     "statusCode": 200
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.segment.io/v1/batch",
+    "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "batch": [
+                {
+                    "type": "page",
+                    "userId": "user12345",
+                    "traits": {
+                        "age": 23,
+                        "email": "testmp@rudderstack.com",
+                        "firstname": "Test Kafka"
+                    },
+                    "properties": {
+                        "path": "/tests/html/index4.html",
+                        "referrer": "",
+                        "search": "",
+                        "title": "",
+                        "url": "http://localhost/tests/html/index4.html"
+                    },
+                    "timeStamp": "2020-04-17T14:55:31.367Z"
+                }
+            ]
+        },
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "user12345",
+    "statusCode": 200
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "POST",
+  "endpoint": "https://api.segment.io/v1/batch",
+  "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo6"
+  },
+  "params": {},
+  "body": {
+      "JSON": {
+          "batch": [
+              {
+                  "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+                  "type": "track",
+                  "userId": "user12345",
+                  "event": "test track with property",
+                  "properties": {
+                      "test_prop_1": "test prop",
+                      "test_prop_2": 1232
+                  },
+                  "timeStamp": "2020-04-17T14:55:31.372Z"
+              }
+          ]
+      },
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {},
+  "userId": "user12345",
+  "statusCode": 200
+}
 ]
 

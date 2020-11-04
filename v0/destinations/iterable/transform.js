@@ -29,7 +29,7 @@ function constructPayloadItem(message, category, destination) {
         mappingConfig[ConfigCategory.DEVICE.name]
       );
       rawPayload.preferUserId = true;
-      if (message.context.device.type === "ios") {
+      if (message.context.device.type.toLowerCase() === "ios") {
         rawPayload.device.platform = "APNS";
       } else {
         rawPayload.device.platform = "GCM";

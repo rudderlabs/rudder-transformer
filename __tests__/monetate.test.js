@@ -22,7 +22,7 @@ inputData.forEach((input, index) => {
       const output = transformer.process(input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });

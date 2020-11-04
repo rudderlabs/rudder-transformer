@@ -138,10 +138,11 @@ if (startDestTransformer) {
       });
       let groupedEvents;
       if (processSessions) {
-        groupedEvents = _.groupBy(
-          events,
-          event => `${event.destination.ID}_${event.message.anonymousId}`
-        );
+        groupedEvents = _.groupBy(events, event => {
+          // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
+          const rudderId = event.metadata.rudderId || event.message.anonymousId;
+          return `${event.destination.ID}_${rudderId}`;
+        });
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }
@@ -264,16 +265,12 @@ async function handleSource(ctx, version, source) {
   await Promise.all(
     events.map(async event => {
       try {
-        let respEvents = await sourceHandler.process(event);
-        respEvents = [respEvents];
-        respList.push(
-          ...respEvents.map(ev => {
-            if (!Array.isArray(ev)) {
-              return { output: { batch: [ev] } };
-            }
-            return { output: { batch: ev } };
-          })
-        );
+        const respEvents = await sourceHandler.process(event);
+        if (Array.isArray(respEvents)) {
+          respList.push({ output: { batch: respEvents } });
+        } else {
+          respList.push({ output: { batch: [respEvents] } });
+        }
       } catch (error) {
         logger.error(error);
         respList.push({
@@ -324,6 +321,34 @@ router.get("/transformerBuildVersion", ctx => {
 
 router.get("/health", ctx => {
   ctx.body = "OK";
+});
+
+router.post("/batch", ctx => {
+  const { destType, input } = ctx.request.body;
+  const destHandler = getDestHandler("v0", destType);
+  if (!destHandler || !destHandler.batch) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support batching`;
+    return;
+  }
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+
+  const response = { batchedRequests: [], errors: [] };
+  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+    // TODO: check await needed?
+    try {
+      const destBatchedRequests = destHandler.batch(destEvents);
+      response.batchedRequests.push(...destBatchedRequests);
+    } catch(error) {
+      response.errors.push(error.message || "Error occurred while processing payload.")
+    }
+  });
+  if(response.errors.length > 0) {
+    ctx.status = 500;
+    ctx.body = response.errors;
+    return;
+  }
+  ctx.body = response.batchedRequests;
 });
 
 module.exports = router;

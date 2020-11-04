@@ -12,7 +12,8 @@ const eventNameMap = {
   bounced: "Email Bounced",
   delivered: "Email Delivered",
   spammed: "Email Marked as Spam",
-  unsubscribed: "Email Unsubscribed"
+  unsubscribed: "Email Unsubscribed",
+  sent: "Email Sent"
 };
 
 function process(event) {
@@ -27,9 +28,10 @@ function process(event) {
   const eventType = "track";
   message.setEventType(eventType);
 
-  const eventName = eventNameMap[event.metric];
+  let eventName = eventNameMap[event.metric];
   if (!eventName) {
-    throw new Error("Metric not supported");
+    // throw new Error("Metric not supported");
+    eventName = "Unknown Event";
   }
   message.setEventName(eventName);
 

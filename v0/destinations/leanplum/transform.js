@@ -12,43 +12,14 @@ const {
   constructPayload
 } = require("../../util");
 
-// function setValues(payload, message, mappingJson) {
-//   if (Array.isArray(mappingJson)) {
-//     let val;
-//     let sourceKeys;
-//     mappingJson.forEach(mapping => {
-//       val = undefined;
-//       sourceKeys = mapping.sourceKeys;
-//       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-//         for (let index = 0; index < sourceKeys.length; index += 1) {
-//           val = get(message, sourceKeys[index]);
-//           if (val) {
-//             break;
-//           }
-//         }
-//
-//         if (val) {
-//           set(payload, mapping.destKey, val);
-//         } else if (mapping.required) {
-//           throw new Error(
-//             `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-//           );
-//         }
-//       }
-//     });
-//   }
-//   return payload;
-// }
-
 function preparePayload(message, name, destination) {
   const mappingJson = mappingConfig[name];
-  let rawPayload = {
+  const rawPayload = {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
-    apiVersion: API_VERSION
+    apiVersion: API_VERSION,
+    ...constructPayload(message, mappingJson)
   };
-
-  rawPayload = constructPayload(message, mappingJson);
 
   if (rawPayload.newUserId === "") {
     delete rawPayload.newUserId;

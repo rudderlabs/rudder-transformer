@@ -105,13 +105,14 @@ function responseBuilder(message, evType, evName, destination) {
     );
 
     // Impportant for historical import
-    if (getFieldValueFromMessage(message, "timestamp")) {
+    if (getFieldValueFromMessage(message, "historicalTimestamp")) {
       set(
         rawPayload,
         "_timestamp",
         Math.floor(
-          new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
-            1000
+          new Date(
+            getFieldValueFromMessage(message, "historicalTimestamp")
+          ).getTime() / 1000
         )
       );
     }
@@ -143,7 +144,10 @@ function responseBuilder(message, evType, evName, destination) {
       if (userId && deviceRelatedEventNames.includes(evName) && token) {
         const devProps = message.properties;
         set(devProps, "id", get(message, "context.device.token"));
-        set(devProps, "platform", get(message, "context.device.type"));
+        const deviceType = get(message, "context.device.type");
+        if (deviceType) {
+          set(devProps, "platform", deviceType.toLowerCase());
+        }
         set(
           devProps,
           "last_used",
@@ -160,13 +164,14 @@ function responseBuilder(message, evType, evName, destination) {
     if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
-      if (getFieldValueFromMessage(message, "timestamp")) {
+      if (getFieldValueFromMessage(message, "historicalTimestamp")) {
         set(
           rawPayload,
           "timestamp",
           Math.floor(
-            new Date(getFieldValueFromMessage(message, "timestamp")).getTime() /
-              1000
+            new Date(
+              getFieldValueFromMessage(message, "historicalTimestamp")
+            ).getTime() / 1000
           )
         );
       }

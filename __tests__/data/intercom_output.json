@@ -3,50 +3,293 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/contacts",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "email": "sayan@gmail.com",
-        "user_id": "123456"
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "name": "Test Name",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "user_id": "test_user_id_1",
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.intercom.io/events",
+    "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer undefined",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "metadata": {
-          "category": "test-category",
-          "user_actual_role": "system_admin, system_user",
-          "user_actual_id": 12345
-        },
-        "event_name": "test track event GA3",
-        "user_id": "12345",
-        "created_at": 1571051718
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "name": "Test Name",
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
-  }
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        },
+        "name": "Name"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        },
+        "name": "Name"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+    "statusCode": 400,
+    "error": "Email or userId is mandatory"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        },
+        "name": "Name",
+        "companies": [
+          {
+            "company_id": "company_id",
+            "custom_attributes": { "key1": "value1" },
+            "name": "Test Comp",
+            "industry": "test industry"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+        "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        },
+        "name": "Name",
+        "companies": [
+          {
+            "company_id": "c0277b5c814453e5135f515f943d085a",
+            "custom_attributes": { "key1": "value1" },
+            "name": "Test Comp",
+            "industry": "test industry"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "test_1@test.com",
+        "phone": "9876543210",
+        "signed_up_at": 1601493060337,
+        "last_seen_user_agent": "unknown",
+        "update_last_request_at": true,
+         "custom_attributes": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "key1": "value1"
+        },
+        "name": "Name",
+        "companies": []
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+  },
+  {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.intercom.io/events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user_id": "test_user_id_1",
+          "email": "test_1@test.com",
+          "event_name": "Test Event 2",
+          "created": 1601493060,
+          "metadata": {
+            "property1": 1,
+            "property2": "test",
+            "property3": true,
+            "property4": "2020-10-05T09:09:03.731Z"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+    },
+
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.intercom.io/events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "test_1@test.com",
+          "event_name": "Test Event 2",
+          "created": 1601493060,
+          "metadata": {
+
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+    },
+    {
+      "statusCode": 400,
+      "error": "Email or userId is mandatory"
+    }
 ]

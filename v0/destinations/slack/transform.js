@@ -50,7 +50,8 @@ function getName(message) {
       (message.userId ? `User ${message.userId}` : undefined) ||
       `Anonymous user ${message.anonymousId}`;
   } else {
-    uName = (message.properties ? message.properties.email : undefined) ||
+    uName =
+      (message.properties ? message.properties.email : undefined) ||
       (message.userId ? `User ${message.userId}` : undefined) ||
       `Anonymous user ${message.anonymousId}`;
   }

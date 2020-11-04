@@ -9,8 +9,8 @@
   "context.app.version": "app_version",
   "context.device.type": "platform",
   "context.locale": "language",
-  "properties.category": "event_type",
   "properties.name": "event_properties.screen_name",
   "session_id": "session_id",
+  "messageId": "insert_id",
   "request_ip": "ip"
 }

@@ -107,7 +107,7 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
 }
 
 function getCommonPayload(message, category, evName) {
-  let rawPayload = {};
+  const rawPayload = {};
   let rudderPropertiesObj;
   const content_items = [];
   const event_data = {};
@@ -170,7 +170,7 @@ function getCommonPayload(message, category, evName) {
     });
   }
   rawPayload.name = evName;
-  
+
   return rawPayload;
 }
 
@@ -193,7 +193,7 @@ function processMessage(message, destination) {
     default:
       throw new Error("Message type is not supported");
   }
-  let rawPayload = getCommonPayload(message, category, evName);
+  const rawPayload = getCommonPayload(message, category, evName);
   return responseBuilder(rawPayload, message, destination, category);
 }
 

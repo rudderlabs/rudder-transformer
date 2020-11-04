@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "$os"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "$android_model"
+  },
+  {
+    "sourceKeys": "context.os.version",
+    "destKey": "$android_os_version"
+  },
+  {
+    "sourceKeys": "context.device.manufacturer",
+    "destKey": "$android_manufacturer"
+  },
+  {
+    "sourceKeys": "context.app.version",
+    "destKey": "$android_app_version"
+  },
+  {
+    "sourceKeys": "context.app.version",
+    "destKey": "$android_app_version_code"
+  }
+]

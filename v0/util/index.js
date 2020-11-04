@@ -12,6 +12,8 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+const uaParser = require("ua-parser-js");
+const moment = require("moment");
 const logger = require("../../logger");
 
 // ========================================================================
@@ -40,11 +42,17 @@ const formatValue = value => {
 };
 
 // Format the destination.Config.dynamicMap arrays to hashMap
-const getHashFromArray = (arrays, fromKey = "from", toKey = "to") => {
+const getHashFromArray = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      hashMap[array[fromKey].toLowerCase()] = array[toKey];
+      hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
+        array[toKey];
     });
   }
   return hashMap;
@@ -97,12 +105,12 @@ function flattenJson(data) {
         result[prop] = [];
       }
     } else {
-      let isEmpty = true;
+      let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
-        isEmpty = false;
+        isEmptyFlag = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
-      if (isEmpty && prop) result[prop] = {};
+      if (isEmptyFlag && prop) result[prop] = {};
     }
   }
 
@@ -177,6 +185,25 @@ const defaultRequestConfig = () => {
       FORM: {}
     },
     files: {}
+  };
+};
+
+const defaultBatchRequestConfig = () => {
+  return {
+    batchedRequest: {
+      version: "1",
+      type: "REST",
+      method: "POST",
+      endpoint: "",
+      headers: {},
+      params: {},
+      body: {
+        JSON: {},
+        XML: {},
+        FORM: {}
+      },
+      files: {}
+    }
   };
 };
 
@@ -269,8 +296,42 @@ const handleMetadataForValue = (value, metadata) => {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
+      case "secondTimestamp":
+        formattedVal = Math.floor(
+          formatTimeStamp(formattedVal, typeFormat) / 1000
+        );
+        break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
+        break;
+      case "encodeURIComponent":
+        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+        break;
+      case "jsonStringify":
+        formattedVal = JSON.stringify(formattedVal);
+        break;
+      case "jsonStringifyOnFlatten":
+        formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "numberForRevenue":
+        if (
+          (typeof formattedVal === "string" ||
+            formattedVal instanceof String) &&
+          formattedVal.charAt(0) === "$"
+        ) {
+          formattedVal = formattedVal.substring(1);
+        }
+        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
+        if (isNaN(formattedVal)) {
+          throw new Error("Revenue is not in the correct format");
+        }
+        break;
+      case "toString":
+        formattedVal = String(formattedVal);
+        break;
+      case "toNumber":
+        formattedVal = Number(formattedVal);
+
         break;
       default:
         break;
@@ -381,6 +442,91 @@ const getFieldValueFromMessage = (message, field) => {
   return null;
 };
 
+// to get destination specific external id passed in context.
+function getDestinationExternalID(message, type) {
+  let externalIdArray = null;
+  let destinationExternalId = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      if (extIdObj.type === type) {
+        destinationExternalId = extIdObj.id;
+      }
+    });
+  }
+  return destinationExternalId;
+}
+
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+const isObject = value => {
+  const type = typeof value;
+  return (
+    value != null &&
+    (type === "object" || type === "function") &&
+    !Array.isArray(value)
+  );
+};
+
+function getBrowserInfo(userAgent) {
+  const ua = uaParser(userAgent);
+  return { name: ua.browser.name, version: ua.browser.version };
+}
+
+/** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
+For example,
+    Config{
+      "groupKeySettings": [
+        {
+          "groupKey": "companyid"
+        },
+        {
+          "groupKey": "accountid"
+        }
+      ]
+    }
+This will return an array as ["companyid", "accountid"]
+The correcponding call is: getValuesAsArrayFromConfig(Config.groupKeySettings, "groupKey")
+* */
+function getValuesAsArrayFromConfig(configObject, key) {
+  const returnArray = [];
+  if (configObject && Array.isArray(configObject) && configObject.length > 0) {
+    let value;
+    configObject.forEach(element => {
+      value = element[key];
+      if (value) {
+        returnArray.push(value);
+      }
+    });
+  }
+  return returnArray;
+}
+
+// Accepts a timestamp and returns the corresponding unix timestamp
+function toUnixTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const unixTimestamp = Math.floor(date.getTime() / 1000);
+  return unixTimestamp;
+}
+
+// Accecpts timestamp as a parameter and returns the difference of the same with current time.
+function getTimeDifference(timestamp) {
+  const currentTime = Date.now();
+  const eventTime = new Date(timestamp);
+  const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
+  const days = duration.asDays();
+  const years = duration.asYears();
+  const months = duration.asMonths();
+  const hours = duration.asHours();
+  const minutes = duration.asMinutes();
+  const seconds = duration.asSeconds();
+  return { days, months, years, hours, minutes, seconds };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -392,18 +538,26 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  defaultBatchRequestConfig,
   flattenJson,
   formatValue,
+  getBrowserInfo,
   getDateInFormat,
+  getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getTimeDifference,
   getValueFromMessage,
+  getValuesAsArrayFromConfig,
+  isEmpty,
+  isObject,
   isPrimitive,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
+  toUnixTimestamp,
   updatePayload
 };

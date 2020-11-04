@@ -11,7 +11,7 @@ const mappingConfig = getMappingConfig(
       name: "MONETATEPage"
     },
     Screen: {
-      name : "MONETATEScreen"
+      name: "MONETATEScreen"
     }
   },
   __dirname

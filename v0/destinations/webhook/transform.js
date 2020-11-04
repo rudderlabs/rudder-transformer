@@ -1,3 +1,5 @@
+const get = require("get-value");
+const set = require("set-value");
 const {
   defaultPostRequestConfig,
   defaultGetRequestConfig,
@@ -18,10 +20,14 @@ const getPropertyParams = message => {
 function process(event) {
   try {
     const { message, destination } = event;
+    // set context.ip from request_ip if it is missing
+    if (!get(message, "context.ip")) {
+      set(message, "context.ip", message.request_ip);
+    }
     const response = defaultRequestConfig();
     const url = destination.Config.webhookUrl;
     const method = destination.Config.webhookMethod;
-    const headers = destination.Config.headers;
+    const { headers } = destination.Config;
 
     if (url) {
       if (method === defaultGetRequestConfig.requestMethod) {

@@ -233,5 +233,11 @@
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
-  ]
+  ],
+
+  {
+    "statusCode": 400,
+    "message": "Invalid Order Completed event"
+  }
 ]
+

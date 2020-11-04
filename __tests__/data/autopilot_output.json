@@ -12,10 +12,14 @@
     "params": {},
     "body": {
       "JSON": {
-        "contact": {
-          "Email": "testmp@rudderstack.com"
+        "contact":{
+        "Email": "testmp@rudderstack.com",
+        "FirstName": "Test Kafka",
+        "custom": {
+          "age": 23
         }
-      },
+      }
+    },
       "XML": {},
       "FORM": {}
     },
@@ -46,11 +50,16 @@
     "files": {},
     "userId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd"
   },
-  { "statusCode": 400, "error": "Message  not supported" },
-  { "statusCode": 400, "error": "Email is required for track calls" },
+  {
+    "statusCode": 400,
+    "error": "Message  not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Email is required for track calls"
+  },
   {
     "statusCode": 400,
     "error": "Message Type is not present. Aborting message."
   }
 ]
-

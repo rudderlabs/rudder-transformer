@@ -1,5 +1,5 @@
 const get = require("get-value");
-
+const md5 = require("md5");
 const { EventType } = require("../../../constants");
 const {
   Event,
@@ -14,7 +14,8 @@ const {
   defaultRequestConfig,
   getParsedIP,
   formatValue,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 
 function getParamsFromConfig(message, destination, type) {
@@ -133,60 +134,42 @@ function responseBuilderSimple(
     [dimensions, metrics] = getCustomParamsFromOldConfig(destination.Config);
   }
 
-  let rawPayload;
-  if (message.context.app) {
-    rawPayload = {
-      v: "1",
-      t: hitType,
-      tid: trackingID,
-      ds: message.channel,
-      an: message.context.app.name,
-      av: message.context.app.version,
-      aiid: message.context.app.namespace
-    };
-  } else {
-    rawPayload = {
-      v: "1",
-      t: hitType,
-      tid: trackingID,
-      ds: message.channel
-    };
-  }
+  const rawPayload = {
+    v: "1",
+    t: hitType,
+    tid: trackingID,
+    ds: message.channel
+  };
+
   if (doubleClick) {
     rawPayload.npa = 1;
   }
   if (anonymizeIp) {
     rawPayload.aip = 1;
   }
-  if (enhancedLinkAttribution) {
-    if (message.properties) {
-      if (message.properties.linkid)
-        rawPayload.linkid = message.properties.linkid;
+  if (enhancedLinkAttribution && message.properties) {
+    rawPayload.linkid = message.properties.linkid;
+  }
+
+  if (message.context) {
+    const { campaign, userAgent, locale, app } = message.context;
+    rawPayload.ua = userAgent;
+    rawPayload.ul = locale;
+    if (app) {
+      rawPayload.an = app.name;
+      rawPayload.av = app.version;
+      rawPayload.aiid = app.namespace;
+    }
+    if (campaign) {
+      const { name, source, medium, content, term } = campaign;
+      rawPayload.cn = name;
+      rawPayload.cs = source;
+      rawPayload.cm = medium;
+      rawPayload.cc = content;
+      rawPayload.ck = term;
     }
   }
-  if (message.context.campaign) {
-    if (message.context.campaign.name) {
-      rawPayload.cn = message.context.campaign.name;
-    }
-    if (message.context.campaign.source) {
-      rawPayload.cs = message.context.campaign.source;
-    }
-    if (message.context.campaign.medium) {
-      rawPayload.cm = message.context.campaign.medium;
-    }
-    if (message.context.campaign.content) {
-      rawPayload.cc = message.context.campaign.content;
-    }
-    if (message.context.campaign.term) {
-      rawPayload.ck = message.context.campaign.term;
-    }
-  }
-  if (message.context.userAgent) {
-    rawPayload.ua = message.context.userAgent;
-  }
-  if (message.context.locale) {
-    rawPayload.ul = message.context.locale;
-  }
+
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
@@ -226,15 +209,23 @@ function responseBuilderSimple(
   if (message.userId && message.userId.length > 0 && sendUserId) {
     finalPayload.uid = message.userId;
   }
-
-  finalPayload.cid = message.anonymousId;
+  const integrationsClientId = message.integrations
+    ? message.integrations.GA
+      ? message.integrations.GA.clientId
+      : undefined
+    : undefined;
+  finalPayload.cid =
+    integrationsClientId ||
+    getDestinationExternalID(message, "gaExternalId") ||
+    message.anonymousId ||
+    md5(message.userId);
 
   finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
   response.method = defaultGetRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
-  response.userId = message.anonymousId;
+  response.userId = message.anonymousId || message.userId;
   response.params = finalPayload;
 
   return response;

@@ -200,7 +200,7 @@ if (startDestTransformer) {
                 ...destTransformedEvents.map(ev => {
                   return {
                     output: ev.transformedEvent,
-                    metadata: (ev.metadata == {})?commonMetadata:ev.metadata,
+                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
                     statusCode: 200
                   };
                 })
@@ -210,7 +210,7 @@ if (startDestTransformer) {
               transformedEvents.push({
                 statusCode: 400,
                 error: error.toString(),
-                metadata: (ev.metadata == {})?commonMetadata:ev.metadata
+                metadata: commonMetadata
               });
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,

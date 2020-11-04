@@ -39,18 +39,18 @@ async function createIvm(code, libraryVersionIds) {
       });
 
       var metadata = function(event) {
-        const eventMetadata = eventsMetadata[event.messageId] || {};
+        const eventMetadata = event? eventsMetadata[event.messageId] || {}: {};
         return eventMetadata
       }
       switch(transformType) {
         case "transformBatch":
-          outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => {transformedEvent, metadata: metadata(ev)})
+          outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
           break;
         case "transformEvent":
           outputEvents = eventMessages.map(ev => {
-            transformedEvent = transformEvent(ev, metadata)
+            let transformedEvent = transformEvent(ev, metadata)
             return {transformedEvent, metadata: metadata(ev)}
-          }).filter(function (e) {return e != null;});
+          }).filter(e => e.transformedEvent != null);
           break;
       }
       return outputEvents

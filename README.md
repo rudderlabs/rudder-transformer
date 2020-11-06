@@ -43,3 +43,6 @@ If you want to run this inside a Docker container
 1. Clone the repository
 2. Run `ENABLE_FUNCTIONS=false npm install`
 3. Start the server with `ENABLE_FUNCTIONS=false npm start`
+
+## Contact Us
+If you come across any issues while configuring or using RudderStack, please feel free to [contact us](https://rudderstack.com/contact/) or start a conversation on our [Discord](https://discordapp.com/invite/xNEdEGw) channel. We will be happy to help you.

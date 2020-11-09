@@ -1,0 +1,175 @@
+[
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://app.posthog.com/batch",
+      "headers": {
+        "Posthog-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "api-key-alias",
+          "properties": {
+            "distinct_id": "uid-1",
+            "alias": "prevId_1"
+          },
+          "timestamp": "2020-08-16 09:03:11.913767",
+          "context": {
+            "device": {
+              "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+              "manufacturer": "Xiaomi",
+              "model": "Redmi 6",
+              "name": "xiaomi"
+            },
+            "network": {
+              "carrier": "Banglalink"
+            },
+            "os": {
+              "name": "android",
+              "version": "8.1.0"
+            },
+            "traits": {
+              "address": {
+                "city": "Dhaka",
+                "country": "Bangladesh"
+              },
+              "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+            }
+          },
+          "type": "alias",
+          "event": "event-alias"
+        }
+      },
+      "files": {},
+      "userId": "uid-1"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://app.posthog.com/batch",
+      "headers": {
+        "Posthog-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "api-key-capture",
+          "properties": {
+            "additional_bet_index": 0,
+            "battle_id": "N/A",
+            "bet_amount": 9,
+            "bet_level": 1,
+            "bet_multiplier": 1,
+            "coin_balance": 9466052,
+            "current_module_name": "CasinoGameModule",
+            "days_in_game": 0,
+            "extra_param": "N/A",
+            "fb_profile": "0",
+            "featureGameType": "N/A",
+            "game_fps": 30,
+            "game_id": "fireEagleBase",
+            "game_name": "FireEagleSlots",
+            "gem_balance": 0,
+            "graphicsQuality": "HD",
+            "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+            "internetReachability": "ReachableViaLocalAreaNetwork",
+            "isLowEndDevice": "False",
+            "is_auto_spin": "False",
+            "is_turbo": "False",
+            "isf": "False",
+            "ishighroller": "False",
+            "jackpot_win_amount": 90,
+            "jackpot_win_type": "Silver",
+            "level": 6,
+            "lifetime_gem_balance": 0,
+            "no_of_spin": 1,
+            "player_total_battles": 0,
+            "player_total_shields": 0,
+            "start_date": "2019-08-01",
+            "total_payments": 0,
+            "tournament_id": "T1561970819",
+            "versionSessionCount": 2,
+            "win_amount": 0
+          },
+          "timestamp": "2020-08-16 09:03:11.913767",
+          "distinct_id": "1234",
+          "type": "event-capture",
+          "event": "",
+          "messageId": "1234"
+        }
+      },
+      "files": {},
+      "userId": "uid-2"
+    },
+  
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://app.posthog.com/batch",
+      "headers": {
+        "Posthog-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "json": {
+          "context": {},
+          "type": "track",
+          "messageId": "07cd68e5-9ad9-4a79-af51-f7118bc9ed71",
+          "timestamp": "2020-11-04T13:21:09.712Z",
+          "distinct_id": "uid-3",
+          "event": "order completed",
+          "properties": {
+            "path": "path",
+            "referrer": "referrer",
+            "search": "search",
+            "KEY_3": {
+              "CHILD_KEY_4": "value_3",
+              "CHILD_KEY_5": "value_4"
+            },
+            "title": "title",
+            "url": "url",
+            "total": 1009,
+            "products": [
+              {
+                "product_id": "507f1f77bcf86cd79943901ghh1",
+                "sku": "45790-38",
+                "name": "Monopoly: 7rd Edition",
+                "price": 19,
+                "position": "1",
+                "category": "Cars",
+                "quantity": 4,
+                "currency": "USD",
+                "url": "https://www.example.com/product/path",
+                "image_url": "https://www.example.com/product/path.jpg"
+              },
+              {
+                "product_id": "507f1f77bcf86cd79943901gth1",
+                "sku": "45790-39",
+                "name": "Monopoly: 8th Edition",
+                "price": 19,
+                "quantity": 2,
+                "position": "1",
+                "currency": "USD",
+                "category": "Cars",
+                "url": "https://www.example.com/product/path",
+                "image_url": "https://www.example.com/product/path.jpg"
+              }
+            ]
+          },
+          "api_key": "track-api-key"
+        },
+        "xml": {}
+      },
+      "TO Do" : ":: Check if this will be userId or destination_Id", 
+      "userId": "uid-3"
+    }
+    
+  ]
+  

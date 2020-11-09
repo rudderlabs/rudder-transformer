@@ -1,0 +1,24 @@
+[
+  {
+      "destKey": "distinct_id",
+      "sourceKeys": [
+        "userId",
+        "context.traits.userId",
+        "context.traits.id",
+        "anonymousId"
+      ],
+      "required": true
+  },    
+  {
+      "destKey": "timestamp",
+      "sourceKeys": ["originalTimestamp", "timestamp"],
+      "required": true,
+      "metadata": {
+        "type": "timestamp"
+      }
+    },
+  { "destKey": "context", "sourceKeys": "context", "required": true },
+  { "destKey": "messageId", "sourceKeys": "messageId", "required": true },
+  { "destKey": "$set", "sourceKeys": "context.traits", "required": true }
+
+]

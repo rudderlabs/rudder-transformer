@@ -1,0 +1,24 @@
+[
+  {
+      "destKey": "timestamp",
+      "sourceKeys": ["originalTimestamp", "timestamp"],
+      "required": true,
+      "metadata": {
+        "type": "timestamp"
+      }
+    },
+  { "destKey": "groupId", "sourceKeys": "groupId", "required": true },
+  { "destKey": "context", "sourceKeys": "context", "required": true },
+  {
+      "destKey": "distinct_id",
+      "sourceKeys": [
+        "userId",
+        "context.traits.userId",
+        "context.traits.id",
+        "anonymousId"
+      ],
+      "required": true
+  }, 
+  { "destKey": "traits", "sourceKeys": "context.traits", "required": true },
+  { "destKey": "messageId", "sourceKeys": "messageId", "required": true }
+]

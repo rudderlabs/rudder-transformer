@@ -28,7 +28,8 @@ const generateDestinationProperty = message => {
     { destKey: "$initial_referrer", sourceKeys: "properties.referrer" },
     { destKey: "$initial_referring_domain", sourceKeys: "properties.url" },
     { destKey: "$ip", sourceKeys: "context.ip" },
-    { destKey: "$timestamp", sourceKeys: "originalTimestamp" }
+    { destKey: "$timestamp", sourceKeys: "originalTimestamp" },
+    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" },
   ];
 
   const data = constructPayload(message, PHPropertyJson);
@@ -45,7 +46,10 @@ const responseBuilderSimple = (message, category, destination) => {
   }
 
   if (payload.properties) {
-    payload.properties = generateDestinationProperty(payload.properties);
+    payload.properties = {
+      ...generateDestinationProperty(payload),
+      ...payload.properties
+    };
   }
 
   if (category.type !== CONFIG_CATEGORIES.TRACK.type) {
@@ -54,7 +58,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const responseBody = {
     ...payload,
-    api_Key: destination.Config.teamApiKey,
+    api_key: destination.Config.teamApiKey,
     type:
       category.type === CONFIG_CATEGORIES.TRACK.type ? "capture" : category.type // To Do:: Need to improve this line of code. Figure out some other ways.
   };

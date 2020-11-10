@@ -14,11 +14,8 @@
   { "destKey": "properties", "sourceKeys": "properties", "required": true },
   {
     "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
-    "required": true,
-    "metadata": {
-      "type": "timestamp"
-    }
+    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "required": true
   },
   { "destKey": "context", "sourceKeys": "context", "required": true }
 ]

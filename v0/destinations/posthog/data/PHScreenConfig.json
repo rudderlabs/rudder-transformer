@@ -1,15 +1,12 @@
 [
-  { "destKey": "properties", "sourceKeys": "properties", "required": true },
+  { "destKey": "properties", "sourceKeys": "properties", "required": false },
   {
       "destKey": "timestamp",
       "sourceKeys": ["originalTimestamp", "timestamp"],
-      "required": true,
-      "metadata": {
-        "type": "timestamp"
-      }
+      "required": false
     },
   { "destKey": "category", "sourceKeys": "category", "required": false },
-  { "destKey": "context", "sourceKeys": "context", "required": true },
+  { "destKey": "context", "sourceKeys": "context", "required": false },
   {
       "destKey": "distinct_id",
       "sourceKeys": [
@@ -20,6 +17,6 @@
       ],
       "required": true
   }, 
-  { "destKey": "name", "sourceKeys": "name", "required": true },
-  { "destKey": "messageId", "sourceKeys": "messageId", "required": true }
+  { "destKey": "name", "sourceKeys": "name", "required": false },
+  { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
 ]

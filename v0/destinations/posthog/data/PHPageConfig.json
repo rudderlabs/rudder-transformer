@@ -3,10 +3,7 @@
   {
       "destKey": "timestamp",
       "sourceKeys": ["originalTimestamp", "timestamp"],
-      "required": true,
-      "metadata": {
-        "type": "timestamp"
-      }
+      "required": true
     },
   { "destKey": "category", "sourceKeys": "category", "required": false },
   { "destKey": "context", "sourceKeys": "context", "required": true },

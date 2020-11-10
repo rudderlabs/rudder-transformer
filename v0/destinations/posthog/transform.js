@@ -11,7 +11,7 @@ const {
 const generateDestinationProperty = message => {
   // To Do :: Write logic for mapping destination 'Properties'
   const PHPropertyJson = [
-    { destKey: "$os", sourceKeys: "os.name" },
+    { destKey: "$os", sourceKeys: "context.os.name" },
     { destKey: "browser", sourceKeys: "context.browser.name" },
     { destKey: "$current_url", sourceKeys: "context.page.url" },
     { destKey: "$host", sourceKeys: "" },
@@ -22,14 +22,14 @@ const generateDestinationProperty = message => {
     { destKey: "$lib", sourceKeys: "context.library.name" },
     { destKey: "$lib_version", sourceKeys: "context.library.version" },
     { destKey: "$insert_id", sourceKeys: "" }, // TO DO : Need to Check
-    { destKey: "$time", sourceKeys: "timestamp" },
+    { destKey: "$time", sourceKeys: ["originalTimestamp", "timestamp"] },
     { destKey: "$device_id", sourceKeys: "context.device.id" },
     { destKey: "distinct_id", sourceKeys: "userId" },
     { destKey: "$initial_referrer", sourceKeys: "properties.referrer" },
     { destKey: "$initial_referring_domain", sourceKeys: "properties.url" },
     { destKey: "$ip", sourceKeys: "context.ip" },
-    { destKey: "$timestamp", sourceKeys: "originalTimestamp" },
-    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" },
+    { destKey: "$timestamp", sourceKeys: ["originalTimestamp", "timestamp"] },
+    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" }
   ];
 
   const data = constructPayload(message, PHPropertyJson);
@@ -47,7 +47,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (payload.properties) {
     payload.properties = {
-      ...generateDestinationProperty(payload),
+      ...generateDestinationProperty(message),
       ...payload.properties
     };
   }
@@ -58,7 +58,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const responseBody = {
     ...payload,
-    api_key: destination.Config.teamApiKey,
+    api_key: destination.Config.apiKey,
     type:
       category.type === CONFIG_CATEGORIES.TRACK.type ? "capture" : category.type // To Do:: Need to improve this line of code. Figure out some other ways.
   };

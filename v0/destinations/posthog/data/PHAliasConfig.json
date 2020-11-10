@@ -1,20 +1,17 @@
 [
-    { "destKey": "properties.distinct_id", 
-      "sourceKeys": [
-      "userId",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ], 
-    "required": true },
-    { "destKey": "properties.alias", "sourceKeys": "previousId", "required": true },
-    {
-        "destKey": "timestamp",
-        "sourceKeys": ["originalTimestamp", "timestamp"],
-        "required": true,
-        "metadata": {
-          "type": "timestamp"
-        }
-    },
-    { "destKey": "context", "sourceKeys": "context", "required": true }
+  { "destKey": "properties.distinct_id", 
+    "sourceKeys": [
+    "userId",
+    "context.traits.userId",
+    "context.traits.id",
+    "anonymousId"
+  ], 
+  "required": true },
+  { "destKey": "properties.alias", "sourceKeys": "previousId", "required": true },
+  {
+      "destKey": "timestamp",
+      "sourceKeys": ["originalTimestamp", "timestamp"],
+      "required": true
+  },
+  { "destKey": "context", "sourceKeys": "context", "required": true }
 ]

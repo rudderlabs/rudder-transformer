@@ -2,13 +2,10 @@
   {
       "destKey": "timestamp",
       "sourceKeys": ["originalTimestamp", "timestamp"],
-      "required": true,
-      "metadata": {
-        "type": "timestamp"
-      }
+      "required": false
     },
-  { "destKey": "groupId", "sourceKeys": "groupId", "required": true },
-  { "destKey": "context", "sourceKeys": "context", "required": true },
+  { "destKey": "groupId", "sourceKeys": "groupId", "required": false },
+  { "destKey": "context", "sourceKeys": "context", "required": false },
   {
       "destKey": "distinct_id",
       "sourceKeys": [
@@ -19,6 +16,6 @@
       ],
       "required": true
   }, 
-  { "destKey": "traits", "sourceKeys": "context.traits", "required": true },
+  { "destKey": "traits", "sourceKeys": "context.traits", "required": false },
   { "destKey": "messageId", "sourceKeys": "messageId", "required": true }
 ]

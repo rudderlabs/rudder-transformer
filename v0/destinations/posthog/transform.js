@@ -11,7 +11,7 @@ const {
 const generateDestinationProperty = message => {
   // To Do :: Write logic for mapping destination 'Properties'
   const PHPropertyJson = [
-    { destKey: "$os", sourceKeys: "os.name" },
+    { destKey: "$os", sourceKeys: "context.os.name" },
     { destKey: "browser", sourceKeys: "context.browser.name" },
     { destKey: "$current_url", sourceKeys: "context.page.url" },
     { destKey: "$host", sourceKeys: "" },
@@ -28,8 +28,8 @@ const generateDestinationProperty = message => {
     { destKey: "$initial_referrer", sourceKeys: "properties.referrer" },
     { destKey: "$initial_referring_domain", sourceKeys: "properties.url" },
     { destKey: "$ip", sourceKeys: "context.ip" },
-    { destKey: "$timestamp", sourceKeys: "originalTimestamp" },
-    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" },
+    { destKey: "$timestamp", sourceKeys: "timestamp" },
+    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" }
   ];
 
   const data = constructPayload(message, PHPropertyJson);
@@ -47,7 +47,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (payload.properties) {
     payload.properties = {
-      ...generateDestinationProperty(payload),
+      ...generateDestinationProperty(message),
       ...payload.properties
     };
   }

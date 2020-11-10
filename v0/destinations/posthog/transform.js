@@ -8,8 +8,8 @@ const {
   defaultPostRequestConfig
 } = require("../../util");
 
-const generateDestinationProperty = message => {
-  // To Do :: Write logic for mapping destination 'Properties'
+// Logic To match destination Property key that is in Rudder Stack Properties Object.
+const generatePropertyDefination = message => {
   const PHPropertyJson = [
     { destKey: "$os", sourceKeys: "context.os.name" },
     { destKey: "browser", sourceKeys: "context.browser.name" },
@@ -31,7 +31,7 @@ const generateDestinationProperty = message => {
     { destKey: "$timestamp", sourceKeys: ["originalTimestamp", "timestamp"] },
     { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" }
   ];
-
+  // TO DO :: Delete Property that is already defined in above json
   const data = constructPayload(message, PHPropertyJson);
 
   return data;
@@ -47,11 +47,12 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (payload.properties) {
     payload.properties = {
-      ...generateDestinationProperty(message),
+      ...generatePropertyDefination(message),
       ...payload.properties
     };
   }
 
+  // Mapping Destination Event with correct value
   if (category.type !== CONFIG_CATEGORIES.TRACK.type) {
     payload.event = category.event;
   }
@@ -74,6 +75,7 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
+// Validate Message Type coming from source
 const validateMessageType = message => {
   if (!message.type) {
     throw Error(Message.TypeNotFound);

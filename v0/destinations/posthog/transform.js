@@ -58,7 +58,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const responseBody = {
     ...payload,
-    api_key: destination.Config.apiKey,
+    api_key: destination.Config.teamApiKey,
     type:
       category.type === CONFIG_CATEGORIES.TRACK.type ? "capture" : category.type // To Do:: Need to improve this line of code. Figure out some other ways.
   };

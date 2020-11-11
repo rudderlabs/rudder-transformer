@@ -1,34 +1,34 @@
-const util = require("util");
+const fs = require("fs");
+const path = require("path");
+
+const version = "v0";
+const sources = ["web"]
 const integration = "ga";
 const name = "Google Analytics";
 
-const fs = require("fs");
-const path = require("path");
-const version = "v0";
+const transformer = require(`../${version}/destinations/${integration}/transform`);
 
-const transformer = require(`../${version}/destinations/ga/transform`);
+sources.forEach(source => {
+  const dataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${integration}/${source}.json`)
+  );
 
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
-);
+  const testData = JSON.parse(dataFile);
 
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
-
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
-
-inputData.forEach((input, index) => {
-  test(`${name} Tests : payload: ${index}`, () => {
-    let output, expected;
-    try {
-      output = transformer.process(input);
-      expected = expectedData[index];
-    } catch (error) {
-      output = error.message;
-      expected = expectedData[index].message;
-    }
-    expect(output).toEqual(expected);
-  });
+  Object.keys(testData).forEach(key => {
+    test(`${name} Tests : payload: ${key}`, () => {
+      let output, expected;
+      const data = testData[key];
+      const input = data.input;
+      try {
+        output = transformer.process(input);
+        expected = data.output;
+      } catch (error) {
+        output = error.message;
+        expected = data.output.message;
+      }
+      expect(output).toEqual(expected);
+    });
+  })
 });
+

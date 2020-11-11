@@ -20,7 +20,7 @@
           "$anon_distinct_id": "f3cf54d8-f237-45d2-89f7-ccd70d42cf31",
           "alias": "prevId_1"
         },
-        "timestamp": "2019-09-01T15:46:51.693Z",  
+        "timestamp": "2019-09-01T15:46:51.693Z",
         "context": {
           "device": {
             "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -168,7 +168,7 @@
           "$initial_referrer": "referrer",
           "$initial_referring_domain": "url",
           "$ip": "0.0.0.0",
-          "$timestamp": "2020-11-04T13:21:09.712Z",  
+          "$timestamp": "2020-11-04T13:21:09.712Z",
           "$anon_distinct_id": "a47b753d-c7d3-40ca-88dc-a1bb79e997e8",
           "KEY_3": {
             "CHILD_KEY_4": "value_3",

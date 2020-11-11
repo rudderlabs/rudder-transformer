@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable import/no-unresolved */
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   defaultRequestConfig,
@@ -7,6 +5,7 @@ const {
   constructPayload,
   defaultPostRequestConfig
 } = require("../../util");
+const { Message } = require("../../util/enum/message");
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {

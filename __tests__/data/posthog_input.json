@@ -37,7 +37,6 @@
       "anonymousId": "f3cf54d8-f237-45d2-89f7-ccd70d42cf31"
     }
   },
-
   {
     "destination": {
       "Config": {
@@ -164,7 +163,7 @@
       "type": "track",
       "messageId": "07cd68e5-9ad9-4a79-af51-f7118bc9ed71",
       "originalTimestamp": "2020-11-04T13:21:09.712Z",
-      "anonymousId": "a47b753d-c7d3-40ca-88dc-a1bb79e997e8",  
+      "anonymousId": "a47b753d-c7d3-40ca-88dc-a1bb79e997e8",
       "userId": "uid-3",
       "event": "order completed",
       "properties": {

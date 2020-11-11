@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 const { getMappingConfig } = require("../../util");
 
 const BASE_ENDPOINT = "https://app.posthog.com";

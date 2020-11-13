@@ -14,7 +14,7 @@ function processInfo() {
 }
 
 function start(port, app) {
-  if (cluster.isMaster) {
+  if (false) {
     logger.info(`Master ${process.pid} is running`);
 
     // Fork workers.

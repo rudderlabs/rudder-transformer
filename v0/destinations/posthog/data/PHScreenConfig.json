@@ -10,6 +10,8 @@
     "destKey": "distinct_id",
     "sourceKeys": [
       "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
       "anonymousId"
@@ -19,4 +21,3 @@
   { "destKey": "name", "sourceKeys": "name", "required": false },
   { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
 ]
-

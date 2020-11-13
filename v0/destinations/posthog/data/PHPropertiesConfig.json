@@ -1,30 +1,98 @@
 [
-    { "destKey": "$os", "sourceKeys": "context.os.name" },
-    { "destKey": "$current_url", "sourceKeys": "context.page.url" },
-    { "destKey": "$host", "sourceKeys": "" },
-    { "destKey": "$pathname", "sourceKeys": "context.page.path" },
-    { "destKey": "$screen_height", "sourceKeys": "context.screen.height", "isScreen": true },
-    { "destKey": "$screen_width", "sourceKeys": "context.screen.width", "isScreen": true },
-    { "destKey": "$lib", "sourceKeys": "context.library.name", "all": true },
-    { "destKey": "$lib_version", "sourceKeys": "context.library.version", "all": true },
-    { "destKey": "$insert_id", "sourceKeys": "" },
-    { "destKey": "$time", "sourceKeys": ["originalTimestamp", "timestamp"] },
-    { "destKey": "$device_id", "sourceKeys": "context.device.id" },
-    { "destKey": "$ip", "sourceKeys": ["request_ip", "context.ip"], "all": true },
-    { "destKey": "$timestamp", "sourceKeys": ["originalTimestamp", "timestamp"], "all": true },
-    { "destKey": "$anon_distinct_id", "sourceKeys": "anonymousId", "all": true },
-    { "destKey": "distinct_id", "sourceKeys": ["userId", "anonymousId"], "all": true},
-    { "destKey": "$screen_density", "sourceKeys": "context.screen.density" , "isScreen": true },
-    { "destKey": "$device_manufacturer", "sourceKeys": "context.device.manufacturer", "isScreen": true },
-    { "destKey": "$os_version", "sourceKeys": "context.os.version", "isScreen": true },
-    { "destKey": "$timezone", "sourceKeys": "context.timezone", "isScreen": true },
-    { "destKey": "$locale", "sourceKeys": "context.locale" , "isScreen": true  },
-    { "destKey": "$user_agent", "sourceKeys": "context.userAgent", "isScreen": true   },
-    { "destKey": "$app_version", "sourceKeys": "context.app.version" , "isScreen": true  },
-    { "destKey": "$device_name", "sourceKeys": "context.device.name", "isScreen": true   },
-    { "destKey": "$network_carrier", "sourceKeys": "context.netswork.carrier", "isScreen": true   },
-    { "destKey": "$app_name", "sourceKeys": "context.app.name" , "isScreen": true  },
-    { "destKey": "$device_model", "sourceKeys": "context.device.model" , "isScreen": true  },
-    { "destKey": "$app_namespace", "sourceKeys": "context.app.namespace" , "isScreen": true  },
-    { "destKey": "$app_build", "sourceKeys": "context.app.build" , "isScreen": true  }
+  { "destKey": "$os", "sourceKeys": "context.os.name" },
+  { "destKey": "$current_url", "sourceKeys": "context.page.url" },
+  { "destKey": "$host", "sourceKeys": "" },
+  { "destKey": "$pathname", "sourceKeys": "context.page.path" },
+  {
+    "destKey": "$screen_height",
+    "sourceKeys": "context.screen.height",
+    "isScreen": true
+  },
+  {
+    "destKey": "$screen_width",
+    "sourceKeys": "context.screen.width",
+    "isScreen": true
+  },
+  { "destKey": "$lib", "sourceKeys": "context.library.name", "all": true },
+  {
+    "destKey": "$lib_version",
+    "sourceKeys": "context.library.version",
+    "all": true
+  },
+  { "destKey": "$insert_id", "sourceKeys": "" },
+  { "destKey": "$time", "sourceKeys": ["originalTimestamp", "timestamp"] },
+  { "destKey": "$device_id", "sourceKeys": "context.device.id" },
+  { "destKey": "$ip", "sourceKeys": ["request_ip", "context.ip"], "all": true },
+  {
+    "destKey": "$timestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "all": true
+  },
+  { "destKey": "$anon_distinct_id", "sourceKeys": "anonymousId", "all": true },
+  {
+    "destKey": "distinct_id",
+    "sourceKeys": ["userId", "anonymousId"],
+    "all": true
+  },
+  {
+    "destKey": "$screen_density",
+    "sourceKeys": "context.screen.density",
+    "isScreen": true
+  },
+  {
+    "destKey": "$device_manufacturer",
+    "sourceKeys": "context.device.manufacturer",
+    "isScreen": true
+  },
+  {
+    "destKey": "$os_version",
+    "sourceKeys": "context.os.version",
+    "isScreen": true
+  },
+  {
+    "destKey": "$timezone",
+    "sourceKeys": "context.timezone",
+    "isScreen": true
+  },
+  { "destKey": "$locale", "sourceKeys": "context.locale", "isScreen": true },
+  {
+    "destKey": "$user_agent",
+    "sourceKeys": "context.userAgent",
+    "isScreen": true
+  },
+  {
+    "destKey": "$app_version",
+    "sourceKeys": "context.app.version",
+    "isScreen": true
+  },
+  {
+    "destKey": "$device_name",
+    "sourceKeys": "context.device.name",
+    "isScreen": true
+  },
+  {
+    "destKey": "$network_carrier",
+    "sourceKeys": "context.netswork.carrier",
+    "isScreen": true
+  },
+  {
+    "destKey": "$app_name",
+    "sourceKeys": "context.app.name",
+    "isScreen": true
+  },
+  {
+    "destKey": "$device_model",
+    "sourceKeys": "context.device.model",
+    "isScreen": true
+  },
+  {
+    "destKey": "$app_namespace",
+    "sourceKeys": "context.app.namespace",
+    "isScreen": true
+  },
+  {
+    "destKey": "$app_build",
+    "sourceKeys": "context.app.build",
+    "isScreen": true
+  }
 ]

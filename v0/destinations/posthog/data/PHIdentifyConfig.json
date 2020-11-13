@@ -3,6 +3,8 @@
     "destKey": "distinct_id",
     "sourceKeys": [
       "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
       "anonymousId"
@@ -15,6 +17,9 @@
     "required": false
   },
   { "destKey": "messageId", "sourceKeys": "messageId", "required": true },
-  { "destKey": "$set", "sourceKeys": ["traits", "context.traits"], "required": true }
+  {
+    "destKey": "$set",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": true
+  }
 ]
-

@@ -2,9 +2,11 @@
   {
     "destKey": "properties.alias",
     "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
-      "userId",
       "anonymousId"
     ],
     "required": true
@@ -20,4 +22,3 @@
     "required": false
   }
 ]
-

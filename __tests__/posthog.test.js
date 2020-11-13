@@ -19,10 +19,10 @@ const expectedData = JSON.parse(outputDataFile);
 inputData.forEach((input, index) => {
   it(`${name} - payload: ${index}`, () => {
     try {
-      const output =  transformer.process(input);
+      const output = transformer.process(input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].error);
     }
-  })
+  });
 });

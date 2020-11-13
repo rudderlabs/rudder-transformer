@@ -23,22 +23,31 @@ const isValidUrl = url => {
   }
 };
 
+const stripTrailingSlash = str => {
+  return str.endsWith("/") ? str.slice(0, -1) : str;
+};
+
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {
   const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
   let propertyJson = MAPPING_CONFIG[PHPropertyJson];
   let data = {};
 
+  // Filter out property specific to mobile or web. isMobile key takes care of it.
+  // Array Filter() will map propeerty on basis of given condition and filters it.
   if (message.channel === "mobile") {
     propertyJson = propertyJson.filter(d => {
-      return d.isScreen || d.all;
+      return d.isMobile || d.all;
     });
   } else {
     propertyJson = propertyJson.filter(d => {
-      return !d.isScreen || d.all;
+      return !d.isMobile || d.all;
     });
   }
 
+  data = constructPayload(message, propertyJson);
+
+  // This logic ensures to get browser info only for payload generated from web.
   if (
     message.channel === "web" &&
     message.context &&
@@ -50,15 +59,13 @@ const generatePropertyDefination = message => {
     data.$browser = browser.name;
     data.$browser_version = browser.version;
   }
-  data = {
-    ...constructPayload(message, propertyJson),
-    ...data
-  };
 
+  // For EventType Screen Posthog maps screen name to our event property.
   if (message.type === EventType.SCREEN) {
     data.$screen_name = message.event;
   }
 
+  // Validate current url from payload and generate host form that url.
   if (isValidUrl(data.$current_url) && !data.$host) {
     const url = new URL(data.$current_url);
     data.$host = url.host;
@@ -92,7 +99,7 @@ const responseBuilderSimple = (message, category, destination) => {
   };
   const response = defaultRequestConfig();
   response.endpoint = destination.Config.yourInstance
-    ? `${destination.Config.yourInstance}/batch`
+    ? `${stripTrailingSlash(destination.Config.yourInstance)}/batch`
     : `${DEFAULT_BASE_ENDPOINT}/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
@@ -102,8 +109,7 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
-// Validate Message Type coming from source
-const validateMessageType = message => {
+const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error(ErrorMessage.TypeNotFound);
   }
@@ -112,22 +118,14 @@ const validateMessageType = message => {
   if (!category) {
     throw Error(ErrorMessage.TypeNotSupported);
   }
-};
-
-const processEvent = (message, destination) => {
-  validateMessageType(message);
 
   const messageType = message.type.toLowerCase();
 
-  const repList = [];
-
-  const category = CONFIG_CATEGORIES[messageType.toUpperCase()];
   if (EventType.TRACK === messageType) {
     // eslint-disable-next-line no-param-reassign
     message.type = CONFIG_CATEGORIES.TRACK.type;
   }
-  repList.push(responseBuilderSimple(message, category, destination));
-  return repList;
+  return responseBuilderSimple(message, category, destination);
 };
 
 const process = event => {

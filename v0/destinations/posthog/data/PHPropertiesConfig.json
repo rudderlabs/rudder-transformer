@@ -1,17 +1,16 @@
 [
   { "destKey": "$os", "sourceKeys": "context.os.name" },
   { "destKey": "$current_url", "sourceKeys": "context.page.url" },
-  { "destKey": "$host", "sourceKeys": "" },
   { "destKey": "$pathname", "sourceKeys": "context.page.path" },
   {
     "destKey": "$screen_height",
     "sourceKeys": "context.screen.height",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$screen_width",
     "sourceKeys": "context.screen.width",
-    "isScreen": true
+    "isMobile": true
   },
   { "destKey": "$lib", "sourceKeys": "context.library.name", "all": true },
   {
@@ -37,62 +36,62 @@
   {
     "destKey": "$screen_density",
     "sourceKeys": "context.screen.density",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$device_manufacturer",
     "sourceKeys": "context.device.manufacturer",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$os_version",
     "sourceKeys": "context.os.version",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$timezone",
     "sourceKeys": "context.timezone",
-    "isScreen": true
+    "isMobile": true
   },
-  { "destKey": "$locale", "sourceKeys": "context.locale", "isScreen": true },
+  { "destKey": "$locale", "sourceKeys": "context.locale", "isMobile": true },
   {
     "destKey": "$user_agent",
     "sourceKeys": "context.userAgent",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$app_version",
     "sourceKeys": "context.app.version",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$device_name",
     "sourceKeys": "context.device.name",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$network_carrier",
-    "sourceKeys": "context.netswork.carrier",
-    "isScreen": true
+    "sourceKeys": "context.network.carrier",
+    "isMobile": true
   },
   {
     "destKey": "$app_name",
     "sourceKeys": "context.app.name",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$device_model",
     "sourceKeys": "context.device.model",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$app_namespace",
     "sourceKeys": "context.app.namespace",
-    "isScreen": true
+    "isMobile": true
   },
   {
     "destKey": "$app_build",
     "sourceKeys": "context.app.build",
-    "isScreen": true
+    "isMobile": true
   }
 ]

@@ -3,7 +3,7 @@
     "destination": {
       "Config": {
         "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
-        "yourInstance": "https://app.posthog.com"
+        "yourInstance": "https://app.posthog.com/"
       }
     },
     "message": {
@@ -41,8 +41,7 @@
   {
     "destination": {
       "Config": {
-        "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
-        "yourInstance": "https://app.posthog.com"
+        "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
       }
     },
     "message": {
@@ -210,6 +209,173 @@
         "All": true
       },
       "sentAt": "2020-11-04T13:21:09.712Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
+        "yourInstance": "https://app.posthog.com/"
+      }
+    },
+    "message": {
+      "type": "screen",
+      "event": "HomePage",
+      "sentAt": "2020-11-12T21:12:54.117Z",
+      "userId": "sajal",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "10"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "9c6bd77ea9da3e68",
+          "name": "raphaelin",
+          "type": "Android",
+          "model": "Redmi K20 Pro",
+          "manufacturer": "Xiaomi"
+        },
+        "locale": "en-IN",
+        "screen": {
+          "width": 1080,
+          "height": 2210,
+          "density": 440
+        },
+        "traits": {
+          "id": "sajal",
+          "age": "30",
+          "name": "User_id_identify",
+          "email": "identify@test.com",
+          "phone": "9112340345",
+          "price": "56.0",
+          "userId": "sajal",
+          "address": {
+            "city": "KOlkata",
+            "state": "West bengal",
+            "street": "Park Street",
+            "country": "India",
+            "postalcode": "700096"
+          },
+          "birthday": "2020-11-13",
+          "lastname": "Mohanta",
+          "quantity": "5",
+          "username": "Samle_putUserName",
+          "createdat": "18th March 2020",
+          "firstname": "Sajal",
+          "anonymousId": "9c6bd77ea9da3e68",
+          "description": "Sample description"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.8"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "airtel",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.3.0.QFKINXM)"
+      },
+      "messageId": "1605215561320-917a2554-87fd-4f9e-881d-9d29e8f30490",
+      "properties": {
+        "name": "HomePage"
+      },
+      "anonymousId": "9c6bd77ea9da3e68",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-12T21:12:41.320Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
+        "yourInstance": "https://app.posthog.com/"
+      }
+    },
+    "message": {
+      "type": "identify",
+      "event": "identify",
+      "sentAt": "2020-11-12T21:12:54.117Z",
+      "userId": "sajal",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "10"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "9c6bd77ea9da3e68",
+          "name": "raphaelin",
+          "type": "Android",
+          "model": "Redmi K20 Pro",
+          "manufacturer": "Xiaomi"
+        },
+        "locale": "en-IN",
+        "screen": {
+          "width": 1080,
+          "height": 2210,
+          "density": 440
+        },
+        "traits": {
+          "id": "sajal",
+          "age": "30",
+          "name": "User_id_identify",
+          "email": "identify@test.com",
+          "phone": "9112340345",
+          "price": "56.0",
+          "userId": "sajal",
+          "address": {
+            "city": "KOlkata",
+            "state": "West bengal",
+            "street": "Park Street",
+            "country": "India",
+            "postalcode": "700096"
+          },
+          "birthday": "2020-11-13",
+          "lastname": "Mohanta",
+          "quantity": "5",
+          "username": "Samle_putUserName",
+          "createdat": "18th March 2020",
+          "firstname": "Sajal",
+          "anonymousId": "9c6bd77ea9da3e68",
+          "description": "Sample description"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.8"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "airtel",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.3.0.QFKINXM)"
+      },
+      "messageId": "1605215561266-084c95fb-aaf6-4abf-9b3b-7ac449a2d4fb",
+      "anonymousId": "9c6bd77ea9da3e68",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-12T21:12:41.266Z"
     }
   }
 ]

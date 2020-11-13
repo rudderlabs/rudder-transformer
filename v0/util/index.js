@@ -31,6 +31,19 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 // GENERIC UTLITY
 // ========================================================================
 
+// return a valid URL object if correct else null
+const isValidUrl = url => {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return null;
+  }
+};
+
+const stripTrailingSlash = str => {
+  return str && str.endsWith("/") ? str.slice(0, -1) : str;
+};
+
 const isPrimitive = arg => {
   const type = typeof arg;
   return arg == null || (type !== "object" && type !== "function");
@@ -205,6 +218,15 @@ const defaultBatchRequestConfig = () => {
       files: {}
     }
   };
+};
+
+// ========================================================================
+// Error Message UTILITIES
+// ========================================================================
+const ErrorMessage = {
+  TypeNotFound: "Invalid payload. Property Type is not present",
+  TypeNotSupported: "Message type not supported",
+  FailedToConstructPayload: "Payload could not be constructed"
 };
 
 // ========================================================================
@@ -477,6 +499,21 @@ function getBrowserInfo(userAgent) {
   return { name: ua.browser.name, version: ua.browser.version };
 }
 
+function getInfoFromUA(prop, payload, defaultVal) {
+  const ua = get(payload, "context.userAgent");
+  const devInfo = ua ? uaParser(ua) : {};
+  return get(devInfo, prop) || defaultVal;
+}
+
+function getDeviceModel(payload, sourceKey) {
+  const payloadVal = get(payload, sourceKey);
+
+  if (payload.channel && payload.channel.toLowerCase() === "web") {
+    return getInfoFromUA("os.name", payload, payloadVal);
+  }
+  return payloadVal;
+}
+
 /** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
 For example,
     Config{
@@ -532,18 +569,20 @@ function getTimeDifference(timestamp) {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  ErrorMessage,
   constructPayload,
+  defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
-  defaultBatchRequestConfig,
   flattenJson,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDeviceModel,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
@@ -554,10 +593,12 @@ module.exports = {
   isEmpty,
   isObject,
   isPrimitive,
+  isValidUrl,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
+  stripTrailingSlash,
   toUnixTimestamp,
   updatePayload
 };

@@ -10,22 +10,10 @@ const {
   getDeviceModel,
   constructPayload,
   defaultPostRequestConfig,
-  ErrorMessage
+  ErrorMessage,
+  isValidUrl,
+  stripTrailingSlash
 } = require("../../util");
-
-const isValidUrl = url => {
-  try {
-    // eslint-disable-next-line no-new
-    new URL(url);
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
-
-const stripTrailingSlash = str => {
-  return str.endsWith("/") ? str.slice(0, -1) : str;
-};
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {
@@ -66,8 +54,8 @@ const generatePropertyDefination = message => {
   }
 
   // Validate current url from payload and generate host form that url.
-  if (isValidUrl(data.$current_url) && !data.$host) {
-    const url = new URL(data.$current_url);
+  const url = isValidUrl(data.$current_url);
+  if (url) {
     data.$host = url.host;
   }
 
@@ -78,7 +66,6 @@ const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (!payload) {
     // fail-safety for developer error
-    // eslint-disable-next-line no-undef
     throw Error(ErrorMessage.FailedToConstructPayload);
   }
 
@@ -98,9 +85,8 @@ const responseBuilderSimple = (message, category, destination) => {
     type: category.type
   };
   const response = defaultRequestConfig();
-  response.endpoint = destination.Config.yourInstance
-    ? `${stripTrailingSlash(destination.Config.yourInstance)}/batch`
-    : `${DEFAULT_BASE_ENDPOINT}/batch`;
+  response.endpoint = `${stripTrailingSlash(destination.Config.yourInstance) ||
+    DEFAULT_BASE_ENDPOINT}/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
@@ -119,12 +105,6 @@ const processEvent = (message, destination) => {
     throw Error(ErrorMessage.TypeNotSupported);
   }
 
-  const messageType = message.type.toLowerCase();
-
-  if (EventType.TRACK === messageType) {
-    // eslint-disable-next-line no-param-reassign
-    message.type = CONFIG_CATEGORIES.TRACK.type;
-  }
   return responseBuilderSimple(message, category, destination);
 };
 

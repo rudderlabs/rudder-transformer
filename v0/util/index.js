@@ -31,6 +31,19 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 // GENERIC UTLITY
 // ========================================================================
 
+// return a valid URL object if correct else null
+const isValidUrl = url => {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return null;
+  }
+};
+
+const stripTrailingSlash = str => {
+  return str && str.endsWith("/") ? str.slice(0, -1) : str;
+};
+
 const isPrimitive = arg => {
   const type = typeof arg;
   return arg == null || (type !== "object" && type !== "function");
@@ -556,23 +569,23 @@ function getTimeDifference(timestamp) {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  ErrorMessage,
   constructPayload,
+  defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  ErrorMessage,
   defaultRequestConfig,
-  defaultBatchRequestConfig,
   flattenJson,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDeviceModel,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
-  getDeviceModel,
   getParsedIP,
   getTimeDifference,
   getValueFromMessage,
@@ -580,10 +593,12 @@ module.exports = {
   isEmpty,
   isObject,
   isPrimitive,
+  isValidUrl,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
+  stripTrailingSlash,
   toUnixTimestamp,
   updatePayload
 };

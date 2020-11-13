@@ -1,37 +1,68 @@
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { EventType } = require("../../../constants");
+const {
+  DEFAULT_BASE_ENDPOINT,
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG
+} = require("./config");
 const {
   defaultRequestConfig,
-  getFieldValueFromMessage,
+  getBrowserInfo,
+  getDeviceModel,
   constructPayload,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  ErrorMessage
 } = require("../../util");
-const { Message } = require("../../util/enum/message");
+
+const isValidUrl = url => {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {
-  const PHPropertyJson = [
-    { destKey: "$os", sourceKeys: "context.os.name" },
-    { destKey: "browser", sourceKeys: "context.browser.name" },
-    { destKey: "$current_url", sourceKeys: "context.page.url" },
-    { destKey: "$host", sourceKeys: "" },
-    { destKey: "$pathname", sourceKeys: "context.page.path" },
-    { destKey: "$browser_version", sourceKeys: "context.browser.version" },
-    { destKey: "$screen_height", sourceKeys: "context.screen.height" },
-    { destKey: "$screen_width", sourceKeys: "context.screen.width" },
-    { destKey: "$lib", sourceKeys: "context.library.name" },
-    { destKey: "$lib_version", sourceKeys: "context.library.version" },
-    { destKey: "$insert_id", sourceKeys: "" }, // TO DO : Need to Check
-    { destKey: "$time", sourceKeys: ["originalTimestamp", "timestamp"] },
-    { destKey: "$device_id", sourceKeys: "context.device.id" },
-    { destKey: "distinct_id", sourceKeys: "userId" },
-    { destKey: "$initial_referrer", sourceKeys: "properties.referrer" },
-    { destKey: "$initial_referring_domain", sourceKeys: "properties.url" },
-    { destKey: "$ip", sourceKeys: "context.ip" },
-    { destKey: "$timestamp", sourceKeys: ["originalTimestamp", "timestamp"] },
-    { destKey: "$anon_distinct_id", sourceKeys: "anonymousId" }
-  ];
-  // TO DO :: Delete Property that is already defined in above json
-  const data = constructPayload(message, PHPropertyJson);
+  const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
+  let propertyJson = MAPPING_CONFIG[PHPropertyJson];
+  let data = {};
+
+  if (message.channel === "mobile") {
+    propertyJson = propertyJson.filter(d => {
+      return d.isScreen || d.all;
+    });
+  } else {
+    propertyJson = propertyJson.filter(d => {
+      return !d.isScreen || d.all;
+    });
+  }
+
+  if (
+    message.channel === "web" &&
+    message.context &&
+    message.context.userAgent
+  ) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    const osInfo = getDeviceModel(message);
+    data.$os = osInfo;
+    data.$browser = browser.name;
+    data.$browser_version = browser.version;
+  }
+  data = {
+    ...constructPayload(message, propertyJson),
+    ...data
+  };
+
+  if (message.type === EventType.SCREEN) {
+    data.$screen_name = message.event;
+  }
+
+  if (isValidUrl(data.$current_url) && !data.$host) {
+    const url = new URL(data.$current_url);
+    data.$host = url.host;
+  }
 
   return data;
 };
@@ -41,15 +72,13 @@ const responseBuilderSimple = (message, category, destination) => {
   if (!payload) {
     // fail-safety for developer error
     // eslint-disable-next-line no-undef
-    throw Error(Message.FailedToConstructPayload);
+    throw Error(ErrorMessage.FailedToConstructPayload);
   }
 
-  if (payload.properties) {
-    payload.properties = {
-      ...generatePropertyDefination(message),
-      ...payload.properties
-    };
-  }
+  payload.properties = {
+    ...generatePropertyDefination(message),
+    ...payload.properties
+  };
 
   // Mapping Destination Event with correct value
   if (category.type !== CONFIG_CATEGORIES.TRACK.type) {
@@ -59,17 +88,16 @@ const responseBuilderSimple = (message, category, destination) => {
   const responseBody = {
     ...payload,
     api_key: destination.Config.teamApiKey,
-    type:
-      category.type === CONFIG_CATEGORIES.TRACK.type ? "capture" : category.type // To Do:: Need to improve this line of code. Figure out some other ways.
+    type: category.type
   };
   const response = defaultRequestConfig();
-  response.endpoint = `${destination.Config.yourInstance}/batch`;
+  response.endpoint = destination.Config.yourInstance
+    ? `${destination.Config.yourInstance}/batch`
+    : `${DEFAULT_BASE_ENDPOINT}/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Indicative-Client": "RudderStack",
     "Content-Type": "application/json"
   };
-  response.userId = getFieldValueFromMessage(message, "userId");
   response.body.JSON = responseBody;
   return response;
 };
@@ -77,12 +105,12 @@ const responseBuilderSimple = (message, category, destination) => {
 // Validate Message Type coming from source
 const validateMessageType = message => {
   if (!message.type) {
-    throw Error(Message.TypeNotFound);
+    throw Error(ErrorMessage.TypeNotFound);
   }
 
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   if (!category) {
-    throw Error(Message.TypeNotSupported);
+    throw Error(ErrorMessage.TypeNotSupported);
   }
 };
 
@@ -94,6 +122,10 @@ const processEvent = (message, destination) => {
   const repList = [];
 
   const category = CONFIG_CATEGORIES[messageType.toUpperCase()];
+  if (EventType.TRACK === messageType) {
+    // eslint-disable-next-line no-param-reassign
+    message.type = CONFIG_CATEGORIES.TRACK.type;
+  }
   repList.push(responseBuilderSimple(message, category, destination));
   return repList;
 };

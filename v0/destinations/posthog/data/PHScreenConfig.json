@@ -6,7 +6,6 @@
     "required": false
   },
   { "destKey": "category", "sourceKeys": "category", "required": false },
-  { "destKey": "context", "sourceKeys": "context", "required": false },
   {
     "destKey": "distinct_id",
     "sourceKeys": [

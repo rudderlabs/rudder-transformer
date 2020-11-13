@@ -12,10 +12,9 @@
   {
     "destKey": "timestamp",
     "sourceKeys": ["originalTimestamp", "timestamp"],
-    "required": true
+    "required": false
   },
-  { "destKey": "context", "sourceKeys": "context", "required": true },
   { "destKey": "messageId", "sourceKeys": "messageId", "required": true },
-  { "destKey": "$set", "sourceKeys": "context.traits", "required": true }
+  { "destKey": "$set", "sourceKeys": ["traits", "context.traits"], "required": true }
 ]
 

@@ -9,6 +9,7 @@
     "message": {
       "event": "event-alias",
       "context": {
+        "ip": "0.0.0.0",
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
@@ -31,7 +32,7 @@
         }
       },
       "type": "alias",
-      "timestamp": "2019-09-01T15:46:51.693Z",
+      "timestamp": "2020-11-04T13:21:09.712Z",
       "userId": "uid-1",
       "previousId": "prevId_1",
       "anonymousId": "f3cf54d8-f237-45d2-89f7-ccd70d42cf31"
@@ -48,6 +49,7 @@
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Product Brought",
       "context": {
+        "ip": "0.0.0.0",
         "device": {
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
@@ -107,7 +109,7 @@
         "versionSessionCount": 2,
         "win_amount": 0
       },
-      "timestamp": "2019-09-01T15:46:51.693Z",
+      "timestamp": "2020-11-04T13:21:09.712Z",
       "userId": "uid-2",
       "messageId": "e4408cb8-16dd-41e9-a313-a7a9cdc4bac5"
     }

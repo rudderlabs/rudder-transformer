@@ -5,7 +5,6 @@
     "required": false
   },
   { "destKey": "groupId", "sourceKeys": "groupId", "required": false },
-  { "destKey": "context", "sourceKeys": "context", "required": false },
   {
     "destKey": "distinct_id",
     "sourceKeys": [
@@ -16,7 +15,7 @@
     ],
     "required": true
   },
-  { "destKey": "traits", "sourceKeys": "context.traits", "required": false },
-  { "destKey": "messageId", "sourceKeys": "messageId", "required": true }
+  { "destKey": "traits", "sourceKeys": ["traits", "context.traits"], "required": false },
+  { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
 ]
 

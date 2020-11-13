@@ -208,6 +208,15 @@ const defaultBatchRequestConfig = () => {
 };
 
 // ========================================================================
+// Error Message UTILITIES
+// ========================================================================
+const ErrorMessage = {
+  TypeNotFound: "Invalid payload. Property Type is not present",
+  TypeNotSupported: "Message type not supported",
+  FailedToConstructPayload: "Payload could not be constructed"
+};
+
+// ========================================================================
 // TRANSFORMER UTILITIES
 // ========================================================================
 const MESSAGE_MAPPING = JSON.parse(
@@ -477,6 +486,21 @@ function getBrowserInfo(userAgent) {
   return { name: ua.browser.name, version: ua.browser.version };
 }
 
+function getInfoFromUA(prop, payload, defaultVal) {
+  const ua = get(payload, "context.userAgent");
+  const devInfo = ua ? uaParser(ua) : {};
+  return get(devInfo, prop) || defaultVal;
+}
+
+function getDeviceModel(payload, sourceKey) {
+  const payloadVal = get(payload, sourceKey);
+
+  if (payload.channel && payload.channel.toLowerCase() === "web") {
+    return getInfoFromUA("os.name", payload, payloadVal);
+  }
+  return payloadVal;
+}
+
 /** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
 For example,
     Config{
@@ -537,6 +561,7 @@ module.exports = {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
+  ErrorMessage,
   defaultRequestConfig,
   defaultBatchRequestConfig,
   flattenJson,
@@ -547,6 +572,7 @@ module.exports = {
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
+  getDeviceModel,
   getParsedIP,
   getTimeDifference,
   getValueFromMessage,

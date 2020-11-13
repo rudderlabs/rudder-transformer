@@ -11,13 +11,12 @@
   },
   { "destKey": "event", "sourceKeys": "event", "required": true },
   { "destKey": "messageId", "sourceKeys": "messageId", "required": true },
-  { "destKey": "properties", "sourceKeys": "properties", "required": true },
+  { "destKey": "properties", "sourceKeys": "properties", "required": false },
   {
     "destKey": "timestamp",
     "sourceKeys": ["timestamp", "originalTimestamp"],
-    "required": true
-  },
-  { "destKey": "context", "sourceKeys": "context", "required": true }
+    "required": false
+  }
 ]
 
 

@@ -12,13 +12,12 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
 }
 
 async function createIvm(code, libraryVersionIds) {
-  const createIvmStartTime =  new Date()
+  const createIvmStartTime = new Date();
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCodeV1(libraryVersionId)
     )
   );
-
   const librariesMap = {};
   if (code && libraries) {
     // TODO: Check if this should this be &&
@@ -55,7 +54,7 @@ async function createIvm(code, libraryVersionIds) {
       }
       return outputEvents
     }
-  `
+  `;
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
   const isolateStartWallTime = isolate.wallTime;
@@ -181,7 +180,7 @@ async function createIvm(code, libraryVersionIds) {
       return compiledModules[spec].module;
     }
     console.log(`import from ${spec} failed. Module not found.`);
-    return undefined;
+    throw new Error(`import from ${spec} failed. Module not found.`);
   });
 
   // const base64Script = await isolate.compileScript(base64);

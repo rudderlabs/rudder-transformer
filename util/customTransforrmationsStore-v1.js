@@ -4,10 +4,10 @@ const stats = require("./stats");
 
 const transformationCache = {};
 const libraryCache = {};
-// TODO: change config backend url to api.rudderlabs.com
+
 const CONFIG_BACKEND_URL =
-  process.env.CONFIG_BACKEND_URL ||
-  "https://api.rudderlabs.com";
+  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
 

@@ -35,6 +35,8 @@ describe("User transformation", () => {
     const expectedData = require(`./data/${integration}_output.json`);
 
     const respBody = {
+      codeVersion: '0',
+      name: name,
       code: `
       function transform(events) {
           const filteredEvents = events.map(event => {
@@ -49,7 +51,6 @@ describe("User transformation", () => {
     });
 
     const output = await userTransformHandler(inputData, versionId, []);
-
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -65,6 +66,8 @@ describe("User transformation", () => {
     const expectedData = require(`./data/${integration}_filter_output.json`);
 
     const respBody = {
+      codeVersion: '0',
+      name: name,
       code: `function transform(events) {
                         let filteredEvents = events.filter(event => {
                           const eventType = event.type;
@@ -84,7 +87,6 @@ describe("User transformation", () => {
       json: jest.fn().mockResolvedValue(respBody)
     });
     const output = await userTransformHandler(inputData, versionId, []);
-
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -100,6 +102,8 @@ describe("User transformation", () => {
     const expectedData = require(`./data/${integration}_lodash_output.json`);
 
     const respBody = {
+      codeVersion:'1',
+      name:'lodash',
       code: `
       import * as lodash from 'lodash';
       export function transformBatch(events, metadata) {
@@ -110,9 +114,9 @@ describe("User transformation", () => {
           });
             return modifiedEvents;
           }
-          `,
-      codeVersion: 1
+          `
     };
+
     respBody["versionId"] = versionId
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     when(fetch).calledWith(transformerUrl).mockResolvedValue({
@@ -129,14 +133,11 @@ describe("User transformation", () => {
     `;
 
     const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
-
     const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
     when(fetch).calledWith(libraryUrl).mockResolvedValue({
       json: jest.fn().mockResolvedValue({"code":lodashCode,"name":"lodash"})
     });
-
     const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
-
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
@@ -164,7 +165,8 @@ describe("User transformation", () => {
             return modifiedEvents;
           }
           `,
-      codeVersion: 1
+      name:"url",
+      codeVersion: '1'
     };
     respBody["versionId"] = versionId
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -182,6 +184,7 @@ describe("User transformation", () => {
     });
 
     const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );

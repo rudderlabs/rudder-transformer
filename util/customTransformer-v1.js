@@ -16,12 +16,9 @@ const unsupportedFuncNames = [
   "split"
 ];
 
-const { addCode, subCode } = require("./math.js");
 const { getPool } = require("./ivmPool");
 
 async function transform(isolatevm, events) {
-  // TODO : check if we can resolve this
-  // eslint-disable-next-line no-async-promise-executor
   const transformationPayload = {};
   transformationPayload.events = events;
   transformationPayload.transformationType = isolatevm.fName;

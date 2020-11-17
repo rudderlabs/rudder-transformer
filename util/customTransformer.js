@@ -189,12 +189,15 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
           libraryVersionIDs
         );
       } else {
-        output = eventMessages.map(ev => ({transformedEvent: ev, metadata: {}}))
         userTransformedEvents = await runUserTransform(
-          output,
+          eventMessages,
           res.code,
           eventsMetadata
         );
+        userTransformedEvents = userTransformedEvents.map(ev => ({
+          transformedEvent: ev,
+          metadata: {}
+        }));
       }
       return userTransformedEvents;
     }

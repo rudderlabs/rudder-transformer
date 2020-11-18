@@ -182,16 +182,7 @@ async function createIvm(code, libraryVersionIds) {
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });
-
-  // const base64Script = await isolate.compileScript(base64);
-  // const customScriptRunResult = await customScript.run(context);
-  // console.log(
-  //   "runUserTransform -> customScriptRunResult",
-  //   customScriptRunResult
-  // );
   await customScriptModule.evaluate();
-  // const fnRefOld = await customScriptModule.namespace.get("transform");
-  // console.log("runUserTransform -> fnRefOld", fnRefOld);
 
   const supportedFuncNames = ["transformEvent", "transformBatch"];
   const supportedFuncs = {};

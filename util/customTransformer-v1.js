@@ -1,20 +1,5 @@
 const ivm = require("isolated-vm");
-const fetch = require("node-fetch");
-const fs = require("fs");
-const lodashCore = require("lodash/core");
-const _ = require("lodash");
 const stats = require("./stats");
-
-// TODO: Check why these dont work
-const unsupportedFuncNames = [
-  "_",
-  "extend",
-  "each",
-  "first",
-  "join",
-  "reverse",
-  "split"
-];
 
 const { getPool } = require("./ivmPool");
 

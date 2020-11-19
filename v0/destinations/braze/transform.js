@@ -323,6 +323,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
 function process(event) {
   const respList = [];
+  let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
 
@@ -361,8 +362,10 @@ function process(event) {
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
-      response = processIdentify(message, destination);
-      respList.push(response);
+      if (message.anonymousId) {
+        response = processIdentify(message, destination);
+        respList.push(response);
+      }
 
       response = processTrackWithUserAttributes(
         message,

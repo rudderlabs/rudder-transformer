@@ -1,6 +1,6 @@
 [
     {
-        "destKey": "_e",
+        "destKey": "event",
         "sourceKeys": "name",
         "required": false
     },

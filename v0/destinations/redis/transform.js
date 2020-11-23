@@ -9,7 +9,7 @@ const { EventType } = require("../../../constants");
 // 2. stringifies the values to set them in redis
 const processValues = obj => {
   Object.keys(obj).forEach(key => {
-    if (isEmpty(obj[key]) || isObject(obj[key])) {
+    if (obj[key] === null || isObject(obj[key])) {
       // eslint-disable-next-line no-param-reassign
       delete obj[key];
       return;
@@ -57,11 +57,11 @@ const process = event => {
     );
   }
 
+  processValues(hmap.fields);
+
   if (Object.keys(hmap.fields).length === 0) {
     throw new Error("context or context.traits or traits is empty");
   }
-
-  processValues(hmap.fields);
 
   const result = {
     message: hmap,

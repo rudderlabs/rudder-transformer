@@ -228,6 +228,77 @@
       "Config": {
         "address": "localhost:6379",
         "database": "test",
+        "prefix": "TestEmptyKey"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Redis",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "REDIS"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Redis",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "country": "UK",
+          "lastname": "Mouse",
+          "arrayProp": [{"x": 1, "y":2}],
+          "emptyKey": "",
+          "nestedProp": {
+            "innerProp1": "innerPropVal1",
+            "innerProp2": "innerPropVal2",
+            "innerProp3": {}
+          }
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "traits": {
+        "country": "USA",
+        "firstname": "Mickey"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+      "originalTimestamp": "2020-01-24T06:29:02.362Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53708",
+      "sentAt": "2020-01-24T06:29:02.363Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+    },
+    "request": {}
+  },
+  {
+    "destination": {
+      "Config": {
+        "address": "localhost:6379",
+        "database": "test",
         "prefix": "TestPrefix"
       },
       "DestinationDefinition": {

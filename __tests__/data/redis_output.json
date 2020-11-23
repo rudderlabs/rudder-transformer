@@ -62,6 +62,21 @@
     "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
   },
   {
+    "message": {
+      "key": "TestEmptyKey:user:9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+      "fields": {
+        "country": "USA",
+        "firstname": "Mickey",
+        "lastname": "Mouse",
+        "arrayProp": "[{\"x\":1,\"y\":2}]",
+        "emptyKey": "",
+        "nestedProp.innerProp1": "innerPropVal1",
+        "nestedProp.innerProp2": "innerPropVal2"
+      }
+    },
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
+  },
+  {
     "error": "context or context.traits or traits is empty"
   }
 ]

@@ -1,35 +1,37 @@
 [
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "00000000000000000000000000",
-    "params": {
-      "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
-    },
-    "body": {
-      "JSON": {
-        "properties": [
-          {
-            "property": "email",
-            "value": "testhubspot2@email.com"
-          },
-          {
-            "property": "firstname",
-            "value": "Test Hubspot"
-          }
-        ]
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "statusCode": 200
-  },
+      "userId": "00000000000000000000000000",
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "properties": [
+            {
+              "property": "email",
+              "value": "testhubspot2@email.com"
+            },
+            {
+              "property": "firstname",
+              "value": "Test Hubspot"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
+    }
+  ],
   {
     "statusCode": 400,
     "error": "message type page is not supported"
@@ -57,37 +59,39 @@
     "files": {},
     "statusCode": 200
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "userId": "00000000000000000000000000",
-    "params": {
-      "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
-    },
-    "body": {
-      "JSON": {
-        "properties": [
-          {
-            "property": "email",
-            "value": "testhubspot2@email.com"
-          },
-          {
-            "property": "firstname",
-            "value": "Test Hubspot"
-          }
-        ]
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "statusCode": 200
-  },
+      "userId": "00000000000000000000000000",
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "properties": [
+            {
+              "property": "email",
+              "value": "testhubspot2@email.com"
+            },
+            {
+              "property": "firstname",
+              "value": "Test Hubspot"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
+    }
+  ],
   { "statusCode": 400, "error": "Identify without email is not supported." },
   {
     "version": "1",
@@ -136,5 +140,70 @@
     },
     "files": {},
     "statusCode": 200
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "userId": "00000000000000000000000000",
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "properties": [
+            {
+              "property": "email",
+              "value": "testhubspot2@email.com"
+            },
+            {
+              "property": "firstname",
+              "value": "Test Hubspot"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/associations/p8603955_car/contact/batch/create",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "userId": "00000000000000000000000000",
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "inputs": [
+            {
+              "from": {
+                "id": "32921360"
+              },
+              "to": {
+                "id": "751"
+              },
+              "type": "car_to_contact"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "statusCode": 200
+    }
+  ]
 ]

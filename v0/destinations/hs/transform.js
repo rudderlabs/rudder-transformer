@@ -39,16 +39,17 @@ async function getProperties(destination) {
 async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
 
-  const sourceKeys = Object.keys(mappingJson);
   const traits = getFieldValueFromMessage(message, "traits");
   if (traits) {
-    const traitsKeys = Object.keys(traits);
-    const propertyMap = await getProperties(destination);
+    // add all the fields from mappingJson
+    const sourceKeys = Object.keys(mappingJson);
     sourceKeys.forEach(sourceKey => {
       if (get(traits, sourceKey)) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
       }
     });
+    const traitsKeys = Object.keys(traits);
+    const propertyMap = await getProperties(destination);
     traitsKeys.forEach(traitsKey => {
       const hsSupportedKey = getKey(traitsKey);
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
@@ -134,6 +135,7 @@ async function processTrack(message, destination) {
 // }
 
 async function processIdentify(message, destination) {
+  const response = [];
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !traits.email) {
     throw new Error("Identify without email is not supported.");
@@ -144,12 +146,63 @@ async function processIdentify(message, destination) {
     destination
   );
   const properties = getPropertyValueForIdentify(userProperties);
-  return responseBuilderSimple(
-    { properties },
-    message,
-    EventType.IDENTIFY,
-    destination
+  response.push(
+    responseBuilderSimple(
+      { properties },
+      message,
+      EventType.IDENTIFY,
+      destination
+    )
   );
+
+  // check for CRM custom-objects and act accordingly
+  // Ref: https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+  if (traits.hubspot) {
+    const { contactId, qualifiedName, objects } = traits.hubspot;
+    if (!contactId) {
+      throw new Error(
+        "HubSpot contactId is not provided. Aborting custom-object association"
+      );
+    }
+
+    if (!qualifiedName) {
+      throw new Error(
+        "HubSpot qualifiedName is not provided. Aborting custom-object association"
+      );
+    }
+
+    if (!objects || !Array.isArray(objects) || objects.length === 0) {
+      throw new Error(
+        "HubSpot objects are not provided.  Aborting custom-object association"
+      );
+    }
+
+    // every thing is checked. create the request
+    const endpoint = `https://api.hubapi.com/crm/v3/associations/${qualifiedName}/contact/batch/create`;
+    const params = { hapikey: destination.Config.apiKey };
+    const inputs = [];
+    objects.forEach(item => {
+      inputs.push({
+        from: { id: item.objectId },
+        to: { id: contactId },
+        type: `${item.objectType}_to_contact`
+      });
+    });
+
+    const requestObject = defaultRequestConfig();
+    requestObject.params = params;
+    requestObject.endpoint = endpoint;
+    requestObject.body.JSON = { inputs };
+    requestObject.headers = {
+      "Content-Type": "application/json"
+    };
+    requestObject.userId = message.anonymousId;
+    requestObject.statusCode = 200;
+
+    response.push(requestObject);
+  }
+
+  return response;
 }
 
 async function processSingleMessage(message, destination) {

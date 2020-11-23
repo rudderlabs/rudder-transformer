@@ -12,6 +12,8 @@ const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
+const uaParser = require("ua-parser-js");
+const moment = require("moment");
 const logger = require("../../logger");
 
 // ========================================================================
@@ -28,6 +30,19 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+// return a valid URL object if correct else null
+const isValidUrl = url => {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return null;
+  }
+};
+
+const stripTrailingSlash = str => {
+  return str && str.endsWith("/") ? str.slice(0, -1) : str;
+};
 
 const isPrimitive = arg => {
   const type = typeof arg;
@@ -103,12 +118,12 @@ function flattenJson(data) {
         result[prop] = [];
       }
     } else {
-      let isEmpty = true;
+      let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
-        isEmpty = false;
+        isEmptyFlag = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
-      if (isEmpty && prop) result[prop] = {};
+      if (isEmptyFlag && prop) result[prop] = {};
     }
   }
 
@@ -184,6 +199,34 @@ const defaultRequestConfig = () => {
     },
     files: {}
   };
+};
+
+const defaultBatchRequestConfig = () => {
+  return {
+    batchedRequest: {
+      version: "1",
+      type: "REST",
+      method: "POST",
+      endpoint: "",
+      headers: {},
+      params: {},
+      body: {
+        JSON: {},
+        XML: {},
+        FORM: {}
+      },
+      files: {}
+    }
+  };
+};
+
+// ========================================================================
+// Error Message UTILITIES
+// ========================================================================
+const ErrorMessage = {
+  TypeNotFound: "Invalid payload. Property Type is not present",
+  TypeNotSupported: "Message type not supported",
+  FailedToConstructPayload: "Payload could not be constructed"
 };
 
 // ========================================================================
@@ -304,6 +347,13 @@ const handleMetadataForValue = (value, metadata) => {
         if (isNaN(formattedVal)) {
           throw new Error("Revenue is not in the correct format");
         }
+        break;
+      case "toString":
+        formattedVal = String(formattedVal);
+        break;
+      case "toNumber":
+        formattedVal = Number(formattedVal);
+
         break;
       default:
         break;
@@ -431,12 +481,97 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+const isObject = value => {
+  const type = typeof value;
+  return (
+    value != null &&
+    (type === "object" || type === "function") &&
+    !Array.isArray(value)
+  );
+};
+
+function getBrowserInfo(userAgent) {
+  const ua = uaParser(userAgent);
+  return { name: ua.browser.name, version: ua.browser.version };
+}
+
+function getInfoFromUA(prop, payload, defaultVal) {
+  const ua = get(payload, "context.userAgent");
+  const devInfo = ua ? uaParser(ua) : {};
+  return get(devInfo, prop) || defaultVal;
+}
+
+function getDeviceModel(payload, sourceKey) {
+  const payloadVal = get(payload, sourceKey);
+
+  if (payload.channel && payload.channel.toLowerCase() === "web") {
+    return getInfoFromUA("os.name", payload, payloadVal);
+  }
+  return payloadVal;
+}
+
+/** * This method forms an array of non-empty values from destination config where that particular config holds an array of "key-value" pair.
+For example,
+    Config{
+      "groupKeySettings": [
+        {
+          "groupKey": "companyid"
+        },
+        {
+          "groupKey": "accountid"
+        }
+      ]
+    }
+This will return an array as ["companyid", "accountid"]
+The correcponding call is: getValuesAsArrayFromConfig(Config.groupKeySettings, "groupKey")
+* */
+function getValuesAsArrayFromConfig(configObject, key) {
+  const returnArray = [];
+  if (configObject && Array.isArray(configObject) && configObject.length > 0) {
+    let value;
+    configObject.forEach(element => {
+      value = element[key];
+      if (value) {
+        returnArray.push(value);
+      }
+    });
+  }
+  return returnArray;
+}
+
+// Accepts a timestamp and returns the corresponding unix timestamp
+function toUnixTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const unixTimestamp = Math.floor(date.getTime() / 1000);
+  return unixTimestamp;
+}
+
+// Accecpts timestamp as a parameter and returns the difference of the same with current time.
+function getTimeDifference(timestamp) {
+  const currentTime = Date.now();
+  const eventTime = new Date(timestamp);
+  const duration = moment.duration(moment(currentTime).diff(moment(eventTime)));
+  const days = duration.asDays();
+  const years = duration.asYears();
+  const months = duration.asMonths();
+  const hours = duration.asHours();
+  const minutes = duration.asMinutes();
+  const seconds = duration.asSeconds();
+  return { days, months, years, hours, minutes, seconds };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  ErrorMessage,
   constructPayload,
+  defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -444,17 +579,26 @@ module.exports = {
   defaultRequestConfig,
   flattenJson,
   formatValue,
+  getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDeviceModel,
   getFieldValueFromMessage,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getTimeDifference,
   getValueFromMessage,
+  getValuesAsArrayFromConfig,
+  isEmpty,
+  isObject,
   isPrimitive,
+  isValidUrl,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
+  stripTrailingSlash,
+  toUnixTimestamp,
   updatePayload
 };

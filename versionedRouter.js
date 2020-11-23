@@ -138,10 +138,11 @@ if (startDestTransformer) {
       });
       let groupedEvents;
       if (processSessions) {
-        groupedEvents = _.groupBy(
-          events,
-          event => `${event.destination.ID}_${event.message.anonymousId}`
-        );
+        groupedEvents = _.groupBy(events, event => {
+          // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
+          const rudderId = event.metadata.rudderId || event.message.anonymousId;
+          return `${event.destination.ID}_${rudderId}`;
+        });
       } else {
         groupedEvents = _.groupBy(events, event => event.destination.ID);
       }
@@ -311,6 +312,34 @@ router.get("/version", ctx => {
 
 router.get("/health", ctx => {
   ctx.body = "OK";
+});
+
+router.post("/batch", ctx => {
+  const { destType, input } = ctx.request.body;
+  const destHandler = getDestHandler("v0", destType);
+  if (!destHandler || !destHandler.batch) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support batching`;
+    return;
+  }
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+
+  const response = { batchedRequests: [], errors: [] };
+  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+    // TODO: check await needed?
+    try {
+      const destBatchedRequests = destHandler.batch(destEvents);
+      response.batchedRequests.push(...destBatchedRequests);
+    } catch(error) {
+      response.errors.push(error.message || "Error occurred while processing payload.")
+    }
+  });
+  if(response.errors.length > 0) {
+    ctx.status = 500;
+    ctx.body = response.errors;
+    return;
+  }
+  ctx.body = response.batchedRequests;
 });
 
 module.exports = router;

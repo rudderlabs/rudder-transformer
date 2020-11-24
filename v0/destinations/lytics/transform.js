@@ -12,11 +12,9 @@ function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
   const { stream, apiKey } = destination.Config;
 
-  const timestamp = message.originalTimestamp;
+  const timestamp = message.originalTimestamp || message.timestamp;
   response.endpoint = `${ENDPOINT}/${stream}?timestamp_field=${timestamp}`;
   response.method = defaultPostRequestConfig.requestMethod;
-
-  response.userId = message.anonymousId;
   response.body.JSON = removeUndefinedAndNullValues(flattenJson(payload));
   response.headers = {
     "Content-Type": "application/json",

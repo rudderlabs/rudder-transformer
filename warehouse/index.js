@@ -1,43 +1,27 @@
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
 
-const v0 = require("./v0/util");
-const v1 = require("./v1/util");
+const {
+  isObject,
+  isBlank,
+  validTimestamp,
+  getVersionedUtils
+} = require("./util");
+const { getMergeRuleEvent } = require("./identity");
 
-const whDefaultColumnMapping = require("./config/WHDefaultConfig.json");
-const whTrackColumnMapping = require("./config/WHTrackConfig.json");
-const whPageColumnMapping = require("./config/WHPageConfig.json");
-const whScreenColumnMapping = require("./config/WHScreenConfig.json");
-const whGroupColumnMapping = require("./config/WHGroupConfig.json");
-const whAliasColumnMapping = require("./config/WHAliasConfig.json");
+const whDefaultColumnMappingRules = require("./config/WHDefaultConfig.js");
+const whTrackColumnMappingRules = require("./config/WHTrackConfig.js");
+const whUserColumnMappingRules = require("./config/WHUserConfig.js");
+const whPageColumnMappingRules = require("./config/WHPageConfig.js");
+const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
+const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
+const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
 
-const isObject = value => {
-  const type = typeof value;
-  return (
-    value != null &&
-    (type === "object" || type === "function") &&
-    !Array.isArray(value)
-  );
-};
-
-// https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
-// make sure to disable prettier for regex expression
-// prettier-ignore
-const timestampRegex = new RegExp(
-  // eslint-disable-next-line no-useless-escape
-  /^([\+-]?\d{4})((-)((0[1-9]|1[0-2])(-([12]\d|0[1-9]|3[01])))([T\s]((([01]\d|2[0-3])((:)[0-5]\d))([\:]\d+)?)?(:[0-5]\d([\.]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)$/
+const maxColumnsInEvent = parseInt(
+  process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
+  10
 );
-
-function validTimestamp(input) {
-  return timestampRegex.test(input);
-}
-
-// // older implementation with fallback to new Date()
-// function validTimestamp(input) {
-//   // eslint-disable-next-line no-restricted-globals
-//   if (!isNaN(input)) return false;
-//   return new Date(input).getTime() > 0;
-// }
 
 const getDataType = (val, options) => {
   const type = typeof val;
@@ -71,6 +55,7 @@ const rudderCreatedTables = [
   "groups",
   "accounts"
 ];
+
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
     return `_${name}`;
@@ -79,12 +64,12 @@ function excludeRudderCreatedTableNames(name) {
 }
 
 /*
-  setDataFromColumnMappingAndComputeColumnTypes takes in input object and 
+  setDataFromColumnMappingAndComputeColumnTypes takes in input object and
     1. reads columnMapping and adds corresponding data from message to output object
     2. computes and sets the datatype of the added data to output in columnTypes object
 
   Note: this function mutates output, columnTypes args for sake of perf
-    
+
   eg.
   input = {messageId: "m1", anonymousId: "a1"}
   output = {}
@@ -108,17 +93,31 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   columnTypes,
   options
 ) {
+  if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
-    let val = get(input, key);
-    if (val === null || val === undefined) {
+    let val;
+    // if (_.isFunction(columnMapping[key])) {
+    if (key === "context_ip") {
+      val = columnMapping[key](input);
+    } else {
+      val = get(input, columnMapping[key]);
+    }
+
+    const columnName = utils.safeColumnName(options.provider, key);
+    // do not set column if val is null/empty
+    if (isBlank(val)) {
+      // delete in output and columnTypes, so as to remove if we user
+      // has set property with same name
+      // eslint-disable-next-line no-param-reassign
+      delete output[columnName];
+      // eslint-disable-next-line no-param-reassign
+      delete columnTypes[columnName];
       return;
     }
     const datatype = getDataType(val, options);
     if (datatype === "datetime") {
       val = new Date(val).toISOString();
     }
-    const prop = columnMapping[key];
-    const columnName = utils.safeColumnName(options.provider, prop);
     // eslint-disable-next-line no-param-reassign
     output[columnName] = val;
     // eslint-disable-next-line no-param-reassign
@@ -127,7 +126,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 }
 
 /*
-  setDataFromInputAndComputeColumnTypes takes in input object and 
+  setDataFromInputAndComputeColumnTypes takes in input object and
     1. adds the key/values in input (recursively in case of keys with value of type object) to output object (prefix is added to all keys)
     2. computes and sets the datatype of the added data to output in columnTypes object
 
@@ -157,7 +156,7 @@ function setDataFromInputAndComputeColumnTypes(
   options,
   prefix = ""
 ) {
-  if (!input) return;
+  if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isObject(input[key])) {
       setDataFromInputAndComputeColumnTypes(
@@ -170,7 +169,8 @@ function setDataFromInputAndComputeColumnTypes(
       );
     } else {
       let val = input[key];
-      if (val === null || val === undefined) {
+      // do not set column if val is null/empty
+      if (isBlank(val)) {
         return;
       }
       const datatype = getDataType(val, options);
@@ -178,7 +178,7 @@ function setDataFromInputAndComputeColumnTypes(
         val = new Date(val).toISOString();
       }
       let safeKey = utils.transformColumnName(prefix + key);
-      if (safeKey != "") {
+      if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
         // eslint-disable-next-line no-param-reassign
         output[safeKey] = val;
@@ -189,7 +189,11 @@ function setDataFromInputAndComputeColumnTypes(
   });
 }
 
-function getColumns(options, obj, columnTypes) {
+/*
+ * uuid_ts and loaded_at datatypes are passed from here to create appropriate columns.
+ * Corresponding values are inserted when loading into the warehouse
+ */
+function getColumns(options, event, columnTypes) {
   const columns = {};
   const uuidTS = options.provider === "snowflake" ? "UUID_TS" : "uuid_ts";
   columns[uuidTS] = "datetime";
@@ -198,20 +202,34 @@ function getColumns(options, obj, columnTypes) {
     const loadedAt = "loaded_at";
     columns[loadedAt] = "datetime";
   }
-  Object.keys(obj).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(obj[key], options);
+  Object.keys(event).forEach(key => {
+    columns[key] = columnTypes[key] || getDataType(event[key], options);
   });
+  // throw error if too many columns in an event just in case
+  // to avoid creating too many columns in warehouse due to a spurious event
+  if (Object.keys(columns).length > maxColumnsInEvent) {
+    throw new Error(
+      `${options.provider} transfomer: Too many columns outputted from the event`
+    );
+  }
   return columns;
 }
 
-function getVersionedUtils(schemaVersion) {
-  switch (schemaVersion) {
-    case "v0":
-      return v0;
-    case "v1":
-      return v1;
-    default:
-      return v1;
+const fullEventColumnTypeByProvider = {
+  snowflake: "json",
+  rs: "text",
+  bq: "string",
+  postgres: "json",
+  clickhouse: "string"
+};
+
+function storeRudderEvent(utils, message, output, columnTypes, options) {
+  if (options.whStoreEvent === true) {
+    const colName = utils.safeColumnName(options.provider, "rudder_event");
+    // eslint-disable-next-line no-param-reassign
+    output[colName] = JSON.stringify(message);
+    // eslint-disable-next-line no-param-reassign
+    columnTypes[colName] = fullEventColumnTypeByProvider[options.provider];
   }
 }
 
@@ -395,8 +413,11 @@ function getVersionedUtils(schemaVersion) {
     }
   ]
 */
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
+  options.utils = utils;
+
   const responses = [];
   const eventType = message.type.toLowerCase();
   // store columnTypes as each column is set, so as not to call getDataType again
@@ -414,12 +435,11 @@ function processWarehouseMessage(message, options) {
         options,
         "context_"
       );
-
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
         commonProps,
         message,
-        whTrackColumnMapping,
+        whTrackColumnMappingRules,
         commonColumnTypes,
         options
       );
@@ -427,7 +447,7 @@ function processWarehouseMessage(message, options) {
         utils,
         commonProps,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         commonColumnTypes,
         options
       );
@@ -444,6 +464,7 @@ function processWarehouseMessage(message, options) {
 
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
+      storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
       const tracksMetadata = {
         table: utils.safeTableName(options.provider, "tracks"),
         columns: getColumns(options, tracksEvent, {
@@ -501,7 +522,13 @@ function processWarehouseMessage(message, options) {
         metadata: eventTableMetadata,
         data: eventTableEvent
       });
-      // -----end: event table------
+
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
 
       break;
     }
@@ -559,7 +586,14 @@ function processWarehouseMessage(message, options) {
         utils,
         identifiesEvent,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
+        identifiesColumnTypes,
+        options
+      );
+      storeRudderEvent(
+        utils,
+        message,
+        identifiesEvent,
         identifiesColumnTypes,
         options
       );
@@ -577,6 +611,13 @@ function processWarehouseMessage(message, options) {
       });
       // -----end: identifies table------
 
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
+
       // -----start: users table------
       // do not create a user record if userId is not present in payload
       if (_.toString(message.userId).trim() === "") {
@@ -584,6 +625,14 @@ function processWarehouseMessage(message, options) {
       }
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        usersEvent,
+        message,
+        whUserColumnMappingRules,
+        usersColumnTypes,
+        options
+      );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
@@ -609,7 +658,6 @@ function processWarehouseMessage(message, options) {
         data: usersEvent
       });
       // -----end: users table------
-
       break;
     }
     case "page":
@@ -636,17 +684,18 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       if (eventType === "page") {
         setDataFromColumnMappingAndComputeColumnTypes(
           utils,
           event,
           message,
-          whPageColumnMapping,
+          whPageColumnMappingRules,
           columnTypes,
           options
         );
@@ -655,7 +704,7 @@ function processWarehouseMessage(message, options) {
           utils,
           event,
           message,
-          whScreenColumnMapping,
+          whScreenColumnMappingRules,
           columnTypes,
           options
         );
@@ -667,12 +716,21 @@ function processWarehouseMessage(message, options) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
+
       break;
     }
     case "group": {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,
@@ -690,7 +748,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
@@ -698,10 +756,11 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whGroupColumnMapping,
+        whGroupColumnMappingRules,
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
         table: utils.safeTableName(options.provider, "groups"),
@@ -709,12 +768,21 @@ function processWarehouseMessage(message, options) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
+
       break;
     }
     case "alias": {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
+        utils,
         event,
         message.traits,
         columnTypes,
@@ -732,7 +800,7 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whDefaultColumnMapping,
+        whDefaultColumnMappingRules,
         columnTypes,
         options
       );
@@ -740,10 +808,11 @@ function processWarehouseMessage(message, options) {
         utils,
         event,
         message,
-        whAliasColumnMapping,
+        whAliasColumnMappingRules,
         columnTypes,
         options
       );
+      storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
         table: utils.safeTableName(options.provider, "aliases"),
@@ -751,6 +820,21 @@ function processWarehouseMessage(message, options) {
         receivedAt: message.receivedAt
       };
       responses.push({ metadata, data: event });
+
+      // -----start: identity_merge_rules table------
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
+      // -----end: identity_merge_rules table------
+
+      break;
+    }
+    case "merge": {
+      const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
+      if (mergeRuleEvent) {
+        responses.push(mergeRuleEvent);
+      }
       break;
     }
     default:
@@ -760,5 +844,6 @@ function processWarehouseMessage(message, options) {
 }
 
 module.exports = {
-  processWarehouseMessage
+  processWarehouseMessage,
+  fullEventColumnTypeByProvider
 };

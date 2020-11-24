@@ -10,6 +10,7 @@
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
+  "groupTraits": ["traits", "context.traits"],
   "userId": [
     "userId",
     "traits.userId",
@@ -24,5 +25,18 @@
     "traits.id",
     "context.traits.userId",
     "context.traits.id"
+  ],
+  "firstName": [
+    "traits.firstName",
+    "traits.firstname",
+    "context.traits.firstName",
+    "context.traits.firstname"
+  ],
+  "lastName": [
+    "traits.lastName",
+    "traits.lastname",
+    "context.traits.lastName",
+    "context.traits.lastname"
   ]
+
 }

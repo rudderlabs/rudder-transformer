@@ -9,11 +9,21 @@ const {
   removeUndefinedAndNullValues
 } = require("../../util");
 
+const identifyFields = [
+  "email",
+  "firstname",
+  "firstName",
+  "lastname",
+  "lastName",
+  "phone",
+  "company",
+  "status",
+  "LeadSource"
+];
+
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
-    // const autoPilotConfig = getDestinationKeys(destination);
-
     const response = defaultRequestConfig();
     response.headers = {
       autopilotapikey: destination.Config.apiKey,
@@ -22,11 +32,22 @@ function responseBuilderSimple(message, category, destination) {
     };
     let responseBody;
     let contactIdOrEmail;
+    let customPayload;
     switch (message.type) {
       case EventType.IDENTIFY:
-        responseBody = {
-          contact: { ...payload }
-        };
+        customPayload = message.traits || message.context.traits;
+        identifyFields.forEach(value => {
+          delete customPayload[value];
+        });
+        if (Object.keys(customPayload).length) {
+          responseBody = {
+            contact: { ...payload, custom: customPayload }
+          };
+        } else {
+          responseBody = {
+            contact: { ...payload }
+          };
+        }
         response.endpoint = category.endPoint;
         break;
       case EventType.TRACK:
@@ -37,7 +58,6 @@ function responseBuilderSimple(message, category, destination) {
         } else {
           throw new Error("Email is required for track calls");
         }
-        response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         break;
       default:
         break;

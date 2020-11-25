@@ -120,28 +120,28 @@ function getUserAttributesObject(message, mappingJson) {
   // });
 
   const reserved = [
-    "avatar",
     "address",
-    "birthday",
-    "email",
-    "id",
-    "firstname",
-    "gender",
-    "lastname",
-    "phone",
-    "facebook",
-    "twitter",
-    "first_name",
-    "last_name",
-    "dob",
-    "external_id",
-    "country",
-    "home_city",
+    "avatar",
     "bio",
-    "gender",
-    "phone",
+    "birthday",
+    "country",
+    "dob",
+    "email",
     "email_subscribe",
-    "push_subscribe"
+    "external_id",
+    "facebook",
+    "first_name",
+    "firstname",
+    "firstName",
+    "gender",
+    "home_city",
+    "id",
+    "last_name",
+    "lastname",
+    "lastName",
+    "phone",
+    "push_subscribe",
+    "twitter"
   ];
 
   const traits = message.traits || (message.context && message.context.traits);

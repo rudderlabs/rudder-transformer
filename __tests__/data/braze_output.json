@@ -53,7 +53,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/identify",
+      "endpoint": "https://rest.iad-01.braze.com/users/identify",
       "headers": {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -81,7 +81,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "endpoint": "https://rest.iad-01.braze.com/users/track",
       "headers": {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -127,6 +127,8 @@
             {
               "email": "mickey@disney.com",
               "city": "Disney",
+              "first_name": "Mickey",
+              "gender": "F",
               "_update_existing_only": false,
               "user_alias": {
                 "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -234,10 +236,13 @@
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
-
   {
     "statusCode": 400,
     "message": "Invalid Order Completed event"
+  },
+  {
+    "statusCode": 400,
+    "message": "Message type is not supported"
   }
 ]
 

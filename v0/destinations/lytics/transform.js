@@ -7,7 +7,8 @@ const {
   defaultRequestConfig,
   flattenJson
 } = require("../../util");
-function responseBuilderSimple(message, category, destination) {
+
+const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const { stream, apiKey } = destination.Config;
@@ -21,7 +22,7 @@ function responseBuilderSimple(message, category, destination) {
     Authorization: apiKey
   };
   return response;
-}
+};
 
 const processEvent = (message, destination) => {
   if (!message.type) {

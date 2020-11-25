@@ -13,10 +13,8 @@
   },
   {
     "destKey": "",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   }
 ]
+

@@ -1,0 +1,13 @@
+[
+  {
+    "destKey": "event",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "properties",
+    "required": false
+  }
+]
+

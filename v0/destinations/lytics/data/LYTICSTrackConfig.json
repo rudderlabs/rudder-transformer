@@ -1,0 +1,13 @@
+[
+  {
+    "destKey": "_e",
+    "sourceKeys": "event",
+    "required": false
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "properties",
+    "required": false
+  }
+]
+

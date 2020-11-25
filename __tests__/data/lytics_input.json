@@ -113,35 +113,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "US"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -202,35 +175,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "US"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -299,35 +245,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "US"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -388,35 +307,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "EU"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -477,35 +369,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "IND"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -566,35 +431,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "AMA"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -654,35 +492,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "IND"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -743,35 +554,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "IND"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -892,35 +676,8 @@
         "userId": "ruchu123"
       },
       "destination": {
-        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-        "Name": "MoEngage Testing",
-        "DestinationDefinition": {
-          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-          "Name": "MOENGAGE",
-          "DisplayName": "MoEngage",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": ["apiId", "apiKey", "region"]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "reactnative"
-            ]
-          }
-        },
         "Config": {
-          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-          "eventDelivery": false,
-          "eventDeliveryTS": 1602757086384,
-          "region": "US"
+          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
         },
         "Enabled": true,
         "Transformations": [],
@@ -982,9 +739,11 @@
         },
         "destination": {
           "Config": {
-            "devKey": "ef1d42390426e3f7c90ac78272e74344"
+            "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
           },
-          "Enabled": true
+          "Enabled": true,
+          "Transformations": [],
+          "IsProcessorEnabled": true
         }
       },
       {
@@ -1042,9 +801,11 @@
         },
         "destination": {
           "Config": {
-            "devKey": "ef1d42390426e3f7c90ac78272e74344"
+            "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
           },
-          "Enabled": true
+          "Enabled": true,
+          "Transformations": [],
+          "IsProcessorEnabled": true
         }
       }
   ]

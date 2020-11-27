@@ -1,0 +1,20 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": false
+  }
+]
+

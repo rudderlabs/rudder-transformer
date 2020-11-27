@@ -1,11 +1,11 @@
 {
-  "country": ["traits.address.country", "context.traits.address.country"],
-  "dob": ["traits.birthday", "context.traits.birthday"],
-  "email": ["traits.email", "context.traits.email"],
-  "first_name": ["traits.firstName", "context.traits.firstName"],
-  "gender": ["traits.gender", "context.traits.gender"],
-  "home_city": ["traits.address.city", "context.traits.address.city"],
-  "image_url": ["traits.avatar", "context.traits.avatar"],
-  "last_name": ["traits.lastName", "context.traits.lastName"],
-  "phone": ["traits.phone", "context.traits.phone"]
+  "country": "address.country",
+  "dob": "birthday",
+  "email": "email",
+  "first_name": "firstName",
+  "gender": "gender",
+  "home_city": "address.city",
+  "image_url": "avatar",
+  "last_name": "lastName",
+  "phone": "phone"
 }

@@ -1,5 +1,4 @@
 const get = require("get-value");
-const _ = require("lodash");
 
 const { EventType } = require("../../../constants");
 const {
@@ -19,16 +18,22 @@ const {
 } = require("./config");
 
 function formatGender(gender) {
-  if (!gender) return;
-  if (typeof gender !== "string") return;
+  // few possible cases of woman
+  if (["woman", "female", "w", "f"].indexOf(gender.toLowerCase()) > -1) {
+    return "F";
+  }
 
-  const femaleGenders = ["woman", "female", "w", "f"];
-  const maleGenders = ["man", "male", "m"];
-  const otherGenders = ["other", "o"];
+  // few possible cases of man
+  if (["man", "male", "m"].indexOf(gender.toLowerCase()) > -1) {
+    return "M";
+  }
 
-  if (femaleGenders.indexOf(gender.toLowerCase()) > -1) return "F";
-  if (maleGenders.indexOf(gender.toLowerCase()) > -1) return "M";
-  if (otherGenders.indexOf(gender.toLowerCase()) > -1) return "O";
+  // few possible cases of other
+  if (["other", "o"].indexOf(gender.toLowerCase()) > -1) {
+    return "O";
+  }
+
+  return null;
 }
 
 function buildResponse(message, destination, properties, endpoint) {
@@ -83,29 +88,68 @@ function getIdentifyPayload(message) {
   return { aliases_to_identify: [payload] };
 }
 
+// Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
 function getUserAttributesObject(message, mappingJson) {
+  // blank output object
   const data = {};
-  const destKeys = Object.keys(mappingJson);
-  destKeys.forEach(destKey => {
-    const sourceKeys = mappingJson[destKey];
+  // get traits from message
+  const traits = getFieldValueFromMessage(message, "traits");
 
-    let value;
-    for (let index = 0; index < sourceKeys.length; index += 1) {
-      value = get(message, sourceKeys[index]);
-
-      if (value) {
-        break;
-      }
-    }
-
+  // iterate over the destKeys and set the value if present
+  Object.keys(mappingJson).forEach(destKey => {
+    let value = get(traits, mappingJson[destKey]);
     if (value) {
+      // handle gender special case
       if (destKey === "gender") {
-        data[destKey] = formatGender(value);
-      } else {
-        data[destKey] = value;
+        value = formatGender(value);
+      }
+      data[destKey] = value;
+    }
+  });
+
+  // reserved keys : already mapped through mappingJson
+  const reservedKeys = [
+    "address",
+    "birthday",
+    "email",
+    "firstName",
+    "gender",
+    "avatar",
+    "lastName",
+    "phone"
+  ];
+
+  // iterate over rest of the traits properties
+  Object.keys(traits).forEach(traitKey => {
+    // if traitKey is not reserved add the value to final output
+    if (reservedKeys.indexOf(traitKey) === -1) {
+      const value = get(traits, traitKey);
+      if (value) {
+        data[traitKey] = value;
       }
     }
   });
+
+  // destKeys.forEach(destKey => {
+  //   const sourceKeys = mappingJson[destKey];
+
+  //   let value;
+  //   for (let index = 0; index < sourceKeys.length; index += 1) {
+  //     value = get(message, sourceKeys[index]);
+
+  //     if (value) {
+  //       break;
+  //     }
+  //   }
+
+  //   if (value) {
+  //     if (destKey === "gender") {
+  //       data[destKey] = formatGender(value);
+  //     } else {
+  //       data[destKey] = value;
+  //     }
+  //   }
+  // });
 
   // const sourceKeys = Object.keys(mappingJson);
   // sourceKeys.forEach(sourceKey => {
@@ -119,42 +163,42 @@ function getUserAttributesObject(message, mappingJson) {
   //   }
   // });
 
-  const reserved = [
-    "address",
-    "avatar",
-    "bio",
-    "birthday",
-    "country",
-    "dob",
-    "email",
-    "email_subscribe",
-    "external_id",
-    "facebook",
-    "first_name",
-    "firstname",
-    "firstName",
-    "gender",
-    "home_city",
-    "id",
-    "last_name",
-    "lastname",
-    "lastName",
-    "phone",
-    "push_subscribe",
-    "twitter"
-  ];
+  // const reserved = [
+  //   "address",
+  //   "avatar",
+  //   "bio",
+  //   "birthday",
+  //   "country",
+  //   "dob",
+  //   "email",
+  //   "email_subscribe",
+  //   "external_id",
+  //   "facebook",
+  //   "first_name",
+  //   "firstname",
+  //   "firstName",
+  //   "gender",
+  //   "home_city",
+  //   "id",
+  //   "last_name",
+  //   "lastname",
+  //   "lastName",
+  //   "phone",
+  //   "push_subscribe",
+  //   "twitter"
+  // ];
 
-  const traits = message.traits || (message.context && message.context.traits);
+  // const traits = message.traits || (message.context && message.context.traits);
 
-  if (traits) {
-    reserved.forEach(element => {
-      delete traits[element];
-    });
+  // if (traits) {
+  //   reserved.forEach(element => {
+  //     delete traits[element];
+  //   });
 
-    Object.keys(traits).forEach(key => {
-      data[key] = traits[key];
-    });
-  }
+  //   Object.keys(traits).forEach(key => {
+  //     data[key] = traits[key];
+  //   });
+  // }
 
   return data;
 }

@@ -34,13 +34,11 @@ function responseBuilderSimple(message, category, destination) {
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
   if (user_data && commonData) {
-    const name  = user_data.name
-    let split;
-    if(name){
-      split = name.split(" ");
+    const split = user_data.name ? user_data.name.split(" ") : null;
+    if (split !== null) {
+      user_data.fn = sha256(split[0]);
+      user_data.ln = sha256(split[1]);
     }
-    user_data.fn = sha256(split[0]);
-    user_data.ln = sha256(split[1]);
     delete user_data.name;
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
@@ -65,7 +63,7 @@ const processEvent = (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       if (advancedMapping) {
-        category = CONFIG_CATEGORIES.IDENTIFY;
+        category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
         throw Error(
@@ -84,7 +82,6 @@ const processEvent = (message, destination) => {
     default:
       throw new Error("Message type not supported");
   }
-
   // build the response
   return responseBuilderSimple(message, category, destination);
 };

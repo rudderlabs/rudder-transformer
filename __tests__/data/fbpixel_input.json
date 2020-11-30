@@ -1469,7 +1469,7 @@
             "event": "spin_result",
             "integrations": {
                 "All": true,
-                "Facebook Pixel": {
+                "FacebookPixel": {
                     "dataProcessingOptions": [
                         [
                             "LDU"

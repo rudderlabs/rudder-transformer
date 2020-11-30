@@ -15,6 +15,7 @@ const get = require("get-value");
 const uaParser = require("ua-parser-js");
 const moment = require("moment");
 const logger = require("../../logger");
+const sha256 = require("sha256");
 
 // ========================================================================
 // INLINERS
@@ -353,7 +354,9 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "toNumber":
         formattedVal = Number(formattedVal);
-
+        break;
+      case "hashToSha256":
+        formattedVal = sha256(formattedVal);
         break;
       default:
         break;

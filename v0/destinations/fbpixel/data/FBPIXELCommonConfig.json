@@ -1,0 +1,17 @@
+[
+    {
+      "destKey": "event_name",
+      "sourceKeys": [
+       "type"
+      ],
+      "required": true
+    },
+    {
+      "destKey": "event_time",
+      "sourceKeys": ["timestamp","originalTimestamp"],
+      "required": true,
+      "metadata": {
+        "type": "secondTimestamp"
+      }
+    }
+  ]

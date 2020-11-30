@@ -1,5 +1,7 @@
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { EventType } = require("../../../constants");
+const sha256 = require("sha256");
+
 const {
   constructPayload,
   defaultPostRequestConfig,
@@ -26,30 +28,59 @@ function responseBuilderSimple(message, category, destination) {
 
   const endpoint = `https://graph.facebook.com/v9.0/${pixelId}/events?access_token=${accessToken}`;
 
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  
+  const user_data = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const commonData = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
+  );
+  if (user_data && commonData) {
+    const name  = user_data.name
+    let split;
+    if(name){
+      split = name.split(" ");
+    }
+    user_data.fn = sha256(split[0]);
+    user_data.ln = sha256(split[1]);
+    delete user_data.name;
+    const response = defaultRequestConfig();
+    response.endpoint = endpoint;
+    response.method = defaultPostRequestConfig.requestMethod;
+    const payload = {
+      data: [{ user_data, ...commonData }]
+    };
+    response.body.FORM = payload;
+    return response;
+  }
+  // fail-safety for developer error
+  throw new Error("Payload could not be constructed");
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
-
+  const { advancedMapping } = destination.Config;
   const messageType = message.type.toLowerCase();
   let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
-      break;
-    case EventType.PAGE:
-      category = CONFIG_CATEGORIES.PAGE;
-      break;
-    case EventType.SCREEN:
-      category = CONFIG_CATEGORIES.SCREEN;
-      break;
-    case EventType.TRACK:
-      category = CONFIG_CATEGORIES.TRACK;
-      break;
+      if (advancedMapping) {
+        category = CONFIG_CATEGORIES.IDENTIFY;
+        break;
+      } else {
+        throw Error(
+          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent."
+        );
+      }
+    // case EventType.PAGE:
+    //   category = CONFIG_CATEGORIES.PAGE;
+    //   break;
+    // case EventType.SCREEN:
+    //   category = CONFIG_CATEGORIES.SCREEN;
+    //   break;
+    // case EventType.TRACK:
+    //   category = CONFIG_CATEGORIES.TRACK;
+    //   break;
     default:
       throw new Error("Message type not supported");
   }

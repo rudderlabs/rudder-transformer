@@ -156,6 +156,17 @@ const formatTimeStamp = (dateStr, format) => {
   }
 };
 
+// Check what type of gender and convert to f or m
+
+const hashToSha256ForGender = gender => {
+  if (gender.toUpperCase() === "FEMALE" || gender.toUpperCase() === "F") {
+    return sha256("f");
+  }
+  if (gender.toUpperCase() === "MALE" || gender.toUpperCase() === "M") {
+    return sha256("m");
+  }
+};
+
 // ========================================================================
 // REQUEST FORMAT METHODS
 // ========================================================================
@@ -356,7 +367,10 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = Number(formattedVal);
         break;
       case "hashToSha256":
-        formattedVal = sha256(formattedVal);
+        formattedVal = sha256(String(formattedVal));
+        break;
+      case "hashToSha256ForGender":
+        formattedVal = hashToSha256ForGender(formattedVal);
         break;
       default:
         break;

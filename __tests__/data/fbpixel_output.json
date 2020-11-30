@@ -36,7 +36,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -72,7 +72,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -108,7 +108,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -142,7 +142,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -173,7 +173,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -204,7 +204,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -236,7 +236,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -245,22 +245,18 @@
             "FORM": {
                 "data": [
                     {
-                        "data": [
-                            {
-                                "event_name": "Viewed Page Application Loaded",
-                                "event_time": 1567352811,
-                                "user_data": {
-                                    "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
-                                },
-                                "custom_data": {
-                                    "path": "/abc",
-                                    "referrer": "xyz",
-                                    "search": "def",
-                                    "title": "ghi",
-                                    "url": "jkl"
-                                }
-                            }
-                        ]
+                        "event_name": "Viewed Page Application Loaded",
+                        "event_time": 1567352811,
+                        "user_data": {
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
+                        },
+                        "custom_data": {
+                            "path": "/abc",
+                            "referrer": "xyz",
+                            "search": "def",
+                            "title": "ghi",
+                            "url": "jkl"
+                        }
                     }
                 ]
             }
@@ -272,7 +268,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -284,7 +280,7 @@
                         "event_name": "ViewContent",
                         "event_time": 1606654694,
                         "user_data": {
-                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
                         },
                         "custom_data": {
                             "content_ids": "cat 1",
@@ -304,7 +300,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -334,7 +330,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -364,7 +360,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -395,7 +391,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -429,7 +425,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -463,7 +459,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -498,7 +494,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -533,7 +529,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-         "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
         "headers": {},
         "params": {},
         "body": {
@@ -556,7 +552,9 @@
                             "value": 400,
                             "additional_bet_index": 0
                         },
-                        "data_processing_options": ["LDU"],
+                        "data_processing_options": [
+                            "LDU"
+                        ],
                         "data_processing_options_country": 1,
                         "data_processing_options_state": 1000
                     }

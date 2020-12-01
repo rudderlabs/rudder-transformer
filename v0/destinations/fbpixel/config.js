@@ -1,10 +1,10 @@
 const { getMappingConfig } = require("../../util");
 
 const CONFIG_CATEGORIES = {
-  USERDATA: { name: "FBPIXELUserDataConfig" },
-  COMMON: { name: "FBPIXELCommonConfig" }
+  USERDATA: { type: "identify", name: "FBPIXELUserDataConfig" },
+  COMMON: { name: "FBPIXELCommonConfig" },
   //   TRACK: { name: "FBPIXELTrackConfig" },
-  //   PAGE: { name: "FBPIXELPageScreenConfig" }
+  PAGE: { type: "page", name: "FBPIXELPageScreenCustomConfig" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

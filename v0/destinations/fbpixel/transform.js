@@ -28,11 +28,23 @@ function responseBuilderSimple(message, category, destination) {
 
   const endpoint = `https://graph.facebook.com/v9.0/${pixelId}/events?access_token=${accessToken}`;
 
-  const user_data = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const user_data = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
+  );
   const commonData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
+  let custom_data;
+  if (category.type !== "identify") {
+    custom_data = constructPayload(message, MAPPING_CONFIG[category.name]);
+  }
+  if (category.type === "page") {
+    commonData.event_name = message.name
+      ? `Viewed Page ${message.name}`
+      : "Viewed a Page";
+  }
   if (user_data && commonData) {
     const split = user_data.name ? user_data.name.split(" ") : null;
     if (split !== null) {
@@ -44,7 +56,7 @@ function responseBuilderSimple(message, category, destination) {
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     const payload = {
-      data: [{ user_data, ...commonData }]
+      data: [{ user_data, ...commonData, ...custom_data }]
     };
     response.body.FORM = payload;
     return response;
@@ -70,9 +82,9 @@ const processEvent = (message, destination) => {
           "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent."
         );
       }
-    // case EventType.PAGE:
-    //   category = CONFIG_CATEGORIES.PAGE;
-    //   break;
+    case EventType.PAGE:
+      category = CONFIG_CATEGORIES.PAGE;
+      break;
     // case EventType.SCREEN:
     //   category = CONFIG_CATEGORIES.SCREEN;
     //   break;

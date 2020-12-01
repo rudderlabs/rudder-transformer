@@ -1,0 +1,6 @@
+[{
+    "destKey": "custom_data",
+    "sourceKeys": "properties",
+    "required": true
+  }
+]

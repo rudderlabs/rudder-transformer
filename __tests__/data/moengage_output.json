@@ -70,7 +70,8 @@
               "value": 31.98
             },
             "app_version": "1.1.6",
-            "user_time": "2020-10-16T08:10:12.782Z"
+            "current_time": "2020-10-16T13:40:12.791+05:30",
+            "user_timezone_offset": -18000
           }
         ]
       },
@@ -92,7 +93,7 @@
           "email": "ruchira@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
-          "created_time": "2020-10-16T08:26:14.938Z"
+          "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
         "customer_id": "ruchu123"
       }
@@ -123,7 +124,7 @@
             "email": "ruchira@gmail.com",
             "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
             "company.id": "abc123",
-            "created_time": "2020-10-16T08:53:29.386Z"
+            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
           },
           "customer_id": "ruchu123"
         }
@@ -183,7 +184,7 @@
           "email": "ruchira@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
-          "created_time": "2020-10-16T09:05:11.001Z"
+          "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
         "customer_id": "ruchu123"
       }
@@ -213,7 +214,7 @@
           "email": "ruchira@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
-          "created_time": "2020-10-16T09:09:31.465Z"
+          "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
         "customer_id": "ruchu123"
       }
@@ -314,7 +315,8 @@
               "value": 31.98
             },
             "app_version": "1.1.6",
-            "user_time": "2020-10-16T08:10:12.782Z"
+            "current_time": "2020-10-16T13:40:12.791+05:30",
+            "user_timezone_offset": 19800
           }
         ]
       },
@@ -325,4 +327,3 @@
     "userId": "ruchu123"
   }
 ]
-

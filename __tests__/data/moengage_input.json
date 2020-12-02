@@ -4,6 +4,7 @@
       "anonymousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
       "channel": "web",
       "context": {
+        "timezone": "America/Havana",
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -122,7 +123,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -211,7 +216,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -308,7 +317,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -397,7 +410,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -486,7 +503,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -575,7 +596,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -663,7 +688,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -752,7 +781,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -783,6 +816,7 @@
     "message": {
       "channel": "web",
       "context": {
+        "timezone": "Asia/Kolkata",
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -901,7 +935,11 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
+            "defaultConfig": [
+              "apiId",
+              "apiKey",
+              "region"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -929,4 +967,3 @@
     }
   }
 ]
-

@@ -7,15 +7,16 @@
 // ========================================================================
 
 const Handlebars = require("handlebars");
+
 const fs = require("fs");
 const path = require("path");
 const _ = require("lodash");
 const set = require("set-value");
 const get = require("get-value");
 const uaParser = require("ua-parser-js");
-const moment = require("moment");
-const logger = require("../../logger");
+const moment = require("moment-timezone");
 const sha256 = require("sha256");
+const logger = require("../../logger");
 
 // ========================================================================
 // INLINERS
@@ -132,6 +133,20 @@ function flattenJson(data) {
   return result;
 }
 
+// Get the offset value in Seconds for timezone
+
+const getOffsetInSec = value => {
+  const x = moment()
+    .tz(value)
+    .format("Z");
+  const split = x.split(":");
+  const hour = Number(split[0]);
+  const min = Number(split[1]);
+  let sec = 0;
+  sec =
+    hour < 0 ? -1 * (hour * -60 * 60 + min * 60) : hour * 60 * 60 + min * 60;
+  return sec;
+};
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE
@@ -383,6 +398,9 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "getFbGenderVal":
         formattedVal = getFbGenderVal(formattedVal);
+        break;
+      case "getOffsetInSec":
+        formattedVal = getOffsetInSec(formattedVal);
         break;
       default:
         break;

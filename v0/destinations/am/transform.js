@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-lonely-if */
 const _ = require("lodash");
@@ -311,6 +312,7 @@ function processSingleMessage(message, destination) {
   let category = ConfigCategory.DEFAULT;
 
   const messageType = message.type.toLowerCase();
+
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = "events"; // identify same as events
@@ -450,10 +452,19 @@ function processTransaction(message) {
 
   // Why are we skipping Checkout started and Order Updated?
   // Order Cancelled is not being sent, but we are handling it here
-  if (
-    eventType === EventType.ORDER_CANCELLED.name ||
-    eventType === EventType.ORDER_REFUNDED.name
-  ) {
+  if (eventType === Event.ORDER_CANCELLED.name) {
+    // eslint-disable-next-line no-undef
+    eventtype = Event.ORDER_CANCELLED.name;
+    // eslint-disable-next-line no-undef
+    return processProductListAction(message);
+  }
+  if (eventType === Event.ORDER_REFUNDED.name) {
+    eventtype = Event.ORDER_REFUNDED.name;
+
+    return processProductListAction(message);
+  }
+  if (eventType === Event.ORDER_COMPLETED.name) {
+    eventtype = Event.ORDER_COMPLETED.name;
     return processProductListAction(message);
   }
   return [];
@@ -462,15 +473,23 @@ function processTransaction(message) {
 function process(event) {
   const respList = [];
   const { message, destination } = event;
+
   const messageType = message.type.toLowerCase();
   const eventType = message.event ? message.event.toLowerCase() : undefined;
+
   const toSendEvents = [];
+  let temp;
   if (
     messageType === EventType.TRACK &&
     (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-      eventType === Event.PRODUCT_LIST_CLICKED)
+      eventType === Event.PRODUCT_LIST_CLICKED.name)
   ) {
-    toSendEvents.push(processProductListAction(message));
+    // toSendEvents.push(processProductListAction(message));
+    temp = processProductListAction(message);
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < temp.length; i++) {
+      toSendEvents.push(temp[i]);
+    }
   } else if (
     messageType === EventType.TRACK &&
     (eventType === Event.CHECKOUT_STARTED.name ||
@@ -478,7 +497,11 @@ function process(event) {
       eventType === Event.ORDER_COMPLETED.name ||
       eventType === Event.ORDER_CANCELLED.name)
   ) {
-    toSendEvents.push(processTransaction(message));
+    temp = processTransaction(message);
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < temp.length; i++) {
+      toSendEvents.push(temp[i]);
+    }
   } else {
     toSendEvents.push(message);
   }

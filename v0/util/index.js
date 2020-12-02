@@ -5,7 +5,6 @@
 // TRANSFORMER UTILITIES ==> Utility methods having dependency on event/message
 // GENERIC ==> Other methods which doesn't fit in other categories
 // ========================================================================
-
 const Handlebars = require("handlebars");
 
 const fs = require("fs");

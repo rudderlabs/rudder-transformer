@@ -135,16 +135,20 @@ function flattenJson(data) {
 // Get the offset value in Seconds for timezone
 
 const getOffsetInSec = value => {
-  const x = moment()
-    .tz(value)
-    .format("Z");
-  const split = x.split(":");
-  const hour = Number(split[0]);
-  const min = Number(split[1]);
-  let sec = 0;
-  sec =
-    hour < 0 ? -1 * (hour * -60 * 60 + min * 60) : hour * 60 * 60 + min * 60;
-  return sec;
+  const name = moment.tz.zone(value);
+  if (name) {
+    const x = moment()
+      .tz(value)
+      .format("Z");
+    const split = x.split(":");
+    const hour = Number(split[0]);
+    const min = Number(split[1]);
+    let sec = 0;
+    sec =
+      hour < 0 ? -1 * (hour * -60 * 60 + min * 60) : hour * 60 * 60 + min * 60;
+    return sec;
+  }
+  return undefined;
 };
 // Important !@!
 // format date in yyyymmdd format

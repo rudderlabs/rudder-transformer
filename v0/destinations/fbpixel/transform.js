@@ -1,20 +1,72 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable camelcase */
+const sha256 = require("sha256");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { EventType } = require("../../../constants");
-const sha256 = require("sha256");
 
 const {
   constructPayload,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues,
   defaultRequestConfig,
   flattenJson
 } = require("../../util");
 
+function checkPiiProperties(
+  custom_data,
+  blacklistPiiProperties,
+  whitelistPiiProperties
+) {
+  const defaultPiiProperties = [
+    "email",
+    "firstName",
+    "lastName",
+    "gender",
+    "city",
+    "country",
+    "phone",
+    "state",
+    "zip",
+    "birthday"
+  ];
+  blacklistPiiProperties = blacklistPiiProperties || [];
+  whitelistPiiProperties = whitelistPiiProperties || [];
+  const customPiiProperties = {};
+  for (let i = 0; i < blacklistPiiProperties.length; i += 1) {
+    const configuration = blacklistPiiProperties[i];
+    customPiiProperties[configuration.blacklistPiiProperties] =
+      configuration.blacklistPiiHash;
+  }
+  Object.keys(custom_data).forEach(function(property) {
+    const isPropertyPii = defaultPiiProperties.indexOf(property) >= 0;
+    let isProperyWhiteListed = false;
+    for (let i = 0; i < whitelistPiiProperties.length; i += 1) {
+      const configuration = whitelistPiiProperties[i];
+      const properties = configuration.whitelistPiiProperties;
+      if (properties === property) {
+        isProperyWhiteListed = true;
+      }
+    }
+    if (isPropertyPii) {
+      if (!isProperyWhiteListed) {
+        delete custom_data[property];
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(customPiiProperties, property)) {
+      if (customPiiProperties[property]) {
+        custom_data[property] = sha256(String(custom_data[property]));
+      } else {
+        delete custom_data[property];
+      }
+    }
+  });
+  return custom_data;
+}
+
 function responseBuilderSimple(message, category, destination) {
   const { Config } = destination;
-  const {
-    pixelId,
-    accessToken,
+  const { pixelId, accessToken } = Config;
+  let {
     blacklistPiiProperties,
     categoryToContent,
     eventsToEvents,
@@ -38,8 +90,16 @@ function responseBuilderSimple(message, category, destination) {
   );
   let custom_data;
   if (category.type !== "identify") {
-    custom_data = constructPayload(message, MAPPING_CONFIG[category.name]);
+    custom_data = flattenJson(
+      constructPayload(message, MAPPING_CONFIG[category.name])
+    );
+    custom_data = checkPiiProperties(
+      custom_data,
+      blacklistPiiProperties,
+      whitelistPiiProperties
+    );
   }
+
   if (category.type === "page") {
     commonData.event_name = message.name
       ? `Viewed Page ${message.name}`
@@ -56,7 +116,7 @@ function responseBuilderSimple(message, category, destination) {
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     const payload = {
-      data: [{ user_data, ...commonData, ...custom_data }]
+      data: [{ user_data, ...commonData, custom_data }]
     };
     response.body.FORM = payload;
     return response;
@@ -83,6 +143,7 @@ const processEvent = (message, destination) => {
         );
       }
     case EventType.PAGE:
+    case EventType.SCREEN:
       category = CONFIG_CATEGORIES.PAGE;
       break;
     // case EventType.SCREEN:

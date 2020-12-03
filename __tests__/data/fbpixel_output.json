@@ -294,16 +294,17 @@
                 "data": [
                     {
                         "event_name": "ViewContent",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "cat 1",
+                            "content_ids": ["cat 1"],
                             "content_type": "product_group",
-                            "contents": "[{'id':'cat 1','quantity':1}]",
-                            "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
-                            "ph": "593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579"
+                            "contents": [{"id":"cat 1","quantity":1}],
+                            "email": "abc@gmail.com",
+                            "phone": "593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579"
                         }
                     }
                 ]
@@ -325,14 +326,45 @@
                 "data": [
                     {
                         "event_name": "ViewContent",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "cat 1",
+                            "content_ids": ["cat 1"],
                             "content_type": "product_group",
-                            "contents": "[{'id':'cat 1','quantity':1}]"
+                            "contents": [{"id":"cat 1","quantity":1}]
+                        }
+                    }
+                ]
+            }
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "headers": {},
+        "params": {},
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {
+                "data": [
+                    {
+                        "event_name": "ViewContent",
+                        "event_time": 1571051718,
+                        "user_data": {
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                        },
+                        "custom_data": {
+                            "content_ids": ["507f1f77bcf86cd799439011","507f1f77bcf86cdef799439011"],
+                            "content_type": "product",
+                            "contents": [{"id":"507f1f77bcf86cd799439011","quantity":2},{"id":"507f1f77bcf86cdef799439011","quantity":2}]
                         }
                     }
                 ]
@@ -356,41 +388,13 @@
                         "event_name": "ViewContent",
                         "event_time": 1606654694,
                         "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"]",
+                            "content_ids": ["507f1f77bcf86cd799439011","507f1f77bcf86cdef799439011"],
                             "content_type": "product",
-                            "contents": "[{'id':'507f1f77bcf86cd799439011','quantity':2},{'id':'507f1f77bcf86cdef799439011','quantity':2}]"
-                        }
-                    }
-                ]
-            }
-        },
-        "files": {}
-    },
-    {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
-        "headers": {},
-        "params": {},
-        "body": {
-            "JSON": {},
-            "XML": {},
-            "FORM": {
-                "data": [
-                    {
-                        "event_name": "ViewContent",
-                        "event_time": 1606654694,
-                        "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
-                        },
-                        "custom_data": {
-                            "content_ids": "[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"]",
-                            "content_type": "product",
-                            "contents": "[{'id':'507f1f77bcf86cd799439011','quantity':2},{'id':'507f1f77bcf86cdef799439011','quantity':2}]",
+                            "contents": [{"id":"507f1f77bcf86cd799439011","quantity":2},{"id":"507f1f77bcf86cdef799439011","quantity":2}],
                             "list_id": "1234"
                         }
                     }

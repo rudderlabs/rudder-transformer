@@ -12,6 +12,7 @@ const {
 } = require("../../util");
 
 function checkPiiProperties(
+  message,
   custom_data,
   blacklistPiiProperties,
   whitelistPiiProperties
@@ -20,6 +21,10 @@ function checkPiiProperties(
     "email",
     "firstName",
     "lastName",
+    "firstname",
+    "lastname",
+    "first_name",
+    "last_name",
     "gender",
     "city",
     "country",
@@ -54,7 +59,7 @@ function checkPiiProperties(
 
     if (Object.prototype.hasOwnProperty.call(customPiiProperties, property)) {
       if (customPiiProperties[property]) {
-        custom_data[property] = sha256(String(custom_data[property]));
+        custom_data[property] = sha256(String(message.properties[property]));
       } else {
         delete custom_data[property];
       }
@@ -72,8 +77,6 @@ function responseBuilderSimple(message, category, destination) {
     eventsToEvents,
     eventCustomProperties,
     valueFieldIdentifier,
-    advancedMapping,
-    legacyConversionPixelId,
     whitelistPiiProperties,
     limitedDataUSage
   } = Config;
@@ -84,20 +87,25 @@ function responseBuilderSimple(message, category, destination) {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
   );
+  let custom_data = {};
+
   const commonData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
-  let custom_data;
   if (category.type !== "identify") {
-    custom_data = flattenJson(
-      constructPayload(message, MAPPING_CONFIG[category.name])
-    );
+    custom_data = {
+      ...custom_data,
+      ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
+    };
     custom_data = checkPiiProperties(
+      message,
       custom_data,
       blacklistPiiProperties,
       whitelistPiiProperties
     );
+  } else {
+    custom_data = undefined;
   }
 
   if (category.type === "page") {
@@ -105,6 +113,24 @@ function responseBuilderSimple(message, category, destination) {
       ? `Viewed Page ${message.name}`
       : "Viewed a Page";
   }
+  if (category.type === "simple track") {
+    custom_data.value = message.properties
+      ? message.properties.revenue
+      : undefined;
+    delete custom_data.revenue;
+  }
+
+  if (limitedDataUSage) {
+    const dpo = message.integrations.FacebookPixel
+      ? message.integrations.FacebookPixel.dataProcessingOptions
+      : undefined;
+    [
+      commonData.data_processing_options,
+      commonData.data_processing_options_country,
+      commonData.data_processing_options_state
+    ] = dpo;
+  }
+
   if (user_data && commonData) {
     const split = user_data.name ? user_data.name.split(" ") : null;
     if (split !== null) {
@@ -146,12 +172,31 @@ const processEvent = (message, destination) => {
     case EventType.SCREEN:
       category = CONFIG_CATEGORIES.PAGE;
       break;
-    // case EventType.SCREEN:
-    //   category = CONFIG_CATEGORIES.SCREEN;
-    //   break;
-    // case EventType.TRACK:
-    //   category = CONFIG_CATEGORIES.TRACK;
-    //   break;
+    case EventType.TRACK:
+      switch (message.event.toLowerCase()) {
+        case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
+          category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
+          break;
+        case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
+          category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
+          break;
+        case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
+          category = CONFIG_CATEGORIES.PRODUCT_ADDED;
+          break;
+        case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
+          category = CONFIG_CATEGORIES.ORDER_COMPLETED;
+          break;
+        case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
+          category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
+          break;
+        case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
+          category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
+          break;
+        default:
+          category = CONFIG_CATEGORIES.SIMPLE_TRACK;
+          break;
+      }
+      break;
     default:
       throw new Error("Message type not supported");
   }

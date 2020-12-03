@@ -1567,6 +1567,96 @@
         },
         "destination": {
             "Config": {
+                "limitedDataUSage" : true,
+                "blacklistPiiProperties": [
+                    {
+                        "blacklistPiiProperties": "",
+                        "blacklistPiiHash": false
+                    }
+                ],
+                "accessToken": "09876",
+                "pixelId": "dfgdfgdgd",
+                "eventsToEvents": [
+                    {
+                        "from": "",
+                        "to": ""
+                    }
+                ],
+                "eventCustomProperties": [
+                    {
+                        "eventCustomProperties": ""
+                    }
+                ],
+                "valueFieldIdentifier": "",
+                "advancedMapping": false,
+                "whitelistPiiProperties": [
+                    {
+                        "whitelistPiiProperties": ""
+                    }
+                ]
+            },
+            "Enabled": true
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+            "destination_props": {
+                "Fb": {
+                    "app_id": "RudderFbApp"
+                }
+            },
+            "context": {
+                "device": {
+                    "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+                    "manufacturer": "Xiaomi",
+                    "model": "Redmi 6",
+                    "name": "xiaomi"
+                },
+                "network": {
+                    "carrier": "Banglalink"
+                },
+                "os": {
+                    "name": "android",
+                    "version": "8.1.0"
+                },
+                "screen": {
+                    "height": "100",
+                    "density": 50
+                },
+                "traits": {
+                    "email": "abc@gmail.com",
+                    "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+                }
+            },
+            "event": "spin_result",
+            "integrations": {
+                "All": true,
+                "FacebookPixel": {
+                    "dataProcessingOptions": [
+                        [
+                            "LDU"
+                        ],
+                        1,
+                        1000
+                    ],
+                    "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+                    "fbp": "fb.1.1554763741205.234567890",
+                    "fb_login_id": "fb_id",
+                    "lead_id": "lead_id"
+                }
+            },
+            "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+            "properties": {
+                "revenue": 400,
+                "additional_bet_index": 0
+            },
+            "timestamp": "2019-09-01T15:46:51.693229+05:30",
+            "type": "track"
+        },
+        "destination": {
+            "Config": {
+                "limitedDataUSage" : false,
                 "blacklistPiiProperties": [
                     {
                         "blacklistPiiProperties": "",

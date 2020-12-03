@@ -13,7 +13,7 @@
                 "data": [
                     {
                         "event_name": "spin_result",
-                        "event_time": 1567352811,
+                        "event_time": 1567333011,
                         "user_data": {
                             "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                             "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
@@ -105,24 +105,20 @@
             "JSON": {},
             "XML": {},
             "FORM": {
-                "data": [
-                    {
                         "data": [
                             {
                                 "event_name": "spin_result",
-                                "event_time": 1567352811,
+                                "event_time": 1567333011,
                                 "user_data": {
-                                    "external_id": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+                                    "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                                     "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
                                 },
                                 "custom_data": {
-                                    "value": "400",
-                                    "additional_bet_index": null
+                                    "value": 400,
+                                    "additional_bet_index": 0
                                 }
                             }
                         ]
-                    }
-                ]
             }
         },
         "files": {}
@@ -141,14 +137,14 @@
                 "data": [
                     {
                         "event_name": "spin_result",
-                        "event_time": 1567352811,
+                        "event_time": 1567333011,
                         "user_data": {
-                            "external_id": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+                            "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                             "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
                         },
                         "custom_data": {
-                            "value": "400",
-                            "additional_bet_index": null,
+                            "value": 400,
+                            "additional_bet_index": 0,
                             "email": "abc@gmail.com"
                         }
                     }
@@ -171,14 +167,14 @@
                 "data": [
                     {
                         "event_name": "spin_result",
-                        "event_time": 1567352811,
+                        "event_time": 1567333011,
                         "user_data": {
-                            "external_id": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+                            "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                             "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
                         },
                         "custom_data": {
-                            "value": "400",
-                            "additional_bet_index": null,
+                            "value": 400,
+                            "additional_bet_index": 0,
                             "email": "abc@gmail.com"
                         }
                     }
@@ -201,14 +197,14 @@
                 "data": [
                     {
                         "event_name": "spin_result",
-                        "event_time": 1567352811,
+                        "event_time": 1567333011,
                         "user_data": {
-                            "external_id": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+                            "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                             "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
                         },
                         "custom_data": {
-                            "value": "400",
-                            "additional_bet_index": null,
+                            "value": 400,
+                            "additional_bet_index": 0,
                             "email": "abc@gmail.com",
                             "phone": "593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579"
                         }
@@ -551,7 +547,7 @@
                 "data": [
                     {
                         "event_name": "spin_result",
-                        "event_time": 1567352811,
+                        "event_time": 1567333011,
                         "user_data": {
                             "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
                             "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
@@ -569,6 +565,39 @@
                         ],
                         "data_processing_options_country": 1,
                         "data_processing_options_state": 1000
+                    }
+                ]
+            }
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "headers": {},
+        "params": {},
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {
+                "data": [
+                    {
+                        "event_name": "spin_result",
+                        "event_time": 1567333011,
+                        "user_data": {
+                            "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
+                            "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
+                            "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+                            "fbp": "fb.1.1554763741205.234567890",
+                            "fb_login_id": "fb_id",
+                            "lead_id": "lead_id"
+                        },
+                        "custom_data": {
+                            "value": 400,
+                            "additional_bet_index": 0
+                        }
                     }
                 ]
             }

@@ -1,9 +1,7 @@
 [
     {
       "destKey": "event_name",
-      "sourceKeys": 
-       "type"
-      ,
+      "sourceKeys": ["event", "type"],
       "required": true
     },
     {

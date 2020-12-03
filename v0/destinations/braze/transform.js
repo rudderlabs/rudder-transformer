@@ -417,12 +417,24 @@ function batch(destEvents) {
           const batchResponse = defaultRequestConfig();
           batchResponse.headers = message.headers;
           batchResponse.endpoint = trackEndpoint;
-          batchResponse.body.JSON = {
-            attributes: attributesBatch,
-            events: eventsBatch,
-            purchases: purchasesBatch,
+          const responseBodyJson = {
             partner: BRAZE_PARTNER_NAME
           };
+          if (attributesBatch.length > 0) {
+            responseBodyJson.attributes = attributesBatch;
+          }
+          if (eventsBatch.length > 0) {
+            responseBodyJson.events = eventsBatch;
+          }
+          if (purchasesBatch.length > 0) {
+            responseBodyJson.purchases = purchasesBatch;
+          }
+          batchResponse.body.JSON = responseBodyJson;
+          // batchResponse.body.JSON = {
+          //   attributes: attributesBatch,
+          //   events: eventsBatch,
+          //   purchases: purchasesBatch,
+          // };
           // modify the endpoint to track endpoint
           batchResponse.endpoint = trackEndpoint;
           respList.push(
@@ -469,12 +481,25 @@ function batch(destEvents) {
         const batchResponse = defaultRequestConfig();
         batchResponse.headers = message.headers;
         batchResponse.endpoint = trackEndpoint;
-        batchResponse.body.JSON = {
-          attributes: attributesBatch,
-          events: eventsBatch,
-          purchases: purchasesBatch,
+        const responseBodyJson = {
           partner: BRAZE_PARTNER_NAME
         };
+        if (attributesBatch.length > 0) {
+          responseBodyJson.attributes = attributesBatch;
+        }
+        if (eventsBatch.length > 0) {
+          responseBodyJson.events = eventsBatch;
+        }
+        if (purchasesBatch.length > 0) {
+          responseBodyJson.purchases = purchasesBatch;
+        }
+        batchResponse.body.JSON = responseBodyJson;
+        // batchResponse.body.JSON = {
+        //   attributes: attributesBatch,
+        //   events: eventsBatch,
+        //   purchases: purchasesBatch,
+        //   partner: BRAZE_PARTNER_NAME
+        // };
         // modify the endpoint as message object will have identify endpoint
         batchResponse.endpoint = trackEndpoint;
         respList.push(
@@ -504,12 +529,25 @@ function batch(destEvents) {
     const batchResponse = defaultRequestConfig();
     batchResponse.headers = message.headers;
     batchResponse.endpoint = trackEndpoint;
-    batchResponse.body.JSON = {
-      attributes: attributesBatch,
-      events: eventsBatch,
-      purchases: purchasesBatch,
+    const responseBodyJson = {
       partner: BRAZE_PARTNER_NAME
     };
+    if (attributesBatch.length > 0) {
+      responseBodyJson.attributes = attributesBatch;
+    }
+    if (eventsBatch.length > 0) {
+      responseBodyJson.events = eventsBatch;
+    }
+    if (purchasesBatch.length > 0) {
+      responseBodyJson.purchases = purchasesBatch;
+    }
+    batchResponse.body.JSON = responseBodyJson;
+    // batchResponse.body.JSON = {
+    //   attributes: attributesBatch,
+    //   events: eventsBatch,
+    //   purchases: purchasesBatch,
+    //   partner: BRAZE_PARTNER_NAME
+    // };
     // modify the endpoint to track endpoint
     batchResponse.endpoint = trackEndpoint;
     respList.push(

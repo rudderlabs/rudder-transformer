@@ -11,11 +11,79 @@ const {
   flattenJson
 } = require("../../util");
 
+function getContentType(message, defaultValue, categoryToContent) {
+  const { options } = message;
+  if (options && options.contentType) {
+    return [options.contentType];
+  }
+
+  let { category } = message.properties;
+  if (!category) {
+    const { products } = message.properties;
+    if (products && products.length) {
+      category = products[0].category;
+    }
+  }
+  if (category) {
+    if (categoryToContent === undefined) {
+      categoryToContent = [];
+    }
+    const mapped = categoryToContent;
+    const mappedTo = mapped.reduce((filtered, map) => {
+      if (map.from === category) {
+        filtered.push(map.to);
+      }
+      return filtered;
+    }, []);
+    if (mappedTo.length) {
+      return mappedTo;
+    }
+  }
+  return defaultValue;
+}
+
+function handleProductListViewed(message, categoryToContent) {
+  let contentType;
+  const contentIds = [];
+  const contents = [];
+  const { products } = message.properties;
+  if (Array.isArray(products)) {
+    products.forEach(function(product) {
+      const productId = product.product_id;
+      if (productId) {
+        contentIds.push(productId);
+        contents.push({
+          id: productId,
+          quantity: message.properties.quantity
+        });
+      }
+    });
+  }
+
+  if (contentIds.length) {
+    contentType = "product";
+  } else {
+    contentIds.push(message.properties.category || "");
+    contents.push({
+      id: message.properties.category || "",
+      quantity: 1
+    });
+    contentType = "product_group";
+  }
+  return {
+    content_ids: contentIds,
+    content_type: getContentType(message, contentType, categoryToContent),
+    contents
+  };
+}
+
 function checkPiiProperties(
   message,
   custom_data,
   blacklistPiiProperties,
-  whitelistPiiProperties
+  whitelistPiiProperties,
+  isStandard,
+  eventCustomProperties
 ) {
   const defaultPiiProperties = [
     "email",
@@ -64,14 +132,22 @@ function checkPiiProperties(
         delete custom_data[property];
       }
     }
+    if (
+      isStandard &&
+      !Object.prototype.hasOwnProperty.call(eventCustomProperties, property) &&
+      !isPropertyPii
+    ) {
+      delete custom_data[property];
+    }
   });
+
   return custom_data;
 }
 
 function responseBuilderSimple(message, category, destination) {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
-  let {
+  const {
     blacklistPiiProperties,
     categoryToContent,
     eventsToEvents,
@@ -98,14 +174,30 @@ function responseBuilderSimple(message, category, destination) {
       ...custom_data,
       ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
     };
+
     custom_data = checkPiiProperties(
       message,
       custom_data,
       blacklistPiiProperties,
-      whitelistPiiProperties
+      whitelistPiiProperties,
+      category.standard,
+      eventCustomProperties
     );
   } else {
     custom_data = undefined;
+  }
+  if (category.standard) {
+    switch (category.type) {
+      case "product list viewed":
+        custom_data = {
+          ...custom_data,
+          ...handleProductListViewed(message, categoryToContent)
+        };
+        commonData.event_name = "ViewContent";
+        break;
+      default:
+        throw Error("This standard event does not exist");
+    }
   }
 
   if (category.type === "page") {

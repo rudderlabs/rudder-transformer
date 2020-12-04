@@ -47,12 +47,13 @@
     "md5": "^2.2.1",
     "minimist": ">=0.2.1",
     "moment": "^2.27.0",
+    "moment-timezone": "^0.5.32",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
-    "ua-parser-js": "^0.7.22",
     "set-value": "^3.0.2",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
+    "ua-parser-js": "^0.7.22",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

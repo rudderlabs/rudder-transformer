@@ -23,8 +23,19 @@
     "required": false
   },
   {
-    "destKey": "user_time",
-    "sourceKeys": "originalTimestamp",
+    "destKey": "current_time",
+    "sourceKeys": [
+      "timestamp",
+      "originalTimestamp"
+    ],
     "required": false
+  },
+  {
+    "destKey": "user_timezone_offset",
+    "sourceKeys": "context.timezone",
+    "required": false,
+    "metadata": {
+      "type": "getOffsetInSec"
+    }
   }
 ]

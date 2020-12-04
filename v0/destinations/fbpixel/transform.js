@@ -11,6 +11,10 @@ const {
   flattenJson
 } = require("../../util");
 
+function formatRevenue(revenue) {
+  return Number((revenue || 0).toFixed(2));
+}
+
 function getContentType(message, defaultValue, categoryToContent) {
   const { options } = message;
   if (options && options.contentType) {
@@ -31,10 +35,10 @@ function getContentType(message, defaultValue, categoryToContent) {
     const mapped = categoryToContent;
     const mappedTo = mapped.reduce((filtered, map) => {
       if (map.from === category) {
-        filtered.push(map.to);
+        filtered = map.to;
       }
       return filtered;
-    }, []);
+    }, "");
     if (mappedTo.length) {
       return mappedTo;
     }
@@ -42,6 +46,34 @@ function getContentType(message, defaultValue, categoryToContent) {
   return defaultValue;
 }
 
+function handleOrder(message, categoryToContent) {
+  const { products } = message.properties;
+  const value = formatRevenue(message.properties.revenue);
+  const contentType = getContentType(message, "product", categoryToContent);
+  const contentIds = [];
+  const contents = [];
+  const { category } = message.properties;
+
+  for (let i = 0; i < products.length; i += 1) {
+    const pId = products[i].product_id || products[i].sku || products[i].id;
+    contentIds.push(pId);
+    const content = {
+      id: pId,
+      quantity: products[i].quantity,
+      item_price: products[i].price
+    };
+    contents.push(content);
+  }
+  return {
+    content_category: category,
+    content_ids: contentIds,
+    content_type: contentType,
+    currency: message.properties.currency,
+    value,
+    contents,
+    num_items: contentIds.length
+  };
+}
 function handleProductListViewed(message, categoryToContent) {
   let contentType;
   const contentIds = [];
@@ -73,6 +105,44 @@ function handleProductListViewed(message, categoryToContent) {
   return {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
+    contents
+  };
+}
+
+function handleProduct(message, categoryToContent, valueFieldIdentifier) {
+  const useValue = valueFieldIdentifier === "properties.value";
+  const contentIds = [
+    message.properties.product_id ||
+      message.properties.id ||
+      message.properties.sku ||
+      ""
+  ];
+  const contentType = getContentType(message, "product", categoryToContent);
+  const contentName =
+    message.properties.product_name || message.properties.name || "";
+  const contentCategory = message.properties.category || "";
+  const { currency } = message.properties;
+  const value = useValue
+    ? formatRevenue(message.properties.value)
+    : formatRevenue(message.properties.price);
+  const contents = [
+    {
+      id:
+        message.properties.product_id ||
+        message.properties.id ||
+        message.properties.sku ||
+        "",
+      quantity: message.properties.quantity,
+      item_price: message.properties.price
+    }
+  ];
+  return {
+    content_ids: contentIds,
+    content_type: contentType,
+    content_name: contentName,
+    content_category: contentCategory,
+    currency,
+    value,
     contents
   };
 }
@@ -132,11 +202,15 @@ function checkPiiProperties(
         delete custom_data[property];
       }
     }
-    if (
-      isStandard &&
-      !Object.prototype.hasOwnProperty.call(eventCustomProperties, property) &&
-      !isPropertyPii
-    ) {
+    let isCustomProperty = false;
+    for (let i = 0; i < eventCustomProperties.length; i += 1) {
+      const configuration = eventCustomProperties[i];
+      const properties = configuration.eventCustomProperties;
+      if (properties === property) {
+        isCustomProperty = true;
+      }
+    }
+    if (isStandard && !isCustomProperty && !isPropertyPii) {
       delete custom_data[property];
     }
   });
@@ -150,7 +224,6 @@ function responseBuilderSimple(message, category, destination) {
   const {
     blacklistPiiProperties,
     categoryToContent,
-    eventsToEvents,
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
@@ -174,7 +247,6 @@ function responseBuilderSimple(message, category, destination) {
       ...custom_data,
       ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
     };
-
     custom_data = checkPiiProperties(
       message,
       custom_data,
@@ -187,6 +259,7 @@ function responseBuilderSimple(message, category, destination) {
     custom_data = undefined;
   }
   if (category.standard) {
+    custom_data.currency = message.properties.currency || "USD";
     switch (category.type) {
       case "product list viewed":
         custom_data = {
@@ -194,6 +267,42 @@ function responseBuilderSimple(message, category, destination) {
           ...handleProductListViewed(message, categoryToContent)
         };
         commonData.event_name = "ViewContent";
+        break;
+      case "product viewed":
+        custom_data = {
+          ...custom_data,
+          ...handleProduct(message, categoryToContent, valueFieldIdentifier)
+        };
+        commonData.event_name = "ViewContent";
+        break;
+      case "product added":
+        custom_data = {
+          ...custom_data,
+          ...handleProduct(message, categoryToContent, valueFieldIdentifier)
+        };
+        commonData.event_name = "AddToCart";
+        break;
+      case "order completed":
+        custom_data = {
+          ...custom_data,
+          ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+        };
+        commonData.event_name = "Purchase";
+        break;
+      case "products searched":
+        custom_data = {
+          ...custom_data,
+          search_string: message.properties.query
+        };
+        commonData.event_name = "Search";
+        break;
+      case "checkout started":
+        custom_data = {
+          ...custom_data,
+          ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+        };
+
+        commonData.event_name = "InitiateCheckout";
         break;
       default:
         throw Error("This standard event does not exist");
@@ -247,7 +356,10 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
-  const { advancedMapping } = destination.Config;
+  const { advancedMapping, eventsToEvents } = destination.Config;
+  let standard;
+  let standardTo = "";
+  let checkEvent;
   const messageType = message.type.toLowerCase();
   let category;
   switch (messageType) {
@@ -265,23 +377,39 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.TRACK:
-      switch (message.event.toLowerCase()) {
+      standard = eventsToEvents;
+      if (standard) {
+        standardTo = standard.reduce((filtered, standards) => {
+          if (standards.from.toLowerCase() === message.event.toLowerCase()) {
+            filtered = standards.to;
+          }
+          return filtered;
+        }, "");
+      }
+      checkEvent = standardTo !== "" ? standardTo : message.event.toLowerCase();
+
+      switch (checkEvent) {
         case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
+        case "ViewContent":
           category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
           break;
         case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
           category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
           break;
         case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
+        case "AddToCart":
           category = CONFIG_CATEGORIES.PRODUCT_ADDED;
           break;
         case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
+        case "Purchase":
           category = CONFIG_CATEGORIES.ORDER_COMPLETED;
           break;
         case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
+        case "Search":
           category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
           break;
         case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
+        case "InitiateCheckout":
           category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
           break;
         default:

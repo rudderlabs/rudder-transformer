@@ -119,86 +119,18 @@ function getUserAttributesObject(message, mappingJson) {
     "phone"
   ];
 
-  // iterate over rest of the traits properties
-  Object.keys(traits).forEach(traitKey => {
-    // if traitKey is not reserved add the value to final output
-    if (reservedKeys.indexOf(traitKey) === -1) {
-      const value = get(traits, traitKey);
-      if (value) {
-        data[traitKey] = value;
+  if (traits) {
+    // iterate over rest of the traits properties
+    Object.keys(traits).forEach(traitKey => {
+      // if traitKey is not reserved add the value to final output
+      if (reservedKeys.indexOf(traitKey) === -1) {
+        const value = get(traits, traitKey);
+        if (value) {
+          data[traitKey] = value;
+        }
       }
-    }
-  });
-
-  // destKeys.forEach(destKey => {
-  //   const sourceKeys = mappingJson[destKey];
-
-  //   let value;
-  //   for (let index = 0; index < sourceKeys.length; index += 1) {
-  //     value = get(message, sourceKeys[index]);
-
-  //     if (value) {
-  //       break;
-  //     }
-  //   }
-
-  //   if (value) {
-  //     if (destKey === "gender") {
-  //       data[destKey] = formatGender(value);
-  //     } else {
-  //       data[destKey] = value;
-  //     }
-  //   }
-  // });
-
-  // const sourceKeys = Object.keys(mappingJson);
-  // sourceKeys.forEach(sourceKey => {
-  //   const value = get(message, sourceKey);
-  //   if (value) {
-  //     if (mappingJson[sourceKey] === "gender") {
-  //       data[mappingJson[sourceKey]] = formatGender(value);
-  //     } else {
-  //       data[mappingJson[sourceKey]] = value;
-  //     }
-  //   }
-  // });
-
-  // const reserved = [
-  //   "address",
-  //   "avatar",
-  //   "bio",
-  //   "birthday",
-  //   "country",
-  //   "dob",
-  //   "email",
-  //   "email_subscribe",
-  //   "external_id",
-  //   "facebook",
-  //   "first_name",
-  //   "firstname",
-  //   "firstName",
-  //   "gender",
-  //   "home_city",
-  //   "id",
-  //   "last_name",
-  //   "lastname",
-  //   "lastName",
-  //   "phone",
-  //   "push_subscribe",
-  //   "twitter"
-  // ];
-
-  // const traits = message.traits || (message.context && message.context.traits);
-
-  // if (traits) {
-  //   reserved.forEach(element => {
-  //     delete traits[element];
-  //   });
-
-  //   Object.keys(traits).forEach(key => {
-  //     data[key] = traits[key];
-  //   });
-  // }
+    });
+  }
 
   return data;
 }
@@ -264,12 +196,6 @@ function addMandatoryPurchaseProperties(
     };
   }
   return null;
-  // payload.price = price;
-  // payload.product_id = productId;
-  // payload.currency = currencyCode;
-  // payload.quantity = quantity;
-  // payload.time = timestamp;
-  // return payload;
 }
 
 function getPurchaseObjs(message) {
@@ -471,7 +397,6 @@ function batch(destEvents) {
       const { events, attributes, purchases } = jsonBody;
 
       // if total count = 75 form a new batch
-
       const maxCount = Math.max(
         attributesBatch.length + (attributes ? attributes.length : 0),
         eventsBatch.length + (events ? events.length : 0),
@@ -492,12 +417,24 @@ function batch(destEvents) {
           const batchResponse = defaultRequestConfig();
           batchResponse.headers = message.headers;
           batchResponse.endpoint = trackEndpoint;
-          batchResponse.body.JSON = {
-            attributes: attributesBatch,
-            events: eventsBatch,
-            purchases: purchasesBatch,
+          const responseBodyJson = {
             partner: BRAZE_PARTNER_NAME
           };
+          if (attributesBatch.length > 0) {
+            responseBodyJson.attributes = attributesBatch;
+          }
+          if (eventsBatch.length > 0) {
+            responseBodyJson.events = eventsBatch;
+          }
+          if (purchasesBatch.length > 0) {
+            responseBodyJson.purchases = purchasesBatch;
+          }
+          batchResponse.body.JSON = responseBodyJson;
+          // batchResponse.body.JSON = {
+          //   attributes: attributesBatch,
+          //   events: eventsBatch,
+          //   purchases: purchasesBatch,
+          // };
           // modify the endpoint to track endpoint
           batchResponse.endpoint = trackEndpoint;
           respList.push(
@@ -544,12 +481,25 @@ function batch(destEvents) {
         const batchResponse = defaultRequestConfig();
         batchResponse.headers = message.headers;
         batchResponse.endpoint = trackEndpoint;
-        batchResponse.body.JSON = {
-          attributes: attributesBatch,
-          events: eventsBatch,
-          purchases: purchasesBatch,
+        const responseBodyJson = {
           partner: BRAZE_PARTNER_NAME
         };
+        if (attributesBatch.length > 0) {
+          responseBodyJson.attributes = attributesBatch;
+        }
+        if (eventsBatch.length > 0) {
+          responseBodyJson.events = eventsBatch;
+        }
+        if (purchasesBatch.length > 0) {
+          responseBodyJson.purchases = purchasesBatch;
+        }
+        batchResponse.body.JSON = responseBodyJson;
+        // batchResponse.body.JSON = {
+        //   attributes: attributesBatch,
+        //   events: eventsBatch,
+        //   purchases: purchasesBatch,
+        //   partner: BRAZE_PARTNER_NAME
+        // };
         // modify the endpoint as message object will have identify endpoint
         batchResponse.endpoint = trackEndpoint;
         respList.push(
@@ -579,12 +529,25 @@ function batch(destEvents) {
     const batchResponse = defaultRequestConfig();
     batchResponse.headers = message.headers;
     batchResponse.endpoint = trackEndpoint;
-    batchResponse.body.JSON = {
-      attributes: attributesBatch,
-      events: eventsBatch,
-      purchases: purchasesBatch,
+    const responseBodyJson = {
       partner: BRAZE_PARTNER_NAME
     };
+    if (attributesBatch.length > 0) {
+      responseBodyJson.attributes = attributesBatch;
+    }
+    if (eventsBatch.length > 0) {
+      responseBodyJson.events = eventsBatch;
+    }
+    if (purchasesBatch.length > 0) {
+      responseBodyJson.purchases = purchasesBatch;
+    }
+    batchResponse.body.JSON = responseBodyJson;
+    // batchResponse.body.JSON = {
+    //   attributes: attributesBatch,
+    //   events: eventsBatch,
+    //   purchases: purchasesBatch,
+    //   partner: BRAZE_PARTNER_NAME
+    // };
     // modify the endpoint to track endpoint
     batchResponse.endpoint = trackEndpoint;
     respList.push(

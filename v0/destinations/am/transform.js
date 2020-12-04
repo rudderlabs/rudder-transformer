@@ -487,7 +487,7 @@ function process(event) {
     // toSendEvents.push(processProductListAction(message));
     temp = processProductListAction(message);
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < temp.length; i++) {
+    for (let i = 0; i < temp.length; i += 1) {
       toSendEvents.push(temp[i]);
     }
   } else if (
@@ -499,7 +499,7 @@ function process(event) {
   ) {
     temp = processTransaction(message);
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < temp.length; i++) {
+    for (let i = 0; i < temp.length; i += 1) {
       toSendEvents.push(temp[i]);
     }
   } else {

@@ -146,13 +146,16 @@ function processIdentify(message, destination) {
 
 function processTrackWithUserAttributes(message, destination, mappingJson) {
   let payload = getUserAttributesObject(message, mappingJson);
-  payload = setExternalIdOrAliasObject(payload, message);
-  return buildResponse(
-    message,
-    destination,
-    { attributes: [payload] },
-    getTrackEndPoint(destination.Config.endPoint)
-  );
+  if (payload && Object.keys(payload).length > 0) {
+    payload = setExternalIdOrAliasObject(payload, message);
+    return buildResponse(
+      message,
+      destination,
+      { attributes: [payload] },
+      getTrackEndPoint(destination.Config.endPoint)
+    );
+  }
+  return null;
 }
 
 function handleReservedProperties(props) {
@@ -342,7 +345,10 @@ function process(event) {
         destination,
         mappingConfig[category.name]
       );
-      respList.push(response);
+
+      if (response) {
+        respList.push(response);
+      }
       break;
     default:
       throw new Error("Message type is not supported");

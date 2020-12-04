@@ -20,27 +20,27 @@ const CONFIG_CATEGORIES = {
   PRODUCT_VIEWED: {
     standard: true,
     type: "product viewed",
-    name: "FBPIXELProductViewedConfig"
+    name: "FBPIXELPSimpleCustomConfig"
   },
   PRODUCT_ADDED: {
     standard: true,
     type: "product added",
-    name: "FBPIXELProductAddedConfig"
+    name: "FBPIXELPSimpleCustomConfig"
   },
   ORDER_COMPLETED: {
     standard: true,
     type: "order completed",
-    name: "FBPIXELOrderCompletedConfig"
+    name: "FBPIXELPSimpleCustomConfig"
   },
   PRODUCTS_SEARCHED: {
     standard: true,
     type: "products searched",
-    name: "FBPIXELProductsSearchedConfig"
+    name: "FBPIXELPSimpleCustomConfig"
   },
   CHECKOUT_STARTED: {
     standard: true,
     type: "checkout started",
-    name: "FBPIXELCheckoutStartedConfig"
+    name: "FBPIXELPSimpleCustomConfig"
   },
   PAGE: { standard: false, type: "page", name: "FBPIXELPSimpleCustomConfig" }
 };

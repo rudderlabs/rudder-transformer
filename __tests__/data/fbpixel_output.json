@@ -105,20 +105,20 @@
             "JSON": {},
             "XML": {},
             "FORM": {
-                        "data": [
-                            {
-                                "event_name": "spin_result",
-                                "event_time": 1567333011,
-                                "user_data": {
-                                    "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
-                                    "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                                },
-                                "custom_data": {
-                                    "value": 400,
-                                    "additional_bet_index": 0
-                                }
-                            }
-                        ]
+                "data": [
+                    {
+                        "event_name": "spin_result",
+                        "event_time": 1567333011,
+                        "user_data": {
+                            "external_id": "6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a",
+                            "em": "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+                        },
+                        "custom_data": {
+                            "value": 400,
+                            "additional_bet_index": 0
+                        }
+                    }
+                ]
             }
         },
         "files": {}
@@ -300,11 +300,19 @@
                             "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": ["cat 1"],
+                            "content_ids": [
+                                "cat 1"
+                            ],
                             "content_type": "product_group",
-                            "contents": [{"id":"cat 1","quantity":1}],
+                            "contents": [
+                                {
+                                    "id": "cat 1",
+                                    "quantity": 1
+                                }
+                            ],
                             "email": "abc@gmail.com",
-                            "phone": "593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579"
+                            "phone": "593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579",
+                            "currency": "USD"
                         }
                     }
                 ]
@@ -332,9 +340,17 @@
                             "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": ["cat 1"],
+                            "content_ids": [
+                                "cat 1"
+                            ],
                             "content_type": "product_group",
-                            "contents": [{"id":"cat 1","quantity":1}]
+                            "contents": [
+                                {
+                                    "id": "cat 1",
+                                    "quantity": 1
+                                }
+                            ],
+                            "currency": "USD"
                         }
                     }
                 ]
@@ -362,9 +378,22 @@
                             "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": ["507f1f77bcf86cd799439011","507f1f77bcf86cdef799439011"],
+                            "currency": "USD",
+                            "content_ids": [
+                                "507f1f77bcf86cd799439011",
+                                "507f1f77bcf86cdef799439011"
+                            ],
                             "content_type": "product",
-                            "contents": [{"id":"507f1f77bcf86cd799439011","quantity":2},{"id":"507f1f77bcf86cdef799439011","quantity":2}]
+                            "contents": [
+                                {
+                                    "id": "507f1f77bcf86cd799439011",
+                                    "quantity": 2
+                                },
+                                {
+                                    "id": "507f1f77bcf86cdef799439011",
+                                    "quantity": 2
+                                }
+                            ]
                         }
                     }
                 ]
@@ -386,16 +415,29 @@
                 "data": [
                     {
                         "event_name": "ViewContent",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
                             "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
                             "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": ["507f1f77bcf86cd799439011","507f1f77bcf86cdef799439011"],
+                            "content_ids": [
+                                "507f1f77bcf86cd799439011",
+                                "507f1f77bcf86cdef799439011"
+                            ],
                             "content_type": "product",
-                            "contents": [{"id":"507f1f77bcf86cd799439011","quantity":2},{"id":"507f1f77bcf86cdef799439011","quantity":2}],
-                            "list_id": "1234"
+                            "contents": [
+                                {
+                                    "id": "507f1f77bcf86cd799439011",
+                                    "quantity": 2
+                                },
+                                {
+                                    "id": "507f1f77bcf86cdef799439011",
+                                    "quantity": 2
+                                }
+                            ],
+                            "list_id": "1234",
+                            "currency":"USD"
                         }
                     }
                 ]
@@ -417,18 +459,27 @@
                 "data": [
                     {
                         "event_name": "ViewContent",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "[\"p-298\"]",
+                            "content_ids": [
+                                "p-298"
+                            ],
                             "content_type": "product",
                             "content_name": "my product 1",
                             "content_category": "clothing",
                             "currency": "CAD",
-                            "value": "24.75",
-                            "contents": "[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75}]"
+                            "value": 24.75,
+                            "contents": [
+                                {
+                                    "id": "p-298",
+                                    "quantity": 1,
+                                    "item_price": 24.75
+                                }
+                            ]
                         }
                     }
                 ]
@@ -450,18 +501,26 @@
                 "data": [
                     {
                         "event_name": "AddToCart",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "[\"p-298\"]",
+                            "content_ids": [
+                                "p-298"
+                            ],
                             "content_type": "product",
-                            "content_name": null,
-                            "content_category": "clothing",
+                            "content_name": "",
+                            "content_category": "cat 1",
                             "currency": "CAD",
-                            "value": "24.75",
-                            "contents": "[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75}]"
+                            "value": 24.75,
+                            "contents": [
+                                {
+                                    "id": "p-298",
+                                    "quantity": 1
+                                }
+                            ]
                         }
                     }
                 ]
@@ -483,19 +542,33 @@
                 "data": [
                     {
                         "event_name": "Purchase",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "em": "4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
                         },
                         "custom_data": {
-                            "content_ids": "[\"p-298\",\"p-299\"]",
+                            "content_ids": [
+                                "p-298",
+                                "p-299"
+                            ],
                             "content_type": "product",
-                            "content_name": null,
-                            "content_category": "clothing",
                             "currency": "INR",
-                            "value": "12.24",
-                            "contents": "[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}]",
-                            "num_items": "2"
+                            "value": 12.24,
+                            "contents": [
+                                {
+                                    "id": "p-298",
+                                    "quantity": 1,
+                                    "item_price": 24.75
+                                },
+                                {
+                                    "id": "p-299",
+                                    "quantity": 3,
+                                    "item_price": 24.75
+                                }
+                            ],
+                            "num_items": 2
                         }
                     }
                 ]
@@ -517,19 +590,34 @@
                 "data": [
                     {
                         "event_name": "InitiateCheckout",
-                        "event_time": 1606654694,
+                        "event_time": 1571051718,
                         "user_data": {
-                            "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+                            "em": "4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2"
                         },
                         "custom_data": {
-                            "content_ids": "[\"p-298\",\"p-299\"]",
+                            "content_ids": [
+                                "p-298",
+                                "p-299"
+                            ],
                             "content_type": "product",
-                            "content_name": null,
                             "content_category": "clothing",
                             "currency": "CAD",
-                            "value": null,
-                            "contents": "[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}]",
-                            "num_items": "2"
+                            "value": 0.00,
+                            "contents": [
+                                {
+                                    "id": "p-298",
+                                    "quantity": 1,
+                                    "item_price": 24.75
+                                },
+                                {
+                                    "id": "p-299",
+                                    "quantity": 1,
+                                    "item_price": 24.75
+                                }
+                            ],
+                            "num_items": 2
                         }
                     }
                 ]
@@ -601,6 +689,36 @@
                         "custom_data": {
                             "value": 400,
                             "additional_bet_index": 0
+                        }
+                    }
+                ]
+            }
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v9.0/dfgdfgdgd/events?access_token=09876",
+        "headers": {},
+        "params": {},
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {
+                "data": [
+                    {
+                        "event_name": "Search",
+                        "event_time": 1571051718,
+                        "user_data": {
+                            "external_id": "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5",
+                            "em": "4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2",
+                            "client_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                        },
+                        "custom_data": {
+                            "currency": "USD",
+                            "search_string": "HDMI cable"
                         }
                     }
                 ]

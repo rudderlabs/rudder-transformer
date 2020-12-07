@@ -241,9 +241,15 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     message.properties = {};
   }
   let { properties } = message;
+  const requestJson = {
+    partner: BRAZE_PARTNER_NAME
+  };
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
-  attributePayload = setExternalIdOrAliasObject(attributePayload, message);
+  if (attributePayload && Object.keys(attributePayload).length > 0) {
+    attributePayload = setExternalIdOrAliasObject(attributePayload, message);
+    requestJson.attributes = [attributePayload];
+  }
 
   if (
     messageType === EventType.TRACK &&
@@ -282,14 +288,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload.properties = properties;
 
   payload = setExternalIdOrAliasObject(payload, message);
+  if (payload) {
+    requestJson.events = [payload];
+  }
   return buildResponse(
     message,
     destination,
-    {
-      attributes: [attributePayload],
-      events: [payload],
-      partner: BRAZE_PARTNER_NAME
-    },
+    requestJson,
     getTrackEndPoint(destination.Config.endPoint)
   );
 }
@@ -324,7 +329,19 @@ function process(event) {
       respList.push(response);
       break;
     case EventType.PAGE:
-      message.event = message.name;
+      message.event =
+        message.name || get(message, "properties.name") || "Page Viewed";
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name]
+      );
+      respList.push(response);
+      break;
+    case EventType.SCREEN:
+      message.event =
+        message.name || get(message, "properties.name") || "Screen Viewed";
       response = processTrackEvent(
         messageType,
         message,

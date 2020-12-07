@@ -13,17 +13,9 @@
       "params": {},
       "body": {
         "JSON": {
-          "attributes": [
-            {
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
-            }
-          ],
           "events": [
             {
+              "name": "Page Viewed",
               "time": "2020-01-24T11:59:02.402+05:30",
               "properties": {
                 "path": "/tests/html/index2.html",

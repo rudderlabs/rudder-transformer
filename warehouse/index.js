@@ -70,7 +70,7 @@ function excludeRudderCreatedTableNames(name) {
 
   Note: this function mutates output, columnTypes args for sake of perf
 
-  eg.
+  eg.1
   input = {messageId: "m1", anonymousId: "a1"}
   output = {}
   columnMapping = {messageId: "id", anonymousId: "anonymous_id"}
@@ -83,6 +83,7 @@ function excludeRudderCreatedTableNames(name) {
 
   output = {id: "m1", anonymous_id: "a1"}
   columnTypes = {id: "string", anonymous_id: "string"}
+  the data type of an key from columnMapping shouldn't be object. if its, then the column is dropped
 */
 
 function setDataFromColumnMappingAndComputeColumnTypes(
@@ -104,8 +105,8 @@ function setDataFromColumnMappingAndComputeColumnTypes(
     }
 
     const columnName = utils.safeColumnName(options.provider, key);
-    // do not set column if val is null/empty
-    if (isBlank(val)) {
+    // do not set column if val is null/empty/object
+    if (typeof val === "object" || isBlank(val)) {
       // delete in output and columnTypes, so as to remove if we user
       // has set property with same name
       // eslint-disable-next-line no-param-reassign
@@ -453,7 +454,6 @@ function processWarehouseMessage(message, options) {
       );
 
       // -----start: tracks table------
-
       const tracksColumnTypes = {};
       // set event column based on event_text in the tracks table
       const eventColName = utils.safeColumnName(options.provider, "event");
@@ -461,7 +461,6 @@ function processWarehouseMessage(message, options) {
         commonProps[utils.safeColumnName(options.provider, "event_text")]
       );
       tracksColumnTypes[eventColName] = "string";
-
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
       storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);

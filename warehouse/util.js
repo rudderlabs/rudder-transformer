@@ -16,6 +16,9 @@ const isObject = value => {
 };
 
 const isBlank = value => {
+  if (typeof value === "object") {
+    return _.isEmpty(value);
+  }
   return _.isEmpty(_.toString(value));
 };
 

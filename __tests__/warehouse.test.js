@@ -376,6 +376,43 @@ describe("remove rudder property if rudder property is null", () => {
     });
   });
 });
+describe("remove any property if event is object ", () => {
+  it("should remove any property if event is object", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      i.message.channel = {}
+      i.message.event = {}
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).not.toHaveProperty(
+            integrationCasedString(integrations[index], "channel")
+        );
+        expect(received[0].data).not.toHaveProperty(
+            integrationCasedString(integrations[index], "channel")
+        );
+      });
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).not.toHaveProperty(
+            integrationCasedString(integrations[index], "event_text")
+        );
+        expect(received[0].data).not.toHaveProperty(
+            integrationCasedString(integrations[index], "event_text")
+        );
+      });
+      i.message.channel = {"channel":"android"}
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).not.toHaveProperty(
+            integrationCasedString(integrations[index], "channel")
+        );
+        expect(received[0].data).not.toHaveProperty(
+            integrationCasedString(integrations[index], "channel")
+        );
+      });
+    });
+  });
+});
 
 describe("store full rudder event", () => {
   it("should store if configured in dest settings", () => {

@@ -119,86 +119,18 @@ function getUserAttributesObject(message, mappingJson) {
     "phone"
   ];
 
-  // iterate over rest of the traits properties
-  Object.keys(traits).forEach(traitKey => {
-    // if traitKey is not reserved add the value to final output
-    if (reservedKeys.indexOf(traitKey) === -1) {
-      const value = get(traits, traitKey);
-      if (value) {
-        data[traitKey] = value;
+  if (traits) {
+    // iterate over rest of the traits properties
+    Object.keys(traits).forEach(traitKey => {
+      // if traitKey is not reserved add the value to final output
+      if (reservedKeys.indexOf(traitKey) === -1) {
+        const value = get(traits, traitKey);
+        if (value) {
+          data[traitKey] = value;
+        }
       }
-    }
-  });
-
-  // destKeys.forEach(destKey => {
-  //   const sourceKeys = mappingJson[destKey];
-
-  //   let value;
-  //   for (let index = 0; index < sourceKeys.length; index += 1) {
-  //     value = get(message, sourceKeys[index]);
-
-  //     if (value) {
-  //       break;
-  //     }
-  //   }
-
-  //   if (value) {
-  //     if (destKey === "gender") {
-  //       data[destKey] = formatGender(value);
-  //     } else {
-  //       data[destKey] = value;
-  //     }
-  //   }
-  // });
-
-  // const sourceKeys = Object.keys(mappingJson);
-  // sourceKeys.forEach(sourceKey => {
-  //   const value = get(message, sourceKey);
-  //   if (value) {
-  //     if (mappingJson[sourceKey] === "gender") {
-  //       data[mappingJson[sourceKey]] = formatGender(value);
-  //     } else {
-  //       data[mappingJson[sourceKey]] = value;
-  //     }
-  //   }
-  // });
-
-  // const reserved = [
-  //   "address",
-  //   "avatar",
-  //   "bio",
-  //   "birthday",
-  //   "country",
-  //   "dob",
-  //   "email",
-  //   "email_subscribe",
-  //   "external_id",
-  //   "facebook",
-  //   "first_name",
-  //   "firstname",
-  //   "firstName",
-  //   "gender",
-  //   "home_city",
-  //   "id",
-  //   "last_name",
-  //   "lastname",
-  //   "lastName",
-  //   "phone",
-  //   "push_subscribe",
-  //   "twitter"
-  // ];
-
-  // const traits = message.traits || (message.context && message.context.traits);
-
-  // if (traits) {
-  //   reserved.forEach(element => {
-  //     delete traits[element];
-  //   });
-
-  //   Object.keys(traits).forEach(key => {
-  //     data[key] = traits[key];
-  //   });
-  // }
+    });
+  }
 
   return data;
 }
@@ -214,13 +146,16 @@ function processIdentify(message, destination) {
 
 function processTrackWithUserAttributes(message, destination, mappingJson) {
   let payload = getUserAttributesObject(message, mappingJson);
-  payload = setExternalIdOrAliasObject(payload, message);
-  return buildResponse(
-    message,
-    destination,
-    { attributes: [payload] },
-    getTrackEndPoint(destination.Config.endPoint)
-  );
+  if (payload && Object.keys(payload).length > 0) {
+    payload = setExternalIdOrAliasObject(payload, message);
+    return buildResponse(
+      message,
+      destination,
+      { attributes: [payload] },
+      getTrackEndPoint(destination.Config.endPoint)
+    );
+  }
+  return null;
 }
 
 function handleReservedProperties(props) {
@@ -264,12 +199,6 @@ function addMandatoryPurchaseProperties(
     };
   }
   return null;
-  // payload.price = price;
-  // payload.product_id = productId;
-  // payload.currency = currencyCode;
-  // payload.quantity = quantity;
-  // payload.time = timestamp;
-  // return payload;
 }
 
 function getPurchaseObjs(message) {
@@ -312,9 +241,15 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     message.properties = {};
   }
   let { properties } = message;
+  const requestJson = {
+    partner: BRAZE_PARTNER_NAME
+  };
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
-  attributePayload = setExternalIdOrAliasObject(attributePayload, message);
+  if (attributePayload && Object.keys(attributePayload).length > 0) {
+    attributePayload = setExternalIdOrAliasObject(attributePayload, message);
+    requestJson.attributes = [attributePayload];
+  }
 
   if (
     messageType === EventType.TRACK &&
@@ -353,14 +288,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload.properties = properties;
 
   payload = setExternalIdOrAliasObject(payload, message);
+  if (payload) {
+    requestJson.events = [payload];
+  }
   return buildResponse(
     message,
     destination,
-    {
-      attributes: [attributePayload],
-      events: [payload],
-      partner: BRAZE_PARTNER_NAME
-    },
+    requestJson,
     getTrackEndPoint(destination.Config.endPoint)
   );
 }
@@ -395,7 +329,19 @@ function process(event) {
       respList.push(response);
       break;
     case EventType.PAGE:
-      message.event = message.name;
+      message.event =
+        message.name || get(message, "properties.name") || "Page Viewed";
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name]
+      );
+      respList.push(response);
+      break;
+    case EventType.SCREEN:
+      message.event =
+        message.name || get(message, "properties.name") || "Screen Viewed";
       response = processTrackEvent(
         messageType,
         message,
@@ -416,7 +362,10 @@ function process(event) {
         destination,
         mappingConfig[category.name]
       );
-      respList.push(response);
+
+      if (response) {
+        respList.push(response);
+      }
       break;
     default:
       throw new Error("Message type is not supported");
@@ -471,7 +420,6 @@ function batch(destEvents) {
       const { events, attributes, purchases } = jsonBody;
 
       // if total count = 75 form a new batch
-
       const maxCount = Math.max(
         attributesBatch.length + (attributes ? attributes.length : 0),
         eventsBatch.length + (events ? events.length : 0),
@@ -492,12 +440,24 @@ function batch(destEvents) {
           const batchResponse = defaultRequestConfig();
           batchResponse.headers = message.headers;
           batchResponse.endpoint = trackEndpoint;
-          batchResponse.body.JSON = {
-            attributes: attributesBatch,
-            events: eventsBatch,
-            purchases: purchasesBatch,
+          const responseBodyJson = {
             partner: BRAZE_PARTNER_NAME
           };
+          if (attributesBatch.length > 0) {
+            responseBodyJson.attributes = attributesBatch;
+          }
+          if (eventsBatch.length > 0) {
+            responseBodyJson.events = eventsBatch;
+          }
+          if (purchasesBatch.length > 0) {
+            responseBodyJson.purchases = purchasesBatch;
+          }
+          batchResponse.body.JSON = responseBodyJson;
+          // batchResponse.body.JSON = {
+          //   attributes: attributesBatch,
+          //   events: eventsBatch,
+          //   purchases: purchasesBatch,
+          // };
           // modify the endpoint to track endpoint
           batchResponse.endpoint = trackEndpoint;
           respList.push(
@@ -544,12 +504,25 @@ function batch(destEvents) {
         const batchResponse = defaultRequestConfig();
         batchResponse.headers = message.headers;
         batchResponse.endpoint = trackEndpoint;
-        batchResponse.body.JSON = {
-          attributes: attributesBatch,
-          events: eventsBatch,
-          purchases: purchasesBatch,
+        const responseBodyJson = {
           partner: BRAZE_PARTNER_NAME
         };
+        if (attributesBatch.length > 0) {
+          responseBodyJson.attributes = attributesBatch;
+        }
+        if (eventsBatch.length > 0) {
+          responseBodyJson.events = eventsBatch;
+        }
+        if (purchasesBatch.length > 0) {
+          responseBodyJson.purchases = purchasesBatch;
+        }
+        batchResponse.body.JSON = responseBodyJson;
+        // batchResponse.body.JSON = {
+        //   attributes: attributesBatch,
+        //   events: eventsBatch,
+        //   purchases: purchasesBatch,
+        //   partner: BRAZE_PARTNER_NAME
+        // };
         // modify the endpoint as message object will have identify endpoint
         batchResponse.endpoint = trackEndpoint;
         respList.push(
@@ -579,12 +552,25 @@ function batch(destEvents) {
     const batchResponse = defaultRequestConfig();
     batchResponse.headers = message.headers;
     batchResponse.endpoint = trackEndpoint;
-    batchResponse.body.JSON = {
-      attributes: attributesBatch,
-      events: eventsBatch,
-      purchases: purchasesBatch,
+    const responseBodyJson = {
       partner: BRAZE_PARTNER_NAME
     };
+    if (attributesBatch.length > 0) {
+      responseBodyJson.attributes = attributesBatch;
+    }
+    if (eventsBatch.length > 0) {
+      responseBodyJson.events = eventsBatch;
+    }
+    if (purchasesBatch.length > 0) {
+      responseBodyJson.purchases = purchasesBatch;
+    }
+    batchResponse.body.JSON = responseBodyJson;
+    // batchResponse.body.JSON = {
+    //   attributes: attributesBatch,
+    //   events: eventsBatch,
+    //   purchases: purchasesBatch,
+    //   partner: BRAZE_PARTNER_NAME
+    // };
     // modify the endpoint to track endpoint
     batchResponse.endpoint = trackEndpoint;
     respList.push(

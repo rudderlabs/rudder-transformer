@@ -11,10 +11,11 @@
   },
   {
     "destKey": "eventName",
-    "sourceKeys": "event",
-    "required": true,
+    "sourceKeys": ["name", "properties.name"],
+    "required": false,
     "metadata": {
-      "template": "Screen View"
+      "defaultValue": "Screen View",
+      "template": "Screen View {{value}}"
     }
   },
   {

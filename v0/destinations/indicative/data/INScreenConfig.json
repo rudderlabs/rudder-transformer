@@ -11,7 +11,7 @@
   },
   {
     "destKey": "eventName",
-    "sourceKeys": "name",
+    "sourceKeys": ["name", "properties.name"],
     "required": false,
     "metadata": {
       "defaultValue": "Screen View",

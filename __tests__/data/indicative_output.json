@@ -215,6 +215,39 @@
       "body": {
         "JSON": {
           "eventUniqueId": "12345",
+          "eventName": "Page View ApplicationLoaded",
+          "properties": {
+            "name": "ApplicationLoaded",
+            "path": "/test",
+            "referrer": "Rudder",
+            "search": "abc",
+            "title": "Test Page",
+            "url": "www.rudderlabs.com"
+          },
+          "eventTime": 1571051718299,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "12345"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "12345",
           "eventName": "Page View",
           "properties": {
             "path": "/test",

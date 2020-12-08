@@ -215,6 +215,43 @@
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
+        "name": "ApplicationLoaded",
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    }
+  },
+  {
+    "destination": { "Config": { "apiKey": "abcde" } },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
         "path": "/test",
         "referrer": "Rudder",
         "search": "abc",

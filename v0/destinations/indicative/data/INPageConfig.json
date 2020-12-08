@@ -12,9 +12,10 @@
   {
     "destKey": "eventName",
     "sourceKeys": "name",
-    "required": true,
+    "required": false,
     "metadata": {
-      "template": "Page View"
+      "defaultValue": "Page View",
+      "template": "Page View {{value}}"
     }
   },
   {

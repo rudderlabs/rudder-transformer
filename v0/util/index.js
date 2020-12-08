@@ -309,7 +309,7 @@ const getValueFromMessage = (message, sourceKey) => {
 // - - - - ex: "anonymousId", "userId" from traits
 const handleMetadataForValue = (value, metadata) => {
   let formattedVal = value;
-  const { type, typeFormat, template, excludes } = metadata;
+  const { type, typeFormat, template, defaultValue, excludes } = metadata;
 
   // handle type and format
   // skipping check for typeFormat to support default for each type
@@ -363,7 +363,7 @@ const handleMetadataForValue = (value, metadata) => {
   // handle template
   if (template) {
     const hTemplate = Handlebars.compile(template.trim());
-    formattedVal = hTemplate({ value });
+    formattedVal = hTemplate({ value }).trim();
   }
 
   // handle excludes
@@ -436,6 +436,8 @@ const constructPayload = (message, mappingJson) => {
         } else {
           set(payload, destKey, value);
         }
+      } else if (metadata && metadata.defaultValue) {
+        set(payload, destKey, metadata.defaultValue);
       } else if (required) {
         // throw error if reqired value is missing
         throw new Error(

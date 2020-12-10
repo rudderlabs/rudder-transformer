@@ -18,7 +18,10 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
     "required": false
   }
 ]

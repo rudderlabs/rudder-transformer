@@ -1,10 +1,17 @@
 [
   {
     "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
     "required": false
   },
-  { "destKey": "groupId", "sourceKeys": "groupId", "required": false },
+  {
+    "destKey": "groupId",
+    "sourceKeys": "groupId",
+    "required": false
+  },
   {
     "destKey": "distinct_id",
     "sourceKeys": [
@@ -19,8 +26,15 @@
   },
   {
     "destKey": "traits",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
     "required": false
   },
-  { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  }
 ]

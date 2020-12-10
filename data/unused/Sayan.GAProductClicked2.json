@@ -1,66 +1,66 @@
-{"rl_message": {
-                "rl_anonymous_id": "23d7cbff-15b5-43ee-bfde-65282ed5fdf6",
-                "rl_channel": "Test Channel",
-                "rl_context": {
-                    "rl_app": {
-                        "rl_build": "0",
-                        "rl_name": "com.rudderlabs.android.library.test",
-                        "rl_namespace": "com.rudderlabs.android.library.test",
-                        "rl_version": "1.0.0"
-                    },
-                    "rl_device": {
-                        "rl_id": "23d7cbff-15b5-43ee-bfde-65282ed5fdf6",
-                        "rl_manufacturer": "unknown",
-                        "rl_model": "robolectric",
-                        "rl_name": "robolectric"
-                    },
-                    "rl_library": {
-                        "rl_name": "com.rudderlabs.android.library",
-                        "rl_version": "1.0"
-                    },
-                    "rl_locale": "en-US",
-                    "rl_network": {
-                        "rl_carrier": ""
-                    },
-                    "rl_os": {
-                        "rl_name": "Android",
-                        "rl_version": "9"
-                    },
-                    "rl_screen": {
-                        "rl_density": 1,
-                        "rl_height": 320,
-                        "rl_width": 470
-                    },
-                    "rl_traits": {
-                        "rl_anonymous_id": "2f8fe333-590e-4736-8dff-d13dae99d9d1"
-                    },
-                    "rl_user_agent": ""
-                },
-                "rl_event": "Product Clicked",
-                "rl_integrations": [
-                    "rudderlabs"
-                ],
-                "rl_message_id": "d6a75a2d-43a2-4d0c-9bcc-5f6e6705299b",
-                "rl_properties": {
-                    "brand": "opq",
-                    "category": "efg",
-                    "coupon": "opq",
-                    "dimensions": [
-                        "lmn",
-                        "efg"
-                    ],
-                    "image_url": "https://www.example.com/product/path.jpg",
-                    "name": "abc",
-                    "position": 1,
-                    "price": 5.25,
-                    "product_id": "ijk",
-                    "quantity": 1,
-                    "sku": "ijk",
-                    "url": "abc",
-                    "variant": "abc"
-                },
-                "rl_timestamp": "2019-07-19 10:38:03+0000",
-                "rl_type": "track"
- 
-	}
+{
+  "rl_message": {
+    "rl_anonymous_id": "23d7cbff-15b5-43ee-bfde-65282ed5fdf6",
+    "rl_channel": "Test Channel",
+    "rl_context": {
+      "rl_app": {
+        "rl_build": "0",
+        "rl_name": "com.rudderlabs.android.library.test",
+        "rl_namespace": "com.rudderlabs.android.library.test",
+        "rl_version": "1.0.0"
+      },
+      "rl_device": {
+        "rl_id": "23d7cbff-15b5-43ee-bfde-65282ed5fdf6",
+        "rl_manufacturer": "unknown",
+        "rl_model": "robolectric",
+        "rl_name": "robolectric"
+      },
+      "rl_library": {
+        "rl_name": "com.rudderlabs.android.library",
+        "rl_version": "1.0"
+      },
+      "rl_locale": "en-US",
+      "rl_network": {
+        "rl_carrier": ""
+      },
+      "rl_os": {
+        "rl_name": "Android",
+        "rl_version": "9"
+      },
+      "rl_screen": {
+        "rl_density": 1,
+        "rl_height": 320,
+        "rl_width": 470
+      },
+      "rl_traits": {
+        "rl_anonymous_id": "2f8fe333-590e-4736-8dff-d13dae99d9d1"
+      },
+      "rl_user_agent": ""
+    },
+    "rl_event": "Product Clicked",
+    "rl_integrations": [
+      "rudderlabs"
+    ],
+    "rl_message_id": "d6a75a2d-43a2-4d0c-9bcc-5f6e6705299b",
+    "rl_properties": {
+      "brand": "opq",
+      "category": "efg",
+      "coupon": "opq",
+      "dimensions": [
+        "lmn",
+        "efg"
+      ],
+      "image_url": "https://www.example.com/product/path.jpg",
+      "name": "abc",
+      "position": 1,
+      "price": 5.25,
+      "product_id": "ijk",
+      "quantity": 1,
+      "sku": "ijk",
+      "url": "abc",
+      "variant": "abc"
+    },
+    "rl_timestamp": "2019-07-19 10:38:03+0000",
+    "rl_type": "track"
+  }
 }

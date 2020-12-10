@@ -96,6 +96,8 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
+    // delete output[key];
+    // delete columnTypes[key];
     let val;
     // if (_.isFunction(columnMapping[key])) {
     if (key === "context_ip") {
@@ -231,6 +233,54 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
     output[colName] = JSON.stringify(message);
     // eslint-disable-next-line no-param-reassign
     columnTypes[colName] = fullEventColumnTypeByProvider[options.provider];
+  }
+}
+
+function sanitizeEvent(eventType, message) {
+  const delKeys = Object.keys(whDefaultColumnMappingRules);
+  switch (eventType) {
+    case "track":
+    case "screen":
+    case "page": {
+      if (eventType === "page") {
+        delKeys.push(Object.keys(whPageColumnMappingRules));
+      } else if (eventType === "screen") {
+        delKeys.push(Object.keys(whScreenColumnMappingRules));
+      }
+      delKeys.forEach(key => {
+        if (message.properties && isObject(message.properties)) {
+          delete message.properties[key];
+        }
+        if (message.userProperties && isObject(message.userProperties)) {
+          delete message.userProperties[key];
+        }
+      });
+      break;
+    }
+    case "identify":
+    case "group":
+    case "alias": {
+      if (eventType === "alias") {
+        delKeys.push(Object.keys(whAliasColumnMappingRules));
+      } else if (eventType === "group") {
+        delKeys.push(Object.keys(whGroupColumnMappingRules));
+      }
+      delKeys.forEach(key => {
+        if (message.traits && isObject(message.traits)) {
+          delete message.traits[key];
+        }
+        if (
+          message.context &&
+          message.context.traits &&
+          isObject(message.context.traits)
+        ) {
+          delete message.context.traits[key];
+        }
+      });
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -421,6 +471,8 @@ function processWarehouseMessage(message, options) {
 
   const responses = [];
   const eventType = message.type.toLowerCase();
+  sanitizeEvent(eventType, message);
+
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
     case "track": {

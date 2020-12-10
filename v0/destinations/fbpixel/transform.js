@@ -343,6 +343,15 @@ function responseBuilderSimple(message, category, destination) {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
   );
+  if (user_data) {
+    const split = user_data.name ? user_data.name.split(" ") : null;
+    if (split !== null) {
+      user_data.fn = sha256(split[0]);
+      user_data.ln = sha256(split[1]);
+    }
+    delete user_data.name;
+  }
+
   let custom_data = {};
 
   const commonData = constructPayload(
@@ -438,12 +447,6 @@ function responseBuilderSimple(message, category, destination) {
   }
 
   if (user_data && commonData) {
-    const split = user_data.name ? user_data.name.split(" ") : null;
-    if (split !== null) {
-      user_data.fn = sha256(split[0]);
-      user_data.ln = sha256(split[1]);
-    }
-    delete user_data.name;
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;

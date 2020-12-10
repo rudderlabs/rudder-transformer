@@ -3,7 +3,6 @@ const crypto = require("crypto-js");
 async function process(event) {
   let payload = {};
   const noOfFields = event.destination.Config.customMappings.length;
-  console.log(noOfFields);
   const keyField = [];
   const mappedField = [];
 
@@ -18,8 +17,8 @@ async function process(event) {
 
   function getAmzDate(dateStr) {
     const chars = [":", "-"];
-    for (let i = 0; i < chars.length; i++) {
-      while (dateStr.indexOf(chars[i]) != -1) {
+    for (let i = 0; i < chars.length; i += 1) {
+      while (dateStr.indexOf(chars[i]) !== -1) {
         dateStr = dateStr.replace(chars[i], "");
       }
     }
@@ -29,41 +28,33 @@ async function process(event) {
   // get the various date formats needed to form our request
   const amzDate = getAmzDate(new Date().toISOString());
   const authDate = amzDate.split("T")[0];
-  console.log(amzDate);
-  console.log(authDate);
   const signature = getSignatureKey(
     event.destination.Config.secretAccessKey,
     authDate,
     event.destination.Config.region,
     "personalize"
   );
-  console.log(signature.toString());
 
-  for (let i = 0; i < noOfFields; i++) {
+  for (let i = 0; i < noOfFields; i += 1) {
     keyField.push(event.destination.Config.customMappings[i].from);
   }
 
-  for (let j = 0; j < noOfFields; j++) {
+  for (let j = 0; j < noOfFields; j += 1) {
     mappedField.push(event.destination.Config.customMappings[j].to);
   }
-  console.log(mappedField);
-  console.log(keyField);
-  if (event.message.event == event.destination.Config.eventName) {
+  if (event.message.event === event.destination.Config.eventName) {
     const property = {};
-    for (let k = 0; k < noOfFields; k++) {
-      console.log(keyField[k].toUpperCase());
+    for (let k = 0; k < noOfFields; k += 1) {
       if (
-        keyField[k].toUpperCase() == "USER_ID" ||
-        keyField[k].toUpperCase() == "EVENT_TYPE" ||
-        keyField[k].toUpperCase() == "TIMESTAMP"
+        keyField[k].toUpperCase() === "USER_ID" ||
+        keyField[k].toUpperCase() === "EVENT_TYPE" ||
+        keyField[k].toUpperCase() === "TIMESTAMP"
       ) {
         keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
           return g[1].toUpperCase();
         });
-        console.log(keyField[k]);
       } else {
         const mappedFields = mappedField[k];
-        console.log(event.message[mappedFields]);
 
         if (typeof event.message[mappedFields] !== "undefined") {
           keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
@@ -75,7 +66,6 @@ async function process(event) {
         }
       }
     }
-    console.log(property);
 
     payload = {
       version: "1",

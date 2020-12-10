@@ -44,7 +44,7 @@
     ],
     "required": false,
     "metadata": {
-      "type": "hashToSha256ForGender"
+      "type": "getFbGenderVal"
     }
   },
   {
@@ -99,8 +99,8 @@
   {
     "destKey": "ct",
     "sourceKeys": [
-      "traits.city",
-      "context.traits.city"
+      "traits.address.city",
+      "context.traits.address.city"
     ],
     "required": false,
     "metadata": {
@@ -110,8 +110,8 @@
   {
     "destKey": "st",
     "sourceKeys": [
-      "traits.state",
-      "context.traits.state"
+      "traits.address.state",
+      "context.traits.address.state"
     ],
     "required": false,
     "metadata": {
@@ -121,8 +121,8 @@
   {
     "destKey": "zp",
     "sourceKeys": [
-      "traits.zip",
-      "context.traits.zip"
+      "traits.address.zip",
+      "context.traits.address.zip"
     ],
     "required": false,
     "metadata": {
@@ -132,8 +132,8 @@
   {
     "destKey": "country",
     "sourceKeys": [
-      "traits.country",
-      "context.traits.country"
+      "traits.address.country",
+      "context.traits.address.country"
     ],
     "required": false,
     "metadata": {
@@ -142,7 +142,10 @@
   },
   {
     "destKey": "client_ip_address",
-    "sourceKeys": "context.ip",
+    "sourceKeys": [
+      "request_ip",
+      "context.ip"
+    ],
     "required": false
   },
   {

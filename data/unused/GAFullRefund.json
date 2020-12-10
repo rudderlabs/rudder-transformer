@@ -1,1 +1,56 @@
-{"sent_at":"2019-07-17 06:11:40+0000","batch":[{"rl_message":{"channel":"Test Channel","rl_context":{"app":{"build":"0","name":"com.rudderlabs.android.library.test","namespace":"com.rudderlabs.android.library.test","version":"1.0.0"},"rl_traits":{"rl_anonymous_id":"6250c1b1-e70c-4e1c-aa2a-48309370408f"},"library":{"name":"com.rudderlabs.android.library","version":"1.0"},"os":{"name":"Android","version":"9"},"screen":{"density":1,"width":470,"height":320},"user_agent":"","locale":"en-US","device":{"id":"3017e9d3-f1a3-4a9b-9fe3-c2f66b1d9bdb","manufacturer":"unknown","model":"robolectric","name":"robolectric"},"network":{"carrier":""}},"rl_type":"track","rl_message_id":"8cfbf64b-4893-47c3-a139-d3bed6b61cf9","timestamp":"2019-07-17 06:11:39+0000","rl_anonymous_id":"3017e9d3-f1a3-4a9b-9fe3-c2f66b1d9bdb","rl_event":"Order Refunded","rl_properties":{"order_id":"50314b8e9bcf000000000000"},"integrations":["rudderlabs"]}}]}
+{
+  "sent_at": "2019-07-17 06:11:40+0000",
+  "batch": [
+    {
+      "rl_message": {
+        "channel": "Test Channel",
+        "rl_context": {
+          "app": {
+            "build": "0",
+            "name": "com.rudderlabs.android.library.test",
+            "namespace": "com.rudderlabs.android.library.test",
+            "version": "1.0.0"
+          },
+          "rl_traits": {
+            "rl_anonymous_id": "6250c1b1-e70c-4e1c-aa2a-48309370408f"
+          },
+          "library": {
+            "name": "com.rudderlabs.android.library",
+            "version": "1.0"
+          },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "screen": {
+            "density": 1,
+            "width": 470,
+            "height": 320
+          },
+          "user_agent": "",
+          "locale": "en-US",
+          "device": {
+            "id": "3017e9d3-f1a3-4a9b-9fe3-c2f66b1d9bdb",
+            "manufacturer": "unknown",
+            "model": "robolectric",
+            "name": "robolectric"
+          },
+          "network": {
+            "carrier": ""
+          }
+        },
+        "rl_type": "track",
+        "rl_message_id": "8cfbf64b-4893-47c3-a139-d3bed6b61cf9",
+        "timestamp": "2019-07-17 06:11:39+0000",
+        "rl_anonymous_id": "3017e9d3-f1a3-4a9b-9fe3-c2f66b1d9bdb",
+        "rl_event": "Order Refunded",
+        "rl_properties": {
+          "order_id": "50314b8e9bcf000000000000"
+        },
+        "integrations": [
+          "rudderlabs"
+        ]
+      }
+    }
+  ]
+}

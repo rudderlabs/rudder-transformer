@@ -13,13 +13,23 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
     "required": false
   },
-  { "destKey": "messageId", "sourceKeys": "messageId", "required": true },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": true
+  },
   {
     "destKey": "$set",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
     "required": true
   }
 ]

@@ -12,22 +12,34 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
+    "sourceKeys": [
+      "traits.email",
+      "context.traits.email"
+    ],
     "required": false
   },
   {
     "destKey": "phone",
-    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "sourceKeys": [
+      "traits.phone",
+      "context.traits.phone"
+    ],
     "required": false
   },
   {
     "destKey": "name",
-    "sourceKeys": ["traits.name", "context.traits.name"],
+    "sourceKeys": [
+      "traits.name",
+      "context.traits.name"
+    ],
     "required": false
   },
   {
     "destKey": "signed_up_at",
-    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
+    "sourceKeys": [
+      "traits.createdAt",
+      "context.traits.createdAt"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -40,7 +52,10 @@
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
     "required": false
   }
 ]

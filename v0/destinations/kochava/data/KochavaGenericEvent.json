@@ -1,62 +1,62 @@
 [
   {
-      "destKey": "origination_ip",
-      "sourceKeys": "request_ip"
+    "destKey": "origination_ip",
+    "sourceKeys": "request_ip"
   },
   {
-      "destKey": "carrier_name",
-      "sourceKeys": "context.network.carrier"
+    "destKey": "carrier_name",
+    "sourceKeys": "context.network.carrier"
   },
   {
-      "destKey": "device",
-      "sourceKeys": "context.device.model"
+    "destKey": "device",
+    "sourceKeys": "context.device.model"
   },
   {
-      "destKey": "device_ua",
-      "sourceKeys": "context.userAgent"
+    "destKey": "device_ua",
+    "sourceKeys": "context.userAgent"
   },
   {
-      "destKey": "disp_h",
-      "sourceKeys": "context.screen.height"
+    "destKey": "disp_h",
+    "sourceKeys": "context.screen.height"
   },
   {
-      "destKey": "disp_w",
-      "sourceKeys": "context.screen.width"
+    "destKey": "disp_w",
+    "sourceKeys": "context.screen.width"
   },
   {
-      "destKey": "app_name",
-      "sourceKeys": "context.app.name"
+    "destKey": "app_name",
+    "sourceKeys": "context.app.name"
   },
   {
-      "destKey": "app_version",
-      "sourceKeys": "context.app.build"
+    "destKey": "app_version",
+    "sourceKeys": "context.app.build"
   },
   {
-      "destKey": "app_short_string",
-      "sourceKeys": "context.app.version"
+    "destKey": "app_short_string",
+    "sourceKeys": "context.app.version"
   },
   {
-      "destKey": "os_version",
-      "sourceKeys": "context.os.version"
+    "destKey": "os_version",
+    "sourceKeys": "context.os.version"
   },
   {
-      "destKey": "screen_dpi",
-      "sourceKeys": "context.screen.density"
+    "destKey": "screen_dpi",
+    "sourceKeys": "context.screen.density"
   },
   {
-      "destKey": "manufacturer",
-      "sourceKeys": "context.device.manufacturer"
+    "destKey": "manufacturer",
+    "sourceKeys": "context.device.manufacturer"
   },
   {
-      "destKey": "product_name",
-      "sourceKeys": "context.device.name"
+    "destKey": "product_name",
+    "sourceKeys": "context.device.name"
   },
   {
-      "destKey": "locale",
-      "sourceKeys": "context.locale"
+    "destKey": "locale",
+    "sourceKeys": "context.locale"
   },
   {
-      "destKey": "timezone",
-      "sourceKeys": "context.timezone"
+    "destKey": "timezone",
+    "sourceKeys": "context.timezone"
   }
 ]

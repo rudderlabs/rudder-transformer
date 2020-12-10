@@ -1,6 +1,9 @@
 [
   {
-    "sourceKeys": ["context.ip", "request_ip"],
+    "sourceKeys": [
+      "context.ip",
+      "request_ip"
+    ],
     "destKey": "ip"
   },
   {
@@ -99,5 +102,4 @@
     "sourceKeys": "context.library.name",
     "destKey": "mp_lib"
   }
-  
 ]

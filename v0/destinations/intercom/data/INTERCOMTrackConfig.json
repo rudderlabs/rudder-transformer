@@ -18,10 +18,17 @@
     ],
     "required": false
   },
-  { "destKey": "event_name", "sourceKeys": "event", "required": true },
+  {
+    "destKey": "event_name",
+    "sourceKeys": "event",
+    "required": true
+  },
   {
     "destKey": "created",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
     "required": true,
     "metadata": {
       "type": "secondTimestamp"

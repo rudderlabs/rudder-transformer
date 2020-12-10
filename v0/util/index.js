@@ -17,7 +17,6 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
-
 // ========================================================================
 // INLINERS
 // ========================================================================

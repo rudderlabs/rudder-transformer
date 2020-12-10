@@ -1,1 +1,52 @@
-{"sent_at":"2019-07-17 10:11:05+0000","batch":[{"rl_message":{"rl_type":"track","rl_event":"Coins Purchased","rl_context":{"app":{"build":"0","name":"com.rudderlabs.android.library.test","namespace":"com.rudderlabs.android.library.test","version":"1.0.0"},"rl_traits":{"rl_anonymous_id":"6250c1b1-e70c-4e1c-aa2a-48309370408f"},"library":{"name":"com.rudderlabs.android.library","version":"1.0"},"os":{"name":"Android","version":"9"},"screen":{"density":1,"width":470,"height":320},"user_agent":"","locale":"en-US","device":{"id":"c629b888-d167-4b31-bed5-89bf477bf846","manufacturer":"unknown","model":"robolectric","name":"robolectric"},"network":{"carrier":""}},"rl_anonymous_id":"6250c1b1-e70c-4e1c-aa2a-48309370408f","rl_timestamp":"2019-07-16 07:21:46+0000","rl_properties":{"quantity":"6","price":"25.65"}}}]}
+{
+  "sent_at": "2019-07-17 10:11:05+0000",
+  "batch": [
+    {
+      "rl_message": {
+        "rl_type": "track",
+        "rl_event": "Coins Purchased",
+        "rl_context": {
+          "app": {
+            "build": "0",
+            "name": "com.rudderlabs.android.library.test",
+            "namespace": "com.rudderlabs.android.library.test",
+            "version": "1.0.0"
+          },
+          "rl_traits": {
+            "rl_anonymous_id": "6250c1b1-e70c-4e1c-aa2a-48309370408f"
+          },
+          "library": {
+            "name": "com.rudderlabs.android.library",
+            "version": "1.0"
+          },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "screen": {
+            "density": 1,
+            "width": 470,
+            "height": 320
+          },
+          "user_agent": "",
+          "locale": "en-US",
+          "device": {
+            "id": "c629b888-d167-4b31-bed5-89bf477bf846",
+            "manufacturer": "unknown",
+            "model": "robolectric",
+            "name": "robolectric"
+          },
+          "network": {
+            "carrier": ""
+          }
+        },
+        "rl_anonymous_id": "6250c1b1-e70c-4e1c-aa2a-48309370408f",
+        "rl_timestamp": "2019-07-16 07:21:46+0000",
+        "rl_properties": {
+          "quantity": "6",
+          "price": "25.65"
+        }
+      }
+    }
+  ]
+}

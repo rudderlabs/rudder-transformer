@@ -155,15 +155,27 @@ const formatTimeStamp = (dateStr, format) => {
       return date.getTime();
   }
 };
+//
 
+const hashToSha256 = value => {
+  return sha256(value);
+};
 // Check what type of gender and convert to f or m
 
-const hashToSha256ForGender = gender => {
-  if (gender.toUpperCase() === "FEMALE" || gender.toUpperCase() === "F") {
-    return sha256("f");
+const getFbGenderVal = gender => {
+  if (
+    gender.toUpperCase() === "FEMALE" ||
+    gender.toUpperCase() === "F" ||
+    gender.toUpperCase() === "WOMAN"
+  ) {
+    return hashToSha256("f");
   }
-  if (gender.toUpperCase() === "MALE" || gender.toUpperCase() === "M") {
-    return sha256("m");
+  if (
+    gender.toUpperCase() === "MALE" ||
+    gender.toUpperCase() === "M" ||
+    gender.toUpperCase() === "MAN"
+  ) {
+    return hashToSha256("m");
   }
 };
 
@@ -367,10 +379,10 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = Number(formattedVal);
         break;
       case "hashToSha256":
-        formattedVal = sha256(String(formattedVal));
+        formattedVal = hashToSha256(String(formattedVal));
         break;
-      case "hashToSha256ForGender":
-        formattedVal = hashToSha256ForGender(formattedVal);
+      case "getFbGenderVal":
+        formattedVal = getFbGenderVal(formattedVal);
         break;
       default:
         break;

@@ -404,3 +404,43 @@ describe("store full rudder event", () => {
     });
   });
 });
+
+describe("rudder reserved columns", () => {
+  it("should not accept rudder reserved column names from user in properties, traits etc", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+
+      const delProps = [
+        "message.channel",
+        "message.timestamp",
+        "message.originalTimestamp"
+      ];
+      const setProps = [
+        "message.properties.channel",
+        "message.traits.channel",
+        "message.properties.timestamp",
+        "message.traits.timestamp",
+        "message.properties.originalTimestamp",
+        "message.traits.originalTimestamp"
+      ];
+
+      const checkProps = ["channel", "timestamp", "original_timestamp"];
+
+      delProps.forEach(prop => _.unset(i, prop));
+      setProps.forEach(prop => _.set(i, prop, "random value"));
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        checkProps.forEach(k => {
+          k = integrationCasedString(integrations[index], k);
+          expect(received[0].metadata.columns).not.toHaveProperty(k);
+          expect(received[0].data).not.toHaveProperty(k);
+          if (received[1]) {
+            expect(received[1].metadata.columns).not.toHaveProperty(k);
+            expect(received[1].data).not.toHaveProperty(k);
+          }
+        });
+      });
+    });
+  });
+});

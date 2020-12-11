@@ -17,8 +17,6 @@ const {
  */
 
 function formatRevenue(revenue) {
-  console.log(revenue)
-  console.log(Number((revenue || 0).toFixed(2)));
   return Number((revenue || 0).toFixed(2));
 }
 

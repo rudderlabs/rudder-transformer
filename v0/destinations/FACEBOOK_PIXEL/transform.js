@@ -17,6 +17,8 @@ const {
  */
 
 function formatRevenue(revenue) {
+  console.log(revenue)
+  console.log(Number((revenue || 0).toFixed(2)));
   return Number((revenue || 0).toFixed(2));
 }
 
@@ -362,6 +364,9 @@ function responseBuilderSimple(message, category, destination) {
     custom_data = {
       ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
     };
+    if (Object.keys(custom_data).length === 0 && category.standard) {
+      throw Error("No properties for the event so the event cannot be sent.");
+    }
     custom_data = transformedPayloadData(
       message,
       custom_data,
@@ -371,7 +376,6 @@ function responseBuilderSimple(message, category, destination) {
       eventCustomProperties
     );
     if (category.standard) {
-      custom_data.currency = message.properties.currency || "USD";
       switch (category.type) {
         case "product list viewed":
           custom_data = {
@@ -413,12 +417,12 @@ function responseBuilderSimple(message, category, destination) {
             ...custom_data,
             ...handleOrder(message, categoryToContent, valueFieldIdentifier)
           };
-
           commonData.event_name = "InitiateCheckout";
           break;
         default:
           throw Error("This standard event does not exist");
       }
+      custom_data.currency = message.properties.currency || "USD";
     } else {
       if (category.type === "page") {
         commonData.event_name = message.name
@@ -450,8 +454,13 @@ function responseBuilderSimple(message, category, destination) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
+    const jsonStringify = JSON.stringify({
+      user_data,
+      ...commonData,
+      custom_data
+    });
     const payload = {
-      data: [{ user_data, ...commonData, custom_data }]
+      data: [jsonStringify]
     };
     response.body.FORM = payload;
     return response;

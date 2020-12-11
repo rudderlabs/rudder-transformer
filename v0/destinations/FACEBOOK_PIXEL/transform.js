@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 const sha256 = require("sha256");
+const get = require("get-value");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { EventType } = require("../../../constants");
 
@@ -8,7 +9,8 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  flattenJson
+  flattenJson,
+  isObject
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -32,16 +34,23 @@ function formatRevenue(revenue) {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 function getContentType(message, defaultValue, categoryToContent) {
-  const { options } = message;
-  if (options && options.contentType) {
-    return [options.contentType];
+  const { integrations } = message;
+  if (
+    integrations &&
+    integrations.FacebookPixel &&
+    isObject(integrations.FacebookPixel) &&
+    integrations.FacebookPixel.contentType
+  ) {
+    return integrations.FacebookPixel.contentType;
   }
 
   let { category } = message.properties;
   if (!category) {
     const { products } = message.properties;
-    if (products && products.length && Array.isArray(products)) {
-      category = products[0].category;
+    if (products && products.length > 0 && Array.isArray(products)) {
+      if (isObject(products[0])) {
+        category = products[0].category;
+      }
     }
   } else {
     if (categoryToContent === undefined) {
@@ -95,7 +104,7 @@ function handleOrder(message, categoryToContent) {
     content_category: category,
     content_ids: contentIds,
     content_type: contentType,
-    currency: message.properties.currency,
+    currency: message.properties.currency || "USD",
     value,
     contents,
     num_items: contentIds.length
@@ -116,18 +125,22 @@ function handleProductListViewed(message, categoryToContent) {
   const { products } = message.properties;
   if (Array.isArray(products)) {
     products.forEach(product => {
-      const productId = product.product_id;
-      if (productId) {
-        contentIds.push(productId);
-        contents.push({
-          id: productId,
-          quantity: message.properties.quantity
-        });
+      if (isObject(product)) {
+        const productId = product.product_id;
+        if (productId) {
+          contentIds.push(productId);
+          contents.push({
+            id: productId,
+            quantity: message.properties.quantity
+          });
+        }
+      } else {
+        throw Error("Product is not an object. Event not sent");
       }
     });
   }
 
-  if (contentIds.length) {
+  if (contentIds.length > 0) {
     contentType = "product";
   } else {
     contentIds.push(message.properties.category || "");
@@ -166,7 +179,7 @@ function handleProduct(message, categoryToContent, valueFieldIdentifier) {
   const contentName =
     message.properties.product_name || message.properties.name || "";
   const contentCategory = message.properties.category || "";
-  const { currency } = message.properties;
+  const currency = message.properties.currency || "USD";
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
@@ -175,7 +188,8 @@ function handleProduct(message, categoryToContent, valueFieldIdentifier) {
       id:
         message.properties.product_id ||
         message.properties.id ||
-        message.properties.sku,
+        message.properties.sku ||
+        "",
       quantity: message.properties.quantity,
       item_price: message.properties.price
     }
@@ -278,47 +292,48 @@ function transformedPayloadData(
   ];
   blacklistPiiProperties = blacklistPiiProperties || [];
   whitelistPiiProperties = whitelistPiiProperties || [];
-  const customPiiProperties = {};
+  const customBlackListedPiiProperties = {};
+  const customWhiteListedProperties = {};
+  const customEventProperties = {};
   for (let i = 0; i < blacklistPiiProperties.length; i += 1) {
-    const configuration = blacklistPiiProperties[i];
-    customPiiProperties[configuration.blacklistPiiProperties] =
-      configuration.blacklistPiiHash;
+    const singularConfigInstance = blacklistPiiProperties[i];
+    customBlackListedPiiProperties[
+      singularConfigInstance.blacklistPiiProperties
+    ] = singularConfigInstance.blacklistPiiHash;
   }
-  Object.keys(custom_data).forEach(customData => {
-    const isPropertyPii = defaultPiiProperties.indexOf(customData) >= 0;
-    let isProperyWhiteListed = false;
-    for (let i = 0; i < whitelistPiiProperties.length; i += 1) {
-      const configuration = whitelistPiiProperties[i];
-      const properties = configuration.whitelistPiiProperties;
-      if (properties === customData) {
-        isProperyWhiteListed = true;
-      }
-    }
-    if (isPropertyPii) {
-      if (!isProperyWhiteListed) {
-        delete custom_data[customData];
-      }
+  for (let i = 0; i < whitelistPiiProperties.length; i += 1) {
+    const singularConfigInstance = whitelistPiiProperties[i];
+    customWhiteListedProperties[
+      singularConfigInstance.whitelistPiiProperties
+    ] = true;
+  }
+  for (let i = 0; i < eventCustomProperties.length; i += 1) {
+    const singularConfigInstance = eventCustomProperties[i];
+    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
+  }
+  Object.keys(custom_data).forEach(eventProp => {
+    const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
+    const isProperyWhiteListed =
+      customWhiteListedProperties[eventProp] || false;
+    if (isDefaultPiiProperty && !isProperyWhiteListed) {
+      delete custom_data[eventProp];
     }
 
-    if (Object.prototype.hasOwnProperty.call(customPiiProperties, customData)) {
-      if (customPiiProperties[customData]) {
-        custom_data[customData] = sha256(
-          String(message.properties[customData])
-        );
+    if (
+      Object.prototype.hasOwnProperty.call(
+        customBlackListedPiiProperties,
+        eventProp
+      )
+    ) {
+      if (customBlackListedPiiProperties[eventProp]) {
+        custom_data[eventProp] = sha256(String(message.properties[eventProp]));
       } else {
-        delete custom_data[customData];
+        delete custom_data[eventProp];
       }
     }
-    let isCustomProperty = false;
-    for (let i = 0; i < eventCustomProperties.length; i += 1) {
-      const configuration = eventCustomProperties[i];
-      const properties = configuration.eventCustomProperties;
-      if (properties === customData) {
-        isCustomProperty = true;
-      }
-    }
-    if (isStandard && !isCustomProperty && !isPropertyPii) {
-      delete custom_data[customData];
+    const isCustomProperty = customEventProperties[eventProp] || false;
+    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
+      delete custom_data[eventProp];
     }
   });
 
@@ -345,7 +360,7 @@ function responseBuilderSimple(message, category, destination) {
   );
   if (user_data) {
     const split = user_data.name ? user_data.name.split(" ") : null;
-    if (split !== null) {
+    if (split !== null && Array.isArray(split) && split.length === 2) {
       user_data.fn = sha256(split[0]);
       user_data.ln = sha256(split[1]);
     }
@@ -353,8 +368,9 @@ function responseBuilderSimple(message, category, destination) {
   }
 
   let custom_data = {};
+  let commonData = {};
 
-  const commonData = constructPayload(
+  commonData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
@@ -373,6 +389,7 @@ function responseBuilderSimple(message, category, destination) {
       category.standard,
       eventCustomProperties
     );
+    message.properties = message.properties || {};
     if (category.standard) {
       switch (category.type) {
         case "product list viewed":
@@ -438,14 +455,17 @@ function responseBuilderSimple(message, category, destination) {
     custom_data = undefined;
   }
   if (limitedDataUSage) {
-    const data_processing_options = message.integrations.FacebookPixel
-      ? message.integrations.FacebookPixel.dataProcessingOptions
-      : undefined;
-    [
-      commonData.data_processing_options,
-      commonData.data_processing_options_country,
-      commonData.data_processing_options_state
-    ] = data_processing_options;
+    const data_processing_options = get(
+      message,
+      "integrations.FacebookPixel.dataProcessingOptions"
+    );
+    if (data_processing_options && Array.isArray(data_processing_options)) {
+      [
+        commonData.data_processing_options,
+        commonData.data_processing_options_country,
+        commonData.data_processing_options_state
+      ] = data_processing_options;
+    }
   }
 
   if (user_data && commonData) {

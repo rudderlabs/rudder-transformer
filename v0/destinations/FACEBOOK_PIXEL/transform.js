@@ -317,12 +317,10 @@ function transformedPayloadData(
     const singularConfigInstance = eventCustomProperties[i];
     customEventProperties[singularConfigInstance.eventCustomProperties] = true;
   }
-
   Object.keys(custom_data).forEach(eventProp => {
     const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
     const isProperyWhiteListed =
       customWhiteListedProperties[eventProp] || false;
-
     if (isDefaultPiiProperty && !isProperyWhiteListed) {
       delete custom_data[eventProp];
     }

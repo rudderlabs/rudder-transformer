@@ -1518,6 +1518,17 @@
                 }
             },
             "context": {
+                    "dataProcessingOptions": [
+                        [
+                            "LDU"
+                        ],
+                        1,
+                        1000
+                    ],
+                    "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+                    "fbp": "fb.1.1554763741205.234567890",
+                    "fb_login_id": "fb_id",
+                    "lead_id": "lead_id",
                 "device": {
                     "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
                     "manufacturer": "Xiaomi",
@@ -1542,20 +1553,7 @@
             },
             "event": "spin_result",
             "integrations": {
-                "All": true,
-                "FacebookPixel": {
-                    "dataProcessingOptions": [
-                        [
-                            "LDU"
-                        ],
-                        1,
-                        1000
-                    ],
-                    "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
-                    "fbp": "fb.1.1554763741205.234567890",
-                    "fb_login_id": "fb_id",
-                    "lead_id": "lead_id"
-                }
+                "All": true
             },
             "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
             "properties": {
@@ -1607,6 +1605,17 @@
                 }
             },
             "context": {
+                    "dataProcessingOptions": [
+                        [
+                            "LDU"
+                        ],
+                        1,
+                        1000
+                    ],
+                    "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+                    "fbp": "fb.1.1554763741205.234567890",
+                    "fb_login_id": "fb_id",
+                    "lead_id": "lead_id",
                 "device": {
                     "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
                     "manufacturer": "Xiaomi",
@@ -1631,20 +1640,7 @@
             },
             "event": "spin_result",
             "integrations": {
-                "All": true,
-                "FacebookPixel": {
-                    "dataProcessingOptions": [
-                        [
-                            "LDU"
-                        ],
-                        1,
-                        1000
-                    ],
-                    "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
-                    "fbp": "fb.1.1554763741205.234567890",
-                    "fb_login_id": "fb_id",
-                    "lead_id": "lead_id"
-                }
+                "All": true
             },
             "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
             "properties": {

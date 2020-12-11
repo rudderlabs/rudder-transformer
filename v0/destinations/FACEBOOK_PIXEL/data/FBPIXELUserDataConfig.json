@@ -155,27 +155,27 @@
   },
   {
     "destKey": "fbc",
-    "sourceKeys": "integrations.FacebookPixel.fbc",
+    "sourceKeys": "context.fbc",
     "required": false
   },
   {
     "destKey": "fbp",
-    "sourceKeys": "integrations.FacebookPixel.fbp",
+    "sourceKeys": "context.fbp",
     "required": false
   },
   {
     "destKey": "subscription_id",
-    "sourceKeys": "integrations.FacebookPixel.subscription_id",
+    "sourceKeys": "context.subscription_id",
     "required": false
   },
   {
     "destKey": "lead_id",
-    "sourceKeys": "integrations.FacebookPixel.lead_id",
+    "sourceKeys": "context.lead_id",
     "required": false
   },
   {
     "destKey": "fb_login_id",
-    "sourceKeys": "integrations.FacebookPixel.fb_login_id",
+    "sourceKeys": "context.fb_login_id",
     "required": false
   }
 ]

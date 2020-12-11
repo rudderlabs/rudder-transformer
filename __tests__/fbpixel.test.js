@@ -1,4 +1,4 @@
-const integration = "fbpixel";
+const integration = "FACEBOOK_PIXEL";
 const name = "Fbpixel";
 
 const fs = require("fs");

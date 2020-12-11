@@ -1567,7 +1567,7 @@
         },
         "destination": {
             "Config": {
-                "limitedDataUSage" : true,
+                "limitedDataUSage": true,
                 "blacklistPiiProperties": [
                     {
                         "blacklistPiiProperties": "",
@@ -1656,7 +1656,7 @@
         },
         "destination": {
             "Config": {
-                "limitedDataUSage" : false,
+                "limitedDataUSage": false,
                 "blacklistPiiProperties": [
                     {
                         "blacklistPiiProperties": "",

@@ -457,7 +457,7 @@ function responseBuilderSimple(message, category, destination) {
   if (limitedDataUSage) {
     const data_processing_options = get(
       message,
-      "integrations.FacebookPixel.dataProcessingOptions"
+      "context.dataProcessingOptions"
     );
     if (data_processing_options && Array.isArray(data_processing_options)) {
       [

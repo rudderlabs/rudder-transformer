@@ -16,6 +16,7 @@ const get = require("get-value");
 const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const logger = require("../../logger");
+const sha256 = require("sha256");
 
 // ========================================================================
 // INLINERS
@@ -171,6 +172,29 @@ const formatTimeStamp = (dateStr, format) => {
   switch (format) {
     default:
       return date.getTime();
+  }
+};
+//
+
+const hashToSha256 = value => {
+  return sha256(value);
+};
+// Check what type of gender and convert to f or m
+
+const getFbGenderVal = gender => {
+  if (
+    gender.toUpperCase() === "FEMALE" ||
+    gender.toUpperCase() === "F" ||
+    gender.toUpperCase() === "WOMAN"
+  ) {
+    return hashToSha256("f");
+  }
+  if (
+    gender.toUpperCase() === "MALE" ||
+    gender.toUpperCase() === "M" ||
+    gender.toUpperCase() === "MAN"
+  ) {
+    return hashToSha256("m");
   }
 };
 
@@ -372,6 +396,12 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "toNumber":
         formattedVal = Number(formattedVal);
+        break;
+      case "hashToSha256":
+        formattedVal = hashToSha256(String(formattedVal));
+        break;
+      case "getFbGenderVal":
+        formattedVal = getFbGenderVal(formattedVal);
         break;
       case "getOffsetInSec":
         formattedVal = getOffsetInSec(formattedVal);

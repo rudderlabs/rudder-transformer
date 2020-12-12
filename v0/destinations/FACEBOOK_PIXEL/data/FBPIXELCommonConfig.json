@@ -1,15 +1,16 @@
 [
-    {
-      "destKey": "event_name",
-      "sourceKeys": ["event", "type"],
-      "required": true
-    },
-    {
-      "destKey": "event_time",
-      "sourceKeys": ["timestamp","originalTimestamp"],
-      "required": true,
-      "metadata": {
-        "type": "secondTimestamp"
-      }
+  {
+    "destKey": "event_name",
+    "sourceKeys": ["event", "type"],
+    "required": true
+  },
+  {
+    "destKey": "event_time",
+    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
     }
-  ]
+  }
+]
+

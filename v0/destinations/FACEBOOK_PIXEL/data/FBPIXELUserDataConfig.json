@@ -16,10 +16,7 @@
   },
   {
     "destKey": "em",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -27,10 +24,7 @@
   },
   {
     "destKey": "ph",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -38,10 +32,7 @@
   },
   {
     "destKey": "ge",
-    "sourceKeys": [
-      "traits.gender",
-      "context.traits.gender"
-    ],
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
     "required": false,
     "metadata": {
       "type": "getFbGenderVal"
@@ -49,10 +40,7 @@
   },
   {
     "destKey": "db",
-    "sourceKeys": [
-      "traits.birthday",
-      "context.traits.birthday"
-    ],
+    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -90,18 +78,12 @@
   },
   {
     "destKey": "name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
+    "sourceKeys": ["traits.name", "context.traits.name"],
     "required": false
   },
   {
     "destKey": "ct",
-    "sourceKeys": [
-      "traits.address.city",
-      "context.traits.address.city"
-    ],
+    "sourceKeys": ["traits.address.city", "context.traits.address.city"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -109,10 +91,7 @@
   },
   {
     "destKey": "st",
-    "sourceKeys": [
-      "traits.address.state",
-      "context.traits.address.state"
-    ],
+    "sourceKeys": ["traits.address.state", "context.traits.address.state"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -120,10 +99,7 @@
   },
   {
     "destKey": "zp",
-    "sourceKeys": [
-      "traits.address.zip",
-      "context.traits.address.zip"
-    ],
+    "sourceKeys": ["traits.address.zip", "context.traits.address.zip"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -131,10 +107,7 @@
   },
   {
     "destKey": "country",
-    "sourceKeys": [
-      "traits.address.country",
-      "context.traits.address.country"
-    ],
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -142,10 +115,7 @@
   },
   {
     "destKey": "client_ip_address",
-    "sourceKeys": [
-      "request_ip",
-      "context.ip"
-    ],
+    "sourceKeys": ["request_ip", "context.ip"],
     "required": false
   },
   {
@@ -179,3 +149,4 @@
     "required": false
   }
 ]
+

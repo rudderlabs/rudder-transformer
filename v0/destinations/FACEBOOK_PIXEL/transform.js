@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable camelcase */
 const sha256 = require("sha256");
 const get = require("get-value");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
@@ -18,9 +17,9 @@ const {
  * @return number
  */
 
-function formatRevenue(revenue) {
+const formatRevenue = revenue => {
   return Number((revenue || 0).toFixed(2));
-}
+};
 
 /**
  *
@@ -33,7 +32,7 @@ function formatRevenue(revenue) {
  * @return Content Type array as defined in:
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
-function getContentType(message, defaultValue, categoryToContent) {
+const getContentType = (message, defaultValue, categoryToContent) => {
   const { integrations } = message;
   if (
     integrations &&
@@ -68,7 +67,8 @@ function getContentType(message, defaultValue, categoryToContent) {
     }
   }
   return defaultValue;
-}
+};
+
 /**
  *
  * @param {*} message Rudder element
@@ -76,7 +76,7 @@ function getContentType(message, defaultValue, categoryToContent) {
  *
  * Handles order completed and checkout started types of specific events
  */
-function handleOrder(message, categoryToContent) {
+const handleOrder = (message, categoryToContent) => {
   const { products } = message.properties;
   const value = formatRevenue(message.properties.revenue);
   const contentType = getContentType(message, "product", categoryToContent);
@@ -109,7 +109,7 @@ function handleOrder(message, categoryToContent) {
     contents,
     num_items: contentIds.length
   };
-}
+};
 
 /**
  *
@@ -118,7 +118,7 @@ function handleOrder(message, categoryToContent) {
  *
  * Handles product list viewed
  */
-function handleProductListViewed(message, categoryToContent) {
+const handleProductListViewed = (message, categoryToContent) => {
   let contentType;
   const contentIds = [];
   const contents = [];
@@ -160,14 +160,15 @@ function handleProductListViewed(message, categoryToContent) {
     content_type: getContentType(message, contentType, categoryToContent),
     contents
   };
-}
+};
+
 /**
  *
  * @param {*} message Rudder Payload
  * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
-function handleProduct(message, categoryToContent, valueFieldIdentifier) {
+const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const useValue = valueFieldIdentifier === "properties.value";
   const contentIds = [
     message.properties.product_id ||
@@ -208,11 +209,11 @@ function handleProduct(message, categoryToContent, valueFieldIdentifier) {
     value,
     contents
   };
-}
+};
 
-/** This function transforms the payloads according to the config settings and adds, removes or hashes pii data. 
+/** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
  Also checks if it is a standard event and sends properties only if it is mentioned in our configs.
- @param message --> the rudder payload 
+ @param message --> the rudder payload
 
  {
       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -249,11 +250,11 @@ function handleProduct(message, categoryToContent, valueFieldIdentifier) {
       type: 'track'
     }
 
- @param custom_data --> properties
+ @param customData --> properties
  { revenue: 400, additional_bet_index: 0 }
- 
- @param blacklistPiiProperties --> 
- [ { blacklistPiiProperties: 'phone', blacklistPiiHash: true } ] // hashes the phone property 
+
+ @param blacklistPiiProperties -->
+ [ { blacklistPiiProperties: 'phone', blacklistPiiHash: true } ] // hashes the phone property
 
  @param whitelistPiiProperties -->
  [ { whitelistPiiProperties: 'email' } ] // sets email
@@ -261,19 +262,19 @@ function handleProduct(message, categoryToContent, valueFieldIdentifier) {
  @param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
  false
 
- @param eventCustomProperties --> 
+ @param eventCustomProperties -->
  [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
 
  */
 
-function transformedPayloadData(
+const transformedPayloadData = (
   message,
-  custom_data,
+  customData,
   blacklistPiiProperties,
   whitelistPiiProperties,
   isStandard,
   eventCustomProperties
-) {
+) => {
   const defaultPiiProperties = [
     "email",
     "firstName",
@@ -311,12 +312,12 @@ function transformedPayloadData(
     const singularConfigInstance = eventCustomProperties[i];
     customEventProperties[singularConfigInstance.eventCustomProperties] = true;
   }
-  Object.keys(custom_data).forEach(eventProp => {
+  Object.keys(customData).forEach(eventProp => {
     const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
     const isProperyWhiteListed =
       customWhiteListedProperties[eventProp] || false;
     if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete custom_data[eventProp];
+      delete customData[eventProp];
     }
 
     if (
@@ -326,21 +327,21 @@ function transformedPayloadData(
       )
     ) {
       if (customBlackListedPiiProperties[eventProp]) {
-        custom_data[eventProp] = sha256(String(message.properties[eventProp]));
+        customData[eventProp] = sha256(String(message.properties[eventProp]));
       } else {
-        delete custom_data[eventProp];
+        delete customData[eventProp];
       }
     }
     const isCustomProperty = customEventProperties[eventProp] || false;
     if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete custom_data[eventProp];
+      delete customData[eventProp];
     }
   });
 
-  return custom_data;
-}
+  return customData;
+};
 
-function responseBuilderSimple(message, category, destination) {
+const responseBuilderSimple = (message, category, destination) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
   const {
@@ -354,20 +355,20 @@ function responseBuilderSimple(message, category, destination) {
 
   const endpoint = `https://graph.facebook.com/v9.0/${pixelId}/events?access_token=${accessToken}`;
 
-  const user_data = constructPayload(
+  const userData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
   );
-  if (user_data) {
-    const split = user_data.name ? user_data.name.split(" ") : null;
+  if (userData) {
+    const split = userData.name ? userData.name.split(" ") : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
-      user_data.fn = sha256(split[0]);
-      user_data.ln = sha256(split[1]);
+      userData.fn = sha256(split[0]);
+      userData.ln = sha256(split[1]);
     }
-    delete user_data.name;
+    delete userData.name;
   }
 
-  let custom_data = {};
+  let customData = {};
   let commonData = {};
 
   commonData = constructPayload(
@@ -375,15 +376,15 @@ function responseBuilderSimple(message, category, destination) {
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
   if (category.type !== "identify") {
-    custom_data = {
+    customData = {
       ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
     };
-    if (Object.keys(custom_data).length === 0 && category.standard) {
+    if (Object.keys(customData).length === 0 && category.standard) {
       throw Error("No properties for the event so the event cannot be sent.");
     }
-    custom_data = transformedPayloadData(
+    customData = transformedPayloadData(
       message,
-      custom_data,
+      customData,
       blacklistPiiProperties,
       whitelistPiiProperties,
       category.standard,
@@ -393,43 +394,43 @@ function responseBuilderSimple(message, category, destination) {
     if (category.standard) {
       switch (category.type) {
         case "product list viewed":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             ...handleProductListViewed(message, categoryToContent)
           };
           commonData.event_name = "ViewContent";
           break;
         case "product viewed":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             ...handleProduct(message, categoryToContent, valueFieldIdentifier)
           };
           commonData.event_name = "ViewContent";
           break;
         case "product added":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             ...handleProduct(message, categoryToContent, valueFieldIdentifier)
           };
           commonData.event_name = "AddToCart";
           break;
         case "order completed":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             ...handleOrder(message, categoryToContent, valueFieldIdentifier)
           };
           commonData.event_name = "Purchase";
           break;
         case "products searched":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             search_string: message.properties.query
           };
           commonData.event_name = "Search";
           break;
         case "checkout started":
-          custom_data = {
-            ...custom_data,
+          customData = {
+            ...customData,
             ...handleOrder(message, categoryToContent, valueFieldIdentifier)
           };
           commonData.event_name = "InitiateCheckout";
@@ -437,7 +438,7 @@ function responseBuilderSimple(message, category, destination) {
         default:
           throw Error("This standard event does not exist");
       }
-      custom_data.currency = message.properties.currency || "USD";
+      customData.currency = message.properties.currency || "USD";
     } else {
       if (category.type === "page") {
         commonData.event_name = message.name
@@ -445,37 +446,34 @@ function responseBuilderSimple(message, category, destination) {
           : "Viewed a Page";
       }
       if (category.type === "simple track") {
-        custom_data.value = message.properties
+        customData.value = message.properties
           ? message.properties.revenue
           : undefined;
-        delete custom_data.revenue;
+        delete customData.revenue;
       }
     }
   } else {
-    custom_data = undefined;
+    customData = undefined;
   }
   if (limitedDataUSage) {
-    const data_processing_options = get(
-      message,
-      "context.dataProcessingOptions"
-    );
-    if (data_processing_options && Array.isArray(data_processing_options)) {
+    const dataProcessingOptions = get(message, "context.dataProcessingOptions");
+    if (dataProcessingOptions && Array.isArray(dataProcessingOptions)) {
       [
         commonData.data_processing_options,
         commonData.data_processing_options_country,
         commonData.data_processing_options_state
-      ] = data_processing_options;
+      ] = dataProcessingOptions;
     }
   }
 
-  if (user_data && commonData) {
+  if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     const jsonStringify = JSON.stringify({
-      user_data,
+      user_data: userData,
       ...commonData,
-      custom_data
+      custom_data: customData
     });
     const payload = {
       data: [jsonStringify]
@@ -485,7 +483,7 @@ function responseBuilderSimple(message, category, destination) {
   }
   // fail-safety for developer error
   throw new Error("Payload could not be constructed");
-}
+};
 
 const processEvent = (message, destination) => {
   if (!message.type) {

@@ -1,6 +1,8 @@
-[{
+[
+  {
     "destKey": "",
     "sourceKeys": "properties",
     "required": true
   }
 ]
+

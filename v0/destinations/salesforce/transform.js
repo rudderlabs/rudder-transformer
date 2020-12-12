@@ -20,16 +20,14 @@ const {
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  const response = await axios.post(
-    `${SF_TOKEN_REQUEST_URL}?username=${
-      destination.Config.userName
-    }&password=${encodeURIComponent(
-      destination.Config.password
-    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-      destination.Config.consumerKey
-    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`,
-    {}
-  );
+  const authUrl = `${SF_TOKEN_REQUEST_URL}?username=${
+    destination.Config.userName
+  }&password=${encodeURIComponent(
+    destination.Config.password
+  )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+    destination.Config.consumerKey
+  }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
+  const response = await axios.post(authUrl, {});
 
   return {
     token: `Bearer ${response.data.access_token}`,
@@ -48,6 +46,7 @@ function responseBuilderSimple(message, targetEndpoint, authorizationData) {
   // adjust for firstName and lastName
   traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
 
+  // construct the payload using the mappingJson and add extra params
   const rawPayload = constructPayload(traits, mappingJson);
   Object.keys(traits).forEach(key => {
     if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
@@ -55,18 +54,14 @@ function responseBuilderSimple(message, targetEndpoint, authorizationData) {
     }
   });
 
-  // Remove keys with undefined values
-  const payload = removeUndefinedValues(rawPayload);
-
   const response = defaultRequestConfig();
   const header = {
     "Content-Type": "application/json",
     Authorization: authorizationData.token
   };
-
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
-  response.body.JSON = payload;
+  response.body.JSON = removeUndefinedValues(rawPayload);
   response.endpoint = targetEndpoint;
 
   return response;
@@ -108,6 +103,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   }
 
   // if nothing is present consider it as a Lead Object
+  // BACKWORD COMPATIBILITY
   if (salesforceMaps.length === 0) {
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
@@ -117,11 +113,8 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
     // request configuration will be conditional
-    // POST for create, PATCH for update
     const leadQueryResponse = await axios.get(leadQueryUrl, {
-      headers: {
-        Authorization: authorizationData.token
-      }
+      headers: { Authorization: authorizationData.token }
     });
 
     let leadObjectId;
@@ -159,18 +152,16 @@ async function processIdentify(message, destination) {
     const { salesforceType, salesforceId } = salesforceMap;
 
     // if id is valid, do update else create the object
+    // POST for create, PATCH for update
     let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
     if (salesforceId) {
       targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
     }
 
-    const responseObject = responseBuilderSimple(
-      message,
-      targetEndpoint,
-      authorizationData
+    // finally build the response and push to the list
+    responseData.push(
+      responseBuilderSimple(message, targetEndpoint, authorizationData)
     );
-
-    responseData.push(responseObject);
   });
 
   return responseData;

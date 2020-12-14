@@ -1,7 +1,16 @@
 [
-  { "destKey": "$os", "sourceKeys": "context.os.name" },
-  { "destKey": "$current_url", "sourceKeys": "context.page.url" },
-  { "destKey": "$pathname", "sourceKeys": "context.page.path" },
+  {
+    "destKey": "$os",
+    "sourceKeys": "context.os.name"
+  },
+  {
+    "destKey": "$current_url",
+    "sourceKeys": "context.page.url"
+  },
+  {
+    "destKey": "$pathname",
+    "sourceKeys": "context.page.path"
+  },
   {
     "destKey": "$screen_height",
     "sourceKeys": "context.screen.height",
@@ -12,25 +21,58 @@
     "sourceKeys": "context.screen.width",
     "isMobile": true
   },
-  { "destKey": "$lib", "sourceKeys": "context.library.name", "all": true },
+  {
+    "destKey": "$lib",
+    "sourceKeys": "context.library.name",
+    "all": true
+  },
   {
     "destKey": "$lib_version",
     "sourceKeys": "context.library.version",
     "all": true
   },
-  { "destKey": "$insert_id", "sourceKeys": "" },
-  { "destKey": "$time", "sourceKeys": ["originalTimestamp", "timestamp"] },
-  { "destKey": "$device_id", "sourceKeys": "context.device.id" },
-  { "destKey": "$ip", "sourceKeys": ["request_ip", "context.ip"], "all": true },
   {
-    "destKey": "$timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "destKey": "$insert_id",
+    "sourceKeys": ""
+  },
+  {
+    "destKey": "$time",
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ]
+  },
+  {
+    "destKey": "$device_id",
+    "sourceKeys": "context.device.id"
+  },
+  {
+    "destKey": "$ip",
+    "sourceKeys": [
+      "request_ip",
+      "context.ip"
+    ],
     "all": true
   },
-  { "destKey": "$anon_distinct_id", "sourceKeys": "anonymousId", "all": true },
+  {
+    "destKey": "$timestamp",
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
+    "all": true
+  },
+  {
+    "destKey": "$anon_distinct_id",
+    "sourceKeys": "anonymousId",
+    "all": true
+  },
   {
     "destKey": "distinct_id",
-    "sourceKeys": ["userId", "anonymousId"],
+    "sourceKeys": [
+      "userId",
+      "anonymousId"
+    ],
     "all": true
   },
   {
@@ -53,7 +95,11 @@
     "sourceKeys": "context.timezone",
     "isMobile": true
   },
-  { "destKey": "$locale", "sourceKeys": "context.locale", "isMobile": true },
+  {
+    "destKey": "$locale",
+    "sourceKeys": "context.locale",
+    "isMobile": true
+  },
   {
     "destKey": "$user_agent",
     "sourceKeys": "context.userAgent",

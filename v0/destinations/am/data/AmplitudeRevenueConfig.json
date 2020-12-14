@@ -1,9 +1,29 @@
 {
-  "context.os.name": {"isFunc": true, "funcName": "getOSName", "outKey":"os_name"},
-  "context.os.version": {"isFunc": true, "funcName": "getOSVersion", "outKey":"os_version"},
-  "context.device.model": {"isFunc": true, "funcName": "getDeviceModel", "outKey":"device_model"},
-  "context.device.manufacturer": {"isFunc": true, "funcName": "getDeviceManufacturer", "outKey":"device_manufacturer"},
-  "context.device.type": {"isFunc": true, "funcName": "getPlatform", "outKey":"platform"},
+  "context.os.name": {
+    "isFunc": true,
+    "funcName": "getOSName",
+    "outKey": "os_name"
+  },
+  "context.os.version": {
+    "isFunc": true,
+    "funcName": "getOSVersion",
+    "outKey": "os_version"
+  },
+  "context.device.model": {
+    "isFunc": true,
+    "funcName": "getDeviceModel",
+    "outKey": "device_model"
+  },
+  "context.device.manufacturer": {
+    "isFunc": true,
+    "funcName": "getDeviceManufacturer",
+    "outKey": "device_manufacturer"
+  },
+  "context.device.type": {
+    "isFunc": true,
+    "funcName": "getPlatform",
+    "outKey": "platform"
+  },
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",

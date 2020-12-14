@@ -5,7 +5,7 @@
       "traits.email",
       "context.traits.email"
     ],
-   "required": false
+    "required": false
   },
   {
     "destKey": "dataFields",

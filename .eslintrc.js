@@ -1,6 +1,6 @@
 module.exports = {
   extends: ["airbnb-base", "prettier"],
-  plugins: ["prettier"],
+  plugins: ["prettier", "json-format"],
   env: {
     commonjs: true,
     browser: false,

@@ -1,11 +1,22 @@
 [
-  { "destKey": "properties", "sourceKeys": "properties", "required": false },
   {
-    "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "destKey": "properties",
+    "sourceKeys": "properties",
     "required": false
   },
-  { "destKey": "category", "sourceKeys": "category", "required": false },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": [
+      "originalTimestamp",
+      "timestamp"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "category",
+    "sourceKeys": "category",
+    "required": false
+  },
   {
     "destKey": "distinct_id",
     "sourceKeys": [
@@ -18,6 +29,14 @@
     ],
     "required": true
   },
-  { "destKey": "name", "sourceKeys": "name", "required": false },
-  { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  }
 ]

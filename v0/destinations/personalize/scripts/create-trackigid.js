@@ -41,20 +41,17 @@ schema += '], "version": "1.0"}';
 
 (async function() {
   try {
-
     AWS.config.update({
       accessKeyId,
       secretAccessKey,
       region
     });
 
-
     // create the objects needed for personalize
 
-    let personalize = new AWS.Personalize();
+    const personalize = new AWS.Personalize();
 
     // datasetgroup
-
 
     const paramsCreateDatasetGroup = {
       name: `${name}_DataSetGroup` /* required */
@@ -65,7 +62,6 @@ schema += '], "version": "1.0"}';
       .promise();
 
     const { datasetGroupArn } = responseDatasetGroup;
-
 
     // describe dataset group
 
@@ -81,7 +77,6 @@ schema += '], "version": "1.0"}';
 
     // schema
 
-
     const paramsSchema = {
       name: `${name}_schema` /* required */,
       schema
@@ -94,7 +89,6 @@ schema += '], "version": "1.0"}';
 
     const { schemaArn } = responseSchema;
 
-
     // dataset
 
     while (statusDSGroup !== "ACTIVE") {
@@ -103,8 +97,6 @@ schema += '], "version": "1.0"}';
         .promise();
       statusDSGroup = responseDescribeDSGroup.datasetGroup.status;
     }
-
-
 
     const paramsDataset = {
       datasetGroupArn /* required */,
@@ -118,7 +110,6 @@ schema += '], "version": "1.0"}';
       .promise();
 
     const { datasetArn } = responseDataset;
-
 
     // describe dataset
 
@@ -181,6 +172,4 @@ schema += '], "version": "1.0"}';
     }
     return e;
   }
-})().then(result => {
-
-});
+})().then(result => {});

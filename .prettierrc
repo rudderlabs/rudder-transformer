@@ -1,3 +1,5 @@
 {
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "tabWidth": 2,
+  "files":["*.js", "*.json"]
 }

@@ -330,11 +330,13 @@ router.post("/batch", ctx => {
     try {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
-    } catch(error) {
-      response.errors.push(error.message || "Error occurred while processing payload.")
+    } catch (error) {
+      response.errors.push(
+        error.message || "Error occurred while processing payload."
+      );
     }
   });
-  if(response.errors.length > 0) {
+  if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;
     return;

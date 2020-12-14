@@ -16,7 +16,10 @@
   },
   {
     "destKey": "push_preference",
-    "sourceKeys": ["properties.push_preference", "properties.pushPreference"],
+    "sourceKeys": [
+      "properties.push_preference",
+      "properties.pushPreference"
+    ],
     "required": false
   },
   {
@@ -39,7 +42,13 @@
     "sourceKeys": "properties",
     "required": false,
     "metadata": {
-      "excludes": ["active", "push_preference", "id", "_id", "pushPreference"]
+      "excludes": [
+        "active",
+        "push_preference",
+        "id",
+        "_id",
+        "pushPreference"
+      ]
     }
   }
 ]

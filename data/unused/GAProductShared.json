@@ -1,1 +1,67 @@
-[{"rl_message":{"rl_channel":"Test Channel","rl_context":{"app":{"build":"0","name":"com.rudderlabs.android.library.test","namespace":"com.rudderlabs.android.library.test","version":"1.0.0"},"rl_traits":{"rl_anonymous_id":"6250c1b1-e70c-4e1c-aa2a-48309370408f"},"library":{"name":"com.rudderlabs.android.library","version":"1.0"},"os":{"name":"Android","version":"9"},"screen":{"density":1,"width":470,"height":320},"user_agent":"","locale":"en-US","device":{"id":"5ec5db96-6c4c-4d0b-bcf0-f49ba3dca930","manufacturer":"unknown","model":"robolectric","name":"robolectric"},"network":{"carrier":""}},"rl_type":"track","message_id":"eca6baee-0aec-401f-bbe0-7621af491829","timestamp":"2019-07-18 06:12:13+0000","rl_anonymous_id":"5ec5db96-6c4c-4d0b-bcf0-f49ba3dca930","rl_event":"Product Shared","rl_properties":{"product_id":"507f1f77bcf86cd799439011","sku":"45790-32","category":"Games","name":"Monopoly: 3rd Edition","brand":"Monopoly","variant":"Single User","price":19.0,"quantity":1.0,"coupon":"MAY_DEALS_3","position":1.0,"url":"https://www.example.com/product/path","image_url":"https://www.example.com/product/path.jpg","share_via":"email","share_message":"Hey, check out this item","recipient":"friend@gmail.com"},"integrations":["rudderlabs"]}}]
+[
+  {
+    "rl_message": {
+      "rl_channel": "Test Channel",
+      "rl_context": {
+        "app": {
+          "build": "0",
+          "name": "com.rudderlabs.android.library.test",
+          "namespace": "com.rudderlabs.android.library.test",
+          "version": "1.0.0"
+        },
+        "rl_traits": {
+          "rl_anonymous_id": "6250c1b1-e70c-4e1c-aa2a-48309370408f"
+        },
+        "library": {
+          "name": "com.rudderlabs.android.library",
+          "version": "1.0"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 1,
+          "width": 470,
+          "height": 320
+        },
+        "user_agent": "",
+        "locale": "en-US",
+        "device": {
+          "id": "5ec5db96-6c4c-4d0b-bcf0-f49ba3dca930",
+          "manufacturer": "unknown",
+          "model": "robolectric",
+          "name": "robolectric"
+        },
+        "network": {
+          "carrier": ""
+        }
+      },
+      "rl_type": "track",
+      "message_id": "eca6baee-0aec-401f-bbe0-7621af491829",
+      "timestamp": "2019-07-18 06:12:13+0000",
+      "rl_anonymous_id": "5ec5db96-6c4c-4d0b-bcf0-f49ba3dca930",
+      "rl_event": "Product Shared",
+      "rl_properties": {
+        "product_id": "507f1f77bcf86cd799439011",
+        "sku": "45790-32",
+        "category": "Games",
+        "name": "Monopoly: 3rd Edition",
+        "brand": "Monopoly",
+        "variant": "Single User",
+        "price": 19,
+        "quantity": 1,
+        "coupon": "MAY_DEALS_3",
+        "position": 1,
+        "url": "https://www.example.com/product/path",
+        "image_url": "https://www.example.com/product/path.jpg",
+        "share_via": "email",
+        "share_message": "Hey, check out this item",
+        "recipient": "friend@gmail.com"
+      },
+      "integrations": [
+        "rudderlabs"
+      ]
+    }
+  }
+]

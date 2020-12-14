@@ -1,16 +1,35 @@
 {
-  "address": ["traits.address", "context.traits.address"],
+  "address": [
+    "traits.address",
+    "context.traits.address"
+  ],
   "createdAt": [
     "traits.createdAt",
     "context.traits.createdAt",
     "timestamp",
     "originalTimestamp"
   ],
-  "email": ["traits.email", "context.traits.email", "properties.email"],
-  "timestamp": ["originalTimestamp", "timestamp"],
-  "historicalTimestamp": ["timestamp", "originalTimestamp"],
-  "traits": ["traits", "context.traits"],
-  "groupTraits": ["traits", "context.traits"],
+  "email": [
+    "traits.email",
+    "context.traits.email",
+    "properties.email"
+  ],
+  "timestamp": [
+    "originalTimestamp",
+    "timestamp"
+  ],
+  "historicalTimestamp": [
+    "timestamp",
+    "originalTimestamp"
+  ],
+  "traits": [
+    "traits",
+    "context.traits"
+  ],
+  "groupTraits": [
+    "traits",
+    "context.traits"
+  ],
   "userId": [
     "userId",
     "traits.userId",
@@ -38,5 +57,4 @@
     "context.traits.lastName",
     "context.traits.lastname"
   ]
-
 }

@@ -1,0 +1,152 @@
+[
+  {
+    "destKey": "external_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "em",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "ph",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "ge",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "type": "getFbGenderVal"
+    }
+  },
+  {
+    "destKey": "db",
+    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "ln",
+    "sourceKeys": [
+      "traits.lastname",
+      "traits.lastName",
+      "traits.last_name",
+      "context.traits.lastname",
+      "context.traits.lastName",
+      "context.traits.last_name"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "fn",
+    "sourceKeys": [
+      "traits.firstname",
+      "traits.firstName",
+      "traits.first_name",
+      "context.traits.firstname",
+      "context.traits.firstName",
+      "context.traits.first_name"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "ct",
+    "sourceKeys": ["traits.address.city", "context.traits.address.city"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "st",
+    "sourceKeys": ["traits.address.state", "context.traits.address.state"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "zp",
+    "sourceKeys": ["traits.address.zip", "context.traits.address.zip"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "client_ip_address",
+    "sourceKeys": ["request_ip", "context.ip"],
+    "required": false
+  },
+  {
+    "destKey": "client_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "fbc",
+    "sourceKeys": "context.fbc",
+    "required": false
+  },
+  {
+    "destKey": "fbp",
+    "sourceKeys": "context.fbp",
+    "required": false
+  },
+  {
+    "destKey": "subscription_id",
+    "sourceKeys": "context.subscription_id",
+    "required": false
+  },
+  {
+    "destKey": "lead_id",
+    "sourceKeys": "context.lead_id",
+    "required": false
+  },
+  {
+    "destKey": "fb_login_id",
+    "sourceKeys": "context.fb_login_id",
+    "required": false
+  }
+]
+

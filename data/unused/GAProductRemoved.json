@@ -18,8 +18,15 @@
             "name": "com.rudderlabs.android.library",
             "version": "1.0"
           },
-          "os": { "name": "Android", "version": "9" },
-          "screen": { "density": 1, "width": 470, "height": 320 },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "screen": {
+            "density": 1,
+            "width": 470,
+            "height": 320
+          },
           "user_agent": "",
           "locale": "en-US",
           "device": {
@@ -28,7 +35,9 @@
             "model": "robolectric",
             "name": "robolectric"
           },
-          "network": { "carrier": "" }
+          "network": {
+            "carrier": ""
+          }
         },
         "rl_type": "track",
         "message_id": "48788322-07cb-456b-9d87-63966cab5af6",
@@ -42,15 +51,17 @@
           "name": "Monopoly: 3rd Edition",
           "brand": "Monopoly",
           "variant": "Single User",
-          "price": 19.0,
-          "quantity": 1.0,
+          "price": 19,
+          "quantity": 1,
           "coupon": "MAY_DEALS_3",
-          "position": 1.0,
+          "position": 1,
           "url": "https://www.example.com/product/path",
           "image_url": "https://www.example.com/product/path.jpg",
           "cart_id": "skdjsidjsdkdj29j"
         },
-        "integrations": ["rudderlabs"]
+        "integrations": [
+          "rudderlabs"
+        ]
       }
     }
   ]

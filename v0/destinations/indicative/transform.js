@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
@@ -137,14 +138,14 @@ const processEvent = (message, destination) => {
   }
 
   // append context.page to properties for page, track
-  if (
-    (messageType === EventType.PAGE || messageType === EventType.TRACK) &&
-    formattedMessage.context &&
-    formattedMessage.context.page
-  ) {
+  if (messageType === EventType.PAGE || messageType === EventType.TRACK) {
+    if (!formattedMessage.properties) {
+      formattedMessage.properties = {};
+    }
     formattedMessage.properties = {
-      ...formattedMessage.context.page,
-      ...formattedMessage.properties
+      ...formattedMessage.properties,
+      ...get(formattedMessage, "context.page"),
+      ...get(formattedMessage, "context.campaign")
     };
   }
 

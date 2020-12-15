@@ -3,6 +3,8 @@
     "destKey": "eventUniqueId",
     "sourceKeys": [
       "userId",
+      "traits.userId",
+      "traits.id",
       "context.traits.userId",
       "context.traits.id",
       "anonymousId"
@@ -25,7 +27,7 @@
   },
   {
     "destKey": "eventTime",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
       "type": "timestamp"

@@ -16,24 +16,24 @@ async function transform(isolatevm, events) {
       transferIn: true
     });
     try {
-      await isolatevm.bootstrapScriptResult.apply(undefined, [
-        isolatevm.fnRef,
-        new ivm.Reference(resolve),
-        sharedTransformationPayload
-      ]);
+      await isolatevm.bootstrapScriptResult.apply(
+        undefined,
+        [
+          isolatevm.fnRef,
+          new ivm.Reference(resolve),
+          sharedTransformationPayload
+        ],
+        { timeout: 4000 }
+      );
     } catch (error) {
       reject(error.message);
     }
   });
-  const timeoutPromise = new Promise(resolve => {
-    const wait = setTimeout(() => {
-      clearTimeout(wait);
-      resolve("Timedout");
-    }, 4000);
-  });
-  const result = await Promise.race([executionPromise, timeoutPromise]);
-  if (result === "Timedout") {
-    throw new Error("Timed out");
+  let result;
+  try {
+    result = await Promise.race([executionPromise]);
+  } catch (error) {
+    throw new Error(error)
   }
   return result;
 }

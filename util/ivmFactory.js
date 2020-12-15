@@ -145,28 +145,29 @@ async function createIvm(code, libraryVersionIds) {
         log.applyIgnored(
           undefined,
           args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          );
-        };
+         );
+       };
 
-        return new ivm.Reference(function forwardMainPromise(
-          fnRef,
-          resolve,
-          events
-          ) {
-            const derefMainFunc = fnRef.deref();
-            Promise.resolve(derefMainFunc(events))
-            .then(value => {
-              resolve.applyIgnored(undefined, [
-                new ivm.ExternalCopy(value).copyInto()
-              ]);
-            })
-            .catch(error => {
-              resolve.applyIgnored(undefined, [
-                new ivm.ExternalCopy(error.message).copyInto()
-              ]);
-            });
+      return new ivm.Reference(function forwardMainPromise(
+        fnRef,
+        resolve,
+        events,
+        timeout
+        ){
+          const derefMainFunc = fnRef.deref();
+          Promise.resolve(derefMainFunc(events))
+          .then(value => {
+            resolve.applyIgnored(undefined, [
+              new ivm.ExternalCopy(value).copyInto()
+            ]);
+          })
+          .catch(error => {
+            resolve.applyIgnored(undefined, [
+              new ivm.ExternalCopy(error.message).copyInto()
+            ]);
           });
-        }
+        });
+      }
 
         `
   );

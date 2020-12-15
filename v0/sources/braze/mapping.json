@@ -1,0 +1,16 @@
+{
+  "id": "messageId",
+  "user.user_id": "anonymousId",
+  "user.external_user_id": "userId",
+  "user.device_id": "context.device.id",
+  "user.timezone": "timezone",
+  "properties.device_model": "context.device.model",
+  "properties.os_version": "context.os.version",
+  "properties.platform": "context.os.name",
+  "properties.email_address": "traits.email",
+  "properties.user_agent": "context.userAgent",
+  "properties.to_phone_number": "traits.phone",
+  "properties.ad_id": "context.device.advertisingId",
+  "properties.ad_tracking_enabled": "context.device.adTrackingEnabled",
+  "properties": "properties"
+}

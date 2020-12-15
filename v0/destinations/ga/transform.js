@@ -722,7 +722,10 @@ function processEComGenericEvent(message, destination) {
 // and event type where applicable
 function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type ? message.type.toLowerCase() : undefined;
+  if(!messageType) {
+    throw new Error("Message type is not present");
+  }
   let customParams = {};
   let category;
   let { enableServerSideIdentify, enhancedEcommerce } = destination.Config;
@@ -746,9 +749,12 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK: {
+      let eventName = message.event;
+      if (!(typeof eventName === 'string' || eventName instanceof String)){
+        throw new Error ("Event name is not present/is not a string")
+      }
       if (enhancedEcommerce) {
-        const eventName = message.event.toLowerCase();
-
+        eventName = eventName.toLowerCase();
         category = nameToEventMap[eventName]
           ? nameToEventMap[eventName].category
           : ConfigCategory.NON_ECOM;

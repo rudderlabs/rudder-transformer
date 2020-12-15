@@ -143,9 +143,9 @@ const processEvent = (message, destination) => {
       formattedMessage.properties = {};
     }
     formattedMessage.properties = {
-      ...formattedMessage.properties,
       ...get(formattedMessage, "context.page"),
-      ...get(formattedMessage, "context.campaign")
+      campaign: get(formattedMessage, "context.campaign"),
+      ...formattedMessage.properties
     };
   }
 

@@ -3,6 +3,8 @@ const stats = require("./stats");
 
 const { getPool } = require("./ivmPool");
 
+
+
 async function transform(isolatevm, events) {
   const transformationPayload = {};
   transformationPayload.events = events;
@@ -48,9 +50,12 @@ async function userTransformHandlerV1(
   if (userTransformation.versionId) {
     const isolatevmPool = await getPool(userTransformation, libraryVersionIds);
     const isolatevm = await isolatevmPool.acquire();
-    stats.gauge("isolate_vm_pool_size", isolatevmPool.size);
-    stats.gauge("isolate_vm_pool_available", isolatevmPool.available);
-    stats.counter("events_into_vm", events.length);
+    const tags = {
+      transformerVersionId: userTransformation.versionId
+    };
+    stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
+    stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+    stats.counter("events_into_vm", events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(
       isolatevm.isolateStartWallTime
     );
@@ -64,13 +69,17 @@ async function userTransformHandlerV1(
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
     stats.timing(
       "isolate_wall_time",
-      isolateEndWallTime - isolateStartWallTime
+      isolateEndWallTime - isolateStartWallTime,
+      tags
     );
-    stats.timing("isolate_cpu_time", isolateEndCPUTime - isolateStartCPUTime);
+    stats.timing(
+      "isolate_cpu_time",
+      isolateEndCPUTime - isolateStartCPUTime,
+      tags
+    );
     isolatevmPool.release(isolatevm);
-    stats.gauge("isolate_vm_pool_size", isolatevmPool.size);
-    stats.gauge("isolate_vm_pool_available", isolatevmPool.available);
-    // TODO: add stats for capturing ivm pools
+    stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
+    stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation

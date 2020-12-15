@@ -17,19 +17,22 @@ const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersio
 async function getTransformationCodeV1(versionId) {
   const transformation = transformationCache[versionId];
   if (transformation) return transformation;
+  const tags = {
+    transformerVersionId: versionId
+  };
   try {
     const startTime = new Date();
     const response = await fetch(
       `${getTransformationURL}?versionId=${versionId}`
     );
-    stats.increment("get_transformation_code.success");
-    stats.timing("get_transformation_code", startTime);
+    stats.increment("get_transformation_code.success", tags);
+    stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
     transformationCache[versionId] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment("get_transformation_code.error");
+    stats.increment("get_transformation_code.error", tags);
     throw error;
   }
 }
@@ -37,17 +40,20 @@ async function getTransformationCodeV1(versionId) {
 async function getLibraryCodeV1(versionId) {
   const library = libraryCache[versionId];
   if (library) return library;
+  const tags = {
+    transformerVersionId: versionId
+  };
   try {
     const startTime = new Date();
     const response = await fetch(`${getLibrariesUrl}?versionId=${versionId}`);
-    stats.increment("get_libraries_code.success");
-    stats.timing("get_libraries_code", startTime);
+    stats.increment("get_libraries_code.success", tags);
+    stats.timing("get_libraries_code", startTime, tags);
     const myJson = await response.json();
     libraryCache[versionId] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment("get_libraries_code.error");
+    stats.increment("get_libraries_code.error", tags);
     throw error;
   }
 }

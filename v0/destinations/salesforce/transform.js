@@ -39,7 +39,7 @@ async function getSFDCHeader(destination) {
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
-function responseBuilderSimple(message, salesforceMap, authorizationData) {
+function responseBuilderSimple(traits, salesforceMap, authorizationData) {
   const { salesforceType, salesforceId } = salesforceMap;
 
   // if id is valid, do update else create the object
@@ -51,36 +51,33 @@ function responseBuilderSimple(message, salesforceMap, authorizationData) {
 
   // First name and last name need to be extracted from the name field
   // get traits from the message
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (traits) {
-    let rawPayload = traits;
-    // map using the config only if the type is Lead
-    if (salesforceType === "Lead") {
-      // adjust for firstName and lastName
-      traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
-      // construct the payload using the mappingJson and add extra params
-      rawPayload = constructPayload(traits, identifyMappingJson);
-      Object.keys(traits).forEach(key => {
-        if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
-          rawPayload[`${key}__c`] = traits[key];
-        }
-      });
-    }
-
-    const response = defaultRequestConfig();
-    const header = {
-      "Content-Type": "application/json",
-      Authorization: authorizationData.token
-    };
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = header;
-    response.body.JSON = removeUndefinedValues(rawPayload);
-    response.endpoint = targetEndpoint;
-
-    return response;
+  let rawPayload = traits;
+  // map using the config only if the type is Lead
+  if (salesforceType === "Lead") {
+    // adjust for firstName and lastName
+    // construct the payload using the mappingJson and add extra params
+    rawPayload = constructPayload(
+      { ...traits, ...getFirstAndLastName(traits, "n/a") },
+      identifyMappingJson
+    );
+    Object.keys(traits).forEach(key => {
+      if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
+        rawPayload[`${key}__c`] = traits[key];
+      }
+    });
   }
 
-  return null;
+  const response = defaultRequestConfig();
+  const header = {
+    "Content-Type": "application/json",
+    Authorization: authorizationData.token
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = header;
+  response.body.JSON = removeUndefinedValues(rawPayload);
+  response.endpoint = targetEndpoint;
+
+  return response;
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -124,7 +121,11 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
     // need to perform a parameterized search for this using email
-    const { email } = getFieldValueFromMessage(message, "traits");
+    const email = getFieldValueFromMessage(message, "email");
+
+    if (!email) {
+      throw new Error("Invalid Email address for Lead Objet");
+    }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
@@ -155,6 +156,13 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
 
 // Function for handling identify events
 async function processIdentify(message, destination) {
+  // check the traits before hand
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (!traits) {
+    throw new Error("Invalid traits for Salesforce request");
+  }
+
+  // if traits is correct, start processing
   const responseData = [];
 
   // Get the authorization header if not available
@@ -169,14 +177,9 @@ async function processIdentify(message, destination) {
   // iterate over the object types found
   salesforceMaps.forEach(salesforceMap => {
     // finally build the response and push to the list
-    const resp = responseBuilderSimple(
-      message,
-      salesforceMap,
-      authorizationData
+    responseData.push(
+      responseBuilderSimple(traits, salesforceMap, authorizationData)
     );
-    if (resp) {
-      responseData.push(resp);
-    }
   });
 
   return responseData;

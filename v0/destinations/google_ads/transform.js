@@ -55,6 +55,8 @@ function setEventType(message) {
   switch (eventName.toLowerCase()) {
     case "application installed":
       return "first_open";
+    case "application opened":
+      return "session_start";
     case "order completed":
       // Use in_app_purchase for purchases made through the native app store; use ecommerce_purchase for all other purchases.
       if (

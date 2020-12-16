@@ -248,7 +248,7 @@ describe("User transformation", () => {
 
     await expect(async () => {
       await userTransformHandler([inputData[0]], versionId, []);
-    }).rejects.toThrow("Timed out");
+    }).rejects.toThrow();
 
     expect(fetch).toHaveBeenCalledWith(
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

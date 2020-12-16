@@ -4,7 +4,7 @@ const { EventType } = require("../../../constants");
 const {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
-  mappingJson,
+  identifyMappingJson,
   ignoredTraits
 } = require("./config");
 const {
@@ -43,28 +43,31 @@ function responseBuilderSimple(message, targetEndpoint, authorizationData) {
   // First name and last name need to be extracted from the name field
   // get traits from the message
   let traits = getFieldValueFromMessage(message, "traits");
-  // adjust for firstName and lastName
-  traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
+  if (traits) {
+    // adjust for firstName and lastName
+    traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
+    // construct the payload using the mappingJson and add extra params
+    const rawPayload = constructPayload(traits, identifyMappingJson);
+    Object.keys(traits).forEach(key => {
+      if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
+        rawPayload[`${key}__c`] = traits[key];
+      }
+    });
 
-  // construct the payload using the mappingJson and add extra params
-  const rawPayload = constructPayload(traits, mappingJson);
-  Object.keys(traits).forEach(key => {
-    if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
-      rawPayload[`${key}__c`] = traits[key];
-    }
-  });
+    const response = defaultRequestConfig();
+    const header = {
+      "Content-Type": "application/json",
+      Authorization: authorizationData.token
+    };
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = header;
+    response.body.JSON = removeUndefinedValues(rawPayload);
+    response.endpoint = targetEndpoint;
 
-  const response = defaultRequestConfig();
-  const header = {
-    "Content-Type": "application/json",
-    Authorization: authorizationData.token
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = header;
-  response.body.JSON = removeUndefinedValues(rawPayload);
-  response.endpoint = targetEndpoint;
+    return response;
+  }
 
-  return response;
+  return null;
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -90,7 +93,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   const externalIds = get(message, "context.externalId");
 
   // if externalIds are present look for type `Salesforce-`
-  if (externalIds) {
+  if (externalIds && Array.isArray(externalIds)) {
     externalIds.forEach(extIdMap => {
       const { type, id } = extIdMap;
       if (type.includes("Salesforce")) {
@@ -118,11 +121,14 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     });
 
     let leadObjectId;
-    if (leadQueryResponse && leadQueryResponse.data.searchRecords) {
-      const retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
+    if (
+      leadQueryResponse &&
+      leadQueryResponse.data &&
+      leadQueryResponse.data.searchRecords
+    ) {
       // if count is greater than zero, it means that lead exists, then only update it
       // else the original endpoint, which is the one for creation - can be used
-      if (retrievedLeadCount > 0) {
+      if (leadQueryResponse.data.searchRecords.length > 0) {
         leadObjectId = leadQueryResponse.data.searchRecords[0].Id;
       }
     }
@@ -159,9 +165,14 @@ async function processIdentify(message, destination) {
     }
 
     // finally build the response and push to the list
-    responseData.push(
-      responseBuilderSimple(message, targetEndpoint, authorizationData)
+    const resp = responseBuilderSimple(
+      message,
+      targetEndpoint,
+      authorizationData
     );
+    if (resp) {
+      responseData.push(resp);
+    }
   });
 
   return responseData;

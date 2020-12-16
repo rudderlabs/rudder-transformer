@@ -18,6 +18,6 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
-  mappingJson: mappingConfig[ConfigCategory.IDENTIFY.name],
+  identifyMappingJson: mappingConfig[ConfigCategory.IDENTIFY.name],
   ignoredTraits: mappingConfig[ConfigCategory.IGNORE.name]
 };

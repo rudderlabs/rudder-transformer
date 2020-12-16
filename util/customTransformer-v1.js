@@ -33,7 +33,7 @@ async function transform(isolatevm, events) {
   try {
     result = await Promise.race([executionPromise]);
   } catch (error) {
-    throw new Error(error)
+    throw new Error(error);
   }
   return result;
 }

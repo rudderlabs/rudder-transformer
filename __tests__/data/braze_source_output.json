@@ -8,6 +8,7 @@
           "id": "fedcba87-6543-210f-edc-ba9876543210",
           "model": "Nexus 5X"
         },
+        "timezone": "America/Chicago",
         "os": { "version": "Android (N)", "name": "android" }
       },
       "integrations": { "Braze": false },
@@ -16,7 +17,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -32,6 +32,7 @@
         "library": { "name": "unknown", "version": "unknown" },
         "integration": { "name": "Braze" },
         "device": { "id": "fedcba87-6543-210f-edc-ba9876543210" },
+        "timezone": "America/Chicago",
         "os": { "name": "ios" }
       },
       "integrations": { "Braze": false },
@@ -40,7 +41,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -55,6 +55,7 @@
       "context": {
         "library": { "name": "unknown", "version": "unknown" },
         "integration": { "name": "Braze" },
+        "timezone": "America/Chicago",
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
       },
       "integrations": { "Braze": false },
@@ -63,7 +64,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "traits": { "email": "test@test.com" },
       "properties": {
         "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -77,6 +77,7 @@
     {
       "context": {
         "library": { "name": "unknown", "version": "unknown" },
+        "timezone": "America/Chicago",
         "integration": { "name": "Braze" }
       },
       "integrations": { "Braze": false },
@@ -85,7 +86,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "traits": { "phone": "+16462345678" },
       "properties": {
         "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -105,6 +105,7 @@
           "id": "fedcba87-6543-210f-edc-ba9876543210",
           "model": "Nexus 5X"
         },
+        "timezone": "America/Chicago",
         "os": { "version": "Android (N)", "name": "android" }
       },
       "integrations": { "Braze": false },
@@ -113,7 +114,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -130,6 +130,7 @@
         "library": { "name": "unknown", "version": "unknown" },
         "integration": { "name": "Braze" },
         "device": { "id": "fedcba87-6543-210f-edc-ba9876543210" },
+        "timezone": "America/Chicago",
         "os": { "name": "ios" }
       },
       "integrations": { "Braze": false },
@@ -138,7 +139,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -154,6 +154,7 @@
       "context": {
         "library": { "name": "unknown", "version": "unknown" },
         "integration": { "name": "Braze" },
+        "timezone": "America/Chicago",
         "userAgent": "Mozilla/5.0(Macintosh;IntelMacOSX10_13_5)AppleWebKit/537.36(KHTML,likeGecko)Chrome/67.0.3396.99Safari/537.36"
       },
       "integrations": { "Braze": false },
@@ -162,7 +163,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "traits": { "email": "test@test.com" },
       "properties": {
         "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -177,6 +177,7 @@
     {
       "context": {
         "library": { "name": "unknown", "version": "unknown" },
+        "timezone": "America/Chicago",
         "integration": { "name": "Braze" }
       },
       "integrations": { "Braze": false },
@@ -185,7 +186,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "traits": { "phone": "+16462345678" },
       "properties": {
         "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
@@ -208,6 +208,7 @@
           "advertisingId": "01234567-89ab-cdef-0123-456789abcdef",
           "adTrackingEnabled": true
         },
+        "timezone": "America/Chicago",
         "os": { "version": "iOS10.3.1", "name": "ios" }
       },
       "integrations": { "Braze": false },
@@ -216,7 +217,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "name": "customeventname",
@@ -239,6 +239,7 @@
           "advertisingId": "01234567-89ab-cdef-0123-456789abcdef",
           "adTrackingEnabled": true
         },
+        "timezone": "America/Chicago",
         "os": { "version": "iOS10.3.1", "name": "ios" }
       },
       "integrations": { "Braze": false },
@@ -247,7 +248,6 @@
       "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
       "anonymousId": "0123456789abcdef01234567",
       "userId": "user_id",
-      "timezone": "America/Chicago",
       "properties": {
         "app_id": "01234567-89ab-cdef-0123-456789abcdef",
         "product_id": "1234",

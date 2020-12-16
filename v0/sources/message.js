@@ -32,10 +32,7 @@ class Message {
   }
 
   setProperty(name, value) {
-    if (!this.properties) {
-      this.properties = {};
-    }
-    this[name] = value;
+    set(this, name, value);
   }
 
   setProperties(event, mapping) {

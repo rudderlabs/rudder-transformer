@@ -1,3 +1,5 @@
+const set = require("set-value");
+const get = require("get-value");
 const path = require("path");
 const fs = require("fs");
 const { removeUndefinedAndNullValues, formatTimeStamp } = require("../../util");
@@ -45,11 +47,16 @@ const processEvent = event => {
       );
     }
 
-    // clear properties fields -
-    // remove the fields which are already mapped using mapping.json
-    ignoredProperties.forEach(prop => {
-      delete message.properties[prop];
-    });
+    // set message properties from the event which are not ignored
+    // ignored - already mapped using mapping.json
+    if (event.properties) {
+      Object.keys(event.properties).forEach(key => {
+        if (ignoredProperties.indexOf(key) === -1) {
+          // the property is not ignored
+          set(message, `properties.${key}`, get(event, `properties.${key}`));
+        }
+      });
+    }
 
     // one of userId or anonymousId is required to process
     if (message.userId || message.anonymousId) {

@@ -14,7 +14,7 @@ phases:
     commands:
       - VERSION="$(date '+%d%m%Y.%H%M%S')"
       - ls
-      - docker build -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
+      - docker build --build-arg version=${VERSION} -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
       - docker run rudderlabs/rudder-transformer:$VERSION npm test
       - echo $?
       - docker tag rudderlabs/rudder-transformer:$VERSION rudderlabs/rudder-transformer:latest

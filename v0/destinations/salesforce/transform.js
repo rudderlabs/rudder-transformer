@@ -39,20 +39,33 @@ async function getSFDCHeader(destination) {
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
-function responseBuilderSimple(message, targetEndpoint, authorizationData) {
+function responseBuilderSimple(message, salesforceMap, authorizationData) {
+  const { salesforceType, salesforceId } = salesforceMap;
+
+  // if id is valid, do update else create the object
+  // POST for create, PATCH for update
+  let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
+  if (salesforceId) {
+    targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
+  }
+
   // First name and last name need to be extracted from the name field
   // get traits from the message
   let traits = getFieldValueFromMessage(message, "traits");
   if (traits) {
-    // adjust for firstName and lastName
-    traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
-    // construct the payload using the mappingJson and add extra params
-    const rawPayload = constructPayload(traits, identifyMappingJson);
-    Object.keys(traits).forEach(key => {
-      if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
-        rawPayload[`${key}__c`] = traits[key];
-      }
-    });
+    let rawPayload = traits;
+    // map using the config only if the type is Lead
+    if (salesforceType === "Lead") {
+      // adjust for firstName and lastName
+      traits = { ...traits, ...getFirstAndLastName(traits, "n/a") };
+      // construct the payload using the mappingJson and add extra params
+      rawPayload = constructPayload(traits, identifyMappingJson);
+      Object.keys(traits).forEach(key => {
+        if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
+          rawPayload[`${key}__c`] = traits[key];
+        }
+      });
+    }
 
     const response = defaultRequestConfig();
     const header = {
@@ -155,19 +168,10 @@ async function processIdentify(message, destination) {
 
   // iterate over the object types found
   salesforceMaps.forEach(salesforceMap => {
-    const { salesforceType, salesforceId } = salesforceMap;
-
-    // if id is valid, do update else create the object
-    // POST for create, PATCH for update
-    let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
-    if (salesforceId) {
-      targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
-    }
-
     // finally build the response and push to the list
     const resp = responseBuilderSimple(
       message,
-      targetEndpoint,
+      salesforceMap,
       authorizationData
     );
     if (resp) {

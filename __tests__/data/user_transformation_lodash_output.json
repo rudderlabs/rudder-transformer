@@ -1,6 +1,6 @@
 [
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -32,26 +32,17 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
       "userId": "123456",
+      "max": 8,
+      "min": -2,
       "integrations": {
         "All": true
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
-    "destination": {
-      "ID": 2,
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true,
-      "Transformations": [
-        {
-          "VersionID": "23"
-        }
-      ]
-    }
+    "metadata": {}
   },
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -84,6 +75,8 @@
       "originalTimestamp": "2019-10-14T11:15:18.299Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
+      "max": 8,
+      "min": -2,
       "properties": {
         "path": "/abc",
         "referrer": "",
@@ -97,15 +90,10 @@
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
-    "destination": {
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true
-    }
+    "metadata": {}
   },
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -138,6 +126,8 @@
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
+      "max": 8,
+      "min": -2,
       "event": "test track event GA3",
       "properties": {
         "user_actual_role": "system_admin, system_user",
@@ -148,11 +138,6 @@
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
-    "destination": {
-      "Config": {
-        "trackingID": "UA-149602794-1"
-      },
-      "Enabled": true
-    }
+    "metadata": {}
   }
 ]

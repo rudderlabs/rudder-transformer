@@ -7,6 +7,8 @@ RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 WORKDIR /home/node/app
 USER node
 
+ARG version
+ENV transformer_build_version=$version
 COPY package*.json ./
 RUN npm install
 

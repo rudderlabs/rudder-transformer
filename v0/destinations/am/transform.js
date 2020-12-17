@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+
 /* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");

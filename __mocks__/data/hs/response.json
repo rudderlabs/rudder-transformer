@@ -12,7 +12,10 @@
     { "name": "graduation_date", "type": "string" },
     { "name": "hs_additional_emails", "type": "enumeration" },
     { "name": "hs_all_contact_vids", "type": "enumeration" },
-    { "name": "hs_analytics_first_touch_converting_campaign", "type": "string" },
+    {
+      "name": "hs_analytics_first_touch_converting_campaign",
+      "type": "string"
+    },
     { "name": "hs_analytics_last_touch_converting_campaign", "type": "string" },
     { "name": "hs_avatar_filemanager_key", "type": "string" },
     { "name": "hs_calculated_form_submissions", "type": "enumeration" },
@@ -71,7 +74,10 @@
       "name": "hs_searchable_calculated_international_phone_number",
       "type": "phone_number"
     },
-    { "name": "hs_searchable_calculated_mobile_number", "type": "phone_number" },
+    {
+      "name": "hs_searchable_calculated_mobile_number",
+      "type": "phone_number"
+    },
     { "name": "hs_searchable_calculated_phone_number", "type": "phone_number" },
     { "name": "hs_sequences_is_enrolled", "type": "bool" },
     { "name": "hs_updated_by_user_id", "type": "string" },
@@ -159,7 +165,10 @@
     { "name": "hs_analytics_average_page_views", "type": "number" },
     { "name": "hs_analytics_revenue", "type": "number" },
     { "name": "hs_lifecyclestage_lead_date", "type": "datetime" },
-    { "name": "hs_lifecyclestage_marketingqualifiedlead_date", "type": "datetime" },
+    {
+      "name": "hs_lifecyclestage_marketingqualifiedlead_date",
+      "type": "datetime"
+    },
     { "name": "hs_lifecyclestage_opportunity_date", "type": "datetime" },
     { "name": "lifecyclestage", "type": "enumeration" },
     { "name": "hs_lifecyclestage_salesqualifiedlead_date", "type": "datetime" },

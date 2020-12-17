@@ -350,11 +350,22 @@ const getValueFromMessage = (message, sourceKey) => {
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
 const handleMetadataForValue = (value, metadata) => {
-  let formattedVal = value;
+  if (!metadata) {
+    return value;
+  }
+
+  // get infor from metadata
   const { type, typeFormat, template, defaultValue, excludes } = metadata;
 
+  // if value is null and defaultValue is supplied - use that
+  if (!value) {
+    return defaultValue || value;
+  }
+
+  // we've got a correct value. start processing
+  let formattedVal = value;
+
   // handle type and format
-  // skipping check for typeFormat to support default for each type
   if (type) {
     switch (type) {
       case "timestamp":
@@ -478,16 +489,14 @@ const constructPayload = (message, mappingJson) => {
     mappingJson.forEach(mapping => {
       const { sourceKeys, destKey, required, metadata } = mapping;
       // get the value from event
-      const value = getValueFromMessage(message, sourceKeys);
+      const value = handleMetadataForValue(
+        getValueFromMessage(message, sourceKeys),
+        metadata
+      );
+
       if (value) {
         // set the value only if correct
-        if (metadata) {
-          set(payload, destKey, handleMetadataForValue(value, metadata));
-        } else {
-          set(payload, destKey, value);
-        }
-      } else if (metadata && metadata.defaultValue) {
-        set(payload, destKey, metadata.defaultValue);
+        set(payload, destKey, value);
       } else if (required) {
         // throw error if reqired value is missing
         throw new Error(
@@ -616,6 +625,26 @@ function getTimeDifference(timestamp) {
   return { days, months, years, hours, minutes, seconds };
 }
 
+// Extract firstName and lastName from traits
+// split the name with <space> and consider the 0th position as first name
+// and the last item (only if name is not a single word) as lastName
+function getFirstAndLastName(traits, defaultLastName = "n/a") {
+  let nameParts;
+  if (traits.name) {
+    nameParts = traits.name.split(" ");
+  }
+  return {
+    firstName:
+      traits.firstName ||
+      (nameParts && nameParts.length > 0 ? nameParts[0] : ""),
+    lastName:
+      traits.lastName ||
+      (nameParts && nameParts.length > 1
+        ? nameParts[nameParts.length - 1]
+        : defaultLastName)
+  };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -636,6 +665,7 @@ module.exports = {
   getDestinationExternalID,
   getDeviceModel,
   getFieldValueFromMessage,
+  getFirstAndLastName,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,

@@ -1,5 +1,5 @@
+/* eslint-disable no-console */
 /* eslint-disable no-lonely-if */
-const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -56,18 +56,6 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
-function createSingleMessageBasicStructure(message) {
-  return _.pick(message, [
-    "type",
-    "event",
-    "context",
-    "userId",
-    "originalTimestamp",
-    "request_ip",
-    "integrations",
-    "session_id"
-  ]);
-}
 
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 /* function stringToHash(string) {
@@ -482,10 +470,12 @@ function processRevenueBothConditionFalse(message) {
   if (message.properties.products) {
     message.properties.products.forEach(product => {
       const eventClonePurchaseProduct = productPurchased(message, product);
+      console.log("/n revEvent", JSON.stringify(eventClonePurchaseProduct));
       toSendEvents.push(eventClonePurchaseProduct);
     });
     // using revenue from the root
     const revEvent = revenueEvent(message);
+    console.log("/n revEvent", revEvent);
     revEvent.event = "Product Purchased";
     toSendEvents.push(revEvent);
   }
@@ -549,12 +539,14 @@ function bothConditionTrue(message) {
   }
   toSendEvents.push(BothTrue);
   // for the revenue calls
-  message.properties.products.forEach(product => {
-    const revPerProduct = revenueEvent(message);
-    revPerProduct.event = "Tracking Revenue";
-    revPerProduct.properties = product;
-    toSendEvents.push(revPerProduct);
-  });
+  if (message.properties.products) {
+    message.properties.products.forEach(product => {
+      const revPerProduct = revenueEvent(message);
+      revPerProduct.event = "Tracking Revenue";
+      revPerProduct.properties = product;
+      toSendEvents.push(revPerProduct);
+    });
+  }
   return toSendEvents;
 }
 
@@ -606,7 +598,6 @@ function process(event) {
   });
   return respList;
 }
-
 
 function getBatchEvents(message, metadata, batchEventResponse) {
   let batchComplete = false;

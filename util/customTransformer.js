@@ -1,6 +1,7 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
+const { userTransformHandlerV1 } = require("./customTransformer-v1");
 
 async function runUserTransform(events, code, eventsMetadata) {
   // TODO: Decide on the right value for memory limit
@@ -55,7 +56,7 @@ async function runUserTransform(events, code, eventsMetadata) {
       // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let fetch = _fetch;
@@ -72,7 +73,7 @@ async function runUserTransform(events, code, eventsMetadata) {
           ]);
         });
       };
-      
+
       // Now we create the other half of the 'log' function in this isolate. We'll just take every
       // argument, create an external copy of it and pass it along to the log function above.
       let log = _log;
@@ -102,7 +103,7 @@ async function runUserTransform(events, code, eventsMetadata) {
             args.map(arg => new ivm.ExternalCopy(arg).copyInto())
             );
           };
-        
+
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -122,7 +123,7 @@ async function runUserTransform(events, code, eventsMetadata) {
             });
           });
         }
-         
+
         `
   );
 
@@ -168,7 +169,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   return result;
 }
 
-async function userTransformHandler(events, versionId) {
+async function userTransformHandler(events, versionId, libraryVersionIDs) {
   if (versionId) {
     const res = await getTransformationCode(versionId);
     if (res) {
@@ -180,11 +181,24 @@ async function userTransformHandler(events, versionId) {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
-      const userTransformedEvents = await runUserTransform(
-        eventMessages,
-        res.code,
-        eventsMetadata
-      );
+      let userTransformedEvents = [];
+      if (res.codeVersion && res.codeVersion === "1") {
+        userTransformedEvents = await userTransformHandlerV1(
+          events,
+          res,
+          libraryVersionIDs
+        );
+      } else {
+        userTransformedEvents = await runUserTransform(
+          eventMessages,
+          res.code,
+          eventsMetadata
+        );
+        userTransformedEvents = userTransformedEvents.map(ev => ({
+          transformedEvent: ev,
+          metadata: {}
+        }));
+      }
       return userTransformedEvents;
     }
   }

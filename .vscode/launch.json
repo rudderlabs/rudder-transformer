@@ -14,9 +14,11 @@
             "runtimeArgs": [
                 "--nolazy"
             ],
-            "sourceMaps": true
+            "sourceMaps": true,
+            "runtimeExecutable":"/usr/local/bin/node"
         },
         {
+            "runtimeExecutable":"/usr/local/bin/node",
             "type": "node",
             "request": "launch",
             "name": "Jest Current File",

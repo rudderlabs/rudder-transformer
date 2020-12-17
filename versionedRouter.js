@@ -153,6 +153,12 @@ if (startDestTransformer) {
       );
 
       const transformedEvents = [];
+      let librariesVersionIDs = [];
+      if (events[0].libraries) {
+        librariesVersionIDs = events[0].libraries.map(
+          library => library.VersionID
+        );
+      }
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
           logger.debug(`dest: ${dest}`);
@@ -162,7 +168,6 @@ if (startDestTransformer) {
             destEvents[0].destination.Transformations &&
             destEvents[0].destination.Transformations[0] &&
             destEvents[0].destination.Transformations[0].VersionID;
-
           const messageIds = destEvents.map(
             ev => ev.metadata && ev.metadata.messageId
           );
@@ -189,14 +194,14 @@ if (startDestTransformer) {
               );
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
-                transformationVersionId
+                transformationVersionId,
+                librariesVersionIDs
               );
-
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   return {
-                    output: ev,
-                    metadata: commonMetadata,
+                    output: ev.transformedEvent,
+                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
                     statusCode: 200
                   };
                 })
@@ -308,6 +313,10 @@ if (startSourceTransformer) {
 
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
+});
+
+router.get("/transformerBuildVersion", ctx => {
+  ctx.body = process.env.transformer_build_version || "Version Info not found";
 });
 
 router.get("/health", ctx => {

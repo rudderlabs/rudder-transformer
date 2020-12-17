@@ -12,7 +12,7 @@ phases:
       - VERSION=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///g' | tr "/" .)
       - ls
       - echo build Docker image on `date`
-      - docker build -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
+      - docker build --build-arg version=${VERSION} -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
       - docker run rudderlabs/develop-rudder-transformer:$VERSION npm test
       - echo $?
   post_build:

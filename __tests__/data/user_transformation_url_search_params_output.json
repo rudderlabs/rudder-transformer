@@ -1,6 +1,6 @@
 [
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -37,21 +37,10 @@
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
-    "destination": {
-      "ID": 2,
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true,
-      "Transformations": [
-        {
-          "VersionID": "23"
-        }
-      ]
-    }
+    "metadata": {}
   },
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -89,7 +78,8 @@
         "referrer": "",
         "search": "",
         "title": "",
-        "url": "client=firefox-b-d&q=url+search+params+nodejs"
+        "url": "client=firefox-b-d&q=url+search+params+nodejs",
+        "client": "firefox-b-d"
       },
       "integrations": {
         "All": true
@@ -97,15 +87,10 @@
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
-    "destination": {
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true
-    }
+    "metadata": {}
   },
   {
-    "message": {
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -148,11 +133,6 @@
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
-    "destination": {
-      "Config": {
-        "trackingID": "UA-149602794-1"
-      },
-      "Enabled": true
-    }
+    "metadata": {}
   }
 ]

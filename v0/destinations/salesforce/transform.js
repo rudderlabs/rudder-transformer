@@ -2,171 +2,187 @@ const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
 const {
-  ConfigCategory,
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
-  mappingConfig,
-  defaultTraits
+  identifyMappingJson,
+  ignoredTraits
 } = require("./config");
 const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  constructPayload
+  constructPayload,
+  getFirstAndLastName
 } = require("../../util");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  const response = await axios.post(
-    `${SF_TOKEN_REQUEST_URL}?username=${
-      destination.Config.userName
-    }&password=${encodeURIComponent(
-      destination.Config.password
-    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-      destination.Config.consumerKey
-    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`,
-    {}
-  );
+  const authUrl = `${SF_TOKEN_REQUEST_URL}?username=${
+    destination.Config.userName
+  }&password=${encodeURIComponent(
+    destination.Config.password
+  )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+    destination.Config.consumerKey
+  }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
+  const response = await axios.post(authUrl, {});
 
-  return [`Bearer ${response.data.access_token}`, response.data.instance_url];
-}
-
-// not supported from the dashboard
-function getParamsFromConfig(message, destination) {
-  const params = {};
-
-  const obj = {};
-  // customMapping: [{from:<>, to: <>}] , structure of custom mapping
-  if (destination.Config.customMappings) {
-    destination.Config.customMappings.forEach(mapping => {
-      obj[mapping.from] = mapping.to;
-    });
-  }
-  const keys = Object.keys(obj);
-  keys.forEach(key => {
-    params[obj[key]] = get(message.properties, key);
-  });
-  return params;
+  return {
+    token: `Bearer ${response.data.access_token}`,
+    instanceUrl: response.data.instance_url
+  };
 }
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
-async function responseBuilderSimple(
-  message,
-  mappingJson,
-  ignoreMapJson,
-  destination,
-  targetEndpoint,
-  authorizationData
-) {
+function responseBuilderSimple(traits, salesforceMap, authorizationData) {
+  const { salesforceType, salesforceId } = salesforceMap;
+
+  // if id is valid, do update else create the object
+  // POST for create, PATCH for update
+  let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
+  if (salesforceId) {
+    targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
+  }
+
   // First name and last name need to be extracted from the name field
-  // and inserted into the message
-  let firstName = "";
-  let lastName = "";
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (traits.name) {
-    // Split by space and then take first and last elements
-    const nameComponents = traits.name.split(" ");
-    firstName = nameComponents[0]; // first element
-    lastName = nameComponents[nameComponents.length - 1]; // last element
-    // Insert first and last names separately into message
-    traits.firstName = firstName;
-    traits.lastName = lastName;
-  }
-
-  const rawPayload = constructPayload(message, mappingJson);
-
-  if (!rawPayload.LastName || rawPayload.LastName.trim() === "") {
-    rawPayload.LastName = "n/a";
-  }
-
-  if (!rawPayload.Company || rawPayload.Company.trim() === "") {
-    rawPayload.Company = "n/a";
-  }
-
-  // Remove keys with undefined values
-  const payload = removeUndefinedValues(rawPayload);
-
-  // Get custom params from destination config
-  let customParams = getParamsFromConfig(message, destination);
-  customParams = removeUndefinedValues(customParams);
-
-  const customKeys = Object.keys(traits);
-  customKeys.forEach(key => {
-    if (
-      !defaultTraits.some(function(k) {
-        return ~k.indexOf(key);
-      }) &&
-      !ignoreMapJson.includes(key)
-    ) {
-      const val = traits[key];
-      if (val) {
-        payload[`${key}__c`] = val;
+  // get traits from the message
+  let rawPayload = traits;
+  // map using the config only if the type is Lead
+  if (salesforceType === "Lead") {
+    // adjust for firstName and lastName
+    // construct the payload using the mappingJson and add extra params
+    rawPayload = constructPayload(
+      { ...traits, ...getFirstAndLastName(traits, "n/a") },
+      identifyMappingJson
+    );
+    Object.keys(traits).forEach(key => {
+      if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
+        rawPayload[`${key}__c`] = traits[key];
       }
-    }
-  });
+    });
+  }
 
   const response = defaultRequestConfig();
   const header = {
     "Content-Type": "application/json",
-    Authorization: authorizationData[0]
+    Authorization: authorizationData.token
   };
-
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
-  response.body.JSON = { ...customParams, ...payload };
+  response.body.JSON = removeUndefinedValues(rawPayload);
   response.endpoint = targetEndpoint;
-  response.userId = message.anonymousId;
-  response.statusCode = 200;
 
   return response;
 }
 
-// Function for handling identify events
-async function processIdentify(message, destination) {
-  // Get the authorization header if not available
-  // if (!authorizationData) {
-  const authorizationData = await getSFDCHeader(destination);
-  // }
-  // start with creation endpoint, update only if Lead does not exist
-  let targetEndpoint = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/sobjects/Lead`;
+// Check for externalId field under context and look for probable Salesforce objects
+// We'll make separate requests for every Salesforce Object types present under externalIds
+//
+// Expected externalId map for Contact object:
+//
+// ------------------------
+// {
+//   "type": "Salesforce-Contact",
+//   "id": "0035g000001FaHfAAK"
+// }
+// ------------------------
+//
+// We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
+//
+// Default Object type will be "Lead" for backward compatibility
+async function getSalesforceIdFromPayload(message, authorizationData) {
+  // define default map
+  const salesforceMaps = [];
 
-  // check if the lead exists
-  // need to perform a parameterized search for this using email
-  const { email } = getFieldValueFromMessage(message, "traits");
+  // get externalId
+  const externalIds = get(message, "context.externalId");
 
-  const leadQueryUrl = `${authorizationData[1]}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
-
-  // request configuration will be conditional
-  // POST for create, PATCH for update
-  const leadQueryResponse = await axios.get(leadQueryUrl, {
-    headers: {
-      Authorization: authorizationData[0]
-    }
-  });
-
-  if (leadQueryResponse && leadQueryResponse.data.searchRecords) {
-    const retrievedLeadCount = leadQueryResponse.data.searchRecords.length;
-    // if count is greater than zero, it means that lead exists, then only update it
-    // else the original endpoint, which is the one for creation - can be used
-    if (retrievedLeadCount > 0) {
-      targetEndpoint += `/${leadQueryResponse.data.searchRecords[0].Id}?_HttpMethod=PATCH`;
-    }
+  // if externalIds are present look for type `Salesforce-`
+  if (externalIds && Array.isArray(externalIds)) {
+    externalIds.forEach(extIdMap => {
+      const { type, id } = extIdMap;
+      if (type.includes("Salesforce")) {
+        salesforceMaps.push({
+          salesforceType: type.replace("Salesforce-", ""),
+          salesforceId: id
+        });
+      }
+    });
   }
 
-  return responseBuilderSimple(
+  // if nothing is present consider it as a Lead Object
+  // BACKWORD COMPATIBILITY
+  if (salesforceMaps.length === 0) {
+    // its a lead object. try to get lead object id using search query
+    // check if the lead exists
+    // need to perform a parameterized search for this using email
+    const email = getFieldValueFromMessage(message, "email");
+
+    if (!email) {
+      throw new Error("Invalid Email address for Lead Objet");
+    }
+
+    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
+
+    // request configuration will be conditional
+    const leadQueryResponse = await axios.get(leadQueryUrl, {
+      headers: { Authorization: authorizationData.token }
+    });
+
+    let leadObjectId;
+    if (
+      leadQueryResponse &&
+      leadQueryResponse.data &&
+      leadQueryResponse.data.searchRecords
+    ) {
+      // if count is greater than zero, it means that lead exists, then only update it
+      // else the original endpoint, which is the one for creation - can be used
+      if (leadQueryResponse.data.searchRecords.length > 0) {
+        leadObjectId = leadQueryResponse.data.searchRecords[0].Id;
+      }
+    }
+
+    // add a Lead Object to the response
+    salesforceMaps.push({ salesforceType: "Lead", salesforceId: leadObjectId });
+  }
+
+  return salesforceMaps;
+}
+
+// Function for handling identify events
+async function processIdentify(message, destination) {
+  // check the traits before hand
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (!traits) {
+    throw new Error("Invalid traits for Salesforce request");
+  }
+
+  // if traits is correct, start processing
+  const responseData = [];
+
+  // Get the authorization header if not available
+  const authorizationData = await getSFDCHeader(destination);
+
+  // get salesforce object map
+  const salesforceMaps = await getSalesforceIdFromPayload(
     message,
-    mappingConfig[ConfigCategory.IDENTIFY.name],
-    mappingConfig[ConfigCategory.IGNORE.name],
-    destination,
-    targetEndpoint,
     authorizationData
   );
+
+  // iterate over the object types found
+  salesforceMaps.forEach(salesforceMap => {
+    // finally build the response and push to the list
+    responseData.push(
+      responseBuilderSimple(traits, salesforceMap, authorizationData)
+    );
+  });
+
+  return responseData;
 }
 
 // Generic process function which invokes specific handler functions depending on message type

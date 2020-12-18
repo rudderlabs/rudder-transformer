@@ -1,1 +1,19 @@
-[]
+[
+  { "destKey": "City", "sourceKeys": ["address.city", "city"] },
+  { "destKey": "Company", "sourceKeys": ["company.name", "company"] },
+  { "destKey": "Country", "sourceKeys": ["address.country", "country"] },
+  { "destKey": "Email", "sourceKeys": "email" },
+  { "destKey": "FirstName", "sourceKeys": "firstName" },
+  { "destKey": "Industry", "sourceKeys": "company.industry" },
+  { "destKey": "LastName", "sourceKeys": "lastName" },
+  { "destKey": "OriginalSourceInfo", "sourceKeys": "leadSource" },
+  { "destKey": "NumberOfEmployees", "sourceKeys": "company.employee_count" },
+  { "destKey": "Phone", "sourceKeys": "phone" },
+  { "destKey": "PostalCode", "sourceKeys": ["address.zip","zip", "address.postalCode", "postalCode"] },
+  { "destKey": "Rating", "sourceKeys": "rating" },
+  { "destKey": "State", "sourceKeys": ["address.state", "state"] },
+  { "destKey": "Address", "sourceKeys": ["address.street", "street"] },
+  { "destKey": "Title", "sourceKeys": "title" },
+  { "destKey": "DateofBirth", "sourceKeys": "birthday" },
+  { "destKey": "Website", "sourceKeys": "website" }
+]

@@ -1,9 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////
+// TODO: Need to figure out a way to mock failed requests based on post body
+////////////////////////////////////////////////////////////////////////////////
 const axios = jest.genMockFromModule("axios");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
-  "salesforce.com": "salesforce"
+  "salesforce.com": "salesforce",
+  "mktorest.com": "marketo"
 };
 
 const fs = require("fs");
@@ -27,16 +31,24 @@ function getData(url) {
 }
 
 function get(url) {
-  const mockData = getData(url);
+  const data = getData(url);
   return new Promise((resolve, reject) => {
-    resolve({ data: mockData });
+    if (data) {
+      resolve({ data });
+    } else {
+      resolve({ error: "Request failed" });
+    }
   });
 }
 
 function post(url) {
-  const mockData = getData(url);
+  const data = getData(url);
   return new Promise((resolve, reject) => {
-    resolve({ data: mockData });
+    if (data) {
+      resolve({ data });
+    } else {
+      resolve({ error: "Request failed" });
+    }
   });
 }
 axios.get = get;

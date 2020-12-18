@@ -2,8 +2,8 @@ const ivm = require("isolated-vm");
 const stats = require("./stats");
 
 const { getPool } = require("./ivmPool");
-
-
+const { getFactory } = require("./ivmFactory");
+const logger = require("../logger");
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -47,14 +47,36 @@ async function userTransformHandlerV1(
   userTransformation,
   libraryVersionIds
 ) {
+/*
+ Transform VM aquire mode is
+ on demand if env variable ON_DEMAND_ISOLATE_VM = true | True | TRUE,
+ Pooled otherwise
+*/
+  const isAcquireTransformerIsolatedVMMode = process.env.ON_DEMAND_ISOLATE_VM
+  ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase()  === "true"
+  : false;
   if (userTransformation.versionId) {
-    const isolatevmPool = await getPool(userTransformation, libraryVersionIds);
-    const isolatevm = await isolatevmPool.acquire();
     const tags = {
       transformerVersionId: userTransformation.versionId
     };
-    stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-    stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+
+    // Create isolated VMs in pooled or on demand mode based on env var ON_DEMAND_ISOLATE_VM
+    let isolatevmPool, isolatevm, isolatevmFactory;
+    if (isAcquireTransformerIsolatedVMMode) {
+      logger.debug(`Isolate VM being created... `);
+      isolatevmFactory = await getFactory(userTransformation.code, libraryVersionIds);
+      isolatevm = await isolatevmFactory.create();
+      logger.debug(`Isolate VM created... `);
+    } else {
+      logger.debug(`Pooled transformer VM being created... `);
+      isolatevmPool = await getPool(userTransformation, libraryVersionIds);
+      isolatevm = await isolatevmPool.acquire();
+      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
+      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+      logger.debug(`Pooled transformer VM created... `);
+    }
+
+    // Transform the event...
     stats.counter("events_into_vm", events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(
       isolatevm.isolateStartWallTime
@@ -77,9 +99,19 @@ async function userTransformHandlerV1(
       isolateEndCPUTime - isolateStartCPUTime,
       tags
     );
-    isolatevmPool.release(isolatevm);
-    stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-    stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+
+    // Destroy the isolated vm resources created
+    if (isAcquireTransformerIsolatedVMMode) {
+      logger.debug(`Isolate VM being destroyed... `);
+      isolatevmFactory.destroy(isolatevm);
+      logger.debug(`Isolate VM destroyed... `);
+    } else {
+      logger.debug(`Pooled Tranformer VMs being destroyed.. `);
+      isolatevmPool.release(isolatevm);
+      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
+      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+      logger.debug(`Pooled Tranformer VMs destroyed.. `);
+    }
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation

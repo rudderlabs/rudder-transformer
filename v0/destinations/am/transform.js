@@ -559,26 +559,26 @@ function process(event) {
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
       if (
-        destination.Config.trackProductsOnce === "true" &&
-        destination.Config.trackRevenuePerProduct === "false"
+        destination.Config.trackProductsOnce === true &&
+        destination.Config.trackRevenuePerProduct === false
       ) {
         tempResult = onlyProductOnceTrue(message);
       }
       if (
-        destination.Config.trackProductsOnce === "false" &&
-        destination.Config.trackRevenuePerProduct === "true"
+        destination.Config.trackProductsOnce === false &&
+        destination.Config.trackRevenuePerProduct === true
       ) {
         tempResult = onlyTrackRevPerProductTrue(message);
       }
       if (
-        destination.Config.trackProductsOnce === "false" &&
-        destination.Config.trackRevenuePerProduct === "false"
+        destination.Config.trackProductsOnce === false &&
+        destination.Config.trackRevenuePerProduct === false
       ) {
         tempResult = processRevenueBothConditionFalse(message);
       }
       if (
-        destination.Config.trackProductsOnce === "true" &&
-        destination.Config.trackRevenuePerProduct === "true"
+        destination.Config.trackProductsOnce === true &&
+        destination.Config.trackRevenuePerProduct === true
       ) {
         tempResult = bothConditionTrue(message);
       }

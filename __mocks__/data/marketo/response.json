@@ -1,0 +1,38 @@
+{
+  "https://marketo_acct_id_success.mktorest.com/identity/oauth/token": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json": {
+    "requestId": "7ab2#17672a46a99",
+    "result": [
+      {
+        "id": 4,
+        "status": "created"
+      }
+    ],
+    "success": true
+  },
+  "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json?filterType=email&filterValues=arnab.compsc%40gmail.com": {
+    "requestId": "107#17672aeadba",
+    "result": [],
+    "success": true
+  },
+  "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json?filterType=userId&filterValues=test-user-6j55yr": {
+    "requestId": "12093#17672aeaee6",
+    "result": [
+      {
+        "createdAt": "2020-12-17T21:39:07Z",
+        "email": null,
+        "firstName": null,
+        "id": 4,
+        "lastName": null,
+        "updatedAt": "2020-12-17T21:39:07Z",
+        "userId": "test-user-6j55yr"
+      }
+    ],
+    "success": true
+  }
+}

@@ -23,5 +23,5 @@ inputData.forEach(async (input, index) => {
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].error);
     }
-  })
+  });
 });

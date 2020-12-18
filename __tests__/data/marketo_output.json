@@ -1,1 +1,175 @@
-[]
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer access_token_success"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2020-12-17T21:00:59.176Z",
+            "activityTypeId": 100001,
+            "attributes": [],
+            "leadId": 4,
+            "primaryAttributeValue": "Test Product"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer access_token_success"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2020-12-17T21:00:59.176Z",
+            "activityTypeId": 100001,
+            "attributes": [
+              {
+                "apiName": "productId",
+                "value": "prod_1"
+              }
+            ],
+            "leadId": 4,
+            "primaryAttributeValue": "Test Product"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer access_token_success"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "Email": "test@example.org",
+            "FirstName": "Test",
+            "id": 4,
+            "LastName": "Name",
+            "userId": "user_id_success"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer access_token_success"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "customLeadScore": "100",
+            "Email": "test@example.org",
+            "FirstName": "Test",
+            "id": 4,
+            "LastName": "Name",
+            "userId": "user_id_success"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer access_token_success"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2020-12-17T21:00:59.176Z",
+            "activityTypeId": 100001,
+            "attributes": [],
+            "leadId": 4,
+            "primaryAttributeValue": "Test Product"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Invalid credentials"
+  },
+  {
+    "statusCode": 400,
+    "error": "Invalid traits value for Marketo"
+  },
+  {
+    "statusCode": 400,
+    "error": "Anonymous event tracking is turned off and invalid userId"
+  },
+  {
+    "statusCode": 400,
+    "error": "Event is not mapped to Custom Activity"
+  },
+  {
+    "statusCode": 400,
+    "error": "Primary Key value is invalid for the event"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

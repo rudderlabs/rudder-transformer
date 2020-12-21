@@ -1,10 +1,11 @@
 const integration = "marketo";
 const name = "Marketo";
+const version = "v0";
 
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../${version}/destinations/${integration}/transform`);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)

@@ -79,6 +79,30 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
   return null;
 };
 
+// lookup Marketo using email
+// fails transformer if lookup fails - fields are not created in Marketo
+// ------------------------
+// Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
+// ------------------------
+const lookupLeadUsingEmail = async (accountId, token, email) => {
+  const resp = await axios.get(
+    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    {
+      params: { filterValues: email, filterType: "email" },
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+
+  if (resp.data) {
+    const { result } = resp.data;
+    if (result && Array.isArray(result) && result.length > 0) {
+      return result[0].id;
+    }
+  }
+
+  return null;
+};
+
 // Handles identify calls
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
@@ -88,7 +112,8 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
 // `id` i.e. leadId as lookupField at the end of it
 const processIdentify = async (message, destination) => {
   // get bearer token
-  // lookup using userId
+  // lookup using email. if present use that
+  // else lookup using userId
   // if exists use that leadId
   // else make the call to create the lead
   const { accountId, leadTraitMapping } = destination;
@@ -102,12 +127,10 @@ const processIdentify = async (message, destination) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const token = await getAuthToken(destination);
 
-  const leadId = await lookupLead(
-    accountId,
-    token,
-    userId,
-    message.anonymousId
-  );
+  const email = getFieldValueFromMessage(message, "email");
+  const leadId =
+    (email && (await lookupLeadUsingEmail(accountId, token, email))) ||
+    (await lookupLead(accountId, token, userId, message.anonymousId));
 
   if (!leadId) {
     throw new Error("Lead lookup failed");

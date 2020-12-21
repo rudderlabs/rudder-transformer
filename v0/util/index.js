@@ -1,10 +1,3 @@
-// ========================================================================
-// Make sure you are putting any new method in relevant section
-// INLINERS ==> Inline methods
-// REQUEST FORMATS ==> Various request formats to format the final response
-// TRANSFORMER UTILITIES ==> Utility methods having dependency on event/message
-// GENERIC ==> Other methods which doesn't fit in other categories
-// ========================================================================
 
 const Handlebars = require("handlebars");
 const fs = require("fs");

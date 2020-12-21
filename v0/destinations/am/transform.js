@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");
@@ -370,35 +369,6 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = message.event;
-
-      if (
-        message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
-      ) {
-        // if properties has revenue and revenue_type fields
-        // consider the event as revenue event directly
-        category = ConfigCategory.REVENUE;
-        break;
-      }
-
-      switch (evType) {
-        case Event.PROMOTION_CLICKED.name:
-        case Event.PROMOTION_VIEWED.name:
-        case Event.PRODUCT_CLICKED.name:
-        case Event.PRODUCT_VIEWED.name:
-        case Event.PRODUCT_ADDED.name:
-        case Event.PRODUCT_REMOVED.name:
-        case Event.PRODUCT_ADDED_TO_WISHLIST.name:
-        case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
-        case Event.PRODUCT_LIST_VIEWED.name:
-        case Event.PRODUCT_LIST_CLICKED.name:
-          category = nameToEventMap[evType].category;
-          break;
-        default:
-          category = ConfigCategory.DEFAULT;
-          break;
-      }
       break;
     default:
       logger.debug("could not determine type");
@@ -459,95 +429,83 @@ function revenueEvent(message) {
   }
   return revEvent;
 }
-function processRevenueBothConditionFalse(message) {
-  const toSendEvents = [];
 
-  // call simple event with no revenue price quanity field
-  const eventClone = simpleCallForTrackRevPerProduct(message);
-  toSendEvents.push(eventClone);
-
-  // call product purchased event for each product
-  if (message.properties.products) {
-    message.properties.products.forEach(product => {
-      const eventClonePurchaseProduct = productPurchased(message, product);
-      console.log("/n revEvent", JSON.stringify(eventClonePurchaseProduct));
-      toSendEvents.push(eventClonePurchaseProduct);
-    });
-    // using revenue from the root
-    const revEvent = revenueEvent(message);
-    console.log("/n revEvent", revEvent);
-    revEvent.event = "Product Purchased";
-    toSendEvents.push(revEvent);
-  }
-  return toSendEvents;
-}
-
-function onlyTrackRevPerProductTrue(message) {
-  const toSendEvents = [];
-  const eventClone = simpleCallForTrackRevPerProduct(message);
-
-  toSendEvents.push(eventClone);
-  if (message.properties.products) {
-    // call product purchased for each product
-    message.properties.products.forEach(product => {
-      const eventClonePurchaseProduct = productPurchased(message, product);
-      toSendEvents.push(eventClonePurchaseProduct);
-    });
-    // revenue event for every product
-    message.properties.products.forEach(product => {
-      const revPerProduct = revenueEvent(message);
-      revPerProduct.event = "Tracking Revenue";
-      revPerProduct.properties = product;
-      toSendEvents.push(revPerProduct);
-    });
-  }
-  return toSendEvents;
-}
-
-function onlyProductOnceTrue(message) {
+function TrackRevenue(message, destination) {
   const sendEvent = [];
-  const ProdOnce = JSON.parse(JSON.stringify(message));
-  delete ProdOnce.properties.revenue;
-  delete ProdOnce.properties.price;
-  delete ProdOnce.properties.quantity;
-  ProdOnce.properties.products = message.properties.products;
-
-  sendEvent.push(ProdOnce);
-
-  const RevTrackForOnce = revenueEvent(message);
-  RevTrackForOnce.event = "Tracking Revenue";
-  if (RevTrackForOnce.properties.products) {
-    delete RevTrackForOnce.properties.products;
-  }
-  sendEvent.push(RevTrackForOnce);
-  return sendEvent;
-}
-
-function bothConditionTrue(message) {
-  const toSendEvents = [];
-  const BothTrue = JSON.parse(JSON.stringify(message));
-  BothTrue.event = message.event;
-  for (const key of Object.keys(message.properties)) {
+  // if trackProductOnce is true
+  if (destination.Config.trackProductsOnce) {
+    const ProdOnce = JSON.parse(JSON.stringify(message));
+    delete ProdOnce.properties.revenue;
+    delete ProdOnce.properties.price;
+    delete ProdOnce.properties.quantity;
     if (
-      key === "revenue" ||
-      key === "price" ||
-      key === "quantity" ||
-      key === "revenue_type"
+      message.properties.products &&
+      message.properties.products.length >= 1
     ) {
-      delete BothTrue.properties[key];
+      ProdOnce.properties.products = message.properties.products;
+    } else {
+      delete ProdOnce.properties.products;
+    }
+    sendEvent.push(ProdOnce);
+    // if trackRevenuePerProduct is true
+    if (destination.Config.trackRevenuePerProduct) {
+      if (
+        message.properties.products &&
+        message.properties.products.length >= 1
+      ) {
+        message.properties.products.forEach(product => {
+          const revPerProduct = revenueEvent(message);
+          revPerProduct.event = "Tracking Revenue";
+          revPerProduct.properties = product;
+          sendEvent.push(revPerProduct);
+        });
+      }
+    } else {
+      // if trackRevenuePerProduct is false
+      const RevTrackForOnce = revenueEvent(message);
+      RevTrackForOnce.event = "Tracking Revenue";
+      if (
+        RevTrackForOnce.properties.products &&
+        message.properties.products.length >= 1
+      ) {
+        delete RevTrackForOnce.properties.products;
+      }
+      sendEvent.push(RevTrackForOnce);
+    }
+  } else {
+    // if trackProductOnce is false
+    const eventClone = simpleCallForTrackRevPerProduct(message);
+    sendEvent.push(eventClone);
+    if (
+      message.properties.products &&
+      message.properties.products.length >= 1
+    ) {
+      message.properties.products.forEach(product => {
+        const eventClonePurchaseProduct = productPurchased(message, product);
+        sendEvent.push(eventClonePurchaseProduct);
+      });
+    }
+    if (destination.Config.trackRevenuePerProduct) {
+      // if trackRevenuePerProduct is true
+      if (
+        message.properties.products &&
+        message.properties.products.length > 0
+      ) {
+        message.properties.products.forEach(product => {
+          const revPerProduct = revenueEvent(message);
+          revPerProduct.event = "Tracking Revenue";
+          revPerProduct.properties = product;
+          sendEvent.push(revPerProduct);
+        });
+      } else {
+        // if trackRevenuePerProduct is false
+        const revEvent = revenueEvent(message);
+        revEvent.event = "Product Purchased";
+        sendEvent.push(revEvent);
+      }
     }
   }
-  toSendEvents.push(BothTrue);
-  // for the revenue calls
-  if (message.properties.products) {
-    message.properties.products.forEach(product => {
-      const revPerProduct = revenueEvent(message);
-      revPerProduct.event = "Tracking Revenue";
-      revPerProduct.properties = product;
-      toSendEvents.push(revPerProduct);
-    });
-  }
-  return toSendEvents;
+  return sendEvent;
 }
 
 function process(event) {
@@ -558,31 +516,7 @@ function process(event) {
   let tempResult;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      if (
-        destination.Config.trackProductsOnce === "true" &&
-        destination.Config.trackRevenuePerProduct === "false"
-      ) {
-        tempResult = onlyProductOnceTrue(message);
-      }
-      if (
-        destination.Config.trackProductsOnce === "false" &&
-        destination.Config.trackRevenuePerProduct === "true"
-      ) {
-        tempResult = onlyTrackRevPerProductTrue(message);
-      }
-      if (
-        destination.Config.trackProductsOnce === "false" &&
-        destination.Config.trackRevenuePerProduct === "false"
-      ) {
-        tempResult = processRevenueBothConditionFalse(message);
-      }
-      if (
-        destination.Config.trackProductsOnce === "true" &&
-        destination.Config.trackRevenuePerProduct === "true"
-      ) {
-        tempResult = bothConditionTrue(message);
-      }
-
+      tempResult = TrackRevenue(message, destination);
       if (destination)
         tempResult.forEach(payload => {
           toSendEvents.push(payload);
@@ -596,6 +530,7 @@ function process(event) {
   toSendEvents.forEach(sendEvent => {
     respList.push(...processSingleMessage(sendEvent, destination));
   });
+  // console.log(JSON.stringify(respList));
   return respList;
 }
 
@@ -728,11 +663,11 @@ function batch(destEvents) {
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
-        batchEventResponse.destination = destinationObject;
-        respList.push({ ...batchEventResponse });
-        batchEventResponse = defaultBatchRequestConfig();
-        batchEventResponse.destination = destinationObject;
-        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        // batchEventResponse.destination = destinationObject;
+        // respList.push({ ...batchEventResponse });
+        // batchEventResponse = defaultBatchRequestConfig();
+        // batchEventResponse.destination = destinationObject;
+        // isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
       }
     }
   });

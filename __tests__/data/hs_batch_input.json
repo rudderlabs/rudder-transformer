@@ -1,0 +1,118 @@
+[
+  [
+    {
+      "message": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "userId": "00000000000000000000000000",
+        "params": {
+          "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+        },
+        "body": {
+          "JSON": {
+            "properties": [
+              {
+                "property": "email",
+                "value": "testhubspot2@email.com"
+              },
+              {
+                "property": "firstname",
+                "value": "Test Hubspot"
+              }
+            ]
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "statusCode": 200
+      },
+      "destination": { "ID": "a" },
+      "metadata": { "job_id": 1 }
+    }
+  ],
+  [
+    {
+      "message": {
+        "type": "track",
+        "event": "MainActivity",
+        "sentAt": "2020-03-12T09:05:13.042Z",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "8.1.0"
+          },
+          "app": {
+            "name": "LeanPlumIntegrationAndroid",
+            "build": "1",
+            "version": "1.0",
+            "namespace": "com.android.SampleLeanPlum"
+          },
+          "device": {
+            "id": "5094f5704b9cf2b3",
+            "name": "generic_x86",
+            "type": "android",
+            "model": "Android SDK built for x86",
+            "manufacturer": "Google"
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1080,
+            "height": 1794,
+            "density": 420
+          },
+          "traits": {
+            "anonymousId": "5094f5704b9cf2b3"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.1-beta.1"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "Android",
+            "cellular": true,
+            "bluetooth": false
+          },
+          "timezone": "Asia/Kolkata",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "externalId": [
+            {
+              "id": 180201,
+              "type": "appsflyerExternalId"
+            }
+          ]
+        },
+        "rudderId": "34ee063a-3b73-4b35-bf32-fb274e0250b2",
+        "messageId": "id1",
+        "timestamp": "2020-12-21T19:36:49.250Z",
+        "properties": {
+          "name": "MainActivity",
+          "automatic": true
+        },
+        "receivedAt": "2020-12-21T19:36:58.871Z",
+        "request_ip": "172.18.0.1",
+        "anonymousId": "5094f5704b9cf2b3",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2020-03-12T09:05:03.421Z"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+          "hubID": "6405167"
+        },
+        "Enabled": true,
+        "ID": "a"
+      },
+      "metadata": { "job_id": 2 }
+    }
+  ]
+]

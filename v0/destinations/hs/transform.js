@@ -1,14 +1,17 @@
+/* eslint-disable no-await-in-loop */
 const get = require("get-value");
 const set = require("set-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
 const {
+  defaultBatchRequestConfig,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedValues,
   getFieldValueFromMessage
 } = require("../../util");
+const logger = require("../../../logger");
 const { ConfigCategory, mappingConfig } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -172,6 +175,41 @@ async function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  return event.message;
 }
-exports.process = process;
+
+const formatBatchResponse = (batchPayload, metadataList, destination) => {
+  const response = defaultBatchRequestConfig();
+  response.batchedRequest = batchPayload;
+  response.metadata = metadataList;
+  response.destination = destination;
+  return response;
+};
+
+const batch = async destEvents => {
+  const respList = [];
+  for (let index = 0; index < destEvents.length; index += 1) {
+    const ev = destEvents[index];
+    const { message, metadata, destination } = ev;
+    if (message.statusCode) {
+      // processed event
+      respList.push(formatBatchResponse(message, [metadata], destination));
+    } else {
+      // unprocessed event
+      try {
+        const singleResponse = await processSingleMessage(message, destination);
+        respList.push(
+          formatBatchResponse(singleResponse, [metadata], destination)
+        );
+      } catch (error) {
+        logger.debug(error);
+      }
+    }
+  }
+  return respList;
+};
+
+module.exports = {
+  process,
+  batch
+};

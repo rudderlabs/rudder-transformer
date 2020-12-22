@@ -385,7 +385,7 @@ function processSingleMessage(message, destination) {
   );
 }
 
-function simpleCallForTrackRevPerProduct(message) {
+function trackRevenuePerProduct(message) {
   const eventClone = JSON.parse(JSON.stringify(message));
   eventClone.event = message.event;
   // eslint-disable-next-line no-restricted-syntax
@@ -409,14 +409,14 @@ function simpleCallForTrackRevPerProduct(message) {
   return eventClone;
 }
 
-function productPurchased(message, product) {
+function populateProductPurchasedEvent(message, product) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
   eventClonePurchaseProduct.event = "Product Purchased";
   eventClonePurchaseProduct.properties = product;
   return eventClonePurchaseProduct;
 }
 
-function revenueEvent(message) {
+function getRevenueEvent(message) {
   const revEvent = JSON.parse(JSON.stringify(message));
   // eslint-disable-next-line no-restricted-syntax
 
@@ -430,23 +430,23 @@ function revenueEvent(message) {
   return revEvent;
 }
 
-function TrackRevenue(message, destination) {
+function trackRevenue(message, destination) {
   const sendEvent = [];
   // if trackProductOnce is true
   if (destination.Config.trackProductsOnce) {
-    const ProdOnce = JSON.parse(JSON.stringify(message));
-    delete ProdOnce.properties.revenue;
-    delete ProdOnce.properties.price;
-    delete ProdOnce.properties.quantity;
+    const prodOnce = JSON.parse(JSON.stringify(message));
+    delete prodOnce.properties.revenue;
+    delete prodOnce.properties.price;
+    delete prodOnce.properties.quantity;
     if (
       message.properties.products &&
       message.properties.products.length >= 1
     ) {
-      ProdOnce.properties.products = message.properties.products;
+      prodOnce.properties.products = message.properties.products;
     } else {
-      delete ProdOnce.properties.products;
+      delete prodOnce.properties.products;
     }
-    sendEvent.push(ProdOnce);
+    sendEvent.push(prodOnce);
     // if trackRevenuePerProduct is true
     if (destination.Config.trackRevenuePerProduct) {
       if (
@@ -454,7 +454,7 @@ function TrackRevenue(message, destination) {
         message.properties.products.length >= 1
       ) {
         message.properties.products.forEach(product => {
-          const revPerProduct = revenueEvent(message);
+          const revPerProduct = getRevenueEvent(message);
           revPerProduct.event = "Tracking Revenue";
           revPerProduct.properties = product;
           sendEvent.push(revPerProduct);
@@ -462,26 +462,29 @@ function TrackRevenue(message, destination) {
       }
     } else {
       // if trackRevenuePerProduct is false
-      const RevTrackForOnce = revenueEvent(message);
-      RevTrackForOnce.event = "Tracking Revenue";
+      const revTrackForOnce = getRevenueEvent(message);
+      revTrackForOnce.event = "Tracking Revenue";
       if (
-        RevTrackForOnce.properties.products &&
+        revTrackForOnce.properties.products &&
         message.properties.products.length >= 1
       ) {
-        delete RevTrackForOnce.properties.products;
+        delete revTrackForOnce.properties.products;
       }
-      sendEvent.push(RevTrackForOnce);
+      sendEvent.push(revTrackForOnce);
     }
   } else {
     // if trackProductOnce is false
-    const eventClone = simpleCallForTrackRevPerProduct(message);
+    const eventClone = trackRevenuePerProduct(message);
     sendEvent.push(eventClone);
     if (
       message.properties.products &&
       message.properties.products.length >= 1
     ) {
       message.properties.products.forEach(product => {
-        const eventClonePurchaseProduct = productPurchased(message, product);
+        const eventClonePurchaseProduct = populateProductPurchasedEvent(
+          message,
+          product
+        );
         sendEvent.push(eventClonePurchaseProduct);
       });
     }
@@ -492,14 +495,14 @@ function TrackRevenue(message, destination) {
         message.properties.products.length > 0
       ) {
         message.properties.products.forEach(product => {
-          const revPerProduct = revenueEvent(message);
+          const revPerProduct = getRevenueEvent(message);
           revPerProduct.event = "Tracking Revenue";
           revPerProduct.properties = product;
           sendEvent.push(revPerProduct);
         });
       } else {
         // if trackRevenuePerProduct is false
-        const revEvent = revenueEvent(message);
+        const revEvent = getRevenueEvent(message);
         revEvent.event = "Product Purchased";
         sendEvent.push(revEvent);
       }
@@ -516,7 +519,7 @@ function process(event) {
   let tempResult;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      tempResult = TrackRevenue(message, destination);
+      tempResult = trackRevenue(message, destination);
       if (destination)
         tempResult.forEach(payload => {
           toSendEvents.push(payload);
@@ -530,7 +533,7 @@ function process(event) {
   toSendEvents.forEach(sendEvent => {
     respList.push(...processSingleMessage(sendEvent, destination));
   });
-  // console.log(JSON.stringify(respList));
+  console.log(JSON.stringify(respList));
   return respList;
 }
 
@@ -663,11 +666,11 @@ function batch(destEvents) {
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
-        // batchEventResponse.destination = destinationObject;
-        // respList.push({ ...batchEventResponse });
-        // batchEventResponse = defaultBatchRequestConfig();
-        // batchEventResponse.destination = destinationObject;
-        // isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        batchEventResponse.destination = destinationObject;
+        respList.push({ ...batchEventResponse });
+        batchEventResponse = defaultBatchRequestConfig();
+        batchEventResponse.destination = destinationObject;
+        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
       }
     }
   });

@@ -533,7 +533,6 @@ function process(event) {
   toSendEvents.forEach(sendEvent => {
     respList.push(...processSingleMessage(sendEvent, destination));
   });
-  console.log(JSON.stringify(respList));
   return respList;
 }
 

@@ -202,7 +202,7 @@ const batch = async destEvents => {
           formatBatchResponse(singleResponse, [metadata], destination)
         );
       } catch (error) {
-        logger.debug(error);
+        logger.error(error);
       }
     }
   }

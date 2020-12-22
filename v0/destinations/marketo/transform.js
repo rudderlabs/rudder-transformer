@@ -8,6 +8,7 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage
 } = require("../../util");
+const logger = require("../../../logger");
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
@@ -18,22 +19,25 @@ const {
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
 const getAuthToken = async destination => {
-  const { accountId, clientId, clientSecret } = destination;
-  const resp = await axios.get(
-    `https://${accountId}.mktorest.com/identity/oauth/token`,
-    {
-      params: {
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: "client_credentials"
+  try {
+    const { accountId, clientId, clientSecret } = destination;
+    const resp = await axios.get(
+      `https://${accountId}.mktorest.com/identity/oauth/token`,
+      {
+        params: {
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "client_credentials"
+        }
       }
+    );
+
+    if (resp.data) {
+      return resp.data.access_token;
     }
-  );
-
-  if (resp.data) {
-    return resp.data.access_token;
+  } catch (error) {
+    throw new Error("Marketo auth failed");
   }
-
   throw new Error("Invalid credentials");
 };
 
@@ -53,29 +57,32 @@ const getAuthToken = async destination => {
 // ------------------------
 // Thus we'll always be using createOrUpdate
 const lookupLead = async (accountId, token, userId, anonymousId) => {
-  const attribute = userId ? { userId } : { anonymousId };
-  const resp = await axios.post(
-    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-    {
-      action: "createOrUpdate",
-      input: [attribute],
-      lookupField: userId ? "userId" : "anonymousId"
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json"
+  try {
+    const attribute = userId ? { userId } : { anonymousId };
+    const resp = await axios.post(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        action: "createOrUpdate",
+        input: [attribute],
+        lookupField: userId ? "userId" : "anonymousId"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json"
+        }
+      }
+    );
+
+    if (resp.data) {
+      const { result } = resp.data;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
       }
     }
-  );
-
-  if (resp.data) {
-    const { result } = resp.data;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
-    }
+  } catch (error) {
+    throw new Error("Marketo lookup failed");
   }
-
   return null;
 };
 
@@ -85,21 +92,26 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
 const lookupLeadUsingEmail = async (accountId, token, email) => {
-  const resp = await axios.get(
-    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-    {
-      params: { filterValues: email, filterType: "email" },
-      headers: { Authorization: `Bearer ${token}` }
-    }
-  );
+  try {
+    const resp = await axios.get(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        params: { filterValues: email, filterType: "email" },
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
 
-  if (resp.data) {
-    const { result } = resp.data;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
+    if (resp.data) {
+      const { result } = resp.data;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
+      }
     }
+  } catch (error) {
+    // lookup using email is optional. so not throwing an error from here
+    logger.debug(error);
+    return null;
   }
-
   return null;
 };
 

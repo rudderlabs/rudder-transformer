@@ -323,7 +323,7 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.post("/batch", ctx => {
+router.post("/batch", async ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
   if (!destHandler || !destHandler.batch) {
@@ -334,17 +334,19 @@ router.post("/batch", ctx => {
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
   const response = { batchedRequests: [], errors: [] };
-  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
-    // TODO: check await needed?
-    try {
-      const destBatchedRequests = destHandler.batch(destEvents);
-      response.batchedRequests.push(...destBatchedRequests);
-    } catch (error) {
-      response.errors.push(
-        error.message || "Error occurred while processing payload."
-      );
-    }
-  });
+  await Promise.all(
+    Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+      // TODO: check await needed?
+      try {
+        const destBatchedRequests = await destHandler.batch(destEvents);
+        response.batchedRequests.push(...destBatchedRequests);
+      } catch (error) {
+        response.errors.push(
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
   if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;

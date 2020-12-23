@@ -198,11 +198,18 @@ const batch = async destEvents => {
       // unprocessed event
       try {
         const singleResponse = await processSingleMessage(message, destination);
-        respList.push(
-          formatBatchResponse(singleResponse, [metadata], destination)
-        );
+        if (singleResponse) {
+          respList.push(
+            formatBatchResponse(singleResponse, [metadata], destination)
+          );
+        }
       } catch (error) {
         logger.error(error);
+        respList.push({
+          metadata,
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
+        });
       }
     }
   }

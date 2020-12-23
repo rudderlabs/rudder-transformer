@@ -714,7 +714,7 @@
             "tax": 2,
             "total": 27.5,
             "coupon": "hasbros",
-            "revenue": 48,
+            "revenue": "48",
             "revenue_type":"abc",
             "price": 25,
             "quantity": 2,

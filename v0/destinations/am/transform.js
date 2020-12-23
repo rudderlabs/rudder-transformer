@@ -500,14 +500,15 @@ function trackRevenue(message, destination) {
           revPerProduct.properties = product;
           sendEvent.push(revPerProduct);
         });
-      } else {
-        // if trackRevenuePerProduct is false
-        const revEvent = getRevenueEvent(message);
-        revEvent.event = "Product Purchased";
-        sendEvent.push(revEvent);
       }
+    } else {
+      // if trackRevenuePerProduct is false
+      const revEvent = getRevenueEvent(message);
+      revEvent.event = "Product Purchased";
+      sendEvent.push(revEvent);
     }
   }
+
   return sendEvent;
 }
 

@@ -1,0 +1,6 @@
+{
+    "event": "name",
+    "timestamp": "timestamp",
+    "properties": "attributes",
+    "messageId": "request_id"
+ }

@@ -104,8 +104,6 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
-    // delete output[key];
-    // delete columnTypes[key];
     let val;
     // if (_.isFunction(columnMapping[key])) {
     if (key === "context_ip") {

@@ -8,50 +8,50 @@
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
 /** Used as a safe reference for `undefined` in pre-ES5 environments. */
-var undefined;
+let undefined;
 
 /** Used as the semantic version number. */
-var VERSION = "4.17.10";
+const VERSION = "4.17.10";
 
 /** Error message constants. */
-var FUNC_ERROR_TEXT = "Expected a function";
+const FUNC_ERROR_TEXT = "Expected a function";
 
 /** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-  COMPARE_UNORDERED_FLAG = 2;
+const COMPARE_PARTIAL_FLAG = 1;
+const COMPARE_UNORDERED_FLAG = 2;
 
 /** Used to compose bitmasks for function metadata. */
-var WRAP_BIND_FLAG = 1,
-  WRAP_PARTIAL_FLAG = 32;
+const WRAP_BIND_FLAG = 1;
+const WRAP_PARTIAL_FLAG = 32;
 
 /** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0,
-  MAX_SAFE_INTEGER = 9007199254740991;
+const INFINITY = 1 / 0;
+const MAX_SAFE_INTEGER = 9007199254740991;
 
 /** `Object#toString` result references. */
-var argsTag = "[object Arguments]",
-  arrayTag = "[object Array]",
-  asyncTag = "[object AsyncFunction]",
-  boolTag = "[object Boolean]",
-  dateTag = "[object Date]",
-  errorTag = "[object Error]",
-  funcTag = "[object Function]",
-  genTag = "[object GeneratorFunction]",
-  numberTag = "[object Number]",
-  objectTag = "[object Object]",
-  proxyTag = "[object Proxy]",
-  regexpTag = "[object RegExp]",
-  stringTag = "[object String]";
+const argsTag = "[object Arguments]";
+const arrayTag = "[object Array]";
+const asyncTag = "[object AsyncFunction]";
+const boolTag = "[object Boolean]";
+const dateTag = "[object Date]";
+const errorTag = "[object Error]";
+const funcTag = "[object Function]";
+const genTag = "[object GeneratorFunction]";
+const numberTag = "[object Number]";
+const objectTag = "[object Object]";
+const proxyTag = "[object Proxy]";
+const regexpTag = "[object RegExp]";
+const stringTag = "[object String]";
 
 /** Used to match HTML entities and HTML characters. */
-var reUnescapedHtml = /[&<>"']/g,
-  reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+const reUnescapedHtml = /[&<>"']/g;
+const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
 /** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
+const reIsUint = /^(?:0|[1-9]\d*)$/;
 
 /** Used to map characters to HTML entities. */
-var htmlEscapes = {
+const htmlEscapes = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
@@ -60,24 +60,24 @@ var htmlEscapes = {
 };
 
 /** Detect free variable `global` from Node.js. */
-var freeGlobal =
-  typeof global == "object" && global && global.Object === Object && global;
+const freeGlobal =
+  typeof global === "object" && global && global.Object === Object && global;
 
 /** Detect free variable `self`. */
-var freeSelf =
-  typeof self == "object" && self && self.Object === Object && self;
+const freeSelf =
+  typeof self === "object" && self && self.Object === Object && self;
 
 /** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function("return this")();
+const root = freeGlobal || freeSelf || Function("return this")();
 
 /** Detect free variable `exports`. */
-var freeExports =
-  typeof exports == "object" && exports && !exports.nodeType && exports;
+const freeExports =
+  typeof exports === "object" && exports && !exports.nodeType && exports;
 
 /** Detect free variable `module`. */
-var freeModule =
+const freeModule =
   freeExports &&
-  typeof module == "object" &&
+  typeof module === "object" &&
   module &&
   !module.nodeType &&
   module;
@@ -109,8 +109,8 @@ function arrayPush(array, values) {
  * @returns {number} Returns the index of the matched value, else `-1`.
  */
 function baseFindIndex(array, predicate, fromIndex, fromRight) {
-  var length = array.length,
-    index = fromIndex + (fromRight ? 1 : -1);
+  const { length } = array;
+  let index = fromIndex + (fromRight ? 1 : -1);
 
   while (fromRight ? index-- : ++index < length) {
     if (predicate(array[index], index, array)) {
@@ -191,7 +191,7 @@ function baseValues(object, props) {
  * @param {string} chr The matched character to escape.
  * @returns {string} Returns the escaped character.
  */
-var escapeHtmlChar = basePropertyOf(htmlEscapes);
+const escapeHtmlChar = basePropertyOf(htmlEscapes);
 
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
@@ -210,33 +210,33 @@ function overArg(func, transform) {
 /*--------------------------------------------------------------------------*/
 
 /** Used for built-in method references. */
-var arrayProto = Array.prototype,
-  objectProto = Object.prototype;
+const arrayProto = Array.prototype;
+const objectProto = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
+const { hasOwnProperty } = objectProto;
 
 /** Used to generate unique IDs. */
-var idCounter = 0;
+let idCounter = 0;
 
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString = objectProto.toString;
+const nativeObjectToString = objectProto.toString;
 
 /** Used to restore the original `_` reference in `_.noConflict`. */
-var oldDash = root._;
+const oldDash = root._;
 
 /** Built-in value references. */
-var objectCreate = Object.create,
-  propertyIsEnumerable = objectProto.propertyIsEnumerable;
+const objectCreate = Object.create;
+const { propertyIsEnumerable } = objectProto;
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeIsFinite = root.isFinite,
-  nativeKeys = overArg(Object.keys, Object),
-  nativeMax = Math.max;
+const nativeIsFinite = root.isFinite;
+const nativeKeys = overArg(Object.keys, Object);
+const nativeMax = Math.max;
 
 /*------------------------------------------------------------------------*/
 
@@ -369,7 +369,7 @@ function lodash(value) {
  * @param {Object} proto The object to inherit from.
  * @returns {Object} Returns the new object.
  */
-var baseCreate = (function() {
+const baseCreate = (function() {
   function object() {}
   return function(proto) {
     if (!isObject(proto)) {
@@ -379,7 +379,7 @@ var baseCreate = (function() {
       return objectCreate(proto);
     }
     object.prototype = proto;
-    var result = new object();
+    const result = new object();
     object.prototype = undefined;
     return result;
   };
@@ -414,7 +414,7 @@ LodashWrapper.prototype.constructor = LodashWrapper;
  * @param {*} value The value to assign.
  */
 function assignValue(object, key, value) {
-  var objValue = object[key];
+  const objValue = object[key];
   if (
     !(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
     (value === undefined && !(key in object))
@@ -447,7 +447,7 @@ function baseAssignValue(object, key, value) {
  * @returns {number|Object} Returns the timer id or timeout object.
  */
 function baseDelay(func, wait, args) {
-  if (typeof func != "function") {
+  if (typeof func !== "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   return setTimeout(function() {
@@ -463,7 +463,7 @@ function baseDelay(func, wait, args) {
  * @param {Function} iteratee The function invoked per iteration.
  * @returns {Array|Object} Returns `collection`.
  */
-var baseEach = createBaseEach(baseForOwn);
+const baseEach = createBaseEach(baseForOwn);
 
 /**
  * The base implementation of `_.every` without support for iteratee shorthands.
@@ -475,7 +475,7 @@ var baseEach = createBaseEach(baseForOwn);
  *  else `false`
  */
 function baseEvery(collection, predicate) {
-  var result = true;
+  let result = true;
   baseEach(collection, function(value, index, collection) {
     result = !!predicate(value, index, collection);
     return result;
@@ -494,12 +494,12 @@ function baseEvery(collection, predicate) {
  * @returns {*} Returns the extremum value.
  */
 function baseExtremum(array, iteratee, comparator) {
-  var index = -1,
-    length = array.length;
+  let index = -1;
+  const { length } = array;
 
   while (++index < length) {
-    var value = array[index],
-      current = iteratee(value);
+    const value = array[index];
+    const current = iteratee(value);
 
     if (
       current != null &&
@@ -507,8 +507,8 @@ function baseExtremum(array, iteratee, comparator) {
         ? current === current && !false
         : comparator(current, computed))
     ) {
-      var computed = current,
-        result = value;
+      var computed = current;
+      var result = value;
     }
   }
   return result;
@@ -523,7 +523,7 @@ function baseExtremum(array, iteratee, comparator) {
  * @returns {Array} Returns the new filtered array.
  */
 function baseFilter(collection, predicate) {
-  var result = [];
+  const result = [];
   baseEach(collection, function(value, index, collection) {
     if (predicate(value, index, collection)) {
       result.push(value);
@@ -544,14 +544,14 @@ function baseFilter(collection, predicate) {
  * @returns {Array} Returns the new flattened array.
  */
 function baseFlatten(array, depth, predicate, isStrict, result) {
-  var index = -1,
-    length = array.length;
+  let index = -1;
+  const { length } = array;
 
   predicate || (predicate = isFlattenable);
   result || (result = []);
 
   while (++index < length) {
-    var value = array[index];
+    const value = array[index];
     if (depth > 0 && predicate(value)) {
       if (depth > 1) {
         // Recursively flatten arrays (susceptible to call stack limits).
@@ -577,7 +577,7 @@ function baseFlatten(array, depth, predicate, isStrict, result) {
  * @param {Function} keysFunc The function to get the keys of `object`.
  * @returns {Object} Returns `object`.
  */
-var baseFor = createBaseFor();
+const baseFor = createBaseFor();
 
 /**
  * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -637,7 +637,7 @@ function baseGt(value, other) {
  * @param {*} value The value to check.
  * @returns {boolean} Returns `true` if `value` is an `arguments` object,
  */
-var baseIsArguments = noop;
+const baseIsArguments = noop;
 
 /**
  * The base implementation of `_.isDate` without Node.js optimizations.
@@ -693,23 +693,23 @@ function baseIsEqual(value, other, bitmask, customizer, stack) {
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
 function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-  var objIsArr = isArray(object),
-    othIsArr = isArray(other),
-    objTag = objIsArr ? arrayTag : baseGetTag(object),
-    othTag = othIsArr ? arrayTag : baseGetTag(other);
+  const objIsArr = isArray(object);
+  const othIsArr = isArray(other);
+  let objTag = objIsArr ? arrayTag : baseGetTag(object);
+  let othTag = othIsArr ? arrayTag : baseGetTag(other);
 
   objTag = objTag == argsTag ? objectTag : objTag;
   othTag = othTag == argsTag ? objectTag : othTag;
 
-  var objIsObj = objTag == objectTag,
-    othIsObj = othTag == objectTag,
-    isSameTag = objTag == othTag;
+  const objIsObj = objTag == objectTag;
+  const othIsObj = othTag == objectTag;
+  const isSameTag = objTag == othTag;
 
   stack || (stack = []);
-  var objStack = find(stack, function(entry) {
+  const objStack = find(stack, function(entry) {
     return entry[0] == object;
   });
-  var othStack = find(stack, function(entry) {
+  const othStack = find(stack, function(entry) {
     return entry[0] == other;
   });
   if (objStack && othStack) {
@@ -733,12 +733,12 @@ function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
     return result;
   }
   if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__"),
-      othIsWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
+    const objIsWrapped = objIsObj && hasOwnProperty.call(object, "__wrapped__");
+    const othIsWrapped = othIsObj && hasOwnProperty.call(other, "__wrapped__");
 
     if (objIsWrapped || othIsWrapped) {
-      var objUnwrapped = objIsWrapped ? object.value() : object,
-        othUnwrapped = othIsWrapped ? other.value() : other;
+      const objUnwrapped = objIsWrapped ? object.value() : object;
+      const othUnwrapped = othIsWrapped ? other.value() : other;
 
       var result = equalFunc(
         objUnwrapped,
@@ -785,13 +785,13 @@ function baseIsRegExp(value) {
  * @returns {Function} Returns the iteratee.
  */
 function baseIteratee(func) {
-  if (typeof func == "function") {
+  if (typeof func === "function") {
     return func;
   }
   if (func == null) {
     return identity;
   }
-  return (typeof func == "object" ? baseMatches : baseProperty)(func);
+  return (typeof func === "object" ? baseMatches : baseProperty)(func);
 }
 
 /**
@@ -816,8 +816,8 @@ function baseLt(value, other) {
  * @returns {Array} Returns the new mapped array.
  */
 function baseMap(collection, iteratee) {
-  var index = -1,
-    result = isArrayLike(collection) ? Array(collection.length) : [];
+  let index = -1;
+  const result = isArrayLike(collection) ? Array(collection.length) : [];
 
   baseEach(collection, function(value, key, collection) {
     result[++index] = iteratee(value, key, collection);
@@ -833,15 +833,15 @@ function baseMap(collection, iteratee) {
  * @returns {Function} Returns the new spec function.
  */
 function baseMatches(source) {
-  var props = nativeKeys(source);
+  const props = nativeKeys(source);
   return function(object) {
-    var length = props.length;
+    let { length } = props;
     if (object == null) {
       return !length;
     }
     object = Object(object);
     while (length--) {
-      var key = props[length];
+      const key = props[length];
       if (
         !(
           key in object &&
@@ -891,7 +891,7 @@ function basePick(object, props) {
  * @returns {Function} Returns the new function.
  */
 function baseRest(func, start) {
-  return setToString(overRest(func, start, identity), func + "");
+  return setToString(overRest(func, start, identity), `${func}`);
 }
 
 /**
@@ -904,8 +904,8 @@ function baseRest(func, start) {
  * @returns {Array} Returns the slice of `array`.
  */
 function baseSlice(array, start, end) {
-  var index = -1,
-    length = array.length;
+  let index = -1;
+  let { length } = array;
 
   if (start < 0) {
     start = -start > length ? 0 : length + start;
@@ -917,7 +917,7 @@ function baseSlice(array, start, end) {
   length = start > end ? 0 : (end - start) >>> 0;
   start >>>= 0;
 
-  var result = Array(length);
+  const result = Array(length);
   while (++index < length) {
     result[index] = array[index + start];
   }
@@ -946,7 +946,7 @@ function copyArray(source) {
  *  else `false`.
  */
 function baseSome(collection, predicate) {
-  var result;
+  let result;
 
   baseEach(collection, function(value, index, collection) {
     result = predicate(value, index, collection);
@@ -966,7 +966,7 @@ function baseSome(collection, predicate) {
  * @returns {*} Returns the resolved value.
  */
 function baseWrapperValue(value, actions) {
-  var result = value;
+  const result = value;
   return reduce(
     actions,
     function(result, action) {
@@ -989,15 +989,15 @@ function baseWrapperValue(value, actions) {
  */
 function compareAscending(value, other) {
   if (value !== other) {
-    var valIsDefined = value !== undefined,
-      valIsNull = value === null,
-      valIsReflexive = value === value,
-      valIsSymbol = false;
+    const valIsDefined = value !== undefined;
+    const valIsNull = value === null;
+    const valIsReflexive = value === value;
+    const valIsSymbol = false;
 
-    var othIsDefined = other !== undefined,
-      othIsNull = other === null,
-      othIsReflexive = other === other,
-      othIsSymbol = false;
+    const othIsDefined = other !== undefined;
+    const othIsNull = other === null;
+    const othIsReflexive = other === other;
+    const othIsSymbol = false;
 
     if (
       (!othIsNull && !othIsSymbol && !valIsSymbol && value > other) ||
@@ -1040,16 +1040,16 @@ function compareAscending(value, other) {
  * @returns {Object} Returns `object`.
  */
 function copyObject(source, props, object, customizer) {
-  var isNew = !object;
+  const isNew = !object;
   object || (object = {});
 
-  var index = -1,
-    length = props.length;
+  let index = -1;
+  const { length } = props;
 
   while (++index < length) {
-    var key = props[index];
+    const key = props[index];
 
-    var newValue = customizer
+    let newValue = customizer
       ? customizer(object[key], source[key], key, object, source)
       : undefined;
 
@@ -1074,18 +1074,18 @@ function copyObject(source, props, object, customizer) {
  */
 function createAssigner(assigner) {
   return baseRest(function(object, sources) {
-    var index = -1,
-      length = sources.length,
-      customizer = length > 1 ? sources[length - 1] : undefined;
+    let index = -1;
+    let { length } = sources;
+    let customizer = length > 1 ? sources[length - 1] : undefined;
 
     customizer =
-      assigner.length > 3 && typeof customizer == "function"
+      assigner.length > 3 && typeof customizer === "function"
         ? (length--, customizer)
         : undefined;
 
     object = Object(object);
     while (++index < length) {
-      var source = sources[index];
+      const source = sources[index];
       if (source) {
         assigner(object, source, index, customizer);
       }
@@ -1110,9 +1110,9 @@ function createBaseEach(eachFunc, fromRight) {
     if (!isArrayLike(collection)) {
       return eachFunc(collection, iteratee);
     }
-    var length = collection.length,
-      index = fromRight ? length : -1,
-      iterable = Object(collection);
+    const { length } = collection;
+    let index = fromRight ? length : -1;
+    const iterable = Object(collection);
 
     while (fromRight ? index-- : ++index < length) {
       if (iteratee(iterable[index], index, iterable) === false) {
@@ -1132,13 +1132,13 @@ function createBaseEach(eachFunc, fromRight) {
  */
 function createBaseFor(fromRight) {
   return function(object, iteratee, keysFunc) {
-    var index = -1,
-      iterable = Object(object),
-      props = keysFunc(object),
-      length = props.length;
+    let index = -1;
+    const iterable = Object(object);
+    const props = keysFunc(object);
+    let { length } = props;
 
     while (length--) {
-      var key = props[fromRight ? length : ++index];
+      const key = props[fromRight ? length : ++index];
       if (iteratee(iterable[key], key, iterable) === false) {
         break;
       }
@@ -1160,9 +1160,9 @@ function createCtor(Ctor) {
     // Use a `switch` statement to work with class constructors. See
     // http://ecma-international.org/ecma-262/7.0/#sec-ecmascript-function-objects-call-thisargument-argumentslist
     // for more details.
-    var args = arguments;
-    var thisBinding = baseCreate(Ctor.prototype),
-      result = Ctor.apply(thisBinding, args);
+    const args = arguments;
+    const thisBinding = baseCreate(Ctor.prototype);
+    const result = Ctor.apply(thisBinding, args);
 
     // Mimic the constructor's `return` behavior.
     // See https://es5.github.io/#x13.2.2 for more details.
@@ -1179,7 +1179,7 @@ function createCtor(Ctor) {
  */
 function createFind(findIndexFunc) {
   return function(collection, predicate, fromIndex) {
-    var iterable = Object(collection);
+    const iterable = Object(collection);
     if (!isArrayLike(collection)) {
       var iteratee = baseIteratee(predicate, 3);
       collection = keys(collection);
@@ -1187,7 +1187,7 @@ function createFind(findIndexFunc) {
         return iteratee(iterable[key], key, iterable);
       };
     }
-    var index = findIndexFunc(collection, predicate, fromIndex);
+    const index = findIndexFunc(collection, predicate, fromIndex);
     return index > -1
       ? iterable[iteratee ? collection[index] : index]
       : undefined;
@@ -1207,19 +1207,19 @@ function createFind(findIndexFunc) {
  * @returns {Function} Returns the new wrapped function.
  */
 function createPartial(func, bitmask, thisArg, partials) {
-  if (typeof func != "function") {
+  if (typeof func !== "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
-  var isBind = bitmask & WRAP_BIND_FLAG,
-    Ctor = createCtor(func);
+  const isBind = bitmask & WRAP_BIND_FLAG;
+  const Ctor = createCtor(func);
 
   function wrapper() {
-    var argsIndex = -1,
-      argsLength = arguments.length,
-      leftIndex = -1,
-      leftLength = partials.length,
-      args = Array(leftLength + argsLength),
-      fn = this && this !== root && this instanceof wrapper ? Ctor : func;
+    let argsIndex = -1;
+    let argsLength = arguments.length;
+    let leftIndex = -1;
+    const leftLength = partials.length;
+    const args = Array(leftLength + argsLength);
+    const fn = this && this !== root && this instanceof wrapper ? Ctor : func;
 
     while (++leftIndex < leftLength) {
       args[leftIndex] = partials[leftIndex];
@@ -1246,21 +1246,21 @@ function createPartial(func, bitmask, thisArg, partials) {
  * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
  */
 function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-    arrLength = array.length,
-    othLength = other.length;
+  const isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+  const arrLength = array.length;
+  const othLength = other.length;
 
   if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
     return false;
   }
-  var index = -1,
-    result = true,
-    seen = bitmask & COMPARE_UNORDERED_FLAG ? [] : undefined;
+  let index = -1;
+  let result = true;
+  const seen = bitmask & COMPARE_UNORDERED_FLAG ? [] : undefined;
 
   // Ignore non-index properties.
   while (++index < arrLength) {
-    var arrValue = array[index],
-      othValue = other[index];
+    var arrValue = array[index];
+    const othValue = other[index];
 
     var compared;
     if (compared !== undefined) {
@@ -1333,7 +1333,7 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
       // Coerce regexes to strings and treat strings, primitives and objects,
       // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
       // for more details.
-      return object == other + "";
+      return object == `${other}`;
   }
   return false;
 }
@@ -1352,29 +1352,29 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
  * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
  */
 function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-    objProps = keys(object),
-    objLength = objProps.length,
-    othProps = keys(other),
-    othLength = othProps.length;
+  const isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+  const objProps = keys(object);
+  const objLength = objProps.length;
+  const othProps = keys(other);
+  const othLength = othProps.length;
 
   if (objLength != othLength && !isPartial) {
     return false;
   }
-  var index = objLength;
+  let index = objLength;
   while (index--) {
     var key = objProps[index];
     if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
       return false;
     }
   }
-  var result = true;
+  let result = true;
 
-  var skipCtor = isPartial;
+  let skipCtor = isPartial;
   while (++index < objLength) {
     key = objProps[index];
-    var objValue = object[key],
-      othValue = other[key];
+    const objValue = object[key];
+    const othValue = other[key];
 
     var compared;
     // Recursively compare objects (susceptible to call stack limits).
@@ -1390,8 +1390,8 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
     skipCtor || (skipCtor = key == "constructor");
   }
   if (result && !skipCtor) {
-    var objCtor = object.constructor,
-      othCtor = other.constructor;
+    const objCtor = object.constructor;
+    const othCtor = other.constructor;
 
     // Non `Object` object instances with different constructors are not equal.
     if (
@@ -1399,9 +1399,9 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
       "constructor" in object &&
       "constructor" in other &&
       !(
-        typeof objCtor == "function" &&
+        typeof objCtor === "function" &&
         objCtor instanceof objCtor &&
-        typeof othCtor == "function" &&
+        typeof othCtor === "function" &&
         othCtor instanceof othCtor
       )
     ) {
@@ -1419,7 +1419,7 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
  * @returns {Function} Returns the new function.
  */
 function flatRest(func) {
-  return setToString(overRest(func, undefined, flatten), func + "");
+  return setToString(overRest(func, undefined, flatten), `${func}`);
 }
 
 /**
@@ -1442,7 +1442,7 @@ function isFlattenable(value) {
  * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
  */
 function isIndex(value, length) {
-  var type = typeof value;
+  const type = typeof value;
   length = length == null ? MAX_SAFE_INTEGER : length;
 
   return (
@@ -1468,7 +1468,7 @@ function isIterateeCall(value, index, object) {
   if (!isObject(object)) {
     return false;
   }
-  var type = typeof index;
+  const type = typeof index;
   if (
     type == "number"
       ? isArrayLike(object) && isIndex(index, object.length)
@@ -1489,9 +1489,9 @@ function isIterateeCall(value, index, object) {
  * @returns {Array} Returns the array of property names.
  */
 function nativeKeysIn(object) {
-  var result = [];
+  const result = [];
   if (object != null) {
-    for (var key in Object(object)) {
+    for (const key in Object(object)) {
       result.push(key);
     }
   }
@@ -1521,16 +1521,16 @@ function objectToString(value) {
 function overRest(func, start, transform) {
   start = nativeMax(start === undefined ? func.length - 1 : start, 0);
   return function() {
-    var args = arguments,
-      index = -1,
-      length = nativeMax(args.length - start, 0),
-      array = Array(length);
+    const args = arguments;
+    let index = -1;
+    const length = nativeMax(args.length - start, 0);
+    const array = Array(length);
 
     while (++index < length) {
       array[index] = args[start + index];
     }
     index = -1;
-    var otherArgs = Array(start + 1);
+    const otherArgs = Array(start + 1);
     while (++index < start) {
       otherArgs[index] = args[index];
     }
@@ -1593,13 +1593,13 @@ function compact(array) {
  * // => [1]
  */
 function concat() {
-  var length = arguments.length;
+  const { length } = arguments;
   if (!length) {
     return [];
   }
-  var args = Array(length - 1),
-    array = arguments[0],
-    index = length;
+  const args = Array(length - 1);
+  const array = arguments[0];
+  let index = length;
 
   while (index--) {
     args[index - 1] = arguments[index];
@@ -1646,11 +1646,11 @@ function concat() {
  * // => 2
  */
 function findIndex(array, predicate, fromIndex) {
-  var length = array == null ? 0 : array.length;
+  const length = array == null ? 0 : array.length;
   if (!length) {
     return -1;
   }
-  var index = fromIndex == null ? 0 : toInteger(fromIndex);
+  let index = fromIndex == null ? 0 : toInteger(fromIndex);
   if (index < 0) {
     index = nativeMax(length + index, 0);
   }
@@ -1672,7 +1672,7 @@ function findIndex(array, predicate, fromIndex) {
  * // => [1, 2, [3, [4]], 5]
  */
 function flatten(array) {
-  var length = array == null ? 0 : array.length;
+  const length = array == null ? 0 : array.length;
   return length ? baseFlatten(array, 1) : [];
 }
 
@@ -1691,7 +1691,7 @@ function flatten(array) {
  * // => [1, 2, 3, 4, 5]
  */
 function flattenDeep(array) {
-  var length = array == null ? 0 : array.length;
+  const length = array == null ? 0 : array.length;
   return length ? baseFlatten(array, INFINITY) : [];
 }
 
@@ -1741,17 +1741,17 @@ function head(array) {
  * // => 3
  */
 function indexOf(array, value, fromIndex) {
-  var length = array == null ? 0 : array.length;
-  if (typeof fromIndex == "number") {
+  const length = array == null ? 0 : array.length;
+  if (typeof fromIndex === "number") {
     fromIndex = fromIndex < 0 ? nativeMax(length + fromIndex, 0) : fromIndex;
   } else {
     fromIndex = 0;
   }
-  var index = (fromIndex || 0) - 1,
-    isReflexive = value === value;
+  let index = (fromIndex || 0) - 1;
+  const isReflexive = value === value;
 
   while (++index < length) {
-    var other = array[index];
+    const other = array[index];
     if (isReflexive ? other === value : other !== other) {
       return index;
     }
@@ -1774,7 +1774,7 @@ function indexOf(array, value, fromIndex) {
  * // => 3
  */
 function last(array) {
-  var length = array == null ? 0 : array.length;
+  const length = array == null ? 0 : array.length;
   return length ? array[length - 1] : undefined;
 }
 
@@ -1795,7 +1795,7 @@ function last(array) {
  * @returns {Array} Returns the slice of `array`.
  */
 function slice(array, start, end) {
-  var length = array == null ? 0 : array.length;
+  const length = array == null ? 0 : array.length;
   start = start == null ? 0 : +start;
   end = end === undefined ? length : +end;
   return length ? baseSlice(array, start, end) : [];
@@ -1833,7 +1833,7 @@ function slice(array, start, end) {
  * // => 'pebbles is 1'
  */
 function chain(value) {
-  var result = lodash(value);
+  const result = lodash(value);
   result.__chain__ = true;
   return result;
 }
@@ -2296,13 +2296,13 @@ function some(collection, predicate, guard) {
  * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
  */
 function sortBy(collection, iteratee) {
-  var index = 0;
+  let index = 0;
   iteratee = baseIteratee(iteratee);
 
   return baseMap(
     baseMap(collection, function(value, key, collection) {
       return {
-        value: value,
+        value,
         index: index++,
         criteria: iteratee(value, key, collection)
       };
@@ -2336,8 +2336,8 @@ function sortBy(collection, iteratee) {
  * // => Allows adding up to 4 contacts to the list.
  */
 function before(n, func) {
-  var result;
-  if (typeof func != "function") {
+  let result;
+  if (typeof func !== "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   n = toInteger(n);
@@ -2387,7 +2387,7 @@ function before(n, func) {
  * bound('hi');
  * // => 'hi fred!'
  */
-var bind = baseRest(function(func, thisArg, partials) {
+const bind = baseRest(function(func, thisArg, partials) {
   return createPartial(
     func,
     WRAP_BIND_FLAG | WRAP_PARTIAL_FLAG,
@@ -2414,7 +2414,7 @@ var bind = baseRest(function(func, thisArg, partials) {
  * }, 'deferred');
  * // => Logs 'deferred' after one millisecond.
  */
-var defer = baseRest(function(func, args) {
+const defer = baseRest(function(func, args) {
   return baseDelay(func, 1, args);
 });
 
@@ -2437,7 +2437,7 @@ var defer = baseRest(function(func, args) {
  * }, 1000, 'later');
  * // => Logs 'later' after one second.
  */
-var delay = baseRest(function(func, wait, args) {
+const delay = baseRest(function(func, wait, args) {
   return baseDelay(func, toNumber(wait) || 0, args);
 });
 
@@ -2462,11 +2462,11 @@ var delay = baseRest(function(func, wait, args) {
  * // => [1, 3, 5]
  */
 function negate(predicate) {
-  if (typeof predicate != "function") {
+  if (typeof predicate !== "function") {
     throw new TypeError(FUNC_ERROR_TEXT);
   }
   return function() {
-    var args = arguments;
+    const args = arguments;
     return !predicate.apply(this, args);
   };
 }
@@ -2621,7 +2621,7 @@ var isArguments = baseIsArguments(
  * _.isArray(_.noop);
  * // => false
  */
-var isArray = Array.isArray;
+var { isArray } = Array;
 
 /**
  * Checks if `value` is array-like. A value is considered array-like if it's
@@ -2694,7 +2694,7 @@ function isBoolean(value) {
  * _.isDate('Mon April 23 2012');
  * // => false
  */
-var isDate = baseIsDate;
+const isDate = baseIsDate;
 
 /**
  * Checks if `value` is an empty object, collection, map, or set.
@@ -2801,7 +2801,7 @@ function isEqual(value, other) {
  * // => false
  */
 function isFinite(value) {
-  return typeof value == "number" && nativeIsFinite(value);
+  return typeof value === "number" && nativeIsFinite(value);
 }
 
 /**
@@ -2827,7 +2827,7 @@ function isFunction(value) {
   }
   // The use of `Object#toString` avoids issues with the `typeof` operator
   // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
+  const tag = baseGetTag(value);
   return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
 }
 
@@ -2859,7 +2859,7 @@ function isFunction(value) {
  */
 function isLength(value) {
   return (
-    typeof value == "number" &&
+    typeof value === "number" &&
     value > -1 &&
     value % 1 == 0 &&
     value <= MAX_SAFE_INTEGER
@@ -2892,7 +2892,7 @@ function isLength(value) {
  * // => false
  */
 function isObject(value) {
-  var type = typeof value;
+  const type = typeof value;
   return value != null && (type == "object" || type == "function");
 }
 
@@ -2921,7 +2921,7 @@ function isObject(value) {
  * // => false
  */
 function isObjectLike(value) {
-  return value != null && typeof value == "object";
+  return value != null && typeof value === "object";
 }
 
 /**
@@ -3008,7 +3008,7 @@ function isNull(value) {
  */
 function isNumber(value) {
   return (
-    typeof value == "number" ||
+    typeof value === "number" ||
     (isObjectLike(value) && baseGetTag(value) == numberTag)
   );
 }
@@ -3030,7 +3030,7 @@ function isNumber(value) {
  * _.isRegExp('/abc/');
  * // => false
  */
-var isRegExp = baseIsRegExp;
+const isRegExp = baseIsRegExp;
 
 /**
  * Checks if `value` is classified as a `String` primitive or object.
@@ -3051,7 +3051,7 @@ var isRegExp = baseIsRegExp;
  */
 function isString(value) {
   return (
-    typeof value == "string" ||
+    typeof value === "string" ||
     (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag)
   );
 }
@@ -3182,10 +3182,10 @@ var toNumber = Number;
  * // => '1,2,3'
  */
 function toString(value) {
-  if (typeof value == "string") {
+  if (typeof value === "string") {
     return value;
   }
-  return value == null ? "" : value + "";
+  return value == null ? "" : `${value}`;
 }
 
 /*------------------------------------------------------------------------*/
@@ -3222,7 +3222,7 @@ function toString(value) {
  * _.assign({ 'a': 0 }, new Foo, new Bar);
  * // => { 'a': 1, 'c': 3 }
  */
-var assign = createAssigner(function(object, source) {
+const assign = createAssigner(function(object, source) {
   copyObject(source, nativeKeys(source), object);
 });
 
@@ -3257,7 +3257,7 @@ var assign = createAssigner(function(object, source) {
  * _.assignIn({ 'a': 0 }, new Foo, new Bar);
  * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4 }
  */
-var assignIn = createAssigner(function(object, source) {
+const assignIn = createAssigner(function(object, source) {
   copyObject(source, nativeKeysIn(source), object);
 });
 
@@ -3296,7 +3296,7 @@ var assignIn = createAssigner(function(object, source) {
  * // => true
  */
 function create(prototype, properties) {
-  var result = baseCreate(prototype);
+  const result = baseCreate(prototype);
   return properties == null ? result : assign(result, properties);
 }
 
@@ -3321,26 +3321,26 @@ function create(prototype, properties) {
  * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
  * // => { 'a': 1, 'b': 2 }
  */
-var defaults = baseRest(function(object, sources) {
+const defaults = baseRest(function(object, sources) {
   object = Object(object);
 
-  var index = -1;
-  var length = sources.length;
-  var guard = length > 2 ? sources[2] : undefined;
+  let index = -1;
+  let { length } = sources;
+  const guard = length > 2 ? sources[2] : undefined;
 
   if (guard && isIterateeCall(sources[0], sources[1], guard)) {
     length = 1;
   }
 
   while (++index < length) {
-    var source = sources[index];
-    var props = keysIn(source);
-    var propsIndex = -1;
-    var propsLength = props.length;
+    const source = sources[index];
+    const props = keysIn(source);
+    let propsIndex = -1;
+    const propsLength = props.length;
 
     while (++propsIndex < propsLength) {
-      var key = props[propsIndex];
-      var value = object[key];
+      const key = props[propsIndex];
+      const value = object[key];
 
       if (
         value === undefined ||
@@ -3457,7 +3457,7 @@ var keysIn = nativeKeysIn;
  * _.pick(object, ['a', 'c']);
  * // => { 'a': 1, 'c': 3 }
  */
-var pick = flatRest(function(object, paths) {
+const pick = flatRest(function(object, paths) {
   return object == null ? {} : basePick(object, paths);
 });
 
@@ -3491,7 +3491,7 @@ var pick = flatRest(function(object, paths) {
  * // => 'default'
  */
 function result(object, path, defaultValue) {
-  var value = object == null ? undefined : object[path];
+  let value = object == null ? undefined : object[path];
   if (value === undefined) {
     value = defaultValue;
   }
@@ -3629,7 +3629,7 @@ function identity(value) {
  * _.filter(['abc', 'def'], /ef/);
  * // => ['def']
  */
-var iteratee = baseIteratee;
+const iteratee = baseIteratee;
 
 /**
  * Creates a function that performs a partial deep comparison between a given
@@ -3700,8 +3700,8 @@ function matches(source) {
  * // => ['e']
  */
 function mixin(object, source, options) {
-  var props = keys(source),
-    methodNames = baseFunctions(source, props);
+  const props = keys(source);
+  let methodNames = baseFunctions(source, props);
 
   if (
     options == null &&
@@ -3712,20 +3712,20 @@ function mixin(object, source, options) {
     object = this;
     methodNames = baseFunctions(source, keys(source));
   }
-  var chain = !(isObject(options) && "chain" in options) || !!options.chain,
-    isFunc = isFunction(object);
+  const chain = !(isObject(options) && "chain" in options) || !!options.chain;
+  const isFunc = isFunction(object);
 
   baseEach(methodNames, function(methodName) {
-    var func = source[methodName];
+    const func = source[methodName];
     object[methodName] = func;
     if (isFunc) {
       object.prototype[methodName] = function() {
-        var chainAll = this.__chain__;
+        const chainAll = this.__chain__;
         if (chain || chainAll) {
-          var result = object(this.__wrapped__),
-            actions = (result.__actions__ = copyArray(this.__actions__));
+          const result = object(this.__wrapped__);
+          const actions = (result.__actions__ = copyArray(this.__actions__));
 
-          actions.push({ func: func, args: arguments, thisArg: object });
+          actions.push({ func, args: arguments, thisArg: object });
           result.__chain__ = chainAll;
           return result;
         }
@@ -3791,7 +3791,7 @@ function noop() {
  * // => '105'
  */
 function uniqueId(prefix) {
-  var id = ++idCounter;
+  const id = ++idCounter;
   return toString(prefix) + id;
 }
 
@@ -3927,7 +3927,7 @@ lodash.first = head;
 mixin(
   lodash,
   (function() {
-    var source = {};
+    const source = {};
     baseForOwn(lodash, function(func, methodName) {
       if (!hasOwnProperty.call(lodash.prototype, methodName)) {
         source[methodName] = func;
@@ -3964,16 +3964,18 @@ baseEach(
     "unshift"
   ],
   function(methodName) {
-    var func = (/^(?:replace|split)$/.test(methodName)
-        ? String.prototype
-        : arrayProto)[methodName],
-      chainName = /^(?:push|sort|unshift)$/.test(methodName) ? "tap" : "thru",
-      retUnwrapped = /^(?:pop|join|replace|shift)$/.test(methodName);
+    const func = (/^(?:replace|split)$/.test(methodName)
+      ? String.prototype
+      : arrayProto)[methodName];
+    const chainName = /^(?:push|sort|unshift)$/.test(methodName)
+      ? "tap"
+      : "thru";
+    const retUnwrapped = /^(?:pop|join|replace|shift)$/.test(methodName);
 
     lodash.prototype[methodName] = function() {
-      var args = arguments;
+      const args = arguments;
       if (retUnwrapped && !this.__chain__) {
-        var value = this.value();
+        const value = this.value();
         return func.apply(isArray(value) ? value : [], args);
       }
       return this[chainName](function(value) {
@@ -3990,8 +3992,8 @@ lodash.prototype.toJSON = lodash.prototype.valueOf = lodash.prototype.value = wr
 
 // Some AMD build optimizers, like r.js, check for condition patterns like:
 if (
-  typeof define == "function" &&
-  typeof define.amd == "object" &&
+  typeof define === "function" &&
+  typeof define.amd === "object" &&
   define.amd
 ) {
   // Expose Lodash on the global object to prevent errors when Lodash is

@@ -3,8 +3,6 @@ const stats = require("./stats");
 
 const { getPool } = require("./ivmPool");
 
-
-
 async function transform(isolatevm, events) {
   const transformationPayload = {};
   transformationPayload.events = events;
@@ -83,7 +81,6 @@ async function userTransformHandlerV1(
     return transformedEvents;
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation
-
   }
   return events;
 }

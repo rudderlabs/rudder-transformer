@@ -2,7 +2,7 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
 const stats = require("./stats");
-const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
+const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
 const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -26,7 +26,7 @@ async function createIvm(code, libraryVersionIds) {
     });
   }
 
-  code = code + `
+  code += `
     export function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
       let transformType = transformationPayload.transformationType

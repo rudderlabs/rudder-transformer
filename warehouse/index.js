@@ -56,6 +56,15 @@ const rudderCreatedTables = [
   "accounts"
 ];
 
+const rudderReservedColums = {
+  track: { ...whDefaultColumnMappingRules, ...whTrackColumnMappingRules },
+  identify: { ...whDefaultColumnMappingRules, ...whUserColumnMappingRules },
+  page: { ...whDefaultColumnMappingRules, ...whPageColumnMappingRules },
+  screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
+  group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
+  alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules }
+};
+
 function excludeRudderCreatedTableNames(name) {
   if (rudderCreatedTables.includes(name.toLowerCase())) {
     return `_${name}`;
@@ -151,6 +160,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 
 function setDataFromInputAndComputeColumnTypes(
   utils,
+  eventType,
   output,
   input,
   columnTypes,
@@ -162,6 +172,7 @@ function setDataFromInputAndComputeColumnTypes(
     if (isObject(input[key])) {
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         output,
         input[key],
         columnTypes,
@@ -181,6 +192,13 @@ function setDataFromInputAndComputeColumnTypes(
       let safeKey = utils.transformColumnName(prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
+        // remove rudder reserved columns name if set by user
+        if (
+          rudderReservedColums[eventType] &&
+          rudderReservedColums[eventType][safeKey.toLowerCase()]
+        ) {
+          return;
+        }
         // eslint-disable-next-line no-param-reassign
         output[safeKey] = val;
         // eslint-disable-next-line no-param-reassign
@@ -421,6 +439,7 @@ function processWarehouseMessage(message, options) {
 
   const responses = [];
   const eventType = message.type.toLowerCase();
+
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
     case "track": {
@@ -430,6 +449,7 @@ function processWarehouseMessage(message, options) {
 
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         commonProps,
         message.context,
         commonColumnTypes,
@@ -490,6 +510,7 @@ function processWarehouseMessage(message, options) {
 
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         trackProps,
         message.properties,
         eventTableColumnTypes,
@@ -497,6 +518,7 @@ function processWarehouseMessage(message, options) {
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         trackProps,
         message.userProperties,
         eventTableColumnTypes,
@@ -537,6 +559,7 @@ function processWarehouseMessage(message, options) {
       const commonColumnTypes = {};
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         commonProps,
         message.userProperties,
         commonColumnTypes,
@@ -544,6 +567,7 @@ function processWarehouseMessage(message, options) {
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         commonProps,
         message.context ? message.context.traits : {},
         commonColumnTypes,
@@ -551,6 +575,7 @@ function processWarehouseMessage(message, options) {
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         commonProps,
         message.traits,
         commonColumnTypes,
@@ -561,6 +586,7 @@ function processWarehouseMessage(message, options) {
       // set context props
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         commonProps,
         message.context,
         commonColumnTypes,
@@ -665,6 +691,7 @@ function processWarehouseMessage(message, options) {
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.properties,
         columnTypes,
@@ -673,6 +700,7 @@ function processWarehouseMessage(message, options) {
       // set rudder properties after user set properties to prevent overwriting
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.context,
         columnTypes,
@@ -730,6 +758,7 @@ function processWarehouseMessage(message, options) {
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.traits,
         columnTypes,
@@ -737,6 +766,7 @@ function processWarehouseMessage(message, options) {
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.context,
         columnTypes,
@@ -782,6 +812,7 @@ function processWarehouseMessage(message, options) {
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.traits,
         columnTypes,
@@ -789,6 +820,7 @@ function processWarehouseMessage(message, options) {
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
+        eventType,
         event,
         message.context,
         columnTypes,

@@ -416,33 +416,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
       },
       "messageId": "24ecc509-ce3e-473c-8483-ba1ea2c195cb",
-      "properties": {
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "key1": {
-              "key11": "value1",
-              "key22": "value2"
-            },
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "currency78": "USD",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price23": 3,
-            "category": "Games",
-            "quantity": 2,
-            "currency78": "USD",
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
+      "traits": {
+        "groupId": "1234"
       },
       "anonymousId": "c6ff1462-b692-43d6-8f6a-659efedc99ea",
       "integrations": {

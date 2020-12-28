@@ -299,6 +299,29 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   );
 }
 
+// For group call we will add a user attribute with the groupId attribute
+// with the value as true
+//
+// Ex: If the groupId is 1234, we'll add a attribute to the user object with the
+// key `ab_rudder_group_1234` with the value `true`
+function processGroup(message, destination) {
+  const groupAttribute = {};
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
+    throw new Error("Invalid groupId");
+  }
+  groupAttribute[`ab_rudder_group_${groupId}`] = true;
+  return buildResponse(
+    message,
+    destination,
+    {
+      attributes: [groupAttribute],
+      partner: BRAZE_PARTNER_NAME
+    },
+    getTrackEndPoint(destination.Config.endPoint)
+  );
+}
+
 function process(event) {
   const respList = [];
   let response;
@@ -366,6 +389,10 @@ function process(event) {
       if (response) {
         respList.push(response);
       }
+      break;
+    case EventType.GROUP:
+      response = processGroup(message, destination);
+      respList.push(response);
       break;
     default:
       throw new Error("Message type is not supported");
@@ -543,7 +570,7 @@ function batch(destEvents) {
   }
 
   const ev = destEvents[index - 1];
-  const { message, metadata, destination } = ev;
+  const { message, destination } = ev;
   if (
     attributesBatch.length > 0 ||
     eventsBatch.length > 0 ||

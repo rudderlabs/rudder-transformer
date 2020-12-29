@@ -26,6 +26,10 @@
     "traits",
     "context.traits"
   ],
+  "groupId": [
+    "groupId",
+    "traits.groupId"
+  ],
   "groupTraits": [
     "traits",
     "context.traits"

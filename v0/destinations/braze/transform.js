@@ -299,6 +299,30 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   );
 }
 
+// For group call we will add a user attribute with the groupId attribute
+// with the value as true
+//
+// Ex: If the groupId is 1234, we'll add a attribute to the user object with the
+// key `ab_rudder_group_1234` with the value `true`
+function processGroup(message, destination) {
+  const groupAttribute = {};
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
+    throw new Error("Invalid groupId");
+  }
+  groupAttribute[`ab_rudder_group_${groupId}`] = true;
+  setExternalId(groupAttribute, message);
+  return buildResponse(
+    message,
+    destination,
+    {
+      attributes: [groupAttribute],
+      partner: BRAZE_PARTNER_NAME
+    },
+    getTrackEndPoint(destination.Config.endPoint)
+  );
+}
+
 function process(event) {
   const respList = [];
   let response;
@@ -367,12 +391,30 @@ function process(event) {
         respList.push(response);
       }
       break;
+    case EventType.GROUP:
+      response = processGroup(message, destination);
+      respList.push(response);
+      break;
     default:
       throw new Error("Message type is not supported");
   }
 
   return respList;
 }
+
+/*
+ *
+  input: [
+   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
+   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
+  ]
+  output: [
+    { batchedRequest: {}, jobs: [1, 3]},
+    { batchedRequest: {}, jobs: [2, 4]},
+  ]
+*/
 
 function formatBatchResponse(batchPayload, metadataList, destination) {
   const response = defaultBatchRequestConfig();
@@ -453,11 +495,6 @@ function batch(destEvents) {
             responseBodyJson.purchases = purchasesBatch;
           }
           batchResponse.body.JSON = responseBodyJson;
-          // batchResponse.body.JSON = {
-          //   attributes: attributesBatch,
-          //   events: eventsBatch,
-          //   purchases: purchasesBatch,
-          // };
           // modify the endpoint to track endpoint
           batchResponse.endpoint = trackEndpoint;
           respList.push(
@@ -517,12 +554,6 @@ function batch(destEvents) {
           responseBodyJson.purchases = purchasesBatch;
         }
         batchResponse.body.JSON = responseBodyJson;
-        // batchResponse.body.JSON = {
-        //   attributes: attributesBatch,
-        //   events: eventsBatch,
-        //   purchases: purchasesBatch,
-        //   partner: BRAZE_PARTNER_NAME
-        // };
         // modify the endpoint as message object will have identify endpoint
         batchResponse.endpoint = trackEndpoint;
         respList.push(
@@ -543,7 +574,7 @@ function batch(destEvents) {
   }
 
   const ev = destEvents[index - 1];
-  const { message, metadata, destination } = ev;
+  const { message, destination } = ev;
   if (
     attributesBatch.length > 0 ||
     eventsBatch.length > 0 ||
@@ -565,12 +596,6 @@ function batch(destEvents) {
       responseBodyJson.purchases = purchasesBatch;
     }
     batchResponse.body.JSON = responseBodyJson;
-    // batchResponse.body.JSON = {
-    //   attributes: attributesBatch,
-    //   events: eventsBatch,
-    //   purchases: purchasesBatch,
-    //   partner: BRAZE_PARTNER_NAME
-    // };
     // modify the endpoint to track endpoint
     batchResponse.endpoint = trackEndpoint;
     respList.push(
@@ -580,7 +605,6 @@ function batch(destEvents) {
 
   return respList;
 }
-
 module.exports = {
   process,
   batch

@@ -174,8 +174,19 @@ async function processSingleMessage(message, destination) {
   return response;
 }
 
+function filterMessage(message) {
+  const messageType = message.type.toLowerCase();
+  switch (messageType) {
+    case EventType.IDENTIFY:
+    case EventType.TRACK:
+      return message;
+    default:
+      throw new Error("Message type is not supported");
+  }
+}
+
 function process(event) {
-  return event.message;
+  return filterMessage(event.message);
 }
 
 const formatBatchResponse = (batchPayload, metadataList, destination) => {
@@ -205,11 +216,6 @@ const batch = async destEvents => {
         }
       } catch (error) {
         logger.error(error);
-        respList.push({
-          metadata,
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
-        });
       }
     }
   }

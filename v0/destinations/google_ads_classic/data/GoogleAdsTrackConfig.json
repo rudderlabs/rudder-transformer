@@ -1,48 +1,48 @@
 [
-    {
-        "destKey": "app_event_name",
-        "sourceKeys": "event",
-        "required": true
-    },
-    {
-        "destKey": "rdid",
-        "sourceKeys": "context.device.advertisingId",
-        "required": false
-    },
-    {
-        "destKey": "app_version",
-        "sourceKeys": "context.app.version",
-        "required": true
-    },
-    {
-        "destKey": "os_version",
-        "sourceKeys": "context.os.version",
-        "required": true
-    },
-    {
-        "destKey": "sdk_version",
-        "sourceKeys": "context.app.build",
-        "required": true
-    },
-    {
-        "destKey": "timestamp",
-        "sourceKeys": [
-            "timestamp",
-            "originalTimestamp"
-          ],
-        "required": true,
-        "metadata": {
-            "type": "secondTimestamp"
-          }
-    },
-    {
-        "destKey": "value",
-        "sourceKeys": "properties.revenue",
-        "required": false
-    },
-    {
-        "destKey": "currency_code",
-        "sourceKeys": "properties.currency",
-        "required": false
+  {
+    "destKey": "app_event_name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "rdid",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "app_version",
+    "sourceKeys": "context.app.version",
+    "required": true
+  },
+  {
+    "destKey": "os_version",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "sdk_version",
+    "sourceKeys": "context.app.build",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": [
+      "timestamp",
+      "originalTimestamp"
+    ],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
     }
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.revenue",
+    "required": false
+  },
+  {
+    "destKey": "currency_code",
+    "sourceKeys": "properties.currency",
+    "required": false
+  }
 ]

@@ -22,30 +22,21 @@ const { EventType } = require("../../../constants");
  *
  */
 const setEventType = message => {
-  const eventName = get(message, "event");
-  let eventType;
-  let eventValue;
-  Object.keys(mappedEventTypes).forEach(mappedEventType => {
-    if (mappedEventType === eventName) {
-      eventType = mappedEventType;
-      eventValue = mappedEventTypes[mappedEventType];
-    }
-  });
-  switch (eventName.toLowerCase()) {
-    case "order completed":
-      // Use in_app_purchase for purchases made through the native app store; use ecommerce_purchase for all other purchases.
-      if (
-        get(message, "properties.affiliation") === "App Store" ||
-        get(message, "properties.affiliation") === "Google Store"
-      ) {
-        return "in_app_purchase";
-      }
-      return "ecommerce_purchase";
-    case eventType:
-      return eventValue;
-    default:
-      return "custom";
+  const evName = get(message, "event").toLowerCase();
+  const mappedEvent = mappedEventTypes[evName];
+  if (mappedEvent) {
+    return mappedEvent;
   }
+  if (evName === "order completed") {
+    if (
+      get(message, "properties.affiliation") === "App Store" ||
+      get(message, "properties.affiliation") === "Google Store"
+    ) {
+      return "in_app_purchase";
+    }
+    return "ecommerce_purchase";
+  }
+  return "custom";
 };
 
 const responseBuilderSimple = (message, destination) => {

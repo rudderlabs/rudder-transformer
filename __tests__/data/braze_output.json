@@ -253,7 +253,8 @@
         "JSON": {
           "attributes": [
             {
-              "ab_rudder_group_1234": true
+              "ab_rudder_group_1234": true,
+              "external_id":"Randomuser2222"
             }
           ],
           "partner": "RudderStack"

@@ -44,10 +44,5 @@
         "destKey": "currency_code",
         "sourceKeys": "properties.currency",
         "required": false
-    },
-    {
-        "destKey": "gclid",
-        "sourceKeys": "properties",
-        "required": false
     }
 ]

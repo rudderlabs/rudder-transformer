@@ -1,9 +1,10 @@
 const get = require("get-value");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require("./config");
+const { trackConfig, baseEndpoint } = require("./config");
 const {
   constructPayload,
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  removeUndefinedValues
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -18,7 +19,7 @@ const { EventType } = require("../../../constants");
  */
 
 function setEventName(message) {
-  const defaultEventTypes = [
+  const reservedEventNames = [
     "first_open",
     "session_start",
     "in_app_purchase",
@@ -34,8 +35,8 @@ function setEventName(message) {
    * This field must not contain any of the values reserved for app_event_type.
    * If a reserved event name is used, the API will return an APP_EVENT_NAME_RESERVED_VALUE error.
    */
-  const isDefaultName = defaultEventTypes.indexOf(eventName) >= 0;
-  if (isDefaultName) {
+
+  if (reservedEventNames.indexOf(eventName) >= 0) {
     throw new Error(
       "Event name is a reserved event name in Google Ads. Aborting Message"
     );
@@ -79,9 +80,18 @@ function setEventType(message) {
   }
 }
 function responseBuilderSimple(message, category, destination) {
-  const { Config } = destination;
-  const { devToken, linkId, version, lat, fallbackIDFAZero } = Config;
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const {
+    devToken,
+    linkId,
+    version,
+    lat,
+    fallbackIDFAZero
+  } = destination.Config;
+  // if fall back to value is false and rdid is not present the message will not be accepted by google ads so it will be aborted by rudder.
+  if (!fallbackIDFAZero && !get(message, "context.device.advertisingId")) {
+    throw new Error("No advertisingId set. Aborting message");
+  }
+  const payload = constructPayload(message, category);
   if (payload) {
     payload.dev_token = devToken;
     payload.link_id = linkId;
@@ -90,13 +100,19 @@ function responseBuilderSimple(message, category, destination) {
     if (payload.app_event_type === "custom") {
       payload.app_event_name = setEventName(message);
     }
+    /**
+     * Limit-ad-tracking status for the device.
+     * 0: User has not chosen to limit ad tracking.
+     * 1: User has chosen to limit ad tracking.
+     */
     payload.lat = lat ? 1 : 0;
     /**
      * The type of identifier stored in the rdid field
      * For Android: advertisingid
      * For iOS: idfa
      */
-    if (get(message, "context.device.type") === "Android") {
+
+    if (get(message, "context.device.type").toLowerCase() === "android") {
       payload.id_type = "advertisingid";
     } else {
       payload.id_type = "idfa";
@@ -105,33 +121,35 @@ function responseBuilderSimple(message, category, destination) {
     if (fallbackIDFAZero && !payload.rdid) {
       payload.rdid = "00000000-0000-0000-0000-000000000000";
     }
-    // if fall back to value is false and rdid is not present the message will not be accepted by google ads so it will be aborted by rudder.
-    else if (!fallbackIDFAZero && !payload.rdid) {
-      throw new Error("No advertisingId set. Aborting message");
-    }
+
     const response = defaultRequestConfig(message);
-    response.endpoint = `${baseEndpoint}/${version}`;
+    response.endpoint = `${baseEndpoint}${version}`;
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = get(message, "properties");
+    response.body.JSON = removeUndefinedValues({
+      app_event_data: get(message, "properties")
+    });
     response.params = payload;
     /**
      * if the request body is empty (in cases where no rich event data is passed in the app_event_data payload),
      * Google ads server requires that we explicitly set the Content-Length: 0 header on your request.
      */
-    if (response.body.JSON) {
+    const commonHeader = {
+      "User-Agent": get(message, "context.userAgent"),
+      "X-Forwarded-For":
+        get(message, "context.ip") || get(message, "request_ip"),
+      "Content-Type": "application/json; charset=utf-8"
+    };
+    if (
+      Object.keys(response.body.JSON).length === 0 &&
+      response.body.JSON.constructor === Object
+    ) {
       response.headers = {
-        "User-Agent": get(message, "context.userAgent"),
-        "X-Forwarded-For":
-          get(message, "reques_ip") || get(message, "context.ip"),
-        "Content-Type": "application/json; charset=utf-8"
+        ...commonHeader,
+        "Content-Length": 0
       };
     } else {
       response.headers = {
-        "User-Agent": get(message, "context.userAgent"),
-        "X-Forwarded-For":
-          get(message, "reques_ip") || get(message, "context.ip"),
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": 0
+        ...commonHeader
       };
     }
     return response;
@@ -152,7 +170,7 @@ const processEvent = (message, destination) => {
       if (!get(message, "event")) {
         throw new Error("Track event without event name. Aborting message.");
       }
-      category = CONFIG_CATEGORIES.TRACK;
+      category = trackConfig;
       break;
     default:
       throw new Error("Message type not supported");

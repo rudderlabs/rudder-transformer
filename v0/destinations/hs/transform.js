@@ -132,15 +132,7 @@ async function processTrack(message, destination) {
   );
 }
 
-// function handleError(message) {
-//   throw new Error(message);
-// }
-
 async function processIdentify(message, destination) {
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (!traits || !traits.email) {
-    throw new Error("Identify without email is not supported.");
-  }
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
@@ -157,27 +149,32 @@ async function processIdentify(message, destination) {
 
 async function processSingleMessage(message, destination) {
   let response;
-  try {
-    switch (message.type) {
-      case EventType.TRACK:
-        response = await processTrack(message, destination);
-        break;
-      case EventType.IDENTIFY:
-        response = await processIdentify(message, destination);
-        break;
-      default:
-        throw new Error(`message type ${message.type} is not supported`);
-    }
-  } catch (e) {
-    throw new Error(e.message || "error occurred while processing payload.");
+  switch (message.type) {
+    case EventType.TRACK:
+      response = await processTrack(message, destination);
+      break;
+    case EventType.IDENTIFY:
+      response = await processIdentify(message, destination);
+      break;
+    default:
+      throw new Error(`message type ${message.type} is not supported`);
   }
   return response;
+}
+
+function validateIdentify(message) {
+  const email = getFieldValueFromMessage(message, "email");
+  if (!email) {
+    throw new Error("Identify without email is not supported.");
+  }
 }
 
 function filterMessage(message) {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
+      validateIdentify(message);
+      return message;
     case EventType.TRACK:
       return message;
     default:

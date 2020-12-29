@@ -1,15 +1,19 @@
-const _ = require("lodash");
-
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getFieldValueFromMessage,
+  isBlank
 } = require("../../util");
 
 const { endpoint } = require("./config");
 
-function isBlank(value) {
-  return _.isEmpty(_.toString(value));
+function normalizeMessage(message) {
+  return {
+    ...message,
+    type: message.type && message.type.toLowerCase(),
+    userId: getFieldValueFromMessage(message, "userIdOnly")
+  };
 }
 
 function buildResponse(message, destination) {
@@ -29,13 +33,11 @@ function buildResponse(message, destination) {
 }
 
 function processSingleMessage(message, destination) {
-  const messageType = message.type.toLowerCase();
-
   if (isBlank(message.userId)) {
     throw new Error("Missing required user id");
   }
 
-  switch (messageType) {
+  switch (message.type) {
     case EventType.IDENTIFY:
     case EventType.TRACK:
     case EventType.GROUP:
@@ -46,7 +48,10 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  return processSingleMessage(
+    normalizeMessage(event.message),
+    event.destination
+  );
 }
 
 exports.process = process;

@@ -35,6 +35,7 @@ const {
 const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
+const { compact } = require("lodash");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
@@ -92,8 +93,171 @@ function addMinIdlength() {
   return { min_id_length: 1 };
 }
 
-// Build response for Amplitude. In this case, endpoint will be different depending
-// on the event type being sent to Amplitude
+function responseBuilderSimpleForRevenue(
+  groupInfo,
+  rootElementName,
+  message,
+  evType,
+  mappingJson,
+  destination,
+  lengthEvent,
+  revenueTypeCalculation
+) {
+  const rawPayload = {};
+  const addOptions = "options";
+  const respList = [];
+  const response = defaultRequestConfig();
+  const groupResponse = defaultRequestConfig();
+
+  let groups;
+
+  let endpoint = ENDPOINT;
+
+  // 1. first populate the dest keys from the config files.
+  // Group config file is similar to Identify config file
+  // because we need to make an identify call too along with group entity update
+  // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
+  // Additionally, we will update the user_properties with groupName:groupValue
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    // check if custom processing is required on the payload sourceKey ==> destKey
+    if (typeof mappingJson[sourceKey] === "object") {
+      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+      if (isFunc) {
+        // get the destKey/outKey value from calling the util function
+        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
+      }
+    } else {
+      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    }
+  });
+
+  // 2. get campaign info (only present for JS sdk and http calls)
+  // const campaign = get(message, "context.campaign") || {};
+
+  set(rawPayload, "event_properties", message.properties);
+  rawPayload.event_type = evType;
+  if (
+    destination.Config.trackRevenuePerProduct &&
+    message.event === "Product Purchased"
+  ) {
+    if (message.properties.revenue)
+      rawPayload.revenue = message.properties.revenue;
+    if (message.properties.price) {
+      rawPayload.price = message.properties.price;
+    }
+    if (message.properties.quantity) {
+      rawPayload.quantity = message.properties.quantity;
+    }
+    if (revenueTypeCalculation > 0) {
+      rawPayload.revenue_type = "Purchased";
+    } else {
+      rawPayload.revenue_type = "Refunded";
+    }
+  }
+  if (destination.Config.trackRevenuePerProduct && lengthEvent === 1) {
+    if (message.properties.revenue)
+      rawPayload.revenue = message.properties.revenue;
+    if (message.properties.price) {
+      rawPayload.price = message.properties.price;
+    }
+    if (message.properties.quantity) {
+      rawPayload.quantity = message.properties.quantity;
+    }
+    if (message.properties.revenue > 0) {
+      rawPayload.revenue_type = "Purchased";
+    } else {
+      rawPayload.revenue_type = "Refunded";
+    }
+  }
+
+  if (
+    (destination.Config.trackRevenuePerProduct === false &&
+      destination.Config.trackProductsOnce === true &&
+      message.event !== "Product Purchased") ||
+    (destination.Config.trackRevenuePerProduct === false &&
+      message.event !== "Product Purchased")
+  ) {
+    if (message.properties.revenue)
+      rawPayload.revenue = message.properties.revenue;
+    if (message.properties.price) {
+      rawPayload.price = message.properties.price;
+    }
+    if (message.properties.quantity) {
+      rawPayload.quantity = message.properties.quantity;
+    }
+    if (message.properties.revenue > 0) {
+      rawPayload.revenue_type = "Purchased";
+    } else {
+      rawPayload.revenue_type = "Refunded";
+    }
+  }
+  groups = groupInfo && Object.assign(groupInfo);
+
+  // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
+  // refer (1.) for passing "groups" for Rudder group call
+  // https://developers.amplitude.com/docs/http-api-v2#schemaevent
+  set(rawPayload, "groups", groups);
+  let payload = removeUndefinedValues(rawPayload);
+
+  if (message.channel === "mobile") {
+    set(payload, "device_brand", message.context.device.manufacturer);
+  }
+
+  payload.time = new Date(
+    getFieldValueFromMessage(message, "timestamp")
+  ).getTime();
+
+  // send user_id only when present, for anonymous users not required
+  if (
+    message.userId &&
+    message.userId !== "" &&
+    message.userId !== "null" &&
+    message.userId !== null
+  ) {
+    payload.user_id = message.userId;
+  }
+  payload.session_id = getSessionId(payload);
+
+  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+  // for correct versionName
+  // ====================
+  // fixVersion(payload, message);
+
+  payload.ip = getParsedIP(message);
+  payload = removeUndefinedValues(payload);
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.userId = message.anonymousId;
+  response.body.JSON = {
+    api_key: destination.Config.apiKey,
+    [rootElementName]: [payload],
+    [addOptions]: addMinIdlength()
+  };
+  respList.push(response);
+
+  // https://developers.amplitude.com/docs/group-identify-api
+  // Refer (1.), Rudder group call updates group propertiees.
+  if (evType === EventType.GROUP && groupInfo) {
+    groupResponse.method = defaultPostRequestConfig.requestMethod;
+    groupResponse.endpoint = GROUP_ENDPOINT;
+    let groupPayload = Object.assign(groupInfo);
+    groupResponse.userId = message.anonymousId;
+    groupPayload = removeUndefinedValues(groupPayload);
+    groupResponse.body.FORM = {
+      api_key: destination.Config.apiKey,
+      identification: [JSON.stringify(groupPayload)]
+    };
+    respList.push(groupResponse);
+  }
+
+  // console.log("\n returning from messagebuilder");
+  return respList;
+}
+
 function responseBuilderSimple(
   groupInfo,
   rootElementName,
@@ -285,7 +449,58 @@ function responseBuilderSimple(
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
+function processSingleMessageForRevenue(
+  message,
+  destination,
+  lengthEvent,
+  revenueTypeCalculation
+) {
+  // console.log("\n inside processSingle message");
+  let payloadObjectName = "events";
+  let evType;
+  // It is expected that Rudder alias. identify group calls won't have this set
+  // To be used for track/page calls to associate the event to a group in AM
+  let groupInfo = get(message, "integrations.Amplitude.groups") || undefined;
+  let category = ConfigCategory.DEFAULT;
+
+  const messageType = message.type.toLowerCase();
+  switch (messageType) {
+    case EventType.TRACK:
+      evType = message.event;
+
+      if (
+        message.properties &&
+        message.properties.revenue &&
+        message.properties.revenue_type
+      ) {
+        // if properties has revenue and revenue_type fields
+        // consider the event as revenue event directly
+        category = ConfigCategory.REVENUE;
+        break;
+      }
+      break;
+    default:
+      logger.debug("could not determine type");
+      throw new Error("message type not supported");
+  }
+  // console.log(
+  //   "\n returning from processSingleMessage to responseBuilderSimpleForRevenue"
+  // );
+
+  return responseBuilderSimpleForRevenue(
+    groupInfo,
+    payloadObjectName,
+    message,
+    evType,
+    mappingConfig[category.name],
+    destination,
+    lengthEvent,
+    revenueTypeCalculation
+  );
+}
+
 function processSingleMessage(message, destination) {
+  console.log("\n inside processSingle message");
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -369,11 +584,43 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = message.event;
+
+      if (
+        message.properties &&
+        message.properties.revenue &&
+        message.properties.revenue_type
+      ) {
+        // if properties has revenue and revenue_type fields
+        // consider the event as revenue event directly
+        category = ConfigCategory.REVENUE;
+        break;
+      }
+
+      switch (evType) {
+        case Event.PROMOTION_CLICKED.name:
+        case Event.PROMOTION_VIEWED.name:
+        case Event.PRODUCT_CLICKED.name:
+        case Event.PRODUCT_VIEWED.name:
+        case Event.PRODUCT_ADDED.name:
+        case Event.PRODUCT_REMOVED.name:
+        case Event.PRODUCT_ADDED_TO_WISHLIST.name:
+        case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
+        case Event.PRODUCT_LIST_VIEWED.name:
+        case Event.PRODUCT_LIST_CLICKED.name:
+          category = nameToEventMap[evType].category;
+          break;
+        default:
+          category = ConfigCategory.DEFAULT;
+          break;
+      }
       break;
     default:
       logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
+  console.log(
+    "\n returning from processSingleMessage to responseBuilderSimpleForRevenue"
+  );
 
   return responseBuilderSimple(
     groupInfo,
@@ -385,130 +632,82 @@ function processSingleMessage(message, destination) {
   );
 }
 
-function trackRevenuePerProduct(message) {
+function simpleCallForTrackRevPerProduct(message) {
   const eventClone = JSON.parse(JSON.stringify(message));
   eventClone.event = message.event;
   // eslint-disable-next-line no-restricted-syntax
   if (message.properties) {
-    if (message.properties.revenue) {
-      delete eventClone.properties.revenue;
-    }
     if (message.properties.products) {
       delete eventClone.properties.products;
-    }
-    if (message.properties.price) {
-      delete eventClone.properties.price;
-    }
-    if (message.properties.quantity) {
-      delete eventClone.properties.quantity;
-    }
-    if (message.properties.revenue_type) {
-      delete eventClone.properties.revenue_type;
     }
   }
   return eventClone;
 }
 
-function populateProductPurchasedEvent(message, product) {
+function productPurchased(message, product) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
   eventClonePurchaseProduct.event = "Product Purchased";
   eventClonePurchaseProduct.properties = product;
   return eventClonePurchaseProduct;
 }
 
-function getRevenueEvent(message) {
-  const revEvent = JSON.parse(JSON.stringify(message));
-  // eslint-disable-next-line no-restricted-syntax
-
-  for (const key of Object.keys(message.properties)) {
-    if (key === "revenue" || key === "price" || key === "quantity") {
-      revEvent.properties.key = message.properties.key;
-    } else {
-      delete revEvent.properties[key];
-    }
-  }
-  return revEvent;
-}
-
-function trackRevenue(message, destination) {
+function TrackRevenue(message, destination) {
+  console.log("inside track revenue");
   const sendEvent = [];
   // if trackProductOnce is true
   if (destination.Config.trackProductsOnce) {
-    const prodOnce = JSON.parse(JSON.stringify(message));
-    delete prodOnce.properties.revenue;
-    delete prodOnce.properties.price;
-    delete prodOnce.properties.quantity;
-    if (
-      message.properties.products &&
-      message.properties.products.length >= 1
-    ) {
-      prodOnce.properties.products = message.properties.products;
-    } else {
-      delete prodOnce.properties.products;
+    const ProdOnce = JSON.parse(JSON.stringify(message));
+    if (message.properties.products) {
+      delete ProdOnce.properties.products;
     }
-    sendEvent.push(prodOnce);
+    sendEvent.push(ProdOnce);
     // if trackRevenuePerProduct is true
     if (destination.Config.trackRevenuePerProduct) {
       if (
         message.properties.products &&
         message.properties.products.length >= 1
       ) {
-        message.properties.products.forEach(product => {
-          const revPerProduct = getRevenueEvent(message);
-          revPerProduct.event = "Tracking Revenue";
-          revPerProduct.properties = product;
-          sendEvent.push(revPerProduct);
-        });
+        if (
+          message.properties.products &&
+          message.properties.products.length >= 1
+        ) {
+          message.properties.products.forEach(product => {
+            const eventClonePurchaseProduct = productPurchased(
+              message,
+              product
+            );
+            sendEvent.push(eventClonePurchaseProduct);
+          });
+        }
       }
     } else {
-      // if trackRevenuePerProduct is false
-      const revTrackForOnce = getRevenueEvent(message);
-      revTrackForOnce.event = "Tracking Revenue";
+      // if trackRevenuePerProduct is false -----
       if (
-        revTrackForOnce.properties.products &&
+        message.properties.products &&
         message.properties.products.length >= 1
       ) {
-        delete revTrackForOnce.properties.products;
+        message.properties.products.forEach(product => {
+          const eventClonePurchaseProduct = productPurchased(message, product);
+
+          sendEvent.push(eventClonePurchaseProduct);
+        });
       }
-      sendEvent.push(revTrackForOnce);
     }
   } else {
     // if trackProductOnce is false
-    const eventClone = trackRevenuePerProduct(message);
+    const eventClone = simpleCallForTrackRevPerProduct(message);
     sendEvent.push(eventClone);
     if (
       message.properties.products &&
       message.properties.products.length >= 1
     ) {
       message.properties.products.forEach(product => {
-        const eventClonePurchaseProduct = populateProductPurchasedEvent(
-          message,
-          product
-        );
+        const eventClonePurchaseProduct = productPurchased(message, product);
+
         sendEvent.push(eventClonePurchaseProduct);
       });
     }
-    if (destination.Config.trackRevenuePerProduct) {
-      // if trackRevenuePerProduct is true
-      if (
-        message.properties.products &&
-        message.properties.products.length > 0
-      ) {
-        message.properties.products.forEach(product => {
-          const revPerProduct = getRevenueEvent(message);
-          revPerProduct.event = "Tracking Revenue";
-          revPerProduct.properties = product;
-          sendEvent.push(revPerProduct);
-        });
-      }
-    } else {
-      // if trackRevenuePerProduct is false
-      const revEvent = getRevenueEvent(message);
-      revEvent.event = "Product Purchased";
-      sendEvent.push(revEvent);
-    }
   }
-
   return sendEvent;
 }
 
@@ -519,21 +718,47 @@ function process(event) {
   const toSendEvents = [];
   let tempResult;
   if (messageType === EventType.TRACK) {
+    // console.log("\n inside process track if block");
     if (message.properties && message.properties.revenue) {
-      tempResult = trackRevenue(message, destination);
+      tempResult = TrackRevenue(message, destination);
+      // console.log("\n came back to process");
       if (destination)
         tempResult.forEach(payload => {
+          // console.log("\n sending events in toSendEvents in process");
           toSendEvents.push(payload);
         });
     } else {
       toSendEvents.push(message);
+      // console.log("\n inside track if, sending event for no destination");
     }
   } else {
+    // when it is  not track
+    // console.log("\n sending event when not track but others");
     toSendEvents.push(message);
   }
-  toSendEvents.forEach(sendEvent => {
-    respList.push(...processSingleMessage(sendEvent, destination));
-  });
+  if (message.properties && message.properties.revenue) {
+    toSendEvents.forEach(sendEvent => {
+      // console.log(
+      //   "\n sending event to processSingleMessage while revenue is there"
+      // );
+      respList.push(
+        ...processSingleMessageForRevenue(
+          sendEvent,
+          destination,
+          toSendEvents.length,
+          message.properties.revenue
+        )
+      );
+    });
+  } else {
+    console.log(
+     "\n sending event to processSingleMessage while revenue is NOT there"
+    );
+    toSendEvents.forEach(sendEvent => {
+      respList.push(...processSingleMessage(sendEvent, destination));
+    });
+  }
+  // console.log("\n came back to process from processSingleMessage");
   return respList;
 }
 

@@ -254,7 +254,6 @@ function responseBuilderSimpleForRevenue(
     respList.push(groupResponse);
   }
 
-  // console.log("\n returning from messagebuilder");
   return respList;
 }
 
@@ -455,7 +454,6 @@ function processSingleMessageForRevenue(
   lengthEvent,
   revenueTypeCalculation
 ) {
-  // console.log("\n inside processSingle message");
   let payloadObjectName = "events";
   let evType;
   // It is expected that Rudder alias. identify group calls won't have this set
@@ -483,9 +481,6 @@ function processSingleMessageForRevenue(
       logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
-  // console.log(
-  //   "\n returning from processSingleMessage to responseBuilderSimpleForRevenue"
-  // );
 
   return responseBuilderSimpleForRevenue(
     groupInfo,
@@ -500,7 +495,6 @@ function processSingleMessageForRevenue(
 }
 
 function processSingleMessage(message, destination) {
-  console.log("\n inside processSingle message");
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -618,9 +612,6 @@ function processSingleMessage(message, destination) {
       logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
-  console.log(
-    "\n returning from processSingleMessage to responseBuilderSimpleForRevenue"
-  );
 
   return responseBuilderSimple(
     groupInfo,
@@ -652,7 +643,6 @@ function productPurchased(message, product) {
 }
 
 function TrackRevenue(message, destination) {
-  console.log("inside track revenue");
   const sendEvent = [];
   // if trackProductOnce is true
   if (destination.Config.trackProductsOnce) {
@@ -718,29 +708,21 @@ function process(event) {
   const toSendEvents = [];
   let tempResult;
   if (messageType === EventType.TRACK) {
-    // console.log("\n inside process track if block");
     if (message.properties && message.properties.revenue) {
       tempResult = TrackRevenue(message, destination);
-      // console.log("\n came back to process");
       if (destination)
         tempResult.forEach(payload => {
-          // console.log("\n sending events in toSendEvents in process");
           toSendEvents.push(payload);
         });
     } else {
       toSendEvents.push(message);
-      // console.log("\n inside track if, sending event for no destination");
     }
   } else {
     // when it is  not track
-    // console.log("\n sending event when not track but others");
     toSendEvents.push(message);
   }
   if (message.properties && message.properties.revenue) {
     toSendEvents.forEach(sendEvent => {
-      // console.log(
-      //   "\n sending event to processSingleMessage while revenue is there"
-      // );
       respList.push(
         ...processSingleMessageForRevenue(
           sendEvent,
@@ -751,14 +733,10 @@ function process(event) {
       );
     });
   } else {
-    console.log(
-     "\n sending event to processSingleMessage while revenue is NOT there"
-    );
     toSendEvents.forEach(sendEvent => {
       respList.push(...processSingleMessage(sendEvent, destination));
     });
   }
-  // console.log("\n came back to process from processSingleMessage");
   return respList;
 }
 

@@ -208,10 +208,8 @@ function responseBuilderSimple(
           rawPayload.quantity = message.properties.quantity;
         }
         if (revenueTypeCalculation > 0) {
-          console.log("inside purchased", revenueTypeCalculation);
           rawPayload.revenue_type = "Purchased";
         } else {
-          console.log("inside refunded", revenueTypeCalculation);
           rawPayload.revenue_type = "Refunded";
         }
       }
@@ -259,7 +257,6 @@ function responseBuilderSimple(
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
   set(rawPayload, "groups", groups);
   let payload = removeUndefinedValues(rawPayload);
-  // console.log(payload);
   let unmapUserId;
   switch (evType) {
     case EventType.ALIAS:
@@ -349,7 +346,6 @@ function processSingleMessage(
   lengthEvent,
   revenueTypeCalculation
 ) {
-  console.log(revenueTypeCalculation);
   let payloadObjectName = "events";
   let evType;
   let groupTraits;

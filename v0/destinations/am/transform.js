@@ -93,7 +93,7 @@ function addMinIdlength() {
   return { min_id_length: 1 };
 }
 
-function responseBuilderSimpleForRevenue(
+function responseBuilderSimple(
   groupInfo,
   rootElementName,
   message,
@@ -102,168 +102,6 @@ function responseBuilderSimpleForRevenue(
   destination,
   lengthEvent,
   revenueTypeCalculation
-) {
-  const rawPayload = {};
-  const addOptions = "options";
-  const respList = [];
-  const response = defaultRequestConfig();
-  const groupResponse = defaultRequestConfig();
-
-  let groups;
-
-  let endpoint = ENDPOINT;
-
-  // 1. first populate the dest keys from the config files.
-  // Group config file is similar to Identify config file
-  // because we need to make an identify call too along with group entity update
-  // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
-  // Additionally, we will update the user_properties with groupName:groupValue
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    // check if custom processing is required on the payload sourceKey ==> destKey
-    if (typeof mappingJson[sourceKey] === "object") {
-      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
-      if (isFunc) {
-        // get the destKey/outKey value from calling the util function
-        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
-      }
-    } else {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-    }
-  });
-
-  // 2. get campaign info (only present for JS sdk and http calls)
-  // const campaign = get(message, "context.campaign") || {};
-
-  set(rawPayload, "event_properties", message.properties);
-  rawPayload.event_type = evType;
-  if (
-    destination.Config.trackRevenuePerProduct &&
-    message.event === "Product Purchased"
-  ) {
-    if (message.properties.revenue)
-      rawPayload.revenue = message.properties.revenue;
-    if (message.properties.price) {
-      rawPayload.price = message.properties.price;
-    }
-    if (message.properties.quantity) {
-      rawPayload.quantity = message.properties.quantity;
-    }
-    if (revenueTypeCalculation > 0) {
-      rawPayload.revenue_type = "Purchased";
-    } else {
-      rawPayload.revenue_type = "Refunded";
-    }
-  }
-  if (destination.Config.trackRevenuePerProduct && lengthEvent === 1) {
-    if (message.properties.revenue)
-      rawPayload.revenue = message.properties.revenue;
-    if (message.properties.price) {
-      rawPayload.price = message.properties.price;
-    }
-    if (message.properties.quantity) {
-      rawPayload.quantity = message.properties.quantity;
-    }
-    if (message.properties.revenue > 0) {
-      rawPayload.revenue_type = "Purchased";
-    } else {
-      rawPayload.revenue_type = "Refunded";
-    }
-  }
-
-  if (
-    (destination.Config.trackRevenuePerProduct === false &&
-      destination.Config.trackProductsOnce === true &&
-      message.event !== "Product Purchased") ||
-    (destination.Config.trackRevenuePerProduct === false &&
-      message.event !== "Product Purchased")
-  ) {
-    if (message.properties.revenue)
-      rawPayload.revenue = message.properties.revenue;
-    if (message.properties.price) {
-      rawPayload.price = message.properties.price;
-    }
-    if (message.properties.quantity) {
-      rawPayload.quantity = message.properties.quantity;
-    }
-    if (message.properties.revenue > 0) {
-      rawPayload.revenue_type = "Purchased";
-    } else {
-      rawPayload.revenue_type = "Refunded";
-    }
-  }
-  groups = groupInfo && Object.assign(groupInfo);
-
-  // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
-  // refer (1.) for passing "groups" for Rudder group call
-  // https://developers.amplitude.com/docs/http-api-v2#schemaevent
-  set(rawPayload, "groups", groups);
-  let payload = removeUndefinedValues(rawPayload);
-
-  if (message.channel === "mobile") {
-    set(payload, "device_brand", message.context.device.manufacturer);
-  }
-
-  payload.time = new Date(
-    getFieldValueFromMessage(message, "timestamp")
-  ).getTime();
-
-  // send user_id only when present, for anonymous users not required
-  if (
-    message.userId &&
-    message.userId !== "" &&
-    message.userId !== "null" &&
-    message.userId !== null
-  ) {
-    payload.user_id = message.userId;
-  }
-  payload.session_id = getSessionId(payload);
-
-  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
-  // for correct versionName
-  // ====================
-  // fixVersion(payload, message);
-
-  payload.ip = getParsedIP(message);
-  payload = removeUndefinedValues(payload);
-  response.endpoint = endpoint;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.userId = message.anonymousId;
-  response.body.JSON = {
-    api_key: destination.Config.apiKey,
-    [rootElementName]: [payload],
-    [addOptions]: addMinIdlength()
-  };
-  respList.push(response);
-
-  // https://developers.amplitude.com/docs/group-identify-api
-  // Refer (1.), Rudder group call updates group propertiees.
-  if (evType === EventType.GROUP && groupInfo) {
-    groupResponse.method = defaultPostRequestConfig.requestMethod;
-    groupResponse.endpoint = GROUP_ENDPOINT;
-    let groupPayload = Object.assign(groupInfo);
-    groupResponse.userId = message.anonymousId;
-    groupPayload = removeUndefinedValues(groupPayload);
-    groupResponse.body.FORM = {
-      api_key: destination.Config.apiKey,
-      identification: [JSON.stringify(groupPayload)]
-    };
-    respList.push(groupResponse);
-  }
-
-  return respList;
-}
-
-function responseBuilderSimple(
-  groupInfo,
-  rootElementName,
-  message,
-  evType,
-  mappingJson,
-  destination
 ) {
   const rawPayload = {};
   const addOptions = "options";
@@ -357,6 +195,63 @@ function responseBuilderSimple(
     default:
       set(rawPayload, "event_properties", message.properties);
       rawPayload.event_type = evType;
+      if (
+        destination.Config.trackRevenuePerProduct &&
+        message.event === "Product Purchased"
+      ) {
+        if (message.properties.revenue)
+          rawPayload.revenue = message.properties.revenue;
+        if (message.properties.price) {
+          rawPayload.price = message.properties.price;
+        }
+        if (message.properties.quantity) {
+          rawPayload.quantity = message.properties.quantity;
+        }
+        if (revenueTypeCalculation > 0) {
+          console.log("inside purchased", revenueTypeCalculation);
+          rawPayload.revenue_type = "Purchased";
+        } else {
+          console.log("inside refunded", revenueTypeCalculation);
+          rawPayload.revenue_type = "Refunded";
+        }
+      }
+      if (destination.Config.trackRevenuePerProduct && lengthEvent === 1) {
+        if (message.properties.revenue)
+          rawPayload.revenue = message.properties.revenue;
+        if (message.properties.price) {
+          rawPayload.price = message.properties.price;
+        }
+        if (message.properties.quantity) {
+          rawPayload.quantity = message.properties.quantity;
+        }
+        if (message.properties.revenue > 0) {
+          rawPayload.revenue_type = "Purchased";
+        } else {
+          rawPayload.revenue_type = "Refunded";
+        }
+      }
+
+      if (
+        (destination.Config.trackRevenuePerProduct === false &&
+          destination.Config.trackProductsOnce === true &&
+          message.event !== "Product Purchased") ||
+        (destination.Config.trackRevenuePerProduct === false &&
+          message.event !== "Product Purchased")
+      ) {
+        if (message.properties.revenue)
+          rawPayload.revenue = message.properties.revenue;
+        if (message.properties.price) {
+          rawPayload.price = message.properties.price;
+        }
+        if (message.properties.quantity) {
+          rawPayload.quantity = message.properties.quantity;
+        }
+        if (message.properties.revenue > 0) {
+          rawPayload.revenue_type = "Purchased";
+        } else {
+          rawPayload.revenue_type = "Refunded";
+        }
+      }
       groups = groupInfo && Object.assign(groupInfo);
   }
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
@@ -364,7 +259,7 @@ function responseBuilderSimple(
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
   set(rawPayload, "groups", groups);
   let payload = removeUndefinedValues(rawPayload);
-
+  // console.log(payload);
   let unmapUserId;
   switch (evType) {
     case EventType.ALIAS:
@@ -448,53 +343,13 @@ function responseBuilderSimple(
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessageForRevenue(
+function processSingleMessage(
   message,
   destination,
   lengthEvent,
   revenueTypeCalculation
 ) {
-  let payloadObjectName = "events";
-  let evType;
-  // It is expected that Rudder alias. identify group calls won't have this set
-  // To be used for track/page calls to associate the event to a group in AM
-  let groupInfo = get(message, "integrations.Amplitude.groups") || undefined;
-  let category = ConfigCategory.DEFAULT;
-
-  const messageType = message.type.toLowerCase();
-  switch (messageType) {
-    case EventType.TRACK:
-      evType = message.event;
-
-      if (
-        message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
-      ) {
-        // if properties has revenue and revenue_type fields
-        // consider the event as revenue event directly
-        category = ConfigCategory.REVENUE;
-        break;
-      }
-      break;
-    default:
-      logger.debug("could not determine type");
-      throw new Error("message type not supported");
-  }
-
-  return responseBuilderSimpleForRevenue(
-    groupInfo,
-    payloadObjectName,
-    message,
-    evType,
-    mappingConfig[category.name],
-    destination,
-    lengthEvent,
-    revenueTypeCalculation
-  );
-}
-
-function processSingleMessage(message, destination) {
+  console.log(revenueTypeCalculation);
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -612,14 +467,15 @@ function processSingleMessage(message, destination) {
       logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
-
   return responseBuilderSimple(
     groupInfo,
     payloadObjectName,
     message,
     evType,
     mappingConfig[category.name],
-    destination
+    destination,
+    lengthEvent,
+    revenueTypeCalculation
   );
 }
 
@@ -718,13 +574,12 @@ function process(event) {
       toSendEvents.push(message);
     }
   } else {
-    // when it is  not track
     toSendEvents.push(message);
   }
   if (message.properties && message.properties.revenue) {
     toSendEvents.forEach(sendEvent => {
       respList.push(
-        ...processSingleMessageForRevenue(
+        ...processSingleMessage(
           sendEvent,
           destination,
           toSendEvents.length,
@@ -734,7 +589,9 @@ function process(event) {
     });
   } else {
     toSendEvents.forEach(sendEvent => {
-      respList.push(...processSingleMessage(sendEvent, destination));
+      respList.push(
+        ...processSingleMessage(sendEvent, destination, toSendEvents.length)
+      );
     });
   }
   return respList;
@@ -869,11 +726,11 @@ function batch(destEvents) {
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
-        batchEventResponse.destination = destinationObject;
-        respList.push({ ...batchEventResponse });
-        batchEventResponse = defaultBatchRequestConfig();
-        batchEventResponse.destination = destinationObject;
-        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        // batchEventResponse.destination = destinationObject;
+        // respList.push({ ...batchEventResponse });
+        // batchEventResponse = defaultBatchRequestConfig();
+        // batchEventResponse.destination = destinationObject;
+        // isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
       }
     }
   });

@@ -145,26 +145,21 @@ function process(event) {
         destination,
         mappingConfig[category.name]
       );
-      respList.push(response);
       break;
     case EventType.PAGE:
       response = processPage(message, destination, mappingConfig[category.name]);
-      respList.push(response);
       break;
     case EventType.IDENTIFY:
       response = processIdentify(
         message,
         destination
       );
-      if (response) {
-        respList.push(response);
-      }
       break;
     default:
       throw new Error("Message type is not supported");
   }
 
-  return respList;
+  return response;
 }
 
 module.exports = {

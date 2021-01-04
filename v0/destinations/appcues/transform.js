@@ -1,5 +1,6 @@
 const get = require("get-value");
 
+
 const {
   EventType
 } = require("../../../constants");
@@ -14,11 +15,16 @@ const {
   getEndpoint,
 } = require("./config");
 
-function buildResponse(message, identifyPayload, endpoint) {
+const {
+  utcTimeToEpoch,
+  removeEmptyUndefinedandNullValues
+} = require("./utils");
+
+function buildResponse(message, payload, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(identifyPayload);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   return {
     ...response,
     headers: {
@@ -36,7 +42,7 @@ function getIdentifyPayload(message) {
   if (traits && Object.keys(traits).length > 0) {
     payload.profile_update = traits;
   }
-
+  return payload;
 }
 
 function processIdentify(message, destination) {
@@ -47,23 +53,78 @@ function processIdentify(message, destination) {
   );
 }
 
-function processTrackEvent(message, destination, mappingJson) {
-  const requestJson = {};
-
+function getTrackPayload(message, mappingJson) {
+  let eventJson = {};
+  
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(message, mappingJson[destKey]);
     if (value) {
-      requestJson[destKey] = value;
+      eventJson[destKey] = value;
     }
   });
+  return eventJson;
+}
+
+function processTrackEvent(message, destination, mappingJson) {
+  let requestJson = {};
+  if (message.messageId) {
+    requestJson.request_id = message.messageId;
+  }
+
+  let eventJson = getTrackPayload(message, mappingJson);
+  eventJson.timestamp = utcTimeToEpoch(eventJson.timestamp);
+  requestJson.events = [eventJson];
 
   return buildResponse(
     message,
-    destination,
     requestJson,
-    getEndPoint(destination.Config.accountId, message.userId)
+    getEndpoint(destination.Config.accountId, message.userId)
   );
+
+}
+
+function getProfilePayload(message) {
+  let profileJson = {};
+  const category = ConfigCategory.PROFILE;
+  const mappingJson = mappingConfig[category.name];
+  Object.keys(mappingJson).forEach(destKey => {
+    let value = get(message, mappingJson[destKey]);
+    if (value) {
+      profileJson[destKey] = value;
+    }
+  });
+  return profileJson;
+}
+
+function processPage(message, destination, mappingJson) {
+  
+  let requestJson = {};
+  if (message.messageId) {
+    requestJson.request_id = message.messageId;
+  }
+
+  // generating profile part of the payload
+  let profileJson = getProfilePayload(message);
+  profileJson._appcuesId = destination.Config.accountId;
+  requestJson.profile_update = profileJson;
+  
+  // generating event part of the payload
+  let eventJson = getTrackPayload(message, mappingJson);
+  eventJson.timestamp = utcTimeToEpoch(eventJson.timestamp);
+  eventJson.name = "Viewed a Page";
+  eventJson.attributes._identity = {};
+  eventJson.attributes._identity.userId = message.userId;
+  eventJson.attributes = removeEmptyUndefinedandNullValues(eventJson.attributes);
+  eventJson.context = {};
+  eventJson.context.url = message.context.page.url;
+  requestJson.events = [eventJson];
+
+  return buildResponse(
+    message, 
+    requestJson, 
+    getEndpoint(destination.Config.accountId, message.userId)
+    );
 }
 
 function process(event) {
@@ -80,7 +141,6 @@ function process(event) {
   switch (messageType) {
     case EventType.TRACK:
       response = processTrackEvent(
-        messageType,
         message,
         destination,
         mappingConfig[category.name]
@@ -88,7 +148,8 @@ function process(event) {
       respList.push(response);
       break;
     case EventType.PAGE:
-      // need to implement page
+      response = processPage(message, destination, mappingConfig[category.name]);
+      respList.push(response);
       break;
     case EventType.IDENTIFY:
       response = processIdentify(

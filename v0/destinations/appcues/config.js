@@ -5,6 +5,9 @@ const {
 const ConfigCategory = {
   TRACK: {
     name: "AppcuesTrackConfig"
+  },
+  PROFILE: {
+    name: "AppcuesPageProfile"
   }
 };
 

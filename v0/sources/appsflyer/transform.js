@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const Message = require("../message");
 
 const { removeUndefinedAndNullValues } = require("../../util");
@@ -12,14 +11,14 @@ function processEvent(event) {
 
     message.setEventType(messageType);
 
-    //const eventName = eventNameMap[eventType] || eventType;
     message.setEventName(eventName);
 
     if (event.event_time) {
       message.setProperty("originalTimestamp", event.event_time);
+      message.setProperty("timestamp", event.event_time);
     }
 
-    const properties = {...event};
+    const properties = { ...event };
     message.setProperty("properties", properties);
 
     if (event.customer_user_id) {
@@ -31,33 +30,20 @@ function processEvent(event) {
     }
     return null;
   }
-  throw new Error("Unknwon event type from Auth0");
+  throw new Error("Unknwon event type from Appsflyer");
 }
 
 function process(event) {
-  //console.log(JSON.stringify(event));
-  /* events.forEach(event => {
-    try {
-      const resp = processEvent(event);
-      if (resp) {
-        responses.push(removeUndefinedAndNullValues(resp));
-      }
-    } catch (error) {
-      // TODO: figure out a way to handle partial failures within batch
-      // responses.push({
-      //   statusCode: 400,
-      //   error: error.message || "Unknwon error"
-      // });
-    }
-  });
-  if (responses.length === 0) {
-    throw new Error("All requests in the batch failed");
-  } else {
-    return responses;
-  } */
-  const response = processEvent(event);
-  const returnValue = removeUndefinedAndNullValues(response);
-  console.log(JSON.stringify(returnValue));
+  let returnValue = {};
+  try {
+    const response = processEvent(event);
+    returnValue = removeUndefinedAndNullValues(response);
+  } catch (error) {
+    returnValue = {
+      statusCode: 400,
+      error: error.message || "Unknwon error"
+    };
+  }
   return returnValue;
 }
 

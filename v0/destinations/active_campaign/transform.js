@@ -1,5 +1,6 @@
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const get = require("get-value");
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -8,14 +9,17 @@ const {
 } = require("../../util");
 
 const responseBuilderSimple = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = {};
+  let contact = constructPayload(message, MAPPING_CONFIG[category.name]);
+  payload.contact = contact;
   if (payload) {
     const responseBody = { ...payload, apiKey: destination.Config.apiKey };
     const response = defaultRequestConfig();
-    response.endpoint = category.endPoint;
+    response.endpoint = String(destination.Config.apiUrl).concat(String(category.endPoint));
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Api-Token": destination.Config.apiKey
     };
     response.userId = getFieldValueFromMessage(message, "userId");
     response.body.JSON = responseBody;

@@ -3,7 +3,7 @@ const { getMappingConfig } = require("../../util");
 const BASE_ENDPOINT = "https://api.indicative.com/service";
 
 const CONFIG_CATEGORIES = {
-  IDENTIFY: { name: "ACIdentify" },
+  IDENTIFY: { name: "ACIdentify" ,endPoint:"/api/3/contacts"},
   PAGE: { name: "ACPage" },
   SCREEN: { name: "ACScreen" },
   TRACK: { name: "ACTrack" }

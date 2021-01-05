@@ -477,18 +477,6 @@ function processSingleMessage(
   );
 }
 
-function trackRevPerProduct(message) {
-  const eventClone = JSON.parse(JSON.stringify(message));
-  eventClone.event = message.event;
-  // eslint-disable-next-line no-restricted-syntax
-  if (message.properties) {
-    if (message.properties.products) {
-      delete eventClone.properties.products;
-    }
-  }
-  return eventClone;
-}
-
 function createProductPurchasedEvent(message, product) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
   eventClonePurchaseProduct.event = "Product Purchased";
@@ -497,74 +485,7 @@ function createProductPurchasedEvent(message, product) {
   return eventClonePurchaseProduct;
 }
 
-// function trackRevenue(message, destination) {
-//   const sendEvent = [];
-//   // if trackProductOnce is true
-//   if (destination.Config.trackProductsOnce) {
-//     const ProdOnce = JSON.parse(JSON.stringify(message));
-//     if (message.properties.products) {
-//       // As the very first event should not contain product array
-//       delete ProdOnce.properties.products;
-//     }
-//     sendEvent.push(ProdOnce);
-//     // if trackRevenuePerProduct is true
-//     if (destination.Config.trackRevenuePerProduct) {
-//       if (
-//         message.properties.products &&
-//         Array.isArray(message.properties.products) &&
-//         message.properties.products.length >= 1
-//       ) {
-//         // without existence of any product no product purchased event should be called
-//         message.properties.products.forEach(product => {
-//           const eventClonePurchaseProduct = createProductPurchasedEvent(
-//             message,
-//             product
-//           );
-//           sendEvent.push(eventClonePurchaseProduct);
-//         });
-//       }
-//     } else {
-//       // if trackRevenuePerProduct is false -----
-//       if (
-//         message.properties.products &&
-//         Array.isArray(message.properties.products) &&
-//         message.properties.products.length >= 1
-//       ) {
-//         message.properties.products.forEach(product => {
-//           // creating product purchased event for each product
-//           const eventClonePurchaseProduct = createProductPurchasedEvent(
-//             message,
-//             product
-//           );
-
-//           sendEvent.push(eventClonePurchaseProduct);
-//         });
-//       }
-//     }
-//   } else {
-//     // if trackProductOnce is false
-//     const eventClone = trackRevPerProduct(message);
-//     sendEvent.push(eventClone);
-//     if (
-//       message.properties.products &&
-//       Array.isArray(message.properties.products) &&
-//       message.properties.products.length >= 1
-//     ) {
-//       message.properties.products.forEach(product => {
-//         // creating product purchased event for each product
-//         const eventClonePurchaseProduct = createProductPurchasedEvent(
-//           message,
-//           product
-//         );
-
-//         sendEvent.push(eventClonePurchaseProduct);
-//       });
-//     }
-//   }
-//   return sendEvent;
-// }
-
-function trackRevenue(message, destination) {
+function trackRevenue(message) {
   const sendEvent = [];
   const ProdOnce = JSON.parse(JSON.stringify(message));
   if (message.properties.products) {
@@ -597,7 +518,7 @@ function process(event) {
   let setOfPayloads;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      setOfPayloads = trackRevenue(message, destination);
+      setOfPayloads = trackRevenue(message);
       setOfPayloads.forEach(payload => {
         toSendEvents.push(payload);
       });

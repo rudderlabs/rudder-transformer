@@ -128,7 +128,7 @@ async function routerHandleDest(ctx) {
         } catch (error) {
           logger.error(error);
           respList.push({
-            metadata: [input.metadata],
+            metadata: [inputs.metadata],
             statusCode: 400,
             error: error.message || "Error occurred while processing payload."
           });

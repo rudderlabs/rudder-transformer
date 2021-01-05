@@ -99,6 +99,9 @@ function createRevenuePayload(
   revenueTypeCalculation
 ) {
   if (destination.Config.trackRevenuePerProduct) {
+    // In this case per product revenue is calculated from each product purchased event
+    // also when there is no product array the revenue will be calculated from the very first event only
+    // AM calculates revenue when revenue, price or quantity is specified on the roots but not inside event_properties
     if (message.event === "Product Purchased" || numberOfEvents === 1) {
       if (message.properties.revenue)
         rawPayload.revenue = message.properties.revenue;
@@ -109,6 +112,8 @@ function createRevenuePayload(
         rawPayload.quantity = message.properties.quantity;
       }
       if (message.event === "Product Purchased") {
+        // here the revenue of the root is sent through revenueTypeCalculation because
+        // product purchased event does not have this field
         if (revenueTypeCalculation >= 0) {
           rawPayload.revenueType = "Purchased";
         } else {
@@ -116,6 +121,8 @@ function createRevenuePayload(
         }
       }
       if (numberOfEvents === 1) {
+        // when there is no product array only a single event is sent and
+        // revenue is to be calculated from that only
         if (message.properties.revenue >= 0) {
           rawPayload.revenueType = "Purchased";
         } else {
@@ -128,6 +135,8 @@ function createRevenuePayload(
     destination.Config.trackRevenuePerProduct === false &&
     message.event !== "Product Purchased"
   ) {
+    // when trackRevenuePerProduct is false the revenue is to be calculated from the topmost event only
+    // so we need to filter out "Product Purchased" event which is of no use here
     if (message.properties.revenue)
       rawPayload.revenue = message.properties.revenue;
     if (message.properties.price) {
@@ -251,6 +260,7 @@ function responseBuilderSimple(
         (message.properties && message.properties.revenue) ||
         evType === "Product Purchased"
       ) {
+        // "Product Purchased" event is mentioned seperately because it does not contain revenue field
         rawPayload = createRevenuePayload(
           destination,
           message,
@@ -450,23 +460,6 @@ function processSingleMessage(
         break;
       }
 
-      switch (evType) {
-        case Event.PROMOTION_CLICKED.name:
-        case Event.PROMOTION_VIEWED.name:
-        case Event.PRODUCT_CLICKED.name:
-        case Event.PRODUCT_VIEWED.name:
-        case Event.PRODUCT_ADDED.name:
-        case Event.PRODUCT_REMOVED.name:
-        case Event.PRODUCT_ADDED_TO_WISHLIST.name:
-        case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
-        case Event.PRODUCT_LIST_VIEWED.name:
-        case Event.PRODUCT_LIST_CLICKED.name:
-          category = nameToEventMap[evType].category;
-          break;
-        default:
-          category = ConfigCategory.DEFAULT;
-          break;
-      }
       break;
     default:
       logger.debug("could not determine type");
@@ -484,7 +477,7 @@ function processSingleMessage(
   );
 }
 
-function simpleCallForTrackRevPerProduct(message) {
+function trackRevPerProduct(message) {
   const eventClone = JSON.parse(JSON.stringify(message));
   eventClone.event = message.event;
   // eslint-disable-next-line no-restricted-syntax
@@ -496,68 +489,102 @@ function simpleCallForTrackRevPerProduct(message) {
   return eventClone;
 }
 
-function productPurchased(message, product) {
+function createProductPurchasedEvent(message, product) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
   eventClonePurchaseProduct.event = "Product Purchased";
+  // In product purchased event event properties consists of the details of each product
   eventClonePurchaseProduct.properties = product;
   return eventClonePurchaseProduct;
 }
 
+// function trackRevenue(message, destination) {
+//   const sendEvent = [];
+//   // if trackProductOnce is true
+//   if (destination.Config.trackProductsOnce) {
+//     const ProdOnce = JSON.parse(JSON.stringify(message));
+//     if (message.properties.products) {
+//       // As the very first event should not contain product array
+//       delete ProdOnce.properties.products;
+//     }
+//     sendEvent.push(ProdOnce);
+//     // if trackRevenuePerProduct is true
+//     if (destination.Config.trackRevenuePerProduct) {
+//       if (
+//         message.properties.products &&
+//         Array.isArray(message.properties.products) &&
+//         message.properties.products.length >= 1
+//       ) {
+//         // without existence of any product no product purchased event should be called
+//         message.properties.products.forEach(product => {
+//           const eventClonePurchaseProduct = createProductPurchasedEvent(
+//             message,
+//             product
+//           );
+//           sendEvent.push(eventClonePurchaseProduct);
+//         });
+//       }
+//     } else {
+//       // if trackRevenuePerProduct is false -----
+//       if (
+//         message.properties.products &&
+//         Array.isArray(message.properties.products) &&
+//         message.properties.products.length >= 1
+//       ) {
+//         message.properties.products.forEach(product => {
+//           // creating product purchased event for each product
+//           const eventClonePurchaseProduct = createProductPurchasedEvent(
+//             message,
+//             product
+//           );
+
+//           sendEvent.push(eventClonePurchaseProduct);
+//         });
+//       }
+//     }
+//   } else {
+//     // if trackProductOnce is false
+//     const eventClone = trackRevPerProduct(message);
+//     sendEvent.push(eventClone);
+//     if (
+//       message.properties.products &&
+//       Array.isArray(message.properties.products) &&
+//       message.properties.products.length >= 1
+//     ) {
+//       message.properties.products.forEach(product => {
+//         // creating product purchased event for each product
+//         const eventClonePurchaseProduct = createProductPurchasedEvent(
+//           message,
+//           product
+//         );
+
+//         sendEvent.push(eventClonePurchaseProduct);
+//       });
+//     }
+//   }
+//   return sendEvent;
+// }
+
 function trackRevenue(message, destination) {
   const sendEvent = [];
-  // if trackProductOnce is true
-  if (destination.Config.trackProductsOnce) {
-    const ProdOnce = JSON.parse(JSON.stringify(message));
-    if (message.properties.products) {
-      delete ProdOnce.properties.products;
-    }
-    sendEvent.push(ProdOnce);
-    // if trackRevenuePerProduct is true
-    if (destination.Config.trackRevenuePerProduct) {
-      if (
-        message.properties.products &&
-        message.properties.products.length >= 1
-      ) {
-        if (
-          message.properties.products &&
-          message.properties.products.length >= 1
-        ) {
-          message.properties.products.forEach(product => {
-            const eventClonePurchaseProduct = productPurchased(
-              message,
-              product
-            );
-            sendEvent.push(eventClonePurchaseProduct);
-          });
-        }
-      }
-    } else {
-      // if trackRevenuePerProduct is false -----
-      if (
-        message.properties.products &&
-        message.properties.products.length >= 1
-      ) {
-        message.properties.products.forEach(product => {
-          const eventClonePurchaseProduct = productPurchased(message, product);
-
-          sendEvent.push(eventClonePurchaseProduct);
-        });
-      }
-    }
-  } else {
-    // if trackProductOnce is false
-    const eventClone = simpleCallForTrackRevPerProduct(message);
-    sendEvent.push(eventClone);
-    if (
-      message.properties.products &&
-      message.properties.products.length >= 1
-    ) {
-      message.properties.products.forEach(product => {
-        const eventClonePurchaseProduct = productPurchased(message, product);
-
-        sendEvent.push(eventClonePurchaseProduct);
-      });
-    }
+  const ProdOnce = JSON.parse(JSON.stringify(message));
+  if (message.properties.products) {
+    // As the very first event should not contain product array
+    delete ProdOnce.properties.products;
+  }
+  sendEvent.push(ProdOnce);
+  if (
+    message.properties.products &&
+    Array.isArray(message.properties.products) &&
+    message.properties.products.length >= 1
+  ) {
+    // without existence of any product no product purchased event should be called
+    message.properties.products.forEach(product => {
+      const eventClonePurchaseProduct = createProductPurchasedEvent(
+        message,
+        product
+      );
+      sendEvent.push(eventClonePurchaseProduct);
+    });
   }
   return sendEvent;
 }
@@ -567,14 +594,13 @@ function process(event) {
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
-  let tempResult;
+  let setOfPayloads;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      tempResult = trackRevenue(message, destination);
-      if (destination)
-        tempResult.forEach(payload => {
-          toSendEvents.push(payload);
-        });
+      setOfPayloads = trackRevenue(message, destination);
+      setOfPayloads.forEach(payload => {
+        toSendEvents.push(payload);
+      });
     } else {
       toSendEvents.push(message);
     }

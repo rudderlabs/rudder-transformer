@@ -29,7 +29,7 @@ const getDestHandler = (version, dest) => {
 };
 
 const getRouterDestHandler = destType => {
-  return require(`./routerDestinations/${destType}/transform`);
+  return require(`./v0/destinations/${destType}/transform`);
 };
 
 const getSourceHandler = (version, source) => {
@@ -111,7 +111,7 @@ async function routerHandleDest(ctx) {
   await Promise.all(
     input.map(async input => {
       try {
-        let respEvents = await routerDestHandler.process(input);
+        let respEvents = await routerDestHandler.processRouterDest(input);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];
         }

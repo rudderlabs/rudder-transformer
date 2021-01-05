@@ -297,4 +297,15 @@ const process = async event => {
   return response;
 };
 
-exports.process = process;
+const processRouterDest = input => {
+  const inputs = input;
+  inputs.batched = false;
+  inputs.statusCode = 200;
+  const { metadata } = input;
+  if (!Array.isArray(metadata)) {
+    inputs.metadata = [metadata];
+  }
+  return inputs;
+};
+
+module.exports = { process, processRouterDest };

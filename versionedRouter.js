@@ -28,10 +28,6 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
-const getRouterDestHandler = destType => {
-  return require(`./v0/destinations/${destType}/transform`);
-};
-
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -106,11 +102,16 @@ async function handleDest(ctx, version, destination) {
 
 async function routerHandleDest(ctx) {
   const { destType, input } = ctx.request.body;
-  const routerDestHandler = getRouterDestHandler(destType);
+  const routerDestHandler = getDestHandler("v0", destType);
   const respList = [];
   await Promise.all(
     input.map(async input => {
       try {
+        if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+          ctx.status = 404;
+          ctx.body = `${destType} doesn't support router transform`;
+          return;
+        }
         let respEvents = await routerDestHandler.processRouterDest(input);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];

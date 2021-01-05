@@ -301,8 +301,7 @@ const processRouterDest = input => {
   const inputs = input;
   inputs.batched = false;
   inputs.statusCode = 200;
-  const { metadata } = input;
-  inputs.metadata = [metadata];
+  inputs.metadata = [input.metadata];
   return inputs;
 };
 

@@ -28,6 +28,10 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
+const getRouterDestHandler = destType => {
+  return require(`./routerDestinations/${destType}/transform`);
+};
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -100,6 +104,37 @@ async function handleDest(ctx, version, destination) {
   ctx.set("apiVersion", API_VERSION);
 }
 
+async function routerHandleDest(ctx) {
+  const { destType, input } = ctx.request.body;
+  const routerDestHandler = getRouterDestHandler(destType);
+  const respList = [];
+  await Promise.all(
+    input.map(async input => {
+      try {
+        let respEvents = await routerDestHandler.process(input);
+        if (!Array.isArray(respEvents)) {
+          respEvents = [respEvents];
+        }
+        respList.push(
+          ...respEvents.map(ev => {
+            return {
+              ...ev
+            };
+          })
+        );
+      } catch (error) {
+        logger.error(error);
+        respList.push({
+          metadata: input.metadata,
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
+        });
+      }
+    })
+  );
+  ctx.body = { output: respList };
+}
+
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
@@ -123,6 +158,9 @@ if (startDestTransformer) {
           version
         });
         stats.increment("dest_transform_requests", 1, { destination, version });
+      });
+      router.post("/routerTransform", async ctx => {
+        await routerHandleDest(ctx);
       });
     });
   });

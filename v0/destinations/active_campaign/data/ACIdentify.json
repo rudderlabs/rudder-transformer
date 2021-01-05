@@ -1,1 +1,49 @@
-[]
+[
+  {
+    "destKey": "email",
+    "sourceKeys": [
+        "traits.email",
+        "context.traits.email",
+        "properties.email"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": [
+        "traits.firstName",
+        "context.traits.firstName",
+        "properties.lastName"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": [
+        "traits.lastName",
+        "context.traits.lastName",
+        "properties.lastName"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": [
+        "traits.phone",
+        "context.traits.phone",
+        "properties.phone"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "fieldValues",
+    "sourceKeys": [
+        "traits.fieldValues",
+        "context.traits.fieldValues",
+        "properties.fieldValues"
+      ],
+    "required": false
+  }
+  
+  
+]

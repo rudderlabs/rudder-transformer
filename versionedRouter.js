@@ -109,8 +109,9 @@ async function routerHandleDest(ctx) {
     return;
   }
   const respList = [];
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
-    input.map(async input => {
+    Object.entries(allDestEvents).map(async ([destID, input]) => {
       try {
         let respEvents = await routerDestHandler.processRouterDest(input);
         if (!Array.isArray(respEvents)) {

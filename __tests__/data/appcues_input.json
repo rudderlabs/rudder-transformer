@@ -157,7 +157,7 @@
       "sentAt": "2021-01-04T08:33:07.005Z",
       "timestamp": "2021-01-04T14:03:07.008+05:30",
       "type": "track",
-      "userId": ""
+      "userId": "sampleId"
     },
     "destination": {
       "Config": {
@@ -215,7 +215,7 @@
       "sentAt": "2021-01-04T08:33:07.006Z",
       "timestamp": "2021-01-04T14:03:07.026+05:30",
       "type": "track",
-      "userId": ""
+      "userId": "sampleId"
     },
     "destination": {
       "Config": {
@@ -276,7 +276,7 @@
       "sentAt": "2021-01-04T08:43:05.783Z",
       "timestamp": "2021-01-04T14:13:05.799+05:30",
       "type": "page",
-      "userId": ""
+      "userId": "sampleId"
     },
     "destination": {
       "Config": {
@@ -341,7 +341,133 @@
       "sentAt": "2021-01-04T08:43:05.784Z",
       "timestamp": "2021-01-04T14:13:05.801+05:30",
       "type": "page",
-      "userId": ""
+      "userId": "sampleId"
+    },
+    "destination": {
+      "Config": {
+        "accountId": "86086",
+        "useNativeSDK": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "a4a6304a-df41-4ca9-b2b7-4b0009dfddaa",
+      "category": "page category",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.9"
+        },
+        "campaign": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.9"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/testing",
+          "referrer": "",
+          "search": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+      "name": "page name",
+      "originalTimestamp": "2021-01-04T08:43:05.784Z",
+      "properties": {
+        "category": "page category",
+        "name": "page name",
+        "path": "/testing",
+        "referrer": "",
+        "search": "",
+        "title": "properties title",
+        "url": "https://pagecall.com/properties_url"
+      },
+      "receivedAt": "2021-01-04T14:13:05.801+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "2d03081c-8053-4cce-9abf-bb024f747900",
+      "sentAt": "2021-01-04T08:43:05.784Z",
+      "timestamp": "2021-01-04T14:13:05.801+05:30",
+      "type": "page",
+      "userId": "sampleId"
+    },
+    "destination": {
+      "Config": {
+        "accountId": "86086",
+        "useNativeSDK": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "a4a6304a-df41-4ca9-b2b7-4b0009dfddaa",
+      "category": "page category",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.9"
+        },
+        "campaign": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.9"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/testing",
+          "referrer": "",
+          "search": "",
+          "title": "context title",
+          "url": "https://pagecall.com/context_url"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+      "name": "page name",
+      "originalTimestamp": "2021-01-04T08:43:05.784Z",
+      "properties": {
+        "category": "page category",
+        "name": "page name",
+        "path": "/testing",
+        "referrer": "",
+        "search": ""
+      },
+      "receivedAt": "2021-01-04T14:13:05.801+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "2d03081c-8053-4cce-9abf-bb024f747900",
+      "sentAt": "2021-01-04T08:43:05.784Z",
+      "timestamp": "2021-01-04T14:13:05.801+05:30",
+      "type": "page",
+      "userId": "sampleId"
     },
     "destination": {
       "Config": {

@@ -1,8 +1,12 @@
 {
-    "userId": "userId",
-    "_lastBrowserLanguage": "context.locale",
-    "_updatedAt": "sentAt",
-    "_userAgent": "context.userAgent",
-    "_currentPageTitle": "context.page.title",
-    "_currentPageUrl": "context.page.url"
+	"userId": "userId",
+	"_lastBrowserLanguage": "context.locale",
+	"_updatedAt": "sentAt",
+	"_userAgent": "context.userAgent",
+	"_currentPageTitle": {
+		"sourceKeys": ["context.page.title", "properties.title"]
+	},
+	"_currentPageUrl": {
+		"sourceKeys": ["context.page.url", "properties.url"]
+	}
 }

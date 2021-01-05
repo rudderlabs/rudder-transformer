@@ -60,12 +60,12 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "59f2911c-f050-497d-9f80-e1696a3c56aa",
+    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users//activity"
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -88,12 +88,12 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "59f2911c-f050-497d-9f80-e1696a3c56aa",
+    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users//activity"
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -111,7 +111,7 @@
               "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
               "path": "/rudder-sdk-js/tests/html/script-test.html",
               "_identity": {
-                "userId": ""
+                "userId": "sampleId"
               }
             }
           }
@@ -122,7 +122,8 @@
           "_updatedAt": "2021-01-04T08:43:05.783Z",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageUrl": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
-          "_lastBrowserLanguage": "en-GB"
+          "_lastBrowserLanguage": "en-GB",
+          "userId": "sampleId"
         }
       }
     },
@@ -130,12 +131,12 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "a4a6304a-df41-4ca9-b2b7-4b0009dfddaa",
+    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users//activity"
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -155,7 +156,7 @@
               "path": "/testing",
               "category": "page category",
               "_identity": {
-                "userId": ""
+                "userId": "sampleId"
               }
             }
           }
@@ -166,7 +167,8 @@
           "_updatedAt": "2021-01-04T08:43:05.784Z",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageUrl": "https://pagecall.com/testing",
-          "_lastBrowserLanguage": "en-GB"
+          "_lastBrowserLanguage": "en-GB",
+          "userId": "sampleId"
         }
       }
     },
@@ -174,11 +176,103 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "a4a6304a-df41-4ca9-b2b7-4b0009dfddaa",
+    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users//activity"
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+        "profile_update": {
+          "userId": "sampleId",
+          "_lastBrowserLanguage": "en-GB",
+          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageTitle": "properties title",
+          "_currentPageUrl": "https://pagecall.com/properties_url",
+          "_appcuesId": "86086"
+        },
+        "events": [
+          {
+            "timestamp": 1609749785,
+            "attributes": {
+              "category": "page category",
+              "name": "page name",
+              "path": "/testing",
+              "title": "properties title",
+              "url": "https://pagecall.com/properties_url",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            },
+            "name": "Viewed a Page",
+            "context": {
+              "url": "https://pagecall.com/properties_url"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampleId"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+        "profile_update": {
+          "userId": "sampleId",
+          "_lastBrowserLanguage": "en-GB",
+          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageTitle": "context title",
+          "_currentPageUrl": "https://pagecall.com/context_url",
+          "_appcuesId": "86086"
+        },
+        "events": [
+          {
+            "timestamp": 1609749785,
+            "attributes": {
+              "category": "page category",
+              "name": "page name",
+              "path": "/testing",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            },
+            "name": "Viewed a Page",
+            "context": {
+              "url": "https://pagecall.com/context_url"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampleId"
   }
 ]

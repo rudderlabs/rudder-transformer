@@ -1,14 +1,17 @@
 const get = require("get-value");
-
-
+const set = require("set-value");
 const {
   EventType
 } = require("../../../constants");
+
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues
+  getValueFromMessage,
+  removeUndefinedAndNullValues,
+  removeUndefinedAndNullAndEmptyValues,
 } = require("../../util");
+
 const {
   ConfigCategory,
   mappingConfig,
@@ -17,7 +20,6 @@ const {
 
 const {
   utcTimeToEpoch,
-  removeEmptyUndefinedandNullValues
 } = require("./utils");
 
 function buildResponse(message, payload, endpoint) {
@@ -89,9 +91,15 @@ function getProfilePayload(message) {
   const category = ConfigCategory.PROFILE;
   const mappingJson = mappingConfig[category.name];
   Object.keys(mappingJson).forEach(destKey => {
-    let value = get(message, mappingJson[destKey]);
-    if (value) {
-      profileJson[destKey] = value;
+    if (typeof mappingJson[destKey] === "object") {
+      const { sourceKeys } = mappingJson[destKey];
+      const value = getValueFromMessage(message, sourceKeys);
+      if(!!value)
+      {
+      set(profileJson, destKey, value);
+      }
+    } else {
+      set(profileJson, destKey, get(message, mappingJson[destKey]));
     }
   });
   return profileJson;
@@ -115,9 +123,13 @@ function processPage(message, destination, mappingJson) {
   eventJson.name = "Viewed a Page";
   eventJson.attributes._identity = {};
   eventJson.attributes._identity.userId = message.userId;
-  eventJson.attributes = removeEmptyUndefinedandNullValues(eventJson.attributes);
+  eventJson.attributes = removeUndefinedAndNullAndEmptyValues(eventJson.attributes);
+  if((message.properties && message.properties.url) || (message.context.page && message.context.page.url))
+  {
   eventJson.context = {};
-  eventJson.context.url = message.context.page.url;
+  const sourceKeys = ["context.page.url", "properties.url"];
+  eventJson.context.url = getValueFromMessage(message, sourceKeys);
+  }
   requestJson.events = [eventJson];
 
   return buildResponse(
@@ -134,6 +146,11 @@ function process(event) {
     message,
     destination
   } = event;
+
+  if (!message.type) {
+    throw new Error("Message Type is not present. Aborting message.");
+  }
+
   const messageType = message.type.toLowerCase();
 
   let category = ConfigCategory.TRACK;

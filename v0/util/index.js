@@ -22,11 +22,14 @@ const logger = require("../../logger");
 // ========================================================================
 
 const isDefined = x => !_.isUndefined(x);
+const isNotEmpty = x => !_.isEmpty(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
+const isDefinedAndNotNullAndNotEmpty = x => isDefined(x) && isNotNull(x) && isNotEmpty(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const removeUndefinedAndNullAndEmptyValues = obj => _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 
 // ========================================================================
 // GENERIC UTLITY
@@ -678,6 +681,7 @@ module.exports = {
   isValidUrl,
   removeNullValues,
   removeUndefinedAndNullValues,
+  removeUndefinedAndNullAndEmptyValues,
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,

@@ -112,26 +112,28 @@ async function routerHandleDest(ctx) {
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, input]) => {
-      try {
-        let respEvents = await routerDestHandler.processRouterDest(input);
-        if (!Array.isArray(respEvents)) {
-          respEvents = [respEvents];
+      input.map(async inputs => {
+        try {
+          let respEvents = await routerDestHandler.processRouterDest(inputs);
+          if (!Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
+          respList.push(
+            ...respEvents.map(ev => {
+              return {
+                ...ev
+              };
+            })
+          );
+        } catch (error) {
+          logger.error(error);
+          respList.push({
+            metadata: [input.metadata],
+            statusCode: 400,
+            error: error.message || "Error occurred while processing payload."
+          });
         }
-        respList.push(
-          ...respEvents.map(ev => {
-            return {
-              ...ev
-            };
-          })
-        );
-      } catch (error) {
-        logger.error(error);
-        respList.push({
-          metadata: [input.metadata],
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
-        });
-      }
+      });
     })
   );
   ctx.body = { output: respList };

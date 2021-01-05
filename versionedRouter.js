@@ -103,15 +103,15 @@ async function handleDest(ctx, version, destination) {
 async function routerHandleDest(ctx) {
   const { destType, input } = ctx.request.body;
   const routerDestHandler = getDestHandler("v0", destType);
+  if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support router transform`;
+    return;
+  }
   const respList = [];
   await Promise.all(
     input.map(async input => {
       try {
-        if (!routerDestHandler || !routerDestHandler.processRouterDest) {
-          ctx.status = 404;
-          ctx.body = `${destType} doesn't support router transform`;
-          return;
-        }
         let respEvents = await routerDestHandler.processRouterDest(input);
         if (!Array.isArray(respEvents)) {
           respEvents = [respEvents];

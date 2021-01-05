@@ -35,7 +35,6 @@ const {
 const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
-const { compact } = require("lodash");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
@@ -92,6 +91,59 @@ function getSessionId(payload) {
 function addMinIdlength() {
   return { min_id_length: 1 };
 }
+function createRevenuePayload(
+  destination,
+  message,
+  rawPayload,
+  numberOfEvents,
+  revenueTypeCalculation
+) {
+  if (destination.Config.trackRevenuePerProduct) {
+    if (message.event === "Product Purchased" || numberOfEvents === 1) {
+      if (message.properties.revenue)
+        rawPayload.revenue = message.properties.revenue;
+      if (message.properties.price) {
+        rawPayload.price = message.properties.price;
+      }
+      if (message.properties.quantity) {
+        rawPayload.quantity = message.properties.quantity;
+      }
+      if (message.event === "Product Purchased") {
+        if (revenueTypeCalculation >= 0) {
+          rawPayload.revenueType = "Purchased";
+        } else {
+          rawPayload.revenueType = "Refunded";
+        }
+      }
+      if (numberOfEvents === 1) {
+        if (message.properties.revenue >= 0) {
+          rawPayload.revenueType = "Purchased";
+        } else {
+          rawPayload.revenueType = "Refunded";
+        }
+      }
+    }
+  }
+  if (
+    destination.Config.trackRevenuePerProduct === false &&
+    message.event !== "Product Purchased"
+  ) {
+    if (message.properties.revenue)
+      rawPayload.revenue = message.properties.revenue;
+    if (message.properties.price) {
+      rawPayload.price = message.properties.price;
+    }
+    if (message.properties.quantity) {
+      rawPayload.quantity = message.properties.quantity;
+    }
+    if (message.properties.revenue >= 0) {
+      rawPayload.revenueType = "Purchased";
+    } else {
+      rawPayload.revenueType = "Refunded";
+    }
+  }
+  return rawPayload;
+}
 
 function responseBuilderSimple(
   groupInfo,
@@ -100,10 +152,10 @@ function responseBuilderSimple(
   evType,
   mappingJson,
   destination,
-  lengthEvent,
+  numberOfEvents,
   revenueTypeCalculation
 ) {
-  const rawPayload = {};
+  let rawPayload = {};
   const addOptions = "options";
   const respList = [];
   const response = defaultRequestConfig();
@@ -196,59 +248,16 @@ function responseBuilderSimple(
       set(rawPayload, "event_properties", message.properties);
       rawPayload.event_type = evType;
       if (
-        destination.Config.trackRevenuePerProduct &&
-        message.event === "Product Purchased"
+        (message.properties && message.properties.revenue) ||
+        evType === "Product Purchased"
       ) {
-        if (message.properties.revenue)
-          rawPayload.revenue = message.properties.revenue;
-        if (message.properties.price) {
-          rawPayload.price = message.properties.price;
-        }
-        if (message.properties.quantity) {
-          rawPayload.quantity = message.properties.quantity;
-        }
-        if (revenueTypeCalculation > 0) {
-          rawPayload.revenue_type = "Purchased";
-        } else {
-          rawPayload.revenue_type = "Refunded";
-        }
-      }
-      if (destination.Config.trackRevenuePerProduct && lengthEvent === 1) {
-        if (message.properties.revenue)
-          rawPayload.revenue = message.properties.revenue;
-        if (message.properties.price) {
-          rawPayload.price = message.properties.price;
-        }
-        if (message.properties.quantity) {
-          rawPayload.quantity = message.properties.quantity;
-        }
-        if (message.properties.revenue > 0) {
-          rawPayload.revenue_type = "Purchased";
-        } else {
-          rawPayload.revenue_type = "Refunded";
-        }
-      }
-
-      if (
-        (destination.Config.trackRevenuePerProduct === false &&
-          destination.Config.trackProductsOnce === true &&
-          message.event !== "Product Purchased") ||
-        (destination.Config.trackRevenuePerProduct === false &&
-          message.event !== "Product Purchased")
-      ) {
-        if (message.properties.revenue)
-          rawPayload.revenue = message.properties.revenue;
-        if (message.properties.price) {
-          rawPayload.price = message.properties.price;
-        }
-        if (message.properties.quantity) {
-          rawPayload.quantity = message.properties.quantity;
-        }
-        if (message.properties.revenue > 0) {
-          rawPayload.revenue_type = "Purchased";
-        } else {
-          rawPayload.revenue_type = "Refunded";
-        }
+        rawPayload = createRevenuePayload(
+          destination,
+          message,
+          rawPayload,
+          numberOfEvents,
+          revenueTypeCalculation
+        );
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
@@ -343,7 +352,7 @@ function responseBuilderSimple(
 function processSingleMessage(
   message,
   destination,
-  lengthEvent,
+  numberOfEvents,
   revenueTypeCalculation
 ) {
   let payloadObjectName = "events";
@@ -470,7 +479,7 @@ function processSingleMessage(
     evType,
     mappingConfig[category.name],
     destination,
-    lengthEvent,
+    numberOfEvents,
     revenueTypeCalculation
   );
 }
@@ -494,7 +503,7 @@ function productPurchased(message, product) {
   return eventClonePurchaseProduct;
 }
 
-function TrackRevenue(message, destination) {
+function trackRevenue(message, destination) {
   const sendEvent = [];
   // if trackProductOnce is true
   if (destination.Config.trackProductsOnce) {
@@ -561,7 +570,7 @@ function process(event) {
   let tempResult;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      tempResult = TrackRevenue(message, destination);
+      tempResult = trackRevenue(message, destination);
       if (destination)
         tempResult.forEach(payload => {
           toSendEvents.push(payload);

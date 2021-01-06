@@ -297,12 +297,21 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = input => {
+const processRouterDest = async input => {
   const inputs = input;
   inputs.batched = false;
-  inputs.statusCode = 200;
   inputs.metadata = [input.metadata];
-  return inputs;
+  try {
+    inputs.message = await process({
+      message: input.message,
+      destination: input.destination
+    });
+    inputs.statusCode = 200;
+    return inputs;
+  } catch (error) {
+    inputs.statusCode = error.response.status;
+    return inputs;
+  }
 };
 
 module.exports = { process, processRouterDest };

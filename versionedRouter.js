@@ -137,6 +137,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respList };
+  console.log(ctx.body);
 }
 
 if (startDestTransformer) {

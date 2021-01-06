@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
@@ -114,7 +115,7 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (message, destination) => {
+const processIdentify = async (message, destination, token) => {
   // get bearer token
   // lookup using email. if present use that
   // else lookup using userId
@@ -129,10 +130,6 @@ const processIdentify = async (message, destination) => {
   }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const token = await getAuthToken(destination);
-  if (!token) {
-    throw new Error("Invalid credentials");
-  }
 
   const email = getFieldValueFromMessage(message, "email");
   const leadId =
@@ -173,7 +170,7 @@ const processIdentify = async (message, destination) => {
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (message, destination) => {
+const processTrack = async (message, destination, token) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
@@ -211,12 +208,6 @@ const processTrack = async (message, destination) => {
   );
   if (!primaryAttributeValue) {
     throw new Error("Primary Key value is invalid for the event");
-  }
-
-  // get auth token
-  const token = await getAuthToken(destination);
-  if (!token) {
-    throw new Error("Invalid credentials");
   }
 
   // get leadId
@@ -270,7 +261,7 @@ const responseWrapper = response => {
   return resp;
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, token) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -279,10 +270,14 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await processIdentify(message, formatConfig(destination));
+      response = await processIdentify(
+        message,
+        formatConfig(destination),
+        token
+      );
       break;
     case EventType.TRACK:
-      response = await processTrack(message, formatConfig(destination));
+      response = await processTrack(message, formatConfig(destination), token);
       break;
     default:
       throw new Error("Message type not supported");
@@ -293,25 +288,110 @@ const processEvent = async (message, destination) => {
 };
 
 const process = async event => {
-  const response = await processEvent(event.message, event.destination);
+  const token = await getAuthToken(formatConfig(event.destination));
+  if (!token) {
+    throw Error("Authorisation failed");
+  }
+  const response = await processEvent(event.message, event.destination, token);
   return response;
 };
 
+/**  create output according to  {
+      "message": {},
+      "metadata": [],
+      "batched": false,
+      "statusCode": 500,
+      "error": "",
+      "destination": { "ID": "a", "url": "a" }
+    }
+    */
+// Success responses
+const getSuccessRespEvents = (message, metadata, destination) => {
+  const returnResponse = {};
+  returnResponse.message = message;
+  returnResponse.metadata = metadata;
+  returnResponse.batched = false;
+  returnResponse.statusCode = 200;
+  returnResponse.destination = destination;
+  return returnResponse;
+};
+
+// Error responses
+const getErrorRespEvents = (metadata, statusCode, error) => {
+  const returnResponse = {};
+  returnResponse.metadata = metadata;
+  returnResponse.batched = false;
+  returnResponse.statusCode = statusCode;
+  returnResponse.error = error;
+  return returnResponse;
+};
+
 const processRouterDest = async input => {
-  const inputs = input;
-  inputs.batched = false;
-  inputs.metadata = [input.metadata];
-  try {
-    inputs.message = await process({
-      message: input.message,
-      destination: input.destination
-    });
-    inputs.statusCode = 200;
-    return inputs;
-  } catch (error) {
-    inputs.statusCode = error.response.status;
-    return inputs;
+  // Token needs to be generated for marketo which will be done on input level.
+  // If destination information is not present Error should be thrown
+  if (!Array.isArray(input) || input.length <= 0) {
+    const respEvents = getErrorRespEvents(
+      null,
+      400,
+      "Destination config not present for event"
+    );
+    return [respEvents];
   }
+  let token;
+  try {
+    token = await getAuthToken(formatConfig(input[0].destination));
+  } catch (error) {
+    const respEvents = getErrorRespEvents(
+      input.map(ev => ev.metadata),
+      error.response ? error.response.status : 400,
+      error.message || "Error occurred while processing payload."
+    );
+    return [respEvents];
+  }
+  // If token is null track/identify calls cannot be executed.
+  if (!token) {
+    const respEvents = getErrorRespEvents(
+      input.map(ev => ev.metadata),
+      400,
+      "Authorisation failed"
+    );
+    return [respEvents];
+  }
+  const respList = [];
+  // Checking previous status Code. Initially setting to false.
+  // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
+  let prevStatus = false;
+  for (let i = 0; i < input.length; i += 1) {
+    const inputs = input[i];
+    let respEvents = {};
+    if (prevStatus) {
+      respEvents = getErrorRespEvents(
+        [inputs.metadata],
+        500,
+        "Skipping external API call"
+      );
+      respList.push(respEvents);
+    } else {
+      try {
+        respEvents = getSuccessRespEvents(
+          await processEvent(inputs.message, inputs.destination, token),
+          [inputs.metadata],
+          inputs.destination
+        );
+        respList.push(respEvents);
+      } catch (error) {
+        respEvents = getErrorRespEvents(
+          [inputs.metadata],
+          error.response ? error.response.status : 400,
+          error.message || "Error occurred while processing payload."
+        );
+        prevStatus = respEvents.statusCode === 500;
+        respList.push(respEvents);
+      }
+    }
+  }
+
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

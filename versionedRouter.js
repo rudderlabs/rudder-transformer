@@ -108,32 +108,14 @@ async function routerHandleDest(ctx) {
     ctx.body = `${destType} doesn't support router transform`;
     return;
   }
-  const respList = [];
+  let respEvents;
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
-      await Promise.all(
-        desInput.map(async inputs => {
-          try {
-            let respEvents = await routerDestHandler.processRouterDest(inputs);
-            if (!Array.isArray(respEvents)) {
-              respEvents = [respEvents];
-            }
-            respList.push(...respEvents.map(ev => ({ ...ev })));
-          } catch (error) {
-            logger.error(error);
-            respList.push({
-              metadata: [inputs.metadata],
-              statusCode: 400,
-              error: error.message || "Error occurred while processing payload."
-            });
-          }
-        })
-      );
+      respEvents = await routerDestHandler.processRouterDest(desInput);
     })
   );
-  ctx.body = { output: respList };
-  console.log(ctx.body);
+  ctx.body = { output: respEvents };
 }
 
 if (startDestTransformer) {

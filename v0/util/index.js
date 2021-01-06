@@ -27,6 +27,7 @@ const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const isBlank = (value) => _.isEmpty(_.toString(value));
 
 // ========================================================================
 // GENERIC UTLITY
@@ -676,6 +677,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  isBlank,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,

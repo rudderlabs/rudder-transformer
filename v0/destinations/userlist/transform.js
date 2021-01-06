@@ -8,6 +8,14 @@ const {
 
 const { endpoint } = require("./config");
 
+// ------------------------------------------------
+// Userlist built a custom endpoint for Rudderstack that processes the messages according to our spec.
+// There’s no real documentation about it.
+// Their regular endpoint is documented at
+//
+// https://userlist.com/docs/getting-started/integration-guide/
+// ------------------------------------------------
+
 function normalizeMessage(message) {
   return {
     ...message,

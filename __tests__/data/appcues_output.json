@@ -4,14 +4,14 @@
       "XML": {},
       "FORM": {},
       "JSON": {
-        "request_id": "6a5f38c0-4e75-4268-a066-2b73fbcad01f"
+        "request_id": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
+        "profile_update": {}
       }
     },
     "type": "REST",
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "onlyUserId",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -34,7 +34,6 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "userIdWithProperties",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -60,7 +59,6 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -88,7 +86,6 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -131,7 +128,6 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -176,7 +172,6 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "sampleId",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -227,8 +222,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "sampleId"
+    "files": {}
   },
   {
     "version": "1",
@@ -272,7 +266,6 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "sampleId"
+    "files": {}
   }
 ]

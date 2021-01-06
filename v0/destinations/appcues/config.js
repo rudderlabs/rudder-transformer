@@ -3,6 +3,9 @@ const {
 } = require("../../util");
 
 const ConfigCategory = {
+  IDENTIFY:  {
+   name: "AppcuesIdentifyConfig"
+  },
   TRACK: {
     name: "AppcuesTrackConfig"
   },

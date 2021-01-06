@@ -1,5 +1,17 @@
-{
-    "name": "event",
-    "timestamp": "timestamp",
-    "attributes": "properties"
-}
+[
+    {
+      "destKey": "name",
+      "sourceKeys": "event",
+      "required": false
+    },
+    {
+      "destKey": "timestamp",
+      "sourceKeys": "originalTimestamp",
+      "required": false
+    },
+    {
+        "destKey": "attributes",
+        "sourceKeys": "properties",
+        "required": "false"
+    }
+] 

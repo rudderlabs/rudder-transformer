@@ -85,7 +85,10 @@ function processPage(
 
   return buildResponse(
     requestJson,
-    getEndpoint(destination.Config.accountId, message.userId)
+    getEndpoint(
+      destination.Config.accountId,
+      getFieldValueFromMessage(message, "userIdOnly")
+    )
   );
 }
 
@@ -123,7 +126,10 @@ function process(event) {
     case EventType.IDENTIFY:
       return buildResponse(
         constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
-        getEndpoint(destination.Config.accountId, message.userId)
+        getEndpoint(
+          destination.Config.accountId,
+          getFieldValueFromMessage(message, "userIdOnly")
+        )
       );
     default:
       throw new Error("Message type is not supported");

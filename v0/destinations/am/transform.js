@@ -71,6 +71,8 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
   return Math.abs(hash);
 } */
 
+let insertIdCounter = 0;
+
 function getSessionId(payload) {
   const sessionId = payload.session_id;
   if (sessionId) {
@@ -91,43 +93,43 @@ function getSessionId(payload) {
 function addMinIdlength() {
   return { min_id_length: 1 };
 }
+
+function finalisePriceQuanity(message) {
+  let price;
+  let quantity;
+  if (!message.properties.price) {
+    price = message.properties.revenue;
+    quantity = 1;
+  } else {
+    price = message.properties.price;
+    if (message.properties.quantity) {
+      quantity = message.properties.quantity;
+    }
+  }
+  return [price, quantity];
+}
+
 function createRevenuePayload(
   destination,
   message,
   rawPayload,
-  numberOfEvents,
-  revenueTypeCalculation
+  numberOfEvents
 ) {
   if (destination.Config.trackRevenuePerProduct) {
     // In this case per product revenue is calculated from each product purchased event
     // also when there is no product array the revenue will be calculated from the very first event only
     // AM calculates revenue when revenue, price or quantity is specified on the roots but not inside event_properties
     if (message.event === "Product Purchased" || numberOfEvents === 1) {
-      if (message.properties.revenue)
-        rawPayload.revenue = message.properties.revenue;
-      if (message.properties.price) {
-        rawPayload.price = message.properties.price;
-      }
-      if (message.properties.quantity) {
-        rawPayload.quantity = message.properties.quantity;
-      }
-      if (message.event === "Product Purchased") {
-        // here the revenue of the root is sent through revenueTypeCalculation because
-        // product purchased event does not have this field
-        if (revenueTypeCalculation >= 0) {
-          rawPayload.revenueType = "Purchased";
-        } else {
-          rawPayload.revenueType = "Refunded";
-        }
-      }
-      if (numberOfEvents === 1) {
-        // when there is no product array only a single event is sent and
-        // revenue is to be calculated from that only
-        if (message.properties.revenue >= 0) {
-          rawPayload.revenueType = "Purchased";
-        } else {
-          rawPayload.revenueType = "Refunded";
-        }
+      // planned to put inside a function-----
+      [rawPayload.price, rawPayload.quantity] = finalisePriceQuanity(message);
+      if (message.properties.revenueType) {
+        // revenueType can be input from the user
+        rawPayload.revenueType = message.properties.revenueType;
+      } else if (message.properties.revenue_type) {
+        // user can also input as revenue_type
+        rawPayload.revenueType = message.properties.revenue_type;
+      } else {
+        rawPayload.revenueType = "Purchased";
       }
     }
   }
@@ -137,19 +139,17 @@ function createRevenuePayload(
   ) {
     // when trackRevenuePerProduct is false the revenue is to be calculated from the topmost event only
     // so we need to filter out "Product Purchased" event which is of no use here
-    if (message.properties.revenue)
-      rawPayload.revenue = message.properties.revenue;
-    if (message.properties.price) {
-      rawPayload.price = message.properties.price;
-    }
-    if (message.properties.quantity) {
-      rawPayload.quantity = message.properties.quantity;
-    }
-    if (message.properties.revenue >= 0) {
-      rawPayload.revenueType = "Purchased";
+    if (message.properties.revenueType) {
+      // revenueType can be input from the user
+      rawPayload.revenueType = message.properties.revenueType;
+    } else if (message.properties.revenue_type) {
+      // user can also input as revenue_type
+      rawPayload.revenueType = message.properties.revenue_type;
     } else {
-      rawPayload.revenueType = "Refunded";
+      rawPayload.revenueType = "Purchased";
     }
+    // planned to put inside a function-----
+    [rawPayload.price, rawPayload.quantity] = finalisePriceQuanity(message);
   }
   return rawPayload;
 }
@@ -162,7 +162,7 @@ function responseBuilderSimple(
   mappingJson,
   destination,
   numberOfEvents,
-  revenueTypeCalculation
+  isRevenue
 ) {
   let rawPayload = {};
   const addOptions = "options";
@@ -191,7 +191,17 @@ function responseBuilderSimple(
         set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
       }
     } else {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+      if (
+        mappingJson[sourceKey] === "insert_id" &&
+        message.type === "track" &&
+        isRevenue
+      ) {
+        const insertIdEdit = get(message, sourceKey).concat(
+          insertIdCounter.toString()
+        );
+        set(rawPayload, mappingJson[sourceKey], insertIdEdit);
+        insertIdCounter += 1;
+      } else set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
     }
   });
 
@@ -255,18 +265,20 @@ function responseBuilderSimple(
       break;
     default:
       set(rawPayload, "event_properties", message.properties);
+      if (evType === EventType.TRACK)
+        set(rawPayload, "user_properties", message.context.traits);
       rawPayload.event_type = evType;
+      rawPayload.user_id = message.userId;
       if (
         (message.properties && message.properties.revenue) ||
         evType === "Product Purchased"
       ) {
-        // "Product Purchased" event is mentioned seperately because it does not contain revenue field
+        // making the revenue payload
         rawPayload = createRevenuePayload(
           destination,
           message,
           rawPayload,
-          numberOfEvents,
-          revenueTypeCalculation
+          numberOfEvents
         );
       }
       groups = groupInfo && Object.assign(groupInfo);
@@ -354,17 +366,13 @@ function responseBuilderSimple(
       }
       break;
   }
+
   return respList;
 }
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(
-  message,
-  destination,
-  numberOfEvents,
-  revenueTypeCalculation
-) {
+function processSingleMessage(message, destination, numberOfEvents, isRevenue) {
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -473,7 +481,7 @@ function processSingleMessage(
     mappingConfig[category.name],
     destination,
     numberOfEvents,
-    revenueTypeCalculation
+    isRevenue
   );
 }
 
@@ -484,15 +492,7 @@ function createProductPurchasedEvent(message, product) {
   eventClonePurchaseProduct.properties = product;
   return eventClonePurchaseProduct;
 }
-
-function trackRevenue(message) {
-  const sendEvent = [];
-  const ProdOnce = JSON.parse(JSON.stringify(message));
-  if (message.properties.products) {
-    // As the very first event should not contain product array
-    delete ProdOnce.properties.products;
-  }
-  sendEvent.push(ProdOnce);
+function purchaseProducts(message, sendEvent) {
   if (
     message.properties.products &&
     Array.isArray(message.properties.products) &&
@@ -510,20 +510,48 @@ function trackRevenue(message) {
   return sendEvent;
 }
 
+function trackRevenue(message, destination) {
+  const sendEvent = [];
+  let captureEvents = [];
+  const prodOnce = JSON.parse(JSON.stringify(message));
+  if (destination.Config.trackProductsOnce === false) {
+    if (message.properties.products) {
+      // when trackProductsOnce false no product array present
+      delete prodOnce.properties.products;
+    }
+  }
+  // when track product once true
+  sendEvent.push(prodOnce);
+  if (destination.Config.trackRevenuePerProduct === true)
+    captureEvents = purchaseProducts(message, sendEvent);
+  else {
+    if (destination.Config.trackRevenuePerProduct === false) {
+      if (destination.Config.trackProductsOnce === false) {
+        // condition for false-false contains product purchased event
+        captureEvents = purchaseProducts(message, sendEvent);
+      } else captureEvents = sendEvent; // sending event for track product once true and track revenue per product false
+    }
+  }
+  return captureEvents;
+}
+
 function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   let setOfPayloads;
+  let isRevenue;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      setOfPayloads = trackRevenue(message);
+      setOfPayloads = trackRevenue(message, destination);
       setOfPayloads.forEach(payload => {
         toSendEvents.push(payload);
       });
+      isRevenue = true;
     } else {
       toSendEvents.push(message);
+      isRevenue = false;
     }
   } else {
     toSendEvents.push(message);
@@ -535,7 +563,7 @@ function process(event) {
           sendEvent,
           destination,
           toSendEvents.length,
-          message.properties.revenue
+          isRevenue
         )
       );
     });
@@ -546,6 +574,7 @@ function process(event) {
       );
     });
   }
+  // console.log(JSON.stringify(respList));
   return respList;
 }
 

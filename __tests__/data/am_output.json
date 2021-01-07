@@ -585,7 +585,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Order Completed",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e90",
                             "event_properties": {
                                 "tax": 2,
                                 "total": 27.5,
@@ -601,7 +601,6 @@
                                 "affiliation": "Google Store",
                                 "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                             },
-                            "revenue": 48,
                             "price": 25,
                             "quantity": 2,
                             "revenueType": "Purchased",
@@ -637,7 +636,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e91",
                             "event_properties": {
                                 "sku": "45790-32",
                                 "url": "https://www.example.com/product/path",
@@ -680,7 +679,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e92",
                             "event_properties": {
                                 "sku": "46493-32",
                                 "name": "Uno Card Game",
@@ -705,9 +704,7 @@
         
     }
 ],
-[
   {
-      
           "version": "1",
           "type": "REST",
           "method": "POST",
@@ -723,7 +720,7 @@
                       {
                           "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                           "event_type": "Order Completed",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e93",
                           "event_properties": {
                               "tax": 2,
                               "total": 27.5,
@@ -734,15 +731,34 @@
                               "currency": "USD",
                               "discount": 2.5,
                               "order_id": "50314b8e9bcf000000000000",
+                              "products": [
+                                  {
+                                      "sku": "45790-32",
+                                      "url": "https://www.example.com/product/path",
+                                      "name": "Monopoly: 3rd Edition",
+                                      "price": 19,
+                                      "category": "Games",
+                                      "quantity": 1,
+                                      "image_url": "https:///www.example.com/product/path.jpg",
+                                      "product_id": "507f1f77bcf86cd799439011"
+                                  },
+                                  {
+                                      "sku": "46493-32",
+                                      "name": "Uno Card Game",
+                                      "price": 3,
+                                      "category": "Games",
+                                      "quantity": 2,
+                                      "product_id": "505bd76785ebb509fc183733"
+                                  }
+                              ],
                               "shipping": 3,
                               "subtotal": 22.5,
                               "affiliation": "Google Store",
                               "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                           },
-                          "revenue": 48,
+                          "revenueType": "Purchased",
                           "price": 25,
                           "quantity": 2,
-                          "revenueType": "Purchased",
                           "time": 1597383030118,
                           "session_id": -1
                       }
@@ -756,367 +772,295 @@
           },
           "files": {},
           "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-     
   },
-  {
-     
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "45790-32",
-                              "url": "https://www.example.com/product/path",
-                              "name": "Monopoly: 3rd Edition",
-                              "price": 19,
-                              "category": "Games",
-                              "quantity": 1,
-                              "image_url": "https:///www.example.com/product/path.jpg",
-                              "product_id": "507f1f77bcf86cd799439011"
-                          },
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-      
-  },
-  {
-      
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "46493-32",
-                              "name": "Uno Card Game",
-                              "price": 3,
-                              "category": "Games",
-                              "quantity": 2,
-                              "product_id": "505bd76785ebb509fc183733"
-                          },
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-     
-  }
+[
+    {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://api.amplitude.com/2/httpapi",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "api_key": "abcde",
+                    "events": [
+                        {
+                            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+                            "event_type": "Order Completed",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e94",
+                            "event_properties": {
+                                "tax": 2,
+                                "total": 27.5,
+                                "coupon": "hasbros",
+                                "revenue": 48,
+                                "price": 25,
+                                "quantity": 2,
+                                "currency": "USD",
+                                "discount": 2.5,
+                                "order_id": "50314b8e9bcf000000000000",
+                                "shipping": 3,
+                                "subtotal": 22.5,
+                                "affiliation": "Google Store",
+                                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+                            },
+                            "time": 1597383030118,
+                            "session_id": -1
+                        }
+                    ],
+                    "options": {
+                        "min_id_length": 1
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    },
+    {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://api.amplitude.com/2/httpapi",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "api_key": "abcde",
+                    "events": [
+                        {
+                            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+                            "event_type": "Product Purchased",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e95",
+                            "event_properties": {
+                                "sku": "45790-32",
+                                "url": "https://www.example.com/product/path",
+                                "name": "Monopoly: 3rd Edition",
+                                "price": 19,
+                                "category": "Games",
+                                "quantity": 1,
+                                "image_url": "https:///www.example.com/product/path.jpg",
+                                "product_id": "507f1f77bcf86cd799439011"
+                            },
+                            "price": 19,
+                            "quantity": 1,
+                            "revenueType": "Purchased",
+                            "time": 1597383030118,
+                            "session_id": -1
+                        }
+                    ],
+                    "options": {
+                        "min_id_length": 1
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    },
+    {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://api.amplitude.com/2/httpapi",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "api_key": "abcde",
+                    "events": [
+                        {
+                            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+                            "event_type": "Product Purchased",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e96",
+                            "event_properties": {
+                                "sku": "46493-32",
+                                "name": "Uno Card Game",
+                                "price": 3,
+                                "category": "Games",
+                                "quantity": 2,
+                                "product_id": "505bd76785ebb509fc183733"
+                            },
+                            "price": 3,
+                            "quantity": 2,
+                            "revenueType": "Purchased",
+                            "time": 1597383030118,
+                            "session_id": -1
+                        }
+                    ],
+                    "options": {
+                        "min_id_length": 1
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    }
 ],
 [
   {
-     
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Order Completed",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "tax": 2,
-                              "total": 27.5,
-                              "coupon": "hasbros",
-                              "revenue": 48,
-                              "price": 25,
-                              "quantity": 2,
-                              "currency": "USD",
-                              "discount": 2.5,
-                              "order_id": "50314b8e9bcf000000000000",
-                              "shipping": 3,
-                              "subtotal": 22.5,
-                              "affiliation": "Google Store",
-                              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
-                          },
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-      
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "event_type": "Order Completed",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e97",
+            "event_properties": {
+              "tax": 2,
+              "total": 27.5,
+              "coupon": "hasbros",
+              "revenue": 48,
+              "price": 25,
+              "products": [
+                {
+                    "sku": "45790-32",
+                    "url": "https://www.example.com/product/path",
+                    "name": "Monopoly: 3rd Edition",
+                    "price": 19,
+                    "category": "Games",
+                    "quantity": 1,
+                    "image_url": "https:///www.example.com/product/path.jpg",
+                    "product_id": "507f1f77bcf86cd799439011"
+                },
+                {
+                    "sku": "46493-32",
+                    "name": "Uno Card Game",
+                    "price": 3,
+                    "category": "Games",
+                    "quantity": 2,
+                    "product_id": "505bd76785ebb509fc183733"
+                }
+            ],
+              "quantity": 2,
+              "currency": "USD",
+              "discount": 2.5,
+              "order_id": "50314b8e9bcf000000000000",
+              "shipping": 3,
+              "subtotal": 22.5,
+              "affiliation": "Google Store",
+              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+            },
+            "time": 1597383030118,
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
   },
   {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "45790-32",
-                              "url": "https://www.example.com/product/path",
-                              "name": "Monopoly: 3rd Edition",
-                              "price": 19,
-                              "category": "Games",
-                              "quantity": 1,
-                              "image_url": "https:///www.example.com/product/path.jpg",
-                              "product_id": "507f1f77bcf86cd799439011"
-                          },
-                          "price": 19,
-                          "quantity": 1,
-                          "revenueType": "Purchased",
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-      
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "event_type": "Product Purchased",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e98",
+            "event_properties": {
+              "sku": "45790-32",
+              "url": "https://www.example.com/product/path",
+              "name": "Monopoly: 3rd Edition",
+              "price": 19,
+              "category": "Games",
+              "quantity": 1,
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "product_id": "507f1f77bcf86cd799439011"
+            },
+            "price": 19,
+            "quantity": 1,
+            "revenueType": "Purchased",
+            "time": 1597383030118,
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
   },
   {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "46493-32",
-                              "name": "Uno Card Game",
-                              "price": 3,
-                              "category": "Games",
-                              "quantity": 2,
-                              "product_id": "505bd76785ebb509fc183733"
-                          },
-                          "price": 3,
-                          "quantity": 2,
-                          "revenueType": "Purchased",
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "event_type": "Product Purchased",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e99",
+            "event_properties": {
+              "sku": "46493-32",
+              "name": "Uno Card Game",
+              "price": 3,
+              "category": "Games",
+              "quantity": 2,
+              "product_id": "505bd76785ebb509fc183733"
+            },
+            "price": 3,
+            "quantity": 2,
+            "revenueType": "Purchased",
+            "time": 1597383030118,
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
   }
 ],
-[
-  {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Order Completed",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "tax": 2,
-                              "total": 27.5,
-                              "coupon": "hasbros",
-                              "revenue": 48,
-                              "price": 25,
-                              "quantity": 2,
-                              "currency": "USD",
-                              "discount": 2.5,
-                              "order_id": "50314b8e9bcf000000000000",
-                              "shipping": 3,
-                              "subtotal": 22.5,
-                              "affiliation": "Google Store",
-                              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
-                          },
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-      
-  },
-  {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "45790-32",
-                              "url": "https://www.example.com/product/path",
-                              "name": "Monopoly: 3rd Edition",
-                              "price": 19,
-                              "category": "Games",
-                              "quantity": 1,
-                              "image_url": "https:///www.example.com/product/path.jpg",
-                              "product_id": "507f1f77bcf86cd799439011"
-                          },
-                          "price": 19,
-                          "quantity": 1,
-                          "revenueType": "Purchased",
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-  },
-  {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.amplitude.com/2/httpapi",
-          "headers": {
-              "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-              "JSON": {
-                  "api_key": "abcde",
-                  "events": [
-                      {
-                          "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                          "event_type": "Product Purchased",
-                          "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-                          "event_properties": {
-                              "sku": "46493-32",
-                              "name": "Uno Card Game",
-                              "price": 3,
-                              "category": "Games",
-                              "quantity": 2,
-                              "product_id": "505bd76785ebb509fc183733"
-                          },
-                          "price": 3,
-                          "quantity": 2,
-                          "revenueType": "Purchased",
-                          "time": 1597383030118,
-                          "session_id": -1
-                      }
-                  ],
-                  "options": {
-                      "min_id_length": 1
-                  }
-              },
-              "XML": {},
-              "FORM": {}
-          },
-          "files": {},
-          "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-      
-  }
-],
-  
 {
       "version": "1",
       "type": "REST",
@@ -1133,7 +1077,7 @@
                   {
                       "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                       "event_type": "Order Completed",
-                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e910",
                       "event_properties": {
                           "tax": 2,
                           "total": 27.5,
@@ -1149,7 +1093,6 @@
                           "affiliation": "Google Store",
                           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                       },
-                      "revenue": 48,
                       "price": 25,
                       "quantity": 2,
                       "revenueType": "Purchased",
@@ -1184,7 +1127,7 @@
                   {
                       "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                       "event_type": "Order Completed",
-                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e911",
                       "event_properties": {
                           "tax": 2,
                           "total": 27.5,
@@ -1200,7 +1143,6 @@
                           "affiliation": "Google Store",
                           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                       },
-                      "revenue": 48,
                       "price": 25,
                       "quantity": 2,
                       "revenueType": "Purchased",
@@ -1235,7 +1177,7 @@
                   {
                       "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                       "event_type": "Order Completed",
-                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e912",
                       "event_properties": {
                           "tax": 2,
                           "total": 27.5,
@@ -1251,7 +1193,6 @@
                           "affiliation": "Google Store",
                           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                       },
-                      "revenue": 48,
                       "price": 25,
                       "quantity": 2,
                       "revenueType": "Purchased",
@@ -1287,7 +1228,7 @@
                   {
                       "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                       "event_type": "Order Completed",
-                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+                      "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e913",
                       "event_properties": {
                           "tax": 2,
                           "total": 27.5,
@@ -1303,7 +1244,6 @@
                           "affiliation": "Google Store",
                           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
                       },
-                      "revenue": 48,
                       "price": 25,
                       "quantity": 2,
                       "revenueType": "Purchased",

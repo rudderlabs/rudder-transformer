@@ -8,7 +8,6 @@
       "integration": {
         "name": "AF"
       },
-      "userId": "hi.from@appsflyer.example.com",
       "ip": "1.1.1.1",
       "timezone": "UTC",
       "userAgent": "AppsFlyer/1 CFNetwork/978.0.7 Darwin/18.6.0",
@@ -34,7 +33,8 @@
           "city": "Khu Pho Binh Hoa",
           "zip": "823941",
           "country": "VN"
-        }
+        },
+        "userId": "hi.from@appsflyer.example.com"
       },
       "externalId": [
         {
@@ -87,7 +87,6 @@
       "gp_click_time": null,
       "contributor_1_af_prt": null,
       "match_type": null,
-      "appsflyer_id": "1547985076649-5309999",
       "dma": "None",
       "http_referrer": null,
       "af_sub5": null,
@@ -112,13 +111,11 @@
       "af_sub2": null,
       "original_url": null,
       "contributor_2_campaign": null,
-      "android_id": null,
       "contributor_3_media_source": null,
       "af_adset": null,
       "af_ad": null,
       "state": "57",
       "network_account_id": null,
-      "idfa": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
       "retargeting_conversion_type": null,
       "af_channel": null,
       "af_cost_currency": null,
@@ -167,7 +164,6 @@
       "integration": {
         "name": "AF"
       },
-      "userId": "hi.from@appsflyer.example.com",
       "ip": "1.1.1.1",
       "timezone": "UTC",
       "userAgent": "AppsFlyer/1 CFNetwork/978.0.7 Darwin/18.6.0",
@@ -193,7 +189,8 @@
           "city": "Khu Pho Binh Hoa",
           "zip": "823941",
           "country": "VN"
-        }
+        },
+        "userId": "hi.from@appsflyer.example.com"
       },
       "externalId": [
         {
@@ -246,7 +243,6 @@
       "gp_click_time": null,
       "contributor_1_af_prt": null,
       "match_type": null,
-      "appsflyer_id": "1547985076649-5309999",
       "dma": "None",
       "http_referrer": null,
       "af_sub5": null,
@@ -271,13 +267,11 @@
       "af_sub2": null,
       "original_url": null,
       "contributor_2_campaign": null,
-      "android_id": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
       "contributor_3_media_source": null,
       "af_adset": null,
       "af_ad": null,
       "state": "57",
       "network_account_id": null,
-      "idfa": null,
       "retargeting_conversion_type": null,
       "af_channel": null,
       "af_cost_currency": null,

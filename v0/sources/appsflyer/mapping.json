@@ -1,5 +1,5 @@
 {
-  "customer_user_id": ["userId", "context.userId"],
+  "customer_user_id": ["userId", "context.traits.userId"],
   "event_time": ["timestamp", "originalTimestamp"],
   "ip": "context.ip",
   "selected_timezone": "context.timezone",

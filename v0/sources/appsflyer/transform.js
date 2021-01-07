@@ -32,10 +32,20 @@ function processEvent(event) {
       }
     });
 
-    if (event.platform && event.platform.toLowerCase() === "ios") {
-      message.context.device.advertisingId = event.idfa;
-    } else if (event.platform && event.platform.toLowerCase() === "android") {
-      message.context.device.advertisingId = event.android_id;
+    if (event.platform) {
+      if (event.platform.toLowerCase() === "ios") {
+        message.context.device.advertisingId = event.idfa;
+      } else if (event.platform.toLowerCase() === "android") {
+        message.context.device.advertisingId = event.android_id;
+      }
+      // remove idfa from message properties as it is already mapped.
+      if (message.properties && message.properties.idfa !== undefined) {
+        delete message.properties.idfa;
+      }
+      // remove android_id from message properties as it is already mapped.
+      if (message.properties && message.properties.android_id !== undefined) {
+        delete message.properties.android_id;
+      }
     }
     if (message.context.device.advertisingId) {
       message.context.device.adTrackingEnabled = true;
@@ -48,6 +58,10 @@ function processEvent(event) {
           value: event.appsflyer_id
         }
       ];
+      // remove appsflyer_id from message properties as it is already mapped.
+      if (message.properties && message.properties.appsflyer_id !== undefined) {
+        delete message.properties.appsflyer_id;
+      }
     }
 
     if (message.userId && message.userId !== "") {
@@ -59,9 +73,8 @@ function processEvent(event) {
 }
 
 function process(event) {
-  let returnValue = {};
   const response = processEvent(event);
-  returnValue = removeUndefinedAndNullValues(response);
+  const returnValue = removeUndefinedAndNullValues(response);
   return returnValue;
 }
 

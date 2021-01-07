@@ -94,7 +94,7 @@ function addMinIdlength() {
   return { min_id_length: 1 };
 }
 
-function finalisePriceQuanity(message) {
+function finalizePriceQuanity(message) {
   let price;
   let quantity;
   if (!message.properties.price) {
@@ -121,7 +121,7 @@ function createRevenuePayload(
     // AM calculates revenue when revenue, price or quantity is specified on the roots but not inside event_properties
     if (message.event === "Product Purchased" || numberOfEvents === 1) {
       // planned to put inside a function-----
-      [rawPayload.price, rawPayload.quantity] = finalisePriceQuanity(message);
+      [rawPayload.price, rawPayload.quantity] = finalizePriceQuanity(message);
       if (message.properties.revenueType) {
         // revenueType can be input from the user
         rawPayload.revenueType = message.properties.revenueType;
@@ -149,7 +149,7 @@ function createRevenuePayload(
       rawPayload.revenueType = "Purchased";
     }
     // planned to put inside a function-----
-    [rawPayload.price, rawPayload.quantity] = finalisePriceQuanity(message);
+    [rawPayload.price, rawPayload.quantity] = finalizePriceQuanity(message);
   }
   return rawPayload;
 }
@@ -706,11 +706,11 @@ function batch(destEvents) {
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
-        // batchEventResponse.destination = destinationObject;
-        // respList.push({ ...batchEventResponse });
-        // batchEventResponse = defaultBatchRequestConfig();
-        // batchEventResponse.destination = destinationObject;
-        // isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        batchEventResponse.destination = destinationObject;
+        respList.push({ ...batchEventResponse });
+        batchEventResponse = defaultBatchRequestConfig();
+        batchEventResponse.destination = destinationObject;
+        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
       }
     }
   });

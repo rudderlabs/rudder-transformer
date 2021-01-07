@@ -1,44 +1,38 @@
 [
-    {
-      "destKey": "userId",
-      "sourceKeys": [
-		   "userId",
-		   "traits.userId",
-		   "traits.id",
-		   "context.traits.userId",
-		   "context.traits.id"
-	    ],
-      "required": true
-    },
-    {
-      "destKey": "_lastBrowserLanguage",
-      "sourceKeys": "context.locale",
-      "required": false
-	  },
-    {
-      "destKey": "_updatedAt",
-      "sourceKeys": "originalTimestamp",
-      "required": false
-    },
-    {
-      "destKey": "_userAgent",
-      "sourceKeys": "context.userAgent",
-      "required": false
-    },
-    {
-      "destKey": "_currentPageTitle",
-      "sourceKeys": [ 
-        "context.page.title",
-        "properties.title"
-      ],
-      "required": false
-    },
-    {
-      "destKey": "_currentPageUrl",
-      "sourceKeys": [
-        "context.page.url", 
-        "properties.url"
-      ],
-      "required": false
-    }
+  {
+    "destKey": "userId",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "_lastBrowserLanguage",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "destKey": "_updatedAt",
+    "sourceKeys": "originalTimestamp",
+    "required": false
+  },
+  {
+    "destKey": "_userAgent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "_currentPageTitle",
+    "sourceKeys": ["context.page.title", "properties.title"],
+    "required": false
+  },
+  {
+    "destKey": "_currentPageUrl",
+    "sourceKeys": ["context.page.url", "properties.url"],
+    "required": false
+  }
 ]

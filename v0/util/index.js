@@ -25,11 +25,13 @@ const isDefined = x => !_.isUndefined(x);
 const isNotEmpty = x => !_.isEmpty(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
-const isDefinedAndNotNullAndNotEmpty = x => isDefined(x) && isNotNull(x) && isNotEmpty(x);
+const isDefinedAndNotNullAndNotEmpty = x =>
+  isDefined(x) && isNotNull(x) && isNotEmpty(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
-const removeUndefinedAndNullAndEmptyValues = obj => _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+const removeUndefinedAndNullAndEmptyValues = obj =>
+  _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 
 // ========================================================================
 // GENERIC UTLITY
@@ -176,6 +178,14 @@ const formatTimeStamp = (dateStr, format) => {
       return date.getTime();
   }
 };
+
+// Accepts a timestamp and returns the corresponding unix timestamp
+function toUnixTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const unixTimestamp = Math.floor(date.getTime() / 1000);
+  return unixTimestamp;
+}
+
 //
 
 const hashToSha256 = value => {
@@ -419,6 +429,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "getOffsetInSec":
         formattedVal = getOffsetInSec(formattedVal);
         break;
+      case "toUnixTimestamp":
+        formattedVal = toUnixTimestamp(formattedVal);
+        break;
       default:
         break;
     }
@@ -605,13 +618,6 @@ function getValuesAsArrayFromConfig(configObject, key) {
     });
   }
   return returnArray;
-}
-
-// Accepts a timestamp and returns the corresponding unix timestamp
-function toUnixTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  const unixTimestamp = Math.floor(date.getTime() / 1000);
-  return unixTimestamp;
 }
 
 // Accecpts timestamp as a parameter and returns the difference of the same with current time.

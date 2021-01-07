@@ -1,10 +1,8 @@
-const {
-  getMappingConfig
-} = require("../../util");
+const { getMappingConfig } = require("../../util");
 
 const ConfigCategory = {
-  IDENTIFY:  {
-   name: "AppcuesIdentifyConfig"
+  IDENTIFY: {
+    name: "AppcuesIdentifyConfig"
   },
   TRACK: {
     name: "AppcuesTrackConfig"
@@ -23,5 +21,5 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   ConfigCategory,
   mappingConfig,
-  getEndpoint,
+  getEndpoint
 };

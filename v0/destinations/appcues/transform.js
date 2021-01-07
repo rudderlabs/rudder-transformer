@@ -1,102 +1,96 @@
-const get = require("get-value");
-const set = require("set-value");
-const {
-  EventType
-} = require("../../../constants");
+const { EventType } = require("../../../constants");
 
 const {
   constructPayload,
   defaultRequestConfig,
+  getFieldValueFromMessage,
   getValueFromMessage,
   removeUndefinedAndNullValues,
-  removeUndefinedAndNullAndEmptyValues,
-  toUnixTimestamp
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 
-const {
-  ConfigCategory,
-  mappingConfig,
-  getEndpoint,
-} = require("./config");
+const { ConfigCategory, mappingConfig, getEndpoint } = require("./config");
 
-function buildResponse(message, payload, endpoint) {
+function buildResponse(payload, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return {
     ...response,
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     }
   };
 }
 
-function processIdentify(message, destination, mappingJson) {
-  return buildResponse(
-    message,
-    constructPayload(message,mappingJson),
-    getEndpoint(destination.Config.accountId, message.userId)
-  );
-}
-
 function processTrackEvent(message, destination, mappingJson) {
-  let requestJson = {};
+  const requestJson = {};
   if (message.messageId) {
     requestJson.request_id = message.messageId;
   }
 
-  let eventJson = constructPayload(message,mappingJson); 
-  eventJson.timestamp = toUnixTimestamp(eventJson.timestamp);
+  const eventJson = constructPayload(message, mappingJson);
   requestJson.events = [eventJson];
 
   return buildResponse(
-    message,
     requestJson,
-    getEndpoint(destination.Config.accountId, message.userId)
+    getEndpoint(
+      destination.Config.accountId,
+      getFieldValueFromMessage(message, "userIdOnly")
+    )
   );
-
 }
 
-function processPage(message, destination, trackMappingJson, profileMappingJson) {
-
-  let requestJson = {};
+function processPage(
+  message,
+  destination,
+  trackMappingJson,
+  profileMappingJson
+) {
+  const requestJson = {};
   if (message.messageId) {
     requestJson.request_id = message.messageId;
   }
 
   // generating profile part of the payload
-  let profileJson = constructPayload(message,profileMappingJson);
+  const profileJson = constructPayload(message, profileMappingJson);
+  // eslint-disable-next-line no-underscore-dangle
   profileJson._appcuesId = destination.Config.accountId;
   requestJson.profile_update = profileJson;
 
   // generating event part of the payload
-  let eventJson = constructPayload(message, trackMappingJson);
-  eventJson.timestamp = toUnixTimestamp(eventJson.timestamp);
-  eventJson.name = "Viewed a Page";
+  const eventJson = constructPayload(message, trackMappingJson);
+  // eslint-disable-next-line no-underscore-dangle
   eventJson.attributes._identity = {};
-  eventJson.attributes._identity.userId = message.userId;
-  eventJson.attributes = removeUndefinedAndNullAndEmptyValues(eventJson.attributes);
-  if ((message.properties && message.properties.url) || (message.context.page && message.context.page.url)) {
+  // eslint-disable-next-line no-underscore-dangle
+  eventJson.attributes._identity.userId = getFieldValueFromMessage(
+    message,
+    "userIdOnly"
+  );
+  eventJson.attributes = removeUndefinedAndNullAndEmptyValues(
+    eventJson.attributes
+  );
+
+  if (
+    (message.properties && message.properties.url) ||
+    (message.context.page && message.context.page.url)
+  ) {
     eventJson.context = {};
-    const sourceKeys = ["context.page.url", "properties.url"];
-    eventJson.context.url = getValueFromMessage(message, sourceKeys);
+    eventJson.context.url = getValueFromMessage(message, [
+      "context.page.url",
+      "properties.url"
+    ]);
   }
   requestJson.events = [eventJson];
 
   return buildResponse(
-    message,
     requestJson,
     getEndpoint(destination.Config.accountId, message.userId)
   );
 }
 
 function process(event) {
-  const respList = [];
-  let response;
-  const {
-    message,
-    destination
-  } = event;
+  const { message, destination } = event;
 
   if (!message.type) {
     throw new Error("Message Type is not present. Aborting message.");
@@ -104,46 +98,36 @@ function process(event) {
 
   const messageType = message.type.toLowerCase();
 
-  let category = ConfigCategory.TRACK;
-  let profileCategory = ConfigCategory.PROFILE;
-
   switch (messageType) {
     case EventType.TRACK:
-      response = processTrackEvent(
+      return processTrackEvent(
         message,
         destination,
-        mappingConfig[category.name]
+        mappingConfig[ConfigCategory.TRACK.name]
       );
-      break;
     case EventType.PAGE:
-      response = processPage(
-        message, 
-        destination, 
-        mappingConfig[category.name],
-        mappingConfig[profileCategory.name]
+      message.event = "Viewed a Page";
+      return processPage(
+        message,
+        destination,
+        mappingConfig[ConfigCategory.TRACK.name],
+        mappingConfig[ConfigCategory.PROFILE.name]
       );
-      break;
     case EventType.SCREEN:
       message.event = "Viewed a Screen";
-      response = processTrackEvent(
+      return processTrackEvent(
         message,
         destination,
-        mappingConfig[category.name]
+        mappingConfig[ConfigCategory.TRACK.name]
       );
-      break;
     case EventType.IDENTIFY:
-      category = ConfigCategory.IDENTIFY;
-      response = processIdentify(
-        message,
-        destination,
-        mappingConfig[category.name]
+      return buildResponse(
+        constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
+        getEndpoint(destination.Config.accountId, message.userId)
       );
-      break;
     default:
       throw new Error("Message type is not supported");
   }
-
-  return response;
 }
 
 module.exports = {

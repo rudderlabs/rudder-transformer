@@ -1,17 +1,20 @@
 [
-    {
-      "destKey": "name",
-      "sourceKeys": "event",
-      "required": false
-    },
-    {
-      "destKey": "timestamp",
-      "sourceKeys": "originalTimestamp",
-      "required": false
-    },
-    {
-        "destKey": "attributes",
-        "sourceKeys": "properties",
-        "required": "false"
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "originalTimestamp",
+    "required": true,
+    "metadata": {
+      "type": "toUnixTimestamp"
     }
-] 
+  },
+  {
+    "destKey": "attributes",
+    "sourceKeys": "properties",
+    "required": "false"
+  }
+]

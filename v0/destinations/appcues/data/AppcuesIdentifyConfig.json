@@ -6,7 +6,7 @@
   },
   {
     "destKey": "profile_update",
-    "sourceKeys": ["context.traits", "traits"],
+    "sourceKeys": ["traits", "context.traits"],
     "required": true
   }
 ]

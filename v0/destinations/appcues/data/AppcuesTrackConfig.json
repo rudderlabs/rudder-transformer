@@ -6,10 +6,10 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
-      "type": "toUnixTimestamp"
+      "type": "secondTimestamp"
     }
   },
   {

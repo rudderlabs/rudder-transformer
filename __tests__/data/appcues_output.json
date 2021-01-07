@@ -99,7 +99,7 @@
       "JSON": {
         "events": [
           {
-            "name": "Viewed a Page",
+            "name": "Visited a Page",
             "context": {
               "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html"
             },
@@ -141,7 +141,7 @@
       "JSON": {
         "events": [
           {
-            "name": "Viewed a Page",
+            "name": "Visited a Page",
             "context": {
               "url": "https://pagecall.com/testing"
             },
@@ -212,7 +212,7 @@
                 "userId": "sampleId"
               }
             },
-            "name": "Viewed a Page",
+            "name": "Visited a Page",
             "context": {
               "url": "https://pagecall.com/properties_url"
             }
@@ -256,7 +256,7 @@
                 "userId": "sampleId"
               }
             },
-            "name": "Viewed a Page",
+            "name": "Visited a Page",
             "context": {
               "url": "https://pagecall.com/context_url"
             }

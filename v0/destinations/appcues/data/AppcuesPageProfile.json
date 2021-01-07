@@ -17,7 +17,7 @@
   },
   {
     "destKey": "_updatedAt",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": false
   },
   {

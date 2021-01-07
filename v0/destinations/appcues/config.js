@@ -9,6 +9,9 @@ const ConfigCategory = {
   },
   PROFILE: {
     name: "AppcuesPageProfile"
+  },
+  DEFAULT: {
+    name: "AppcuesDefaultConfig"
   }
 };
 

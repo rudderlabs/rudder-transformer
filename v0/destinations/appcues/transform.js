@@ -1,9 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 const { EventType } = require("../../../constants");
 
 const {
   constructPayload,
   defaultRequestConfig,
-  getFieldValueFromMessage,
   getValueFromMessage,
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues
@@ -24,20 +24,17 @@ function buildResponse(payload, endpoint) {
 }
 
 function processTrackEvent(message, destination, mappingJson) {
-  const requestJson = {};
-  if (message.messageId) {
-    requestJson.request_id = message.messageId;
-  }
+  const requestJson = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.DEFAULT.name]
+  );
 
   const eventJson = constructPayload(message, mappingJson);
   requestJson.events = [eventJson];
 
   return buildResponse(
     requestJson,
-    getEndpoint(
-      destination.Config.accountId,
-      getFieldValueFromMessage(message, "userIdOnly")
-    )
+    getEndpoint(destination.Config.accountId, message.userId)
   );
 }
 
@@ -47,26 +44,24 @@ function processPage(
   trackMappingJson,
   profileMappingJson
 ) {
-  const requestJson = {};
-  if (message.messageId) {
-    requestJson.request_id = message.messageId;
-  }
+  const requestJson = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.DEFAULT.name]
+  );
 
   // generating profile part of the payload
   const profileJson = constructPayload(message, profileMappingJson);
-  // eslint-disable-next-line no-underscore-dangle
   profileJson._appcuesId = destination.Config.accountId;
   requestJson.profile_update = profileJson;
 
   // generating event part of the payload
   const eventJson = constructPayload(message, trackMappingJson);
-  // eslint-disable-next-line no-underscore-dangle
-  eventJson.attributes._identity = {};
-  // eslint-disable-next-line no-underscore-dangle
-  eventJson.attributes._identity.userId = getFieldValueFromMessage(
-    message,
-    "userIdOnly"
-  );
+  eventJson.attributes = {
+    ...eventJson.attributes,
+    _identity: {
+      userId: message.userId
+    }
+  };
   eventJson.attributes = removeUndefinedAndNullAndEmptyValues(
     eventJson.attributes
   );
@@ -75,20 +70,15 @@ function processPage(
     (message.properties && message.properties.url) ||
     (message.context.page && message.context.page.url)
   ) {
-    eventJson.context = {};
-    eventJson.context.url = getValueFromMessage(message, [
-      "context.page.url",
-      "properties.url"
-    ]);
+    eventJson.context = {
+      url: getValueFromMessage(message, ["context.page.url", "properties.url"])
+    };
   }
   requestJson.events = [eventJson];
 
   return buildResponse(
     requestJson,
-    getEndpoint(
-      destination.Config.accountId,
-      getFieldValueFromMessage(message, "userIdOnly")
-    )
+    getEndpoint(destination.Config.accountId, message.userId)
   );
 }
 
@@ -97,6 +87,12 @@ function process(event) {
 
   if (!message.type) {
     throw new Error("Message Type is not present. Aborting message.");
+  }
+
+  if (!message.userId) {
+    throw new Error(
+      "User id is absent. Aborting event as userId is mandatory for Appcues"
+    );
   }
 
   const messageType = message.type.toLowerCase();
@@ -109,7 +105,7 @@ function process(event) {
         mappingConfig[ConfigCategory.TRACK.name]
       );
     case EventType.PAGE:
-      message.event = "Viewed a Page";
+      message.event = "Visited a Page";
       return processPage(
         message,
         destination,
@@ -126,10 +122,7 @@ function process(event) {
     case EventType.IDENTIFY:
       return buildResponse(
         constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
-        getEndpoint(
-          destination.Config.accountId,
-          getFieldValueFromMessage(message, "userIdOnly")
-        )
+        getEndpoint(destination.Config.accountId, message.userId)
       );
     default:
       throw new Error("Message type is not supported");

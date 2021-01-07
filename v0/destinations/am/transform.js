@@ -161,8 +161,7 @@ function responseBuilderSimple(
   evType,
   mappingJson,
   destination,
-  numberOfEvents,
-  isRevenue
+  numberOfEvents
 ) {
   let rawPayload = {};
   const addOptions = "options";
@@ -191,17 +190,7 @@ function responseBuilderSimple(
         set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
       }
     } else {
-      if (
-        mappingJson[sourceKey] === "insert_id" &&
-        message.type === "track" &&
-        isRevenue
-      ) {
-        const insertIdEdit = get(message, sourceKey).concat(
-          insertIdCounter.toString()
-        );
-        set(rawPayload, mappingJson[sourceKey], insertIdEdit);
-        insertIdCounter += 1;
-      } else set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
     }
   });
 
@@ -372,7 +361,7 @@ function responseBuilderSimple(
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(message, destination, numberOfEvents, isRevenue) {
+function processSingleMessage(message, destination, numberOfEvents) {
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -480,13 +469,13 @@ function processSingleMessage(message, destination, numberOfEvents, isRevenue) {
     evType,
     mappingConfig[category.name],
     destination,
-    numberOfEvents,
-    isRevenue
+    numberOfEvents
   );
 }
 
 function createProductPurchasedEvent(message, product) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
+  // console.log(JSON.stringify(message));
   eventClonePurchaseProduct.event = "Product Purchased";
   // In product purchased event event properties consists of the details of each product
   eventClonePurchaseProduct.properties = product;
@@ -500,6 +489,9 @@ function purchaseProducts(message, sendEvent) {
   ) {
     // without existence of any product no product purchased event should be called
     message.properties.products.forEach(product => {
+      message.messageId = message.messageId.concat(
+        message.properties.products.indexOf(product).toString()
+      );
       const eventClonePurchaseProduct = createProductPurchasedEvent(
         message,
         product
@@ -541,17 +533,14 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   let setOfPayloads;
-  let isRevenue;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
       setOfPayloads = trackRevenue(message, destination);
       setOfPayloads.forEach(payload => {
         toSendEvents.push(payload);
       });
-      isRevenue = true;
     } else {
       toSendEvents.push(message);
-      isRevenue = false;
     }
   } else {
     toSendEvents.push(message);
@@ -559,12 +548,7 @@ function process(event) {
   if (message.properties && message.properties.revenue) {
     toSendEvents.forEach(sendEvent => {
       respList.push(
-        ...processSingleMessage(
-          sendEvent,
-          destination,
-          toSendEvents.length,
-          isRevenue
-        )
+        ...processSingleMessage(sendEvent, destination, toSendEvents.length)
       );
     });
   } else {

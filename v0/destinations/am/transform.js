@@ -574,7 +574,6 @@ function process(event) {
       );
     });
   }
-  // console.log(JSON.stringify(respList));
   return respList;
 }
 

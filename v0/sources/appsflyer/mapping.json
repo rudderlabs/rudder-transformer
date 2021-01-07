@@ -1,0 +1,18 @@
+{
+  "customer_user_id": ["userId", "context.userId"],
+  "event_time": ["timestamp", "originalTimestamp"],
+  "ip": "context.ip",
+  "selected_timezone": "context.timezone",
+  "user_agent": "context.userAgent",
+  "bundle_id": "context.app.namespace",
+  "app_version": "context.app.version",
+  "app_name": "context.app.name",
+  "device_type": "context.device.model",
+  "wifi": "context.network.wifi",
+  "carrier": "context.network.carrier",
+  "platform": ["platform", "context.os.name"],
+  "os_version": "context.os.version",
+  "city": ["traits.address.city", "context.traits.address.city"],
+  "postal_code": ["traits.address.zip", "context.traits.address.zip"],
+  "country_code": ["traits.address.country", "context.traits.address.country"]
+}

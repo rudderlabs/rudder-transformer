@@ -6,42 +6,69 @@
         "version": "unknown"
       },
       "integration": {
-        "name": "Appsflyer"
-      }
+        "name": "AF"
+      },
+      "userId": "hi.from@appsflyer.example.com",
+      "ip": "1.1.1.1",
+      "timezone": "UTC",
+      "userAgent": "AppsFlyer/1 CFNetwork/978.0.7 Darwin/18.6.0",
+      "app": {
+        "namespace": "com.appsflyer.AppsFlyer",
+        "version": "1.4.1",
+        "name": "AppsFlyer"
+      },
+      "device": {
+        "model": "iPhoneXR",
+        "advertisingId": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
+        "adTrackingEnabled": true
+      },
+      "network": {
+        "wifi": true
+      },
+      "os": {
+        "name": "ios",
+        "version": "12.3.1"
+      },
+      "traits": {
+        "address": {
+          "city": "Khu Pho Binh Hoa",
+          "zip": "823941",
+          "country": "VN"
+        }
+      },
+      "externalId": [
+        {
+          "type": "appsflyerExternalId",
+          "value": "1547985076649-5309999"
+        }
+      ]
     },
     "integrations": {
-      "Appsflyer": false
+      "AF": false
     },
     "properties": {
       "idfv": "868049A3-4B2F-4A11-9B00-CFFC362XXXXX",
       "device_category": "phone",
       "af_sub1": null,
-      "customer_user_id": "hi.from@appsflyer.example.com",
       "is_lat": null,
       "contributor_2_af_prt": null,
-      "bundle_id": "com.appsflyer.AppsFlyer",
       "gp_broadcast_referrer": "",
       "contributor_2_touch_time": null,
       "contributor_3_touch_type": null,
       "event_source": "SDK",
       "af_cost_value": null,
       "contributor_1_match_type": null,
-      "app_version": "1.4.1",
       "contributor_3_af_prt": null,
       "custom_data": null,
       "contributor_2_touch_type": null,
       "gp_install_begin": null,
-      "city": "Khu Pho Binh Hoa",
       "amazon_aid": null,
       "gp_referrer": null,
       "af_cost_model": null,
       "af_c_id": null,
       "attributed_touch_time_selected_timezone": null,
       "selected_currency": "USD",
-      "app_name": "AppsFlyer",
       "install_time_selected_timezone": "2019-01-20 04:51:16.000+0000",
-      "postal_code": "823941",
-      "wifi": true,
       "install_time": "2019-01-20 04:51:16.000",
       "operator": null,
       "attributed_touch_type": null,
@@ -57,7 +84,6 @@
       "attributed_touch_time": null,
       "revenue_in_selected_currency": null,
       "is_retargeting": false,
-      "country_code": "VN",
       "gp_click_time": null,
       "contributor_1_af_prt": null,
       "match_type": null,
@@ -76,9 +102,7 @@
       "region": "AS",
       "cost_in_selected_currency": null,
       "event_value": "{}",
-      "ip": "1.1.1.1",
       "oaid": null,
-      "event_time": "2020-01-15 14:57:24.898",
       "is_receipt_validated": null,
       "contributor_1_campaign": null,
       "af_sub4": null,
@@ -94,7 +118,6 @@
       "af_ad": null,
       "state": "57",
       "network_account_id": null,
-      "device_type": "iPhoneXR",
       "idfa": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
       "retargeting_conversion_type": null,
       "af_channel": null,
@@ -110,31 +133,193 @@
       "contributor_1_touch_time": null,
       "event_revenue": null,
       "af_ad_type": null,
-      "carrier": null,
       "event_name": "My Apps",
       "af_sub_siteid": null,
       "advertising_id": null,
-      "os_version": "12.3.1",
-      "platform": "ios",
       "af_sub3": null,
       "contributor_3_match_type": null,
-      "selected_timezone": "UTC",
       "af_ad_id": null,
       "contributor_3_touch_time": null,
-      "user_agent": "AppsFlyer/1 CFNetwork/978.0.7 Darwin/18.6.0",
       "is_primary_attribution": true,
       "sdk_version": "v4.10.0",
       "event_time_selected_timezone": "2020-01-15 14:57:24.898+0000"
     },
     "type": "track",
     "event": "My Apps",
-    "originalTimestamp": "2020-01-15 14:57:24.898",
+    "userId": "hi.from@appsflyer.example.com",
     "timestamp": "2020-01-15 14:57:24.898",
-    "userId": "hi.from@appsflyer.example.com"
+    "originalTimestamp": "2020-01-15 14:57:24.898",
+    "platform": "ios",
+    "traits": {
+      "address": {
+        "city": "Khu Pho Binh Hoa",
+        "zip": "823941",
+        "country": "VN"
+      }
+    }
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "AF"
+      },
+      "userId": "hi.from@appsflyer.example.com",
+      "ip": "1.1.1.1",
+      "timezone": "UTC",
+      "userAgent": "AppsFlyer/1 CFNetwork/978.0.7 Darwin/18.6.0",
+      "app": {
+        "namespace": "com.appsflyer.AppsFlyer",
+        "version": "1.4.1",
+        "name": "AppsFlyer"
+      },
+      "device": {
+        "model": "Nokia 5.3",
+        "advertisingId": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
+        "adTrackingEnabled": true
+      },
+      "network": {
+        "wifi": true
+      },
+      "os": {
+        "name": "android",
+        "version": "12.3.1"
+      },
+      "traits": {
+        "address": {
+          "city": "Khu Pho Binh Hoa",
+          "zip": "823941",
+          "country": "VN"
+        }
+      },
+      "externalId": [
+        {
+          "type": "appsflyerExternalId",
+          "value": "1547985076649-5309999"
+        }
+      ]
+    },
+    "integrations": {
+      "AF": false
+    },
+    "properties": {
+      "idfv": "868049A3-4B2F-4A11-9B00-CFFC362XXXXX",
+      "device_category": "phone",
+      "af_sub1": null,
+      "is_lat": null,
+      "contributor_2_af_prt": null,
+      "gp_broadcast_referrer": "",
+      "contributor_2_touch_time": null,
+      "contributor_3_touch_type": null,
+      "event_source": "SDK",
+      "af_cost_value": null,
+      "contributor_1_match_type": null,
+      "contributor_3_af_prt": null,
+      "custom_data": null,
+      "contributor_2_touch_type": null,
+      "gp_install_begin": null,
+      "amazon_aid": null,
+      "gp_referrer": null,
+      "af_cost_model": null,
+      "af_c_id": null,
+      "attributed_touch_time_selected_timezone": null,
+      "selected_currency": "USD",
+      "install_time_selected_timezone": "2019-01-20 04:51:16.000+0000",
+      "install_time": "2019-01-20 04:51:16.000",
+      "operator": null,
+      "attributed_touch_type": null,
+      "af_attribution_lookback": null,
+      "campaign_type": null,
+      "keyword_match_type": null,
+      "af_adset_id": null,
+      "device_download_time_selected_timezone": "2019-01-20 04:51:16.000+0000",
+      "contributor_2_media_source": null,
+      "conversion_type": null,
+      "contributor_2_match_type": null,
+      "api_version": "2.0",
+      "attributed_touch_time": null,
+      "revenue_in_selected_currency": null,
+      "is_retargeting": false,
+      "gp_click_time": null,
+      "contributor_1_af_prt": null,
+      "match_type": null,
+      "appsflyer_id": "1547985076649-5309999",
+      "dma": "None",
+      "http_referrer": null,
+      "af_sub5": null,
+      "af_prt": null,
+      "event_revenue_currency": "USD",
+      "store_reinstall": null,
+      "install_app_store": null,
+      "media_source": "organic",
+      "deeplink_url": null,
+      "campaign": null,
+      "af_keywords": null,
+      "region": "AS",
+      "cost_in_selected_currency": null,
+      "event_value": "{}",
+      "oaid": null,
+      "is_receipt_validated": null,
+      "contributor_1_campaign": null,
+      "af_sub4": null,
+      "imei": null,
+      "contributor_3_campaign": null,
+      "event_revenue_usd": null,
+      "af_sub2": null,
+      "original_url": null,
+      "contributor_2_campaign": null,
+      "android_id": "A7071198-3848-40A5-B3D0-94578D9BZZZZ",
+      "contributor_3_media_source": null,
+      "af_adset": null,
+      "af_ad": null,
+      "state": "57",
+      "network_account_id": null,
+      "idfa": null,
+      "retargeting_conversion_type": null,
+      "af_channel": null,
+      "af_cost_currency": null,
+      "contributor_1_media_source": null,
+      "keyword_id": null,
+      "device_download_time": "2019-01-20 04:51:16.000",
+      "contributor_1_touch_type": null,
+      "af_reengagement_window": null,
+      "af_siteid": null,
+      "language": "en-US",
+      "app_id": "id1217828636",
+      "contributor_1_touch_time": null,
+      "event_revenue": null,
+      "af_ad_type": null,
+      "event_name": "My Apps",
+      "af_sub_siteid": null,
+      "advertising_id": null,
+      "af_sub3": null,
+      "contributor_3_match_type": null,
+      "af_ad_id": null,
+      "contributor_3_touch_time": null,
+      "is_primary_attribution": true,
+      "sdk_version": "v4.10.0",
+      "event_time_selected_timezone": "2020-01-15 14:57:24.898+0000"
+    },
+    "type": "track",
+    "event": "My Apps",
+    "userId": "hi.from@appsflyer.example.com",
+    "timestamp": "2020-01-15 14:57:24.898",
+    "originalTimestamp": "2020-01-15 14:57:24.898",
+    "platform": "android",
+    "traits": {
+      "address": {
+        "city": "Khu Pho Binh Hoa",
+        "zip": "823941",
+        "country": "VN"
+      }
+    }
   },
   {
     "statusCode": 400,
-    "error": "Unknwon event type from Appsflyer"
+    "message": "Unknwon event type from Appsflyer"
   },
   {
   }

@@ -26,3 +26,25 @@ inputData.forEach(async (input, index) => {
     }
   });
 });
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+const output = [];
+const getOutput = async input => {
+ output.push(...await transformer.processRouterDest(input));
+  console.log(output);
+  console.log(expectedRouterData);
+  exepect(output).toEqual(expectedRouterData);
+
+}
+getOutput(inputRouterData)
+  
+ 
+
+
+

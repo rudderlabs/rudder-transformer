@@ -380,7 +380,7 @@ const processRouterDest = async input => {
       respList.push(respEvents);
     }
   }
-
+  console.log(respList)
   return respList;
 };
 

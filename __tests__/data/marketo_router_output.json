@@ -1,0 +1,142 @@
+[
+    {
+        "batchedRequest": {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://585-AXP-425.mktorest.com/rest/v1/activities/external.json",
+            "headers": {
+                "Authorization": "Bearer 3f0d72a7-5c27-49b4-a325-72b62347ab48:ab",
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "input": [
+                        {
+                            "activityDate": "2020-12-17T21:00:59.176Z",
+                            "activityTypeId": 100001,
+                            "attributes": [],
+                            "leadId": 1002842,
+                            "primaryAttributeValue": "Test Product"
+                        }
+                    ]
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        "metadata": [
+            {
+                "jobId": 2
+            }
+        ],
+        "batched": false,
+        "statusCode": 200,
+        "destination": {
+            "ID": "a",
+            "url": "b",
+            "Config": {
+                "accountId": "585-AXP-425",
+                "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
+                "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",
+                "trackAnonymousEvents": true,
+                "customActivityEventMap": [
+                    {
+                        "from": "Product Clicked",
+                        "to": "100001"
+                    }
+                ],
+                "customActivityPropertyMap": [
+                    {
+                        "from": "name",
+                        "to": "productName"
+                    }
+                ],
+                "customActivityPrimaryKeyMap": [
+                    {
+                        "from": "Product Clicked",
+                        "to": "name"
+                    }
+                ],
+                "leadTraitMapping": [
+                    {
+                        "from": "leadScore",
+                        "to": "customLeadScore"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "batchedRequest": {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://585-AXP-425.mktorest.com/rest/v1/activities/external.json",
+            "headers": {
+                "Authorization": "Bearer 3f0d72a7-5c27-49b4-a325-72b62347ab48:ab",
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "input": [
+                        {
+                            "activityDate": "2020-12-17T21:00:59.176Z",
+                            "activityTypeId": 100001,
+                            "attributes": [],
+                            "leadId": 1002842,
+                            "primaryAttributeValue": "Test Product"
+                        }
+                    ]
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        "metadata": [
+            {
+                "jobId": 2
+            }
+        ],
+        "batched": false,
+        "statusCode": 200,
+        "destination": {
+            "ID": "a",
+            "url": "b",
+            "Config": {
+                "accountId": "585-AXP-425",
+                "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
+                "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",
+                "trackAnonymousEvents": true,
+                "customActivityEventMap": [
+                    {
+                        "from": "Product Clicked",
+                        "to": "100001"
+                    }
+                ],
+                "customActivityPropertyMap": [
+                    {
+                        "from": "name",
+                        "to": "productName"
+                    }
+                ],
+                "customActivityPrimaryKeyMap": [
+                    {
+                        "from": "Product Clicked",
+                        "to": "name"
+                    }
+                ],
+                "leadTraitMapping": [
+                    {
+                        "from": "leadScore",
+                        "to": "customLeadScore"
+                    }
+                ]
+            }
+        }
+    }
+]

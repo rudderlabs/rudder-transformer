@@ -62,7 +62,6 @@ function process(event) {
   let returnValue = {};
   const response = processEvent(event);
   returnValue = removeUndefinedAndNullValues(response);
-  console.log(JSON.stringify(returnValue));
   return returnValue;
 }
 

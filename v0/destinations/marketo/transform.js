@@ -297,7 +297,7 @@ const process = async event => {
 };
 
 /**  create output according to  {
-      "message": {},
+      "batchedRequest": {},
       "metadata": [],
       "batched": false,
       "statusCode": 500,
@@ -308,7 +308,7 @@ const process = async event => {
 // Success responses
 const getSuccessRespEvents = (message, metadata, destination) => {
   const returnResponse = {};
-  returnResponse.message = message;
+  returnResponse.batchedRequest = message;
   returnResponse.metadata = metadata;
   returnResponse.batched = false;
   returnResponse.statusCode = 200;
@@ -360,34 +360,24 @@ const processRouterDest = async input => {
   const respList = [];
   // Checking previous status Code. Initially setting to false.
   // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
-  let prevStatus = false;
+  // let prevStatus = false;
   for (let i = 0; i < input.length; i += 1) {
     const inputs = input[i];
     let respEvents = {};
-    if (prevStatus) {
-      respEvents = getErrorRespEvents(
+    try {
+      respEvents = getSuccessRespEvents(
+        await processEvent(inputs.message, inputs.destination, token),
         [inputs.metadata],
-        500,
-        "Skipping external API call"
+        inputs.destination
       );
       respList.push(respEvents);
-    } else {
-      try {
-        respEvents = getSuccessRespEvents(
-          await processEvent(inputs.message, inputs.destination, token),
-          [inputs.metadata],
-          inputs.destination
-        );
-        respList.push(respEvents);
-      } catch (error) {
-        respEvents = getErrorRespEvents(
-          [inputs.metadata],
-          error.response ? error.response.status : 400,
-          error.message || "Error occurred while processing payload."
-        );
-        prevStatus = respEvents.statusCode === 500;
-        respList.push(respEvents);
-      }
+    } catch (error) {
+      respEvents = getErrorRespEvents(
+        [inputs.metadata],
+        error.response ? error.response.status : 400,
+        error.message || "Error occurred while processing payload."
+      );
+      respList.push(respEvents);
     }
   }
 

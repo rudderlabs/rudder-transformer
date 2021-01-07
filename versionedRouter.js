@@ -108,11 +108,12 @@ async function routerHandleDest(ctx) {
     ctx.body = `${destType} doesn't support router transform`;
     return;
   }
-  let respEvents;
+  const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
-      respEvents = await routerDestHandler.processRouterDest(desInput);
+      const listOutput = await routerDestHandler.processRouterDest(desInput);
+      respEvents.push(...listOutput);
     })
   );
   ctx.body = { output: respEvents };

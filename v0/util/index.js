@@ -32,6 +32,8 @@ const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+const isBlank = (value) => _.isEmpty(_.toString(value));
+
 
 // ========================================================================
 // GENERIC UTLITY
@@ -685,6 +687,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  isBlank,
   removeNullValues,
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues,

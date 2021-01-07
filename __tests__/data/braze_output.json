@@ -237,6 +237,35 @@
     "statusCode": 400,
     "message": "Invalid Order Completed event"
   },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "ab_rudder_group_1234": true,
+              "external_id":"Randomuser2222"
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "Randomuser2222"
+    }
+  ],
   {
     "statusCode": 400,
     "message": "Message type is not supported"

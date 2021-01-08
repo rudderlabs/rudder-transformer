@@ -1,1 +1,9 @@
-[]
+[{
+    "destKey": "name",
+    "sourceKeys": [
+        "properties.domain",
+        "properties.url",
+        "context.page.url"
+    ],
+    "required": true
+  }]

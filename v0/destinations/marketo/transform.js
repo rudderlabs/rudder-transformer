@@ -348,6 +348,7 @@ const processRouterDest = async input => {
     );
     return [respEvents];
   }
+
   // If token is null track/identify calls cannot be executed.
   if (!token) {
     const respEvents = getErrorRespEvents(
@@ -357,30 +358,49 @@ const processRouterDest = async input => {
     );
     return [respEvents];
   }
-  const respList = [];
+
   // Checking previous status Code. Initially setting to false.
   // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
-  // let prevStatus = false;
-  for (let i = 0; i < input.length; i += 1) {
-    const inputs = input[i];
-    let respEvents = {};
-    try {
-      respEvents = getSuccessRespEvents(
-        await processEvent(inputs.message, inputs.destination, token),
-        [inputs.metadata],
-        inputs.destination
-      );
-      respList.push(respEvents);
-    } catch (error) {
-      respEvents = getErrorRespEvents(
-        [inputs.metadata],
-        error.response ? error.response.status : 400,
-        error.message || "Error occurred while processing payload."
-      );
-      respList.push(respEvents);
-    }
-  }
-  console.log(respList)
+  const respList = await Promise.all(
+    input.map(async inputs => {
+      try {
+        return getSuccessRespEvents(
+          await processEvent(inputs.message, inputs.destination, token),
+          [inputs.metadata],
+          inputs.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [inputs.metadata],
+          error.response ? error.response.status : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  // const respList = [];
+  // // Checking previous status Code. Initially setting to false.
+  // // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
+  // // let prevStatus = false;
+  // for (let i = 0; i < input.length; i += 1) {
+  //   const inputs = input[i];
+  //   let respEvents = {};
+  //   try {
+  //     respEvents = getSuccessRespEvents(
+  //       await processEvent(inputs.message, inputs.destination, token),
+  //       [inputs.metadata],
+  //       inputs.destination
+  //     );
+  //     respList.push(respEvents);
+  //   } catch (error) {
+  //     respEvents = getErrorRespEvents(
+  //       [inputs.metadata],
+  //       error.response ? error.response.status : 400,
+  //       error.message || "Error occurred while processing payload."
+  //     );
+  //     respList.push(respEvents);
+  //   }
+  // }
   return respList;
 };
 

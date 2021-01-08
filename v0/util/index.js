@@ -320,16 +320,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-// get a field value from message.
-// if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
-// else use sourceKey from `data/message.json` for actual field precedence
-// Example usage: getFieldValueFromMessage(message, "userId",true)
-//                This will return the first nonnull value from
-//                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
-const getFieldValueFromMessage = (message, sourceKey, sourceFromGenericMap) => {
-  if (sourceFromGenericMap) {
-    sourceKey = MESSAGE_MAPPING[sourceKey];
-  }
+const getValueFromMessage = (message, sourceKey) => {
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
       logger.warn(
@@ -355,6 +346,19 @@ const getFieldValueFromMessage = (message, sourceKey, sourceFromGenericMap) => {
     throw new Error("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
+};
+
+// get a field value from message.
+// if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
+// else use sourceKey from `data/message.json` for actual field precedence
+// Example usage: getFieldValueFromMessage(message, "userId",true)
+//                This will return the first nonnull value from
+//                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
+const getFieldValueFromMessage = (message, sourceKey) => {
+  sourceKey = MESSAGE_MAPPING[sourceKey];
+  if (sourceKey) {
+    return getValueFromMessage(message, sourceKey);
+  }
 };
 
 // format the value as per the metadata values
@@ -506,9 +510,12 @@ const constructPayload = (message, mappingJson) => {
         metadata,
         sourceFromGenericMap
       } = mapping;
-      // get the value from event
+      // get the value from event, pass sourceFromGenericMap in the mapping to force this to take the
+      // sourcekeys from GenericFieldMapping, else take the sourceKeys from specific destination mapping sourceKeys
       const value = handleMetadataForValue(
-        getFieldValueFromMessage(message, sourceKeys, sourceFromGenericMap),
+        sourceFromGenericMap
+          ? getFieldValueFromMessage(message, sourceKeys)
+          : getValueFromMessage(message, sourceKeys),
         metadata
       );
 
@@ -670,6 +677,7 @@ module.exports = {
   getDestinationExternalID,
   getDeviceModel,
   getFieldValueFromMessage,
+  getValueFromMessage,
   getFirstAndLastName,
   getHashFromArray,
   getMappingConfig,

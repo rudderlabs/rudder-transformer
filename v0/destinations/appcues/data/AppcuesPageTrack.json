@@ -17,5 +17,17 @@
     "destKey": "attributes",
     "sourceKeys": "properties",
     "required": "false"
+  },
+  {
+    "destKey": "context.url",
+    "sourceKeys": "pageUrl",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes._identity.userId",
+    "sourceKeys": "userIdOnly",
+    "required": false,
+    "sourceFromGenericMap": true
   }
 ]

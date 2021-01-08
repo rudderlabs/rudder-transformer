@@ -7,7 +7,10 @@ const ConfigCategory = {
   TRACK: {
     name: "AppcuesTrackConfig"
   },
-  PROFILE: {
+  PAGETRACK: {
+    name: "AppcuesPageTrack"
+  },
+  PAGEPROFILE: {
     name: "AppcuesPageProfile"
   },
   DEFAULT: {

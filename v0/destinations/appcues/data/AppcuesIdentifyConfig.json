@@ -6,7 +6,8 @@
   },
   {
     "destKey": "profile_update",
-    "sourceKeys": ["traits", "context.traits"],
-    "required": true
+    "sourceKeys": "traits",
+    "required": true,
+    "sourceFromGenericMap": true
   }
 ]

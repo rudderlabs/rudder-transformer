@@ -4,7 +4,6 @@ const { EventType } = require("../../../constants");
 const {
   constructPayload,
   defaultRequestConfig,
-  getValueFromMessage,
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
@@ -38,42 +37,24 @@ function processTrackEvent(message, destination, mappingJson) {
   );
 }
 
-function processPage(
-  message,
-  destination,
-  trackMappingJson,
-  profileMappingJson
-) {
+function processPage(message, destination, pageTrackJson, pageProfileJson) {
   const requestJson = constructPayload(
     message,
     mappingConfig[ConfigCategory.DEFAULT.name]
   );
 
   // generating profile part of the payload
-  const profileJson = constructPayload(message, profileMappingJson);
+  const profileJson = constructPayload(message, pageProfileJson);
   profileJson._appcuesId = destination.Config.accountId;
   requestJson.profile_update = profileJson;
 
   // generating event part of the payload
-  const eventJson = constructPayload(message, trackMappingJson);
-  eventJson.attributes = {
-    ...eventJson.attributes,
-    _identity: {
-      userId: message.userId
-    }
-  };
+  const eventJson = constructPayload(message, pageTrackJson);
+
   eventJson.attributes = removeUndefinedAndNullAndEmptyValues(
     eventJson.attributes
   );
 
-  if (
-    (message.properties && message.properties.url) ||
-    (message.context.page && message.context.page.url)
-  ) {
-    eventJson.context = {
-      url: getValueFromMessage(message, ["context.page.url", "properties.url"])
-    };
-  }
   requestJson.events = [eventJson];
 
   return buildResponse(
@@ -109,8 +90,8 @@ function process(event) {
       return processPage(
         message,
         destination,
-        mappingConfig[ConfigCategory.TRACK.name],
-        mappingConfig[ConfigCategory.PROFILE.name]
+        mappingConfig[ConfigCategory.PAGETRACK.name],
+        mappingConfig[ConfigCategory.PAGEPROFILE.name]
       );
     case EventType.SCREEN:
       message.event = "Viewed a Screen";

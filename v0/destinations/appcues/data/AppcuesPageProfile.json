@@ -1,14 +1,9 @@
 [
   {
     "destKey": "userId",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
-    ],
-    "required": true
+    "sourceKeys": "userIdOnly",
+    "required": true,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "_lastBrowserLanguage",
@@ -17,8 +12,9 @@
   },
   {
     "destKey": "_updatedAt",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
-    "required": false
+    "sourceKeys": "timestamp",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "_userAgent",
@@ -27,12 +23,14 @@
   },
   {
     "destKey": "_currentPageTitle",
-    "sourceKeys": ["context.page.title", "properties.title"],
-    "required": false
+    "sourceKeys": "pageTitle",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "_currentPageUrl",
-    "sourceKeys": ["context.page.url", "properties.url"],
-    "required": false
+    "sourceKeys": "pageUrl",
+    "required": false,
+    "sourceFromGenericMap": true
   }
 ]

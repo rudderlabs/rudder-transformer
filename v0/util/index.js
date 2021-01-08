@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -32,8 +33,7 @@ const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
-const isBlank = (value) => _.isEmpty(_.toString(value));
-
+const isBlank = value => _.isEmpty(_.toString(value));
 
 // ========================================================================
 // GENERIC UTLITY
@@ -320,10 +320,16 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-// Important !@!
-// - get value from a list of sourceKeys in precedence order
-// - get value from a string key
-const getValueFromMessage = (message, sourceKey) => {
+// get a field value from message.
+// if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
+// else use sourceKey from `data/message.json` for actual field precedence
+// Example usage: getFieldValueFromMessage(message, "userId",true)
+//                This will return the first nonnull value from
+//                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
+const getFieldValueFromMessage = (message, sourceKey, sourceFromGenericMap) => {
+  if (sourceFromGenericMap) {
+    sourceKey = MESSAGE_MAPPING[sourceKey];
+  }
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
       logger.warn(
@@ -369,7 +375,6 @@ const handleMetadataForValue = (value, metadata) => {
   if (!value) {
     return defaultValue || value;
   }
-
   // we've got a correct value. start processing
   let formattedVal = value;
 
@@ -448,7 +453,6 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
-
   return formattedVal;
 };
 
@@ -495,10 +499,16 @@ const constructPayload = (message, mappingJson) => {
     //   ...
     // ];
     mappingJson.forEach(mapping => {
-      const { sourceKeys, destKey, required, metadata } = mapping;
+      const {
+        sourceKeys,
+        destKey,
+        required,
+        metadata,
+        sourceFromGenericMap
+      } = mapping;
       // get the value from event
       const value = handleMetadataForValue(
-        getValueFromMessage(message, sourceKeys),
+        getFieldValueFromMessage(message, sourceKeys, sourceFromGenericMap),
         metadata
       );
 
@@ -517,19 +527,6 @@ const constructPayload = (message, mappingJson) => {
   }
 
   // invalid mappingJson
-  return null;
-};
-
-// get a field value from message.
-// check `data/message.json` for actual field precedence
-// Example usage: getFieldValueFromMessage(message, "userId")
-//                This will return the first nonnull value from
-//                ["userId", "context.traits.userId", "context.traits.id", "anonymousId"]
-const getFieldValueFromMessage = (message, field) => {
-  const sourceKey = MESSAGE_MAPPING[field];
-  if (sourceKey) {
-    return getValueFromMessage(message, sourceKey);
-  }
   return null;
 };
 
@@ -678,7 +675,6 @@ module.exports = {
   getMappingConfig,
   getParsedIP,
   getTimeDifference,
-  getValueFromMessage,
   getValuesAsArrayFromConfig,
   isEmpty,
   isObject,

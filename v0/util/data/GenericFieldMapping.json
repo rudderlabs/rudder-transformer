@@ -60,5 +60,13 @@
     "traits.lastname",
     "context.traits.lastName",
     "context.traits.lastname"
+  ],
+  "pageTitle": [
+    "context.page.title", 
+    "properties.title"
+  ],
+  "pageUrl": [
+    "context.page.url", 
+    "properties.url"
   ]
 }

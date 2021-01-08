@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");
@@ -71,8 +73,6 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
   return Math.abs(hash);
 } */
 
-let insertIdCounter = 0;
-
 function getSessionId(payload) {
   const sessionId = payload.session_id;
   if (sessionId) {
@@ -94,7 +94,7 @@ function addMinIdlength() {
   return { min_id_length: 1 };
 }
 
-function finalizePriceQuanity(message) {
+function setPriceQuanityInPayload(message, rawPayload) {
   let price;
   let quantity;
   if (!message.properties.price) {
@@ -106,50 +106,19 @@ function finalizePriceQuanity(message) {
       quantity = message.properties.quantity;
     }
   }
-  return [price, quantity];
+  rawPayload.price = price;
+  rawPayload.quantity = quantity;
+  rawPayload.revenue = message.properties.revenue;
+  return rawPayload;
 }
 
-function createRevenuePayload(
-  destination,
-  message,
-  rawPayload,
-  numberOfEvents
-) {
-  if (destination.Config.trackRevenuePerProduct) {
-    // In this case per product revenue is calculated from each product purchased event
-    // also when there is no product array the revenue will be calculated from the very first event only
-    // AM calculates revenue when revenue, price or quantity is specified on the roots but not inside event_properties
-    if (message.event === "Product Purchased" || numberOfEvents === 1) {
-      // planned to put inside a function-----
-      [rawPayload.price, rawPayload.quantity] = finalizePriceQuanity(message);
-      if (message.properties.revenueType) {
-        // revenueType can be input from the user
-        rawPayload.revenueType = message.properties.revenueType;
-      } else if (message.properties.revenue_type) {
-        // user can also input as revenue_type
-        rawPayload.revenueType = message.properties.revenue_type;
-      } else {
-        rawPayload.revenueType = "Purchased";
-      }
-    }
-  }
-  if (
-    destination.Config.trackRevenuePerProduct === false &&
-    message.event !== "Product Purchased"
-  ) {
-    // when trackRevenuePerProduct is false the revenue is to be calculated from the topmost event only
-    // so we need to filter out "Product Purchased" event which is of no use here
-    if (message.properties.revenueType) {
-      // revenueType can be input from the user
-      rawPayload.revenueType = message.properties.revenueType;
-    } else if (message.properties.revenue_type) {
-      // user can also input as revenue_type
-      rawPayload.revenueType = message.properties.revenue_type;
-    } else {
-      rawPayload.revenueType = "Purchased";
-    }
-    // planned to put inside a function-----
-    [rawPayload.price, rawPayload.quantity] = finalizePriceQuanity(message);
+function createRevenuePayload(message, rawPayload) {
+  if (message.isRevenue) {
+    rawPayload.revenueType =
+      message.properties.revenueType ||
+      message.properties.revenue_type ||
+      "Purchased";
+    rawPayload = setPriceQuanityInPayload(message, rawPayload);
   }
   return rawPayload;
 }
@@ -160,8 +129,7 @@ function responseBuilderSimple(
   message,
   evType,
   mappingJson,
-  destination,
-  numberOfEvents
+  destination
 ) {
   let rawPayload = {};
   const addOptions = "options";
@@ -263,12 +231,7 @@ function responseBuilderSimple(
         evType === "Product Purchased"
       ) {
         // making the revenue payload
-        rawPayload = createRevenuePayload(
-          destination,
-          message,
-          rawPayload,
-          numberOfEvents
-        );
+        rawPayload = createRevenuePayload(message, rawPayload);
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
@@ -361,7 +324,7 @@ function responseBuilderSimple(
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(message, destination, numberOfEvents) {
+function processSingleMessage(message, destination) {
   let payloadObjectName = "events";
   let evType;
   let groupTraits;
@@ -468,33 +431,45 @@ function processSingleMessage(message, destination, numberOfEvents) {
     message,
     evType,
     mappingConfig[category.name],
-    destination,
-    numberOfEvents
+    destination
   );
 }
 
-function createProductPurchasedEvent(message, product) {
+function createProductPurchasedEvent(message, destination, product, counter) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
-  // console.log(JSON.stringify(message));
+
   eventClonePurchaseProduct.event = "Product Purchased";
   // In product purchased event event properties consists of the details of each product
   eventClonePurchaseProduct.properties = product;
+
+  if (destination.Config.trackRevenuePerProduct === true) {
+    eventClonePurchaseProduct.isRevenue = true;
+  }
+  // need to modify the message id of each newly created event, as it is mapped to insert_id and that is used by Amplitude for dedup.
+  eventClonePurchaseProduct.messageId = `${message.messageId}-${counter}`;
   return eventClonePurchaseProduct;
 }
-function purchaseProducts(message, sendEvent) {
-  if (
-    message.properties.products &&
-    Array.isArray(message.properties.products) &&
-    message.properties.products.length >= 1
-  ) {
-    // without existence of any product no product purchased event should be called
+
+function isProductArrayInPayload(message) {
+  const isProductArray =
+    (message.properties.products &&
+      Array.isArray(message.properties.products) &&
+      message.properties.products.length > 0) === true;
+  return isProductArray;
+}
+
+function getProductPurchasedEvents(message, destination, sendEvent) {
+  if (isProductArrayInPayload(message)) {
+    let counter = 0;
+
+    // Create product purchased event for each product in products array.
     message.properties.products.forEach(product => {
-      message.messageId = message.messageId.concat(
-        message.properties.products.indexOf(product).toString()
-      );
+      counter += 1;
       const eventClonePurchaseProduct = createProductPurchasedEvent(
         message,
-        product
+        destination,
+        product,
+        counter
       );
       sendEvent.push(eventClonePurchaseProduct);
     });
@@ -502,29 +477,48 @@ function purchaseProducts(message, sendEvent) {
   return sendEvent;
 }
 
-function trackRevenue(message, destination) {
-  const sendEvent = [];
-  let captureEvents = [];
-  const prodOnce = JSON.parse(JSON.stringify(message));
+function trackRevenueEvent(message, destination) {
+  let sendEvents = [];
+  const originalEvent = JSON.parse(JSON.stringify(message));
+
   if (destination.Config.trackProductsOnce === false) {
-    if (message.properties.products) {
+    if (isProductArrayInPayload(message)) {
       // when trackProductsOnce false no product array present
-      delete prodOnce.properties.products;
+      delete originalEvent.properties.products;
+    } else {
+      // when product array is not there in payload, will track the revenue of the original event.
+      originalEvent.isRevenue = true;
+    }
+  } else {
+    /* if (isProductArrayInPayload(message)) {
+      // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
+      if (destination.Config.trackRevenuePerProduct === false) {
+        originalEvent.isRevenue = true;
+      }
+    } else {
+      originalEvent.isRevenue = true;
+    } */
+    // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
+    // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
+    // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
+    if (!isProductArrayInPayload(message)) {
+      originalEvent.isRevenue = true;
     }
   }
-  // when track product once true
-  sendEvent.push(prodOnce);
-  if (destination.Config.trackRevenuePerProduct === true)
-    captureEvents = purchaseProducts(message, sendEvent);
-  else {
-    if (destination.Config.trackRevenuePerProduct === false) {
-      if (destination.Config.trackProductsOnce === false) {
-        // condition for false-false contains product purchased event
-        captureEvents = purchaseProducts(message, sendEvent);
-      } else captureEvents = sendEvent; // sending event for track product once true and track revenue per product false
-    }
+  // when trackRevenuePerProduct is false, track the revenue of original event.
+  if (destination.Config.trackRevenuePerProduct === false) {
+    originalEvent.isRevenue = true;
   }
-  return captureEvents;
+
+  sendEvents.push(originalEvent);
+
+  if (
+    destination.Config.trackRevenuePerProduct === true ||
+    destination.Config.trackProductsOnce === false
+  ) {
+    sendEvents = getProductPurchasedEvents(message, destination, sendEvents);
+  }
+  return sendEvents;
 }
 
 function process(event) {
@@ -532,12 +526,11 @@ function process(event) {
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
-  let setOfPayloads;
   if (messageType === EventType.TRACK) {
     if (message.properties && message.properties.revenue) {
-      setOfPayloads = trackRevenue(message, destination);
-      setOfPayloads.forEach(payload => {
-        toSendEvents.push(payload);
+      const revenueEvents = trackRevenueEvent(message, destination);
+      revenueEvents.forEach(revenueEvent => {
+        toSendEvents.push(revenueEvent);
       });
     } else {
       toSendEvents.push(message);
@@ -545,19 +538,10 @@ function process(event) {
   } else {
     toSendEvents.push(message);
   }
-  if (message.properties && message.properties.revenue) {
-    toSendEvents.forEach(sendEvent => {
-      respList.push(
-        ...processSingleMessage(sendEvent, destination, toSendEvents.length)
-      );
-    });
-  } else {
-    toSendEvents.forEach(sendEvent => {
-      respList.push(
-        ...processSingleMessage(sendEvent, destination, toSendEvents.length)
-      );
-    });
-  }
+
+  toSendEvents.forEach(sendEvent => {
+    respList.push(...processSingleMessage(sendEvent, destination));
+  });
   return respList;
 }
 

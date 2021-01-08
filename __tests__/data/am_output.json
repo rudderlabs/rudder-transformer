@@ -603,6 +603,7 @@
                             },
                             "price": 25,
                             "quantity": 2,
+                            "revenue": 48,
                             "revenueType": "Purchased",
                             "time": 1597383030118,
                             "session_id": -1
@@ -636,7 +637,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e90",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
                             "event_properties": {
                                 "sku": "45790-32",
                                 "url": "https://www.example.com/product/path",
@@ -679,7 +680,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e901",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
                             "event_properties": {
                                 "sku": "46493-32",
                                 "name": "Uno Card Game",
@@ -759,6 +760,7 @@
                           "revenueType": "Purchased",
                           "price": 25,
                           "quantity": 2,
+                          "revenue": 48,
                           "time": 1597383030118,
                           "session_id": -1
                       }
@@ -836,7 +838,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e90",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
                             "event_properties": {
                                 "sku": "45790-32",
                                 "url": "https://www.example.com/product/path",
@@ -880,7 +882,7 @@
                         {
                             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                             "event_type": "Product Purchased",
-                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e901",
+                            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
                             "event_properties": {
                                 "sku": "46493-32",
                                 "name": "Uno Card Game",
@@ -990,7 +992,7 @@
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "event_type": "Product Purchased",
-            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e90",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
             "event_properties": {
               "sku": "45790-32",
               "url": "https://www.example.com/product/path",
@@ -1034,7 +1036,7 @@
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "event_type": "Product Purchased",
-            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e901",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
             "event_properties": {
               "sku": "46493-32",
               "name": "Uno Card Game",
@@ -1095,6 +1097,7 @@
                       },
                       "price": 25,
                       "quantity": 2,
+                      "revenue": 48,
                       "revenueType": "Purchased",
                       "time": 1597383030118,
                       "session_id": -1
@@ -1145,6 +1148,7 @@
                       },
                       "price": 25,
                       "quantity": 2,
+                      "revenue": 48,
                       "revenueType": "Purchased",
                       "time": 1597383030118,
                       "session_id": -1
@@ -1195,6 +1199,7 @@
                       },
                       "price": 25,
                       "quantity": 2,
+                      "revenue": 48,
                       "revenueType": "Purchased",
                       "time": 1597383030118,
                       "session_id": -1
@@ -1246,6 +1251,7 @@
                       },
                       "price": 25,
                       "quantity": 2,
+                      "revenue": 48,
                       "revenueType": "Purchased",
                       "time": 1597383030118,
                       "session_id": -1

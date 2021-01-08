@@ -267,5 +267,45 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "id1",
+        "events": [
+          {
+            "name": "Viewed a Screen",
+            "timestamp": 1584003903,
+            "attributes": {
+              "name": "MainActivity",
+              "automatic": true
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "User id is absent. Aborting event as userId is mandatory for Appcues"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
   }
 ]

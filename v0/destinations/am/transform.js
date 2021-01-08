@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-lonely-if */
 const _ = require("lodash");
@@ -478,17 +477,17 @@ function process(event) {
   const eventType = message.event ? message.event.toLowerCase() : undefined;
 
   const toSendEvents = [];
-  let temp;
+  let listOfMessages;
   if (
     messageType === EventType.TRACK &&
     (eventType === Event.PRODUCT_LIST_VIEWED.name ||
       eventType === Event.PRODUCT_LIST_CLICKED.name)
   ) {
     // toSendEvents.push(processProductListAction(message));
-    temp = processProductListAction(message);
+    listOfMessages = processProductListAction(message);
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < temp.length; i += 1) {
-      toSendEvents.push(temp[i]);
+    for (let i = 0; i < listOfMessages.length; i += 1) {
+      toSendEvents.push(listOfMessages[i]);
     }
   } else if (
     messageType === EventType.TRACK &&
@@ -497,10 +496,10 @@ function process(event) {
       eventType === Event.ORDER_COMPLETED.name ||
       eventType === Event.ORDER_CANCELLED.name)
   ) {
-    temp = processTransaction(message);
+    listOfMessages = processTransaction(message);
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < temp.length; i += 1) {
-      toSendEvents.push(temp[i]);
+    for (let i = 0; i < listOfMessages.length; i += 1) {
+      toSendEvents.push(listOfMessages[i]);
     }
   } else {
     toSendEvents.push(message);

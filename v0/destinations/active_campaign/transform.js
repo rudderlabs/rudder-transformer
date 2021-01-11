@@ -15,15 +15,34 @@ const responseBuilderSimple = (message, payload, category, destination) => {
   if (payload) {
     const responseBody = { ...payload, apiKey: destination.Config.apiKey };
     const response = defaultRequestConfig();
-    response.endpoint = `${destination.Config.apiUrl}${
-      category.endPoint ? category.endPoint : ""
-    }`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      "Api-Token": destination.Config.apiKey
-    };
-    response.body.JSON = responseBody;
+    switch (category.name) {
+      case "ACIdentify":
+      case "ACPage":
+        response.endpoint = `${destination.Config.apiUrl}${
+          category.endPoint ? category.endPoint : ""
+        }`;
+        response.method = defaultPostRequestConfig.requestMethod;
+        response.headers = {
+          "Content-Type": "application/json",
+          "Api-Token": destination.Config.apiKey
+        };
+        response.body.JSON = responseBody;
+        break;
+      case "ACScreen":
+      case "ACTrack":
+        response.endpoint = `${category.endPoint}`;
+        response.method = defaultPostRequestConfig.requestMethod;
+        response.headers = {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Api-Token": destination.Config.apiKey
+        };
+        response.body.FORM = responseBody;
+        break;
+      default:
+        throw new Error("Message format type not supported");
+
+    }
+
     return response;
   }
   // fail-safety for developer error
@@ -57,6 +76,136 @@ const pageRequestHandler = (message, category, destination) => {
   return responseBuilderSimple(message, payload, category, destination);
 };
 
+const screenRequestHandler = async (message, category, destination) => {
+  //Need to check if the event with same name already exists if not need to create
+  //Retrieve All events from destination
+  let res;
+  try {
+    res = await Axios({
+      method: "get",
+      url: `${destination.Config.apiUrl}${
+        category.getEventEndPoint ? category.getEventEndPoint : ""
+      }`,
+      headers: {
+        "Content-Type": "application/json",
+        "Api-Token": destination.Config.apiKey
+      }
+    });
+  } catch (err) {
+    LOG.error(`Error while fetching dest events ${err}`);
+  }
+  if (res.status != 200) throw new Error("Unable to fetch dest events");
+
+  const storedEventsArr = res.data.eventTrackingEvents;
+  const storedEvents = [];
+  storedEventsArr.map(ev => {
+    storedEvents.push(ev.name);
+  });
+  //Check if the source event is already present
+  if (!storedEvents.includes(message.properties.eventName)) {
+    //Create the event
+    try {
+      res = await Axios({
+        method: "post",
+        url: `${destination.Config.apiUrl}${
+          category.getEventEndPoint ? category.getEventEndPoint : ""
+        }`,
+        headers: {
+          "Content-Type": "application/json",
+          "Api-Token": destination.Config.apiKey
+        },
+        data: {
+          eventTrackingEvent: {
+            name: message.properties.eventName
+          }
+        }
+      });
+    } catch (err) {
+      LOG.error(`Error while creating dest event ${err}`);
+    }
+
+    if (res.status != 201) throw new Error("Unable to create dest event");
+  }
+  //Previous operations successfull then
+  //Mapping the Event payloads
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  payload.actid = destination.Config.actid;
+  payload.key = destination.Config.eventKey;
+  payload.visit = encodeURIComponent(
+    `{email : ${
+      message.context.traits.email
+        ? message.context.traits.email
+        : message.context.traits.traits.email
+    }}`
+  );
+  return responseBuilderSimple(message, payload, category, destination);
+};
+
+const trackRequestHandler = async (message, category, destination) => {
+  //Need to check if the event with same name already exists if not need to create
+  //Retrieve All events from destination
+  let res;
+  try {
+    res = await Axios({
+      method: "get",
+      url: `${destination.Config.apiUrl}${
+        category.getEventEndPoint ? category.getEventEndPoint : ""
+      }`,
+      headers: {
+        "Content-Type": "application/json",
+        "Api-Token": destination.Config.apiKey
+      }
+    });
+  } catch (err) {
+    LOG.error(`Error while fetching dest events ${err}`);
+  }
+  if (res.status != 200) throw new Error("Unable to fetch dest events");
+
+  const storedEventsArr = res.data.eventTrackingEvents;
+  const storedEvents = [];
+  storedEventsArr.map(ev => {
+    storedEvents.push(ev.name);
+  });
+  //Check if the source event is already present
+  if (!storedEvents.includes(message.properties.eventName)) {
+    //Create the event
+    try {
+      res = await Axios({
+        method: "post",
+        url: `${destination.Config.apiUrl}${
+          category.getEventEndPoint ? category.getEventEndPoint : ""
+        }`,
+        headers: {
+          "Content-Type": "application/json",
+          "Api-Token": destination.Config.apiKey
+        },
+        data: {
+          eventTrackingEvent: {
+            name: message.properties.eventName
+          }
+        }
+      });
+    } catch (err) {
+      LOG.error(`Error while creating dest event ${err}`);
+    }
+
+    if (res.status != 201) throw new Error("Unable to create dest event");
+  }
+  //Previous operations successfull then
+  //Mapping the Event payloads
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  payload.actid = destination.Config.actid;
+  payload.key = destination.Config.eventKey;
+  payload.visit = encodeURIComponent(
+    `{email : ${
+      message.context.traits.email
+        ? message.context.traits.email
+        : message.context.traits.traits.email
+    }}`
+  );
+  return responseBuilderSimple(message, payload, category, destination);
+};
+
 const customTagProcessor = async (message, category, destination) => {
   const tagsToBeCreated = [];
   const tagIds = [];
@@ -77,7 +226,7 @@ const customTagProcessor = async (message, category, destination) => {
       }
     });
   } catch (err) {
-    throw Error("Failed to Create new Contact");
+    throw new Error("Failed to Create new Contact");
   }
   const created_contact = res.data.contact;
 
@@ -98,7 +247,7 @@ const customTagProcessor = async (message, category, destination) => {
       }
     });
   } catch (err) {
-    throw Error("Failed to Create new Contact");
+    throw new Error("Failed to Create new Contact");
   }
   //Creating a Stored tag map [tag_name] => tag_id for easy compare
   let storedTags = {};
@@ -250,7 +399,7 @@ const customFieldProcessor = async (
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -266,12 +415,14 @@ const processEvent = (message, destination) => {
       break;
     case EventType.SCREEN:
       category = CONFIG_CATEGORIES.SCREEN;
+      response = screenRequestHandler(message, category, destination);
       break;
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
+      response = trackRequestHandler(message, category, destination);
       break;
     default:
-      throw Error("Message type not supported");
+      throw new Error("Message type not supported");
   }
   return response;
 };

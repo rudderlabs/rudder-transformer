@@ -12,8 +12,14 @@ const CONFIG_CATEGORIES = {
               mergeFieldValueWithContactUrl:"/api/3/fieldValues"
             },
   PAGE: { name: "ACPage" ,endPoint:"/api/3/siteTrackingDomains"},
-  SCREEN: { name: "ACScreen" },
-  TRACK: { name: "ACTrack" }
+  SCREEN: { name: "ACScreen" ,
+            endPoint:"https://trackcmp.net/event",
+            getEventEndPoint:"/api/3/eventTrackingEvents"
+          },
+  TRACK: {  name: "ACTrack" ,
+            endPoint:"https://trackcmp.net/event",
+            getEventEndPoint:"/api/3/eventTrackingEvents"        
+          }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

@@ -102,9 +102,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
     quantity = 1;
   } else {
     price = message.properties.price;
-    if (message.properties.quantity) {
-      quantity = message.properties.quantity;
-    }
+    quantity = message.properties.quantity || 1;
   }
   rawPayload.price = price;
   rawPayload.quantity = quantity;
@@ -458,23 +456,24 @@ function isProductArrayInPayload(message) {
   return isProductArray;
 }
 
-function getProductPurchasedEvents(message, destination, sendEvent) {
+function getProductPurchasedEvents(message, destination) {
+  const productPurchasedEvents = [];
   if (isProductArrayInPayload(message)) {
     let counter = 0;
 
     // Create product purchased event for each product in products array.
     message.properties.products.forEach(product => {
       counter += 1;
-      const eventClonePurchaseProduct = createProductPurchasedEvent(
+      const productPurchasedEvent = createProductPurchasedEvent(
         message,
         destination,
         product,
         counter
       );
-      sendEvent.push(eventClonePurchaseProduct);
+      productPurchasedEvents.push(productPurchasedEvent);
     });
   }
-  return sendEvent;
+  return productPurchasedEvents;
 }
 
 function trackRevenueEvent(message, destination) {
@@ -516,7 +515,13 @@ function trackRevenueEvent(message, destination) {
     destination.Config.trackRevenuePerProduct === true ||
     destination.Config.trackProductsOnce === false
   ) {
-    sendEvents = getProductPurchasedEvents(message, destination, sendEvents);
+    const productPurchasedEvents = getProductPurchasedEvents(
+      message,
+      destination
+    );
+    if (productPurchasedEvents.length > 0) {
+      sendEvents = [...sendEvents, ...productPurchasedEvents];
+    }
   }
   return sendEvents;
 }

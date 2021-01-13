@@ -1267,6 +1267,275 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
   
-}
+},
+{
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+          "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+          "JSON": {
+              "api_key": "abcde",
+              "events": [
+                  {
+                      "os_name": "Chrome",
+                      "os_version": "86.0.4240.198",
+                      "device_model": "Mac",
+                      "platform": "Web",
+                      "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+                      "app_name": "RudderLabs JavaScript SDK",
+                      "app_version": "1.1.8",
+                      "language": "en-GB",
+                      "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+                      "event_type": "$identify",
+                      "user_properties": {
+                          "city": "Durgapur",
+                          "name": "Manashi",
+                          "phone": "990099009900",
+                          "subjects": 5,
+                          "experience": 2,
+                          "$add": {
+                              "age": 12,
+                              "friends": 3
+                          }
+                      },
+                      "time": 1605853102342,
+                      "user_id": "User_111",
+                      "session_id": -1
+                  }
+              ],
+              "options": {
+                  "min_id_length": 1
+              }
+          },
+          "XML": {},
+          "FORM": {}
+      },
+      "files": {},
+      "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+
+},
+
+  {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://api.amplitude.com/2/httpapi",
+          "headers": {
+              "Content-Type": "application/json"
+          },
+          "params": {},
+          "body": {
+              "JSON": {
+                  "api_key": "abcde",
+                  "events": [
+                      {
+                          "os_name": "Chrome",
+                          "os_version": "86.0.4240.198",
+                          "device_model": "Mac",
+                          "platform": "Web",
+                          "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+                          "app_name": "RudderLabs JavaScript SDK",
+                          "app_version": "1.1.8",
+                          "language": "en-GB",
+                          "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+                          "event_type": "$identify",
+                          "user_properties": {
+                              "city": "Durgapur",
+                              "name": "Manashi",
+                              "phone": "990099009900",
+                              "friends": 3,
+                              "age": 12,
+                              "experience": 2,
+                              "$setOnce": {
+                                  "subjects": 5
+                              }
+                          },
+                          "time": 1605853102342,
+                          "user_id": "User_111",
+                          "session_id": -1
+                      }
+                  ],
+                  "options": {
+                      "min_id_length": 1
+                  }
+              },
+              "XML": {},
+              "FORM": {}
+          },
+          "files": {},
+          "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+
+  },
+  
+    {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://api.amplitude.com/2/httpapi",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "api_key": "abcde",
+                    "events": [
+                        {
+                            "os_name": "Chrome",
+                            "os_version": "86.0.4240.198",
+                            "device_model": "Mac",
+                            "platform": "Web",
+                            "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+                            "app_name": "RudderLabs JavaScript SDK",
+                            "app_version": "1.1.8",
+                            "language": "en-GB",
+                            "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+                            "event_type": "$identify",
+                            "user_properties": {
+                                "city": "Durgapur",
+                                "phone": "990099009900",
+                                "friends": 3,
+                                "age": 12,
+                                "subjects": 5,
+                                "experience": 2,
+                                "$append": {
+                                    "name": "Manashi"
+                                }
+                            },
+                            "time": 1605853102342,
+                            "user_id": "User_111",
+                            "session_id": -1
+                        }
+                    ],
+                    "options": {
+                        "min_id_length": 1
+                    }
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+        },
+        
+          {
+      
+                  "version": "1",
+                  "type": "REST",
+                  "method": "POST",
+                  "endpoint": "https://api.amplitude.com/2/httpapi",
+                  "headers": {
+                      "Content-Type": "application/json"
+                  },
+                  "params": {},
+                  "body": {
+                      "JSON": {
+                          "api_key": "abcde",
+                          "events": [
+                              {
+                                  "os_name": "Chrome",
+                                  "os_version": "86.0.4240.198",
+                                  "device_model": "Mac",
+                                  "platform": "Web",
+                                  "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+                                  "app_name": "RudderLabs JavaScript SDK",
+                                  "app_version": "1.1.8",
+                                  "language": "en-GB",
+                                  "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+                                  "event_type": "$identify",
+                                  "user_properties": {
+                                      "city": "Durgapur",
+                                      "name": "Manashi",
+                                      "phone": "990099009900",
+                                      "friends": 3,
+                                      "age": 12,
+                                      "subjects": 5,
+                                      "$prepend": {
+                                          "experience": 2
+                                      }
+                                  },
+                                  "time": 1605853102342,
+                                  "user_id": "User_111",
+                                  "session_id": -1
+                              }
+                          ],
+                          "options": {
+                              "min_id_length": 1
+                          }
+                      },
+                      "XML": {},
+                      "FORM": {}
+                  },
+                  "files": {},
+                  "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+              
+          },
+          
+            {
+        
+                    "version": "1",
+                    "type": "REST",
+                    "method": "POST",
+                    "endpoint": "https://api.amplitude.com/2/httpapi",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "params": {},
+                    "body": {
+                        "JSON": {
+                            "api_key": "abcde",
+                            "events": [
+                                {
+                                    "os_name": "Chrome",
+                                    "os_version": "86.0.4240.198",
+                                    "device_model": "Mac",
+                                    "platform": "Web",
+                                    "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+                                    "app_name": "RudderLabs JavaScript SDK",
+                                    "app_version": "1.1.8",
+                                    "language": "en-GB",
+                                    "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+                                    "event_type": "$identify",
+                                    "user_properties": {
+                                        "city": "Durgapur",
+                                        "phone": "990099009900",
+                                        "$add": {
+                                            "age": 12,
+                                            "friends": 3
+                                        },
+                                        "$setOnce": {
+                                            "subjects": 5
+                                        },
+                                        "$append": {
+                                            "name": "Manashi"
+                                        },
+                                        "$prepend": {
+                                            "experience": 2
+                                        }
+                                    },
+                                    "time": 1605853102342,
+                                    "user_id": "User_111",
+                                    "session_id": -1
+                                }
+                            ],
+                            "options": {
+                                "min_id_length": 1
+                            }
+                        },
+                        "XML": {},
+                        "FORM": {}
+                    },
+                    "files": {},
+                    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+            
+            }
+        
+      
+
 
 ]

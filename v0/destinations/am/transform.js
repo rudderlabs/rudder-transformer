@@ -1,6 +1,6 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-lonely-if */
-const _ = require("lodash");
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -57,18 +57,6 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
 // Utility method for creating the structure required for single message processing
 // with basic fields populated
-function createSingleMessageBasicStructure(message) {
-  return _.pick(message, [
-    "type",
-    "event",
-    "context",
-    "userId",
-    "originalTimestamp",
-    "request_ip",
-    "integrations",
-    "session_id"
-  ]);
-}
 
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 /* function stringToHash(string) {
@@ -106,8 +94,33 @@ function addMinIdlength() {
   return { min_id_length: 1 };
 }
 
-// Build response for Amplitude. In this case, endpoint will be different depending
-// on the event type being sent to Amplitude
+function setPriceQuanityInPayload(message, rawPayload) {
+  let price;
+  let quantity;
+  if (!message.properties.price) {
+    price = message.properties.revenue;
+    quantity = 1;
+  } else {
+    price = message.properties.price;
+    quantity = message.properties.quantity || 1;
+  }
+  rawPayload.price = price;
+  rawPayload.quantity = quantity;
+  rawPayload.revenue = message.properties.revenue;
+  return rawPayload;
+}
+
+function createRevenuePayload(message, rawPayload) {
+  if (message.isRevenue) {
+    rawPayload.revenueType =
+      message.properties.revenueType ||
+      message.properties.revenue_type ||
+      "Purchased";
+    rawPayload = setPriceQuanityInPayload(message, rawPayload);
+  }
+  return rawPayload;
+}
+
 function responseBuilderSimple(
   groupInfo,
   rootElementName,
@@ -116,7 +129,7 @@ function responseBuilderSimple(
   mappingJson,
   destination
 ) {
-  const rawPayload = {};
+  let rawPayload = {};
   const addOptions = "options";
   const respList = [];
   const response = defaultRequestConfig();
@@ -207,7 +220,18 @@ function responseBuilderSimple(
       break;
     default:
       set(rawPayload, "event_properties", message.properties);
+      if (message.type === EventType.TRACK)
+        set(rawPayload, "user_properties", message.context.traits);
+
       rawPayload.event_type = evType;
+      rawPayload.user_id = message.userId;
+      if (
+        (message.properties && message.properties.revenue) ||
+        evType === "Product Purchased"
+      ) {
+        // making the revenue payload
+        rawPayload = createRevenuePayload(message, rawPayload);
+      }
       groups = groupInfo && Object.assign(groupInfo);
   }
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
@@ -215,7 +239,6 @@ function responseBuilderSimple(
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
   set(rawPayload, "groups", groups);
   let payload = removeUndefinedValues(rawPayload);
-
   let unmapUserId;
   switch (evType) {
     case EventType.ALIAS:
@@ -294,6 +317,7 @@ function responseBuilderSimple(
       }
       break;
   }
+
   return respList;
 }
 
@@ -395,29 +419,11 @@ function processSingleMessage(message, destination) {
         break;
       }
 
-      switch (evType) {
-        case Event.PROMOTION_CLICKED.name:
-        case Event.PROMOTION_VIEWED.name:
-        case Event.PRODUCT_CLICKED.name:
-        case Event.PRODUCT_VIEWED.name:
-        case Event.PRODUCT_ADDED.name:
-        case Event.PRODUCT_REMOVED.name:
-        case Event.PRODUCT_ADDED_TO_WISHLIST.name:
-        case Event.PRODUCT_REMOVED_FROM_WISHLIST.name:
-        case Event.PRODUCT_LIST_VIEWED.name:
-        case Event.PRODUCT_LIST_CLICKED.name:
-          category = nameToEventMap[evType].category;
-          break;
-        default:
-          category = ConfigCategory.DEFAULT;
-          break;
-      }
       break;
     default:
       logger.debug("could not determine type");
       throw new Error("message type not supported");
   }
-
   return responseBuilderSimple(
     groupInfo,
     payloadObjectName,
@@ -428,57 +434,113 @@ function processSingleMessage(message, destination) {
   );
 }
 
-// Method for handling product list actions
-function processProductListAction(message) {
-  const eventList = [];
-  const { products } = message.properties;
+function createProductPurchasedEvent(message, destination, product, counter) {
+  const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
 
-  // Now construct complete payloads for each product and
-  // get them processed through single message processing logic
-  products.forEach(product => {
-    const productEvent = createSingleMessageBasicStructure(message);
-    productEvent.properties = product;
-    eventList.push(productEvent);
-  });
+  eventClonePurchaseProduct.event = "Product Purchased";
+  // In product purchased event event properties consists of the details of each product
+  eventClonePurchaseProduct.properties = product;
 
-  return eventList;
+  if (destination.Config.trackRevenuePerProduct === true) {
+    eventClonePurchaseProduct.isRevenue = true;
+  }
+  // need to modify the message id of each newly created event, as it is mapped to insert_id and that is used by Amplitude for dedup.
+  eventClonePurchaseProduct.messageId = `${message.messageId}-${counter}`;
+  return eventClonePurchaseProduct;
 }
 
-function processTransaction(message) {
-  // For order cancel or refund, amounts need to be made negative
-  const eventType = message.event.toLowerCase();
+function isProductArrayInPayload(message) {
+  const isProductArray =
+    (message.properties.products &&
+      Array.isArray(message.properties.products) &&
+      message.properties.products.length > 0) === true;
+  return isProductArray;
+}
 
-  // Why are we skipping Checkout started and Order Updated?
-  // Order Cancelled is not being sent, but we are handling it here
-  if (
-    eventType === EventType.ORDER_CANCELLED.name ||
-    eventType === EventType.ORDER_REFUNDED.name
-  ) {
-    return processProductListAction(message);
+function getProductPurchasedEvents(message, destination) {
+  const productPurchasedEvents = [];
+  if (isProductArrayInPayload(message)) {
+    let counter = 0;
+
+    // Create product purchased event for each product in products array.
+    message.properties.products.forEach(product => {
+      counter += 1;
+      const productPurchasedEvent = createProductPurchasedEvent(
+        message,
+        destination,
+        product,
+        counter
+      );
+      productPurchasedEvents.push(productPurchasedEvent);
+    });
   }
-  return [];
+  return productPurchasedEvents;
+}
+
+function trackRevenueEvent(message, destination) {
+  let sendEvents = [];
+  const originalEvent = JSON.parse(JSON.stringify(message));
+
+  if (destination.Config.trackProductsOnce === false) {
+    if (isProductArrayInPayload(message)) {
+      // when trackProductsOnce false no product array present
+      delete originalEvent.properties.products;
+    } else {
+      // when product array is not there in payload, will track the revenue of the original event.
+      originalEvent.isRevenue = true;
+    }
+  } else {
+    /* if (isProductArrayInPayload(message)) {
+      // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
+      if (destination.Config.trackRevenuePerProduct === false) {
+        originalEvent.isRevenue = true;
+      }
+    } else {
+      originalEvent.isRevenue = true;
+    } */
+    // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
+    // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
+    // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
+    if (!isProductArrayInPayload(message)) {
+      originalEvent.isRevenue = true;
+    }
+  }
+  // when trackRevenuePerProduct is false, track the revenue of original event.
+  if (destination.Config.trackRevenuePerProduct === false) {
+    originalEvent.isRevenue = true;
+  }
+
+  sendEvents.push(originalEvent);
+
+  if (
+    destination.Config.trackRevenuePerProduct === true ||
+    destination.Config.trackProductsOnce === false
+  ) {
+    const productPurchasedEvents = getProductPurchasedEvents(
+      message,
+      destination
+    );
+    if (productPurchasedEvents.length > 0) {
+      sendEvents = [...sendEvents, ...productPurchasedEvents];
+    }
+  }
+  return sendEvents;
 }
 
 function process(event) {
   const respList = [];
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
-  const eventType = message.event ? message.event.toLowerCase() : undefined;
   const toSendEvents = [];
-  if (
-    messageType === EventType.TRACK &&
-    (eventType === Event.PRODUCT_LIST_VIEWED.name ||
-      eventType === Event.PRODUCT_LIST_CLICKED)
-  ) {
-    toSendEvents.push(processProductListAction(message));
-  } else if (
-    messageType === EventType.TRACK &&
-    (eventType === Event.CHECKOUT_STARTED.name ||
-      eventType === Event.ORDER_UPDATED.name ||
-      eventType === Event.ORDER_COMPLETED.name ||
-      eventType === Event.ORDER_CANCELLED.name)
-  ) {
-    toSendEvents.push(processTransaction(message));
+  if (messageType === EventType.TRACK) {
+    if (message.properties && message.properties.revenue) {
+      const revenueEvents = trackRevenueEvent(message, destination);
+      revenueEvents.forEach(revenueEvent => {
+        toSendEvents.push(revenueEvent);
+      });
+    } else {
+      toSendEvents.push(message);
+    }
   } else {
     toSendEvents.push(message);
   }

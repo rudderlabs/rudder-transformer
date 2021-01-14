@@ -379,7 +379,6 @@ const responseBuilderSimple = (message, category, destination) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
-
   if (category.type !== "identify") {
     customData = {
       ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))

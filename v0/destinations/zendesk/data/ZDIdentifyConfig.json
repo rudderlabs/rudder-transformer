@@ -10,8 +10,8 @@
   {
     "destKey": "user.name",
     "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
+      "context.traits.name",
+      "traits.name"
     ],
     "required": false
   },

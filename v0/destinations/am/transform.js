@@ -14,7 +14,9 @@ const {
   defaultRequestConfig,
   defaultBatchRequestConfig,
   getParsedIP,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getValueFromMessage,
+  deleteObjectProperty
 } = require("../../util");
 const {
   Event,
@@ -61,15 +63,12 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 /* function stringToHash(string) {
   let hash = 0;
-
   if (string.length == 0) return hash;
-
   for (i = 0; i < string.length; i++) {
     char = string.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash &= hash;
   }
-
   return Math.abs(hash);
 } */
 
@@ -119,6 +118,60 @@ function createRevenuePayload(message, rawPayload) {
     rawPayload = setPriceQuanityInPayload(message, rawPayload);
   }
   return rawPayload;
+}
+
+function updateTraitsObject(property, traitsObject, actionKey) {
+  const propertyToUpdate = getValueFromMessage(traitsObject, property);
+  traitsObject[actionKey][property] = propertyToUpdate;
+  deleteObjectProperty(traitsObject, property);
+  return traitsObject;
+}
+
+function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
+  traitsObject[actionKey] = {};
+  configPropertyTrait.forEach(traitsElement => {
+    const property = traitsElement.traits;
+    traitsObject = updateTraitsObject(property, traitsObject, actionKey);
+  });
+  return traitsObject;
+}
+
+function handleTraits(messageTrait, destination) {
+  let traitsObject = JSON.parse(JSON.stringify(messageTrait));
+
+  if (destination.Config.traitsToIncrement) {
+    const actionKey = "$add";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToIncrement,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToSetOnce) {
+    const actionKey = "$setOnce";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToSetOnce,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToAppend) {
+    const actionKey = "$append";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToAppend,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToPrepend) {
+    const actionKey = "$prepend";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToPrepend,
+      actionKey,
+      traitsObject
+    );
+  }
+  return traitsObject;
 }
 
 function responseBuilderSimple(
@@ -173,8 +226,9 @@ function responseBuilderSimple(
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
-        set(rawPayload, "user_properties", message.userProperties);
         traits = getFieldValueFromMessage(message, "traits");
+        traits = handleTraits(traits, destination);
+        set(rawPayload, "user_properties", message.userProperties);
         if (traits) {
           Object.keys(traits).forEach(trait => {
             if (SpecedTraits.includes(trait)) {

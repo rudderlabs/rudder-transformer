@@ -3,7 +3,7 @@ const NodeCache = require("node-cache");
 const logger = require("../logger");
 const stats = require("./stats");
 
-const myCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 120 });
+const myCache = new NodeCache();
 
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
@@ -23,7 +23,7 @@ async function getTransformationCode(versionId) {
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime);
     const myJson = await response.json();
-    myCache.set(versionId, myJson, 5 * 60);
+    myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
     logger.error(error);

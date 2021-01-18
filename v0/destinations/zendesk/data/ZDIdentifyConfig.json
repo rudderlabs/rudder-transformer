@@ -1,54 +1,37 @@
 [
   {
     "destKey": "user.email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false,
     "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
+    "sourceKeys": ["traits.name", "context.traits.name"],
     "required": false,
     "eventTypeMapping": ["identify"]
   },
   {
     "destKey": "user.name",
-    "sourceKeys": [
-      "context.traits.name"
-    ],
+    "sourceKeys": "context.traits.name",
     "required": false,
     "eventTypeMapping": ["group"]
   },
   {
     "destKey": "user.organization_id",
-    "sourceKeys": [
-      "traits.organizationId",
-      "context.traits.organizationId"
-    ],
+    "sourceKeys": ["traits.organizationId", "context.traits.organizationId"],
     "required": false,
     "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.time_zone",
-    "sourceKeys": [
-      "traits.timezone",
-      "context.traits.timezone"
-    ],
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
     "required": false,
     "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.phone",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
     "required": false,
     "eventTypeMapping": ["identify", "group"]
   },

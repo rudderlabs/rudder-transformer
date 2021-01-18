@@ -5,7 +5,8 @@
       "traits.email",
       "context.traits.email"
     ],
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.name",
@@ -13,7 +14,16 @@
       "context.traits.name",
       "traits.name"
     ],
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify"]
+  },
+  {
+    "destKey": "user.name",
+    "sourceKeys": [
+      "context.traits.name"
+    ],
+    "required": false,
+    "eventTypeMapping": ["group"]
   },
   {
     "destKey": "user.organization_id",
@@ -21,7 +31,8 @@
       "traits.organizationId",
       "context.traits.organizationId"
     ],
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.time_zone",
@@ -29,7 +40,8 @@
       "traits.timezone",
       "context.traits.timezone"
     ],
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.phone",
@@ -37,11 +49,13 @@
       "traits.phone",
       "context.traits.phone"
     ],
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify", "group"]
   },
   {
     "destKey": "user.external_id",
     "sourceKeys": "userId",
-    "required": false
+    "required": false,
+    "eventTypeMapping": ["identify", "group"]
   }
 ]

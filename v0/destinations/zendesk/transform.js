@@ -104,9 +104,26 @@ async function checkAndCreateUserFields(
   }
 }
 
-function getIdentifyPayload(message, category, destinationConfig) {
-  const mappingJson = mappingConfig[category.name];
+/**
+ * This function is used to filter config Array on basis of eventType
+ * Useful ion case of generating identify Payload
+ * @param {*} messageType
+ * @param {*} categoryName
+ */
+function getMappingJson(messageType, categoryName) {
+  const mJson = mappingConfig[categoryName];
+  return mJson.filter(m => m.eventTypeMapping.includes(messageType));
+}
 
+/**
+ * To DO :: Improvement : This call should be specific to generate users object
+ * so better to name it getUser.
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destinationConfig
+ */
+function getIdentifyPayload(message, category, destinationConfig) {
+  const mappingJson = getMappingJson(message.type, category.name);
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 

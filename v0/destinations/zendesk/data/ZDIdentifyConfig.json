@@ -11,8 +11,8 @@
   {
     "destKey": "user.name",
     "sourceKeys": [
-      "context.traits.name",
-      "traits.name"
+      "traits.name",
+      "context.traits.name"
     ],
     "required": false,
     "eventTypeMapping": ["identify"]

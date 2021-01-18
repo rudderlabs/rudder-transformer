@@ -1,47 +1,12 @@
 [
-  {
-    "destKey": "user.email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "user.name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
-    "required": false
-  },
+  { "destKey": "user.email", "sourceKeys": "email", "required": false },
+  { "destKey": "user.name", "sourceKeys": "name", "required": false },
   {
     "destKey": "user.organization_id",
-    "sourceKeys": [
-      "traits.organizationId",
-      "context.traits.organizationId"
-    ],
+    "sourceKeys": "organizationId",
     "required": false
   },
-  {
-    "destKey": "user.time_zone",
-    "sourceKeys": [
-      "traits.timezone",
-      "context.traits.timezone"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "user.phone",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "user.external_id",
-    "sourceKeys": "userId",
-    "required": false
-  }
+  { "destKey": "user.time_zone", "sourceKeys": "timezone", "required": false },
+  { "destKey": "user.phone", "sourceKeys": "phone", "required": false }
 ]
+

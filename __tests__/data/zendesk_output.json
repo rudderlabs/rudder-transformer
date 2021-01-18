@@ -48,12 +48,11 @@
     "body": {
       "JSON": {
         "user": {
-          "email": "group_email_124@xyz.com",
-          "name": "test-org124",
+          "email": "example124@email.com",
+          "name": "abcd124",
           "external_id": "abcd-124",
           "user_fields": {
-            "id": "abcd-124",
-            "domainNames": "cw124.com"
+            "id": "abcd-124"
           },
           "verified": true,
           "organization_id": 900001329943

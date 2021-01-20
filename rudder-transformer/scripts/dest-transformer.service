@@ -1,0 +1,16 @@
+[Unit]
+Description = Setting up Dest Transformer
+After = network.target
+
+[Service]
+WorkingDirectory = /home/ubuntu/rudder-transformer
+Restart = on-failure
+RestartSec = 3s
+StartLimitInterval = 0
+ExecStart = /usr/bin/node /home/ubuntu/rudder-transformer/destTransformer.js
+StandardOutput = syslog
+StandardError = syslog
+SyslogIdentifier = dest-transformer
+
+[Install]
+WantedBy = multi-user.target

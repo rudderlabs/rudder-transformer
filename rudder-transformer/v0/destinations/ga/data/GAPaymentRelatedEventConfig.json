@@ -1,0 +1,9 @@
+{
+  "properties.checkout_id": "ti",
+  "properties.step": "cos",
+  "properties.payment_method": "col",
+  "request_ip": "uip",
+  "properties.total": "tr",
+  "properties.shipping": "ts",
+  "properties.tax": "tt"
+}

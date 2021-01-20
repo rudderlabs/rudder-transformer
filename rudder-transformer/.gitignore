@@ -1,0 +1,8 @@
+**/.DS_Store
+.env
+node_modules
+npm-debug.log
+/coverage/*
+
+temp.json
+temp_out.json

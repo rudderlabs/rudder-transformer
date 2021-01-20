@@ -9,24 +9,6 @@
     "required": true
   },
   {
-    "destKey": "firstName",
-    "sourceKeys": [
-        "traits.firstName",
-        "context.traits.firstName",
-        "properties.lastName"
-      ],
-    "required": false
-  },
-  {
-    "destKey": "lastName",
-    "sourceKeys": [
-        "traits.lastName",
-        "context.traits.lastName",
-        "properties.lastName"
-      ],
-    "required": false
-  },
-  {
     "destKey": "phone",
     "sourceKeys": [
         "traits.phone",

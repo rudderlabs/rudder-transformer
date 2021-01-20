@@ -416,6 +416,11 @@ const handleMetadataForValue = (value, metadata) => {
       case "getOffsetInSec":
         formattedVal = getOffsetInSec(formattedVal);
         break;
+      case "domainUrl":
+        formattedVal = formattedVal
+          .replace("https://", "")
+          .replace("http://", "");
+        break;
       default:
         break;
     }

@@ -34,7 +34,7 @@ function getData(url) {
 }
 
 function get(url) {
-  const data = getData(url);
+  const mockData = getData(url);
   return new Promise((resolve, reject) => {
     resolve({ data: mockData ,status: 200 });
   });

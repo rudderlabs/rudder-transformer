@@ -91,7 +91,7 @@
         "referrer": "Rudder",
         "search": "abc",
         "title": "Test Page",
-        "url": "www.rudderlabs.com"
+        "url": "https://www.rudderlabs.com"
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T11:15:53.296Z"

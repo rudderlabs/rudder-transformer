@@ -17,7 +17,7 @@
   {
     "destKey": "os_version",
     "sourceKeys": "context.os.version",
-    "required": true
+    "required": false
   },
   {
     "destKey": "sdk_version",

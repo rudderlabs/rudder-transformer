@@ -12,6 +12,13 @@ const {
   removeUndefinedValues
 } = require("../../util");
 const { EventType } = require("../../../constants");
+const uaParser = require("@amplitude/ua-parser-js");
+
+function getInfoFromUA(path, payload) {
+  const ua = get(payload, "context.userAgent");
+  const devInfo = ua ? uaParser(ua) : {};
+  return get(devInfo, path);
+}
 
 /**
  *
@@ -70,7 +77,10 @@ const responseBuilderSimple = (message, destination) => {
      * For iOS: idfa
      */
 
-    if (get(message, "context.device.type").toLowerCase() === "android") {
+    if (
+      get(message, "context.device.type") &&
+      get(message, "context.device.type").toLowerCase() === "android"
+    ) {
       payload.id_type = "advertisingid";
     } else {
       payload.id_type = "idfa";
@@ -79,7 +89,12 @@ const responseBuilderSimple = (message, destination) => {
     if (fallbackIDFAZero && !payload.rdid) {
       payload.rdid = "00000000-0000-0000-0000-000000000000";
     }
-
+    payload.os_version = payload.os_version
+      ? payload.os_version
+      : getInfoFromUA("os.version", message);
+    if (payload.value && !payload.currency_code) {
+      payload.currency_code = "USD";
+    }
     const response = defaultRequestConfig(message);
     response.endpoint = `${baseEndpoint}${version}`;
     response.method = defaultPostRequestConfig.requestMethod;
@@ -97,12 +112,6 @@ const responseBuilderSimple = (message, destination) => {
         get(message, "context.ip") || get(message, "request_ip"),
       "Content-Type": "application/json; charset=utf-8"
     };
-    if (
-      Object.keys(response.body.JSON).length === 0 &&
-      response.body.JSON.constructor === Object
-    ) {
-      response.headers["Content-Length"] = 0;
-    }
     return response;
   }
   // fail-safety for developer error

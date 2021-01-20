@@ -220,8 +220,7 @@ function responseBuilderSimple(
       break;
     default:
       set(rawPayload, "event_properties", message.properties);
-      if (message.type === EventType.TRACK)
-        set(rawPayload, "user_properties", message.context.traits);
+      set(rawPayload, "user_properties", message.context.traits);
 
       rawPayload.event_type = evType;
       rawPayload.user_id = message.userId;

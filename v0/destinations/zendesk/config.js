@@ -25,7 +25,8 @@ const defaultFields = {
     "organizationId",
     "timezone",
     "phone",
-    "userId"
+    "userId",
+    "id"
   ],
   [ConfigCategory.GROUP.organizationFieldsJson]: [
     "name",

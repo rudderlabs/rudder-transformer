@@ -104,17 +104,25 @@ async function checkAndCreateUserFields(
   }
 }
 
-function getIdentifyPayload(message, category, destinationConfig) {
+function getIdentifyPayload(message, category, destinationConfig, type) {
   const mappingJson = mappingConfig[category.name];
 
-  const payload = constructPayload(message, mappingJson);
+  const traits =
+    type === "group"
+      ? get(message, "context.traits")
+      : getFieldValueFromMessage(message, "traits");
+
+  const payload = constructPayload(traits, mappingJson);
+  payload.user.external_id =
+    get(traits, "userId") || get(traits, "id") || message.userId;
+
   const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 
   if (payload.user.external_id) {
     set(payload, "user.user_fields.id", payload.user.external_id);
   }
+
   // send fields not in sourceKeys as user fields
-  const traits = getFieldValueFromMessage(message, "traits");
   const userFields = Object.keys(traits).filter(
     trait => !(sourceKeys.includes(trait) || typeof traits[trait] === "object")
   );
@@ -314,7 +322,12 @@ async function processIdentify(message, destinationConfig, headers) {
     headers
   );
 
-  const payload = getIdentifyPayload(message, category, destinationConfig);
+  const payload = getIdentifyPayload(
+    message,
+    category,
+    destinationConfig,
+    "identify"
+  );
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
@@ -438,11 +451,11 @@ async function processGroup(message, destinationConfig, headers) {
     url = endPoint + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
-    if(isUserAlreadyAssociated(userId, orgId, headers)){
+    if(isUserAlreadyAssociated(userId, orgId, headers)) {
       throw new Error("user is already associated with organization");
     } */
     category = ConfigCategory.IDENTIFY;
-    payload = getIdentifyPayload(message, category, destinationConfig);
+    payload = getIdentifyPayload(message, category, destinationConfig, "group");
     payload.user.organization_id = orgId;
     url = endPoint + category.createOrUpdateUserEndpoint;
     // return responseBuilder(message, headers, payload, url);

@@ -1,0 +1,502 @@
+[
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "First Investment",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"link_id": "878437894",
+			"app_event_type": "custom",
+			"lat": 1,
+			"id_type": "advertisingid",
+			"dev_token": "**********HnmA"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "application installed",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"link_id": "878437894",
+			"app_event_type": "first_open",
+			"lat": 1,
+			"id_type": "advertisingid",
+			"dev_token": "**********HnmA"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "application opened",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "session_start",
+			"lat": 1,
+			"id_type": "advertisingid"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "product list viewed",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "view_item_list",
+			"lat": 1,
+			"id_type": "advertisingid"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "order completed",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "ecommerce_purchase",
+			"lat": 1,
+			"id_type": "idfa"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"properties.affiliation": "App Store",
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "order completed",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "in_app_purchase",
+			"lat": 0,
+			"id_type": "advertisingid"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"affiliation": "Google Store",
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "product viewed",
+			"app_version": "1.0",
+			"os_version": "9",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "view_item",
+			"lat": 1,
+			"id_type": "advertisingid",
+			"rdid": "00000000-0000-0000-0000-000000000000"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"affiliation": "Google Store",
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"statusCode": 400,
+		"error": "No advertisingId set. Aborting message"
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "products searched",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"currency_code": "EUR",
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "view_search_results",
+			"lat": 1,
+			"id_type": "advertisingid",
+			"os_version": "9"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"affiliation": "Google Store",
+					"currency": "EUR",
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"version": "1",
+		"type": "REST",
+		"method": "POST",
+		"endpoint": "https://www.googleadservices.com/pagead/conversion/app/1.0",
+		"headers": {
+			"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)",
+			"X-Forwarded-For": "[::1]",
+			"Content-Type": "application/json; charset=utf-8"
+		},
+		"params": {
+			"app_event_name": "products searched",
+			"rdid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+			"app_version": "1.0",
+			"sdk_version": "4",
+			"timestamp": 1601371229,
+			"value": 20.37566,
+			"dev_token": "**********HnmA",
+			"link_id": "878437894",
+			"app_event_type": "view_search_results",
+			"lat": 1,
+			"id_type": "advertisingid",
+			"os_version": "9",
+			"currency_code": "USD"
+		},
+		"body": {
+			"JSON": {
+				"app_event_data": {
+					"key1": "value1",
+					"key2": "value2",
+					"key3": {
+						"k4": "v4",
+						"k5": {
+							"k6": "v6"
+						}
+					},
+					"key5": [
+						{
+							"k": "v1"
+						},
+						{
+							"k": "v2"
+						}
+					],
+					"revenue": 20.37566
+				}
+			},
+			"XML": {},
+			"FORM": {}
+		},
+		"files": {}
+	},
+	{
+		"statusCode": 400,
+		"error": "Event name is a reserved event name in Google Ads. Aborting Message"
+	},
+	{
+		"statusCode": 400,
+		"error": "Message type not supported"
+	},
+	{
+		"statusCode": 400,
+		"error": "Track event without event name. Aborting message."
+	},
+	{
+		"statusCode": 400,
+		"error": "Message Type is not present. Aborting message."
+	}
+]

@@ -36,7 +36,11 @@ function getData(url) {
 function get(url) {
   const mockData = getData(url);
   return new Promise((resolve, reject) => {
-    resolve({ data: mockData ,status: 200 });
+    if (mockData) {
+      resolve({ data: mockData, status: 200 });
+    } else {
+      resolve({ error: "Request failed" });
+    }
   });
 }
 
@@ -90,8 +94,8 @@ function post(url, payload) {
     });
   }
   return new Promise((resolve, reject) => {
-    if (data) {
-      resolve({ data });
+    if (mockData) {
+      resolve({ data: mockData });
     } else {
       resolve({ error: "Request failed" });
     }

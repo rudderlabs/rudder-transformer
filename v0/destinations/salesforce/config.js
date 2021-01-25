@@ -6,7 +6,16 @@ const ConfigCategory = {
   },
   IGNORE: {
     name: "SFIgnoreConfig"
+  },
+  GROUP: {
+    name: "SFGroupConfig"
   }
+};
+
+const CRUD_OPERATION = {
+  CREATE: "Create",
+  UPDATE: "Update",
+  DELETE: "Delete"
 };
 
 const SF_API_VERSION = "50.0";
@@ -19,5 +28,7 @@ module.exports = {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
   identifyMappingJson: mappingConfig[ConfigCategory.IDENTIFY.name],
-  ignoredTraits: mappingConfig[ConfigCategory.IGNORE.name]
+  groupMappingJson: mappingConfig[ConfigCategory.GROUP.name],
+  ignoredTraits: mappingConfig[ConfigCategory.IGNORE.name],
+  CRUD_OPERATION
 };

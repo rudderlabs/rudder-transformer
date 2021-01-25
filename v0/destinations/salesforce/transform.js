@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-restricted-syntax */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
@@ -5,7 +7,9 @@ const {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
   identifyMappingJson,
-  ignoredTraits
+  groupMappingJson,
+  ignoredTraits,
+  CRUD_OPERATION
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -46,7 +50,8 @@ function responseBuilderSimple(traits, salesforceMap, authorizationData) {
   // POST for create, PATCH for update
   let targetEndpoint = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${salesforceType}`;
   if (salesforceId) {
-    targetEndpoint += `/${salesforceId}?_HttpMethod=PATCH`;
+    const httpMethod = salesforceMap.httpMethod || "PATCH";
+    targetEndpoint += `/${salesforceId}?_HttpMethod=${httpMethod}`;
   }
 
   // First name and last name need to be extracted from the name field
@@ -154,7 +159,185 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   return salesforceMaps;
 }
 
-// Function for handling identify events
+/**
+ * Get Mapping field from fieldmapping and upsertmapping array data present in actionconfigurations object
+ * @param {*} message
+ * @param {*} fieldMapping
+ * @param {*} upsertMapping
+ */
+function getMappingField(message, fieldMapping, upsertMapping) {
+  const mappingPayload = { Field: {}, Upsert: {} };
+  if (fieldMapping.length === 0) {
+    return null;
+  }
+  fieldMapping.forEach(map => {
+    mappingPayload.Field[map.to] = get(message, map.from);
+  });
+
+  if (upsertMapping.length > 0) {
+    upsertMapping.forEach(map => {
+      mappingPayload.Upsert[map.to] = get(message, map.from);
+    });
+  }
+
+  return mappingPayload;
+}
+
+/**
+ * Validate id field if CRUD Operation is Update
+ * @param {*} fields
+ */
+function isValidUpdateOperation(fields) {
+  if (!fields.Id) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * This fn will generate response payload for each action configuration array.
+ * @param {*} crudOperation
+ * @param {*} sfObject
+ * @param {*} fields
+ * @param {*} upserts
+ * @param {*} authorizationData
+ */
+function generateActionConfiguration(
+  crudOperation,
+  sfObject,
+  fields,
+  upserts,
+  authorizationData
+) {
+  const sfMap = {
+    salesforceType: null,
+    salesforceId: null
+  };
+  sfMap.salesforceType = sfObject;
+  switch (crudOperation) {
+    case CRUD_OPERATION.UPDATE:
+      if (isValidUpdateOperation(fields)) {
+        sfMap.salesforceId = fields.Id;
+        delete fields.Id;
+      }
+      break;
+    case CRUD_OPERATION.DELETE:
+      sfMap.httpMethod = CRUD_OPERATION.DELETE.toUpperCase();
+      break;
+    case CRUD_OPERATION.CREATE:
+      break;
+    default:
+      throw new Error(`actions is not configured to process track event`);
+  }
+
+  return responseBuilderSimple(fields, sfMap, authorizationData);
+}
+
+/**
+ * Function to process track event present in actions form
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} actionConfigurations
+ * @param {*} authorizationData
+ */
+function processTrack(
+  message,
+  destination,
+  actionConfigurations,
+  authorizationData
+) {
+  let payload = {};
+  const customActionResponse = [];
+  actionConfigurations.forEach(config => {
+    payload = getMappingField(
+      message,
+      config.fieldMappings,
+      config.upsertMappings
+    );
+    customActionResponse.push(
+      generateActionConfiguration(
+        config.crudOperation,
+        config.salesForceObject,
+        payload.Field,
+        payload.Upsert,
+        authorizationData
+      )
+    );
+  });
+  return customActionResponse;
+}
+
+/**
+ * Handle Custom Actions present in  added in config object
+ * @param {*} message
+ * @param {*} destination
+ */
+async function processCustomActions(message, destination) {
+  const { event } = message;
+  let { actions } = destination.Config;
+  let customActionResponse = [];
+  if (!event) {
+    throw new Error(`message type ${message.type} should contain an event.`);
+  }
+  if (actions && actions.length === 0) {
+    throw new Error(`actions is not configured to process track event`);
+  }
+
+  const authorizationData = await getSFDCHeader(destination);
+  actions = actions.filter(a => {
+    return event === a.eventName;
+  });
+
+  /**
+   * Loop Over list of actions and push generated payload into array.
+   */
+  actions.forEach(ac => {
+    let res = [];
+    if (message.type === EventType.TRACK) {
+      res = processTrack(
+        message,
+        destination,
+        ac.actionConfigurations,
+        authorizationData
+      );
+    }
+    customActionResponse = customActionResponse.concat(res);
+  });
+
+  return customActionResponse;
+}
+
+/**
+ * Function to handle group event. It only creates a new account in Salesforce.
+ * @param {*} message
+ * @param {*} destination
+ */
+async function processGroup(message, destination) {
+  let payload = {};
+  const sfMap = {
+    salesforceType: "Account",
+    salesforceId: null
+  };
+  // check the traits before hand
+  const traits = getFieldValueFromMessage(message, "traits");
+  if (!traits) {
+    throw new Error("Invalid traits for Salesforce request");
+  }
+
+  // Get the authorization header if not available
+  const authorizationData = await getSFDCHeader(destination);
+
+  payload = constructPayload(message, groupMappingJson);
+
+  return responseBuilderSimple(payload, sfMap, authorizationData);
+}
+
+/**
+ * Function for handling identify events
+ * @param {*} message
+ * @param {*} destination
+ */
 async function processIdentify(message, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
@@ -189,10 +372,19 @@ async function processIdentify(message, destination) {
 // and event type where applicable
 async function processSingleMessage(message, destination) {
   let response;
-  if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, destination);
-  } else {
-    throw new Error(`message type ${message.type} is not supported`);
+  const eventType = message.type;
+  switch (eventType) {
+    case EventType.IDENTIFY:
+      response = await processIdentify(message, destination);
+      break;
+    case EventType.GROUP:
+      response = await processGroup(message, destination);
+      break;
+    case EventType.TRACK:
+      response = await processCustomActions(message, destination);
+      break;
+    default:
+      throw new Error(`message type ${message.type} is not supported`);
   }
   return response;
 }
@@ -203,3 +395,75 @@ async function process(event) {
 }
 
 exports.process = process;
+
+/** ------------------------------------------------------  For Future Reference ----------------------------------------------- */
+/**
+function shallowEqual(src, dest) {
+  const srcKeys = Object.keys(src);
+  const destKeys = Object.keys(dest);
+
+  if (srcKeys.length > destKeys.length) {
+    return false;
+  }
+
+  for (const key of srcKeys) {
+    if (src[key] !== dest[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+async function generateUpsertMappingRule(sfObject, upserts, authorizationData) {
+  const items = [];
+  const url = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${sfObject}`;
+  const response = await axios.get(url, {
+    headers: { Authorization: authorizationData.token }
+  });
+  const { recentItems } = response;
+  for (const item in recentItems) {
+    if (shallowEqual(upserts, item)) {
+      items.push(item.Id);
+    }
+  }
+  return items;
+}
+
+function createUpsertMapping(
+  crudOperation,
+  sfObject,
+  fields,
+  upserts,
+  authorizationData
+) {
+  let updateMappingIds = [];
+  const sfMap = {
+    salesforceType: null,
+    salesforceId: null
+  };
+  updateMappingIds = generateUpsertMappingRule(sfObject, upserts);
+  if (updateMappingIds.length === 0) {
+    crudOperation = CRUD_OPERATION.CREATE;
+  } else {
+    updateMappingIds.forEach(id => {
+      sfMap.salesforceId = id;
+      customActionResponse.push(
+        responseBuilderSimple(fields, sfMap, authorizationData)
+      );
+    });
+    crudOperation = CRUD_OPERATION.UPDATE;
+  }
+  return updateMappingIds;
+}
+
+if (crudOperation === CRUD_OPERATION.UPSERT) {
+  sfMap = createUpsertMapping(
+    crudOperation,
+    sfObject,
+    fields,
+    upserts,
+    authorizationData
+  );
+} else
+ */
+/** --------------------------------------------------- END ------------------------------------------------------- */

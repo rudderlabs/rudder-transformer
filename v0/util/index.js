@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -355,10 +354,11 @@ const getValueFromMessage = (message, sourceKey) => {
 //                This will return the first nonnull value from
 //                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
 const getFieldValueFromMessage = (message, sourceKey) => {
-  sourceKey = MESSAGE_MAPPING[sourceKey];
-  if (sourceKey) {
-    return getValueFromMessage(message, sourceKey);
+  const sourceKeyMap = MESSAGE_MAPPING[sourceKey];
+  if (sourceKeyMap) {
+    return getValueFromMessage(message, sourceKeyMap);
   }
+  return null;
 };
 
 // format the value as per the metadata values

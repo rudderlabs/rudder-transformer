@@ -89,6 +89,11 @@ const customTagProcessor = async (message, category, destination) => {
     ? get(message.context.traits, "tags")
     : get(message.traits, "tags");
 
+  // If no tags are sent in message return the contact from the method
+  if (!tags && !Array.isArray(tags)) {
+    return createdContact;
+  }
+
   // Step - 2
   // Fetch already created tags from dest, so that we avoid duplicate tag creation request
   // Ref - https://developers.activecampaign.com/reference#retrieve-all-tags
@@ -209,6 +214,10 @@ const customFieldProcessor = async (
     ? get(message.context.traits, "fieldInfo")
     : get(message.traits, "fieldInfo");
 
+  // If no field info is passed return from method
+  if (!fieldInfo) {
+    return;
+  }
   const fieldKeys = Object.keys(fieldInfo);
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
@@ -339,7 +348,7 @@ const screenRequestHandler = async (message, category, destination) => {
   });
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference#create-a-new-event-name-only
-  if (!storedEvents.includes(message.properties.eventName)) {
+  if (!storedEvents.includes(message.event)) {
     // Create the event
     try {
       res = await axios.post(
@@ -348,7 +357,7 @@ const screenRequestHandler = async (message, category, destination) => {
         }`,
         {
           eventTrackingEvent: {
-            name: message.name
+            name: message.event
           }
         },
         {
@@ -409,7 +418,7 @@ const trackRequestHandler = async (message, category, destination) => {
   });
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference#create-a-new-event-name-only
-  if (!storedEvents.includes(message.properties.eventName)) {
+  if (!storedEvents.includes(message.event)) {
     // Create the event
     try {
       res = await axios.post(

@@ -135,11 +135,10 @@
         "search": "abc",
         "title": "Test Page",
         "url": "www.rudderlabs.com",
-        "info":"Rudder_Event_Screen_Test"
+        "name":"Rudder_Event_Screen_Test"
       },
-      "event": "Test",
+      "event": "ScreenViewed",
       "integrations": { "All": true },
-      "name": "ScreenViewed",
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
@@ -178,9 +177,7 @@
         }
       },
       "event": "Tracking Action",
-      "integrations": {
-        "AM": true
-      },
+      "integrations": { "All": true },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
         "name":"Rudder_Event_Track_Test"

@@ -278,7 +278,9 @@ async function processCustomActions(message, destination) {
   let { actions } = destination.Config;
   let customActionResponse = [];
   if (!event) {
-    throw new Error(`message type ${message.type} should contain an event.`);
+    throw new Error(
+      `message type ${message.type} should contain an event property.`
+    );
   }
   if (actions && actions.length === 0) {
     throw new Error(`actions is not configured to process track event`);
@@ -395,75 +397,3 @@ async function process(event) {
 }
 
 exports.process = process;
-
-/** ------------------------------------------------------  For Future Reference ----------------------------------------------- */
-/**
-function shallowEqual(src, dest) {
-  const srcKeys = Object.keys(src);
-  const destKeys = Object.keys(dest);
-
-  if (srcKeys.length > destKeys.length) {
-    return false;
-  }
-
-  for (const key of srcKeys) {
-    if (src[key] !== dest[key]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-async function generateUpsertMappingRule(sfObject, upserts, authorizationData) {
-  const items = [];
-  const url = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/${sfObject}`;
-  const response = await axios.get(url, {
-    headers: { Authorization: authorizationData.token }
-  });
-  const { recentItems } = response;
-  for (const item in recentItems) {
-    if (shallowEqual(upserts, item)) {
-      items.push(item.Id);
-    }
-  }
-  return items;
-}
-
-function createUpsertMapping(
-  crudOperation,
-  sfObject,
-  fields,
-  upserts,
-  authorizationData
-) {
-  let updateMappingIds = [];
-  const sfMap = {
-    salesforceType: null,
-    salesforceId: null
-  };
-  updateMappingIds = generateUpsertMappingRule(sfObject, upserts);
-  if (updateMappingIds.length === 0) {
-    crudOperation = CRUD_OPERATION.CREATE;
-  } else {
-    updateMappingIds.forEach(id => {
-      sfMap.salesforceId = id;
-      customActionResponse.push(
-        responseBuilderSimple(fields, sfMap, authorizationData)
-      );
-    });
-    crudOperation = CRUD_OPERATION.UPDATE;
-  }
-  return updateMappingIds;
-}
-
-if (crudOperation === CRUD_OPERATION.UPSERT) {
-  sfMap = createUpsertMapping(
-    crudOperation,
-    sfObject,
-    fields,
-    upserts,
-    authorizationData
-  );
-} else
- */
-/** --------------------------------------------------- END ------------------------------------------------------- */

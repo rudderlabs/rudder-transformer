@@ -264,6 +264,15 @@ const customFieldProcessor = async (
   // Ref - https://developers.activecampaign.com/reference#create-fieldvalue
   await Promise.all(
     filteredFieldKeys.map(async key => {
+      let fPayload;
+      if (Array.isArray(fieldInfo[key])) {
+        fPayload = "||";
+        fieldInfo[key].map(fv => {
+          fPayload = `${fPayload}${fv}||`;
+        });
+      } else {
+        fPayload = fieldInfo[key];
+      }
       try {
         await axios.post(
           `${destination.Config.apiUrl}${
@@ -275,7 +284,7 @@ const customFieldProcessor = async (
             fieldValue: {
               contact: createdContact.id,
               field: fieldMap[key],
-              value: fieldInfo[key]
+              value: fPayload
             }
           },
           {
@@ -292,6 +301,61 @@ const customFieldProcessor = async (
   );
 };
 
+const customListProcessor = async (
+  message,
+  category,
+  destination,
+  createdContact
+) => {
+  // Here we extract the list info from the message
+  const listInfo = get(message.context.traits, "lists")
+    ? get(message.context.traits, "lists")
+    : get(message.traits, "lists");
+  if (!listInfo) {
+    return;
+  }
+  // The list info is pushed into a list object array
+  const listArr = [];
+  if (Array.isArray(listInfo)) {
+    listInfo.map(list => {
+      listArr.push(list);
+    });
+  } else {
+    listArr.push(listInfo);
+  }
+  // For each list object we are mapping the createdcontact with the list along with the
+  // status information
+  // Ref: https://developers.activecampaign.com/reference#update-list-status-for-contact
+  Promise.all(
+    listArr.map(async li => {
+      try {
+        await axios.post(
+          `${destination.Config.apiUrl}${
+            category.mergeListWithContactUrl
+              ? category.mergeListWithContactUrl
+              : ""
+          }`,
+          {
+            contactList: {
+              list: li.id,
+              contact: createdContact.id,
+              status: li.status === "subscribe" ? 1 : 2
+            }
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Api-Token": destination.Config.apiKey
+            }
+          }
+        );
+      } catch (err) {
+        LOG.error(`Error While mapping list with id ${li.id}`);
+      }
+    })
+  );
+};
+
 // This the handler func for identify type of events here before we transform the event
 // and return to rudder server we process the message by calling specific destination apis
 // for handling tag information and custom field information.
@@ -302,6 +366,8 @@ const identifyRequestHandler = async (message, category, destination) => {
     destination
   );
   await customFieldProcessor(message, category, destination, createdContact);
+  await customListProcessor(message, category, destination, createdContact);
+
   const payload = {
     contact: constructPayload(message, MAPPING_CONFIG[category.name])
   };

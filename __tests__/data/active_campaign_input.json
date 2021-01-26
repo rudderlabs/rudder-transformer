@@ -41,6 +41,16 @@
           "Office": "Trastkiv",
           "Country": "Russia"
         },
+        "lists": [
+          {
+            "id": 2,
+            "status": "subscribe"
+          },
+          {
+            "id": 3,
+            "status": "unsubscribe"
+          }
+        ],
         "address": {
           "city": "kolkata",
           "country": "India",
@@ -99,12 +109,12 @@
   },
   {
     "destination": {
-        "Config": {
-            "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-            "apiUrl": "https://active.campaigns.rudder.com",
-            "actid": "476550467",
-            "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
-          }
+      "Config": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "apiUrl": "https://active.campaigns.rudder.com",
+        "actid": "476550467",
+        "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+      }
     },
     "message": {
       "channel": "web",
@@ -135,7 +145,7 @@
         "search": "abc",
         "title": "Test Page",
         "url": "www.rudderlabs.com",
-        "name":"Rudder_Event_Screen_Test"
+        "name": "Rudder_Event_Screen_Test"
       },
       "event": "ScreenViewed",
       "integrations": { "All": true },
@@ -143,14 +153,14 @@
     }
   },
   {
-    "destination": { 
-        "Config": {
-            "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-            "apiUrl": "https://active.campaigns.rudder.com",
-            "actid": "476550467",
-            "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
-          }
-     },
+    "destination": {
+      "Config": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "apiUrl": "https://active.campaigns.rudder.com",
+        "actid": "476550467",
+        "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -180,7 +190,7 @@
       "integrations": { "All": true },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-        "name":"Rudder_Event_Track_Test"
+        "name": "Rudder_Event_Track_Test"
       },
       "userId": "test_user_id",
       "timestamp": "2019-09-01T15:46:51.693Z",
@@ -188,5 +198,4 @@
       "type": "track"
     }
   }
-  
 ]

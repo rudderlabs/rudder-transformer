@@ -93,6 +93,12 @@ function post(url, payload) {
       resolve({ data: payload, status: 201 });
     });
   }
+  if(url.includes("https://active.campaigns.rudder.com/api/3/contactLists")) {
+    //resolve with status 201 and the response data containing the created event
+    return new Promise((resolve, reject) => {
+      resolve({ data: payload, status: 200 });
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData });

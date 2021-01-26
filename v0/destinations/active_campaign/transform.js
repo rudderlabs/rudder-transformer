@@ -328,29 +328,35 @@ const customListProcessor = async (
   // Ref: https://developers.activecampaign.com/reference#update-list-status-for-contact
   Promise.all(
     listArr.map(async li => {
-      try {
-        await axios.post(
-          `${destination.Config.apiUrl}${
-            category.mergeListWithContactUrl
-              ? category.mergeListWithContactUrl
-              : ""
-          }`,
-          {
-            contactList: {
-              list: li.id,
-              contact: createdContact.id,
-              status: li.status === "subscribe" ? 1 : 2
+      if (li.status === "subscribe" || li.status === "unsubscribe") {
+        try {
+          await axios.post(
+            `${destination.Config.apiUrl}${
+              category.mergeListWithContactUrl
+                ? category.mergeListWithContactUrl
+                : ""
+            }`,
+            {
+              contactList: {
+                list: li.id,
+                contact: createdContact.id,
+                status: li.status === "subscribe" ? 1 : 2
+              }
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Api-Token": destination.Config.apiKey
+              }
             }
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "Api-Token": destination.Config.apiKey
-            }
-          }
+          );
+        } catch (err) {
+          LOG.error(`Error While mapping list with id ${li.id}`);
+        }
+      } else {
+        LOG.error(
+          `Error While mapping list with id ${li.id}, status is not-defined`
         );
-      } catch (err) {
-        LOG.error(`Error While mapping list with id ${li.id}`);
       }
     })
   );

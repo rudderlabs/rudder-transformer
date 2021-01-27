@@ -1,0 +1,311 @@
+[
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "request_id": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
+        "profile_update": {}
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "request_id": "57494c6a-3c62-4b30-83aa-6e821d37ac75",
+        "profile_update": {
+          "last name": "Abraham",
+          "first name": "John"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "eventWithoutProperties",
+            "timestamp": 1609749187,
+            "attributes": {}
+          }
+        ],
+        "request_id": "045f5107-6036-4557-ae17-6ddf5ee57eb6"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "eventWithProperties",
+            "timestamp": 1609749187,
+            "attributes": {
+              "category": "blah"
+            }
+          }
+        ],
+        "request_id": "4b99c45d-8591-473c-b79d-abd466f6f4d5"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "Visited a Page",
+            "context": {
+              "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html"
+            },
+            "timestamp": 1609749785,
+            "attributes": {
+              "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
+              "path": "/rudder-sdk-js/tests/html/script-test.html",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            }
+          }
+        ],
+        "request_id": "75a9e08b-955a-4dc7-8a39-3f6fba9d7497",
+        "profile_update": {
+          "_appcuesId": "86086",
+          "_updatedAt": "2021-01-04T08:43:05.783Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageUrl": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
+          "_lastBrowserLanguage": "en-GB",
+          "userId": "sampleId"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "Visited a Page",
+            "context": {
+              "url": "https://pagecall.com/testing"
+            },
+            "timestamp": 1609749785,
+            "attributes": {
+              "url": "https://pagecall.com/testing",
+              "name": "page name",
+              "path": "/testing",
+              "category": "page category",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            }
+          }
+        ],
+        "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+        "profile_update": {
+          "_appcuesId": "86086",
+          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageUrl": "https://pagecall.com/testing",
+          "_lastBrowserLanguage": "en-GB",
+          "userId": "sampleId"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+        "profile_update": {
+          "userId": "sampleId",
+          "_lastBrowserLanguage": "en-GB",
+          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageTitle": "properties title",
+          "_currentPageUrl": "https://pagecall.com/properties_url",
+          "_appcuesId": "86086"
+        },
+        "events": [
+          {
+            "timestamp": 1609749785,
+            "attributes": {
+              "category": "page category",
+              "name": "page name",
+              "path": "/testing",
+              "title": "properties title",
+              "url": "https://pagecall.com/properties_url",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            },
+            "name": "Visited a Page",
+            "context": {
+              "url": "https://pagecall.com/properties_url"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
+        "profile_update": {
+          "userId": "sampleId",
+          "_lastBrowserLanguage": "en-GB",
+          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+          "_currentPageTitle": "context title",
+          "_currentPageUrl": "https://pagecall.com/context_url",
+          "_appcuesId": "86086"
+        },
+        "events": [
+          {
+            "timestamp": 1609749785,
+            "attributes": {
+              "category": "page category",
+              "name": "page name",
+              "path": "/testing",
+              "_identity": {
+                "userId": "sampleId"
+              }
+            },
+            "name": "Visited a Page",
+            "context": {
+              "url": "https://pagecall.com/context_url"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "id1",
+        "events": [
+          {
+            "name": "Viewed a Screen",
+            "timestamp": 1584003903,
+            "attributes": {
+              "name": "MainActivity",
+              "automatic": true
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "User id is absent. Aborting event as userId is mandatory for Appcues"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
+  }
+]

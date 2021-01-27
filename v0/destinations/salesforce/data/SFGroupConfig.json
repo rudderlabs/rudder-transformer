@@ -1,17 +1,17 @@
 [
-  { "destKey": "Name", "sourceKeys": "traits.name" },
+  { "destKey": "Name", "sourceKeys": "traits.name", "required": true },
   { "destKey": "Phone", "sourceKeys": "traits.phone" },
   { "destKey": "AccountNumber", "sourceKeys": "groupId" },
   { "destKey": "Industry", "sourceKeys": "company.industry" },
 
-  { "destKey": "BillingCity", "sourceKeys": ["address.city", "city"] },
-  { "destKey": "BillingCountry", "sourceKeys": ["address.country", "country"] },
+  { "destKey": "BillingCity", "sourceKeys": ["traits.address.city", "address.city", "city"] },
+  { "destKey": "BillingCountry", "sourceKeys": ["traits.address.country", "address.country", "country"] },
   {
     "destKey": "BillingPostalCode",
-    "sourceKeys": ["address.postalCode", "postalCode"]
+    "sourceKeys": ["traits.address.postalCode", "address.postalCode", "postalCode"]
   },
-  { "destKey": "BillingState", "sourceKeys": ["address.state", "state"] },
-  { "destKey": "BillingStreet", "sourceKeys": ["address.street", "street"] },
+  { "destKey": "BillingState", "sourceKeys": ["traits.address.state", "address.state", "state"] },
+  { "destKey": "BillingStreet", "sourceKeys": ["traits.address.street", "address.street", "street"] },
   { "destKey": "Description", "sourceKeys": "description" },
   { "destKey": "NumberOfEmployees", "sourceKeys": "employees" }
 ]

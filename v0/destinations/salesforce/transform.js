@@ -100,7 +100,13 @@ function responseBuilderSimple(traits, salesforceMap, authorizationData) {
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(message, authorizationData) {
+async function getSalesforceIdFromPayload(
+  message,
+  authorizationData,
+  sfObject = "Lead",
+  requiredField = "id",
+  searchQuery = ""
+) {
   // define default map
   const salesforceMaps = [];
 
@@ -126,13 +132,13 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
     // need to perform a parameterized search for this using email
-    const email = getFieldValueFromMessage(message, "email");
+    const query = searchQuery || getFieldValueFromMessage(message, "email");
 
-    if (!email) {
+    if (!query) {
       throw new Error("Invalid Email address for Lead Objet");
     }
 
-    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
+    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${query}&sobject=${sfObject}&${sfObject}.fields=${requiredField}`;
 
     // request configuration will be conditional
     const leadQueryResponse = await axios.get(leadQueryUrl, {
@@ -153,7 +159,10 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     }
 
     // add a Lead Object to the response
-    salesforceMaps.push({ salesforceType: "Lead", salesforceId: leadObjectId });
+    salesforceMaps.push({
+      salesforceType: sfObject,
+      salesforceId: leadObjectId
+    });
   }
 
   return salesforceMaps;
@@ -317,10 +326,6 @@ async function processCustomActions(message, destination) {
  */
 async function processGroup(message, destination) {
   let payload = {};
-  const sfMap = {
-    salesforceType: "Account",
-    salesforceId: null
-  };
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -331,8 +336,24 @@ async function processGroup(message, destination) {
   const authorizationData = await getSFDCHeader(destination);
 
   payload = constructPayload(message, groupMappingJson);
+  // get salesforce object map
+  const salesforceMaps = await getSalesforceIdFromPayload(
+    message,
+    authorizationData,
+    "Account",
+    "Name",
+    payload.Name
+  );
+  const responseData = [];
+  // iterate over the object types found
+  salesforceMaps.forEach(salesforceMap => {
+    // finally build the response and push to the list
+    responseData.push(
+      responseBuilderSimple(payload, salesforceMap, authorizationData)
+    );
+  });
 
-  return responseBuilderSimple(payload, sfMap, authorizationData);
+  return responseData;
 }
 
 /**
@@ -397,3 +418,69 @@ async function process(event) {
 }
 
 exports.process = process;
+
+// {
+//   "destination": {
+//     "Config": {
+//       "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
+//       "password": "hJCR557#uzFfD",
+//       "userName": "sampathvinayak1453@gmail.com"
+//     },
+//     "DestinationDefinition": {
+//       "DisplayName": "Salesforce",
+//       "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+//       "Name": "SALESFORCE"
+//     },
+//     "Enabled": true,
+//     "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+//     "Name": "tst",
+//     "Transformations": []
+//   },
+//   "message": {
+//     "channel": "web",
+//     "context": {
+//       "app": {
+//         "build": "1.0.0",
+//         "name": "RudderLabs JavaScript SDK",
+//         "namespace": "com.rudderlabs.javascript",
+//         "version": "1.0.0"
+//       },
+//       "library": {
+//         "name": "RudderLabs JavaScript SDK",
+//         "version": "1.0.0"
+//       },
+//       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+//       "locale": "en-US",
+//       "ip": "0.0.0.0",
+//       "os": {
+//         "name": "",
+//         "version": ""
+//       },
+//       "screen": {
+//         "density": 2
+//       }
+//     },
+//     "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+//     "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+//     "originalTimestamp": "2019-10-14T09:03:17.562Z",
+//     "anonymousId": "123456",
+//     "userId": "123456",
+//     "type": "group",
+//     "traits": {
+//       "anonymousId": "123456",
+//       "name": "Shivam-Group 2:33",
+//       "email": "sayan@gmail.com",
+//       "address": {
+//         "city": "kolkata",
+//         "country": "India",
+//         "postalCode": 700056,
+//         "state": "WB",
+//         "street": ""
+//       }
+//     },
+//     "integrations": {
+//       "All": true
+//     },
+//     "sentAt": "2019-10-14T09:03:22.563Z"
+//   }
+// }

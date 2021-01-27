@@ -47,16 +47,10 @@
         "required": false
       },
       {
-        "destKey": "password",
-        "sourceKeys": [
-      "traits.password",
-      "context.traits.password"
-        ],
-        "required": false
-      },
-      {
         "destKey": "company",
         "sourceKeys": [
+      "traits.company.name",
+      "context.traits.company.name",
       "traits.company",
       "context.traits.company"
         ],
@@ -110,6 +104,8 @@
       {
         "destKey": "country",
         "sourceKeys": [
+            "traits.address.country",
+            "context.traits.address.country",
             "traits.country",
             "context.traits.country"
         ],
@@ -118,8 +114,8 @@
       {
         "destKey": "address_one",
         "sourceKeys": [
-            "traits.address_one",
-            "context.traits.address_one"
+            "traits.street",
+            "context.traits.street"
         ],
         "required": false
       },
@@ -134,24 +130,24 @@
       {
         "destKey": "city",
         "sourceKeys": [
-            "traits.city",
-            "context.traits.city"
+            "traits.address.city",
+            "context.traits.address.city"
         ],
         "required": false
       },
       {
         "destKey": "state",
         "sourceKeys": [
-            "traits.state",
-            "context.traits.state"
+            "traits.address.state",
+            "context.traits.address.state"
         ],
         "required": false
       },
       {
         "destKey": "zip",
         "sourceKeys": [
-            "traits.zip",
-            "context.traits.zip"
+            "traits.address.zip",
+            "context.traits.address.zip"
         ],
         "required": false
       },
@@ -174,8 +170,8 @@
       {
         "destKey": "source",
         "sourceKeys": [
-            "traits.source",
-            "context.traits.source"
+            "traits.utm_source",
+            "context.traits.utm_source"
         ],
         "required": false
       },
@@ -270,8 +266,6 @@
             "context.traits.is_starred"
         ],
         "required": false
-      }
-      
+    }
 
-      
 ]

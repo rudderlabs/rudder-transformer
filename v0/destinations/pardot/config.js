@@ -10,6 +10,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   BASE_ENDPOINT,
-  CONFIG_CATEGORIES,
+  identifyConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
   MAPPING_CONFIG
 };

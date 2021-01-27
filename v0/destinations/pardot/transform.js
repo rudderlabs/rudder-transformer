@@ -1,5 +1,5 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { CONFIG_CATEGORIES, identifyConfig } = require("./config");
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -9,25 +9,18 @@ const {
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = {};
-  const contact = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const contact = constructPayload(message, identifyConfig);
   payload.contact = contact;
-  if (payload) {
-    const responseBody = { ...payload, apiKey: destination.Config.apiKey };
-    const response = defaultRequestConfig();
-    response.endpoint = String(destination.Config.apiUrl).concat(
-      String(category.endPoint)
-    );
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      "Api-Token": destination.Config.apiKey
-    };
-    response.userId = getFieldValueFromMessage(message, "userId");
-    response.body.JSON = responseBody;
-    return response;
-  }
+
+  const responseBody = { ...payload, apiKey: destination.Config.apiKey };
+  const response = defaultRequestConfig();
+  response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = responseBody;
+  return response;
+
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  // throw new Error("Payload could not be constructed");
 };
 
 // Consider only Identify call for Pardot for now
@@ -36,17 +29,8 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
-  const messageType = message.type.toLowerCase();
 
-  let category;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
-      break;
-    default:
-      throw new Error("Message type not supported");
-  }
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(message, identifyConfig, destination);
 };
 
 const process = event => {

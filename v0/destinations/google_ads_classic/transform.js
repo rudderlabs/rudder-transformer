@@ -1,4 +1,5 @@
 const get = require("get-value");
+const uaParser = require("@amplitude/ua-parser-js");
 const {
   trackConfig,
   baseEndpoint,
@@ -12,7 +13,6 @@ const {
   removeUndefinedValues
 } = require("../../util");
 const { EventType } = require("../../../constants");
-const uaParser = require("@amplitude/ua-parser-js");
 
 function getInfoFromUA(path, payload) {
   const ua = get(payload, "context.userAgent");

@@ -232,14 +232,14 @@
 			"currency_code": "EUR",
 			"dev_token": "**********HnmA",
 			"link_id": "878437894",
-			"app_event_type": "ecommerce_purchase",
+			"app_event_type": "in_app_purchase",
 			"lat": 1,
 			"id_type": "idfa"
 		},
 		"body": {
 			"JSON": {
 				"app_event_data": {
-					"properties.affiliation": "App Store",
+					"affiliation": "App Store",
 					"currency": "EUR",
 					"key1": "value1",
 					"key2": "value2",

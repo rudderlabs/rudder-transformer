@@ -1,3 +1,4 @@
+/* eslint-disable  array-callback-return */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
@@ -145,7 +146,7 @@ const customTagProcessor = async (message, category, destination) => {
             }`,
             {
               tag: {
-                tag: tag,
+                tag,
                 tagType: "contact",
                 description: ""
               }

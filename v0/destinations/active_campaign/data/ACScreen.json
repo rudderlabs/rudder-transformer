@@ -1,16 +1,12 @@
-[{
+[
+  {
     "destKey": "event",
-    "sourceKeys": [
-        "event",
-        "properties.name"
-    ],
+    "sourceKeys": ["event", "properties.name"],
     "required": true
   },
   {
     "destKey": "eventdata",
-    "sourceKeys": [
-        "properties.name"
-    ],
+    "sourceKeys": ["properties.name"],
     "required": false
   }
 ]

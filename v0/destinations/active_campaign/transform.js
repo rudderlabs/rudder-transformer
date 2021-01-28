@@ -13,7 +13,7 @@ const {
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
-const responseBuilderSimple = (message, payload, category, destination) => {
+const responseBuilderSimple = (payload, category, destination) => {
   if (payload) {
     const responseBody = { ...payload, apiKey: destination.Config.apiKey };
     const response = defaultRequestConfig();
@@ -380,7 +380,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   payload.contact.firstName = getFieldValueFromMessage(message, "firstName");
   payload.contact.lastName = getFieldValueFromMessage(message, "lastName");
-  return responseBuilderSimple(message, payload, category, destination);
+  return responseBuilderSimple(payload, category, destination);
 };
 // This method handles any page request
 // Creates the payload as per API spec and returns to rudder-server
@@ -389,7 +389,7 @@ const pageRequestHandler = (message, category, destination) => {
   const payload = {
     siteTrackingDomain: constructPayload(message, MAPPING_CONFIG[category.name])
   };
-  return responseBuilderSimple(message, payload, category, destination);
+  return responseBuilderSimple(payload, category, destination);
 };
 
 const screenRequestHandler = async (message, category, destination) => {
@@ -460,7 +460,7 @@ const screenRequestHandler = async (message, category, destination) => {
         : message.context.traits.traits.email
     }}`
   );
-  return responseBuilderSimple(message, payload, category, destination);
+  return responseBuilderSimple(payload, category, destination);
 };
 
 const trackRequestHandler = async (message, category, destination) => {
@@ -530,7 +530,7 @@ const trackRequestHandler = async (message, category, destination) => {
         : message.context.traits.traits.email
     }}`
   );
-  return responseBuilderSimple(message, payload, category, destination);
+  return responseBuilderSimple(payload, category, destination);
 };
 
 // The main entry point where the message is processed based on what type of event

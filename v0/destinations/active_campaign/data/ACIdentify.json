@@ -1,0 +1,21 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "required": true
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone", "properties.phone"],
+    "required": false
+  },
+  {
+    "destKey": "fieldValues",
+    "sourceKeys": [
+      "traits.fieldValues",
+      "context.traits.fieldValues",
+      "properties.fieldValues"
+    ],
+    "required": false
+  }
+]

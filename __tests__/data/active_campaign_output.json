@@ -1,0 +1,97 @@
+[
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "contact": {
+          "email": "jamesDoe@gmail.com",
+          "firstName": "James",
+          "lastName": "Doe",
+          "phone": "92374162212"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "siteTrackingDomain": {
+          "name": "www.rudderlabs.com"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "actid": "476550467",
+        "event": "ScreenViewed",
+        "visit": "%7Bemail%20%3A%20jamesDoe%40gmail.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "eventdata": "Rudder_Event_Screen_Test"
+      },
+      "JSON": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "version": "1",
+    "endpoint": "https://trackcmp.net/event"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "actid": "476550467",
+        "event": "Tracking Action",
+        "visit": "%7Bemail%20%3A%20jamesDoe%40gmail.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "eventdata": "Rudder_Event_Track_Test"
+      },
+      "JSON": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "version": "1",
+    "endpoint": "https://trackcmp.net/event"
+  }
+]

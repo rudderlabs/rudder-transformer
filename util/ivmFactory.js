@@ -27,7 +27,7 @@ async function createIvm(code, libraryVersionIds) {
   }
 
   code = code + `
-    export function transformWrapper(transformationPayload) {
+    export async function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
       let transformType = transformationPayload.transformationType
       let outputEvents = []
@@ -46,10 +46,12 @@ async function createIvm(code, libraryVersionIds) {
           outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
           break;
         case "transformEvent":
-          outputEvents = eventMessages.map(ev => {
-            let transformedEvent = transformEvent(ev, metadata)
+
+          outputEvents = await Promise.all(eventMessages.map(async ev => {
+            let transformedEvent = await transformEvent(ev, metadata)
             return {transformedEvent, metadata: metadata(ev)}
-          }).filter(e => e.transformedEvent != null);
+          }));
+          outputEvents = outputEvents.filter(e => e.transformedEvent != null);
           break;
       }
       return outputEvents

@@ -10,6 +10,13 @@ const {
   getFieldValueFromMessage
 } = require("../../util");
 
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
+
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
 // //////////////////////////////////////////////////////////////////////
@@ -33,6 +40,18 @@ const getAuthToken = async destination => {
     });
 
   if (resp.data) {
+    const { success, errors } = resp.data;
+    if (success === false) {
+      if (
+        errors[0].code === "603" ||
+        errors[0].code === "605" ||
+        errors[0].code === "609" ||
+        errors[0].code === "610"
+      ) {
+        throw new CustomError("Error in getting token. Abortable", 500);
+      }
+      throw new CustomError("Error in getting token. Retryable", 400);
+    }
     return resp.data.access_token;
   }
 
@@ -76,7 +95,18 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
     });
 
   if (resp.data) {
-    const { result } = resp.data;
+    const { success, errors, result } = resp.data;
+    if (success === false) {
+      if (
+        errors[0].code === "603" ||
+        errors[0].code === "605" ||
+        errors[0].code === "609" ||
+        errors[0].code === "610"
+      ) {
+        throw new CustomError("Error in getting token. Abortable", 500);
+      }
+      throw new CustomError("Error in getting token. Retryable", 400);
+    }
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -98,9 +128,19 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
     .catch(error => {
       throw error;
     });
-
   if (resp.data) {
-    const { result } = resp.data;
+    const { success, errors, result } = resp.data;
+    if (success === false) {
+      if (
+        errors[0].code === "603" ||
+        errors[0].code === "605" ||
+        errors[0].code === "609" ||
+        errors[0].code === "610"
+      ) {
+        throw new CustomError("Error in getting token. Abortable", 500);
+      }
+      throw new CustomError("Error in getting token. Retryable", 400);
+    }
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -124,7 +164,6 @@ const processIdentify = async (message, destination, token) => {
   const { accountId, leadTraitMapping } = destination;
 
   const traits = getFieldValueFromMessage(message, "traits");
-
   if (!traits) {
     throw new Error("Invalid traits value for Marketo");
   }

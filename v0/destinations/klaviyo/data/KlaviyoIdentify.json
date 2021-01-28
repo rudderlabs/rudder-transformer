@@ -1,0 +1,62 @@
+[
+  {
+    "destKey": "$email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "$first_name",
+    "sourceKeys": ["traits.firstName", "context.traits.firstName"],
+    "required": false
+  },
+  {
+    "destKey": "$last_name",
+    "sourceKeys": ["traits.lastName", "context.traits.lastName"],
+    "required": false
+  },
+  {
+    "destKey": "$phone_number",
+    "sourceKeys": ["traits.firstName", "context.traits.firstName"],
+    "required": false
+  },
+  {
+    "destKey": "$title",
+    "sourceKeys": ["traits.title", "context.traits.title"],
+    "required": false
+  },
+  {
+    "destKey": "$organization",
+    "sourceKeys": ["traits.organization", "context.traits.organization"],
+    "required": false
+  },
+  {
+    "destKey": "$city",
+    "sourceKeys": ["traits.city", "context.traits.city"],
+    "required": false
+  },
+  {
+    "destKey": "$region",
+    "sourceKeys": ["traits.region", "context.traits.region"],
+    "required": false
+  },
+  {
+    "destKey": "$country",
+    "sourceKeys": ["traits.country", "context.traits.country"],
+    "required": false
+  },
+  {
+    "destKey": "$zip",
+    "sourceKeys": ["traits.zip", "context.traits.zip"],
+    "required": false
+  },
+  {
+    "destKey": "$image",
+    "sourceKeys": ["traits.image", "context.traits.image"],
+    "required": false
+  },
+  {
+    "destKey": "$timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": false
+  }
+]

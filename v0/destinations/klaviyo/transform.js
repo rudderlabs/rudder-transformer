@@ -1,28 +1,42 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  CONFIG_CATEGORIES,
+  BASE_ENDPOINT,
+  MAPPING_CONFIG
+} = require("./config");
 const {
   defaultRequestConfig,
-  getFieldValueFromMessage,
   constructPayload,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  defaultGetRequestConfig
 } = require("../../util");
 
-const responseBuilderSimple = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (payload) {
-    const responseBody = { ...payload, apiKey: destination.Config.apiKey };
-    const response = defaultRequestConfig();
-    response.endpoint = category.endPoint;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json"
-    };
-    response.userId = getFieldValueFromMessage(message, "userId");
-    response.body.JSON = responseBody;
-    return response;
-  }
-  // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+// const responseBuilderSimple = (payload, category, destination) => {
+//   if (payload) {
+//     const responseBody = { ...payload, apiKey: destination.Config.apiKey };
+//     const response = defaultRequestConfig();
+//     response.endpoint = category.endPoint;
+//     response.method = defaultPostRequestConfig.requestMethod;
+//     response.headers = {
+//       "Content-Type": "application/json"
+//     };
+//     response.body.JSON = responseBody;
+//     return response;
+//   }
+//   // fail-safety for developer error
+//   throw new Error("Payload could not be constructed");
+// };
+
+const identifyRequestHandler = (message, category, destination) => {
+  const payload = {
+    token: destination.Config.pubApiKey,
+    properties: constructPayload(message, MAPPING_CONFIG[category.name])
+  };
+  const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
+  const response = defaultRequestConfig();
+  response.endpoint = `${BASE_ENDPOINT}${category.endPoint}?data=${encodedData}`;
+  response.method = defaultGetRequestConfig.requestMethod;
+  return response;
 };
 
 const processEvent = (message, destination) => {
@@ -32,9 +46,11 @@ const processEvent = (message, destination) => {
   const messageType = message.type.toLowerCase();
 
   let category;
+  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
+      response = identifyRequestHandler(message, category, destination);
       break;
     case EventType.PAGE:
       category = CONFIG_CATEGORIES.PAGE;
@@ -48,7 +64,7 @@ const processEvent = (message, destination) => {
     default:
       throw new Error("Message type not supported");
   }
-  return responseBuilderSimple(message, category, destination);
+  return response;
 };
 
 const process = event => {

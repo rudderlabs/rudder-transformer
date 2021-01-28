@@ -1,5 +1,5 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, identifyConfig } = require("./config");
+const { identifyConfig, BASE_ENDPOINT } = require("./config");
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -7,14 +7,14 @@ const {
   defaultPostRequestConfig
 } = require("../../util");
 
-const responseBuilderSimple = (message, category, destination) => {
+const responseBuilderSimple = (message, destination) => {
   const payload = {};
   const contact = constructPayload(message, identifyConfig);
   payload.contact = contact;
 
   const responseBody = { ...payload, apiKey: destination.Config.apiKey };
   const response = defaultRequestConfig();
-  response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
+  response.endpoint = `${destination.Config.apiUrl}${BASE_ENDPOINT}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = responseBody;
   return response;
@@ -30,7 +30,7 @@ const processEvent = (message, destination) => {
     throw Error("Message Type is not present. Aborting message.");
   }
 
-  return responseBuilderSimple(message, identifyConfig, destination);
+  return responseBuilderSimple(message, destination);
 };
 
 const process = event => {

@@ -7,7 +7,8 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  handleResponseRules
 } = require("../../util");
 
 class CustomError extends Error {
@@ -25,7 +26,7 @@ class CustomError extends Error {
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async destination => {
+const getAuthToken = async (destination, destinationDefinition) => {
   const { accountId, clientId, clientSecret } = destination;
   const resp = await axios
     .get(`https://${accountId}.mktorest.com/identity/oauth/token`, {
@@ -38,19 +39,25 @@ const getAuthToken = async destination => {
     .catch(error => {
       throw error;
     });
-
   if (resp.data) {
     const { success, errors } = resp.data;
     if (success === false) {
-      if (
-        errors[0].code === "603" ||
-        errors[0].code === "605" ||
-        errors[0].code === "609" ||
-        errors[0].code === "610"
-      ) {
-        throw new CustomError("Error in getting token. Abortable", 500);
+      const getResponseCode = handleResponseRules(
+        destinationDefinition.ResponseRules,
+        errors[0].code
+      );
+      if (getResponseCode === 500) {
+        throw new CustomError(
+          `${errors[0].message}. During getting auth token. Abortable`,
+          500
+        );
       }
-      throw new CustomError("Error in getting token. Retryable", 400);
+      if (getResponseCode === 400) {
+        throw new CustomError(
+          `${errors[0].message}. During getting auth token. Retryable`,
+          400
+        );
+      }
     }
     return resp.data.access_token;
   }
@@ -73,7 +80,13 @@ const getAuthToken = async destination => {
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const lookupLead = async (accountId, token, userId, anonymousId) => {
+const lookupLead = async (
+  accountId,
+  token,
+  userId,
+  anonymousId,
+  destinationDefinition
+) => {
   const attribute = userId ? { userId } : { anonymousId };
   const resp = await axios
     .post(
@@ -93,19 +106,25 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
     .catch(error => {
       throw error;
     });
-
   if (resp.data) {
     const { success, errors, result } = resp.data;
     if (success === false) {
-      if (
-        errors[0].code === "603" ||
-        errors[0].code === "605" ||
-        errors[0].code === "609" ||
-        errors[0].code === "610"
-      ) {
-        throw new CustomError("Error in getting token. Abortable", 500);
+      const getResponseCode = handleResponseRules(
+        destinationDefinition.ResponseRules,
+        errors[0].code
+      );
+      if (getResponseCode === 500) {
+        throw new CustomError(
+          `${errors[0].message}. During lookup lead. Abortable`,
+          500
+        );
       }
-      throw new CustomError("Error in getting token. Retryable", 400);
+      if (getResponseCode === 400) {
+        throw new CustomError(
+          `${errors[0].message}. During lookup lead. Retryable`,
+          400
+        );
+      }
     }
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
@@ -119,7 +138,12 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (accountId, token, email) => {
+const lookupLeadUsingEmail = async (
+  destinationDefinition,
+  accountId,
+  token,
+  email
+) => {
   const resp = await axios
     .get(`https://${accountId}.mktorest.com/rest/v1/leads.json`, {
       params: { filterValues: email, filterType: "email" },
@@ -131,15 +155,22 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
   if (resp.data) {
     const { success, errors, result } = resp.data;
     if (success === false) {
-      if (
-        errors[0].code === "603" ||
-        errors[0].code === "605" ||
-        errors[0].code === "609" ||
-        errors[0].code === "610"
-      ) {
-        throw new CustomError("Error in getting token. Abortable", 500);
+      const getResponseCode = handleResponseRules(
+        destinationDefinition.ResponseRules,
+        errors[0].code
+      );
+      if (getResponseCode === 500) {
+        throw new CustomError(
+          `${errors[0].message}. During lead look up using email. Abortable`,
+          500
+        );
       }
-      throw new CustomError("Error in getting token. Retryable", 400);
+      if (getResponseCode === 400) {
+        throw new CustomError(
+          `${errors[0].message}. During lead look up using email. Retryable`,
+          400
+        );
+      }
     }
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
@@ -155,7 +186,12 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (message, destination, token) => {
+const processIdentify = async (
+  message,
+  destination,
+  destinationDefinition,
+  token
+) => {
   // get bearer token
   // lookup using email. if present use that
   // else lookup using userId
@@ -172,8 +208,20 @@ const processIdentify = async (message, destination, token) => {
 
   const email = getFieldValueFromMessage(message, "email");
   const leadId =
-    (email && (await lookupLeadUsingEmail(accountId, token, email))) ||
-    (await lookupLead(accountId, token, userId, message.anonymousId));
+    (email &&
+      (await lookupLeadUsingEmail(
+        destinationDefinition,
+        accountId,
+        token,
+        email
+      ))) ||
+    (await lookupLead(
+      accountId,
+      token,
+      userId,
+      message.anonymousId,
+      destinationDefinition
+    ));
 
   if (!leadId) {
     throw new Error("Lead lookup failed");
@@ -209,7 +257,12 @@ const processIdentify = async (message, destination, token) => {
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (message, destination, token) => {
+const processTrack = async (
+  message,
+  destination,
+  token,
+  destinationDefinition
+) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
@@ -254,7 +307,8 @@ const processTrack = async (message, destination, token) => {
     accountId,
     token,
     userId,
-    message.anonymousId
+    message.anonymousId,
+    destinationDefinition
   );
   if (!leadId) {
     throw new Error("Lead lookup failed");
@@ -312,11 +366,17 @@ const processEvent = async (message, destination, token) => {
       response = await processIdentify(
         message,
         formatConfig(destination),
+        destination.DestinationDefinition,
         token
       );
       break;
     case EventType.TRACK:
-      response = await processTrack(message, formatConfig(destination), token);
+      response = await processTrack(
+        message,
+        formatConfig(destination),
+        token,
+        destination.DestinationDefinition
+      );
       break;
     default:
       throw new Error("Message type not supported");
@@ -327,7 +387,15 @@ const processEvent = async (message, destination, token) => {
 };
 
 const process = async event => {
-  const token = await getAuthToken(formatConfig(event.destination));
+  console.log(event.destination);
+  console.log(
+    event.destination.DestinationDefinition.ResponseRules.responseType
+  );
+  console.log(event.destination.DestinationDefinition.ResponseRules.rules);
+  const token = await getAuthToken(
+    formatConfig(event.destination),
+    event.destination.DestinationDefinition
+  );
   if (!token) {
     throw Error("Authorisation failed");
   }
@@ -378,7 +446,10 @@ const processRouterDest = async input => {
   }
   let token;
   try {
-    token = await getAuthToken(formatConfig(input[0].destination));
+    token = await getAuthToken(
+      formatConfig(input[0].destination),
+      input[0].destination.DestinationDefinition
+    );
   } catch (error) {
     const respEvents = getErrorRespEvents(
       input.map(ev => ev.metadata),

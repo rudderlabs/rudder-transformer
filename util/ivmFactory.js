@@ -43,7 +43,8 @@ async function createIvm(code, libraryVersionIds) {
       }
       switch(transformType) {
         case "transformBatch":
-          outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
+          outputEvents = await transformBatch(eventMessages, metadata);
+          outputEvents = outputEvents.map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
           break;
         case "transformEvent":
 

@@ -67,6 +67,142 @@ possibleEnvs.forEach( envValue => {
   
       expect(output).toEqual(expectedData);
     });
+
+    it(`Simple async ${name} Test for V0 transformation`, async () => {
+      const versionId = randomID();
+      const { userTransformHandler } = require("../util/customTransformer");
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_async_output.json`);
+  
+      const respBody = {
+        codeVersion: '0',
+        name: name,
+        code: `
+        async function foo() {
+          return 'resolved';
+        }
+        async function transform(events) {
+            const pr = await foo();
+            const filteredEvents = events.map(event => {
+              event.promise = pr;
+              return event;
+            });
+              return filteredEvents;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+  
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+  
+      expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple ${name} async test for V1 transformation - transformBatch`, async () => {
+      const versionId = randomID();
+      const libraryVersionId = randomID();
+      const { userTransformHandler } = require("../util/customTransformer");
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_async_output.json`);
+  
+      const respBody = {
+        code: `
+        import url from 'url';
+        async function foo() {
+          return 'resolved';
+        }
+        export async function transformBatch(events, metadata) {
+            const pr = await foo();
+            const modifiedEvents = events.map(event => {
+              if(event.properties && event.properties.url){
+                const x = new url.URLSearchParams(event.properties.url).get("client");
+              }
+              event.promise = pr;
+              return event;
+            });
+              return modifiedEvents;
+            }
+            `,
+        name:"url",
+        codeVersion: '1'
+      };
+      respBody["versionId"] = versionId
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      when(fetch).calledWith(transformerUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+  
+      const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+      export default self;
+      `;
+  
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+      when(fetch).calledWith(libraryUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue({"code":urlCode,"name":"url"})
+      });
+  
+      const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+  
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+  
+      expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple ${name} async test for V1 transformation - transformEvent`, async () => {
+      const versionId = randomID();
+      const libraryVersionId = randomID();
+      const { userTransformHandler } = require("../util/customTransformer");
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_async_output.json`);
+  
+      const respBody = {
+        code: `
+        import url from 'url';
+        async function foo() {
+          return 'resolved';
+        }
+        export async function transformEvent(event, metadata) {
+            const pr = await foo();
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          }
+          `,
+        name:"url",
+        codeVersion: '1'
+      };
+      respBody["versionId"] = versionId
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      when(fetch).calledWith(transformerUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+  
+      const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+      export default self;
+      `;
+  
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+      when(fetch).calledWith(libraryUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue({"code":urlCode,"name":"url"})
+      });
+  
+      const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+  
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+  
+      expect(output).toEqual(expectedData);
+    });
   
     it(`Filtering ${name} Test`, async () => {
       const versionId = randomID();

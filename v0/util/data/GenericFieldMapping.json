@@ -68,5 +68,10 @@
   "pageUrl": [
     "context.page.url", 
     "properties.url"
+  ],
+  "phone": [
+    "traits.phone",
+    "context.traits.phone",
+    "properties.phone"
   ]
 }

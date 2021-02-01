@@ -8,17 +8,6 @@
     "required": true
   },
   {
-    "destKey": "campaign_id",
-    "sourceKeys": [
-      "campaignId",
-      "traits.campaignId",
-      "traits.campaign_id",
-      "context.traits.campaignId",
-      "context.traits.campaign_id"
-    ],
-    "required": false
-  },
-  {
     "destKey": "salutation",
     "sourceKeys": [
       "traits.salutation",
@@ -164,14 +153,6 @@
     "sourceKeys": [
       "traits.fax",
       "context.traits.fax"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "source",
-    "sourceKeys": [
-      "traits.source",
-      "context.traits.source"
     ],
     "required": false
   },

@@ -110,13 +110,11 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
-  if (message.isRevenue) {
-    rawPayload.revenueType =
-      message.properties.revenueType ||
-      message.properties.revenue_type ||
-      "Purchased";
-    rawPayload = setPriceQuanityInPayload(message, rawPayload);
-  }
+  rawPayload.revenueType =
+    message.properties.revenueType ||
+    message.properties.revenue_type ||
+    "Purchased";
+  rawPayload = setPriceQuanityInPayload(message, rawPayload);
   return rawPayload;
 }
 
@@ -273,16 +271,15 @@ function responseBuilderSimple(
       endpoint = ALIAS_ENDPOINT;
       break;
     default:
+      traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
-      if (message.type === EventType.TRACK)
-        set(rawPayload, "user_properties", message.context.traits);
+      if (traits) {
+        set(rawPayload, "user_properties", traits);
+      }
 
       rawPayload.event_type = evType;
       rawPayload.user_id = message.userId;
-      if (
-        (message.properties && message.properties.revenue) ||
-        evType === "Product Purchased"
-      ) {
+      if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
       }

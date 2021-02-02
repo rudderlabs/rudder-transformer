@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const { isNonFuncObject } = require("./v0/util");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -199,6 +200,11 @@ if (startDestTransformer) {
               );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
+                  if (!isNonFuncObject(ev.transformedEvent)) {
+                    throw new Error(
+                      `returned event in events from user transformation is not an object, transformationVersionId:${transformationVersionId}`
+                    );
+                  }
                   return {
                     output: ev.transformedEvent,
                     metadata: ev.metadata === {} ? commonMetadata : ev.metadata,

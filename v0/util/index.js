@@ -26,7 +26,7 @@ const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
-const isBlank = (value) => _.isEmpty(_.toString(value));
+const isBlank = value => _.isEmpty(_.toString(value));
 
 // ========================================================================
 // GENERIC UTLITY
@@ -555,6 +555,11 @@ const isObject = value => {
   );
 };
 
+const isNonFuncObject = value => {
+  const type = typeof value;
+  return value != null && type === "object" && !Array.isArray(value);
+};
+
 function getBrowserInfo(userAgent) {
   const ua = uaParser(userAgent);
   return { name: ua.browser.name, version: ua.browser.version };
@@ -674,6 +679,7 @@ module.exports = {
   getValuesAsArrayFromConfig,
   isEmpty,
   isObject,
+  isNonFuncObject,
   isPrimitive,
   isValidUrl,
   isBlank,

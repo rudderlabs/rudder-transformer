@@ -32,23 +32,23 @@ inputData.forEach((input, index) => {
   });
 });
 
-const batchInputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
-);
-const batchOutputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
-);
-
-const batchInputData = JSON.parse(batchInputDataFile);
-const batchExpectedData = JSON.parse(batchOutputDataFile);
-
-batchInputData.forEach((input, index) => {
-  test(`${name} Batching ${index}`, () => {
-    const output = transformer.batch(input);
-    expect(Array.isArray(output)).toEqual(true);
-    expect(output.length).toEqual(batchExpectedData[index].length);
-    output.forEach((input, indexInner) => {
-      expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-    })
-  });
-});
+// const batchInputDataFile = fs.readFileSync(
+//   path.resolve(__dirname, `./data/${integration}_batch_input.json`)
+// );
+// const batchOutputDataFile = fs.readFileSync(
+//   path.resolve(__dirname, `./data/${integration}_batch_output.json`)
+// );
+//
+// const batchInputData = JSON.parse(batchInputDataFile);
+// const batchExpectedData = JSON.parse(batchOutputDataFile);
+//
+// batchInputData.forEach((input, index) => {
+//   test(`${name} Batching ${index}`, () => {
+//     const output = transformer.batch(input);
+//     expect(Array.isArray(output)).toEqual(true);
+//     expect(output.length).toEqual(batchExpectedData[index].length);
+//     output.forEach((input, indexInner) => {
+//       expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
+//     })
+//   });
+// });

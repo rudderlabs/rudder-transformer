@@ -1,22 +1,14 @@
 /* eslint-disable no-await-in-loop */
 const get = require("get-value");
-const axios = require("axios");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
 const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage,
-  handleResponseRules
+  getFieldValueFromMessage
 } = require("../../util");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
+const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
@@ -26,42 +18,23 @@ class CustomError extends Error {
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async (destination, destinationDefinition) => {
+const getAuthToken = async destination => {
   const { accountId, clientId, clientSecret } = destination;
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/identity/oauth/token`, {
+  const resp = await getAxiosResponse(
+    `https://${accountId}.mktorest.com/identity/oauth/token`,
+    {
       params: {
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: "client_credentials"
       }
-    })
-    .catch(error => {
-      throw error;
-    });
-  if (resp.data) {
-    const { success, errors } = resp.data;
-    if (success === false) {
-      const getResponseCode = handleResponseRules(
-        destinationDefinition.ResponseRules,
-        errors[0].code
-      );
-      if (getResponseCode === 500) {
-        throw new CustomError(
-          `${errors[0].message}. During getting auth token. Abortable`,
-          500
-        );
-      }
-      if (getResponseCode === 400) {
-        throw new CustomError(
-          `${errors[0].message}. During getting auth token. Retryable`,
-          400
-        );
-      }
-    }
-    return resp.data.access_token;
+    },
+    destination.ResponseRules ? destination.ResponseRules : null,
+    "During getting auth token"
+  );
+  if (resp) {
+    return resp.access_token;
   }
-
   return null;
 };
 
@@ -81,51 +54,31 @@ const getAuthToken = async (destination, destinationDefinition) => {
 // ------------------------
 // Thus we'll always be using createOrUpdate
 const lookupLead = async (
+  destinationDefinition,
   accountId,
   token,
   userId,
-  anonymousId,
-  destinationDefinition
+  anonymousId
 ) => {
   const attribute = userId ? { userId } : { anonymousId };
-  const resp = await axios
-    .post(
-      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-      {
-        action: "createOrUpdate",
-        input: [attribute],
-        lookupField: userId ? "userId" : "anonymousId"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "application/json"
-        }
+  const resp = await postAxiosResponse(
+    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    {
+      action: "createOrUpdate",
+      input: [attribute],
+      lookupField: userId ? "userId" : "anonymousId"
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json"
       }
-    )
-    .catch(error => {
-      throw error;
-    });
-  if (resp.data) {
-    const { success, errors, result } = resp.data;
-    if (success === false) {
-      const getResponseCode = handleResponseRules(
-        destinationDefinition.ResponseRules,
-        errors[0].code
-      );
-      if (getResponseCode === 500) {
-        throw new CustomError(
-          `${errors[0].message}. During lookup lead. Abortable`,
-          500
-        );
-      }
-      if (getResponseCode === 400) {
-        throw new CustomError(
-          `${errors[0].message}. During lookup lead. Retryable`,
-          400
-        );
-      }
-    }
+    },
+    destinationDefinition ? destinationDefinition.ResponseRules : null,
+    "During lookup lead"
+  );
+  if (resp) {
+    const { result } = resp;
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -144,34 +97,17 @@ const lookupLeadUsingEmail = async (
   token,
   email
 ) => {
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/rest/v1/leads.json`, {
+  const resp = await getAxiosResponse(
+    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    {
       params: { filterValues: email, filterType: "email" },
       headers: { Authorization: `Bearer ${token}` }
-    })
-    .catch(error => {
-      throw error;
-    });
-  if (resp.data) {
-    const { success, errors, result } = resp.data;
-    if (success === false) {
-      const getResponseCode = handleResponseRules(
-        destinationDefinition.ResponseRules,
-        errors[0].code
-      );
-      if (getResponseCode === 500) {
-        throw new CustomError(
-          `${errors[0].message}. During lead look up using email. Abortable`,
-          500
-        );
-      }
-      if (getResponseCode === 400) {
-        throw new CustomError(
-          `${errors[0].message}. During lead look up using email. Retryable`,
-          400
-        );
-      }
-    }
+    },
+    destinationDefinition ? destinationDefinition.ResponseRules : null,
+    "During lead look up using email"
+  );
+  if (resp) {
+    const { result } = resp;
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -216,11 +152,11 @@ const processIdentify = async (
         email
       ))) ||
     (await lookupLead(
+      destinationDefinition,
       accountId,
       token,
       userId,
-      message.anonymousId,
-      destinationDefinition
+      message.anonymousId
     ));
 
   if (!leadId) {
@@ -387,15 +323,7 @@ const processEvent = async (message, destination, token) => {
 };
 
 const process = async event => {
-  console.log(event.destination);
-  console.log(
-    event.destination.DestinationDefinition.ResponseRules.responseType
-  );
-  console.log(event.destination.DestinationDefinition.ResponseRules.rules);
-  const token = await getAuthToken(
-    formatConfig(event.destination),
-    event.destination.DestinationDefinition
-  );
+  const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
     throw Error("Authorisation failed");
   }
@@ -446,10 +374,7 @@ const processRouterDest = async input => {
   }
   let token;
   try {
-    token = await getAuthToken(
-      formatConfig(input[0].destination),
-      input[0].destination.DestinationDefinition
-    );
+    token = await getAuthToken(formatConfig(input[0].destination));
   } catch (error) {
     const respEvents = getErrorRespEvents(
       input.map(ev => ev.metadata),
@@ -488,29 +413,6 @@ const processRouterDest = async input => {
       }
     })
   );
-  // const respList = [];
-  // // Checking previous status Code. Initially setting to false.
-  // // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
-  // // let prevStatus = false;
-  // for (let i = 0; i < input.length; i += 1) {
-  //   const inputs = input[i];
-  //   let respEvents = {};
-  //   try {
-  //     respEvents = getSuccessRespEvents(
-  //       await processEvent(inputs.message, inputs.destination, token),
-  //       [inputs.metadata],
-  //       inputs.destination
-  //     );
-  //     respList.push(respEvents);
-  //   } catch (error) {
-  //     respEvents = getErrorRespEvents(
-  //       [inputs.metadata],
-  //       error.response ? error.response.status : 400,
-  //       error.message || "Error occurred while processing payload."
-  //     );
-  //     respList.push(respEvents);
-  //   }
-  // }
   return respList;
 };
 

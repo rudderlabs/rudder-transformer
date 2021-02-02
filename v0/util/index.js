@@ -664,10 +664,10 @@ function handleResponseRules(responseRules, errorCode) {
       false
     );
     if (abortable[errorCode] === "false") {
-      return 500;
+      return 400;
     }
     if (retryable[errorCode] === "false") {
-      return 400;
+      return 500;
     }
     // is there any case possible that non of the above matches? if there is what should we send?
   }

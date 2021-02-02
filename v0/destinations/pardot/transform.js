@@ -29,8 +29,8 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
-
-  return responseBuilderSimple(message, destination);
+  if (!message.traits.email) throw Error("Email is a required field");
+  else return responseBuilderSimple(message, destination);
 };
 
 const process = event => {

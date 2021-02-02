@@ -533,39 +533,39 @@ function batch(destEvents) {
       //  TODO: Need to think about reusing the code
       // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
       // don't add the response if everything is empty
-      if (
-        attributesBatch.length > 0 ||
-        eventsBatch.length > 0 ||
-        purchasesBatch.length > 0
-      ) {
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = trackEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME
-        };
-        if (attributesBatch.length > 0) {
-          responseBodyJson.attributes = attributesBatch;
-        }
-        if (eventsBatch.length > 0) {
-          responseBodyJson.events = eventsBatch;
-        }
-        if (purchasesBatch.length > 0) {
-          responseBodyJson.purchases = purchasesBatch;
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        // modify the endpoint as message object will have identify endpoint
-        batchResponse.endpoint = trackEndpoint;
-        respList.push(
-          formatBatchResponse(batchResponse, metadataBatch, destination)
-        );
+      // if (
+      //   attributesBatch.length > 0 ||
+      //   eventsBatch.length > 0 ||
+      //   purchasesBatch.length > 0
+      // ) {
+      //   const batchResponse = defaultRequestConfig();
+      //   batchResponse.headers = message.headers;
+      //   batchResponse.endpoint = trackEndpoint;
+      //   const responseBodyJson = {
+      //     partner: BRAZE_PARTNER_NAME
+      //   };
+      //   if (attributesBatch.length > 0) {
+      //     responseBodyJson.attributes = attributesBatch;
+      //   }
+      //   if (eventsBatch.length > 0) {
+      //     responseBodyJson.events = eventsBatch;
+      //   }
+      //   if (purchasesBatch.length > 0) {
+      //     responseBodyJson.purchases = purchasesBatch;
+      //   }
+      //   batchResponse.body.JSON = responseBodyJson;
+      //   // modify the endpoint as message object will have identify endpoint
+      //   batchResponse.endpoint = trackEndpoint;
+      //   respList.push(
+      //     formatBatchResponse(batchResponse, metadataBatch, destination)
+      //   );
 
-        // clear the arrays and reuse
-        attributesBatch = [];
-        eventsBatch = [];
-        purchasesBatch = [];
-        metadataBatch = [];
-      }
+      //   // clear the arrays and reuse
+      //   attributesBatch = [];
+      //   eventsBatch = [];
+      //   purchasesBatch = [];
+      //   metadataBatch = [];
+      // }
       // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
       // separate out the identify request

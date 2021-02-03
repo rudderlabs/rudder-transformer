@@ -1,5 +1,4 @@
 const get = require("get-value");
-const md5 = require("md5");
 const { EventType } = require("../../../constants");
 const {
   Event,
@@ -218,7 +217,7 @@ function responseBuilderSimple(
     integrationsClientId ||
     getDestinationExternalID(message, "gaExternalId") ||
     message.anonymousId ||
-    md5(message.userId);
+    undefined;
 
   finalPayload.uip = getParsedIP(message);
 

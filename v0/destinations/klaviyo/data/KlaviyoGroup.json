@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": ["context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "$consent",
+    "sourceKeys": ["context.traits.consent"],
+    "required": false
+  },
+  {
+    "destKey": "sms_consent",
+    "sourceKeys": ["context.traits.smsConsent"],
+    "required": false
+  }
+]

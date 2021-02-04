@@ -645,35 +645,6 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
   };
 }
 
-// handle response rules
-
-function handleResponseRules(responseRules, errorCode) {
-  const { responseType, rules } = responseRules;
-  // handle for json
-  if (responseType === "JSON") {
-    const abortable = getHashFromArray(
-      rules.abortable,
-      "errors.0.code",
-      "success",
-      false
-    );
-    const retryable = getHashFromArray(
-      rules.retryable,
-      "errors.0.code",
-      "success",
-      false
-    );
-    if (abortable[errorCode] === "false") {
-      return 400;
-    }
-    if (retryable[errorCode] === "false") {
-      return 500;
-    }
-    // is there any case possible that non of the above matches? if there is what should we send?
-  }
-  return 400;
-}
-
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -711,6 +682,5 @@ module.exports = {
   setValues,
   stripTrailingSlash,
   toUnixTimestamp,
-  updatePayload,
-  handleResponseRules
+  updatePayload
 };

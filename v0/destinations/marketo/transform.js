@@ -29,7 +29,7 @@ const getAuthToken = async destination => {
         grant_type: "client_credentials"
       }
     },
-    destination.ResponseRules ? destination.ResponseRules : null,
+    destination.responseRules ? destination.responseRules : null,
     "During getting auth token"
   );
   if (resp) {
@@ -74,7 +74,7 @@ const lookupLead = async (
         "Content-type": "application/json"
       }
     },
-    destinationDefinition ? destinationDefinition.ResponseRules : null,
+    destinationDefinition ? destinationDefinition.responseRules : null,
     "During lookup lead"
   );
   if (resp) {
@@ -103,7 +103,7 @@ const lookupLeadUsingEmail = async (
       params: { filterValues: email, filterType: "email" },
       headers: { Authorization: `Bearer ${token}` }
     },
-    destinationDefinition ? destinationDefinition.ResponseRules : null,
+    destinationDefinition ? destinationDefinition.responseRules : null,
     "During lead look up using email"
   );
   if (resp) {
@@ -196,8 +196,8 @@ const processIdentify = async (
 const processTrack = async (
   message,
   destination,
-  token,
-  destinationDefinition
+  destinationDefinition,
+  token
 ) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
@@ -240,11 +240,11 @@ const processTrack = async (
 
   // get leadId
   const leadId = await lookupLead(
+    destinationDefinition,
     accountId,
     token,
     userId,
-    message.anonymousId,
-    destinationDefinition
+    message.anonymousId
   );
   if (!leadId) {
     throw new Error("Lead lookup failed");
@@ -310,8 +310,8 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(
         message,
         formatConfig(destination),
-        token,
-        destination.DestinationDefinition
+        destination.DestinationDefinition,
+        token
       );
       break;
     default:
@@ -331,15 +331,6 @@ const process = async event => {
   return response;
 };
 
-/**  create output according to  {
-      "batchedRequest": {},
-      "metadata": [],
-      "batched": false,
-      "statusCode": 500,
-      "error": "",
-      "destination": { "ID": "a", "url": "a" }
-    }
-    */
 // Success responses
 const getSuccessRespEvents = (message, metadata, destination) => {
   const returnResponse = {};
@@ -378,7 +369,7 @@ const processRouterDest = async input => {
   } catch (error) {
     const respEvents = getErrorRespEvents(
       input.map(ev => ev.metadata),
-      error.response ? error.response.status : 400,
+      error.response ? error.response.status : 500, // default to retryable
       error.message || "Error occurred while processing payload."
     );
     return [respEvents];
@@ -395,7 +386,8 @@ const processRouterDest = async input => {
   }
 
   // Checking previous status Code. Initially setting to false.
-  // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
+  // If true then previous status is 500 and every subsequent event output should be
+  // sent with status code 500 to the router to be retried.
   const respList = await Promise.all(
     input.map(async inputs => {
       try {
@@ -407,7 +399,7 @@ const processRouterDest = async input => {
       } catch (error) {
         return getErrorRespEvents(
           [inputs.metadata],
-          error.response ? error.response.status : 400,
+          error.response ? error.response.status : 500, // default to retryable
           error.message || "Error occurred while processing payload."
         );
       }

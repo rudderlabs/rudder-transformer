@@ -132,6 +132,29 @@
     "fieldRels": [],
     "fields": [
       {
+        "title": "Likes",
+        "descript": "Likes  description",
+        "type": "multivalue",
+        "isrequired": "1",
+        "perstag": "PERSONALIZEDTAG",
+        "defval": "Defaut Value",
+        "show_in_list": "1",
+        "rows": "2",
+        "cols": "2",
+        "visible": "1",
+        "service": "google",
+        "ordernum": "3",
+        "cdate": "2018-11-15T21:42:40-06:00",
+        "udate": "2018-11-15T21:49:52-06:00",
+        "options": [],
+        "relations": [],
+        "links": {
+          "options": "https://:account.api-us1.com/api/:version/fields/1/options",
+          "relations": "https://:account.api-us1.com/api/:version/fields/1/relations"
+        },
+        "id": "3"
+      },
+      {
         "title": "Another Test Title",
         "descript": null,
         "type": "",

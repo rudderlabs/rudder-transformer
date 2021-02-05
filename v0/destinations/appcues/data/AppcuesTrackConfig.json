@@ -1,0 +1,21 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes",
+    "sourceKeys": "properties",
+    "required": "false"
+  }
+]

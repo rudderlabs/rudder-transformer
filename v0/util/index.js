@@ -21,12 +21,17 @@ const logger = require("../../logger");
 // ========================================================================
 
 const isDefined = x => !_.isUndefined(x);
+const isNotEmpty = x => !_.isEmpty(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
+const isDefinedAndNotNullAndNotEmpty = x =>
+  isDefined(x) && isNotNull(x) && isNotEmpty(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
-const isBlank = (value) => _.isEmpty(_.toString(value));
+const removeUndefinedAndNullAndEmptyValues = obj =>
+  _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+const isBlank = value => _.isEmpty(_.toString(value));
 
 // ========================================================================
 // GENERIC UTLITY
@@ -173,6 +178,7 @@ const formatTimeStamp = (dateStr, format) => {
       return date.getTime();
   }
 };
+
 //
 
 const hashToSha256 = value => {
@@ -312,9 +318,6 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-// Important !@!
-// - get value from a list of sourceKeys in precedence order
-// - get value from a string key
 const getValueFromMessage = (message, sourceKey) => {
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
@@ -343,6 +346,20 @@ const getValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+// get a field value from message.
+// if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
+// else use sourceKey from `data/message.json` for actual field precedence
+// Example usage: getFieldValueFromMessage(message, "userId",true)
+//                This will return the first nonnull value from
+//                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
+const getFieldValueFromMessage = (message, sourceKey) => {
+  const sourceKeyMap = MESSAGE_MAPPING[sourceKey];
+  if (sourceKeyMap) {
+    return getValueFromMessage(message, sourceKeyMap);
+  }
+  return null;
+};
+
 // format the value as per the metadata values
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
@@ -361,7 +378,6 @@ const handleMetadataForValue = (value, metadata) => {
   if (!value) {
     return defaultValue || value;
   }
-
   // we've got a correct value. start processing
   let formattedVal = value;
 
@@ -416,6 +432,11 @@ const handleMetadataForValue = (value, metadata) => {
       case "getOffsetInSec":
         formattedVal = getOffsetInSec(formattedVal);
         break;
+      case "domainUrl":
+        formattedVal = formattedVal
+          .replace("https://", "")
+          .replace("http://", "");
+        break;
       default:
         break;
     }
@@ -440,7 +461,6 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
-
   return formattedVal;
 };
 
@@ -487,10 +507,19 @@ const constructPayload = (message, mappingJson) => {
     //   ...
     // ];
     mappingJson.forEach(mapping => {
-      const { sourceKeys, destKey, required, metadata } = mapping;
-      // get the value from event
+      const {
+        sourceKeys,
+        destKey,
+        required,
+        metadata,
+        sourceFromGenericMap
+      } = mapping;
+      // get the value from event, pass sourceFromGenericMap in the mapping to force this to take the
+      // sourcekeys from GenericFieldMapping, else take the sourceKeys from specific destination mapping sourceKeys
       const value = handleMetadataForValue(
-        getValueFromMessage(message, sourceKeys),
+        sourceFromGenericMap
+          ? getFieldValueFromMessage(message, sourceKeys)
+          : getValueFromMessage(message, sourceKeys),
         metadata
       );
 
@@ -509,19 +538,6 @@ const constructPayload = (message, mappingJson) => {
   }
 
   // invalid mappingJson
-  return null;
-};
-
-// get a field value from message.
-// check `data/message.json` for actual field precedence
-// Example usage: getFieldValueFromMessage(message, "userId")
-//                This will return the first nonnull value from
-//                ["userId", "context.traits.userId", "context.traits.id", "anonymousId"]
-const getFieldValueFromMessage = (message, field) => {
-  const sourceKey = MESSAGE_MAPPING[field];
-  if (sourceKey) {
-    return getValueFromMessage(message, sourceKey);
-  }
   return null;
 };
 
@@ -645,6 +661,27 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
   };
 }
 
+// Deleting nested properties from objects
+
+function deleteObjectProperty(object, pathToObject) {
+  let i;
+  if (!object || !pathToObject) {
+    return;
+  }
+  if (typeof pathToObject === "string") {
+    pathToObject = pathToObject.split(".");
+  }
+  for (i = 0; i < pathToObject.length - 1; i += 1) {
+    object = object[pathToObject[i]];
+
+    if (typeof object === "undefined") {
+      return;
+    }
+  }
+
+  delete object[pathToObject.pop()];
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -658,6 +695,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  deleteObjectProperty,
   flattenJson,
   formatValue,
   getBrowserInfo,
@@ -665,12 +703,12 @@ module.exports = {
   getDestinationExternalID,
   getDeviceModel,
   getFieldValueFromMessage,
+  getValueFromMessage,
   getFirstAndLastName,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
   getTimeDifference,
-  getValueFromMessage,
   getValuesAsArrayFromConfig,
   isEmpty,
   isObject,
@@ -679,6 +717,7 @@ module.exports = {
   isBlank,
   removeNullValues,
   removeUndefinedAndNullValues,
+  removeUndefinedAndNullAndEmptyValues,
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,

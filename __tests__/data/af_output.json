@@ -92,5 +92,63 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "method": "POST",
+    "params": {},
+    "userId": "00000000000000000000000000",
+    "body": {
+      "JSON": {
+        "eventValue": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        },
+        "eventName": "page",
+        "af_events_api": "true",
+        "appsflyer_id": "afUid"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/id123456789",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "method": "POST",
+    "params": {},
+    "userId": "00000000000000000000000000",
+    "body": {
+      "JSON": {
+        "eventValue": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        },
+        "eventName": "page",
+        "af_events_api": "true",
+        "appsflyer_id": "afUid"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

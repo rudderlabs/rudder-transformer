@@ -1,0 +1,13 @@
+[
+  {
+    "destKey": "request_id",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "destKey": "profile_update",
+    "sourceKeys": "traits",
+    "required": true,
+    "sourceFromGenericMap": true
+  }
+]

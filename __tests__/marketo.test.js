@@ -26,3 +26,20 @@ inputData.forEach(async (input, index) => {
     }
   });
 });
+
+// Router tests
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+const output = [];
+const getOutput = async input => {
+  output.push(...(await transformer.processRouterDest(input)));
+  exepect(output).toEqual(expectedRouterData);
+};
+getOutput(inputRouterData);
+

@@ -32,7 +32,10 @@ const formatConfig = destination => {
       "from",
       "to",
       false
-    )
+    ),
+    responseRules: destination.DestinationDefinition
+      ? destination.DestinationDefinition.ResponseRules
+      : null
   };
 };
 

@@ -1,1 +1,57 @@
-[]
+[
+  {
+    "body": { "XML": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGVtYWlsIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGZpcnN0X25hbWUiOiJVdHNhYiIsIiRsYXN0X25hbWUiOiJDaG93ZGh1cnkiLCIkcGhvbmVfbnVtYmVyIjoiKzEyIDM0NSA2NzggOTAwIiwiJHRpdGxlIjoiT3duZXIiLCIkb3JnYW5pemF0aW9uIjoiUnVkZGVyIiwiJGNpdHkiOiJUb2t5byIsIiRyZWdpb24iOiJLYW50byIsIiRjb3VudHJ5IjoiSlAiLCIkemlwIjoiMTAwLTAwMDEiLCJGbGFnZ2VkIjpmYWxzZSwiUmVzaWRlbmNlIjoiU2hpYnV5YSJ9fQ=="
+  },
+  {
+    "body": { "XML": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAxIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdfSwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRlbWFpbCI6InV0c2FiQHJ1ZGRlcnN0YWNrLmNvbSIsIiRwaG9uZV9udW1iZXIiOiI5MTEyMzQwMzc1In19"
+  },
+  {
+    "body": { "XML": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAyIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdfSwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRlbWFpbCI6InV0c2FiQHJ1ZGRlcnN0YWNrLmNvbSIsIiRwaG9uZV9udW1iZXIiOiI5MTEyMzQwMzc1In19"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d",
+        "profiles": [
+          {
+            "email": "utsab@rudderstack.com",
+            "phone_number": "+12 345 678 900"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": { "Content-Type": "application/json" },
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members"
+  },
+  {
+    "error": "Message type not supported"
+  }
+]

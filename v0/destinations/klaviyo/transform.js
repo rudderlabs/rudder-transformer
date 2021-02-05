@@ -19,8 +19,10 @@ const {
   removeUndefinedValues
 } = require("../../util");
 
+// A sigle func to handle the addition of user to a list
+// from an identify call.
+// DOCS: https://www.klaviyo.com/docs/api/v2/lists
 const addUserToList = async (message, conf, destination) => {
-  // Check if listId is present in property then we call the membership api
   let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
     message.properties,
     "listId"
@@ -29,6 +31,7 @@ const addUserToList = async (message, conf, destination) => {
     email: getFieldValueFromMessage(message, "email"),
     phone_number: getFieldValueFromMessage(message, "phone")
   };
+  // If func is called as membership func else subscribe func
   if (conf === LIST_CONF.MEMBERSHIP) {
     targetUrl = `${targetUrl}/members`;
   } else {
@@ -55,7 +58,15 @@ const addUserToList = async (message, conf, destination) => {
     logger.error(err);
   }
 };
+// ---------------------
+// Main Identify request handler func
+// internally it uses axios if membership and(or)
+// subscription is enabled for that user to
+// specific List.
+// DOCS: https://www.klaviyo.com/docs/http-api
+// ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
+  // If listId property is present try to subscribe/member user in list
   if (get(message.properties, "listId")) {
     addUserToList(message, LIST_CONF.MEMBERSHIP, destination);
     addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
@@ -65,6 +76,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     message,
     MAPPING_CONFIG[category.name]
   );
+  // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
     propertyPayload,
@@ -96,7 +108,11 @@ const identifyRequestHandler = async (message, category, destination) => {
   response.method = defaultGetRequestConfig.requestMethod;
   return response;
 };
-
+// ----------------------
+// Main handler func for track request/screen request
+// User info needs to be mapped to a track event (mandatory)
+// DOCS: https://www.klaviyo.com/docs/http-api
+// ----------------------
 const trackRequestHandler = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.token = destination.Config.publicApiKey;
@@ -111,6 +127,12 @@ const trackRequestHandler = (message, category, destination) => {
   return response;
 };
 
+// ----------------------
+// Main handlerfunc for group request
+// we will map user to list (subscribe and/or member)
+// based on property sent
+// DOCS: https://www.klaviyo.com/docs/api/v2/lists
+// ----------------------
 const groupRequestHandler = async (message, category, destination) => {
   const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
     message,
@@ -158,6 +180,7 @@ const groupRequestHandler = async (message, category, destination) => {
   return response;
 };
 
+// Main event processor using specific handler funcs
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");

@@ -2,6 +2,9 @@ const { getMappingConfig } = require("../../util");
 
 const BASE_ENDPOINT = "https://a.klaviyo.com";
 
+// TRACK and IDENTIFY DOCS: https://www.klaviyo.com/docs/http-api
+// LIST API [MEMBERSHIP/SUBSCRIBE] DOCS:https://www.klaviyo.com/docs/http-api
+
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "KlaviyoIdentify", apiUrl: "/api/identify" },
   SCREEN: { name: "KlaviyoScreen", apiUrl: "/api/track" },

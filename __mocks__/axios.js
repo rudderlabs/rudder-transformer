@@ -4,6 +4,7 @@
 const axios = jest.genMockFromModule("axios");
 const { v4: uuidv4 } = require("uuid");
 const acPostRequestHandler = require("./active_campaign_mock");
+const klaviyoPostRequestHandler = require("./klaviyo_mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -49,6 +50,11 @@ function post(url, payload) {
   if (url.includes("https://active.campaigns.rudder.com")) {
     return new Promise((resolve, reject) => {
       resolve(acPostRequestHandler(url, payload));
+    });
+  }
+  if(url.includes("https://a.klaviyo.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(klaviyoPostRequestHandler(url, payload));
     });
   }
   return new Promise((resolve, reject) => {

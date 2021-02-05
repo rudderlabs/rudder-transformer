@@ -18,7 +18,11 @@ const {
 } = require("./config");
 
 function responseBuilderSimple(payload, message, destination) {
-  const endpoint = ENDPOINT + message.context.app.namespace;
+  const endpoint =
+    ENDPOINT + message.context.app.namespace ||
+    ENDPOINT + destination.Config.appleAppId.ios ||
+    destination.Config.androidAppId.android;
+console.log(endpoint)
   const afId = message.integrations
     ? message.integrations.AF
       ? message.integrations.AF.af_uid

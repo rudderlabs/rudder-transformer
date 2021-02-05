@@ -154,8 +154,8 @@ async function createIvm(code, libraryVersionIds) {
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
-        events,
-        timeout
+        reject,
+        events
         ){
           const derefMainFunc = fnRef.deref();
           Promise.resolve(derefMainFunc(events))
@@ -165,7 +165,7 @@ async function createIvm(code, libraryVersionIds) {
             ]);
           })
           .catch(error => {
-            resolve.applyIgnored(undefined, [
+            reject.applyIgnored(undefined, [
               new ivm.ExternalCopy(error.message).copyInto()
             ]);
           });

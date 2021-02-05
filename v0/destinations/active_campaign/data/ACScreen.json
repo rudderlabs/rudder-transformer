@@ -6,7 +6,7 @@
   },
   {
     "destKey": "eventdata",
-    "sourceKeys": ["properties.name"],
+    "sourceKeys": "properties.name",
     "required": false
   }
 ]

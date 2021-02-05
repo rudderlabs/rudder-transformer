@@ -1,9 +1,9 @@
 /* eslint-disable  array-callback-return */
+/* eslint-disable  no-empty */
 const get = require("get-value");
 const axios = require("axios");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const LOG = require("../../../logger");
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -110,9 +110,7 @@ const customTagProcessor = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {
-    LOG.error("Failed to Retrieve tags from Dest new Contact");
-  }
+  } catch (err) {}
 
   const storedTags = {};
   if (res.status === 200) {
@@ -158,9 +156,7 @@ const customTagProcessor = async (message, category, destination) => {
               }
             }
           );
-        } catch (err) {
-          LOG.error(`Create tag failed error:${err}`);
-        }
+        } catch (err) {}
         // For each tags successfully created the response id is pushed to tagIds
         if (res.status === 201) tagIds.push(res.data.tag.id);
       })
@@ -192,9 +188,7 @@ const customTagProcessor = async (message, category, destination) => {
             }
           }
         );
-      } catch (err) {
-        LOG.error(`Merge contact with tags failed error:${err}`);
-      }
+      } catch (err) {}
     })
   );
 
@@ -235,9 +229,7 @@ const customFieldProcessor = async (
       }
     );
     responseStaging = res.status === 200 ? res.data.fields : [];
-  } catch (err) {
-    LOG.error(`Error while fetching existing fields from dest`);
-  }
+  } catch (err) {}
 
   // From the responseStaging we store the stored field information in K-V struct iin fieldMap
   // In order for easy comparison and retrieval.
@@ -253,7 +245,6 @@ const customFieldProcessor = async (
     if (storedFields.includes(fieldKey)) {
       filteredFieldKeys.push(fieldKey);
     } else {
-      LOG.error(`Field ${fieldKey} does not exist in destination, skipping ..`);
     }
   });
 
@@ -295,9 +286,7 @@ const customFieldProcessor = async (
             }
           }
         );
-      } catch (err) {
-        LOG.error(`Error While mapping field ${fieldInfo[key]}`);
-      }
+      } catch (err) {}
     })
   );
 };
@@ -351,13 +340,8 @@ const customListProcessor = async (
               }
             }
           );
-        } catch (err) {
-          LOG.error(`Error While mapping list with id ${li.id}`);
-        }
+        } catch (err) {}
       } else {
-        LOG.error(
-          `Error While mapping list with id ${li.id}, status is not-defined`
-        );
       }
     })
   );
@@ -409,9 +393,7 @@ const screenRequestHandler = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {
-    LOG.error(`Error while fetching dest events ${err}`);
-  }
+  } catch (err) {}
   if (res.status !== 200) throw new Error("Unable to fetch dest events");
 
   const storedEventsArr = res.data.eventTrackingEvents;
@@ -440,9 +422,7 @@ const screenRequestHandler = async (message, category, destination) => {
           }
         }
       );
-    } catch (err) {
-      LOG.error(`Error while creating dest event ${err}`);
-    }
+    } catch (err) {}
 
     if (res.status !== 201) throw new Error("Unable to create dest event");
   }
@@ -479,9 +459,7 @@ const trackRequestHandler = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {
-    LOG.error(`Error while fetching dest events ${err}`);
-  }
+  } catch (err) {}
   if (res.status !== 200) throw new Error("Unable to fetch dest events");
 
   const storedEventsArr = res.data.eventTrackingEvents;
@@ -510,9 +488,7 @@ const trackRequestHandler = async (message, category, destination) => {
           }
         }
       );
-    } catch (err) {
-      LOG.error(`Error while creating dest event ${err}`);
-    }
+    } catch (err) {}
 
     if (res.status !== 201) throw new Error("Unable to create dest event");
   }

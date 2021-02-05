@@ -699,6 +699,27 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
   return destination;
 }
 
+// Deleting nested properties from objects
+
+function deleteObjectProperty(object, pathToObject) {
+  let i;
+  if (!object || !pathToObject) {
+    return;
+  }
+  if (typeof pathToObject === "string") {
+    pathToObject = pathToObject.split(".");
+  }
+  for (i = 0; i < pathToObject.length - 1; i += 1) {
+    object = object[pathToObject[i]];
+
+    if (typeof object === "undefined") {
+      return;
+    }
+  }
+
+  delete object[pathToObject.pop()];
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -713,6 +734,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   extractCustomFields,
+  deleteObjectProperty,
   flattenJson,
   formatValue,
   getBrowserInfo,

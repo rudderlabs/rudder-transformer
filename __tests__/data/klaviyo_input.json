@@ -32,19 +32,19 @@
           "country": "JP",
           "zip": "100-0001",
           "Flagged": false,
-          "Residence": "Shibuya"
+          "Residence": "Shibuya",
+          "properties": {
+            "listId": "XUepkK",
+            "subscribe": true,
+            "consent": "email",
+            "smsConsent": true
+          }
         },
         "locale": "en-US",
         "screen": { "density": 2 },
         "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
         "campaign": {},
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
-      },
-      "properties": {
-        "listId": "XUepkK",
-        "subscribe": true,
-        "consent": "email",
-        "smsConsent": true
       },
       "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
       "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",

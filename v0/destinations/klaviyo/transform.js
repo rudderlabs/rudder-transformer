@@ -24,7 +24,7 @@ const {
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 const addUserToList = async (message, conf, destination) => {
   let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-    message.properties,
+    message.context.traits.properties,
     "listId"
   )}`;
   let profile = {
@@ -36,8 +36,8 @@ const addUserToList = async (message, conf, destination) => {
     targetUrl = `${targetUrl}/members`;
   } else {
     targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent = get(message.properties, "smsConsent");
-    profile.$consent = get(message.properties, "consent");
+    profile.sms_consent = get(message.context.traits.properties, "smsConsent");
+    profile.$consent = get(message.context.traits.properties, "consent");
   }
   profile = removeUndefinedValues(profile);
   try {
@@ -67,7 +67,7 @@ const addUserToList = async (message, conf, destination) => {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  if (get(message.properties, "listId")) {
+  if (get(message.context.traits.properties, "listId")) {
     addUserToList(message, LIST_CONF.MEMBERSHIP, destination);
     addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
   }
@@ -95,7 +95,8 @@ const identifyRequestHandler = async (message, category, destination) => {
       "image",
       "timezone",
       "anonymousId",
-      "userId"
+      "userId",
+      "properties"
     ]
   );
   const payload = {

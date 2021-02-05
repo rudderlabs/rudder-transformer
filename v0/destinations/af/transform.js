@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 
@@ -18,11 +19,17 @@ const {
 } = require("./config");
 
 function responseBuilderSimple(payload, message, destination) {
-  const endpoint =
-    ENDPOINT + message.context.app.namespace ||
-    ENDPOINT + destination.Config.appleAppId.ios ||
-    destination.Config.androidAppId.android;
-console.log(endpoint)
+  const { androidAppId, appleAppId } = destination.Config;
+  let endpoint;
+  if (androidAppId) {
+    endpoint = `${ENDPOINT}${androidAppId}`;
+  } else if (appleAppId) {
+    endpoint = `${ENDPOINT}id${appleAppId}`;
+  } else if (message.context.app.namespace) {
+    endpoint = `${ENDPOINT}${message.context.app.namespace}`;
+  } else {
+    throw new Error("Invalid app endpoint");
+  }
   const afId = message.integrations
     ? message.integrations.AF
       ? message.integrations.AF.af_uid

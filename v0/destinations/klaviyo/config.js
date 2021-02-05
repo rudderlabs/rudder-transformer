@@ -7,7 +7,7 @@ const BASE_ENDPOINT = "https://a.klaviyo.com";
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "KlaviyoIdentify", apiUrl: "/api/identify" },
-  SCREEN: { name: "KlaviyoScreen", apiUrl: "/api/track" },
+  SCREEN: { name: "KlaviyoTrack", apiUrl: "/api/track" },
   TRACK: { name: "KlaviyoTrack", apiUrl: "/api/track" },
   GROUP: { name: "KlaviyoGroup" }
 };

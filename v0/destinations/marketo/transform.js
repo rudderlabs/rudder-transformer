@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
 const get = require("get-value");
-const axios = require("axios");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
 const {
@@ -9,6 +8,7 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage
 } = require("../../util");
+const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
@@ -20,22 +20,21 @@ const {
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
 const getAuthToken = async destination => {
   const { accountId, clientId, clientSecret } = destination;
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/identity/oauth/token`, {
+  const resp = await getAxiosResponse(
+    `https://${accountId}.mktorest.com/identity/oauth/token`,
+    {
       params: {
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: "client_credentials"
       }
-    })
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    return resp.data.access_token;
+    },
+    destination.responseRules ? destination.responseRules : null,
+    "During getting auth token"
+  );
+  if (resp) {
+    return resp.access_token;
   }
-
   return null;
 };
 
@@ -54,29 +53,32 @@ const getAuthToken = async destination => {
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const lookupLead = async (accountId, token, userId, anonymousId) => {
+const lookupLead = async (
+  destinationDefinition,
+  accountId,
+  token,
+  userId,
+  anonymousId
+) => {
   const attribute = userId ? { userId } : { anonymousId };
-  const resp = await axios
-    .post(
-      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-      {
-        action: "createOrUpdate",
-        input: [attribute],
-        lookupField: userId ? "userId" : "anonymousId"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "application/json"
-        }
+  const resp = await postAxiosResponse(
+    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    {
+      action: "createOrUpdate",
+      input: [attribute],
+      lookupField: userId ? "userId" : "anonymousId"
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json"
       }
-    )
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    const { result } = resp.data;
+    },
+    destinationDefinition ? destinationDefinition.responseRules : null,
+    "During lookup lead"
+  );
+  if (resp) {
+    const { result } = resp;
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -89,18 +91,23 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (accountId, token, email) => {
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/rest/v1/leads.json`, {
+const lookupLeadUsingEmail = async (
+  destinationDefinition,
+  accountId,
+  token,
+  email
+) => {
+  const resp = await getAxiosResponse(
+    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    {
       params: { filterValues: email, filterType: "email" },
       headers: { Authorization: `Bearer ${token}` }
-    })
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    const { result } = resp.data;
+    },
+    destinationDefinition ? destinationDefinition.responseRules : null,
+    "During lead look up using email"
+  );
+  if (resp) {
+    const { result } = resp;
     if (result && Array.isArray(result) && result.length > 0) {
       return result[0].id;
     }
@@ -115,7 +122,12 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (message, destination, token) => {
+const processIdentify = async (
+  message,
+  destination,
+  destinationDefinition,
+  token
+) => {
   // get bearer token
   // lookup using email. if present use that
   // else lookup using userId
@@ -124,7 +136,6 @@ const processIdentify = async (message, destination, token) => {
   const { accountId, leadTraitMapping } = destination;
 
   const traits = getFieldValueFromMessage(message, "traits");
-
   if (!traits) {
     throw new Error("Invalid traits value for Marketo");
   }
@@ -133,8 +144,20 @@ const processIdentify = async (message, destination, token) => {
 
   const email = getFieldValueFromMessage(message, "email");
   const leadId =
-    (email && (await lookupLeadUsingEmail(accountId, token, email))) ||
-    (await lookupLead(accountId, token, userId, message.anonymousId));
+    (email &&
+      (await lookupLeadUsingEmail(
+        destinationDefinition,
+        accountId,
+        token,
+        email
+      ))) ||
+    (await lookupLead(
+      destinationDefinition,
+      accountId,
+      token,
+      userId,
+      message.anonymousId
+    ));
 
   if (!leadId) {
     throw new Error("Lead lookup failed");
@@ -170,7 +193,12 @@ const processIdentify = async (message, destination, token) => {
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (message, destination, token) => {
+const processTrack = async (
+  message,
+  destination,
+  destinationDefinition,
+  token
+) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
@@ -212,6 +240,7 @@ const processTrack = async (message, destination, token) => {
 
   // get leadId
   const leadId = await lookupLead(
+    destinationDefinition,
     accountId,
     token,
     userId,
@@ -273,11 +302,17 @@ const processEvent = async (message, destination, token) => {
       response = await processIdentify(
         message,
         formatConfig(destination),
+        destination.DestinationDefinition,
         token
       );
       break;
     case EventType.TRACK:
-      response = await processTrack(message, formatConfig(destination), token);
+      response = await processTrack(
+        message,
+        formatConfig(destination),
+        destination.DestinationDefinition,
+        token
+      );
       break;
     default:
       throw new Error("Message type not supported");
@@ -296,15 +331,6 @@ const process = async event => {
   return response;
 };
 
-/**  create output according to  {
-      "batchedRequest": {},
-      "metadata": [],
-      "batched": false,
-      "statusCode": 500,
-      "error": "",
-      "destination": { "ID": "a", "url": "a" }
-    }
-    */
 // Success responses
 const getSuccessRespEvents = (message, metadata, destination) => {
   const returnResponse = {};
@@ -343,7 +369,7 @@ const processRouterDest = async input => {
   } catch (error) {
     const respEvents = getErrorRespEvents(
       input.map(ev => ev.metadata),
-      error.response ? error.response.status : 400,
+      error.response ? error.response.status : 500, // default to retryable
       error.message || "Error occurred while processing payload."
     );
     return [respEvents];
@@ -360,7 +386,8 @@ const processRouterDest = async input => {
   }
 
   // Checking previous status Code. Initially setting to false.
-  // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
+  // If true then previous status is 500 and every subsequent event output should be
+  // sent with status code 500 to the router to be retried.
   const respList = await Promise.all(
     input.map(async inputs => {
       try {
@@ -372,35 +399,12 @@ const processRouterDest = async input => {
       } catch (error) {
         return getErrorRespEvents(
           [inputs.metadata],
-          error.response ? error.response.status : 400,
+          error.response ? error.response.status : 500, // default to retryable
           error.message || "Error occurred while processing payload."
         );
       }
     })
   );
-  // const respList = [];
-  // // Checking previous status Code. Initially setting to false.
-  // // If true then previous status is 500 and every subsequent event output should be sent with status code 500 to the router to be retried.
-  // // let prevStatus = false;
-  // for (let i = 0; i < input.length; i += 1) {
-  //   const inputs = input[i];
-  //   let respEvents = {};
-  //   try {
-  //     respEvents = getSuccessRespEvents(
-  //       await processEvent(inputs.message, inputs.destination, token),
-  //       [inputs.metadata],
-  //       inputs.destination
-  //     );
-  //     respList.push(respEvents);
-  //   } catch (error) {
-  //     respEvents = getErrorRespEvents(
-  //       [inputs.metadata],
-  //       error.response ? error.response.status : 400,
-  //       error.message || "Error occurred while processing payload."
-  //     );
-  //     respList.push(respEvents);
-  //   }
-  // }
   return respList;
 };
 

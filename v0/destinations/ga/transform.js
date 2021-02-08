@@ -732,7 +732,7 @@ function processSingleMessage(message, destination) {
   } = destination.Config;
   enableServerSideIdentify = enableServerSideIdentify || false;
   enhancedEcommerce = enhancedEcommerce || false;
-  ecommerce = ecommerce || true;
+  ecommerce = ecommerce !== undefined ? ecommerce : true;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (enableServerSideIdentify) {

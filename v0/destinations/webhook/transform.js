@@ -54,4 +54,21 @@ function process(event) {
   }
 }
 
-exports.process = process;
+const getRouterTransformResponse = (message, metadata, destination) => {
+  const returnResponse = {};
+  returnResponse.batchedRequest = message;
+  returnResponse.metadata = metadata;
+  returnResponse.batched = false;
+  returnResponse.statusCode = 200;
+  returnResponse.destination = destination;
+  return returnResponse;
+};
+
+function processRouterDest(events) {
+  return events.map(ev => {
+    const resp = process(ev)
+    return getRouterTransformResponse(resp, [ev.metadata], ev.destination)
+  })
+}
+
+module.exports = { process, processRouterDest };

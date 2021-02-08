@@ -59,7 +59,7 @@
       "jobId": 2
     },
     "destination": {
-      "config": {
+      "Config": {
         "accountId": "585-AXP-425",
         "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
         "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",
@@ -193,7 +193,7 @@
       "jobId": 2
     },
     "destination": {
-      "config": {
+      "Config": {
         "accountId": "585-AXP-425",
         "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
         "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const BASE_ENDPOINT = "https://api.pardot.com/service";
+const BASE_URL = "https://pi.pardot.com";
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "PardotIdentify" }
@@ -9,7 +9,6 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  BASE_ENDPOINT,
-  identifyConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-  MAPPING_CONFIG
+  BASE_URL,
+  identifyConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
 };

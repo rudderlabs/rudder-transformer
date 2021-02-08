@@ -3,8 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 const axios = jest.genMockFromModule("axios");
 const { v4: uuidv4 } = require("uuid");
-const acPostRequestHandler = require("./active_campaign_mock");
-const klaviyoPostRequestHandler = require("./klaviyo_mock");
+const acPostRequestHandler = require("./active_campaign.mock");
+const klaviyoPostRequestHandler = require("./klaviyo.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",

@@ -8,6 +8,7 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const formatConfig = destination => {
   return {
+    ID: destination.ID,
     ...destination.Config,
     customActivityEventMap: getHashFromArray(
       destination.Config.customActivityEventMap,

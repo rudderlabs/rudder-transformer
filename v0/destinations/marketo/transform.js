@@ -9,6 +9,11 @@ const {
   getFieldValueFromMessage
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
+const Cache = require("../../util/cache");
+
+const userIdLeadCache = new Cache(24 * 60 * 60); // 1 day
+const emailLeadCache = new Cache(24 * 60 * 60); // 1 day
+const authCache = new Cache(60 * 60); // 1 hr
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
@@ -19,23 +24,25 @@ const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
 const getAuthToken = async destination => {
-  const { accountId, clientId, clientSecret } = destination;
-  const resp = await getAxiosResponse(
-    `https://${accountId}.mktorest.com/identity/oauth/token`,
-    {
-      params: {
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: "client_credentials"
-      }
-    },
-    destination.responseRules ? destination.responseRules : null,
-    "During getting auth token"
-  );
-  if (resp) {
-    return resp.access_token;
-  }
-  return null;
+  return authCache.get(destination.ID, async () => {
+    const { accountId, clientId, clientSecret } = destination;
+    const resp = await getAxiosResponse(
+      `https://${accountId}.mktorest.com/identity/oauth/token`,
+      {
+        params: {
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "client_credentials"
+        }
+      },
+      destination.responseRules ? destination.responseRules : null,
+      "During getting auth token"
+    );
+    if (resp) {
+      return resp.access_token;
+    }
+    return null;
+  });
 };
 
 // lookup Marketo with userId or anonymousId
@@ -60,30 +67,32 @@ const lookupLead = async (
   userId,
   anonymousId
 ) => {
-  const attribute = userId ? { userId } : { anonymousId };
-  const resp = await postAxiosResponse(
-    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-    {
-      action: "createOrUpdate",
-      input: [attribute],
-      lookupField: userId ? "userId" : "anonymousId"
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json"
+  return userIdLeadCache.get(userId || anonymousId, async () => {
+    const attribute = userId ? { userId } : { anonymousId };
+    const resp = await postAxiosResponse(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        action: "createOrUpdate",
+        input: [attribute],
+        lookupField: userId ? "userId" : "anonymousId"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json"
+        }
+      },
+      destinationDefinition ? destinationDefinition.responseRules : null,
+      "During lookup lead"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
       }
-    },
-    destinationDefinition ? destinationDefinition.responseRules : null,
-    "During lookup lead"
-  );
-  if (resp) {
-    const { result } = resp;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
     }
-  }
-  return null;
+    return null;
+  });
 };
 
 // lookup Marketo using email
@@ -97,22 +106,24 @@ const lookupLeadUsingEmail = async (
   token,
   email
 ) => {
-  const resp = await getAxiosResponse(
-    `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-    {
-      params: { filterValues: email, filterType: "email" },
-      headers: { Authorization: `Bearer ${token}` }
-    },
-    destinationDefinition ? destinationDefinition.responseRules : null,
-    "During lead look up using email"
-  );
-  if (resp) {
-    const { result } = resp;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
+  return emailLeadCache.get(email, async () => {
+    const resp = await getAxiosResponse(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        params: { filterValues: email, filterType: "email" },
+        headers: { Authorization: `Bearer ${token}` }
+      },
+      destinationDefinition ? destinationDefinition.responseRules : null,
+      "During lead look up using email"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
+      }
     }
-  }
-  return null;
+    return null;
+  });
 };
 
 // Handles identify calls

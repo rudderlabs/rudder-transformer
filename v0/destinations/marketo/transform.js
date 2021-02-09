@@ -154,23 +154,31 @@ const processIdentify = async (
   const userId = getFieldValueFromMessage(message, "userIdOnly");
 
   const email = getFieldValueFromMessage(message, "email");
-  const leadId =
-    (email &&
-      (await lookupLeadUsingEmail(
-        destinationDefinition,
-        accountId,
-        token,
-        email
-      ))) ||
-    (await lookupLead(
+  let leadId;
+  if (email) {
+    leadId = await lookupLeadUsingEmail(
+      destinationDefinition,
+      accountId,
+      token,
+      email
+    );
+  } else {
+    leadId = await lookupLead(
       destinationDefinition,
       accountId,
       token,
       userId,
       message.anonymousId
-    ));
+    );
+  }
 
   if (!leadId) {
+    // throwing here as lookup failed because of
+    // either "anonymousId" or "userId" field is not created in marketo - resulting to lookup failure
+    // or lead doesn't exist with "email".
+    //
+    // In the scenario of either of these, we should abort the event and the top level
+    // try-catch should handle this
     throw new Error("Lead lookup failed");
   }
 
@@ -363,23 +371,19 @@ const getErrorRespEvents = (metadata, statusCode, error) => {
   return returnResponse;
 };
 
-const processRouterDest = async input => {
+const processRouterDest = async inputs => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  if (!Array.isArray(input) || input.length <= 0) {
-    const respEvents = getErrorRespEvents(
-      null,
-      400,
-      "Destination config not present for event"
-    );
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
   let token;
   try {
-    token = await getAuthToken(formatConfig(input[0].destination));
+    token = await getAuthToken(formatConfig(inputs[0].destination));
   } catch (error) {
     const respEvents = getErrorRespEvents(
-      input.map(ev => ev.metadata),
+      inputs.map(input => input.metadata),
       error.response ? error.response.status : 500, // default to retryable
       error.message || "Error occurred while processing payload."
     );
@@ -389,7 +393,7 @@ const processRouterDest = async input => {
   // If token is null track/identify calls cannot be executed.
   if (!token) {
     const respEvents = getErrorRespEvents(
-      input.map(ev => ev.metadata),
+      inputs.map(input => input.metadata),
       400,
       "Authorisation failed"
     );
@@ -400,16 +404,16 @@ const processRouterDest = async input => {
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
   const respList = await Promise.all(
-    input.map(async inputs => {
+    inputs.map(async input => {
       try {
         return getSuccessRespEvents(
-          await processEvent(inputs.message, inputs.destination, token),
-          [inputs.metadata],
-          inputs.destination
+          await processEvent(input.message, input.destination, token),
+          [input.metadata],
+          input.destination
         );
       } catch (error) {
         return getErrorRespEvents(
-          [inputs.metadata],
+          [input.metadata],
           error.response ? error.response.status : 500, // default to retryable
           error.message || "Error occurred while processing payload."
         );

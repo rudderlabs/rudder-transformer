@@ -143,6 +143,12 @@ const processIdentify = async (
   const userId = getFieldValueFromMessage(message, "userIdOnly");
 
   const email = getFieldValueFromMessage(message, "email");
+
+  // PR: Good to write in one line. But it is easier to read if we actually split by functionality
+  // Following code needs some effort to understand
+
+  // if (email) leadId = await lookupbyEmail()
+  // else leadId = lookupLead()
   const leadId =
     (email &&
       (await lookupLeadUsingEmail(
@@ -160,6 +166,7 @@ const processIdentify = async (
     ));
 
   if (!leadId) {
+    // Should this be considered a 4xx or 5xx?
     throw new Error("Lead lookup failed");
   }
 
@@ -359,6 +366,7 @@ const processRouterDest = async input => {
     const respEvents = getErrorRespEvents(
       null,
       400,
+      // PR: Wrong message
       "Destination config not present for event"
     );
     return [respEvents];
@@ -389,6 +397,8 @@ const processRouterDest = async input => {
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
   const respList = await Promise.all(
+    // PR: This block should look like inputs.map(input => ) This is reverse here. 
+    // Since we already used input, can we do something like event/ev while iterating. input.map(ev)
     input.map(async inputs => {
       try {
         return getSuccessRespEvents(

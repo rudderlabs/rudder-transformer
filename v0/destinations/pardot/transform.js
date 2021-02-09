@@ -1,4 +1,6 @@
-const {axios} = require("axios");
+const parser = require("fast-xml-parser");
+const he = require("he");
+const { axios } = require("axios");
 const { EventType } = require("../../../constants");
 const { identifyConfig, BASE_URL } = require("./config");
 const {
@@ -7,6 +9,26 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage
 } = require("../../util");
+
+const options = {
+  attributeNamePrefix: "@_",
+  attrNodeName: "attr",
+  textNodeName: "#text",
+  ignoreAttributes: true,
+  ignoreNameSpace: false,
+  allowBooleanAttributes: false,
+  parseNodeValue: true,
+  parseAttributeValue: false,
+  trimValues: true,
+  cdataTagName: "__cdata",
+  cdataPositionChar: "\\c",
+  parseTrueNumberOnly: false,
+  arrayMode: false, // "strict"
+  attrValueProcessor: (val, attrName) =>
+    he.decode(val, { isAttributeValue: true }),
+  tagValueProcessor: (val, tagName) => he.decode(val),
+  stopNodes: ["parse-me-as-string"]
+};
 
 const responseBuilderSimple = (payload, destination) => {
   const responseBody = { ...payload, apiKey: destination.Config.apiKey };
@@ -35,9 +57,11 @@ const getAccessToken = async destination => {
       grantType: "password"
     }
   );
-  if (authResponse) {
-    // to do after we get response structure
-  } else return null;
+  if (parser.validate(authResponse) === true) {
+    const authResponseJson = parser.parse(authResponse, options);
+    return authResponseJson.access_token;
+  }
+  return null;
 };
 
 const processIdentify = (message, destination) => {

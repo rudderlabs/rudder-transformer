@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+/* eslint-disable no-use-before-define */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
@@ -10,10 +11,11 @@ const {
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
 
-const userIdLeadCache = new Cache(24 * 60 * 60); // 1 day
-const emailLeadCache = new Cache(24 * 60 * 60); // 1 day
-const authCache = new Cache(60 * 60); // 1 hr
+const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
+const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
+const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/

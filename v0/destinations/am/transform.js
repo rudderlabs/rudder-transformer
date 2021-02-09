@@ -234,7 +234,10 @@ function responseBuilderSimple(
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
         traits = handleTraits(traits, destination);
-        set(rawPayload, "user_properties", message.userProperties);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...message.userProperties
+        };
         if (traits) {
           Object.keys(traits).forEach(trait => {
             if (SpecedTraits.includes(trait)) {
@@ -274,7 +277,10 @@ function responseBuilderSimple(
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
       if (traits) {
-        set(rawPayload, "user_properties", traits);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...traits
+        };
       }
 
       rawPayload.event_type = evType;

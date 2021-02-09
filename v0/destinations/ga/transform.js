@@ -725,9 +725,14 @@ function processSingleMessage(message, destination) {
   const messageType = message.type.toLowerCase();
   let customParams = {};
   let category;
-  let { enableServerSideIdentify, enhancedEcommerce } = destination.Config;
+  let {
+    enableServerSideIdentify,
+    enhancedEcommerce,
+    ecommerce
+  } = destination.Config;
   enableServerSideIdentify = enableServerSideIdentify || false;
   enhancedEcommerce = enhancedEcommerce || false;
+  ecommerce = ecommerce !== undefined ? ecommerce : true;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (enableServerSideIdentify) {
@@ -807,7 +812,7 @@ function processSingleMessage(message, destination) {
             );
             break;
         }
-      } else {
+      } else if (ecommerce) {
         const eventName = message.event.toLowerCase();
 
         category = nameToEventMap[eventName]
@@ -843,6 +848,9 @@ function processSingleMessage(message, destination) {
             customParams = processNonEComGenericEvent(message, destination);
             break;
         }
+      } else {
+        category = ConfigCategory.NON_ECOM;
+        customParams = processNonEComGenericEvent(message, destination);
       }
       break;
     }

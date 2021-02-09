@@ -213,6 +213,14 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  // append campaign info extracted above(2.) to user_properties.
+  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
+  rawPayload.user_properties = rawPayload.user_properties || {};
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...campaign
+  };
 
   switch (evType) {
     case EventType.IDENTIFY:
@@ -243,14 +251,6 @@ function responseBuilderSimple(
             }
           });
         }
-        // append campaign info extracted above(2.) to user_properties.
-        // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
-        // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
-        rawPayload.user_properties = rawPayload.user_properties || {};
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...campaign
-        };
       }
 
       if (evType === EventType.GROUP) {

@@ -26,9 +26,9 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async destination => {
-  return authCache.get(destination.ID, async () => {
-    const { accountId, clientId, clientSecret } = destination;
+const getAuthToken = async formattedDestination => {
+  return authCache.get(formattedDestination.ID, async () => {
+    const { accountId, clientId, clientSecret } = formattedDestination;
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
       {
@@ -38,7 +38,7 @@ const getAuthToken = async destination => {
           grant_type: "client_credentials"
         }
       },
-      destination.responseRules ? destination.responseRules : null,
+      formattedDestination.responseRules ? formattedDestination.responseRules : null,
       "During getting auth token"
     );
     if (resp) {
@@ -64,7 +64,7 @@ const getAuthToken = async destination => {
 // ------------------------
 // Thus we'll always be using createOrUpdate
 const lookupLead = async (
-  destinationDefinition,
+  formattedDestination,
   accountId,
   token,
   userId,
@@ -85,7 +85,7 @@ const lookupLead = async (
           "Content-type": "application/json"
         }
       },
-      destinationDefinition ? destinationDefinition.responseRules : null,
+      formattedDestination ? formattedDestination.responseRules : null,
       "During lookup lead"
     );
     if (resp) {
@@ -104,7 +104,7 @@ const lookupLead = async (
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
 const lookupLeadUsingEmail = async (
-  destinationDefinition,
+  formattedDestination,
   accountId,
   token,
   email
@@ -116,7 +116,7 @@ const lookupLeadUsingEmail = async (
         params: { filterValues: email, filterType: "email" },
         headers: { Authorization: `Bearer ${token}` }
       },
-      destinationDefinition ? destinationDefinition.responseRules : null,
+      formattedDestination ? formattedDestination.responseRules : null,
       "During lead look up using email"
     );
     if (resp) {
@@ -138,7 +138,7 @@ const lookupLeadUsingEmail = async (
 // `id` i.e. leadId as lookupField at the end of it
 const processIdentify = async (
   message,
-  destination,
+  formattedDestination,
   destinationDefinition,
   token
 ) => {
@@ -147,7 +147,7 @@ const processIdentify = async (
   // else lookup using userId
   // if exists use that leadId
   // else make the call to create the lead
-  const { accountId, leadTraitMapping } = destination;
+  const { accountId, leadTraitMapping } = formattedDestination;
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -161,14 +161,14 @@ const processIdentify = async (
   if (!leadId) {
     if (email) {
       leadId = await lookupLeadUsingEmail(
-        destinationDefinition,
+        formattedDestination,
         accountId,
         token,
         email
       );
     } else {
       leadId = await lookupLead(
-        destinationDefinition,
+        formattedDestination,
         accountId,
         token,
         userId,

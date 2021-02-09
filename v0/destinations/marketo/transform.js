@@ -7,7 +7,8 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
@@ -156,22 +157,24 @@ const processIdentify = async (
   const userId = getFieldValueFromMessage(message, "userIdOnly");
 
   const email = getFieldValueFromMessage(message, "email");
-  let leadId;
-  if (email) {
-    leadId = await lookupLeadUsingEmail(
-      destinationDefinition,
-      accountId,
-      token,
-      email
-    );
-  } else {
-    leadId = await lookupLead(
-      destinationDefinition,
-      accountId,
-      token,
-      userId,
-      message.anonymousId
-    );
+  let leadId = getDestinationExternalID(message, "marketoLeadId");
+  if (!leadId) {
+    if (email) {
+      leadId = await lookupLeadUsingEmail(
+        destinationDefinition,
+        accountId,
+        token,
+        email
+      );
+    } else {
+      leadId = await lookupLead(
+        destinationDefinition,
+        accountId,
+        token,
+        userId,
+        message.anonymousId
+      );
+    }
   }
 
   if (!leadId) {
@@ -260,13 +263,16 @@ const processTrack = async (
   }
 
   // get leadId
-  const leadId = await lookupLead(
-    destinationDefinition,
-    accountId,
-    token,
-    userId,
-    message.anonymousId
-  );
+  let leadId = getDestinationExternalID(message, "marketoLeadId");
+  if (!leadId) {
+    leadId = await lookupLead(
+      destinationDefinition,
+      accountId,
+      token,
+      userId,
+      message.anonymousId
+    );
+  }
   if (!leadId) {
     throw new Error("Lead lookup failed");
   }

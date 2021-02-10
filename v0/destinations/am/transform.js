@@ -213,6 +213,13 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const oldKeys = Object.keys(campaign);
+  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
+  oldKeys.forEach(oldKey => {
+    delete Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] })[
+      oldKey
+    ];
+  });
   // append campaign info extracted above(2.) to user_properties.
   // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
   // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties

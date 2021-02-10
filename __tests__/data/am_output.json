@@ -435,12 +435,12 @@
               "event_type": "$identify",
               "user_properties": {
                 "Company": "Comapny-ABC",
-                "content": "some content",
-                "medium": "medium",
-                "name": "some campaign",
-                "source": "google",
-                "term": "keyword",
-                "test": "other value"
+                "utm_content": "some content",
+                "utm_medium": "medium",
+                "utm_name": "some campaign",
+                "utm_source": "google",
+                "utm_term": "keyword",
+                "utm_test": "other value"
               },
               "groups": {
                 "Company": "Comapny-ABC"
@@ -497,7 +497,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"source\":\"google\",\"medium\":\"medium\",\"term\":\"keyword\",\"content\":\"some content\",\"name\":\"some campaign\",\"test\":\"other value\"}}"
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
         ]
       }
     },
@@ -517,7 +517,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"source\":\"google\",\"medium\":\"medium\",\"term\":\"keyword\",\"content\":\"some content\",\"name\":\"some campaign\",\"test\":\"other value\"},\"unmap\":true}"
+          "{\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"},\"unmap\":true}"
         ]
       }
     },

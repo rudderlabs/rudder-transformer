@@ -25,11 +25,20 @@ function handleResponseRules(responseRules, errorCode) {
       "success",
       false
     );
+    const throttled = getHashFromArray(
+      rules.throttled,
+      "errors.0.code",
+      "success",
+      false
+    );
     if (abortable[errorCode] === "false") {
       return 400;
     }
     if (retryable[errorCode] === "false") {
       return 500;
+    }
+    if (throttled[errorCode] === "false") {
+      return 429;
     }
     // is there any case possible that non of the above matches? if there is what should we send?
   }

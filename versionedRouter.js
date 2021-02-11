@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+require("dotenv").config();
 
 const versions = ["v0"];
 const API_VERSION = "1";

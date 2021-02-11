@@ -213,6 +213,20 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const oldKeys = Object.keys(campaign);
+  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
+  oldKeys.forEach(oldKey => {
+    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
+    delete campaign[oldKey];
+  });
+  // append campaign info extracted above(2.) to user_properties.
+  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
+  rawPayload.user_properties = rawPayload.user_properties || {};
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...campaign
+  };
 
   switch (evType) {
     case EventType.IDENTIFY:
@@ -226,7 +240,10 @@ function responseBuilderSimple(
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
         traits = handleTraits(traits, destination);
-        set(rawPayload, "user_properties", message.userProperties);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...message.userProperties
+        };
         if (traits) {
           Object.keys(traits).forEach(trait => {
             if (SpecedTraits.includes(trait)) {
@@ -243,14 +260,6 @@ function responseBuilderSimple(
             }
           });
         }
-        // append campaign info extracted above(2.) to user_properties.
-        // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
-        // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
-        rawPayload.user_properties = rawPayload.user_properties || {};
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...campaign
-        };
       }
 
       if (evType === EventType.GROUP) {
@@ -274,7 +283,10 @@ function responseBuilderSimple(
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
       if (traits) {
-        set(rawPayload, "user_properties", traits);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...traits
+        };
       }
 
       rawPayload.event_type = evType;

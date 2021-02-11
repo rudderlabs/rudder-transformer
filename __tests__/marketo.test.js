@@ -1,3 +1,4 @@
+jest.mock("axios");
 const integration = "marketo";
 const name = "Marketo";
 const version = "v0";

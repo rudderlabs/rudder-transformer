@@ -98,7 +98,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "message type track is not supported"
+    "error": "message type track is not supported"
   },
   [
     {

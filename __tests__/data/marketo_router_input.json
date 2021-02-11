@@ -60,10 +60,18 @@
     },
     "destination": {
       "Config": {
-        "accountId": "585-AXP-425",
-        "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
-        "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",
-        "trackAnonymousEvents": false
+        "accountId": "marketo_acct_id_success",
+        "clientId": "marketo_client_id_success",
+        "clientSecret": "marketo_client_secret_success",
+        "trackAnonymousEvents": true,
+        "customActivityEventMap": [
+          { "from": "Product Clicked", "to": "100001" }
+        ],
+        "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
+        "customActivityPrimaryKeyMap": [
+          { "from": "Product Clicked", "to": "name" }
+        ],
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -183,21 +191,30 @@
       },
       "messageId": "id1",
       "properties": {
-        "name": "Test Product"
+        "name": "Test Product",
+        "product_id": "prod_1"
       },
       "originalTimestamp": "2020-12-17T21:00:59.176Z",
       "type": "track",
-      "sentAt": "2020-03-12T09:05:03.421Z"
+      "sentAt": "2020-12-17T21:00:59.176Z"
     },
     "metadata": {
       "jobId": 2
     },
     "destination": {
       "Config": {
-        "accountId": "585-AXP-425",
-        "clientId": "abe6c40a-6d16-4560-98f7-158d5ccca0dd",
-        "clientSecret": "oxzXtNhcuw9YGsdhplKUeEMic3vkq8A0",
-        "trackAnonymousEvents": false
+        "accountId": "marketo_acct_id_success",
+        "clientId": "marketo_client_id_success",
+        "clientSecret": "marketo_client_secret_success",
+        "trackAnonymousEvents": true,
+        "customActivityEventMap": [
+          { "from": "Product Clicked", "to": "100001" }
+        ],
+        "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
+        "customActivityPrimaryKeyMap": [
+          { "from": "Product Clicked", "to": "name" }
+        ],
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",

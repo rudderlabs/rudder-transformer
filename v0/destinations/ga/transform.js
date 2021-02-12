@@ -18,6 +18,8 @@ const {
   getDestinationExternalID
 } = require("../../util");
 
+const gaDisplayName = "Google Analytics";
+
 function getParamsFromConfig(message, destination, type) {
   const params = {};
   const obj = {};
@@ -210,8 +212,8 @@ function responseBuilderSimple(
     finalPayload.uid = message.userId;
   }
   const integrationsClientId = message.integrations
-    ? message.integrations.GA
-      ? message.integrations.GA.clientId
+    ? message.integrations[gaDisplayName]
+      ? message.integrations[gaDisplayName].clientId
       : undefined
     : undefined;
   finalPayload.cid =
@@ -723,7 +725,7 @@ function processEComGenericEvent(message, destination) {
 function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
-  if(!messageType) {
+  if (!messageType) {
     throw new Error("Message type is not present");
   }
   let customParams = {};
@@ -755,8 +757,8 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK: {
       let eventName = message.event;
-      if (!(typeof eventName === 'string' || eventName instanceof String)){
-        throw new Error ("Event name is not present/is not a string")
+      if (!(typeof eventName === "string" || eventName instanceof String)) {
+        throw new Error("Event name is not present/is not a string");
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();

@@ -8,7 +8,9 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
@@ -38,7 +40,9 @@ const getAuthToken = async formattedDestination => {
           grant_type: "client_credentials"
         }
       },
-      formattedDestination.responseRules ? formattedDestination.responseRules : null,
+      formattedDestination.responseRules
+        ? formattedDestination.responseRules
+        : null,
       "During getting auth token"
     );
     if (resp) {
@@ -356,27 +360,6 @@ const process = async event => {
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;
-};
-
-// Success responses
-const getSuccessRespEvents = (message, metadata, destination) => {
-  const returnResponse = {};
-  returnResponse.batchedRequest = message;
-  returnResponse.metadata = metadata;
-  returnResponse.batched = false;
-  returnResponse.statusCode = 200;
-  returnResponse.destination = destination;
-  return returnResponse;
-};
-
-// Error responses
-const getErrorRespEvents = (metadata, statusCode, error) => {
-  const returnResponse = {};
-  returnResponse.metadata = metadata;
-  returnResponse.batched = false;
-  returnResponse.statusCode = statusCode;
-  returnResponse.error = error;
-  return returnResponse;
 };
 
 const processRouterDest = async inputs => {

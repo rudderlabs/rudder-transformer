@@ -221,17 +221,17 @@ const processRouterDest = async inputs => {
 
   const respList = await Promise.all(
     inputs.map(async input => {
-      if (input.message.statusCode) {
-        // already transformed event
-        return getSuccessRespEvents(
-          input.message,
-          [input.metadata],
-          input.destination
-        );
-      }
-
-      // unprocessed payload
       try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+
+        // unprocessed payload
         return getSuccessRespEvents(
           await processSingleMessage(input.message, authorizationData),
           [input.metadata],

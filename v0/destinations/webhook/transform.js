@@ -66,9 +66,9 @@ const getRouterTransformResponse = (message, metadata, destination) => {
 
 function processRouterDest(events) {
   return events.map(ev => {
-    const resp = process(ev)
-    return getRouterTransformResponse(resp, [ev.metadata], ev.destination)
-  })
+    const resp = process(ev);
+    return getRouterTransformResponse(resp, [ev.metadata], ev.destination);
+  });
 }
 
 module.exports = { process, processRouterDest };

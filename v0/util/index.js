@@ -661,6 +661,44 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
   };
 }
 
+// Extract fileds from message with exclusions
+// Pass the keys of message for extraction and
+// exclusion fields to exlude and the payload to map into
+/* eslint-disable  array-callback-return */
+// -----------------Example-------------------
+// extractCustomFields(message,payload,["traits", "context.traits", "properties"], "email",
+// ["firstName",
+// "lastName",
+// "phone",
+// "title",
+// "organization",
+// "city",
+// "region",
+// "country",
+// "zip",
+// "image",
+// "timezone"])
+// -------------------------------------------
+// The above call will map the fields other than the
+// exlusion list from the given keys to the destination payload
+function extractCustomFields(message, destination, keys, exclusionFields) {
+  keys.map(key => {
+    const messageContext = get(message, key);
+    if (messageContext) {
+      const values = [];
+      Object.keys(messageContext).map(value => {
+        if (!exclusionFields.includes(value)) values.push(value);
+      });
+      values.map(val => {
+        if (!(typeof messageContext[val] === "undefined")) {
+          set(destination, val, get(messageContext, val));
+        }
+      });
+    }
+  });
+  return destination;
+}
+
 // Deleting nested properties from objects
 
 function deleteObjectProperty(object, pathToObject) {
@@ -695,6 +733,7 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  extractCustomFields,
   deleteObjectProperty,
   flattenJson,
   formatValue,

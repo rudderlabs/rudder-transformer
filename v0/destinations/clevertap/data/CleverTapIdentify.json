@@ -1,0 +1,52 @@
+[
+  {
+    "destKey": "Email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "Phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "Gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false
+  },
+  {
+    "destKey": "Employed",
+    "sourceKeys": ["traits.employed", "context.traits.employed"],
+    "required": false
+  },
+  {
+    "destKey": "Education",
+    "sourceKeys": ["traits.education", "context.traits.education"],
+    "required": false
+  },
+  {
+    "destKey": "Graduate",
+    "sourceKeys": ["traits.graduate", "context.traits.graduate"],
+    "required": false
+  },
+  {
+    "destKey": "Married",
+    "sourceKeys": ["traits.married", "context.traits.married"],
+    "required": false
+  },
+  {
+    "destKey": "MSG-sms",
+    "sourceKeys": ["traits.msg_sms", "context.traits.msg_sms"],
+    "required": false
+  },
+  {
+    "destKey": "Customer Type",
+    "sourceKeys": ["traits.customer_type", "context.traits.customer_type"],
+    "required": false
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "destKey": "evtName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "identity",
+    "sourceKeys": "properties.identity",
+    "required": false
+  },
+  {
+    "destKey": "FBID",
+    "sourceKeys": "properties.fbId",
+    "required": false
+  },
+  {
+    "destKey": "GPID",
+    "sourceKeys": "properties.gpId",
+    "required": false
+  },
+  {
+    "destKey": "objectId",
+    "sourceKeys": "properties.objectId",
+    "required": false
+  }
+
+]

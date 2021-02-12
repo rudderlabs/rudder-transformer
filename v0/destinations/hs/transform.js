@@ -185,6 +185,16 @@ const processRouterDest = async inputs => {
 
   const respList = await Promise.all(
     inputs.map(async input => {
+      if (input.message.statusCode) {
+        // already transformed event
+        return getSuccessRespEvents(
+          input.message,
+          [input.metadata],
+          input.destination
+        );
+      }
+
+      // event is not transformed
       try {
         return getSuccessRespEvents(
           await processSingleMessage(input.message, input.destination),

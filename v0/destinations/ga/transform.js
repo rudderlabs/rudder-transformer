@@ -710,7 +710,7 @@ function processEComGenericEvent(message, destination) {
       case Event.PRODUCT_REVIEWED.name:
         parameters.pa = "detail";
         break;
-      case Event.PRODUCTS_SEARCHED:
+      case Event.PRODUCTS_SEARCHED.name:
         parameters.pa = "click";
         break;
       default:

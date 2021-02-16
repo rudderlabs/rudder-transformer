@@ -17,6 +17,7 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
+const logger = require("../../../logger");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -29,7 +30,13 @@ async function getSFDCHeader(destination) {
   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  const response = await axios.post(authUrl, {});
+  let response;
+  try {
+    response = await axios.post(authUrl, {});
+  } catch (error) {
+    logger.error(error);
+    throw new Error(`SALESFORCE AUTH FAILED: ${error.message}`);
+  }
 
   return {
     token: `Bearer ${response.data.access_token}`,

@@ -660,7 +660,9 @@ function processWarehouseMessage(message, options) {
       );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
-      usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
+      usersColumnTypes[
+        utils.safeColumnName(options.provider, "id")
+      ] = getDataType(message.userId, options);
       // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")

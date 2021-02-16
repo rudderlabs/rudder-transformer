@@ -5965,7 +5965,9 @@
       "userId": "12345",
       "integrations": {
         "All": true,
-        "GA":{"clientId":"clientId"}
+        "GA": {
+          "clientId": "clientId"
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -6040,7 +6042,7 @@
     "message": {
       "channel": "web",
       "context": {
-           "externalId": [
+        "externalId": [
           {
             "id": "externalClientId",
             "type": "gaExternalId"
@@ -7261,7 +7263,6 @@
     }
   },
   {
-
     "message": {
       "channel": "web",
       "context": {
@@ -7473,7 +7474,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,
@@ -7604,7 +7605,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,
@@ -7665,7 +7666,7 @@
         "traits": {
           "email": "sayan@gmail.com"
         },
-        "ip":"0.0.0.0",
+        "ip": "0.0.0.0",
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"
@@ -7736,7 +7737,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,
@@ -7868,7 +7869,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,
@@ -8000,7 +8001,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,
@@ -8132,7 +8133,7 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": false,
-        "ecommerce":true,
+        "ecommerce": true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,

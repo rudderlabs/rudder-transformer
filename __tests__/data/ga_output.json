@@ -41,33 +41,33 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-        "dp": "/abc",
-        "v": "1",
-        "t": "pageview",
-        "tid": "UA-165994240-1",
-        "ds": "web",
-        "npa": 1,
-        "aip": 1,
-        "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "ul": "en-US",
-        "an": "RudderLabs JavaScript SDK",
-        "av": "1.0.0",
-        "aiid": "com.rudderlabs.javascript",
-        "dt": "",
-        "dl": "",
-        "dr": "",
-        "uid": "12345",
-        "cid": "00000000000000000000000000",
-        "uip": "0.0.0.0"
+      "dp": "/abc",
+      "v": "1",
+      "t": "pageview",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "dt": "",
+      "dl": "",
+      "dr": "",
+      "uid": "12345",
+      "cid": "00000000000000000000000000",
+      "uip": "0.0.0.0"
     },
     "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
     },
     "files": {},
     "userId": "00000000000000000000000000"
-},
+  },
   {
     "version": "1",
     "type": "REST",
@@ -1568,7 +1568,7 @@
       "tt": 20.99,
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345", 
+      "uid": "12345",
       "ul": "en-US",
       "pr1qt": 1,
       "pr2qt": 3,
@@ -1763,41 +1763,41 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-        "ea": "action1",
-        "ec": "Ruchira",
-        "ni": 1,
-        "cd1": "ruchira moitra",
-        "content1": "ruchira/plan",
-        "v": "1",
-        "t": "event",
-        "tid": "UA-165994240-1",
-        "ds": "web",
-        "an": "RudderLabs JavaScript SDK",
-        "av": "1.0.0",
-        "aiid": "com.rudderlabs.javascript",
-        "npa": 1,
-        "aip": 1,
-        "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "ul": "en-US",
-        "uid": "12345",
-        "cid": "827ccb0eea8a706c4c34a16891f84e7b",
-        "uip": "0.0.0.0"
+      "ea": "action1",
+      "ec": "Ruchira",
+      "ni": 1,
+      "cd1": "ruchira moitra",
+      "content1": "ruchira/plan",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "uid": "12345",
+      "cid": "827ccb0eea8a706c4c34a16891f84e7b",
+      "uip": "0.0.0.0"
     },
     "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
     },
     "files": {}
-},
-{
-  "version": "1",
-  "type": "REST",
-  "userId": "12345",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "userId": "12345",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "action1",
       "ec": "Ruchira",
       "ni": 1,
@@ -1817,22 +1817,22 @@
       "uid": "12345",
       "cid": "clientId",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {}
   },
-  "files": {}
-},
-{
-  "version": "1",
-  "type": "REST",
-  "userId": "12345",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "userId": "12345",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "action1",
       "ec": "Ruchira",
       "ni": 1,
@@ -1852,21 +1852,21 @@
       "uid": "12345",
       "cid": "externalClientId",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {}
   },
-  "files": {}
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "pa": "checkout",
       "v": "1",
       "t": "event",
@@ -1883,22 +1883,22 @@
       "uid": "12345",
       "cid": "00000000000000000000000000",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "product added",
       "ec": "All",
       "pr1id": "p-298",
@@ -1921,22 +1921,22 @@
       "pr1qt": 1,
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "product added",
       "ec": "EnhancedEcommerce",
@@ -1963,22 +1963,22 @@
       "pr1qt": 1,
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Coupon Entered",
       "ec": "EnhancedEcommerce",
@@ -1996,22 +1996,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Coupon Applied",
       "ec": "EnhancedEcommerce",
@@ -2029,22 +2029,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Coupon Denied",
       "ec": "EnhancedEcommerce",
@@ -2062,22 +2062,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Coupon Removed",
       "ec": "EnhancedEcommerce",
@@ -2095,22 +2095,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Product Reviewed",
       "ec": "EnhancedEcommerce",
@@ -2128,22 +2128,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ni": 1,
       "ea": "Products Searched",
       "ec": "EnhancedEcommerce",
@@ -2161,22 +2161,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "Product Reviewed",
       "ev": 100,
       "ec": "All",
@@ -2194,22 +2194,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "product list viewed",
       "ec": "cat 1",
       "cd1": "my product 1",
@@ -2226,22 +2226,22 @@
       "aiid": "com.rudderlabs.javascript",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "promotion viewed",
       "ec": "cat 1",
       "cu": "CAD",
@@ -2262,22 +2262,22 @@
       "promo1nm": "my product 1",
       "uid": "12345",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "pa": "purchase",
       "pr1id": "p-298",
       "pr1nm": "my product",
@@ -2303,22 +2303,22 @@
       "uid": "12345",
       "uip": "0.0.0.0",
       "cid": "00000000000000000000000000"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "pa": "refund",
       "pr1id": "p-298",
       "pr1nm": "my product",
@@ -2343,22 +2343,22 @@
       "uid": "12345",
       "cid": "00000000000000000000000000",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "product shared",
       "ec": "cat 1",
       "cd1": "my product 1",
@@ -2376,22 +2376,22 @@
       "uid": "12345",
       "cid": "00000000000000000000000000",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
-  "files": {},
-  "userId": "00000000000000000000000000"
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "cart viewed",
       "ec": "cat 1",
       "cd1": "my product 1",
@@ -2409,13 +2409,13 @@
       "uid": "12345",
       "cid": "00000000000000000000000000",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
-  },
-  "files": {},
-  "userId": "00000000000000000000000000"
-}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  }
 ]

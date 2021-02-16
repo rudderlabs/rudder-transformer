@@ -118,6 +118,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  ctx.set("apiVersion", API_VERSION);
 }
 
 if (startDestTransformer) {
@@ -374,6 +375,7 @@ router.post("/batch", ctx => {
     return;
   }
   ctx.body = response.batchedRequests;
+  ctx.set("apiVersion", API_VERSION);
 });
 
 module.exports = router;

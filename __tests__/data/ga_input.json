@@ -179,6 +179,99 @@
         "sendUserId": true,
         "useGoogleAmpClientId": true,
         "web-useNativeSDK": true,
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/abc",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": ""
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
         "dimensions": [
           {
             "from": "name",
@@ -5942,7 +6035,8 @@
       },
       "Enabled": true
     }
-  },{
+  },
+  {
     "message": {
       "channel": "web",
       "context": {
@@ -6009,6 +6103,2036 @@
         "anonymizeIp": true,
         "domain": "domain",
         "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "shrouti@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "checkout step completed",
+      "properties": {
+        "currency": "CAD",
+        "step": 1,
+        "paymentMethod": "Visa"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product added",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "sku": "p-298",
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product added",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "product_id": 100,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Coupon Entered",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Coupon Applied",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Coupon Denied",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Coupon Removed",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Product Reviewed",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Products Searched",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Product Reviewed",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "revenue": 99.99,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298",
+            "product_id": "1"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299",
+            "product_id": "2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce": false,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product list viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "promotion viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "ip":"0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "order completed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "ip": "0.0.0.0"
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "order refunded",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "ip": "0.0.0.0"
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product shared",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
+        "nonInteraction": true,
+        "optimize": "abc123",
+        "sendUserId": true,
+        "useGoogleAmpClientId": true,
+        "web-useNativeSDK": true,
+        "dimensions": [
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
+        ],
+        "metrics": [
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
+        ],
+        "resetCustomDimensionsOnPage": [
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
+        ],
+        "contentGroupings": [
+          {
+            "from": "plan",
+            "to": "content1"
+          },
+          {
+            "from": "prop2",
+            "to": "content2"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "ip": "0.0.0.0"
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "cart viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "cat 1",
+        "sku": "p-298",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "trackingID": "UA-165994240-1",
+        "doubleClick": true,
+        "enhancedLinkAttribution": true,
+        "classic": true,
+        "ignoredReferrers": "",
+        "serverClassic": false,
+        "includeSearch": true,
+        "trackCategorizedPages": true,
+        "trackNamedPages": true,
+        "sampleRate": "100",
+        "siteSpeedSampleRate": "1",
+        "setAllMappedProps": true,
+        "enableServerSideIdentify": true,
+        "serverSideIdentifyEventCategory": "cat1",
+        "serverSideIdentifyEventAction": "action1",
+        "anonymizeIp": true,
+        "domain": "domain",
+        "enhancedEcommerce": false,
+        "ecommerce":true,
         "nonInteraction": true,
         "optimize": "abc123",
         "sendUserId": true,

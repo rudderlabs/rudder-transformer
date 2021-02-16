@@ -8,7 +8,7 @@ const stats = require("./util/stats");
 require("dotenv").config();
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 

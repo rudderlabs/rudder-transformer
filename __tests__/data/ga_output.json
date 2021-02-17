@@ -1533,7 +1533,7 @@
       "tt": 20.99,
       "cu": "INR",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uid": "12345", 
+      "uid": "12345",
       "ul": "en-US",
       "pr1qt": 1,
       "pr2qt": 3,
@@ -1670,7 +1670,17 @@
       "cid": "00000000000000000000000000",
       "uid": "12345",
       "ul": "en-US",
-      "ni": 1
+      "ni": 1,
+      "pr1cd1": "my product",
+      "pr1id": "1",
+      "pr1nm": "my product",
+      "pr1pr": 24.75,
+      "pr1qt": 1,
+      "pr2cd1": "other product",
+      "pr2id": "2",
+      "pr2nm": "other product",
+      "pr2pr": 24.75,
+      "pr2qt": 3
     },
     "body": {
       "JSON": {},
@@ -1728,40 +1738,40 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-        "ea": "action1",
-        "ec": "Ruchira",
-        "ni": 1,
-        "cd1": "Ruchira",
-        "v": "1",
-        "t": "event",
-        "tid": "UA-165994240-1",
-        "ds": "web",
-        "an": "RudderLabs JavaScript SDK",
-        "av": "1.0.0",
-        "aiid": "com.rudderlabs.javascript",
-        "npa": 1,
-        "aip": 1,
-        "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "ul": "en-US",
-        "uid": "12345",
-        "cid": "827ccb0eea8a706c4c34a16891f84e7b",
-        "uip": "0.0.0.0"
+      "ea": "action1",
+      "ec": "Ruchira",
+      "ni": 1,
+      "cd1": "Ruchira",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "uid": "12345",
+      "cid": "827ccb0eea8a706c4c34a16891f84e7b",
+      "uip": "0.0.0.0"
     },
     "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
     },
     "files": {}
-},
-{
-  "version": "1",
-  "type": "REST",
-  "userId": "12345",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "userId": "12345",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "action1",
       "ec": "Ruchira",
       "ni": 1,
@@ -1780,22 +1790,22 @@
       "uid": "12345",
       "cid": "clientId",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {}
   },
-  "files": {}
-},
-{
-  "version": "1",
-  "type": "REST",
-  "userId": "12345",
-  "method": "GET",
-  "endpoint": "https://www.google-analytics.com/collect",
-  "headers": {},
-  "params": {
+  {
+    "version": "1",
+    "type": "REST",
+    "userId": "12345",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "action1",
       "ec": "Ruchira",
       "ni": 1,
@@ -1814,12 +1824,12 @@
       "uid": "12345",
       "cid": "externalClientId",
       "uip": "0.0.0.0"
-  },
-  "body": {
+    },
+    "body": {
       "JSON": {},
       "XML": {},
       "FORM": {}
-  },
-  "files": {}
-}
+    },
+    "files": {}
+  }
 ]

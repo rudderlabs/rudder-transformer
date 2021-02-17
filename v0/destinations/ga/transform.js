@@ -720,6 +720,38 @@ function processEComGenericEvent(message, destination) {
         throw new Error("unknown TransactionEvent type");
     }
   }
+  const { products } = message.properties;
+
+  if (products && products.length > 0) {
+    for (let i = 0; i < products.length; i += 1) {
+      const product = products[i];
+      const prodIndex = i + 1;
+      // If product_id is not provided, then SKU will be used in place of id
+      if (!product.product_id || product.product_id.length === 0) {
+        parameters[`pr${prodIndex}id`] = product.sku;
+      } else {
+        parameters[`pr${prodIndex}id`] = product.product_id;
+      }
+
+      // add product level custom dimensions and metrics to parameters
+      if (enhancedEcommerce) {
+        const customParamKeys = getCustomParamKeys(destination.Config);
+        Object.assign(
+          parameters,
+          getProductLevelCustomParams(product, prodIndex, customParamKeys)
+        );
+      }
+
+      parameters[`pr${prodIndex}nm`] = product.name;
+      parameters[`pr${prodIndex}ca`] = product.category;
+      parameters[`pr${prodIndex}br`] = product.brand;
+      parameters[`pr${prodIndex}va`] = product.variant;
+      parameters[`pr${prodIndex}cc`] = product.coupon;
+      parameters[`pr${prodIndex}ps`] = product.position;
+      parameters[`pr${prodIndex}pr`] = product.price;
+      parameters[`pr${prodIndex}qt`] = product.quantity || 1;
+    }
+  }
   return parameters;
 }
 

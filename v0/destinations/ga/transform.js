@@ -22,7 +22,7 @@ function getParamsFromConfig(message, destination, type) {
   const params = {};
   const obj = {};
   const messageType = message.type;
-  const traits = message.traits || message.context.traits;
+  const traits = getFieldValueFromMessage(message, "traits");
   if (destination) {
     destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;

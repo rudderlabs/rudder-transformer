@@ -1,8 +1,13 @@
 [
   {
+    "destKey": "$id",
+    "sourceKeys": ["traits.userId", "context.traits.userId","properties.userId"],
+    "required": false
+  },
+  {
     "destKey": "$email",
     "sourceKeys": ["traits.email", "context.traits.email","properties.email"],
-    "required": true
+    "required": false
   },
   {
     "destKey": "$first_name",

@@ -23,10 +23,14 @@ const {
 // from an identify call.
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 const addUserToList = async (message, conf, destination) => {
-  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-    message.context.traits.properties,
-    "listId"
-  )}`;
+  // Check if list Id is present in message properties, if yes override
+  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${destination.Config.listId}`;
+  if (get(message.context.traits.properties, "listId")) {
+    targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
+      message.context.traits.properties,
+      "listId"
+    )}`;
+  }
   let profile = {
     email: getFieldValueFromMessage(message, "email"),
     phone_number: getFieldValueFromMessage(message, "phone")
@@ -35,9 +39,14 @@ const addUserToList = async (message, conf, destination) => {
   if (conf === LIST_CONF.MEMBERSHIP) {
     targetUrl = `${targetUrl}/members`;
   } else {
+    // get consent statuses from message if availabe else from dest config
     targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent = get(message.context.traits.properties, "smsConsent");
-    profile.$consent = get(message.context.traits.properties, "consent");
+    profile.sms_consent = get(message.context.traits.properties, "smsConsent")
+      ? get(message.context.traits.properties, "smsConsent")
+      : destination.Config.smsConsent;
+    profile.$consent = get(message.context.traits.properties, "consent")
+      ? get(message.context.traits.properties, "smsConsent")
+      : destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
   try {
@@ -53,9 +62,9 @@ const addUserToList = async (message, conf, destination) => {
         }
       }
     );
-    if (res.status !== 200) logger.error("Unable to add User to List");
+    if (res.status !== 200) logger.debug("Unable to add User to List");
   } catch (err) {
-    logger.error(err);
+    logger.debug(err);
   }
 };
 // ---------------------
@@ -67,15 +76,27 @@ const addUserToList = async (message, conf, destination) => {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  if (get(message.context.traits.properties, "listId")) {
+  const addToList = message.context.traits.properties
+    ? message.context.traits.properties.addToList
+    : false;
+  if (
+    (!!destination.Config.listId ||
+      !!get(message.context.traits.properties, "listId")) &&
+    addToList
+  ) {
     addUserToList(message, LIST_CONF.MEMBERSHIP, destination);
     addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
+  } else {
+    logger.info(
+      `Cannot process list operation as listId is not available, both in message or config`
+    );
   }
   // actual identify call
   let propertyPayload = constructPayload(
     message,
     MAPPING_CONFIG[category.name]
   );
+
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
@@ -140,8 +161,12 @@ const groupRequestHandler = async (message, category, destination) => {
     "groupId"
   )}/subscribe`;
   let profile;
-  if (get(message.traits, "subscribe") === "true") {
+  if (get(message.traits, "subscribe") === true) {
     profile = constructPayload(message, MAPPING_CONFIG[category.name]);
+    // If consent info not present draw it from dest config
+    if (!profile.sms_consent)
+      profile.sms_consent = destination.Config.smsConsent;
+    if (!profile.$consent) profile.$consent = destination.Config.consent;
     try {
       const res = await axios.post(
         targetUrl,
@@ -155,9 +180,9 @@ const groupRequestHandler = async (message, category, destination) => {
           }
         }
       );
-      if (res.status !== 200) logger.error("Unable to add User to List");
+      if (res.status !== 200) logger.debug("Unable to add User to List");
     } catch (err) {
-      logger.error(err);
+      logger.debug(err);
     }
   }
   profile = {

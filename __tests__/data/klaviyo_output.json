@@ -7,7 +7,7 @@
     "params": {},
     "headers": {},
     "version": "1",
-    "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGVtYWlsIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGZpcnN0X25hbWUiOiJVdHNhYiIsIiRsYXN0X25hbWUiOiJDaG93ZGh1cnkiLCIkcGhvbmVfbnVtYmVyIjoiKzEyIDM0NSA2NzggOTAwIiwiJHRpdGxlIjoiT3duZXIiLCIkb3JnYW5pemF0aW9uIjoiUnVkZGVyIiwiJGNpdHkiOiJUb2t5byIsIiRyZWdpb24iOiJLYW50byIsIiRjb3VudHJ5IjoiSlAiLCIkemlwIjoiMTAwLTAwMDEiLCJGbGFnZ2VkIjpmYWxzZSwiUmVzaWRlbmNlIjoiU2hpYnV5YSJ9fQ=="
+    "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGlkIjoidXRzYWJjIiwiJGVtYWlsIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGZpcnN0X25hbWUiOiJVdHNhYiIsIiRsYXN0X25hbWUiOiJDaG93ZGh1cnkiLCIkcGhvbmVfbnVtYmVyIjoiKzEyIDM0NSA1NzggOTAwIiwiJHRpdGxlIjoiRGV2ZWxvcGVyIiwiJG9yZ2FuaXphdGlvbiI6IlJ1ZGRlciIsIiRjaXR5IjoiVG9reW8iLCIkcmVnaW9uIjoiS2FudG8iLCIkY291bnRyeSI6IkpQIiwiJHppcCI6IjEwMC0wMDAxIiwiRmxhZ2dlZCI6ZmFsc2UsIlJlc2lkZW5jZSI6IlNoaWJ1eWEifX0="
   },
   {
     "body": { "XML": {}, "FORM": {}, "JSON": {} },
@@ -53,5 +53,15 @@
   },
   {
     "error": "Message type not supported"
+  },
+  {
+    "body": { "XML": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGlkIjoiYmF0c3UiLCIkZW1haWwiOiJiYXRzdUBydWRkZXJzdGFjay5jb20iLCIkZmlyc3RfbmFtZSI6IkJhdHN1IiwiJGxhc3RfbmFtZSI6IkNob3dkaHVyeSIsIiRwaG9uZV9udW1iZXIiOiIrMTIgMzQ1IDU3OCA5MDAiLCIkdGl0bGUiOiJEZXZlbG9wZXIiLCIkb3JnYW5pemF0aW9uIjoiUnVkZGVyIiwiJGNpdHkiOiJUb2t5byIsIiRyZWdpb24iOiJLYW50byIsIiRjb3VudHJ5IjoiSlAiLCIkemlwIjoiMTAwLTAwMDEiLCJGbGFnZ2VkIjpmYWxzZSwiUmVzaWRlbmNlIjoiU2hpYnV5YSJ9fQ=="
   }
 ]

@@ -21,6 +21,8 @@ const {
 function getParamsFromConfig(message, destination, type) {
   const params = {};
   const obj = {};
+  const messageType = message.type;
+  const traits = message.traits || message.context.traits;
   if (destination) {
     destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;
@@ -31,7 +33,10 @@ function getParamsFromConfig(message, destination, type) {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/contentGroup/g, "cg");
-    params[obj[key]] = get(message.properties, key);
+    params[obj[key]] =
+      messageType !== "identify"
+        ? get(message.properties, key)
+        : get(traits, key);
 
     if (type === "content" && params[obj[key]]) {
       params[obj[key]] = params[obj[key]].replace(" ", "/");
@@ -723,7 +728,7 @@ function processEComGenericEvent(message, destination) {
 function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
-  if(!messageType) {
+  if (!messageType) {
     throw new Error("Message type is not present");
   }
   let customParams = {};
@@ -755,8 +760,8 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK: {
       let eventName = message.event;
-      if (!(typeof eventName === 'string' || eventName instanceof String)){
-        throw new Error ("Event name is not present/is not a string")
+      if (!(typeof eventName === "string" || eventName instanceof String)) {
+        throw new Error("Event name is not present/is not a string");
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();

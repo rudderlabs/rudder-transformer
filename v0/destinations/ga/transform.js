@@ -124,8 +124,9 @@ function processPageViews(message, destination) {
         url = new URL(documentUrl);
         hostname = url.hostname;
         documentPath = url.pathname;
-        if (message.properties.search && includeSearch) {
-          documentPath += message.properties.search;
+        const search = getFieldValueFromMessage(message, "GApageSearch");
+        if (search && includeSearch) {
+          documentPath += search;
         }
       } catch (error) {
         throw new Error("Invalid Url");
@@ -139,7 +140,7 @@ function processPageViews(message, destination) {
     dt: getFieldValueFromMessage(message, "GApageTitle"),
     dr: getFieldValueFromMessage(message, "GApageRef")
   };
-  return parameters;
+  return removeUndefinedAndNullValues(parameters);
 }
 
 // Basic response builder
@@ -215,8 +216,6 @@ function responseBuilderSimple(
   let pageParams;
   if (hitType !== "pageview") {
     pageParams = processPageViews(message, destination);
-    delete pageParams.dr;
-    delete pageParams.dt;
   }
 
   // Remove keys with undefined values
@@ -251,7 +250,7 @@ function responseBuilderSimple(
     ...params,
     ...customParams,
     ...payload,
-    ...removeUndefinedAndNullValues(pageParams)
+    ...pageParams
   };
   let { sendUserId } = destination.Config;
   sendUserId = sendUserId || false;

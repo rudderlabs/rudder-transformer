@@ -80,5 +80,9 @@
   "GApageTitle": [
     "properties.title",
     "context.page.title"
+  ],
+  "GApageSearch": [
+    "properties.search",
+    "context.page.search"
   ]
 }

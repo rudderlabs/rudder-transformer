@@ -1065,6 +1065,8 @@
     "headers": {},
     "params": {
       "ea": "User Enriched",
+      "dr": "http://0.0.0.0:1112/tests/html/",
+      "dt": "GA Ecommerce Test",
       "ec": "All",
       "v": "1",
       "t": "event",

@@ -111,6 +111,44 @@ function getCustomParamsFromOldConfig(config) {
   return [dimensions, metrics];
 }
 
+function setProductLevelProperties(
+  products,
+  parameters,
+  enhancedEcommerce,
+  destination
+) {
+  const params = parameters;
+  for (let i = 0; i < products.length; i += 1) {
+    const product = products[i];
+    const prodIndex = i + 1;
+    // If product_id is not provided, then SKU will be used in place of id
+    if (!product.product_id || product.product_id.length === 0) {
+      params[`pr${prodIndex}id`] = product.sku;
+    } else {
+      params[`pr${prodIndex}id`] = product.product_id;
+    }
+
+    // add product level custom dimensions and metrics to parameters
+    if (enhancedEcommerce) {
+      const customParamKeys = getCustomParamKeys(destination.Config);
+      Object.assign(
+        parameters,
+        getProductLevelCustomParams(product, prodIndex, customParamKeys)
+      );
+    }
+
+    params[`pr${prodIndex}nm`] = product.name;
+    params[`pr${prodIndex}ca`] = product.category;
+    params[`pr${prodIndex}br`] = product.brand;
+    params[`pr${prodIndex}va`] = product.variant;
+    params[`pr${prodIndex}cc`] = product.coupon;
+    params[`pr${prodIndex}ps`] = product.position;
+    params[`pr${prodIndex}pr`] = product.price;
+    params[`pr${prodIndex}qt`] = product.quantity || 1;
+  }
+  return params;
+}
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -390,35 +428,13 @@ function processRefundEvent(message, destination) {
 
   const { products } = message.properties;
   if (products && products.length > 0) {
-    // partial refund
-    // Now iterate through the products and add parameters accordingly
-    const customParamKeys = getCustomParamKeys(destination.Config);
-    for (let i = 0; i < products.length; i += 1) {
-      const value = products[i];
-      const prodIndex = i + 1;
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters[`pr${prodIndex}id`] = value.sku;
-      } else {
-        parameters[`pr${prodIndex}id`] = value.product_id;
-      }
-
-      // add product level custom dimensions and metrics to parameters
-      if (enhancedEcommerce) {
-        Object.assign(
-          parameters,
-          getProductLevelCustomParams(value, prodIndex, customParamKeys)
-        );
-      }
-
-      parameters[`pr${prodIndex}nm`] = value.name;
-      parameters[`pr${prodIndex}ca`] = value.category;
-      parameters[`pr${prodIndex}br`] = value.brand;
-      parameters[`pr${prodIndex}va`] = value.variant;
-      parameters[`pr${prodIndex}cc`] = value.coupon;
-      parameters[`pr${prodIndex}ps`] = value.position;
-      parameters[`pr${prodIndex}pr`] = value.price;
-      parameters[`pr${prodIndex}qt`] = value.quantity;
-    }
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   } else {
     // full refund, only populate order_id
     parameters.ti = message.properties.order_id;
@@ -644,34 +660,13 @@ function processTransactionEvent(message, destination) {
   const { products } = message.properties;
 
   if (products && products.length > 0) {
-    for (let i = 0; i < products.length; i += 1) {
-      const product = products[i];
-      const prodIndex = i + 1;
-      // If product_id is not provided, then SKU will be used in place of id
-      if (!product.product_id || product.product_id.length === 0) {
-        parameters[`pr${prodIndex}id`] = product.sku;
-      } else {
-        parameters[`pr${prodIndex}id`] = product.product_id;
-      }
-
-      // add product level custom dimensions and metrics to parameters
-      if (enhancedEcommerce) {
-        const customParamKeys = getCustomParamKeys(destination.Config);
-        Object.assign(
-          parameters,
-          getProductLevelCustomParams(product, prodIndex, customParamKeys)
-        );
-      }
-
-      parameters[`pr${prodIndex}nm`] = product.name;
-      parameters[`pr${prodIndex}ca`] = product.category;
-      parameters[`pr${prodIndex}br`] = product.brand;
-      parameters[`pr${prodIndex}va`] = product.variant;
-      parameters[`pr${prodIndex}cc`] = product.coupon;
-      parameters[`pr${prodIndex}ps`] = product.position;
-      parameters[`pr${prodIndex}pr`] = product.price;
-      parameters[`pr${prodIndex}qt`] = product.quantity || 1;
-    }
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
     throw new Error("No product information supplied for transaction event");
@@ -721,6 +716,17 @@ function processEComGenericEvent(message, destination) {
       default:
         throw new Error("unknown TransactionEvent type");
     }
+  }
+  const { products } = message.properties;
+
+  if (products && products.length > 0) {
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   }
   return parameters;
 }

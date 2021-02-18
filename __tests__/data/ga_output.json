@@ -40,7 +40,6 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "dp": "/abc",
       "v": "1",
       "t": "pageview",
       "tid": "UA-165994240-1",
@@ -51,13 +50,15 @@
       "npa": 1,
       "aip": 1,
       "cid": "00000000000000000000000000",
-      "dt": "",
-      "dl": "",
-      "dr": "",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
       "uip": "0.0.0.0",
-      "ul": "en-US"
+      "ul": "en-US",
+      "dh": "www.example.com",
+      "dl": "https://www.example.com/abc",
+      "dp": "/abc",
+      "dr": "q",
+      "dt": "a"
     },
     "body": {
       "JSON": {},
@@ -1090,6 +1091,8 @@
     "headers": {},
     "params": {
       "ea": "User Enriched",
+      "dr": "http://0.0.0.0:1112/tests/html/",
+      "dt": "GA Ecommerce Test",
       "ec": "All",
       "v": "1",
       "t": "event",
@@ -1150,7 +1153,6 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "dp": "/abc?xyz=1",
       "v": "1",
       "t": "pageview",
       "tid": "UA-165994240-1",
@@ -1161,13 +1163,13 @@
       "npa": 1,
       "aip": 1,
       "cid": "00000000000000000000000000",
-      "dt": "",
-      "dl": "",
-      "dr": "",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
       "ul": "en-US",
-      "uip": "0.0.0.0"
+      "uip": "0.0.0.0",
+      "dh": "www.example.com",
+      "dl": "https://www.example.com/abc",
+      "dp": "/abc?xyz=1"
     },
     "body": {
       "JSON": {},
@@ -1429,7 +1431,10 @@
       "cid": "00000000000000000000000000",
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "uid": "12345",
-      "st": "www.example.com",
+      "st": "https://www.example.com/abc",
+      "dh": "www.example.com",
+      "dl": "https://www.example.com/abc",
+      "dp": "/abc",
       "ul": "en-US"
     },
     "body": {

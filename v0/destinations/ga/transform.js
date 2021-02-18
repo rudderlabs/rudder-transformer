@@ -9,7 +9,7 @@ const {
   nameToEventMap
 } = require("./config");
 const {
-  removeUndefinedValues,
+  removeUndefinedAndNullValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
   getParsedIP,
@@ -59,7 +59,7 @@ function getProductLevelCustomParams(product, index, customParamKeys) {
     });
   }
 
-  return removeUndefinedValues(customParams);
+  return removeUndefinedAndNullValues(customParams);
 }
 
 function getCustomParamKeys(config) {
@@ -89,7 +89,7 @@ function getCustomParamKeys(config) {
       });
     }
 
-    return removeUndefinedValues(customParams);
+    return removeUndefinedAndNullValues(customParams);
   }
   // return empty object if config is undefined or invalid
   return {};
@@ -109,6 +109,40 @@ function getCustomParamsFromOldConfig(config) {
     });
   }
   return [dimensions, metrics];
+}
+
+// Function for processing pageviews
+function processPageViews(message, destination) {
+  let documentPath;
+  let documentUrl;
+  let hostname;
+  let { includeSearch } = destination.Config;
+  includeSearch = includeSearch || false;
+  if (message.properties) {
+    documentUrl = getFieldValueFromMessage(message, "GApageUrl");
+    let url;
+    if (documentUrl) {
+      try {
+        url = new URL(documentUrl);
+        hostname = url.hostname;
+        documentPath = url.pathname;
+        const search = getFieldValueFromMessage(message, "GApageSearch");
+        if (search && includeSearch) {
+          documentPath += search;
+        }
+      } catch (error) {
+        throw new Error("Invalid Url");
+      }
+    }
+  }
+  const parameters = {
+    dp: documentPath,
+    dl: documentUrl,
+    dh: hostname,
+    dt: getFieldValueFromMessage(message, "GApageTitle"),
+    dr: getFieldValueFromMessage(message, "GApageRef")
+  };
+  return removeUndefinedAndNullValues(parameters);
 }
 
 function setProductLevelProperties(
@@ -219,19 +253,24 @@ function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
-  // Remove keys with undefined values
-  const payload = removeUndefinedValues(rawPayload);
+  let pageParams;
+  if (hitType !== "pageview") {
+    pageParams = processPageViews(message, destination);
+  }
 
-  const params = removeUndefinedValues(parameters);
+  // Remove keys with undefined values
+  const payload = removeUndefinedAndNullValues(rawPayload);
+
+  const params = removeUndefinedAndNullValues(parameters);
 
   // Get dimensions  from destination config
   let dimensionsParam = getParamsFromConfig(message, dimensions, "dimensions");
 
-  dimensionsParam = removeUndefinedValues(dimensionsParam);
+  dimensionsParam = removeUndefinedAndNullValues(dimensionsParam);
 
   // Get metrics from destination config
   let metricsParam = getParamsFromConfig(message, metrics, "metrics");
-  metricsParam = removeUndefinedValues(metricsParam);
+  metricsParam = removeUndefinedAndNullValues(metricsParam);
 
   // Get contentGroupings from destination config
   let contentGroupingsParam = getParamsFromConfig(
@@ -239,7 +278,7 @@ function responseBuilderSimple(
     contentGroupings,
     "content"
   );
-  contentGroupingsParam = removeUndefinedValues(contentGroupingsParam);
+  contentGroupingsParam = removeUndefinedAndNullValues(contentGroupingsParam);
 
   const customParams = {
     ...dimensionsParam,
@@ -247,7 +286,12 @@ function responseBuilderSimple(
     ...contentGroupingsParam
   };
 
-  const finalPayload = { ...params, ...customParams, ...payload };
+  const finalPayload = {
+    ...params,
+    ...customParams,
+    ...payload,
+    ...pageParams
+  };
   let { sendUserId } = destination.Config;
   sendUserId = sendUserId || false;
   // check if userId is there and populate
@@ -305,23 +349,6 @@ function processIdentify(message, destination) {
     ec,
     ni: 1
   };
-}
-
-// Function for processing pageviews
-function processPageViews(message, destination) {
-  let documentPath;
-  let { includeSearch } = destination.Config;
-  includeSearch = includeSearch || false;
-  if (message.properties) {
-    documentPath = message.properties.path;
-    if (message.properties.search && includeSearch) {
-      documentPath += message.properties.search;
-    }
-  }
-  const parameters = {
-    dp: documentPath
-  };
-  return parameters;
 }
 
 // Function for processing non-ecom generic track events
@@ -832,7 +859,7 @@ function processSingleMessage(message, destination) {
             break;
         }
       } else if (ecommerce) {
-        const eventName = message.event.toLowerCase();
+        eventName = message.event.toLowerCase();
 
         category = nameToEventMap[eventName]
           ? nameToEventMap[eventName].category

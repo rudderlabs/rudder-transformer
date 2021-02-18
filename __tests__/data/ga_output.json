@@ -6,6 +6,39 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
+        "ea": "abc def",
+        "ev": 0,
+        "ec": "All",
+        "ni": 1,
+        "v": "1",
+        "t": "event",
+        "tid": "UA-165994240-1",
+        "ds": "web",
+        "npa": 1,
+        "aip": 1,
+        "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "ul": "en-US",
+        "an": "RudderLabs JavaScript SDK",
+        "av": "1.0.0",
+        "aiid": "com.rudderlabs.javascript",
+        "uid": "12345",
+        "cid": "00000000000000000000000000"
+    },
+    "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+},
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
       "ea": "Product List Clicked",
       "ec": "All",
       "v": "1",

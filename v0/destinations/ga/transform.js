@@ -23,6 +23,8 @@ const gaDisplayName = "Google Analytics";
 function getParamsFromConfig(message, destination, type) {
   const params = {};
   const obj = {};
+  const messageType = message.type;
+  const traits = getFieldValueFromMessage(message, "traits");
   if (destination) {
     destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;
@@ -33,7 +35,10 @@ function getParamsFromConfig(message, destination, type) {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/contentGroup/g, "cg");
-    params[obj[key]] = get(message.properties, key);
+    params[obj[key]] =
+      messageType !== "identify"
+        ? get(message.properties, key)
+        : get(traits, key);
 
     if (type === "content" && params[obj[key]]) {
       params[obj[key]] = params[obj[key]].replace(" ", "/");

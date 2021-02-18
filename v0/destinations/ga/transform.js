@@ -871,6 +871,8 @@ function processSingleMessage(message, destination) {
         category = ConfigCategory.NON_ECOM;
         customParams = processNonEComGenericEvent(message, destination);
       }
+      const label = message.properties ? message.properties.label : undefined;
+      customParams.el = label || "event";
       break;
     }
     default:

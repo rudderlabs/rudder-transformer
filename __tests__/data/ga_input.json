@@ -5872,9 +5872,8 @@
       "userId": "12345",
       "integrations": {
         "All": true,
-        "GA": {
-          "clientId": "clientId"
-        }
+        "GA": { "clientId": "clientId" },
+        "Google Analytics": { "clientId": "clientId" }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },

@@ -20,7 +20,7 @@ const {
 
 const gaDisplayName = "Google Analytics";
 
-function getParamsFromConfig(message, destination, type) {
+function getParamsFromConfig(message, destination) {
   const params = {};
   const obj = {};
   const messageType = message.type;
@@ -127,7 +127,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new Error("Invalid Url: " + url);
+        throw new Error(`Invalid Url: ${url}`);
       }
     }
   }
@@ -455,7 +455,8 @@ function processRefundEvent(message, destination) {
   return parameters;
 }
 
-// Function for processing product and cart shared events
+// Function for processing product and cart shared events =
+// This is not an Enhanced Ecomm event
 function processSharingEvent(message) {
   const parameters = {};
   // URL will be there for Product Shared event, hence that can be used as share target
@@ -557,12 +558,6 @@ function processProductListEvent(message, destination) {
 // Function for processing product viewed or clicked events
 function processProductEvent(message, destination) {
   const eventString = message.event;
-  let category;
-  if (message.properties && message.properties.category) {
-    category = message.properties.category;
-  } else {
-    category = "All";
-  }
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
 
@@ -735,14 +730,9 @@ function processSingleMessage(message, destination) {
   }
   let customParams = {};
   let category;
-  let {
-    enableServerSideIdentify,
-    enhancedEcommerce,
-    ecommerce
-  } = destination.Config;
+  let { enableServerSideIdentify, enhancedEcommerce } = destination.Config;
   enableServerSideIdentify = enableServerSideIdentify || false;
   enhancedEcommerce = enhancedEcommerce || false;
-  ecommerce = ecommerce !== undefined ? ecommerce : true;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (enableServerSideIdentify) {

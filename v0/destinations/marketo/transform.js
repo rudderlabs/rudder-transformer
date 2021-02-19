@@ -75,22 +75,17 @@ const lookupLead = async (
   anonymousId
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
-    const attribute = userId ? { userId } : { anonymousId };
-    const resp = await postAxiosResponse(
+    const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       {
-        action: "createOrUpdate",
-        input: [attribute],
-        lookupField: userId ? "userId" : "anonymousId"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "application/json"
-        }
+        params: {
+          filterValues: userId || anonymousId,
+          filterType: userId ? "userId" : "anonymousId"
+        },
+        headers: { Authorization: `Bearer ${token}` }
       },
       formattedDestination ? formattedDestination.responseRules : null,
-      "During lookup lead"
+      "During lead look up using userId or anonymousId"
     );
     if (resp) {
       const { result } = resp;
@@ -133,6 +128,41 @@ const lookupLeadUsingEmail = async (
   });
 };
 
+const createOrUpdateLead = async (
+  formattedDestination,
+  accountId,
+  token,
+  userId,
+  anonymousId
+) => {
+  return userIdLeadCache.get(userId || anonymousId, async () => {
+    const attribute = userId ? { userId } : { anonymousId };
+    const resp = await postAxiosResponse(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        action: "createOrUpdate",
+        input: [attribute],
+        lookupField: userId ? "userId" : "anonymousId"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json"
+        }
+      },
+      formattedDestination ? formattedDestination.responseRules : null,
+      "During lookup lead"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
+      }
+    }
+    return null;
+  });
+};
+
 // Handles identify calls
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
@@ -140,12 +170,7 @@ const lookupLeadUsingEmail = async (
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (
-  message,
-  formattedDestination,
-  destinationDefinition,
-  token
-) => {
+const processIdentify = async (message, formattedDestination, token) => {
   // get bearer token
   // lookup using email. if present use that
   // else lookup using userId
@@ -182,9 +207,28 @@ const processIdentify = async (
   }
 
   if (!leadId) {
+    // lead not found using email/userId/anonymousId
+    // fail the request if email is not provided for creating the lead
+    if (email) {
+      // lead lookup failed - lookup is in created in marketo.
+      // call createOrUpdate API
+      leadId = await createOrUpdateLead(
+        formattedDestination,
+        accountId,
+        token,
+        userId,
+        message.anonymousId
+      );
+    } else {
+      throw new Error("Email is mandatory for creating lead");
+    }
+  }
+
+  if (!leadId) {
     // throwing here as lookup failed because of
     // either "anonymousId" or "userId" field is not created in marketo - resulting to lookup failure
     // or lead doesn't exist with "email".
+    // or leadCreation failed.
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
@@ -277,8 +321,27 @@ const processTrack = async (
       message.anonymousId
     );
   }
+
   if (!leadId) {
-    throw new Error("Lead lookup failed");
+    // lookup not found using userId or anonymousId
+    const email = getFieldValueFromMessage(message, "email");
+    if (email) {
+      leadId = await createOrUpdateLead(
+        destinationDefinition,
+        accountId,
+        token,
+        userId,
+        message.anonymousId
+      );
+    } else {
+      throw new Error(
+        "Email is mandatory for creating lead. Couldn't track event"
+      );
+    }
+  }
+
+  if (!leadId) {
+    throw new Error("Lead lookup or creation failed for track call");
   }
 
   // handle custom activy attributes
@@ -333,7 +396,6 @@ const processEvent = async (message, destination, token) => {
       response = await processIdentify(
         message,
         formatConfig(destination),
-        destination.DestinationDefinition,
         token
       );
       break;

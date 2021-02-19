@@ -349,12 +349,6 @@ function processIdentify(message, destination) {
 
 // Function for processing non-ecom generic track events
 function processNonEComGenericEvent(message, destination) {
-  let eventValue = "";
-  if (message.properties) {
-    eventValue = message.properties.value
-      ? message.properties.value
-      : message.properties.revenue;
-  }
   let { nonInteraction } = destination.Config;
   nonInteraction = nonInteraction || false;
   const nonInteractionProp =
@@ -364,7 +358,6 @@ function processNonEComGenericEvent(message, destination) {
       : !!nonInteraction;
   const parameters = {
     ea: message.event,
-    ev: formatValue(eventValue),
     ec:
       message.properties !== undefined &&
       message.properties.category !== undefined
@@ -383,7 +376,6 @@ function processPromotionEvent(message, destination) {
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
   const parameters = {
-    ec: message.properties.category || "addPromo",
     cu: message.properties.currency
   };
 
@@ -780,11 +772,17 @@ function processSingleMessage(message, destination) {
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
         customParams.ni = 1;
-        const setCategory = message.properties
-          ? message.properties.category
-          : undefined;
         customParams.ea = message.event;
+        let eventValue;
+        let setCategory;
+        if (message.properties) {
+          eventValue = message.properties.value
+            ? message.properties.value
+            : message.properties.revenue;
+          setCategory = message.properties.category;
+        }
         customParams.ec = setCategory || "EnhancedEcommerce";
+        customParams.ev = formatValue(eventValue);
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
             Object.assign(

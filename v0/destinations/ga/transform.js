@@ -39,10 +39,6 @@ function getParamsFromConfig(message, destination, type) {
       messageType !== "identify"
         ? get(message.properties, key)
         : get(traits, key);
-
-    if (type === "content" && params[obj[key]]) {
-      params[obj[key]] = params[obj[key]].replace(" ", "/");
-    }
   });
   return params;
 }
@@ -131,7 +127,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new Error("Invalid Url");
+        throw new Error("Invalid Url: " + url);
       }
     }
   }
@@ -623,6 +619,8 @@ function processProductEvent(message, destination) {
     }
 
     // add produt level custom dimensions and metrics to parameters
+    // TODO:: This below block will be rejected if "pa" is not set, it is better fo this block should go under the above if block
+    // for better readability. ref: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#pa
     const customParamKeys = getCustomParamKeys(destination.Config);
     Object.assign(
       parameters,
@@ -699,6 +697,7 @@ function processTransactionEvent(message, destination) {
     throw new Error("No product information supplied for transaction event");
   }
 
+  // TODO: parameters.ec missing message.properties check and All value?
   if (enhancedEcommerce) {
     parameters.ea = message.event;
     parameters.ec = message.properties.category || "EnhancedEcommerce";
@@ -859,6 +858,7 @@ function processSingleMessage(message, destination) {
             break;
         }
       } else if (ecommerce) {
+        // TODO: Ecoomerce spec is different? https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ecomm
         eventName = message.event.toLowerCase();
 
         category = nameToEventMap[eventName]

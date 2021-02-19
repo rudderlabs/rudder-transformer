@@ -4,7 +4,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name": "Ruchira Moitra"
         },
         "app": {
           "build": "1.0.0",
@@ -100,7 +100,7 @@
             "to": "contentGroup1"
           },
           {
-            "from": "prop2",
+            "from": "name",
             "to": "contentGroup2"
           }
         ]

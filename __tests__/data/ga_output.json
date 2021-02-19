@@ -7,8 +7,9 @@
     "headers": {},
     "params": {
       "ea": "action1",
-      "ec": "Ruchira",
-      "cd1": "Ruchira",
+      "ec": "Ruchira Moitra",
+      "cd1": "Ruchira Moitra",
+      "cg2": "Ruchira Moitra",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",

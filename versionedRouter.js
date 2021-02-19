@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const {oncehubTransformer} = require("./util/oncehub-custom-transformer");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -61,7 +62,7 @@ async function handleDest(ctx, version, destination) {
   await Promise.all(
     events.map(async event => {
       try {
-        const parsedEvent = event;
+        const parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
         if (!Array.isArray(respEvents)) {

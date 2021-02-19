@@ -383,7 +383,6 @@ function processPromotionEvent(message, destination) {
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
   const parameters = {
-    ea: eventString,
     ec: message.properties.category || "addPromo",
     cu: message.properties.currency
   };
@@ -431,9 +430,7 @@ function processPaymentRelatedEvent(message, destination) {
   }
   if (enhancedEcommerce) {
     return {
-      pa,
-      ea: message.event,
-      ec: message.properties.category || "EnhancedEcommerce"
+      pa
     };
   }
   return {
@@ -462,10 +459,6 @@ function processRefundEvent(message, destination) {
     // full refund, only populate order_id
     parameters.ti = message.properties.order_id;
   }
-  if (enhancedEcommerce) {
-    parameters.ea = message.event;
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
-  }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
 }
@@ -476,7 +469,6 @@ function processSharingEvent(message) {
   // URL will be there for Product Shared event, hence that can be used as share target
   // For Cart Shared, the list of product ids can be shared
   const eventTypeString = message.event;
-  parameters.ea = eventTypeString;
   parameters.ec = message.properties.category || "All";
   switch (eventTypeString.toLowerCase()) {
     case Event.PRODUCT_SHARED.name:
@@ -502,12 +494,7 @@ function processProductListEvent(message, destination) {
   const eventString = message.event;
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
-  const parameters = {
-    ea: eventString,
-    ec:
-      message.properties.category ||
-      (enhancedEcommerce ? "EnhancedEcommerce" : "All")
-  };
+  const parameters = {};
 
   // Set action depending on Product List Action
 
@@ -590,10 +577,7 @@ function processProductEvent(message, destination) {
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
 
-  const parameters = {
-    ea: eventString,
-    ec: enhancedEcommerce ? "EnhancedEcommerce" : category
-  };
+  const parameters = {};
 
   // Set product action to click or detail depending on event
 
@@ -698,24 +682,16 @@ function processTransactionEvent(message, destination) {
   }
 
   // TODO: parameters.ec missing message.properties check and All value?
-  if (enhancedEcommerce) {
-    parameters.ea = message.event;
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
-  }
   return parameters;
 }
 
 // Function for handling generic e-commerce events
 function processEComGenericEvent(message, destination) {
   const eventString = message.event;
-  const parameters = {
-    ea: eventString,
-    ec: message.properties.category
-  };
+  const parameters = {};
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
   if (enhancedEcommerce) {
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
     // Set product action as per event
     switch (eventString.toLowerCase()) {
       case Event.CART_VIEWED.name:
@@ -804,6 +780,11 @@ function processSingleMessage(message, destination) {
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
         customParams.ni = 1;
+        const setCategory = message.properties
+          ? message.properties.category
+          : undefined;
+        customParams.ea = message.event;
+        customParams.ec = setCategory || "EnhancedEcommerce";
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
             Object.assign(
@@ -855,43 +836,6 @@ function processSingleMessage(message, destination) {
               customParams,
               processNonEComGenericEvent(message, destination)
             );
-            break;
-        }
-      } else if (ecommerce) {
-        // TODO: Ecoomerce spec is different? https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ecomm
-        eventName = message.event.toLowerCase();
-
-        category = nameToEventMap[eventName]
-          ? nameToEventMap[eventName].category
-          : ConfigCategory.NON_ECOM;
-
-        switch (category.name) {
-          case ConfigCategory.PRODUCT_LIST.name:
-            customParams = processProductListEvent(message, destination);
-            break;
-          case ConfigCategory.PROMOTION.name:
-            customParams = processPromotionEvent(message, destination);
-            break;
-          case ConfigCategory.PRODUCT.name:
-            customParams = processProductEvent(message, destination);
-            break;
-          case ConfigCategory.TRANSACTION.name:
-            customParams = processTransactionEvent(message, destination);
-            break;
-          case ConfigCategory.PAYMENT.name:
-            customParams = processPaymentRelatedEvent(message, destination);
-            break;
-          case ConfigCategory.REFUND.name:
-            customParams = processRefundEvent(message, destination);
-            break;
-          case ConfigCategory.SHARING.name:
-            customParams = processSharingEvent(message);
-            break;
-          case ConfigCategory.ECOM_GENERIC.name:
-            customParams = processEComGenericEvent(message, destination);
-            break;
-          default:
-            customParams = processNonEComGenericEvent(message, destination);
             break;
         }
       } else {

@@ -159,7 +159,7 @@
     "headers": {},
     "params": {
       "ea": "product added",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "add",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -202,7 +202,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -245,7 +245,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -288,7 +288,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -331,7 +331,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -455,7 +455,7 @@
     "headers": {},
     "params": {
       "ea": "product clicked",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "click",
       "pr1cd1": "my product",
       "pr1id": "p-298",

@@ -7,8 +7,9 @@
     "headers": {},
     "params": {
       "ea": "action1",
-      "ec": "Ruchira",
-      "cd1": "Ruchira",
+      "ec": "Ruchira Moitra",
+      "cd1": "Ruchira Moitra",
+      "cg2": "Ruchira Moitra",
       "v": "1",
       "t": "event",
       "tid": "UA-165994240-1",
@@ -75,7 +76,6 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
       "ec": "test-category",
       "ni": 1,
       "v": "1",
@@ -159,7 +159,7 @@
     "headers": {},
     "params": {
       "ea": "product added",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "add",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -202,7 +202,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -245,7 +245,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -288,7 +288,7 @@
     "headers": {},
     "params": {
       "ea": "product removed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "remove",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -331,7 +331,7 @@
     "headers": {},
     "params": {
       "ea": "product viewed",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "detail",
       "pr1cd1": "my product 1",
       "pr1id": "p-298",
@@ -455,7 +455,7 @@
     "headers": {},
     "params": {
       "ea": "product clicked",
-      "ec": "EnhancedEcommerce",
+      "ec": "cat 1",
       "pa": "click",
       "pr1cd1": "my product",
       "pr1id": "p-298",
@@ -498,7 +498,7 @@
     "headers": {},
     "params": {
       "ea": "promotion viewed",
-      "ec": "addPromo",
+      "ec": "EnhancedEcommerce",
       "cu": "CAD",
       "promoa": "view",
       "pa": "view",
@@ -539,7 +539,7 @@
     "headers": {},
     "params": {
       "ea": "promotion clicked",
-      "ec": "addPromo",
+      "ec": "EnhancedEcommerce",
       "cu": "CAD",
       "promoa": "promo_click",
       "pa": "promo_click",
@@ -779,7 +779,6 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
       "ul": "en-US",
       "ec": "All",
       "ni": 1,
@@ -814,7 +813,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -845,7 +843,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -878,7 +875,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -911,7 +907,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -945,7 +940,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -979,7 +973,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1017,7 +1010,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1054,7 +1046,6 @@
     "headers": {},
     "params": {
       "ul": "en-US",
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1186,7 +1177,6 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ev": 0,
       "ec": "All",
       "ni": 1,
       "v": "1",
@@ -1606,6 +1596,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "Order Cancelled",
+      "ev": 100,
       "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
@@ -1655,6 +1646,7 @@
       "pr2nm": "other product",
       "pr2pr": 24.75,
       "ea": "Order Cancelled",
+      "ev": 100,
       "ec": "EnhancedEcommerce",
       "v": "1",
       "t": "event",
@@ -1698,6 +1690,7 @@
     "headers": {},
     "params": {
       "ea": "Cart Viewed",
+      "ev": 100,
       "ec": "EnhancedEcommerce",
       "pa": "detail",
       "v": "1",

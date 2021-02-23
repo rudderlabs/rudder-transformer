@@ -62,7 +62,8 @@ function responseBuilderSimple(traits, salesforceMap, authorizationData) {
   // get traits from the message
   let rawPayload = traits;
   // map using the config only if the type is Lead
-  if (salesforceType === "Lead") {
+  if (salesforceType === "Lead" && !salesforceId) {
+    // adjust the payload only for new Leads. For update do incremental update
     // adjust for firstName and lastName
     // construct the payload using the mappingJson and add extra params
     rawPayload = constructPayload(

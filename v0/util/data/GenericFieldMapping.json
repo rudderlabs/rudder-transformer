@@ -12,7 +12,9 @@
   "email": [
     "traits.email",
     "context.traits.email",
-    "properties.email"
+    "properties.email",
+    "traits.Email",
+    "context.traits.Email"
   ],
   "timestamp": [
     "originalTimestamp",

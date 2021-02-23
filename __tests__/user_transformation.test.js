@@ -203,6 +203,107 @@ possibleEnvs.forEach( envValue => {
   
       expect(output).toEqual(expectedData);
     });
+
+    it(`Simple ${name} async test for V1 transformation - transformEvent - event ordering`, async () => {
+      const versionId = randomID();
+      const libraryVersionId = randomID();
+      const { userTransformHandler } = require("../util/customTransformer");
+      const inputData = require(`./data/${integration}_input_large.json`);
+      const expectedData = require(`./data/${integration}_async_output_large.json`);
+  
+      const respBody = {
+        code: `
+        import url from 'url';
+        async function foo() {
+          return 'resolved';
+        }
+        export async function transformEvent(event, metadata) {
+            const pr = await foo();
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          }
+          `,
+        name:"url",
+        codeVersion: '1'
+      };
+      respBody["versionId"] = versionId
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      when(fetch).calledWith(transformerUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+  
+      const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+      export default self;
+      `;
+  
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+      when(fetch).calledWith(libraryUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue({"code":urlCode,"name":"url"})
+      });
+  
+      const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+  
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+  
+      expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple ${name} async test for V1 transformation - transformEvent with some failures for some events`, async () => {
+      const versionId = randomID();
+      const libraryVersionId = randomID();
+      const { userTransformHandler } = require("../util/customTransformer");
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_async_output_with_errors.json`);
+  
+      const respBody = {
+        code: `
+        import url from 'url';
+        async function rejectNonIdentifies(eventType) {
+          if(eventType === 'identify') {
+            return 'resolved';
+          }
+          throw new Error("Non-identify found")
+        }
+        export async function transformEvent(event, metadata) {
+            const pr = await rejectNonIdentifies(event.type);
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          }
+          `,
+        name:"url",
+        codeVersion: '1'
+      };
+      respBody["versionId"] = versionId
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      when(fetch).calledWith(transformerUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+  
+      const urlCode = `${fs.readFileSync("./util/url-search-params.min.js", "utf8")};
+      export default self;
+      `;
+  
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`
+      when(fetch).calledWith(libraryUrl).mockResolvedValue({
+        json: jest.fn().mockResolvedValue({"code":urlCode,"name":"url"})
+      });
+  
+      const output = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+  
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+  
+      expect(output).toEqual(expectedData);
+    });
   
     it(`Filtering ${name} Test`, async () => {
       const versionId = randomID();
@@ -337,99 +438,106 @@ possibleEnvs.forEach( envValue => {
       expect(output).toEqual(expectedData);
     });
   
-    it(`Test for timeout for v0 transformation`, async () => {
-      const versionId = randomID();
-      const { userTransformHandler } = require("../util/customTransformer");
-      const inputData = require(`./data/${integration}_input.json`);
-      const respBody = {
-        codeVersion: '0',
-        name: name,
-        code: `
-        function transform(events) {
-            while(true){
-  
-            }
-            const modifiedEvents = events.map(event => {
-              if(event.properties && event.properties.url){
-                event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
-              }
-              return event;
-            });
-              return modifiedEvents;
-            }
-            `
-      };
-      fetch.mockResolvedValue({
-        json: jest.fn().mockResolvedValue(respBody)
-      });
-  
-      await expect(async () => {
-        await userTransformHandler(inputData, versionId, []);
-      }).rejects.toThrow("Timed out");
-  
-      expect(fetch).toHaveBeenCalledWith(
-        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-    });
-    it(`Test for timeout for v1 transformEvent`, async () => {
-      const versionId = randomID();
-      const { userTransformHandler } = require("../util/customTransformer");
-      const inputData = require(`./data/${integration}_input.json`);
-      const respBody = {
-        codeVersion: '1',
-        name: name,
-        code: `
-        export function transformEvent(event) {
-            while(true){
-  
-            }
-            return event;
-            }
-            `
-      };
-      respBody["versionId"] = versionId
-      fetch.mockResolvedValue({
-        json: jest.fn().mockResolvedValue(respBody)
-      });
-  
-      await expect(async () => {
-        await userTransformHandler([inputData[0]], versionId, []);
-      }).rejects.toThrow();
-  
-      expect(fetch).toHaveBeenCalledWith(
-          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-    });
-    it(`Test for timeout for v1 transformBatch`, async () => {
-      const versionId = randomID();
-      const { userTransformHandler } = require("../util/customTransformer");
-      const inputData = require(`./data/${integration}_input.json`);
-      const respBody = {
-        codeVersion: '1',
-        name: name,
-        code: `
-  
-        export function transformBatch(events) {
-            while(true){
-  
-            }
-            return events;
-            }
-            `
-      };
-      respBody["versionId"] = versionId
-      fetch.mockResolvedValue({
-        json: jest.fn().mockResolvedValue(respBody)
-      });
-  
-      await expect(async () => {
-        await userTransformHandler(inputData, versionId, []);
-      }).rejects.toThrow();
-  
-      expect(fetch).toHaveBeenCalledWith(
-          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-    });
+    // Running timeout tests only for one possible env value to reduce time taken for tests
+    if(envValue === "true") {
+      describe('Timeout tests', () => {
+        beforeEach(() => {
+        });
+        it(`Test for timeout for v0 transformation`, async () => {
+          const versionId = randomID();
+          const { userTransformHandler } = require("../util/customTransformer");
+          const inputData = require(`./data/${integration}_input.json`);
+          const respBody = {
+            codeVersion: '0',
+            name: name,
+            code: `
+            function transform(events) {
+                while(true){
+      
+                }
+                const modifiedEvents = events.map(event => {
+                  if(event.properties && event.properties.url){
+                    event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
+                  }
+                  return event;
+                });
+                  return modifiedEvents;
+                }
+                `
+          };
+          fetch.mockResolvedValue({
+            json: jest.fn().mockResolvedValue(respBody)
+          });
+      
+          await expect(async () => {
+            await userTransformHandler(inputData, versionId, []);
+          }).rejects.toThrow("Timed out");
+      
+          expect(fetch).toHaveBeenCalledWith(
+            `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+          );
+        });
+        it(`Test for timeout for v1 transformEvent`, async () => {
+          const versionId = randomID();
+          const { userTransformHandler } = require("../util/customTransformer");
+          const inputData = require(`./data/${integration}_input.json`);
+          const respBody = {
+            codeVersion: '1',
+            name: name,
+            code: `
+            export function transformEvent(event) {
+                while(true){
+      
+                }
+                return event;
+                }
+                `
+          };
+          respBody["versionId"] = versionId
+          fetch.mockResolvedValue({
+            json: jest.fn().mockResolvedValue(respBody)
+          });
+      
+          await expect(async () => {
+            await userTransformHandler([inputData[0]], versionId, []);
+          }).rejects.toThrow();
+      
+          expect(fetch).toHaveBeenCalledWith(
+              `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+          );
+        });
+        it(`Test for timeout for v1 transformBatch`, async () => {
+          const versionId = randomID();
+          const { userTransformHandler } = require("../util/customTransformer");
+          const inputData = require(`./data/${integration}_input.json`);
+          const respBody = {
+            codeVersion: '1',
+            name: name,
+            code: `
+      
+            export function transformBatch(events) {
+                while(true){
+      
+                }
+                return events;
+                }
+                `
+          };
+          respBody["versionId"] = versionId
+          fetch.mockResolvedValue({
+            json: jest.fn().mockResolvedValue(respBody)
+          });
+      
+          await expect(async () => {
+            await userTransformHandler(inputData, versionId, []);
+          }).rejects.toThrow();
+      
+          expect(fetch).toHaveBeenCalledWith(
+              `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+          );
+        });
+      })
+    }
   });
 
 });

@@ -1,6 +1,7 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
+
 const stats = require("./stats");
 const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
@@ -26,7 +27,10 @@ async function createIvm(code, libraryVersionIds) {
     });
   }
 
-  code = code + `
+  const codeWithWrapper =
+    // eslint-disable-next-line prefer-template
+    code +
+    `
     export async function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
       let transformType = transformationPayload.transformationType
@@ -49,16 +53,20 @@ async function createIvm(code, libraryVersionIds) {
         case "transformEvent":
 
           outputEvents = await Promise.all(eventMessages.map(async ev => {
-            let transformedEvent = await transformEvent(ev, metadata)
-            return {transformedEvent, metadata: metadata(ev)}
+            try{
+              let transformedEvent = await transformEvent(ev, metadata);
+              return {transformedEvent, metadata: metadata(ev)};
+            } catch (error) {
+              // Handling the errors in versionedRouter.js
+              return {error: error.toString(), metadata: metadata(ev)};
+            }
           }));
-          outputEvents = outputEvents.filter(e => e.transformedEvent != null);
+          outputEvents = outputEvents.filter(e => (e.transformedEvent != null || e.error));
           break;
       }
       return outputEvents
     }
   `;
-  // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
@@ -178,7 +186,7 @@ async function createIvm(code, libraryVersionIds) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-  const customScriptModule = await isolate.compileModule(`${code}`);
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
   await customScriptModule.instantiate(context, spec => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;

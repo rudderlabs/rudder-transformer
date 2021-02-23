@@ -62,11 +62,27 @@
     "context.traits.lastname"
   ],
   "pageTitle": [
-    "context.page.title", 
+    "context.page.title",
     "properties.title"
   ],
   "pageUrl": [
-    "context.page.url", 
+    "context.page.url",
     "properties.url"
+  ],
+  "GApageUrl": [
+    "properties.url",
+    "context.page.url"
+  ],
+  "GApageRef": [
+    "properties.referrer",
+    "context.page.referrer"
+  ],
+  "GApageTitle": [
+    "properties.title",
+    "context.page.title"
+  ],
+  "GApageSearch": [
+    "properties.search",
+    "context.page.search"
   ]
 }

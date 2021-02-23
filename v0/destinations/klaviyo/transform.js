@@ -45,7 +45,7 @@ const addUserToList = async (message, conf, destination) => {
       ? get(message.context.traits.properties, "smsConsent")
       : destination.Config.smsConsent;
     profile.$consent = get(message.context.traits.properties, "consent")
-      ? get(message.context.traits.properties, "smsConsent")
+      ? get(message.context.traits.properties, "consent")
       : destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
@@ -85,7 +85,8 @@ const identifyRequestHandler = async (message, category, destination) => {
     addToList
   ) {
     addUserToList(message, LIST_CONF.MEMBERSHIP, destination);
-    addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
+    if (get(message.context.traits.properties, "subscribe") === true)
+      addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
   } else {
     logger.info(
       `Cannot process list operation as listId is not available, both in message or config`

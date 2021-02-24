@@ -202,7 +202,7 @@ if (startDestTransformer) {
                   if (ev.error) {
                     return {
                       statusCode: 400,
-                      error: ev.error.toString(),
+                      error: ev.error,
                       metadata: ev.metadata
                     };
                   }

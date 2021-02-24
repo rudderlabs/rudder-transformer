@@ -1,10 +1,15 @@
 const crypto = require("crypto-js");
+const { EventType } = require("../../../constants");
+const { getFieldValueFromMessage } = require("../../util");
 
 async function process(event) {
   let payload = {};
   const noOfFields = event.destination.Config.customMappings.length;
   const keyField = [];
   const mappedField = [];
+  let traits = {};
+  let context = {};
+  const { message } = event;
 
   function getSignatureKey(key, dateStamp, regionName, serviceName) {
     const kDate = crypto.HmacSHA256(dateStamp, `AWS4${key}`);
@@ -42,7 +47,7 @@ async function process(event) {
   for (let j = 0; j < noOfFields; j += 1) {
     mappedField.push(event.destination.Config.customMappings[j].to);
   }
-  if (event.message.event === event.destination.Config.eventName) {
+  if (message.event === event.destination.Config.eventName) {
     const property = {};
     for (let k = 0; k < noOfFields; k += 1) {
       if (
@@ -50,19 +55,55 @@ async function process(event) {
         keyField[k].toUpperCase() === "EVENT_TYPE" ||
         keyField[k].toUpperCase() === "TIMESTAMP"
       ) {
-        keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
+        keyField[k] = keyField[k].replace(/_([a-z])/g, function (g) {
           return g[1].toUpperCase();
         });
       } else {
         const mappedFields = mappedField[k];
-
-        if (typeof event.message[mappedFields] !== "undefined") {
-          keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
-            return g[1].toUpperCase();
-          });
-          property[keyField[k]] = event.message[mappedFields];
-        } else {
-          throw new Error(`Mapped Field ${mappedFields} not found`);
+        switch (message.type.toUpperCase()) {
+          case EventType.TRACK:
+          case EventType.PAGE:
+          case EventType.SCREEN:
+            keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
+              return g[1].toUpperCase();
+            });
+            if (message.properties && message.properties[mappedFields]) {
+              property[keyField[k]] = message.properties[mappedFields];
+              // eslint-disable-next-line no-undef
+            } else if (message[mappedFields] !== "undefined") {
+              property[keyField[k]] = message[mappedFields];
+            } else {
+              throw new Error(`Mapped Field ${mappedFields} not found`);
+            }
+            break;
+          default:
+            traits = getFieldValueFromMessage(message, "traits");
+            keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
+              return g[1].toUpperCase();
+            });
+            if (traits[mappedFields]) {
+              property[keyField[k]] = traits[mappedFields];
+            } else if (
+              // if traits present in both roots and context
+              message.traits &&
+              message.context &&
+              message.context.traits
+            ) {
+              // retrieve traits inside context
+              context = message.context;
+              if (context.traits[mappedFields]) {
+                property[keyField[k]] = context.traits[mappedFields];
+              } else if (typeof event.message[mappedFields] !== "undefined") {
+                // if field is not present both in messsage.traits and message.context.traits we have search in the root
+                property[keyField[k]] = event.message[mappedFields];
+              }
+            } else if (typeof event.message[mappedFields] !== "undefined") {
+              // if no trait is present and we have search in the root
+              property[keyField[k]] = event.message[mappedFields];
+            } else {
+              throw new Error(`Mapped Field ${mappedFields} not found`);
+            }
+            break;
         }
       }
     }
@@ -74,8 +115,7 @@ async function process(event) {
       endpoint: `https://personalize-events.${event.destination.Config.region}.amazonaws.com/events`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `AWS4-HMAC-SHA256 Credential=${
-          event.destination.Config.accessKeyId
+        Authorization: `AWS4-HMAC-SHA256 Credential=${event.destination.Config.accessKeyId
         }/${authDate}/${
           event.destination.Config.region
         }/personalize/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=${signature.toString()}`,

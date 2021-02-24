@@ -1,0 +1,831 @@
+[
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "context": {
+                "ip": "14.5.67.21",
+                "traits": {
+                    "city": "Havana",
+                    "country": "Cuba",
+                    "email": "broadcom@gmail.com",
+                    "impressions": "test Impression",
+                    "firstName": "Kora",
+                    "ItemId": "item id",
+                    "lastName": "Doe",
+                    "organization": "Chaadleys",
+                    "profession": "Student",
+                    "region": "Carrabian",
+                    "title": "manager",
+                    "filters": "test filters"
+                },
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "identify",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "timestamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "properties": {
+                "city": "Havana",
+                "country": "Cuba",
+                "email": "broadcom@gmail.com",
+                "impressions": "test Impression",
+                "firstName": "Kora",
+                "ItemId": "item id",
+                "lastName": "Doe",
+                "organization": "Chaadleys",
+                "profession": "Student",
+                "region": "Carrabian",
+                "title": "manager",
+                "filters": "test filters"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "timestamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "properties": {
+                "city": "Havana",
+                "country": "Cuba",
+                "email": "broadcom@gmail.com",
+                "impressions": "test Impression",
+                "firstName": "Kora",
+                "ItemId": "item id",
+                "lastName": "Doe",
+                "organization": "Chaadleys",
+                "profession": "Student",
+                "region": "Carrabian",
+                "title": "manager"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "filters": "test filters",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "timestamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "traits": {
+                "impressions": "test Impression"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "traits": {
+                    "city": "Havana",
+                    "country": "Cuba",
+                    "email": "broadcom@gmail.com",
+                    "firstName": "Kora",
+                    "ItemId": "item id",
+                    "lastName": "Doe",
+                    "organization": "Chaadleys",
+                    "profession": "Student",
+                    "region": "Carrabian",
+                    "title": "manager"
+                },
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "filters": "test filters",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "identify",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "timestamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "traits": {
+                "impressions": "test Impression",
+                "ItemId": "item id"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "filters": "test filters",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "group",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "timestamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "traits": {
+                "impressions": "test Impression",
+                "ItemId": "item id"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "filters": "test filters",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "group",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "time_stamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "event": "testEvent",
+            "properties": {
+                "impressions": "test Impression",
+                "ItemId": "item id"
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "originalTimestamp": "2021-02-23T14:01:20.065+05:30",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30",
+            "request_ip": "[::1]",
+            "filters": "test filters",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-02-23T14:01:20.065+05:30",
+            "createdAt": "2020-02-02T00:23:09.544Z",
+            "type": "page",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1osEt5jHzxWF565ZR39q7MNaiZU",
+            "destinationId": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "jobId": 3,
+            "destinationType": "PERSONALIZE",
+            "messageId": "d472d3d6-f798-4547-95fe-c0d7f817a155",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-02-23T14:01:17.176+05:30"
+        },
+        "destination": {
+            "ID": "1osF04hhTK1VVpt7MxQ8xQGpBM6",
+            "Name": "awsdest",
+            "DestinationDefinition": {
+                "ID": "1osCxGuIh8iNQWHtt1L31oUkNOg",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "routerTransform": false,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ]
+                }
+            },
+            "Config": {
+                "accessKeyId": "5623hwjeekrehrg78374jiij",
+                "customMappings": [
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    },
+                    {
+                        "from": "time_stamp",
+                        "to": "createdAt"
+                    },
+                    {
+                        "from": "event_TYPE",
+                        "to": "eventType"
+                    },
+                    {
+                        "from": "IMPRESSION",
+                        "to": "impressions"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "ItemId"
+                    },
+                    {
+                        "from": "FILters",
+                        "to": "filters"
+                    }
+                ],
+                "eventName": "testEvent",
+                "region": "us-east-1",
+                "secretAccessKey": "gehfgejrf767udfhkfjl",
+                "trackingId": "gfekhflry"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    }
+]

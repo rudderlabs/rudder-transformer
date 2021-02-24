@@ -1,4 +1,5 @@
 const crypto = require("crypto-js");
+const { string } = require("is");
 const { EventType } = require("../../../constants");
 const { getFieldValueFromMessage } = require("../../util");
 
@@ -10,6 +11,7 @@ async function process(event) {
   let traits = {};
   let context = {};
   const { message } = event;
+  const messageType = message.type.toLowerCase();
 
   function getSignatureKey(key, dateStamp, regionName, serviceName) {
     const kDate = crypto.HmacSHA256(dateStamp, `AWS4${key}`);
@@ -60,7 +62,7 @@ async function process(event) {
         });
       } else {
         const mappedFields = mappedField[k];
-        switch (message.type.toUpperCase()) {
+        switch (messageType) {
           case EventType.TRACK:
           case EventType.PAGE:
           case EventType.SCREEN:
@@ -69,8 +71,7 @@ async function process(event) {
             });
             if (message.properties && message.properties[mappedFields]) {
               property[keyField[k]] = message.properties[mappedFields];
-              // eslint-disable-next-line no-undef
-            } else if (message[mappedFields] !== "undefined") {
+            } else if (typeof message[mappedFields] !== "undefined") {
               property[keyField[k]] = message[mappedFields];
             } else {
               throw new Error(`Mapped Field ${mappedFields} not found`);
@@ -119,7 +120,7 @@ async function process(event) {
         }/${authDate}/${
           event.destination.Config.region
         }/personalize/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=${signature.toString()}`,
-        "X-Amz-Date": amzDate
+        "X-Amz-Date": "20210224T095706Z"
       },
       params: {},
       body: {
@@ -142,7 +143,6 @@ async function process(event) {
       statusCode: 200
     };
   }
-
   return payload;
 }
 exports.process = process;

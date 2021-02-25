@@ -21,7 +21,7 @@ const getPIIDestinationList = () => {
       delete event.message.traits.lastName;
     }
     // eslint-disable-next-line no-console
-    console.log("event", event, destination);
+    //console.log("event", event, destination);
     return event;
   };
   

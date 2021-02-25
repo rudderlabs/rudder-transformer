@@ -22,12 +22,12 @@ const {
 // A sigle func to handle the addition of user to a list
 // from an identify call.
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
-const addUserToList = async (message, conf, destination) => {
+const addUserToList = async (message, traitsInfo, conf, destination) => {
   // Check if list Id is present in message properties, if yes override
   let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${destination.Config.listId}`;
-  if (get(message.context.traits.properties, "listId")) {
+  if (get(traitsInfo.properties, "listId")) {
     targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-      message.context.traits.properties,
+      traitsInfo.properties,
       "listId"
     )}`;
   }
@@ -41,11 +41,11 @@ const addUserToList = async (message, conf, destination) => {
   } else {
     // get consent statuses from message if availabe else from dest config
     targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent = get(message.context.traits.properties, "smsConsent")
-      ? get(message.context.traits.properties, "smsConsent")
+    profile.sms_consent = get(traitsInfo.properties, "smsConsent")
+      ? get(traitsInfo.properties, "smsConsent")
       : destination.Config.smsConsent;
-    profile.$consent = get(message.context.traits.properties, "consent")
-      ? get(message.context.traits.properties, "consent")
+    profile.$consent = get(traitsInfo.properties, "consent")
+      ? get(traitsInfo.properties, "consent")
       : destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
@@ -76,17 +76,17 @@ const addUserToList = async (message, conf, destination) => {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  const addToList = message.context.traits.properties
-    ? message.context.traits.properties.addToList
+  const traitsInfo = message.traits ? message.traits : message.context.traits;
+  const addToList = traitsInfo.properties
+    ? traitsInfo.properties.addToList
     : false;
   if (
-    (!!destination.Config.listId ||
-      !!get(message.context.traits.properties, "listId")) &&
+    (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     addToList
   ) {
-    addUserToList(message, LIST_CONF.MEMBERSHIP, destination);
-    if (get(message.context.traits.properties, "subscribe") === true)
-      addUserToList(message, LIST_CONF.SUBSCRIBE, destination);
+    addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
+    if (get(traitsInfo.properties, "subscribe") === true)
+      addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
   } else {
     logger.info(
       `Cannot process list operation as listId is not available, both in message or config`

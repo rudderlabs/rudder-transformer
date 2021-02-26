@@ -52,14 +52,18 @@
   "firstName": [
     "traits.firstName",
     "traits.firstname",
+    "traits.first_name",
     "context.traits.firstName",
-    "context.traits.firstname"
+    "context.traits.firstname",
+    "context.traits.first_name"
   ],
   "lastName": [
     "traits.lastName",
     "traits.lastname",
+    "traits.last_name",
     "context.traits.lastName",
-    "context.traits.lastname"
+    "context.traits.lastname",
+    "context.traits.last_name"
   ],
   "pageTitle": [
     "context.page.title", 

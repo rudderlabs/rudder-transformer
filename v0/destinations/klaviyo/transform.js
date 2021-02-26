@@ -2,7 +2,7 @@
 const get = require("get-value");
 const axios = require("axios");
 const logger = require("../../../logger");
-const { EventType } = require("../../../constants");
+const { EventType, WhiteListedTraits } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
@@ -16,7 +16,8 @@ const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   extractCustomFields,
-  removeUndefinedValues
+  removeUndefinedValues,
+  toUnixTimestamp
 } = require("../../util");
 
 // A sigle func to handle the addition of user to a list
@@ -98,28 +99,14 @@ const identifyRequestHandler = async (message, category, destination) => {
     MAPPING_CONFIG[category.name]
   );
 
+  propertyPayload.$first_name = getFieldValueFromMessage(message, "firstName");
+  propertyPayload.$last_name = getFieldValueFromMessage(message, "lastName");
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
     propertyPayload,
     ["traits", "context.traits"],
-    [
-      "email",
-      "firstName",
-      "lastName",
-      "phone",
-      "title",
-      "organization",
-      "city",
-      "region",
-      "country",
-      "zip",
-      "image",
-      "timezone",
-      "anonymousId",
-      "userId",
-      "properties"
-    ]
+    WhiteListedTraits
   );
   const payload = {
     token: destination.Config.publicApiKey,
@@ -143,6 +130,7 @@ const trackRequestHandler = (message, category, destination) => {
     $email: getFieldValueFromMessage(message, "email"),
     $phone_number: getFieldValueFromMessage(message, "phone")
   };
+  if (message.timestamp) payload.time = toUnixTimestamp(message.timestamp);
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;

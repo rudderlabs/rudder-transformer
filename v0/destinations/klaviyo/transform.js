@@ -126,10 +126,27 @@ const identifyRequestHandler = async (message, category, destination) => {
 const trackRequestHandler = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.token = destination.Config.publicApiKey;
-  payload.customer_properties = {
-    $email: getFieldValueFromMessage(message, "email"),
-    $phone_number: getFieldValueFromMessage(message, "phone")
-  };
+  if (message.properties && message.properties.revenue) {
+    payload.properties.$value = message.properties.revenue;
+    delete payload.properties.revenue;
+  }
+  let customerProperties = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+  );
+  customerProperties.$first_name = getFieldValueFromMessage(
+    message,
+    "firstName"
+  );
+  customerProperties.$last_name = getFieldValueFromMessage(message, "lastName");
+  // Extract other K-V property from traits about user custom properties
+  customerProperties = extractCustomFields(
+    message,
+    customerProperties,
+    ["traits", "context.traits"],
+    WhiteListedTraits
+  );
+  payload.customer_properties = customerProperties;
   if (message.timestamp) payload.time = toUnixTimestamp(message.timestamp);
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();

@@ -94,23 +94,9 @@
         "traits": {
           "id": "utsabc",
           "age": "22",
-          "name": "Utsab",
           "email": "utsab@rudderstack.com",
           "phone": "9112340375",
-          "stock": "56.0",
-          "userId": "sajal12",
-          "address": {
-            "city": "kolkata",
-            "state": "West bengal",
-            "street": "Park Street",
-            "country": "India",
-            "postalcode": "700096"
-          },
-          "birthday": "2021-01-25",
-          "lastname": "Chowdhury",
-          "firstname": "Utsab",
-          "anonymousId": "9c6bd77ea9da3e68",
-          "description": "Sample description"
+          "anonymousId": "9c6bd77ea9da3e68"
         },
         "library": {
           "name": "com.rudderstack.android.sdk.core",
@@ -182,18 +168,6 @@
           "name": "Utsab",
           "email": "utsab@rudderstack.com",
           "phone": "9112340375",
-          "stock": "56.0",
-          "userId": "sajal12",
-          "address": {
-            "city": "kolkata",
-            "state": "West bengal",
-            "street": "Park Street",
-            "country": "India",
-            "postalcode": "700096"
-          },
-          "birthday": "2021-01-25",
-          "lastname": "Chowdhury",
-          "firstname": "Utsab",
           "anonymousId": "9c6bd77ea9da3e68",
           "description": "Sample description"
         },
@@ -215,7 +189,8 @@
       "properties": {
         "PreviouslyVicePresident": true,
         "YearElected": 1801,
-        "VicePresidents": ["Aaron Burr", "George Clinton"]
+        "VicePresidents": ["Aaron Burr", "George Clinton"],
+        "revenue": 3000
       },
       "anonymousId": "9c6bd77ea9da3e68",
       "integrations": {

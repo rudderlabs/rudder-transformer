@@ -434,7 +434,13 @@
               "language": "en-US",
               "event_type": "$identify",
               "user_properties": {
-                "Company": "Comapny-ABC"
+                "Company": "Comapny-ABC",
+                "utm_content": "some content",
+                "utm_medium": "medium",
+                "utm_name": "some campaign",
+                "utm_source": "google",
+                "utm_term": "keyword",
+                "utm_test": "other value"
               },
               "groups": {
                 "Company": "Comapny-ABC"
@@ -491,7 +497,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
         ]
       }
     },
@@ -511,7 +517,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"user_id\":\"sampleusrRudder3\",\"unmap\":true}"
+          "{\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"},\"unmap\":true}"
         ]
       }
     },
@@ -589,6 +595,7 @@
             "event_type": "Viewed Screen View Screen",
             "time": 1580602989544,
             "user_id": "identified user id",
+            "user_properties": {},
             "session_id": -1,
             "ip": "14.5.67.21"
           }

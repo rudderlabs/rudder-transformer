@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+require("dotenv").config();
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -100,6 +101,25 @@ async function handleDest(ctx, version, destination) {
   ctx.set("apiVersion", API_VERSION);
 }
 
+async function routerHandleDest(ctx) {
+  const { destType, input } = ctx.request.body;
+  const routerDestHandler = getDestHandler("v0", destType);
+  if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support router transform`;
+    return;
+  }
+  const respEvents = [];
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+  await Promise.all(
+    Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      const listOutput = await routerDestHandler.processRouterDest(desInput);
+      respEvents.push(...listOutput);
+    })
+  );
+  ctx.body = { output: respEvents };
+}
+
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
@@ -123,6 +143,9 @@ if (startDestTransformer) {
           version
         });
         stats.increment("dest_transform_requests", 1, { destination, version });
+      });
+      router.post("/routerTransform", async ctx => {
+        await routerHandleDest(ctx);
       });
     });
   });
@@ -199,6 +222,13 @@ if (startDestTransformer) {
               );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
+                  if (ev.error) {
+                    return {
+                      statusCode: 400,
+                      error: ev.error,
+                      metadata: ev.metadata
+                    };
+                  }
                   return {
                     output: ev.transformedEvent,
                     metadata: ev.metadata === {} ? commonMetadata : ev.metadata,

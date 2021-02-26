@@ -56,7 +56,7 @@ const isPrimitive = arg => {
 };
 
 const formatValue = value => {
-  if (!value || value < 0) return 0;
+  if (!value || value < 0) return null;
   return Math.round(value);
 };
 
@@ -268,6 +268,29 @@ const defaultBatchRequestConfig = () => {
   };
 };
 
+// Router transformer
+// Success responses
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false
+) => {
+  return {
+    batchedRequest: message,
+    metadata,
+    batched,
+    statusCode: 200,
+    destination
+  };
+};
+
+// Router transformer
+// Error responses
+const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
+  return { metadata, batched, statusCode, error };
+};
+
 // ========================================================================
 // Error Message UTILITIES
 // ========================================================================
@@ -413,7 +436,7 @@ const handleMetadataForValue = (value, metadata) => {
           formattedVal = formattedVal.substring(1);
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
-        if (isNaN(formattedVal)) {
+        if (Number.isNaN(formattedVal)) {
           throw new Error("Revenue is not in the correct format");
         }
         break;
@@ -703,7 +726,6 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
 }
 
 // Deleting nested properties from objects
-
 function deleteObjectProperty(object, pathToObject) {
   let i;
   if (!object || !pathToObject) {
@@ -744,22 +766,24 @@ module.exports = {
   getDateInFormat,
   getDestinationExternalID,
   getDeviceModel,
+  getErrorRespEvents,
   getFieldValueFromMessage,
-  getValueFromMessage,
   getFirstAndLastName,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getSuccessRespEvents,
   getTimeDifference,
+  getValueFromMessage,
   getValuesAsArrayFromConfig,
+  isBlank,
   isEmpty,
   isObject,
   isPrimitive,
   isValidUrl,
-  isBlank,
   removeNullValues,
-  removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues,
+  removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,

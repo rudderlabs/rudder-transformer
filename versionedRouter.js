@@ -184,7 +184,7 @@ if (startDestTransformer) {
       }
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-          logger.debug(`dest: ${dest}`);
+          logger.debug(`dest: ${dest}\n`);
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&
@@ -224,7 +224,7 @@ if (startDestTransformer) {
                 ...destTransformedEvents.map(ev => {
                   return {
                     output: ev.transformedEvent,
-                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
+                    metadata: _.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                     statusCode: 200
                   };
                 })

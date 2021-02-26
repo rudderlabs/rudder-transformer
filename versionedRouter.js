@@ -222,6 +222,13 @@ if (startDestTransformer) {
               );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
+                  if (ev.error) {
+                    return {
+                      statusCode: 400,
+                      error: ev.error,
+                      metadata: ev.metadata
+                    };
+                  }
                   return {
                     output: ev.transformedEvent,
                     metadata: ev.metadata === {} ? commonMetadata : ev.metadata,

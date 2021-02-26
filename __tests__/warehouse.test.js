@@ -380,34 +380,34 @@ describe("remove any property if event is object ", () => {
   it("should remove any property if event is object", () => {
     eventTypes.forEach(evType => {
       let i = input(evType);
-      i.message.channel = {}
-      i.message.event = {}
+      i.message.channel = {};
+      i.message.event = {};
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-            integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integrations[index], "channel")
         );
         expect(received[0].data).not.toHaveProperty(
-            integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integrations[index], "channel")
         );
       });
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-            integrationCasedString(integrations[index], "event_text")
+          integrationCasedString(integrations[index], "event_text")
         );
         expect(received[0].data).not.toHaveProperty(
-            integrationCasedString(integrations[index], "event_text")
+          integrationCasedString(integrations[index], "event_text")
         );
       });
-      i.message.channel = {"channel":"android"}
+      i.message.channel = { channel: "android" };
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received[0].metadata.columns).not.toHaveProperty(
-            integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integrations[index], "channel")
         );
         expect(received[0].data).not.toHaveProperty(
-            integrationCasedString(integrations[index], "channel")
+          integrationCasedString(integrations[index], "channel")
         );
       });
     });
@@ -478,6 +478,44 @@ describe("rudder reserved columns", () => {
           }
         });
       });
+    });
+  });
+});
+
+describe("id column datatype for users table", () => {
+  it("should set id column datatype for users as one received and not always string", () => {
+    let i = input("identify");
+    i.message.userId = 100; //integer
+
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(
+        received[0].metadata.columns[
+          integrationCasedString(integrations[index], "user_id")
+        ]
+      ).toEqual("int");
+      expect(
+        received[1].metadata.columns[
+          integrationCasedString(integrations[index], "id")
+        ]
+      ).toEqual("int");
+    });
+
+    i = input("identify");
+    i.message.userId = 1.1; //float
+
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(
+        received[0].metadata.columns[
+          integrationCasedString(integrations[index], "user_id")
+        ]
+      ).toEqual("float");
+      expect(
+        received[1].metadata.columns[
+          integrationCasedString(integrations[index], "id")
+        ]
+      ).toEqual("float");
     });
   });
 });

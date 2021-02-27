@@ -83,14 +83,15 @@ const identifyRequestHandler = async (message, category, destination) => {
     : false;
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
-    addToList
+    addToList &&
+    destination.Config.privateApiKey
   ) {
     addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
     if (get(traitsInfo.properties, "subscribe") === true)
       addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
   } else {
     logger.info(
-      `Cannot process list operation as listId is not available, both in message or config`
+      `Cannot process list operation as listId is not available, both in message or config or private key not present`
     );
   }
   // actual identify call

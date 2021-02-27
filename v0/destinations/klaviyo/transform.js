@@ -103,6 +103,7 @@ const identifyRequestHandler = async (message, category, destination) => {
 
   propertyPayload.$first_name = getFieldValueFromMessage(message, "firstName");
   propertyPayload.$last_name = getFieldValueFromMessage(message, "lastName");
+  propertyPayload.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
@@ -142,6 +143,7 @@ const trackRequestHandler = (message, category, destination) => {
     "firstName"
   );
   customerProperties.$last_name = getFieldValueFromMessage(message, "lastName");
+  customerProperties.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   customerProperties = extractCustomFields(
     message,
@@ -173,6 +175,7 @@ const groupRequestHandler = async (message, category, destination) => {
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   profile.first_name = getFieldValueFromMessage(message, "firstName");
   profile.last_name = getFieldValueFromMessage(message, "lastName");
+  profile.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   const groupWhitelistedTraits = [
     ...WhiteListedTraits,

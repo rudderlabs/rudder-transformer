@@ -38,7 +38,7 @@
         "profiles": [
           {
             "email": "utsab@rudderstack.com",
-            "id": "user123",
+            "$id": "user123",
             "phone_number": "+12 345 678 900"
           }
         ]

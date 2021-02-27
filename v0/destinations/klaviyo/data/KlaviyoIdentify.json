@@ -51,7 +51,7 @@
   },
   {
     "destKey": "$zip",
-    "sourceKeys": ["traits.zip", "context.traits.zip","context.traits.address.postalCode","properties.zip"],
+    "sourceKeys": ["traits.zip", "context.traits.zip","context.traits.address.postalcode","properties.zip"],
     "required": false
   },
   {

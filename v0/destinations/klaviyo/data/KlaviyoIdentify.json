@@ -36,22 +36,22 @@
   },
   {
     "destKey": "$city",
-    "sourceKeys": ["traits.city", "context.traits.city","properties.city"],
+    "sourceKeys": ["traits.city", "context.traits.city","context.traits.address.city","properties.city"],
     "required": false
   },
   {
     "destKey": "$region",
-    "sourceKeys": ["traits.region", "context.traits.region","properties.region"],
+    "sourceKeys": ["traits.region", "context.traits.region","context.traits.address.region","properties.region"],
     "required": false
   },
   {
     "destKey": "$country",
-    "sourceKeys": ["traits.country", "context.traits.country","properties.country"],
+    "sourceKeys": ["traits.country", "context.traits.country","context.traits.address.country","properties.country"],
     "required": false
   },
   {
     "destKey": "$zip",
-    "sourceKeys": ["traits.zip", "context.traits.zip","properties.zip"],
+    "sourceKeys": ["traits.zip", "context.traits.zip","context.traits.address.postalCode","properties.zip"],
     "required": false
   },
   {

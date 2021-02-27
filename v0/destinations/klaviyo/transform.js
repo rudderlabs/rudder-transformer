@@ -17,7 +17,8 @@ const {
   defaultPostRequestConfig,
   extractCustomFields,
   removeUndefinedValues,
-  toUnixTimestamp
+  toUnixTimestamp,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 // A sigle func to handle the addition of user to a list
@@ -109,6 +110,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     ["traits", "context.traits"],
     WhiteListedTraits
   );
+  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
   const payload = {
     token: destination.Config.publicApiKey,
     properties: propertyPayload
@@ -147,6 +149,7 @@ const trackRequestHandler = (message, category, destination) => {
     ["traits", "context.traits"],
     WhiteListedTraits
   );
+  customerProperties = removeUndefinedAndNullValues(customerProperties);
   payload.customer_properties = customerProperties;
   if (message.timestamp) payload.time = toUnixTimestamp(message.timestamp);
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
@@ -167,9 +170,22 @@ const groupRequestHandler = async (message, category, destination) => {
     message,
     "groupId"
   )}/subscribe`;
-  let profile;
+  let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
+  profile.first_name = getFieldValueFromMessage(message, "firstName");
+  profile.last_name = getFieldValueFromMessage(message, "lastName");
+  // Extract other K-V property from traits about user custom properties
+  const groupWhitelistedTraits = [
+    ...WhiteListedTraits,
+    ...["consent", "smsConsent", "subscribe"]
+  ];
+  profile = extractCustomFields(
+    message,
+    profile,
+    ["traits", "context.traits"],
+    groupWhitelistedTraits
+  );
+  profile = removeUndefinedAndNullValues(profile);
   if (get(message.traits, "subscribe") === true) {
-    profile = constructPayload(message, MAPPING_CONFIG[category.name]);
     // If consent info not present draw it from dest config
     if (!profile.sms_consent)
       profile.sms_consent = destination.Config.smsConsent;
@@ -192,10 +208,8 @@ const groupRequestHandler = async (message, category, destination) => {
       logger.debug(err);
     }
   }
-  profile = {
-    email: getFieldValueFromMessage(message, "email"),
-    phone_number: getFieldValueFromMessage(message, "phone")
-  };
+  delete profile.sms_consent;
+  delete profile.$consent;
   const payload = {
     api_key: destination.Config.privateApiKey,
     profiles: [profile]

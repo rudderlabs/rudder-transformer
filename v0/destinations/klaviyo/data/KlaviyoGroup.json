@@ -21,7 +21,7 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": ["traits.userId", "context.traits.userId","properties.userId"],
+    "sourceKeys": ["userId", "traits.userId", "context.traits.userId","properties.userId"],
     "required": false
   },
   {

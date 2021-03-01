@@ -2,7 +2,6 @@
 // TODO: Need to figure out a way to mock failed requests based on post body
 ////////////////////////////////////////////////////////////////////////////////
 const axios = jest.genMockFromModule("axios");
-const { v4: uuidv4 } = require("uuid");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 

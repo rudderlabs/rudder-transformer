@@ -6,7 +6,7 @@
   },
   {
     "destKey": "properties",
-    "sourceKeys": ["properties"],
+    "sourceKeys": "properties",
     "metadata": {
       "excludes": ["email", "phone"]
     }

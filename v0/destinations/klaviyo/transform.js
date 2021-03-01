@@ -65,11 +65,14 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
         }
       }
     );
-    if (res.status !== 200) logger.debug("Unable to add User to List");
+    if (res.status !== 200) {
+      logger.debug("Unable to add User to List");
+    }
   } catch (err) {
     logger.debug(err);
   }
 };
+
 // ---------------------
 // Main Identify request handler func
 // internally it uses axios if membership and(or)
@@ -79,14 +82,16 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
+  // TODO: use get method
   const traitsInfo = message.traits ? message.traits : message.context.traits;
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     destination.Config.privateApiKey
   ) {
     addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
-    if (get(traitsInfo.properties, "subscribe") === true)
+    if (get(traitsInfo.properties, "subscribe") === true) {
       addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
+    }
   } else {
     logger.info(
       `Cannot process list operation as listId is not available, either in message or config, or private key not present`
@@ -119,6 +124,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   response.method = defaultGetRequestConfig.requestMethod;
   return response;
 };
+
 // ----------------------
 // Main handler func for track request/screen request
 // User info needs to be mapped to a track event (mandatory)
@@ -150,7 +156,9 @@ const trackRequestHandler = (message, category, destination) => {
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   payload.customer_properties = customerProperties;
-  if (message.timestamp) payload.time = toUnixTimestamp(message.timestamp);
+  if (message.timestamp) {
+    payload.time = toUnixTimestamp(message.timestamp);
+  }
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;
@@ -187,9 +195,12 @@ const groupRequestHandler = async (message, category, destination) => {
   profile = removeUndefinedAndNullValues(profile);
   if (get(message.traits, "subscribe") === true) {
     // If consent info not present draw it from dest config
-    if (!profile.sms_consent)
+    if (!profile.sms_consent) {
       profile.sms_consent = destination.Config.smsConsent;
-    if (!profile.$consent) profile.$consent = destination.Config.consent;
+    }
+    if (!profile.$consent) {
+      profile.$consent = destination.Config.consent;
+    }
     try {
       const res = await axios.post(
         targetUrl,
@@ -203,7 +214,9 @@ const groupRequestHandler = async (message, category, destination) => {
           }
         }
       );
-      if (res.status !== 200) logger.debug("Unable to add User to List");
+      if (res.status !== 200) {
+        logger.debug("Unable to add User to List");
+      }
     } catch (err) {
       logger.debug(err);
     }

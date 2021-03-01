@@ -1,67 +1,108 @@
 [
   {
     "destKey": "$id",
-    "sourceKeys": ["userId", "traits.userId", "context.traits.userId","properties.userId"],
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "context.traits.userId",
+      "properties.userId"
+    ],
     "required": false
   },
   {
     "destKey": "$email",
-    "sourceKeys": ["traits.email", "context.traits.email","properties.email"],
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
     "required": false
   },
   {
     "destKey": "$first_name",
-    "sourceKeys": ["traits.firstName", "context.traits.firstName","properties.firstName"],
+    "sourceKeys": [
+      "traits.firstName",
+      "context.traits.firstName",
+      "properties.firstName"
+    ],
     "required": false
   },
   {
     "destKey": "$last_name",
-    "sourceKeys": ["traits.lastName", "context.traits.lastName","properties.lastName"],
+    "sourceKeys": [
+      "traits.lastName",
+      "context.traits.lastName",
+      "properties.lastName"
+    ],
     "required": false
   },
   {
     "destKey": "$phone_number",
-    "sourceKeys": ["traits.phone", "context.traits.phone","properties.phone"],
+    "sourceKeys": ["traits.phone", "context.traits.phone", "properties.phone"],
     "required": false
   },
   {
     "destKey": "$title",
-    "sourceKeys": ["traits.title", "context.traits.title","properties.title"],
+    "sourceKeys": ["traits.title", "context.traits.title", "properties.title"],
     "required": false
   },
   {
     "destKey": "$organization",
-    "sourceKeys": ["traits.organization", "context.traits.organization","properties.organization"],
+    "sourceKeys": [
+      "traits.organization",
+      "context.traits.organization",
+      "properties.organization"
+    ],
     "required": false
   },
   {
     "destKey": "$city",
-    "sourceKeys": ["traits.city", "context.traits.city","context.traits.address.city","properties.city"],
+    "sourceKeys": [
+      "traits.city",
+      "context.traits.city",
+      "context.traits.address.city",
+      "properties.city"
+    ],
     "required": false
   },
   {
     "destKey": "$region",
-    "sourceKeys": ["traits.region", "context.traits.region","context.traits.address.region","properties.region"],
+    "sourceKeys": [
+      "traits.region",
+      "context.traits.region",
+      "context.traits.address.region",
+      "properties.region"
+    ],
     "required": false
   },
   {
     "destKey": "$country",
-    "sourceKeys": ["traits.country", "context.traits.country","context.traits.address.country","properties.country"],
+    "sourceKeys": [
+      "traits.country",
+      "context.traits.country",
+      "context.traits.address.country",
+      "properties.country"
+    ],
     "required": false
   },
   {
     "destKey": "$zip",
-    "sourceKeys": ["traits.zip", "context.traits.zip","context.traits.address.postalcode","properties.zip"],
+    "sourceKeys": [
+      "traits.zip",
+      "context.traits.zip",
+      "context.traits.address.postalcode",
+      "properties.zip"
+    ],
     "required": false
   },
   {
     "destKey": "$image",
-    "sourceKeys": ["traits.image", "context.traits.image","properties.image"],
+    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
     "required": false
   },
   {
     "destKey": "$timezone",
-    "sourceKeys": ["traits.timezone", "context.traits.timezone","properties.timezone"],
+    "sourceKeys": [
+      "traits.timezone",
+      "context.traits.timezone",
+      "properties.timezone"
+    ],
     "required": false
   }
 ]

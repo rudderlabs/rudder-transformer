@@ -1,9 +1,10 @@
+const fs = require("fs");
+const path = require("path");
+
 const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns"
 };
 
-const fs = require("fs");
-const path = require("path");
 let id = 0;
 
 const getData = url => {

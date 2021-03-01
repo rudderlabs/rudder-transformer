@@ -1,3 +1,7 @@
+/* eslint-disable  consistent-return */
+/* eslint-disable  no-param-reassign */
+/* eslint-disable  array-callback-return */
+
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -689,24 +693,30 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
  * exclusion fields to exlude and the payload to map into
  *
  * Example:
- * extractCustomFields(message,payload,["traits", "context.traits", "properties"], "email",
- * ["firstName",
- * "lastName",
- * "phone",
- * "title",
- * "organization",
- * "city",
- * "region",
- * "country",
- * "zip",
- * "image",
- * "timezone"])
+ * extractCustomFields(
+ *   message,
+ *   payload,
+ *   ["traits", "context.traits", "properties"],
+ *   "email",
+ *   [
+ *     "firstName",
+ *     "lastName",
+ *     "phone",
+ *     "title",
+ *     "organization",
+ *     "city",
+ *     "region",
+ *     "country",
+ *     "zip",
+ *     "image",
+ *     "timezone"
+ *   ]
+ * )
  * -------------------------------------------
  * The above call will map the fields other than the
  * exlusion list from the given keys to the destination payload
  *
  */
-/* eslint-disable  array-callback-return */
 function extractCustomFields(message, destination, keys, exclusionFields) {
   keys.map(key => {
     const messageContext = get(message, key);
@@ -758,8 +768,8 @@ module.exports = {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
-  extractCustomFields,
   deleteObjectProperty,
+  extractCustomFields,
   flattenJson,
   formatValue,
   getBrowserInfo,

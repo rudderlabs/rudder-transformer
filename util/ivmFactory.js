@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const _ = require("lodash");
 
 const stats = require("./stats");
-const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
+const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
 const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -42,7 +42,7 @@ async function createIvm(code, libraryVersionIds) {
       });
 
       var metadata = function(event) {
-        const eventMetadata = event? eventsMetadata[event.messageId] || {}: {};
+        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
         return eventMetadata
       }
       switch(transformType) {
@@ -54,8 +54,9 @@ async function createIvm(code, libraryVersionIds) {
 
           outputEvents = await Promise.all(eventMessages.map(async ev => {
             try{
+              const currMsgId = ev.messageId;
               let transformedEvent = await transformEvent(ev, metadata);
-              return {transformedEvent, metadata: metadata(ev)};
+              return {transformedEvent, metadata: eventsMetadata[currMsgId] || {}};
             } catch (error) {
               // Handling the errors in versionedRouter.js
               return {error: error.toString(), metadata: metadata(ev)};

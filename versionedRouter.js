@@ -231,7 +231,9 @@ if (startDestTransformer) {
                   }
                   return {
                     output: ev.transformedEvent,
-                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
+                    metadata: _.isEmpty(ev.metadata)
+                      ? commonMetadata
+                      : ev.metadata,
                     statusCode: 200
                   };
                 })

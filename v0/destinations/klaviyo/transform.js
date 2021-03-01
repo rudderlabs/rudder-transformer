@@ -79,12 +79,8 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   const traitsInfo = message.traits ? message.traits : message.context.traits;
-  const addToList = traitsInfo.properties
-    ? traitsInfo.properties.addToList
-    : false;
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
-    addToList &&
     destination.Config.privateApiKey
   ) {
     addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);

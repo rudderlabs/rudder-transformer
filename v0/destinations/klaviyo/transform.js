@@ -34,6 +34,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
     )}`;
   }
   let profile = {
+    id: getFieldValueFromMessage(message, "userId"),
     email: getFieldValueFromMessage(message, "email"),
     phone_number: getFieldValueFromMessage(message, "phone")
   };
@@ -88,7 +89,7 @@ const identifyRequestHandler = async (message, category, destination) => {
       addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
   } else {
     logger.info(
-      `Cannot process list operation as listId is not available, both in message or config or private key not present`
+      `Cannot process list operation as listId is not available, either in message or config, or private key not present`
     );
   }
   // actual identify call

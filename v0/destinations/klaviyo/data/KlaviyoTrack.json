@@ -1,7 +1,7 @@
 [
   {
     "destKey": "event",
-    "sourceKeys": ["event", "properties.event"],
+    "sourceKeys": ["event", "properties.event", "properties.name"],
     "required": true
   },
   {

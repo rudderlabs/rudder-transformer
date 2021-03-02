@@ -98,7 +98,8 @@
   ],
   {
     "statusCode": 400,
-    "message": "message type track should contain an event property."
+    "message": "message type track should contain an event property.",
+    "error": "message type track is not supported"
   },
   [
     {

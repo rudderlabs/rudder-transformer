@@ -9,7 +9,7 @@ const {
   nameToEventMap
 } = require("./config");
 const {
-  removeUndefinedValues,
+  removeUndefinedAndNullValues,
   defaultGetRequestConfig,
   defaultRequestConfig,
   getParsedIP,
@@ -18,9 +18,13 @@ const {
   getDestinationExternalID
 } = require("../../util");
 
-function getParamsFromConfig(message, destination, type) {
+const gaDisplayName = "Google Analytics";
+
+function getParamsFromConfig(message, destination) {
   const params = {};
   const obj = {};
+  const messageType = message.type;
+  const traits = getFieldValueFromMessage(message, "traits");
   if (destination) {
     destination.forEach(mapping => {
       obj[mapping.from] = mapping.to;
@@ -31,11 +35,10 @@ function getParamsFromConfig(message, destination, type) {
     obj[key] = obj[key].replace(/dimension/g, "cd");
     obj[key] = obj[key].replace(/metric/g, "cm");
     obj[key] = obj[key].replace(/contentGroup/g, "cg");
-    params[obj[key]] = get(message.properties, key);
-
-    if (type === "content" && params[obj[key]]) {
-      params[obj[key]] = params[obj[key]].replace(" ", "/");
-    }
+    params[obj[key]] =
+      messageType !== "identify"
+        ? get(message.properties, key)
+        : get(traits, key);
   });
   return params;
 }
@@ -52,7 +55,7 @@ function getProductLevelCustomParams(product, index, customParamKeys) {
     });
   }
 
-  return removeUndefinedValues(customParams);
+  return removeUndefinedAndNullValues(customParams);
 }
 
 function getCustomParamKeys(config) {
@@ -82,7 +85,7 @@ function getCustomParamKeys(config) {
       });
     }
 
-    return removeUndefinedValues(customParams);
+    return removeUndefinedAndNullValues(customParams);
   }
   // return empty object if config is undefined or invalid
   return {};
@@ -102,6 +105,78 @@ function getCustomParamsFromOldConfig(config) {
     });
   }
   return [dimensions, metrics];
+}
+
+// Function for processing pageviews
+function processPageViews(message, destination) {
+  let documentPath;
+  let documentUrl;
+  let hostname;
+  let { includeSearch } = destination.Config;
+  includeSearch = includeSearch || false;
+  if (message.properties) {
+    documentUrl = getFieldValueFromMessage(message, "GApageUrl");
+    let url;
+    if (documentUrl) {
+      try {
+        url = new URL(documentUrl);
+        hostname = url.hostname;
+        documentPath = url.pathname;
+        const search = getFieldValueFromMessage(message, "GApageSearch");
+        if (search && includeSearch) {
+          documentPath += search;
+        }
+      } catch (error) {
+        throw new Error(`Invalid Url: ${url}`);
+      }
+    }
+  }
+  const parameters = {
+    dp: documentPath,
+    dl: documentUrl,
+    dh: hostname,
+    dt: getFieldValueFromMessage(message, "GApageTitle"),
+    dr: getFieldValueFromMessage(message, "GApageRef")
+  };
+  return removeUndefinedAndNullValues(parameters);
+}
+
+function setProductLevelProperties(
+  products,
+  parameters,
+  enhancedEcommerce,
+  destination
+) {
+  const params = parameters;
+  for (let i = 0; i < products.length; i += 1) {
+    const product = products[i];
+    const prodIndex = i + 1;
+    // If product_id is not provided, then SKU will be used in place of id
+    if (!product.product_id || product.product_id.length === 0) {
+      params[`pr${prodIndex}id`] = product.sku;
+    } else {
+      params[`pr${prodIndex}id`] = product.product_id;
+    }
+
+    // add product level custom dimensions and metrics to parameters
+    if (enhancedEcommerce) {
+      const customParamKeys = getCustomParamKeys(destination.Config);
+      Object.assign(
+        parameters,
+        getProductLevelCustomParams(product, prodIndex, customParamKeys)
+      );
+    }
+
+    params[`pr${prodIndex}nm`] = product.name;
+    params[`pr${prodIndex}ca`] = product.category;
+    params[`pr${prodIndex}br`] = product.brand;
+    params[`pr${prodIndex}va`] = product.variant;
+    params[`pr${prodIndex}cc`] = product.coupon;
+    params[`pr${prodIndex}ps`] = product.position;
+    params[`pr${prodIndex}pr`] = product.price;
+    params[`pr${prodIndex}qt`] = product.quantity || 1;
+  }
+  return params;
 }
 
 // Basic response builder
@@ -174,19 +249,24 @@ function responseBuilderSimple(
   sourceKeys.forEach(sourceKey => {
     rawPayload[mappingJson[sourceKey]] = get(message, sourceKey);
   });
-  // Remove keys with undefined values
-  const payload = removeUndefinedValues(rawPayload);
+  let pageParams;
+  if (hitType !== "pageview") {
+    pageParams = processPageViews(message, destination);
+  }
 
-  const params = removeUndefinedValues(parameters);
+  // Remove keys with undefined values
+  const payload = removeUndefinedAndNullValues(rawPayload);
+
+  const params = removeUndefinedAndNullValues(parameters);
 
   // Get dimensions  from destination config
   let dimensionsParam = getParamsFromConfig(message, dimensions, "dimensions");
 
-  dimensionsParam = removeUndefinedValues(dimensionsParam);
+  dimensionsParam = removeUndefinedAndNullValues(dimensionsParam);
 
   // Get metrics from destination config
   let metricsParam = getParamsFromConfig(message, metrics, "metrics");
-  metricsParam = removeUndefinedValues(metricsParam);
+  metricsParam = removeUndefinedAndNullValues(metricsParam);
 
   // Get contentGroupings from destination config
   let contentGroupingsParam = getParamsFromConfig(
@@ -194,7 +274,7 @@ function responseBuilderSimple(
     contentGroupings,
     "content"
   );
-  contentGroupingsParam = removeUndefinedValues(contentGroupingsParam);
+  contentGroupingsParam = removeUndefinedAndNullValues(contentGroupingsParam);
 
   const customParams = {
     ...dimensionsParam,
@@ -202,7 +282,12 @@ function responseBuilderSimple(
     ...contentGroupingsParam
   };
 
-  const finalPayload = { ...params, ...customParams, ...payload };
+  const finalPayload = {
+    ...params,
+    ...customParams,
+    ...payload,
+    ...pageParams
+  };
   let { sendUserId } = destination.Config;
   sendUserId = sendUserId || false;
   // check if userId is there and populate
@@ -210,8 +295,8 @@ function responseBuilderSimple(
     finalPayload.uid = message.userId;
   }
   const integrationsClientId = message.integrations
-    ? message.integrations.GA
-      ? message.integrations.GA.clientId
+    ? message.integrations[gaDisplayName]
+      ? message.integrations[gaDisplayName].clientId
       : undefined
     : undefined;
   finalPayload.cid =
@@ -262,31 +347,8 @@ function processIdentify(message, destination) {
   };
 }
 
-// Function for processing pageviews
-function processPageViews(message, destination) {
-  let documentPath;
-  let { includeSearch } = destination.Config;
-  includeSearch = includeSearch || false;
-  if (message.properties) {
-    documentPath = message.properties.path;
-    if (message.properties.search && includeSearch) {
-      documentPath += message.properties.search;
-    }
-  }
-  const parameters = {
-    dp: documentPath
-  };
-  return parameters;
-}
-
 // Function for processing non-ecom generic track events
 function processNonEComGenericEvent(message, destination) {
-  let eventValue = "";
-  if (message.properties) {
-    eventValue = message.properties.value
-      ? message.properties.value
-      : message.properties.revenue;
-  }
   let { nonInteraction } = destination.Config;
   nonInteraction = nonInteraction || false;
   const nonInteractionProp =
@@ -296,7 +358,6 @@ function processNonEComGenericEvent(message, destination) {
       : !!nonInteraction;
   const parameters = {
     ea: message.event,
-    ev: formatValue(eventValue),
     ec:
       message.properties !== undefined &&
       message.properties.category !== undefined
@@ -315,8 +376,6 @@ function processPromotionEvent(message, destination) {
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
   const parameters = {
-    ea: eventString,
-    ec: message.properties.category || "addPromo",
     cu: message.properties.currency
   };
 
@@ -363,9 +422,7 @@ function processPaymentRelatedEvent(message, destination) {
   }
   if (enhancedEcommerce) {
     return {
-      pa,
-      ea: message.event,
-      ec: message.properties.category || "EnhancedEcommerce"
+      pa
     };
   }
   return {
@@ -383,54 +440,28 @@ function processRefundEvent(message, destination) {
 
   const { products } = message.properties;
   if (products && products.length > 0) {
-    // partial refund
-    // Now iterate through the products and add parameters accordingly
-    const customParamKeys = getCustomParamKeys(destination.Config);
-    for (let i = 0; i < products.length; i += 1) {
-      const value = products[i];
-      const prodIndex = i + 1;
-      if (!value.product_id || value.product_id.length === 0) {
-        parameters[`pr${prodIndex}id`] = value.sku;
-      } else {
-        parameters[`pr${prodIndex}id`] = value.product_id;
-      }
-
-      // add product level custom dimensions and metrics to parameters
-      if (enhancedEcommerce) {
-        Object.assign(
-          parameters,
-          getProductLevelCustomParams(value, prodIndex, customParamKeys)
-        );
-      }
-
-      parameters[`pr${prodIndex}nm`] = value.name;
-      parameters[`pr${prodIndex}ca`] = value.category;
-      parameters[`pr${prodIndex}br`] = value.brand;
-      parameters[`pr${prodIndex}va`] = value.variant;
-      parameters[`pr${prodIndex}cc`] = value.coupon;
-      parameters[`pr${prodIndex}ps`] = value.position;
-      parameters[`pr${prodIndex}pr`] = value.price;
-      parameters[`pr${prodIndex}qt`] = value.quantity;
-    }
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   } else {
     // full refund, only populate order_id
     parameters.ti = message.properties.order_id;
-  }
-  if (enhancedEcommerce) {
-    parameters.ea = message.event;
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
 }
 
-// Function for processing product and cart shared events
+// Function for processing product and cart shared events =
+// This is not an Enhanced Ecomm event
 function processSharingEvent(message) {
   const parameters = {};
   // URL will be there for Product Shared event, hence that can be used as share target
   // For Cart Shared, the list of product ids can be shared
   const eventTypeString = message.event;
-  parameters.ea = eventTypeString;
   parameters.ec = message.properties.category || "All";
   switch (eventTypeString.toLowerCase()) {
     case Event.PRODUCT_SHARED.name:
@@ -456,12 +487,7 @@ function processProductListEvent(message, destination) {
   const eventString = message.event;
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
-  const parameters = {
-    ea: eventString,
-    ec:
-      message.properties.category ||
-      (enhancedEcommerce ? "EnhancedEcommerce" : "All")
-  };
+  const parameters = {};
 
   // Set action depending on Product List Action
 
@@ -532,22 +558,13 @@ function processProductListEvent(message, destination) {
 // Function for processing product viewed or clicked events
 function processProductEvent(message, destination) {
   const eventString = message.event;
-  let category;
-  if (message.properties && message.properties.category) {
-    category = message.properties.category;
-  } else {
-    category = "All";
-  }
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
 
   // Future releases will have additional logic for below elements allowing for
   // customer-side overriding of event category and event action values
 
-  const parameters = {
-    ea: eventString,
-    ec: enhancedEcommerce ? "EnhancedEcommerce" : category
-  };
+  const parameters = {};
 
   // Set product action to click or detail depending on event
 
@@ -573,6 +590,8 @@ function processProductEvent(message, destination) {
     }
 
     // add produt level custom dimensions and metrics to parameters
+    // TODO:: This below block will be rejected if "pa" is not set, it is better fo this block should go under the above if block
+    // for better readability. ref: https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#pa
     const customParamKeys = getCustomParamKeys(destination.Config);
     Object.assign(
       parameters,
@@ -637,57 +656,29 @@ function processTransactionEvent(message, destination) {
   const { products } = message.properties;
 
   if (products && products.length > 0) {
-    for (let i = 0; i < products.length; i += 1) {
-      const product = products[i];
-      const prodIndex = i + 1;
-      // If product_id is not provided, then SKU will be used in place of id
-      if (!product.product_id || product.product_id.length === 0) {
-        parameters[`pr${prodIndex}id`] = product.sku;
-      } else {
-        parameters[`pr${prodIndex}id`] = product.product_id;
-      }
-
-      // add product level custom dimensions and metrics to parameters
-      if (enhancedEcommerce) {
-        const customParamKeys = getCustomParamKeys(destination.Config);
-        Object.assign(
-          parameters,
-          getProductLevelCustomParams(product, prodIndex, customParamKeys)
-        );
-      }
-
-      parameters[`pr${prodIndex}nm`] = product.name;
-      parameters[`pr${prodIndex}ca`] = product.category;
-      parameters[`pr${prodIndex}br`] = product.brand;
-      parameters[`pr${prodIndex}va`] = product.variant;
-      parameters[`pr${prodIndex}cc`] = product.coupon;
-      parameters[`pr${prodIndex}ps`] = product.position;
-      parameters[`pr${prodIndex}pr`] = product.price;
-      parameters[`pr${prodIndex}qt`] = product.quantity || 1;
-    }
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
     throw new Error("No product information supplied for transaction event");
   }
 
-  if (enhancedEcommerce) {
-    parameters.ea = message.event;
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
-  }
+  // TODO: parameters.ec missing message.properties check and All value?
   return parameters;
 }
 
 // Function for handling generic e-commerce events
 function processEComGenericEvent(message, destination) {
   const eventString = message.event;
-  const parameters = {
-    ea: eventString,
-    ec: message.properties.category
-  };
+  const parameters = {};
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
   if (enhancedEcommerce) {
-    parameters.ec = message.properties.category || "EnhancedEcommerce";
     // Set product action as per event
     switch (eventString.toLowerCase()) {
       case Event.CART_VIEWED.name:
@@ -708,12 +699,23 @@ function processEComGenericEvent(message, destination) {
       case Event.PRODUCT_REVIEWED.name:
         parameters.pa = "detail";
         break;
-      case Event.PRODUCTS_SEARCHED:
+      case Event.PRODUCTS_SEARCHED.name:
         parameters.pa = "click";
         break;
       default:
         throw new Error("unknown TransactionEvent type");
     }
+  }
+  const { products } = message.properties;
+
+  if (products && products.length > 0) {
+    const productParams = setProductLevelProperties(
+      products,
+      parameters,
+      enhancedEcommerce,
+      destination
+    );
+    Object.assign(parameters, productParams);
   }
   return parameters;
 }
@@ -722,7 +724,10 @@ function processEComGenericEvent(message, destination) {
 // and event type where applicable
 function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type ? message.type.toLowerCase() : undefined;
+  if (!messageType) {
+    throw new Error("Message type is not present");
+  }
   let customParams = {};
   let category;
   let { enableServerSideIdentify, enhancedEcommerce } = destination.Config;
@@ -746,14 +751,28 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK: {
+      let eventName = message.event;
+      if (!(typeof eventName === "string" || eventName instanceof String)) {
+        throw new Error("Event name is not present/is not a string");
+      }
       if (enhancedEcommerce) {
-        const eventName = message.event.toLowerCase();
-
+        eventName = eventName.toLowerCase();
         category = nameToEventMap[eventName]
           ? nameToEventMap[eventName].category
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
         customParams.ni = 1;
+        customParams.ea = message.event;
+        let eventValue;
+        let setCategory;
+        if (message.properties) {
+          eventValue = message.properties.value
+            ? message.properties.value
+            : message.properties.revenue;
+          setCategory = message.properties.category;
+        }
+        customParams.ec = setCategory || "EnhancedEcommerce";
+        customParams.ev = formatValue(eventValue);
         switch (category.name) {
           case ConfigCategory.PRODUCT_LIST.name:
             Object.assign(
@@ -808,42 +827,11 @@ function processSingleMessage(message, destination) {
             break;
         }
       } else {
-        const eventName = message.event.toLowerCase();
-
-        category = nameToEventMap[eventName]
-          ? nameToEventMap[eventName].category
-          : ConfigCategory.NON_ECOM;
-
-        switch (category.name) {
-          case ConfigCategory.PRODUCT_LIST.name:
-            customParams = processProductListEvent(message, destination);
-            break;
-          case ConfigCategory.PROMOTION.name:
-            customParams = processPromotionEvent(message, destination);
-            break;
-          case ConfigCategory.PRODUCT.name:
-            customParams = processProductEvent(message, destination);
-            break;
-          case ConfigCategory.TRANSACTION.name:
-            customParams = processTransactionEvent(message, destination);
-            break;
-          case ConfigCategory.PAYMENT.name:
-            customParams = processPaymentRelatedEvent(message, destination);
-            break;
-          case ConfigCategory.REFUND.name:
-            customParams = processRefundEvent(message, destination);
-            break;
-          case ConfigCategory.SHARING.name:
-            customParams = processSharingEvent(message);
-            break;
-          case ConfigCategory.ECOM_GENERIC.name:
-            customParams = processEComGenericEvent(message, destination);
-            break;
-          default:
-            customParams = processNonEComGenericEvent(message, destination);
-            break;
-        }
+        category = ConfigCategory.NON_ECOM;
+        customParams = processNonEComGenericEvent(message, destination);
       }
+      const label = message.properties ? message.properties.label : undefined;
+      customParams.el = label || "event";
       break;
     }
     default:

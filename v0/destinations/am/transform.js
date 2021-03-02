@@ -14,7 +14,9 @@ const {
   defaultRequestConfig,
   defaultBatchRequestConfig,
   getParsedIP,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getValueFromMessage,
+  deleteObjectProperty
 } = require("../../util");
 const {
   Event,
@@ -61,15 +63,12 @@ const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 // https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
 /* function stringToHash(string) {
   let hash = 0;
-
   if (string.length == 0) return hash;
-
   for (i = 0; i < string.length; i++) {
     char = string.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash &= hash;
   }
-
   return Math.abs(hash);
 } */
 
@@ -111,14 +110,66 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
-  if (message.isRevenue) {
-    rawPayload.revenueType =
-      message.properties.revenueType ||
-      message.properties.revenue_type ||
-      "Purchased";
-    rawPayload = setPriceQuanityInPayload(message, rawPayload);
-  }
+  rawPayload.revenueType =
+    message.properties.revenueType ||
+    message.properties.revenue_type ||
+    "Purchased";
+  rawPayload = setPriceQuanityInPayload(message, rawPayload);
   return rawPayload;
+}
+
+function updateTraitsObject(property, traitsObject, actionKey) {
+  const propertyToUpdate = getValueFromMessage(traitsObject, property);
+  traitsObject[actionKey][property] = propertyToUpdate;
+  deleteObjectProperty(traitsObject, property);
+  return traitsObject;
+}
+
+function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
+  traitsObject[actionKey] = {};
+  configPropertyTrait.forEach(traitsElement => {
+    const property = traitsElement.traits;
+    traitsObject = updateTraitsObject(property, traitsObject, actionKey);
+  });
+  return traitsObject;
+}
+
+function handleTraits(messageTrait, destination) {
+  let traitsObject = JSON.parse(JSON.stringify(messageTrait));
+
+  if (destination.Config.traitsToIncrement) {
+    const actionKey = "$add";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToIncrement,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToSetOnce) {
+    const actionKey = "$setOnce";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToSetOnce,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToAppend) {
+    const actionKey = "$append";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToAppend,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToPrepend) {
+    const actionKey = "$prepend";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToPrepend,
+      actionKey,
+      traitsObject
+    );
+  }
+  return traitsObject;
 }
 
 function responseBuilderSimple(
@@ -162,6 +213,20 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const oldKeys = Object.keys(campaign);
+  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
+  oldKeys.forEach(oldKey => {
+    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
+    delete campaign[oldKey];
+  });
+  // append campaign info extracted above(2.) to user_properties.
+  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
+  rawPayload.user_properties = rawPayload.user_properties || {};
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...campaign
+  };
 
   switch (evType) {
     case EventType.IDENTIFY:
@@ -173,8 +238,12 @@ function responseBuilderSimple(
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
-        set(rawPayload, "user_properties", message.userProperties);
         traits = getFieldValueFromMessage(message, "traits");
+        traits = handleTraits(traits, destination);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...message.userProperties
+        };
         if (traits) {
           Object.keys(traits).forEach(trait => {
             if (SpecedTraits.includes(trait)) {
@@ -191,14 +260,6 @@ function responseBuilderSimple(
             }
           });
         }
-        // append campaign info extracted above(2.) to user_properties.
-        // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
-        // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
-        rawPayload.user_properties = rawPayload.user_properties || {};
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...campaign
-        };
       }
 
       if (evType === EventType.GROUP) {
@@ -219,16 +280,18 @@ function responseBuilderSimple(
       endpoint = ALIAS_ENDPOINT;
       break;
     default:
+      traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
-      if (message.type === EventType.TRACK)
-        set(rawPayload, "user_properties", message.context.traits);
+      if (traits) {
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...traits
+        };
+      }
 
       rawPayload.event_type = evType;
       rawPayload.user_id = message.userId;
-      if (
-        (message.properties && message.properties.revenue) ||
-        evType === "Product Purchased"
-      ) {
+      if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
       }

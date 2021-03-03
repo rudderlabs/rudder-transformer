@@ -14,7 +14,8 @@ const {
   getIdentifyEndpoint,
   getTrackEndPoint,
   BRAZE_PARTNER_NAME,
-  BRAZE_MAX_REQ_COUNT
+  TRACK_BRAZE_MAX_REQ_COUNT,
+  IDENTIFY_BRAZE_MAX_REQ_COUNT
 } = require("./config");
 
 function formatGender(gender) {
@@ -427,13 +428,16 @@ function formatBatchResponse(batchPayload, metadataList, destination) {
 function batch(destEvents) {
   const respList = [];
   let trackEndpoint;
+  let identifyEndpoint;
   let jsonBody;
   let endPoint;
   let type;
   let attributesBatch = [];
   let eventsBatch = [];
   let purchasesBatch = [];
-  let metadataBatch = [];
+  let trackMetadataBatch = [];
+  let identifyMetadataBatch = [];
+  let aliasBatch = [];
   let index = 0;
 
   while (index < destEvents.length) {
@@ -468,7 +472,7 @@ function batch(destEvents) {
         purchasesBatch.length + (purchases ? purchases.length : 0)
       );
 
-      if (maxCount > BRAZE_MAX_REQ_COUNT) {
+      if (maxCount > TRACK_BRAZE_MAX_REQ_COUNT) {
         // form a batch and start over
         // reuse the last message response for the auth and endpoint
         // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -498,14 +502,14 @@ function batch(destEvents) {
           // modify the endpoint to track endpoint
           batchResponse.endpoint = trackEndpoint;
           respList.push(
-            formatBatchResponse(batchResponse, metadataBatch, destination)
+            formatBatchResponse(batchResponse, trackMetadataBatch, destination)
           );
 
           // clear the arrays and reuse
           attributesBatch = [];
           eventsBatch = [];
           purchasesBatch = [];
-          metadataBatch = [];
+          trackMetadataBatch = [];
         }
         // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
       }
@@ -524,7 +528,7 @@ function batch(destEvents) {
       }
 
       // keep the original metadata object. needed later to form the batch
-      metadataBatch.push(metadata);
+      trackMetadataBatch.push(metadata);
     } else {
       // identify
       // form a batch with whatever we have till now
@@ -568,11 +572,48 @@ function batch(destEvents) {
       // }
       // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
+      if (!identifyEndpoint) {
+        identifyEndpoint = endPoint;
+      }
+
+      const aliasObjectArr = get(jsonBody, "aliases_to_identify");
+      const aliasMaxCount =
+        aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
+
+      if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
+        // form an identify batch and start over
+        const batchResponse = defaultRequestConfig();
+        batchResponse.headers = message.headers;
+        batchResponse.endpoint = identifyEndpoint;
+        const responseBodyJson = {
+          partner: BRAZE_PARTNER_NAME
+        };
+        if (aliasBatch.length > 0) {
+          responseBodyJson.aliases_to_identify = attributesBatch;
+        }
+        batchResponse.body.JSON = responseBodyJson;
+        // modify the endpoint to track endpoint
+        batchResponse.endpoint = trackEndpoint;
+        respList.push(
+          formatBatchResponse(batchResponse, identifyMetadataBatch, destination)
+        );
+
+        // clear the arrays and reuse
+        aliasBatch = [];
+        identifyMetadataBatch = [];
+      }
+
       // separate out the identify request
-      respList.push(formatBatchResponse(message, [metadata], destination));
+      // respList.push(formatBatchResponse(message, [metadata], destination));
+      if (aliasObjectArr.length > 0) {
+        aliasBatch.push(aliasObjectArr[0]);
+      }
+
+      identifyMetadataBatch.push(metadata);
     }
   }
 
+  // process track events
   const ev = destEvents[index - 1];
   const { message, destination } = ev;
   if (
@@ -599,9 +640,26 @@ function batch(destEvents) {
     // modify the endpoint to track endpoint
     batchResponse.endpoint = trackEndpoint;
     respList.push(
-      formatBatchResponse(batchResponse, metadataBatch, destination)
+      formatBatchResponse(batchResponse, trackMetadataBatch, destination)
     );
   }
+
+  // process identify events
+  const batchResponse = defaultRequestConfig();
+  batchResponse.headers = message.headers;
+  batchResponse.endpoint = identifyEndpoint;
+  const responseBodyJson = {
+    partner: BRAZE_PARTNER_NAME
+  };
+  if (aliasBatch.length > 0) {
+    responseBodyJson.aliases_to_identify = aliasBatch;
+  }
+  batchResponse.body.JSON = responseBodyJson;
+  // modify the endpoint to track endpoint
+  batchResponse.endpoint = trackEndpoint;
+  respList.push(
+    formatBatchResponse(batchResponse, identifyMetadataBatch, destination)
+  );
 
   return respList;
 }

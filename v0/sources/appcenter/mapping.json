@@ -1,0 +1,25 @@
+[
+  {
+    "sourceKeys": ["app_name", "app_display_name"],
+    "destKeys": "context.app.name"
+  },
+  {
+    "sourceKeys": "build_id",
+    "destKeys": "context.app.build"
+  },
+  {
+    "sourceKeys": ["os", "platform"],
+    "destKeys": [
+      "context.device.type",
+      "context.network.carrier",
+      "context.os.name"
+    ]
+  },
+  { "sourceKeys": "start_time", "destKeys": "originalTimeStamp" },
+  { "sourceKeys": "sent_at", "destKeys": "sentAt" },
+  {
+    "sourceKeys": ["short_version", "app_version"],
+    "destKeys": "context.app.version"
+  },
+  { "sourceKeys": "bundle_identifier", "destKeys": "context.app.namespace" }
+]

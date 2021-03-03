@@ -47,8 +47,8 @@ function processEvent(event) {
 function process(event) {
   const response = processEvent(event);
   const returnValue = removeUndefinedAndNullValues(response);
-  // to make the server accept the request
-  returnValue.anonymousId = "7e32188a4dab669f";
+  // to make the server accept the request for now but need to decide on this
+  //returnValue.anonymousId = "7e32188a4dab669f";
   return returnValue;
 }
 

@@ -5,6 +5,7 @@ const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
+  defaultPutRequestConfig,
   defaultRequestConfig,
   constructPayload,
   flattenJson,
@@ -57,7 +58,7 @@ function responseBuilderForIdentifyInsertData(
   category,
   authToken
 ) {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const contactKey =
     getFieldValueFromMessage(message, "userId") ||
@@ -66,10 +67,14 @@ function responseBuilderForIdentifyInsertData(
     throw new Error("Either user id or anonymous id or email is required");
   }
   response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(
-    toTitleCase(flattenJson(payload))
-  );
+  response.method = defaultPutRequestConfig.requestMethod;
+  payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
+  response.body.JSON = {
+    values: {
+      "Contact Key": contactKey,
+      ...payload
+    }
+  };
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${authToken}`

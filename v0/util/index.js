@@ -704,6 +704,27 @@ function deleteObjectProperty(object, pathToObject) {
   delete object[pathToObject.pop()];
 }
 
+// function convert keys in a object to title case
+
+function toTitleCase(payload) {
+  const newPayload = payload;
+  Object.keys(payload).forEach(key => {
+    const value = newPayload[key];
+    delete newPayload[key];
+    const newKey = key
+      .replace(/([A-Z])/g, match => {
+        return ` ${match}`;
+      })
+      .trim()
+      .replace(/(_)/g, ` `)
+      .replace(/(^\w{1})|(\s+\w{1})/g, match => {
+        return match.toUpperCase();
+      });
+    newPayload[newKey] = value;
+  });
+  return newPayload;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -746,5 +767,6 @@ module.exports = {
   setValues,
   stripTrailingSlash,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  toTitleCase
 };

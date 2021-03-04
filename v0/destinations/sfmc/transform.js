@@ -7,7 +7,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
-  flattenJson
+  flattenJson,
+  toTitleCase
 } = require("../../util");
 
 async function getToken(clientId, clientSecret, subdomain) {
@@ -33,11 +34,15 @@ function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
   const response = defaultRequestConfig();
   response.endpoint = `https://${subdomain}.${ENDPOINTS.CONTACTS}`;
   response.method = defaultPostRequestConfig.requestMethod;
+  const contactKey =
+    getFieldValueFromMessage(message, "userId") ||
+    getFieldValueFromMessage(message, "email");
+  if (!contactKey) {
+    throw new Error("Either user id or anonymous id or email is required");
+  }
   response.body.JSON = {
     attributeSets: [], // not sure about this mapping
-    contactKey:
-      getFieldValueFromMessage(message, "userId") ||
-      getFieldValueFromMessage(message, "email")
+    contactKey
   };
   response.headers = {
     "Content-Type": "application/json",
@@ -57,9 +62,14 @@ function responseBuilderForIdentifyInsertData(
   const contactKey =
     getFieldValueFromMessage(message, "userId") ||
     getFieldValueFromMessage(message, "email");
+  if (!contactKey) {
+    throw new Error("Either user id or anonymous id or email is required");
+  }
   response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(flattenJson(payload));
+  response.body.JSON = removeUndefinedAndNullValues(
+    toTitleCase(flattenJson(payload))
+  );
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${authToken}`

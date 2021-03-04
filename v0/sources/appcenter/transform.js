@@ -8,6 +8,14 @@ const mappingJson = JSON.parse(
 
 const { removeUndefinedAndNullValues } = require("../../util");
 
+function guidGenerator() {
+  const S4 = function() {
+    // eslint-disable-next-line no-bitwise
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  };
+  return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
+}
+
 function processEvent(event) {
   const message = new Message(`APPCENTER`);
   message.setEventType("track");
@@ -41,14 +49,16 @@ function processEvent(event) {
   // set fields in payload from mapping json
   message.setPropertiesV2(event, mappingJson);
 
+  // app center does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
+  message.anonymousId = guidGenerator();
   return message;
 }
 
 function process(event) {
   const response = processEvent(event);
   const returnValue = removeUndefinedAndNullValues(response);
-  // to make the server accept the request for now but need to decide on this
-  //returnValue.anonymousId = "7e32188a4dab669f";
+  // to bypass the unit testcases ( we may change this)
+  // returnValue.anonymousId = "7e32188a4dab669f";
   return returnValue;
 }
 

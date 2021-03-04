@@ -43,6 +43,7 @@
     "type": "track",
     "event": "Build Succeeded",
     "originalTimeStamp": "2021-03-02T16:34:13.9184874Z",
+    "anonymousId": "7e32188a4dab669f",
     "sentAt": "2021-03-02T16:41:55.8819564Z"
   },
   {
@@ -89,6 +90,7 @@
     "type": "track",
     "event": "Build Failed",
     "originalTimeStamp": "2021-03-02T16:50:52.2584107Z",
+    "anonymousId": "7e32188a4dab669f",
     "sentAt": "2021-03-02T16:52:35.8848052Z"
   },
   {
@@ -143,6 +145,7 @@
     },
     "type": "track",
     "event": "Released Version 1.0",
+    "anonymousId": "7e32188a4dab669f",
     "sentAt": "2021-03-02T17:49:37.127635Z"
   },
   {
@@ -182,6 +185,7 @@
     },
     "type": "track",
     "event": "App Crashed",
+    "anonymousId": "7e32188a4dab669f",
     "sentAt": "2021-03-02T18:14:33.9713246Z"
   }
 ]

@@ -6,6 +6,7 @@ const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
+  defaultPutRequestConfig,
   defaultRequestConfig,
   constructPayload,
   flattenJson,
@@ -70,7 +71,7 @@ function responseBuilderForInsertData(
   if (!contactKey) {
     throw new Error("Either user id or anonymous id or email is required");
   }
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultPutRequestConfig.requestMethod;
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
   if (
     type === "identify" ||
@@ -97,7 +98,7 @@ function responseBuilderForInsertData(
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${primaryKey}:${primaryKeyValue}`;
     response.body.JSON = {
       values: {
-        primaryKey: primaryKeyValue,
+        [primaryKey]: primaryKeyValue,
         ...payload
       }
     };
@@ -158,6 +159,8 @@ async function responseBuilderSimple(message, category, destination) {
       hashMapUUID[message.event.toLowerCase()]
     );
     finalPayload = trackInsertDataPayload;
+  } else {
+    finalPayload = {};
   }
   return finalPayload;
 }

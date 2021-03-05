@@ -9,11 +9,11 @@ const ENDPOINTS = {
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     type: "identify",
-    name: "SFMCInsertContactsConfig"
+    name: "SFMCInsertIdentifyContactsConfig"
   },
   TRACK: {
     type: "track",
-    name: "SFMCInsertContactsConfig"
+    name: "SFMCInsertTrackContactsConfig"
   }
 };
 

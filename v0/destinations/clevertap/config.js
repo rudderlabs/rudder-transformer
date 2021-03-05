@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const BASE_ENDPOINT = "https://api.clevertap.com/1/upload";
+const BASE_ENDPOINT = "https://{{value}}api.clevertap.com/1/upload";
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "CleverTapIdentify", type: "identify" },

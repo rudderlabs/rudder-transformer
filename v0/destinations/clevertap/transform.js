@@ -1,4 +1,4 @@
-const get = require("get-value");
+const Handlebars = require("handlebars");
 const { EventType } = require("../../../constants");
 const {
   BASE_ENDPOINT,
@@ -48,7 +48,13 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (payload) {
     const response = defaultRequestConfig();
-    response.endpoint = BASE_ENDPOINT;
+    let value = "";
+    if (destination.Config.region && destination.Config.region !== "none") {
+      value = `${destination.Config.region}.`;
+    }
+    const bEndpoint = Handlebars.compile(BASE_ENDPOINT.trim());
+    const formattedEndpoint = bEndpoint({ value }).trim();
+    response.endpoint = formattedEndpoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       "X-CleverTap-Account-Id": destination.Config.accountId,

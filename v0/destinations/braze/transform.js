@@ -622,9 +622,7 @@ function batch(destEvents) {
     const identifyResponseBodyJson = {
       partner: BRAZE_PARTNER_NAME
     };
-    if (aliasBatch.length > 0) {
-      identifyResponseBodyJson.aliases_to_identify = aliasBatch;
-    }
+    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
     identifyBatchResponse.body.JSON = identifyResponseBodyJson;
     // modify the endpoint to identify endpoint
     identifyBatchResponse.endpoint = identifyEndpoint;

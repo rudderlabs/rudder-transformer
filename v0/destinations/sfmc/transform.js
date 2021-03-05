@@ -113,7 +113,7 @@ async function responseBuilderSimple(message, category, destination) {
   const {
     clientId,
     clientSecret,
-    subdomain,
+    subDomain,
     createOrUpdateContacts,
     externalKey,
     eventToExternalKey,
@@ -127,17 +127,17 @@ async function responseBuilderSimple(message, category, destination) {
   let identifyContactsPayload;
   let identifyInsertDataPayload;
   if (category.type === "identify" && !createOrUpdateContacts) {
-    let authToken = await getToken(clientId, clientSecret, subdomain);
+    let authToken = await getToken(clientId, clientSecret, subDomain);
     identifyContactsPayload = responseBuilderForIdentifyContacts(
       message,
-      subdomain,
+      subDomain,
       authToken
     );
-    authToken = await getToken(clientId, clientSecret, subdomain);
+    authToken = await getToken(clientId, clientSecret, subDomain);
     identifyInsertDataPayload = responseBuilderForInsertData(
       message,
       externalKey,
-      subdomain,
+      subDomain,
       category,
       authToken,
       "identify"
@@ -147,11 +147,11 @@ async function responseBuilderSimple(message, category, destination) {
     category.type === "track" &&
     hashMapExternalKey[message.event.toLowerCase()]
   ) {
-    const authToken = await getToken(clientId, clientSecret, subdomain);
+    const authToken = await getToken(clientId, clientSecret, subDomain);
     const trackInsertDataPayload = responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
-      subdomain,
+      subDomain,
       category,
       authToken,
       "track",

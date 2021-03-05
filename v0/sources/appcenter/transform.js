@@ -9,10 +9,9 @@ const mappingJson = JSON.parse(
 const { removeUndefinedAndNullValues } = require("../../util");
 
 function guidGenerator() {
-  const S4 = function() {
+  const S4 = () =>
     // eslint-disable-next-line no-bitwise
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  };
+    (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 }
 
@@ -39,9 +38,7 @@ function processEvent(event) {
   ) {
     message.setEventName("App Crashed");
   } else {
-    message.setEventName("Appcenter Test Event");
-    // for now lets comment it but it should thrown an error saying unsupported event
-    // throw new Error("Unknwon event type from Appcenter");
+    throw new Error("Unknown event type from Appcenter");
   }
   const properties = { ...event };
   message.setProperty("properties", properties);
@@ -58,7 +55,7 @@ function process(event) {
   const response = processEvent(event);
   const returnValue = removeUndefinedAndNullValues(response);
   // to bypass the unit testcases ( we may change this)
-  // returnValue.anonymousId = "7e32188a4dab669f";
+  //returnValue.anonymousId = "7e32188a4dab669f";
   return returnValue;
 }
 

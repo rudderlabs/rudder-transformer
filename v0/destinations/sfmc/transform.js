@@ -1,15 +1,16 @@
 const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require("./config");
 const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
-  defaultPutRequestConfig,
   defaultRequestConfig,
   constructPayload,
   flattenJson,
-  toTitleCase
+  toTitleCase,
+  getHashFromArray
 } = require("../../util");
 
 async function getToken(clientId, clientSecret, subdomain) {
@@ -51,12 +52,15 @@ function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
   };
   return response;
 }
-function responseBuilderForIdentifyInsertData(
+function responseBuilderForInsertData(
   message,
   externalKey,
   subdomain,
   category,
-  authToken
+  authToken,
+  type,
+  primaryKey,
+  uuid
 ) {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
@@ -66,15 +70,38 @@ function responseBuilderForIdentifyInsertData(
   if (!contactKey) {
     throw new Error("Either user id or anonymous id or email is required");
   }
-  response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
-  response.method = defaultPutRequestConfig.requestMethod;
+  response.method = defaultPostRequestConfig.requestMethod;
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
-  response.body.JSON = {
-    values: {
-      "Contact Key": contactKey,
-      ...payload
-    }
-  };
+  if (
+    type === "identify" ||
+    (type === "track" && primaryKey === "Contact Key" && !uuid)
+  ) {
+    response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
+    response.body.JSON = {
+      values: {
+        "Contact Key": contactKey,
+        ...payload
+      }
+    };
+  } else if (type === "track" && uuid) {
+    const generateUuid = uuidv4();
+    response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Uuid:${generateUuid}`;
+    response.body.JSON = {
+      values: {
+        Uuid: generateUuid,
+        ...payload
+      }
+    };
+  } else {
+    const primaryKeyValue = payload[primaryKey];
+    response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${primaryKey}:${primaryKeyValue}`;
+    response.body.JSON = {
+      values: {
+        primaryKey: primaryKeyValue,
+        ...payload
+      }
+    };
+  }
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${authToken}`
@@ -87,8 +114,15 @@ async function responseBuilderSimple(message, category, destination) {
     clientSecret,
     subdomain,
     createOrUpdateContacts,
-    externalKey
+    externalKey,
+    eventToExternalKey,
+    eventToPrimaryKey,
+    eventToUUID
   } = destination.Config;
+  const hashMapExternalKey = getHashFromArray(eventToExternalKey, "from", "to");
+  const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, "from", "to");
+  const hashMapUUID = getHashFromArray(eventToUUID, "from", "to");
+  let finalPayload;
   let identifyContactsPayload;
   let identifyInsertDataPayload;
   if (category.type === "identify" && !createOrUpdateContacts) {
@@ -99,16 +133,33 @@ async function responseBuilderSimple(message, category, destination) {
       authToken
     );
     authToken = await getToken(clientId, clientSecret, subdomain);
-    identifyInsertDataPayload = responseBuilderForIdentifyInsertData(
+    identifyInsertDataPayload = responseBuilderForInsertData(
       message,
       externalKey,
       subdomain,
       category,
-      authToken
+      authToken,
+      "identify"
     );
-    return [identifyContactsPayload, identifyInsertDataPayload];
+    finalPayload = [identifyContactsPayload, identifyInsertDataPayload];
+  } else if (
+    category.type === "track" &&
+    hashMapExternalKey[message.event.toLowerCase()]
+  ) {
+    const authToken = await getToken(clientId, clientSecret, subdomain);
+    const trackInsertDataPayload = responseBuilderForInsertData(
+      message,
+      hashMapExternalKey[message.event.toLowerCase()],
+      subdomain,
+      category,
+      authToken,
+      "track",
+      hashMapPrimaryKey[message.event.toLowerCase()],
+      hashMapUUID[message.event.toLowerCase()]
+    );
+    finalPayload = trackInsertDataPayload;
   }
-  return null;
+  return finalPayload;
 }
 const processEvent = (message, destination) => {
   if (!message.type) {
@@ -120,10 +171,9 @@ const processEvent = (message, destination) => {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
-    // TODO
-    //   case EventType.TRACK:
-    //     category = CONFIG_CATEGORIES.TRACK;
-    //     break;
+    case EventType.TRACK:
+      category = CONFIG_CATEGORIES.TRACK;
+      break;
     default:
       throw new Error("Message type not supported");
   }

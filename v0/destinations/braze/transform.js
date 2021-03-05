@@ -415,7 +415,7 @@ function process(event) {
     { batchedRequest: {}, jobs: [1, 3]},
     { batchedRequest: {}, jobs: [2, 4]},
   ]
-*/
+  */
 
 function formatBatchResponse(batchPayload, metadataList, destination) {
   const response = defaultBatchRequestConfig();
@@ -616,24 +616,26 @@ function batch(destEvents) {
   // process identify events
   const ev = destEvents[index - 1];
   const { message, destination } = ev;
-  const identifyBatchResponse = defaultRequestConfig();
-  identifyBatchResponse.headers = message.headers;
-  const identifyResponseBodyJson = {
-    partner: BRAZE_PARTNER_NAME
-  };
   if (aliasBatch.length > 0) {
-    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
+    const identifyBatchResponse = defaultRequestConfig();
+    identifyBatchResponse.headers = message.headers;
+    const identifyResponseBodyJson = {
+      partner: BRAZE_PARTNER_NAME
+    };
+    if (aliasBatch.length > 0) {
+      identifyResponseBodyJson.aliases_to_identify = aliasBatch;
+    }
+    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
+    // modify the endpoint to identify endpoint
+    identifyBatchResponse.endpoint = identifyEndpoint;
+    respList.push(
+      formatBatchResponse(
+        identifyBatchResponse,
+        identifyMetadataBatch,
+        destination
+      )
+    );
   }
-  identifyBatchResponse.body.JSON = identifyResponseBodyJson;
-  // modify the endpoint to identify endpoint
-  identifyBatchResponse.endpoint = identifyEndpoint;
-  respList.push(
-    formatBatchResponse(
-      identifyBatchResponse,
-      identifyMetadataBatch,
-      destination
-    )
-  );
 
   // process track events
   if (

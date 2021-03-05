@@ -326,7 +326,11 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(payload, "device_brand", message.context.device.manufacturer);
+        set(
+          payload,
+          "device_brand",
+          get(message, "context.device.manufacturer")
+        );
       }
 
       payload.time = new Date(
@@ -406,21 +410,21 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        get(message, "properties.category") ||
         ""} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name: message.name || get(message, "properties.category")
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        get(message, "properties.category") ||
         ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name: message.name || get(message, "properties.category")
       };
       category = ConfigCategory.SCREEN;
       break;

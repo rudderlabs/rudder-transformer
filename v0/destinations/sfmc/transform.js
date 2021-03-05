@@ -75,7 +75,10 @@ function responseBuilderForInsertData(
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
   if (
     type === "identify" ||
-    (type === "track" && primaryKey.includes("Contact Key") && !uuid)
+    (type === "track" &&
+      primaryKeyArray.length === 1 &&
+      primaryKeyArray.includes("Contact Key") &&
+      !uuid)
   ) {
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
     response.body.JSON = {
@@ -96,10 +99,15 @@ function responseBuilderForInsertData(
   } else {
     let strPrimary = "";
     primaryKeyArray.forEach((key, index) => {
+      const keyTrimmed = key.trim();
+      let payloadValue = payload[keyTrimmed];
+      if (keyTrimmed === "Contact Key") {
+        payloadValue = contactKey;
+      }
       if (index === 0) {
-        strPrimary += `${key}:${payload[key]}`;
+        strPrimary += `${keyTrimmed}:${payloadValue}`;
       } else {
-        strPrimary += `,${key}:${payload[key]}`;
+        strPrimary += `,${keyTrimmed}:${payloadValue}`;
       }
     });
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${strPrimary}`;

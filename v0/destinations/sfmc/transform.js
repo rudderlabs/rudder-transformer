@@ -121,7 +121,7 @@ async function responseBuilderSimple(message, category, destination) {
   } = destination.Config;
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, "from", "to");
   const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, "from", "to");
-  const hashMapUUID = getHashFromArray(eventToUUID, "from", "to");
+  const hashMapUUID = getHashFromArray(eventToUUID, "event", "uuid");
   let finalPayload;
   let identifyContactsPayload;
   let identifyInsertDataPayload;

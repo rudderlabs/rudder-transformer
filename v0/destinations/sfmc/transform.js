@@ -62,7 +62,10 @@ function responseBuilderForInsertData(
   primaryKey,
   uuid
 ) {
-  const primaryKeyArray = primaryKey.split(",");
+  let primaryKeyArray;
+  if (primaryKey) {
+    primaryKeyArray = primaryKey.split(",");
+  }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const contactKey =

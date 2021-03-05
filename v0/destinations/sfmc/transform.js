@@ -1,5 +1,4 @@
 const axios = require("axios");
-const { v4: uuidv4 } = require("uuid");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require("./config");
 const {
@@ -63,6 +62,7 @@ function responseBuilderForInsertData(
   primaryKey,
   uuid
 ) {
+  const primaryKeyArray = primaryKey.split(",");
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const contactKey =
@@ -75,7 +75,7 @@ function responseBuilderForInsertData(
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
   if (
     type === "identify" ||
-    (type === "track" && primaryKey === "Contact Key" && !uuid)
+    (type === "track" && primaryKey.includes("Contact Key") && !uuid)
   ) {
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
     response.body.JSON = {
@@ -85,7 +85,7 @@ function responseBuilderForInsertData(
       }
     };
   } else if (type === "track" && uuid) {
-    const generateUuid = uuidv4();
+    const generateUuid = message.messageId;
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Uuid:${generateUuid}`;
     response.body.JSON = {
       values: {
@@ -94,11 +94,17 @@ function responseBuilderForInsertData(
       }
     };
   } else {
-    const primaryKeyValue = payload[primaryKey];
-    response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${primaryKey}:${primaryKeyValue}`;
+    let strPrimary = "";
+    primaryKeyArray.forEach((key, index) => {
+      if (index === 0) {
+        strPrimary += `${key}:${payload[key]}`;
+      } else {
+        strPrimary += `,${key}:${payload[key]}`;
+      }
+    });
+    response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${strPrimary}`;
     response.body.JSON = {
       values: {
-        [primaryKey]: primaryKeyValue,
         ...payload
       }
     };

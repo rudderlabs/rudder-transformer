@@ -154,7 +154,7 @@ async function responseBuilderSimple(message, category, destination) {
       category,
       authToken,
       "track",
-      hashMapPrimaryKey[message.event.toLowerCase()],
+      hashMapPrimaryKey[message.event.toLowerCase()] || "Contact Key",
       hashMapUUID[message.event.toLowerCase()]
     );
     finalPayload = trackInsertDataPayload;

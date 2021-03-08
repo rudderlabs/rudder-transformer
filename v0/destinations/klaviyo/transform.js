@@ -87,7 +87,6 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  // TODO: use get method
   const traitsInfo = getFieldValueFromMessage(message, "traits");
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&

@@ -1,41 +1,33 @@
 [
   {
     "destKey": "$id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "context.traits.userId",
-      "properties.userId"
-    ],
-    "required": false
+    "sourceKeys": "userId",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$email",
-    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
-    "required": false
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$first_name",
-    "sourceKeys": [
-      "traits.firstName",
-      "context.traits.firstName",
-      "properties.firstName"
-    ],
-    "required": false
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$last_name",
-    "sourceKeys": [
-      "traits.lastName",
-      "context.traits.lastName",
-      "properties.lastName"
-    ],
-    "required": false
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$phone_number",
-    "sourceKeys": ["traits.phone", "context.traits.phone", "properties.phone"],
-    "required": false
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$title",

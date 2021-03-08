@@ -1,13 +1,15 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": "context.traits.email",
-    "required": false
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "phone_number",
-    "sourceKeys": "context.traits.phone",
-    "required": false
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$consent",
@@ -21,23 +23,21 @@
   },
   {
     "destKey": "$id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "context.traits.userId",
-      "properties.userId"
-    ],
-    "required": false
+    "sourceKeys": "userId",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "first_name",
-    "sourceKeys": ["context.traits.firstName", "properties.firstName"],
-    "required": false
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "last_name",
-    "sourceKeys": ["context.traits.lastName", "properties.lastName"],
-    "required": false
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$title",

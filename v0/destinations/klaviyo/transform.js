@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
 const axios = require("axios");
@@ -38,6 +39,10 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
     email: getFieldValueFromMessage(message, "email"),
     phone_number: getFieldValueFromMessage(message, "phone")
   };
+  if (destination.Config.enforceEmailAsPrimary) {
+    delete profile.id;
+    profile._id = getFieldValueFromMessage(message, "userId");
+  }
   // If func is called as membership func else subscribe func
   if (conf === LIST_CONF.MEMBERSHIP) {
     targetUrl = `${targetUrl}/members`;
@@ -83,7 +88,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   // TODO: use get method
-  const traitsInfo = message.traits ? message.traits : message.context.traits;
+  const traitsInfo = getFieldValueFromMessage(message, "traits");
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     destination.Config.privateApiKey
@@ -102,10 +107,6 @@ const identifyRequestHandler = async (message, category, destination) => {
     message,
     MAPPING_CONFIG[category.name]
   );
-
-  propertyPayload.$first_name = getFieldValueFromMessage(message, "firstName");
-  propertyPayload.$last_name = getFieldValueFromMessage(message, "lastName");
-  propertyPayload.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
@@ -114,6 +115,10 @@ const identifyRequestHandler = async (message, category, destination) => {
     WhiteListedTraits
   );
   propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  if (destination.Config.enforceEmailAsPrimary) {
+    delete propertyPayload.$id;
+    propertyPayload._id = getFieldValueFromMessage(message, "userId");
+  }
   const payload = {
     token: destination.Config.publicApiKey,
     properties: propertyPayload
@@ -141,12 +146,6 @@ const trackRequestHandler = (message, category, destination) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
   );
-  customerProperties.$first_name = getFieldValueFromMessage(
-    message,
-    "firstName"
-  );
-  customerProperties.$last_name = getFieldValueFromMessage(message, "lastName");
-  customerProperties.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   customerProperties = extractCustomFields(
     message,
@@ -155,6 +154,10 @@ const trackRequestHandler = (message, category, destination) => {
     WhiteListedTraits
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
+  if (destination.Config.enforceEmailAsPrimary) {
+    delete customerProperties.$id;
+    customerProperties._id = getFieldValueFromMessage(message, "userId");
+  }
   payload.customer_properties = customerProperties;
   if (message.timestamp) {
     payload.time = toUnixTimestamp(message.timestamp);
@@ -178,9 +181,6 @@ const groupRequestHandler = async (message, category, destination) => {
     "groupId"
   )}/subscribe`;
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-  profile.first_name = getFieldValueFromMessage(message, "firstName");
-  profile.last_name = getFieldValueFromMessage(message, "lastName");
-  profile.$id = getFieldValueFromMessage(message, "userId");
   // Extract other K-V property from traits about user custom properties
   const groupWhitelistedTraits = [
     ...WhiteListedTraits,
@@ -193,6 +193,10 @@ const groupRequestHandler = async (message, category, destination) => {
     groupWhitelistedTraits
   );
   profile = removeUndefinedAndNullValues(profile);
+  if (destination.Config.enforceEmailAsPrimary) {
+    delete profile.$id;
+    profile._id = getFieldValueFromMessage(message, "userId");
+  }
   if (get(message.traits, "subscribe") === true) {
     // If consent info not present draw it from dest config
     if (!profile.sms_consent) {

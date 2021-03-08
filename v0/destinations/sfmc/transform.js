@@ -127,7 +127,7 @@ function responseBuilderForInsertData(
   return response;
 }
 async function responseBuilderSimple(message, category, destination) {
-  const {
+  let {
     clientId,
     clientSecret,
     subDomain,
@@ -137,6 +137,9 @@ async function responseBuilderSimple(message, category, destination) {
     eventToPrimaryKey,
     eventToUUID
   } = destination.Config;
+  subDomain = "mcxt4zx464ppr71jd9rp300hdc8y";
+    clientId = "ow081709of3iblovt1z0j8hm";
+    clientSecret = "Sm7Yoqpx1jpn4bDyJuvl61Ag";
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, "from", "to");
   const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, "from", "to");
   const hashMapUUID = getHashFromArray(eventToUUID, "event", "uuid");
@@ -176,6 +179,8 @@ async function responseBuilderSimple(message, category, destination) {
       hashMapUUID[message.event.toLowerCase()]
     );
     finalPayload = trackInsertDataPayload;
+  } else if (category.type === "identify" && createOrUpdateContacts) {
+    throw new Error("Creating or updating contacts is disabled");
   } else {
     throw new Error("Event not mapped for this track call");
   }

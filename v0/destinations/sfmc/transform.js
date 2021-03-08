@@ -37,10 +37,10 @@ function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
   response.endpoint = `https://${subdomain}.${ENDPOINTS.CONTACTS}`;
   response.method = defaultPostRequestConfig.requestMethod;
   const contactKey =
-    getFieldValueFromMessage(message, "userId") ||
+    getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either user id or anonymous id or email is required");
+    throw new Error("Either user id or email is required");
   }
   response.body.JSON = {
     attributeSets: [], // not sure about this mapping
@@ -69,10 +69,10 @@ function responseBuilderForInsertData(
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const contactKey =
-    getFieldValueFromMessage(message, "userId") ||
+    getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either user id or anonymous id or email is required");
+    throw new Error("Either user id or email is required");
   }
   response.method = defaultPutRequestConfig.requestMethod;
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));

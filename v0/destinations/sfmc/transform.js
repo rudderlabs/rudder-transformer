@@ -84,7 +84,9 @@ const responseBuilderForInsertData = (
   }
 
   const payload = removeUndefinedAndNullValues(
-    constructPayload(message, MAPPING_CONFIG[category.name])
+    toTitleCase(
+      flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
+    )
   );
   if (
     type === "identify" ||

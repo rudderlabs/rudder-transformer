@@ -177,7 +177,7 @@ async function responseBuilderSimple(message, category, destination) {
     );
     finalPayload = trackInsertDataPayload;
   } else {
-    finalPayload = {};
+    throw new Error("Event not mapped for this track call");
   }
   return finalPayload;
 }

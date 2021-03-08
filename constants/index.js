@@ -23,8 +23,31 @@ const TraitsMapping = {
 
 const SpecedTraits = ["address"];
 
+const WhiteListedTraits = [
+  "email",
+  "firstName",
+  "firstname",
+  "first_name",
+  "lastName",
+  "lastname",
+  "last_name",
+  "phone",
+  "title",
+  "organization",
+  "city",
+  "region",
+  "country",
+  "zip",
+  "image",
+  "timezone",
+  "anonymousId",
+  "userId",
+  "properties"
+];
+
 module.exports = {
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  WhiteListedTraits
 };

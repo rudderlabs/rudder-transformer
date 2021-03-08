@@ -39,7 +39,9 @@
         "tags": ["Test_User", "Interested_User", "DIY_Hobby"],
         "fieldInfo": {
           "Office": "Trastkiv",
-          "Country": "Russia"
+          "Country": "Russia",
+          "Likes": ["Potato", "Onion"],
+          "Random": "random"
         },
         "lists": [
           {
@@ -49,6 +51,10 @@
           {
             "id": 3,
             "status": "unsubscribe"
+          },
+          {
+            "id": 3,
+            "status": "unsubscribexyz"
           }
         ],
         "address": {

@@ -1,0 +1,104 @@
+[
+  {
+    "destKey": "$id",
+    "sourceKeys": "userId",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$phone_number",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$title",
+    "sourceKeys": ["traits.title", "context.traits.title", "properties.title"],
+    "required": false
+  },
+  {
+    "destKey": "$organization",
+    "sourceKeys": [
+      "traits.organization",
+      "context.traits.organization",
+      "properties.organization"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city",
+      "properties.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$region",
+    "sourceKeys": [
+      "traits.region",
+      "traits.address.region",
+      "context.traits.region",
+      "context.traits.address.region",
+      "properties.region"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$country",
+    "sourceKeys": [
+      "traits.country",
+      "traits.address.country",
+      "context.traits.country",
+      "context.traits.address.country",
+      "properties.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$zip",
+    "sourceKeys": [
+      "traits.zip",
+      "traits.address.postalcode",
+      "context.traits.zip",
+      "context.traits.address.postalcode",
+      "properties.zip"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$image",
+    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
+    "required": false
+  },
+  {
+    "destKey": "$timezone",
+    "sourceKeys": [
+      "traits.timezone",
+      "context.traits.timezone",
+      "properties.timezone"
+    ],
+    "required": false
+  }
+]

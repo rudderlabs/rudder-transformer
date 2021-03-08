@@ -13,7 +13,7 @@ const {
   getHashFromArray
 } = require("../../util");
 
-async function getToken(clientId, clientSecret, subdomain) {
+const getToken = async (clientId, clientSecret, subdomain) => {
   try {
     const resp = await axios.post(
       `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
@@ -31,8 +31,9 @@ async function getToken(clientId, clientSecret, subdomain) {
   } catch (error) {
     throw new Error("Could not retrieve authorisation token");
   }
-}
-function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
+};
+
+const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${subdomain}.${ENDPOINTS.CONTACTS}`;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -40,10 +41,10 @@ function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either user id or email is required");
+    throw new Error("Either userId or email is required");
   }
   response.body.JSON = {
-    attributeSets: [], // not sure about this mapping
+    attributeSets: [],
     contactKey
   };
   response.headers = {
@@ -51,8 +52,9 @@ function responseBuilderForIdentifyContacts(message, subdomain, authToken) {
     Authorization: `Bearer ${authToken}`
   };
   return response;
-}
-function responseBuilderForInsertData(
+};
+
+const responseBuilderForInsertData = (
   message,
   externalKey,
   subdomain,
@@ -61,7 +63,7 @@ function responseBuilderForInsertData(
   type,
   primaryKey,
   uuid
-) {
+) => {
   let primaryKeyArray;
   if (primaryKey) {
     primaryKeyArray = primaryKey.split(",");
@@ -72,7 +74,7 @@ function responseBuilderForInsertData(
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either user id or email is required");
+    throw new Error("Either userId or email is required");
   }
   response.method = defaultPutRequestConfig.requestMethod;
   payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
@@ -120,13 +122,15 @@ function responseBuilderForInsertData(
       }
     };
   }
+
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${authToken}`
   };
   return response;
-}
-async function responseBuilderSimple(message, category, destination) {
+};
+
+const responseBuilderSimple = async (message, category, destination) => {
   const {
     clientId,
     clientSecret,
@@ -182,8 +186,9 @@ async function responseBuilderSimple(message, category, destination) {
     throw new Error("Event not mapped for this track call");
   }
   return finalPayload;
-}
-const processEvent = (message, destination) => {
+};
+
+const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -200,10 +205,13 @@ const processEvent = (message, destination) => {
       throw new Error("Message type not supported");
   }
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  const response = await responseBuilderSimple(message, category, destination);
+  return response;
 };
-const process = event => {
-  return processEvent(event.message, event.destination);
+
+const process = async event => {
+  const response = await processEvent(event.message, event.destination);
+  return response;
 };
 
 exports.process = process;

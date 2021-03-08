@@ -51,13 +51,25 @@
   },
   {
     "destKey": "IP Address",
-    "sourceKeys": "context.ip",
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": false
   },
   {
     "destKey": "Ad Tracking Enabled",
     "sourceKeys": "context.device.adTrackingEnabled",
     "required": false
+  },
+  {
+    "destKey": "Last Name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "First Name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "Device Manufacturer",
@@ -77,11 +89,6 @@
   {
     "destKey": "Device Type",
     "sourceKeys": "context.device.type",
-    "required": false
-  },
-  {
-    "destKey": "Ad Tracking Enabled",
-    "sourceKeys": "context.device.adTrackingEnabled",
     "required": false
   },
   {
@@ -121,10 +128,8 @@
   },
   {
     "destKey": "",
-    "sourceKeys": [
-      "context.traits",
-      "traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   }
 ]
+

@@ -767,7 +767,7 @@ module.exports = {
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,
+  toTitleCase,
   toUnixTimestamp,
-  updatePayload,
-  toTitleCase
+  updatePayload
 };

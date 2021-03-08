@@ -26,7 +26,9 @@ const getToken = async (clientId, clientSecret, subdomain) => {
         "Content-Type": "application/json"
       }
     );
-    if (resp && resp.data) return resp.data.access_token;
+    if (resp && resp.data) {
+      return resp.data.access_token;
+    }
     throw new Error("Could not retrieve authorisation token");
   } catch (error) {
     throw new Error("Could not retrieve authorisation token");
@@ -43,14 +45,12 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
   if (!contactKey) {
     throw new Error("Either userId or email is required");
   }
-  response.body.JSON = {
-    attributeSets: [],
-    contactKey
-  };
+  response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${authToken}`
   };
+
   return response;
 };
 
@@ -64,20 +64,28 @@ const responseBuilderForInsertData = (
   primaryKey,
   uuid
 ) => {
-  let primaryKeyArray;
-  if (primaryKey) {
-    primaryKeyArray = primaryKey.split(",");
-  }
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const response = defaultRequestConfig();
   const contactKey =
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
     throw new Error("Either userId or email is required");
   }
+
+  const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
-  payload = removeUndefinedAndNullValues(toTitleCase(flattenJson(payload)));
+  response.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${authToken}`
+  };
+
+  let primaryKeyArray;
+  if (primaryKey) {
+    primaryKeyArray = primaryKey.split(",");
+  }
+
+  const payload = removeUndefinedAndNullValues(
+    constructPayload(message, MAPPING_CONFIG[category.name])
+  );
   if (
     type === "identify" ||
     (type === "track" &&
@@ -123,10 +131,6 @@ const responseBuilderForInsertData = (
     };
   }
 
-  response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${authToken}`
-  };
   return response;
 };
 
@@ -144,18 +148,16 @@ const responseBuilderSimple = async (message, category, destination) => {
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, "from", "to");
   const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, "from", "to");
   const hashMapUUID = getHashFromArray(eventToUUID, "event", "uuid");
-  let finalPayload;
-  let identifyContactsPayload;
-  let identifyInsertDataPayload;
+
+  const authToken = await getToken(clientId, clientSecret, subDomain);
+
   if (category.type === "identify" && !createOrUpdateContacts) {
-    let authToken = await getToken(clientId, clientSecret, subDomain);
-    identifyContactsPayload = responseBuilderForIdentifyContacts(
+    const identifyContactsPayload = responseBuilderForIdentifyContacts(
       message,
       subDomain,
       authToken
     );
-    authToken = await getToken(clientId, clientSecret, subDomain);
-    identifyInsertDataPayload = responseBuilderForInsertData(
+    const identifyInsertDataPayload = responseBuilderForInsertData(
       message,
       externalKey,
       subDomain,
@@ -163,13 +165,18 @@ const responseBuilderSimple = async (message, category, destination) => {
       authToken,
       "identify"
     );
-    finalPayload = [identifyContactsPayload, identifyInsertDataPayload];
-  } else if (
+    return [identifyContactsPayload, identifyInsertDataPayload];
+  }
+
+  if (category.type === "identify" && createOrUpdateContacts) {
+    throw new Error("Creating or updating contacts is disabled");
+  }
+
+  if (
     category.type === "track" &&
     hashMapExternalKey[message.event.toLowerCase()]
   ) {
-    const authToken = await getToken(clientId, clientSecret, subDomain);
-    const trackInsertDataPayload = responseBuilderForInsertData(
+    return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
       subDomain,
@@ -179,19 +186,16 @@ const responseBuilderSimple = async (message, category, destination) => {
       hashMapPrimaryKey[message.event.toLowerCase()] || "Contact Key",
       hashMapUUID[message.event.toLowerCase()]
     );
-    finalPayload = trackInsertDataPayload;
-  } else if (category.type === "identify" && createOrUpdateContacts) {
-    throw new Error("Creating or updating contacts is disabled");
-  } else {
-    throw new Error("Event not mapped for this track call");
   }
-  return finalPayload;
+
+  throw new Error("Event not mapped for this track call");
 };
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
+
   const messageType = message.type.toLowerCase();
   let category;
   switch (messageType) {
@@ -204,6 +208,7 @@ const processEvent = async (message, destination) => {
     default:
       throw new Error("Message type not supported");
   }
+
   // build the response
   const response = await responseBuilderSimple(message, category, destination);
   return response;

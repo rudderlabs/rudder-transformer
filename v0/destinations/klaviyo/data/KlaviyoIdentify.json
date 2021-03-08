@@ -47,6 +47,7 @@
     "destKey": "$city",
     "sourceKeys": [
       "traits.city",
+      "traits.address.city",
       "context.traits.city",
       "context.traits.address.city",
       "properties.city"
@@ -57,6 +58,7 @@
     "destKey": "$region",
     "sourceKeys": [
       "traits.region",
+      "traits.address.region",
       "context.traits.region",
       "context.traits.address.region",
       "properties.region"
@@ -67,6 +69,7 @@
     "destKey": "$country",
     "sourceKeys": [
       "traits.country",
+      "traits.address.country",
       "context.traits.country",
       "context.traits.address.country",
       "properties.country"
@@ -77,6 +80,7 @@
     "destKey": "$zip",
     "sourceKeys": [
       "traits.zip",
+      "traits.address.postalcode",
       "context.traits.zip",
       "context.traits.address.postalcode",
       "properties.zip"

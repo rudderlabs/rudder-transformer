@@ -7,7 +7,7 @@
     "issued_at": "1582343657644",
     "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
   },
-  "https://login.salesforce.com/services/oauth2/token?username=shivam@rs.com&password=RudderStack@2020mA2Q7M1WztWZ5W5Vtvx7JFJz&client_id=undefined&client_secret=undefined&grant_type=password": {
+  "https://login.salesforce.com/services/oauth2/token?username=shivam@rs.com&password=RudderStack%402020mA2Q7M1WztWZ5W5Vtvx7JFJz&client_id=undefined&client_secret=undefined&grant_type=password": {
     "access_token": "00D5g000003d8os!AQ0AQEjypRT2IMxtHvPV3aAh_8NOPLQwBCF76sCFFCEWqtuMpjk_nrI3vHHjA2XnUGQCvFStseeCh63iY8M6FN4pq59ehTPj",
     "instance_url": "https://rudderstack8-dev-ed.my.salesforce.com",
     "id": "https://login.salesforce.com/id/00D5g000003d8osEAA/0055g0000034A0TAAU",
@@ -19,17 +19,15 @@
     "searchRecords": []
   },
   "https://rudderstack8-dev-ed.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=email815@gmail.com&sobject=Case&Case.where=Priority='high'+and+Product__c='pd-0748'&Case.fields=Id": {
-    "data": {
-      "searchRecords": [
-        {
-          "attributes": {
-            "type": "Case",
-            "url": "/services/data/v50.0/sobjects/Case/5005g000003AaiyAAC"
-          },
-          "Id": "5005g000003AaiyAAC"
-        }
-      ]
-    }
+    "searchRecords": [
+      {
+        "attributes": {
+          "type": "Case",
+          "url": "/services/data/v50.0/sobjects/Case/5005g000003AaiyAAC"
+        },
+        "Id": "5005g000003AaiyAAC"
+      }
+    ]
   },
 
   "https://rudderstack8-dev-ed.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=email815@gmail.com&sobject=Case&Case.where=Priority='high'+and+Product__c='pd-0748'&Case.fields=Id,SuppliedEmail,Priority,Product__c": {

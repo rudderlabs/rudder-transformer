@@ -747,8 +747,8 @@
           }
         ],
         "initialAccessToken": "mA2Q7M1WztWZ5W5Vtvx7JFJz",
-        "password": "shivam@rs.com",
-        "userName": "RudderStack@2020"
+        "password": "RudderStack@2020",
+        "userName": "shivam@rs.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",

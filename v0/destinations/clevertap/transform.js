@@ -1,3 +1,5 @@
+const get = require("get-value");
+const set = require("set-value");
 const Handlebars = require("handlebars");
 const { EventType } = require("../../../constants");
 const {
@@ -39,6 +41,9 @@ const responseBuilderSimple = (message, category, destination) => {
     };
   } else {
     const eventData = constructPayload(message, MAPPING_CONFIG[category.name]);
+    if (get(eventData.evtName) == "Order Completed") {
+      set(eventData, "evtName", "Charged");
+    }
     removeUndefinedAndNullValues(eventData);
     eventData.type = "event";
     payload = {

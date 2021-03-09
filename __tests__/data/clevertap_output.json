@@ -147,5 +147,53 @@
   },
   {
     "error": "Message type not supported"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "type": "event",
+            "evtData": {
+              "Items": [
+                {
+                  "Category": "Books",
+                  "Quantity": 1,
+                  "Book name": "The Millionaire next door"
+                },
+                {
+                  "Category": "Books",
+                  "Quantity": 1,
+                  "Book name": "Achieving inner zen"
+                },
+                {
+                  "Category": "Books",
+                  "Quantity": 5,
+                  "Book name": "Chuck it, let's do it"
+                }
+              ],
+              "Amount": 500,
+              "Charged ID": 24052121,
+              "Payment mode": "Debit Card"
+            },
+            "evtName": "Charged",
+            "identity": "user1xy"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "X-CleverTap-Account-Id": "476550467"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
   }
 ]

@@ -4,6 +4,7 @@ const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
 const {
+  isDefinedAndNotNull,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -194,7 +195,7 @@ const processIdentify = async (
   const attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
     const val = traits[key];
-    if (val) {
+    if (isDefinedAndNotNull(val)) {
       attribute[leadTraitMapping[key]] = val;
     }
   });

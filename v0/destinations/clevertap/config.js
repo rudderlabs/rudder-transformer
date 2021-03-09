@@ -19,6 +19,7 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "married",
   "customerType",
   "anonymousId",
+  "avatar",
   "userId",
   "id"
 ];

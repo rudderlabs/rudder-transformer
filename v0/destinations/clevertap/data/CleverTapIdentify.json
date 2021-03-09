@@ -44,5 +44,11 @@
     "destKey": "Customer Type",
     "sourceKeys": ["traits.customerType", "context.traits.customerType"],
     "required": false
+  },
+  {
+    "destKey": "Photo",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "required": false
   }
 ]
+

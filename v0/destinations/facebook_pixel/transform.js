@@ -353,7 +353,7 @@ const responseBuilderSimple = (message, category, destination) => {
     limitedDataUSage
   } = Config;
 
-  const endpoint = `https://graph.facebook.com/v9.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v10.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,

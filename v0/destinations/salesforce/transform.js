@@ -13,8 +13,11 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  getFirstAndLastName
+  getFirstAndLastName,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
+const logger = require("../../../logger");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -27,7 +30,13 @@ async function getSFDCHeader(destination) {
   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  const response = await axios.post(authUrl, {});
+  let response;
+  try {
+    response = await axios.post(authUrl, {});
+  } catch (error) {
+    logger.error(error);
+    throw new Error(`SALESFORCE AUTH FAILED: ${error.message}`);
+  }
 
   return {
     token: `Bearer ${response.data.access_token}`,
@@ -155,7 +164,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
 }
 
 // Function for handling identify events
-async function processIdentify(message, destination) {
+async function processIdentify(message, authorizationData) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -164,9 +173,6 @@ async function processIdentify(message, destination) {
 
   // if traits is correct, start processing
   const responseData = [];
-
-  // Get the authorization header if not available
-  const authorizationData = await getSFDCHeader(destination);
 
   // get salesforce object map
   const salesforceMaps = await getSalesforceIdFromPayload(
@@ -187,10 +193,10 @@ async function processIdentify(message, destination) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, destination) {
+async function processSingleMessage(message, authorizationData) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, destination);
+    response = await processIdentify(message, authorizationData);
   } else {
     throw new Error(`message type ${message.type} is not supported`);
   }
@@ -198,8 +204,56 @@ async function processSingleMessage(message, destination) {
 }
 
 async function process(event) {
-  const response = await processSingleMessage(event.message, event.destination);
+  // Get the authorization header if not available
+  const authorizationData = await getSFDCHeader(event.destination);
+  const response = await processSingleMessage(event.message, authorizationData);
   return response;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const authorizationData = await getSFDCHeader(inputs[0].destination);
+  if (!authorizationData) {
+    const respEvents = getErrorRespEvents(
+      inputs.map(input => input.metadata),
+      400,
+      "Authorisation failed"
+    );
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+
+        // unprocessed payload
+        return getSuccessRespEvents(
+          await processSingleMessage(input.message, authorizationData),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response.status : 500, // default to retryable
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

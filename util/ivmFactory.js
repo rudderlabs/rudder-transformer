@@ -1,8 +1,9 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
+
 const stats = require("./stats");
-const {  getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
+const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
 const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -26,8 +27,11 @@ async function createIvm(code, libraryVersionIds) {
     });
   }
 
-  code = code + `
-    export function transformWrapper(transformationPayload) {
+  const codeWithWrapper =
+    // eslint-disable-next-line prefer-template
+    code +
+    `
+    export async function transformWrapper(transformationPayload) {
       let events = transformationPayload.events
       let transformType = transformationPayload.transformationType
       let outputEvents = []
@@ -38,24 +42,32 @@ async function createIvm(code, libraryVersionIds) {
       });
 
       var metadata = function(event) {
-        const eventMetadata = event? eventsMetadata[event.messageId] || {}: {};
+        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
         return eventMetadata
       }
       switch(transformType) {
         case "transformBatch":
-          outputEvents = transformBatch(eventMessages, metadata).map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
+          outputEvents = await transformBatch(eventMessages, metadata);
+          outputEvents = outputEvents.map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
           break;
         case "transformEvent":
-          outputEvents = eventMessages.map(ev => {
-            let transformedEvent = transformEvent(ev, metadata)
-            return {transformedEvent, metadata: metadata(ev)}
-          }).filter(e => e.transformedEvent != null);
+
+          outputEvents = await Promise.all(eventMessages.map(async ev => {
+            try{
+              const currMsgId = ev.messageId;
+              let transformedEvent = await transformEvent(ev, metadata);
+              return {transformedEvent, metadata: eventsMetadata[currMsgId] || {}};
+            } catch (error) {
+              // Handling the errors in versionedRouter.js
+              return {error: error.toString(), metadata: metadata(ev)};
+            }
+          }));
+          outputEvents = outputEvents.filter(e => (e.transformedEvent != null || e.error));
           break;
       }
       return outputEvents
     }
   `;
-  // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
@@ -151,8 +163,8 @@ async function createIvm(code, libraryVersionIds) {
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
-        events,
-        timeout
+        reject,
+        events
         ){
           const derefMainFunc = fnRef.deref();
           Promise.resolve(derefMainFunc(events))
@@ -162,7 +174,7 @@ async function createIvm(code, libraryVersionIds) {
             ]);
           })
           .catch(error => {
-            resolve.applyIgnored(undefined, [
+            reject.applyIgnored(undefined, [
               new ivm.ExternalCopy(error.message).copyInto()
             ]);
           });
@@ -175,7 +187,7 @@ async function createIvm(code, libraryVersionIds) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-  const customScriptModule = await isolate.compileModule(`${code}`);
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
   await customScriptModule.instantiate(context, spec => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;

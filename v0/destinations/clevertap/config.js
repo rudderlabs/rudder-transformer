@@ -13,29 +13,14 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "email",
   "name",
   "phone",
-  "employed",
   "gender",
   "education",
-  "graduate",
   "birthday",
   "married",
   "customerType",
   "anonymousId",
   "userId",
-  "id",
-  "msg_sms",
-  "msgSMS",
-  "msgSms",
-  "msgsms",
-  "msg_email",
-  "msgEmail",
-  "msgemail",
-  "msg_push",
-  "msgPush",
-  "msgpush",
-  "msg_whatsapp",
-  "msgwhatsapp",
-  "msgWhatsapp"
+  "id"
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

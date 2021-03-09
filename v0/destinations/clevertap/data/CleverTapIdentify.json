@@ -36,11 +36,6 @@
     "required": false
   },
   {
-    "destKey": "Graduate",
-    "sourceKeys": ["traits.graduate", "context.traits.graduate"],
-    "required": false
-  },
-  {
     "destKey": "Married",
     "sourceKeys": ["traits.married", "context.traits.married"],
     "required": false
@@ -48,57 +43,6 @@
   {
     "destKey": "Customer Type",
     "sourceKeys": ["traits.customerType", "context.traits.customerType"],
-    "required": false
-  },
-  {
-    "destKey": "MSG-email",
-    "sourceKeys": [
-      "traits.msg_email",
-      "traits.msgemail",
-      "traits.msgEmail",
-      "context.traits.msg_email",
-      "context.traits.msgemail",
-      "context.traits.msgEmail"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "MSG-push",
-    "sourceKeys": [
-      "traits.msg_push",
-      "traits.msgpush",
-      "traits.msgPush",
-      "context.traits.msg_push",
-      "context.traits.msgpush",
-      "context.traits.msgPush"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "MSG-sms",
-    "sourceKeys": [
-      "traits.msg_sms",
-      "traits.msgSms",
-      "traits.msgsms",
-      "traits.msgSMS",
-      "context.traits.msg_sms",
-      "context.traits.msg_sms",
-      "context.traits.msgSms",
-      "context.traits.msgsms",
-      "context.traits.msgSMS"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "MSG-whatsapp",
-    "sourceKeys": [
-      "traits.msg_whatsapp",
-      "traits.msgWhatsapp",
-      "traits.msgwhatsapp",
-      "context.traits.msg_whatsapp",
-      "context.traits.msgWhatsapp",
-      "context.traits.msgwhatsapp"
-    ],
     "required": false
   }
 ]

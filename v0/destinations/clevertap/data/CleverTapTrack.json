@@ -15,7 +15,7 @@
     "sourceKeys": "properties",
     "required": true,
     "metadata": {
-      "defaultValue": "NA"
+      "defaultValue": {}
     }
   }
 ]

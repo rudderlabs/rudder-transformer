@@ -17,7 +17,7 @@
     "params": {},
     "headers": {},
     "version": "1",
-    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAxIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdfSwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRpZCI6InNhamFsMTIiLCIkZW1haWwiOiJ1dHNhYkBydWRkZXJzdGFjay5jb20iLCIkcGhvbmVfbnVtYmVyIjoiOTExMjM0MDM3NSIsImlkIjoidXRzYWJjIiwiYWdlIjoiMjIifX0="
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAxIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdfSwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRpZCI6InNhamFsMTIiLCIkZW1haWwiOiJ1dHNhYkBydWRkZXJzdGFjay5jb20iLCIkcGhvbmVfbnVtYmVyIjoiOTExMjM0MDM3NSIsImFnZSI6IjIyIn19"
   },
   {
     "body": { "XML": {}, "FORM": {}, "JSON": {} },
@@ -27,7 +27,7 @@
     "params": {},
     "headers": {},
     "version": "1",
-    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAyIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdLCIkdmFsdWUiOjMwMDB9LCJ0b2tlbiI6IldKcWlqOSIsImN1c3RvbWVyX3Byb3BlcnRpZXMiOnsiJGlkIjoic2FqYWwxMiIsIiRlbWFpbCI6InV0c2FiQHJ1ZGRlcnN0YWNrLmNvbSIsIiRwaG9uZV9udW1iZXIiOiI5MTEyMzQwMzc1IiwiaWQiOiJ1dHNhYmMiLCJhZ2UiOiIyMiIsIm5hbWUiOiJVdHNhYiIsImRlc2NyaXB0aW9uIjoiU2FtcGxlIGRlc2NyaXB0aW9uIn19"
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAyIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdLCIkdmFsdWUiOjMwMDB9LCJ0b2tlbiI6IldKcWlqOSIsImN1c3RvbWVyX3Byb3BlcnRpZXMiOnsiJGlkIjoic2FqYWwxMiIsIiRlbWFpbCI6InV0c2FiQHJ1ZGRlcnN0YWNrLmNvbSIsIiRwaG9uZV9udW1iZXIiOiI5MTEyMzQwMzc1IiwiYWdlIjoiMjIiLCJuYW1lIjoiVXRzYWIiLCJkZXNjcmlwdGlvbiI6IlNhbXBsZSBkZXNjcmlwdGlvbiJ9fQ=="
   },
   {
     "body": {

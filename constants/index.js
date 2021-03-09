@@ -40,6 +40,7 @@ const WhiteListedTraits = [
   "zip",
   "image",
   "timezone",
+  "id",
   "anonymousId",
   "userId",
   "properties"

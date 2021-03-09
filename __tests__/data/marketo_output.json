@@ -62,65 +62,6 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer access_token_success"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "action": "createOrUpdate",
-        "input": [
-          {
-            "Email": "test@example.org",
-            "FirstName": "Test",
-            "id": 4,
-            "LastName": "Name",
-            "userId": "user_id_success"
-          }
-        ],
-        "lookupField": "id"
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer access_token_success"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "action": "createOrUpdate",
-        "input": [
-          {
-            "customLeadScore": "100",
-            "Email": "test@example.org",
-            "FirstName": "Test",
-            "id": 4,
-            "LastName": "Name",
-            "userId": "user_id_success"
-          }
-        ],
-        "lookupField": "id"
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
     "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
     "headers": {
       "Content-Type": "application/json",

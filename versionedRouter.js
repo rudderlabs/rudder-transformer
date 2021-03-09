@@ -64,22 +64,24 @@ async function handleDest(ctx, version, destination) {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        if (!Array.isArray(respEvents)) {
-          respEvents = [respEvents];
+        if (respEvents) {
+          if (!Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
+          respList.push(
+            ...respEvents.map(ev => {
+              let { userId } = ev;
+              if (ev.statusCode !== 400 && userId) {
+                userId = `${userId}`;
+              }
+              return {
+                output: { ...ev, userId },
+                metadata: event.metadata,
+                statusCode: 200
+              };
+            })
+          );
         }
-        respList.push(
-          ...respEvents.map(ev => {
-            let { userId } = ev;
-            if (ev.statusCode !== 400 && userId) {
-              userId = `${userId}`;
-            }
-            return {
-              output: { ...ev, userId },
-              metadata: event.metadata,
-              statusCode: 200
-            };
-          })
-        );
       } catch (error) {
         logger.error(error);
 

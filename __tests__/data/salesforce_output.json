@@ -98,8 +98,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "message type track should contain an event property.",
-    "error": "message type track is not supported"
+    "error": "message type track should contain an event property."
   },
   [
     {
@@ -231,6 +230,86 @@
       },
       "files": {}
     }
+  ],
+  [
+    {
+      "body": { "XML": {}, "FORM": {}, "JSON": { "Id": "5005g000001IztSAAS" } },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "version": "1",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Case/5005g000001IztSAAS?_HttpMethod=DELETE"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Case",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "SuppliedEmail": "email1115@gmail.com",
+          "Priority": "high",
+          "Product__c": "pd-1115"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Case/5005g000001J0L2AAK?_HttpMethod=PATCH",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "SuppliedEmail": "email1116@gmail.com",
+          "Product__c": "pd-1116",
+          "Priority": "low"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderstack8-dev-ed.my.salesforce.com/services/data/v50.0/sobjects/Case/5005g000003AaiyAAC?_HttpMethod=PATCH",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D5g000003d8os!AQ0AQEjypRT2IMxtHvPV3aAh_8NOPLQwBCF76sCFFCEWqtuMpjk_nrI3vHHjA2XnUGQCvFStseeCh63iY8M6FN4pq59ehTPj"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "Product__c": "PD-1010",
+          "Priority": "Low"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]
-

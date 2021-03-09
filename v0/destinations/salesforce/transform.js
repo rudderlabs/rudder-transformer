@@ -48,6 +48,46 @@ async function getSFDCHeader(destination) {
   };
 }
 
+// https://rudderstack8-dev-ed.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=email815@gmail.com&sobject=Case&Case.where=Priority='P-low'&Case.fields=Id,SuppliedEmail,Priority,Product__c
+// https://rudderstack8-dev-ed.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=email815@gmail.com&sobject=Case&Case.fields=Id,SuppliedEmail,Priority,Product__c
+
+// To Do :: Look why we are getting this issues
+async function getUpsertData(upserts, sfObject, instanceUrl, token) {
+  let url = `${instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch`;
+  const fields = `&${sfObject}.fields=Id`;
+  let queryParams = "";
+  const upsertKeys = Object.keys(upserts);
+  let res = [];
+  url += `/?q=${upserts[upsertKeys[0]]}&sobject=${sfObject}`;
+  upsertKeys.splice(0, 1);
+
+  if (upsertKeys.length > 0) {
+    const whereClause = `&${sfObject}.where=`;
+    upsertKeys.forEach((k, index) => {
+      queryParams += `${k}='${upserts[k]}'`;
+      if (upsertKeys.length > index + 1) {
+        queryParams += "+and+";
+      }
+    });
+    queryParams = whereClause + queryParams;
+  }
+  // eslint-disable-next-line no-unused-vars
+  url = url + queryParams + fields;
+
+  const upsertResponse = await axios.get(url, {
+    headers: { Authorization: token }
+  });
+
+  if (
+    upsertResponse &&
+    upsertResponse.data &&
+    upsertResponse.data.searchRecords
+  ) {
+    res = upsertResponse.data.searchRecords;
+  }
+  return res;
+}
+
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
@@ -144,7 +184,7 @@ async function getSalesforceIdFromPayload(
     const query = searchQuery || getFieldValueFromMessage(message, "email");
 
     if (!query) {
-      throw new Error("Invalid Email address for Lead Objet");
+      throw new Error("Invalid Email address for Lead Object");
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${query}&sobject=${sfObject}&${sfObject}.fields=${requiredField}`;
@@ -225,7 +265,6 @@ function generateActionConfiguration(
   crudOperation,
   sfObject,
   fields,
-  upserts,
   authorizationData
 ) {
   const sfMap = {
@@ -242,6 +281,7 @@ function generateActionConfiguration(
       break;
     case CRUD_OPERATION.DELETE:
       sfMap.httpMethod = CRUD_OPERATION.DELETE.toUpperCase();
+      sfMap.salesforceId = fields.Id;
       break;
     case CRUD_OPERATION.CREATE:
       break;
@@ -259,30 +299,26 @@ function generateActionConfiguration(
  * @param {*} actionConfigurations
  * @param {*} authorizationData
  */
-function processTrack(
-  message,
-  destination,
-  actionConfigurations,
-  authorizationData
-) {
+function processTrack(message, actionConfigurations, authorizationData) {
   let payload = {};
   const customActionResponse = [];
   actionConfigurations.forEach(config => {
-    payload = getMappingField(
-      message,
-      config.fieldMappings,
-      config.upsertMappings
-    );
-    customActionResponse.push(
-      generateActionConfiguration(
+    if (config.crudOperation !== CRUD_OPERATION.UPSERT) {
+      payload = getMappingField(
+        message,
+        config.fieldMappings,
+        config.upsertMappings
+      );
+      const res = generateActionConfiguration(
         config.crudOperation,
         config.salesForceObject,
         payload.Field,
-        payload.Upsert,
         authorizationData
-      )
-    );
+      );
+      customActionResponse.push(res);
+    }
   });
+
   return customActionResponse;
 }
 
@@ -291,9 +327,8 @@ function processTrack(
  * @param {*} message
  * @param {*} destination
  */
-async function processCustomActions(message, destination) {
+async function processCustomActions(message, authorizationData, actions) {
   const { event } = message;
-  let { actions } = destination.Config;
   let customActionResponse = [];
   if (!event) {
     throw new Error(
@@ -304,10 +339,56 @@ async function processCustomActions(message, destination) {
     throw new Error(`actions is not configured to process track event`);
   }
 
-  const authorizationData = await getSFDCHeader(destination);
   actions = actions.filter(a => {
     return event === a.eventName;
   });
+
+  let upsertActionConfig = [];
+  actions.forEach(a => {
+    upsertActionConfig = a.actionConfigurations.filter(ac => {
+      return ac.crudOperation === CRUD_OPERATION.UPSERT;
+    });
+  });
+
+  await Promise.all(
+    upsertActionConfig.map(async u => {
+      const payload = getMappingField(
+        message,
+        u.fieldMappings,
+        u.upsertMappings
+      );
+      const response = await getUpsertData(
+        payload.Upsert,
+        u.salesForceObject,
+        authorizationData.instanceUrl,
+        authorizationData.token
+      );
+      const res = [];
+      if (response.length === 0) {
+        res.push(
+          generateActionConfiguration(
+            CRUD_OPERATION.CREATE,
+            u.salesForceObject,
+            payload.Field,
+            authorizationData
+          )
+        );
+      } else {
+        response.forEach(r => {
+          payload.Field.Id = r.Id;
+          res.push(
+            generateActionConfiguration(
+              CRUD_OPERATION.UPDATE,
+              u.salesForceObject,
+              payload.Field,
+              authorizationData
+            )
+          );
+        });
+      }
+      customActionResponse = customActionResponse.concat(res);
+    })
+  );
 
   /**
    * Loop Over list of actions and push generated payload into array.
@@ -315,12 +396,7 @@ async function processCustomActions(message, destination) {
   actions.forEach(ac => {
     let res = [];
     if (message.type === EventType.TRACK) {
-      res = processTrack(
-        message,
-        destination,
-        ac.actionConfigurations,
-        authorizationData
-      );
+      res = processTrack(message, ac.actionConfigurations, authorizationData);
     }
     customActionResponse = customActionResponse.concat(res);
   });
@@ -333,16 +409,13 @@ async function processCustomActions(message, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processGroup(message, destination) {
+async function processGroup(message, authorizationData) {
   let payload = {};
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
     throw new Error("Invalid traits for Salesforce request");
   }
-
-  // Get the authorization header if not available
-  const authorizationData = await getSFDCHeader(destination);
 
   payload = constructPayload(message, groupMappingJson);
   // get salesforce object map
@@ -399,7 +472,7 @@ async function processIdentify(message, authorizationData) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, authorizationData) {
+async function processSingleMessage(message, authorizationData, destination) {
   let response;
   const eventType = message.type;
   switch (eventType) {
@@ -410,7 +483,11 @@ async function processSingleMessage(message, authorizationData) {
       response = await processGroup(message, authorizationData);
       break;
     case EventType.TRACK:
-      response = await processCustomActions(message, authorizationData);
+      response = await processCustomActions(
+        message,
+        authorizationData,
+        destination.Config.actions
+      );
       break;
     default:
       throw new Error(`message type ${message.type} is not supported`);
@@ -421,7 +498,11 @@ async function processSingleMessage(message, authorizationData) {
 async function process(event) {
   // Get the authorization header if not available
   const authorizationData = await getSFDCHeader(event.destination);
-  const response = await processSingleMessage(event.message, authorizationData);
+  const response = await processSingleMessage(
+    event.message,
+    authorizationData,
+    event.destination
+  );
   return response;
 }
 
@@ -474,69 +555,3 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
-
-// {
-//   "destination": {
-//     "Config": {
-//       "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-//       "password": "hJCR557#uzFfD",
-//       "userName": "sampathvinayak1453@gmail.com"
-//     },
-//     "DestinationDefinition": {
-//       "DisplayName": "Salesforce",
-//       "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
-//       "Name": "SALESFORCE"
-//     },
-//     "Enabled": true,
-//     "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
-//     "Name": "tst",
-//     "Transformations": []
-//   },
-//   "message": {
-//     "channel": "web",
-//     "context": {
-//       "app": {
-//         "build": "1.0.0",
-//         "name": "RudderLabs JavaScript SDK",
-//         "namespace": "com.rudderlabs.javascript",
-//         "version": "1.0.0"
-//       },
-//       "library": {
-//         "name": "RudderLabs JavaScript SDK",
-//         "version": "1.0.0"
-//       },
-//       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-//       "locale": "en-US",
-//       "ip": "0.0.0.0",
-//       "os": {
-//         "name": "",
-//         "version": ""
-//       },
-//       "screen": {
-//         "density": 2
-//       }
-//     },
-//     "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-//     "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-//     "originalTimestamp": "2019-10-14T09:03:17.562Z",
-//     "anonymousId": "123456",
-//     "userId": "123456",
-//     "type": "group",
-//     "traits": {
-//       "anonymousId": "123456",
-//       "name": "Shivam-Group 2:33",
-//       "email": "sayan@gmail.com",
-//       "address": {
-//         "city": "kolkata",
-//         "country": "India",
-//         "postalCode": 700056,
-//         "state": "WB",
-//         "street": ""
-//       }
-//     },
-//     "integrations": {
-//       "All": true
-//     },
-//     "sentAt": "2019-10-14T09:03:22.563Z"
-//   }
-// }

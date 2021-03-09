@@ -581,6 +581,198 @@
       "type": "identify",
       "userId": "1e7673da-9473-49c6-97f7-da848ecafa76"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "actions": [
+          {
+            "actionConfigurations": [
+              {
+                "crudOperation": "Delete",
+                "fieldMappings": [
+                  { "from": "userId", "to": "Id" },
+                  { "from": "traits.Priority", "to": "Priority" }
+                ],
+                "salesForceObject": "Case",
+                "upsertMappings": [{ "from": "", "to": "" }]
+              }
+            ],
+            "eventName": "Delete Case",
+            "eventType": "Track"
+          }
+        ],
+        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
+        "password": "hJCR557#uzFfD",
+        "userName": "sampathvinayak1453@gmail.com"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Salesforce",
+        "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+        "Name": "SALESFORCE"
+      },
+      "Enabled": true,
+      "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+      "Name": "tst",
+      "Transformations": []
+    },
+    "message": {
+      "userId": "5005g000001IztSAAS",
+      "type": "track",
+      "event": "Delete Case",
+      "traits": {
+        "email": "email1214@gmail.com",
+        "priority": "high",
+        "productName": "pd-1214"
+      },
+      "integrations": {
+        "All": true
+      },
+      "properties": {
+        "email": "email1215@gmail.com",
+        "productName": "pd-1215",
+        "priority": "low",
+        "Id": "5005g000001J0L2AAK"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "actions": [
+          {
+            "actionConfigurations": [
+              {
+                "crudOperation": "Create",
+                "fieldMappings": [
+                  {
+                    "from": "traits.email",
+                    "to": "SuppliedEmail"
+                  },
+                  {
+                    "from": "traits.priority",
+                    "to": "Priority"
+                  },
+                  {
+                    "from": "traits.productName",
+                    "to": "Product__c"
+                  }
+                ],
+                "salesForceObject": "Case",
+                "upsertMappings": [
+                  {
+                    "from": "",
+                    "to": ""
+                  }
+                ]
+              },
+              {
+                "crudOperation": "Update",
+                "fieldMappings": [
+                  {
+                    "from": "properties.email",
+                    "to": "SuppliedEmail"
+                  },
+                  {
+                    "from": "properties.productName",
+                    "to": "Product__c"
+                  },
+                  {
+                    "from": "properties.priority",
+                    "to": "Priority"
+                  },
+                  {
+                    "from": "properties.Id",
+                    "to": "Id"
+                  }
+                ],
+                "salesForceObject": "Case",
+                "upsertMappings": [
+                  {
+                    "from": "",
+                    "to": ""
+                  }
+                ]
+              }
+            ],
+            "eventName": "Generate Case",
+            "eventType": "Track"
+          }
+        ],
+        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
+        "password": "hJCR557#uzFfD",
+        "userName": "sampathvinayak1453@gmail.com"
+      }
+    },
+    "message": {
+      "anonymousId": "anonId-1115",
+      "type": "track",
+      "event": "Generate Case",
+      "traits": {
+        "Id": "5005g000001J0KxAAK",
+        "email": "email1115@gmail.com",
+        "priority": "high",
+        "productName": "pd-1115"
+      },
+      "properties": {
+        "email": "email1116@gmail.com",
+        "productName": "pd-1116",
+        "priority": "low",
+        "Id": "5005g000001J0L2AAK"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "actions": [
+          {
+            "actionConfigurations": [
+              {
+                "crudOperation": "Upsert",
+                "fieldMappings": [
+                  { "from": "traits.productName", "to": "Product__c" },
+                  { "from": "traits.priority", "to": "Priority" }
+                ],
+                "salesForceObject": "Case",
+                "upsertMappings": [
+                  { "from": "properties.email", "to": "SuppliedEmail" },
+                  { "from": "properties.priority", "to": "Priority" },
+                  { "from": "properties.productName", "to": "Product__c" }
+                ]
+              }
+            ],
+            "eventName": "Upsert Case",
+            "eventType": "Track"
+          }
+        ],
+        "initialAccessToken": "mA2Q7M1WztWZ5W5Vtvx7JFJz",
+        "password": "shivam@rs.com",
+        "userName": "RudderStack@2020"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Salesforce",
+        "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+        "Name": "SALESFORCE"
+      },
+      "Enabled": true,
+      "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+      "Name": "tst",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "anonId-1115",
+      "type": "track",
+      "event": "Upsert Case",
+      "traits": {
+        "priority": "Low",
+        "productName": "PD-1010"
+      },
+      "properties": {
+        "email": "email815@gmail.com",
+        "priority": "high",
+        "productName": "pd-0748"
+      }
+    }
   }
 ]
-

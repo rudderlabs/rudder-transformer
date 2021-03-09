@@ -15,7 +15,8 @@ const ConfigCategory = {
 const CRUD_OPERATION = {
   CREATE: "Create",
   UPDATE: "Update",
-  DELETE: "Delete"
+  DELETE: "Delete",
+  UPSERT: "Upsert",
 };
 
 const SF_API_VERSION = "50.0";

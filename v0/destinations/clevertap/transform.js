@@ -20,6 +20,9 @@ const {
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
+  // For identify type of events we require a specific trype of payload
+  // Source: https://developer.clevertap.com/docs/upload-user-profiles-api
+  // ---------------------------------------------------------------------
   if (category.type === "identify") {
     let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
     // Extract other K-V property from traits about user custom properties
@@ -40,7 +43,13 @@ const responseBuilderSimple = (message, category, destination) => {
       ]
     };
   } else {
+    // For other type of events we need to follow payload for sending events
+    // Source: https://developer.clevertap.com/docs/upload-events-api
+    // ----------------------------------------------------------------------
     const eventData = constructPayload(message, MAPPING_CONFIG[category.name]);
+    // For 'Order Completed' type of events we are mapping it as 'Charged'
+    // Special event in Clevertap.
+    // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
     if (get(eventData.evtName) == "Order Completed") {
       set(eventData, "evtName", "Charged");
     }
@@ -54,6 +63,9 @@ const responseBuilderSimple = (message, category, destination) => {
   if (payload) {
     const response = defaultRequestConfig();
     let value = "";
+    // If the acount belongs to specific regional server,
+    // we need to modify the url endpoint based on dest config.
+    // Source: https://developer.clevertap.com/docs/idc
     if (destination.Config.region && destination.Config.region !== "none") {
       value = `${destination.Config.region}.`;
     }
@@ -72,7 +84,8 @@ const responseBuilderSimple = (message, category, destination) => {
   // fail-safety for developer error
   throw new Error("Payload could not be constructed");
 };
-
+// Main Process func for processing events
+// Idnetify, Track, Screen, and Page calls are supported
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");

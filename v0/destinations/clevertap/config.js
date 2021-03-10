@@ -9,6 +9,8 @@ const CONFIG_CATEGORIES = {
   TRACK: { name: "CleverTapTrack", type: "track" }
 };
 
+// These are clevertap specific properties we are already mapping
+// using our mapping json.
 const CLEVERTAP_DEFAULT_EXCLUSION = [
   "email",
   "name",

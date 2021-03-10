@@ -1,39 +1,17 @@
 {
-  "address": [
-    "traits.address",
-    "context.traits.address"
-  ],
+  "address": ["traits.address", "context.traits.address"],
   "createdAt": [
     "traits.createdAt",
     "context.traits.createdAt",
     "timestamp",
     "originalTimestamp"
   ],
-  "email": [
-    "traits.email",
-    "context.traits.email",
-    "properties.email"
-  ],
-  "timestamp": [
-    "originalTimestamp",
-    "timestamp"
-  ],
-  "historicalTimestamp": [
-    "timestamp",
-    "originalTimestamp"
-  ],
-  "traits": [
-    "traits",
-    "context.traits"
-  ],
-  "groupId": [
-    "groupId",
-    "traits.groupId"
-  ],
-  "groupTraits": [
-    "traits",
-    "context.traits"
-  ],
+  "email": ["traits.email", "context.traits.email", "properties.email"],
+  "timestamp": ["originalTimestamp", "timestamp"],
+  "historicalTimestamp": ["timestamp", "originalTimestamp"],
+  "traits": ["traits", "context.traits"],
+  "groupId": ["groupId", "traits.groupId"],
+  "groupTraits": ["traits", "context.traits"],
   "userId": [
     "userId",
     "traits.userId",
@@ -52,12 +30,15 @@
   "firstName": [
     "traits.firstName",
     "traits.firstname",
+    "traits.first_name",
     "context.traits.firstName",
-    "context.traits.firstname"
+    "context.traits.firstname",
+    "context.traits.first_name"
   ],
   "lastName": [
     "traits.lastName",
     "traits.lastname",
+    "traits.last_name",
     "context.traits.lastName",
     "context.traits.lastname"
   ],

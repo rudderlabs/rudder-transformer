@@ -42,6 +42,11 @@
     "context.traits.lastName",
     "context.traits.lastname"
   ],
+  "phone": [
+    "traits.phone",
+    "context.traits.phone",
+    "properties.phone"
+  ],
   "pageTitle": [
     "context.page.title",
     "properties.title"

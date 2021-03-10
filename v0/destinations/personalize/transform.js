@@ -1,5 +1,3 @@
-const crypto = require("crypto-js");
-const { string } = require("is");
 const { EventType } = require("../../../constants");
 const { getFieldValueFromMessage } = require("../../util");
 
@@ -12,35 +10,6 @@ async function process(event) {
   let context = {};
   const { message } = event;
   const messageType = message.type.toLowerCase();
-
-  function getSignatureKey(key, dateStamp, regionName, serviceName) {
-    const kDate = crypto.HmacSHA256(dateStamp, `AWS4${key}`);
-    const kRegion = crypto.HmacSHA256(regionName, kDate);
-    const kService = crypto.HmacSHA256(serviceName, kRegion);
-    const kSigning = crypto.HmacSHA256("aws4_request", kService);
-
-    return kSigning;
-  }
-
-  function getAmzDate(dateStr) {
-    const chars = [":", "-"];
-    for (let i = 0; i < chars.length; i += 1) {
-      while (dateStr.indexOf(chars[i]) !== -1) {
-        dateStr = dateStr.replace(chars[i], "");
-      }
-    }
-    dateStr = `${dateStr.split(".")[0]}Z`;
-    return dateStr;
-  }
-  // get the various date formats needed to form our request
-  const amzDate = getAmzDate(new Date().toISOString());
-  const authDate = amzDate.split("T")[0];
-  const signature = getSignatureKey(
-    event.destination.Config.secretAccessKey,
-    authDate,
-    event.destination.Config.region,
-    "personalize"
-  );
 
   for (let i = 0; i < noOfFields; i += 1) {
     keyField.push(event.destination.Config.customMappings[i].from);
@@ -66,9 +35,11 @@ async function process(event) {
           case EventType.TRACK:
           case EventType.PAGE:
           case EventType.SCREEN:
-            keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
-              return g[1].toUpperCase();
-            });
+            keyField[k] = keyField[k]
+              .toLowerCase()
+              .replace(/_([a-z])/g, function (g) {
+                return g[1].toUpperCase();
+              });
             if (message.properties && message.properties[mappedFields]) {
               property[keyField[k]] = message.properties[mappedFields];
             } else if (typeof message[mappedFields] !== "undefined") {
@@ -79,9 +50,11 @@ async function process(event) {
             break;
           default:
             traits = getFieldValueFromMessage(message, "traits");
-            keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
-              return g[1].toUpperCase();
-            });
+            keyField[k] = keyField[k]
+              .toLowerCase()
+              .replace(/_([a-z])/g, function (g) {
+                return g[1].toUpperCase();
+              });
             if (traits[mappedFields]) {
               property[keyField[k]] = traits[mappedFields];
             } else if (
@@ -110,37 +83,15 @@ async function process(event) {
     }
 
     payload = {
-      version: "1",
-      type: "REST",
-      method: "POST",
-      endpoint: `https://personalize-events.${event.destination.Config.region}.amazonaws.com/events`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `AWS4-HMAC-SHA256 Credential=${event.destination.Config.accessKeyId
-        }/${authDate}/${
-          event.destination.Config.region
-        }/personalize/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=${signature.toString()}`,
-        "X-Amz-Date": "20210224T095706Z"
+      eventList: {
+        eventId: event.message.messageId,
+        eventType: event.destination.Config.eventName,
+        properties: property,
+        sentAt: event.message.sentAt
       },
-      params: {},
-      body: {
-        JSON: {
-          eventList: [
-            {
-              eventId: event.message.messageId,
-              eventType: event.destination.Config.eventName,
-              properties: property,
-              sentAt: event.message.sentAt
-            }
-          ],
-          sessionId: event.message.originalTimestamp,
-          trackingId: event.destination.Config.trackingId,
-          userId: event.message.userId
-        },
-        XML: {},
-        FORM: {}
-      },
-      statusCode: 200
+      sessionId: event.message.originalTimestamp,
+      trackingId: event.destination.Config.trackingId,
+      userId: event.message.userId
     };
   }
   return payload;

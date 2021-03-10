@@ -43,6 +43,7 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "phone",
   "gender",
   "education",
+  "employed",
   "birthday",
   "married",
   "customerType",

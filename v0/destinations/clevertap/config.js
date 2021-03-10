@@ -25,7 +25,8 @@ const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "CleverTapIdentify", type: "identify" },
   PAGE: { name: "CleverTapPage", type: "page" },
   SCREEN: { name: "CleverTapScreen", type: "screen" },
-  TRACK: { name: "CleverTapTrack", type: "track" }
+  TRACK: { name: "CleverTapTrack", type: "track" },
+  ECOM: { name: "CleverTapEcom" }
 };
 
 // These are clevertap specific properties we are already mapping

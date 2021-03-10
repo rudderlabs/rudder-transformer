@@ -25,7 +25,11 @@ const responseBuilderSimple = (message, category, destination) => {
   if (category.type === "identify") {
     let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
     // Extract other K-V property from traits about user custom properties
-    if (!get(profile, "Name")) {
+    if (
+      !get(profile, "Name") &&
+      getFieldValueFromMessage(message, "firstName") &&
+      getFieldValueFromMessage(message, "lastName")
+    ) {
       profile.Name = `${getFieldValueFromMessage(
         message,
         "firstName"
@@ -48,20 +52,39 @@ const responseBuilderSimple = (message, category, destination) => {
       ]
     };
   } else {
-    // For other type of events we need to follow payload for sending events
-    // Source: https://developer.clevertap.com/docs/upload-events-api
-    // ----------------------------------------------------------------------
-    const eventData = constructPayload(message, MAPPING_CONFIG[category.name]);
+    let eventPayload;
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
-    if (get(eventData.evtName) == "Order Completed") {
-      set(eventData, "evtName", "Charged");
+    if (
+      get(message.event) &&
+      get(message.event).toLowerCase() == "order completed"
+    ) {
+      eventPayload = {
+        evtName: "Charged",
+        evtData: constructPayload(
+          message,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]
+        ),
+        identity: getFieldValueFromMessage(message, "userId")
+      };
+      eventPayload.evtData = extractCustomFields(
+        message,
+        eventPayload.evtData,
+        ["properties"],
+        ["checkout_id", "revenue", "products"]
+      );
     }
-    removeUndefinedAndNullValues(eventData);
-    eventData.type = "event";
+    // For other type of events we need to follow payload for sending events
+    // Source: https://developer.clevertap.com/docs/upload-events-api
+    // ----------------------------------------------------------------------
+    else {
+      eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    }
+    removeUndefinedAndNullValues(eventPayload);
+    eventPayload.type = "event";
     payload = {
-      d: [eventData]
+      d: [eventPayload]
     };
   }
 

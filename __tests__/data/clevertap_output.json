@@ -157,29 +157,39 @@
           {
             "type": "event",
             "evtData": {
+              "tax": 1,
               "Items": [
                 {
-                  "Category": "Books",
-                  "Quantity": 1,
-                  "Book name": "The Millionaire next door"
+                  "sku": "G-32",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Monopoly",
+                  "price": 14,
+                  "category": "Games",
+                  "quantity": 1,
+                  "image_url": "https://www.website.com/product/path.jpg",
+                  "product_id": "123"
                 },
                 {
-                  "Category": "Books",
-                  "Quantity": 1,
-                  "Book name": "Achieving inner zen"
-                },
-                {
-                  "Category": "Books",
-                  "Quantity": 5,
-                  "Book name": "Chuck it, let's do it"
+                  "sku": "F-32",
+                  "name": "UNO",
+                  "price": 3.45,
+                  "category": "Games",
+                  "quantity": 2,
+                  "product_id": "345"
                 }
               ],
-              "Amount": 500,
-              "Charged ID": 24052121,
-              "Payment mode": "Debit Card"
+              "total": 20,
+              "Amount": 15,
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "shipping": 22,
+              "Charged ID": "12345",
+              "affiliation": "Apple Store"
             },
             "evtName": "Charged",
-            "identity": "user1xy"
+            "identity": "riverjohn"
           }
         ]
       }

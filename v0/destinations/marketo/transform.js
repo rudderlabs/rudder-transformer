@@ -5,7 +5,8 @@ const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
 const {
-  isDefinedAndNotNull,
+  isDefined,
+  removeUndefinedValues,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -183,8 +184,6 @@ const processIdentify = async (
     }
   }
 
-  leadId = null;
-
   if (!leadId) {
     // throwing here as lookup failed because of
     // either "anonymousId" or "userId" field is not created in marketo - resulting to lookup failure
@@ -197,13 +196,12 @@ const processIdentify = async (
     throw error;
   }
 
-  const attribute = constructPayload(traits, identifyConfig);
+  let attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
     const val = traits[key];
-    if (isDefinedAndNotNull(val)) {
-      attribute[leadTraitMapping[key]] = val;
-    }
+    attribute[leadTraitMapping[key]] = val;
   });
+  attribute = removeUndefinedValues(attribute);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
@@ -295,7 +293,7 @@ const processTrack = async (
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
-      if (value) {
+      if (isDefined(value)) {
         attributes.push({ apiName: customActivityPropertyMap[key], value });
       }
     }

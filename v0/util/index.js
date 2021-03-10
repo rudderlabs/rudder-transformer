@@ -10,7 +10,6 @@
 // GENERIC ==> Other methods which doesn't fit in other categories
 // ========================================================================
 const Handlebars = require("handlebars");
-const { isNullOrUndefined } = require("util");
 
 const fs = require("fs");
 const path = require("path");
@@ -61,10 +60,7 @@ const isPrimitive = arg => {
 };
 
 const formatValue = value => {
-  if (!value || value < 0) {
-    return null;
-  }
-
+  if (!value || value < 0) return null;
   return Math.round(value);
 };
 
@@ -97,11 +93,11 @@ const setValues = (payload, message, mappingJson) => {
       if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
         for (let index = 0; index < sourceKeys.length; index += 1) {
           val = get(message, sourceKeys[index]);
-          if (isDefinedAndNotNull(val)) {
+          if (val) {
             break;
           }
         }
-        if (isDefinedAndNotNull(val)) {
+        if (val) {
           set(payload, mapping.destKey, val);
         } else if (mapping.required) {
           throw new Error(
@@ -149,7 +145,7 @@ function flattenJson(data) {
 
 const getOffsetInSec = value => {
   const name = moment.tz.zone(value);
-  if (isDefinedAndNotNullAndNotEmpty(name)) {
+  if (name) {
     const x = moment()
       .tz(value)
       .format("Z");
@@ -195,21 +191,19 @@ const hashToSha256 = value => {
 // Check what type of gender and convert to f or m
 
 const getFbGenderVal = gender => {
-  if (isDefinedAndNotNull(gender)) {
-    if (
-      gender.toUpperCase() === "FEMALE" ||
-      gender.toUpperCase() === "F" ||
-      gender.toUpperCase() === "WOMAN"
-    ) {
-      return hashToSha256("f");
-    }
-    if (
-      gender.toUpperCase() === "MALE" ||
-      gender.toUpperCase() === "M" ||
-      gender.toUpperCase() === "MAN"
-    ) {
-      return hashToSha256("m");
-    }
+  if (
+    gender.toUpperCase() === "FEMALE" ||
+    gender.toUpperCase() === "F" ||
+    gender.toUpperCase() === "WOMAN"
+  ) {
+    return hashToSha256("f");
+  }
+  if (
+    gender.toUpperCase() === "MALE" ||
+    gender.toUpperCase() === "M" ||
+    gender.toUpperCase() === "MAN"
+  ) {
+    return hashToSha256("m");
   }
 };
 
@@ -361,7 +355,7 @@ const getValueFromMessage = (message, sourceKey) => {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);
-      if (isDefinedAndNotNull(val)) {
+      if (val) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
@@ -408,14 +402,14 @@ const handleMetadataForValue = (value, metadata) => {
   const { type, typeFormat, template, defaultValue, excludes } = metadata;
 
   // if value is null and defaultValue is supplied - use that
-  if (isNullOrUndefined(value) && isDefinedAndNotNull(defaultValue)) {
+  if (!value) {
     return defaultValue || value;
   }
   // we've got a correct value. start processing
   let formattedVal = value;
 
   // handle type and format
-  if (isDefinedAndNotNullAndNotEmpty(type)) {
+  if (type) {
     switch (type) {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
@@ -476,13 +470,13 @@ const handleMetadataForValue = (value, metadata) => {
   }
 
   // handle template
-  if (isDefinedAndNotNullAndNotEmpty(template)) {
+  if (template) {
     const hTemplate = Handlebars.compile(template.trim());
     formattedVal = hTemplate({ value }).trim();
   }
 
   // handle excludes
-  if (isDefinedAndNotNull(template)) {
+  if (excludes) {
     if (typeof value === "object") {
       // exlude the fields from the formattedVal
       excludes.forEach(key => {
@@ -556,7 +550,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (isDefinedAndNotNull(value)) {
+      if (value) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {
@@ -645,7 +639,7 @@ function getValuesAsArrayFromConfig(configObject, key) {
     let value;
     configObject.forEach(element => {
       value = element[key];
-      if (isDefinedAndNotNullAndNotEmpty(value)) {
+      if (value) {
         returnArray.push(value);
       }
     });
@@ -679,7 +673,7 @@ function getTimeDifference(timestamp) {
 // and the last item (only if name is not a single word) as lastName
 function getFirstAndLastName(traits, defaultLastName = "n/a") {
   let nameParts;
-  if (isDefinedAndNotNullAndNotEmpty(traits.name)) {
+  if (traits.name) {
     nameParts = traits.name.split(" ");
   }
   return {
@@ -815,7 +809,7 @@ module.exports = {
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
-  isDefinedAndNotNull,
+  isDefined,
   isEmpty,
   isObject,
   isPrimitive,

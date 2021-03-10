@@ -48,7 +48,12 @@ async function getSFDCHeader(destination) {
 // We pass the parameterMap with any processing-specific key-value prepopulated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
-function responseBuilderSimple(traits, salesforceMap, authorizationData) {
+function responseBuilderSimple(
+  traits,
+  salesforceMap,
+  authorizationData,
+  mapProperty
+) {
   const { salesforceType, salesforceId } = salesforceMap;
 
   // if id is valid, do update else create the object
@@ -62,7 +67,8 @@ function responseBuilderSimple(traits, salesforceMap, authorizationData) {
   // get traits from the message
   let rawPayload = traits;
   // map using the config only if the type is Lead
-  if (salesforceType === "Lead") {
+  if (salesforceType === "Lead" && mapProperty) {
+    // adjust the payload only for new Leads. For update do incremental update
     // adjust for firstName and lastName
     // construct the payload using the mappingJson and add extra params
     rawPayload = constructPayload(
@@ -164,7 +170,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
 }
 
 // Function for handling identify events
-async function processIdentify(message, authorizationData) {
+async function processIdentify(message, authorizationData, mapProperty) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -184,7 +190,12 @@ async function processIdentify(message, authorizationData) {
   salesforceMaps.forEach(salesforceMap => {
     // finally build the response and push to the list
     responseData.push(
-      responseBuilderSimple(traits, salesforceMap, authorizationData)
+      responseBuilderSimple(
+        traits,
+        salesforceMap,
+        authorizationData,
+        mapProperty
+      )
     );
   });
 
@@ -193,10 +204,10 @@ async function processIdentify(message, authorizationData) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, authorizationData) {
+async function processSingleMessage(message, authorizationData, mapProperty) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, authorizationData);
+    response = await processIdentify(message, authorizationData, mapProperty);
   } else {
     throw new Error(`message type ${message.type} is not supported`);
   }
@@ -206,7 +217,13 @@ async function processSingleMessage(message, authorizationData) {
 async function process(event) {
   // Get the authorization header if not available
   const authorizationData = await getSFDCHeader(event.destination);
-  const response = await processSingleMessage(event.message, authorizationData);
+  const response = await processSingleMessage(
+    event.message,
+    authorizationData,
+    event.destination.Config.mapProperty === undefined
+      ? true
+      : event.destination.Config.mapProperty
+  );
   return response;
 }
 
@@ -240,7 +257,13 @@ const processRouterDest = async inputs => {
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(input.message, authorizationData),
+          await processSingleMessage(
+            input.message,
+            authorizationData,
+            input.destination.Config.mapProperty === undefined
+              ? true
+              : input.destination.Config.mapProperty
+          ),
           [input.metadata],
           input.destination
         );

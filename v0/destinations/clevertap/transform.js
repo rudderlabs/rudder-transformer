@@ -1,9 +1,8 @@
 const get = require("get-value");
 const set = require("set-value");
-const Handlebars = require("handlebars");
 const { EventType } = require("../../../constants");
 const {
-  BASE_ENDPOINT,
+  getEndpoint,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   CLEVERTAP_DEFAULT_EXCLUSION
@@ -26,6 +25,12 @@ const responseBuilderSimple = (message, category, destination) => {
   if (category.type === "identify") {
     let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
     // Extract other K-V property from traits about user custom properties
+    if (!get(profile, "Name")) {
+      profile.Name = `${getFieldValueFromMessage(
+        message,
+        "firstName"
+      )} ${getFieldValueFromMessage(message, "lastName")}`;
+    }
     profile = extractCustomFields(
       message,
       profile,
@@ -62,16 +67,10 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (payload) {
     const response = defaultRequestConfig();
-    let value = "";
     // If the acount belongs to specific regional server,
     // we need to modify the url endpoint based on dest config.
     // Source: https://developer.clevertap.com/docs/idc
-    if (destination.Config.region && destination.Config.region !== "none") {
-      value = `${destination.Config.region}.`;
-    }
-    const bEndpoint = Handlebars.compile(BASE_ENDPOINT.trim());
-    const formattedEndpoint = bEndpoint({ value }).trim();
-    response.endpoint = formattedEndpoint;
+    response.endpoint = getEndpoint(destination);
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       "X-CleverTap-Account-Id": destination.Config.accountId,

@@ -809,6 +809,7 @@ module.exports = {
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
+  isDefined,
   isEmpty,
   isObject,
   isPrimitive,

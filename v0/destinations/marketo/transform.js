@@ -1,9 +1,12 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { identifyConfig, formatConfig } = require("./config");
 const {
+  isDefined,
+  removeUndefinedValues,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -188,16 +191,17 @@ const processIdentify = async (
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-    throw new Error("Lead lookup failed");
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
   }
 
-  const attribute = constructPayload(traits, identifyConfig);
+  let attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
     const val = traits[key];
-    if (val) {
-      attribute[leadTraitMapping[key]] = val;
-    }
+    attribute[leadTraitMapping[key]] = val;
   });
+  attribute = removeUndefinedValues(attribute);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
@@ -278,7 +282,9 @@ const processTrack = async (
     );
   }
   if (!leadId) {
-    throw new Error("Lead lookup failed");
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
   }
 
   // handle custom activy attributes
@@ -287,7 +293,7 @@ const processTrack = async (
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
-      if (value) {
+      if (isDefined(value)) {
         attributes.push({ apiName: customActivityPropertyMap[key], value });
       }
     }
@@ -405,7 +411,11 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 500,
           error.message || "Error occurred while processing payload."
         );
       }

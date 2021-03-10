@@ -2,12 +2,13 @@ const { EventType } = require("../../../constants");
 const { getFieldValueFromMessage } = require("../../util");
 
 async function process(event) {
-  let payload = {};
+  const payload = {};
   const noOfFields = event.destination.Config.customMappings.length;
-  const keyField = [];
-  const mappedField = [];
+  const keyField = []; // schema field
+  const mappedField = []; // payload field
   let traits = {};
   let context = {};
+  const property = {};
   const { message } = event;
   const messageType = message.type.toLowerCase();
 
@@ -19,7 +20,6 @@ async function process(event) {
     mappedField.push(event.destination.Config.customMappings[j].to);
   }
   if (message.event === event.destination.Config.eventName) {
-    const property = {};
     for (let k = 0; k < noOfFields; k += 1) {
       if (
         keyField[k].toUpperCase() === "USER_ID" ||
@@ -82,17 +82,37 @@ async function process(event) {
       }
     }
 
-    payload = {
-      eventList: {
-        eventId: event.message.messageId,
-        eventType: event.destination.Config.eventName,
-        properties: property,
-        sentAt: event.message.sentAt
-      },
-      sessionId: event.message.originalTimestamp,
-      trackingId: event.destination.Config.trackingId,
-      userId: event.message.userId
-    };
+    if (property.eventValue) {
+      payload.eventValue = property.eventValue;
+      delete property.eventValue;
+    }
+    if (property.impression) {
+      payload.impression = property.impression;
+      delete property.impression;
+    }
+    if (property.itemId) {
+      payload.itemId = property.itemId;
+      delete property.itemId;
+    }
+    if (property.recommendationId) {
+      payload.recommendationId = property.recommendationId;
+      delete property.recommendationId;
+    }
+    let eventId;
+    if (property.eventId) {
+      eventId = property.eventId;
+      delete property.eventId;
+    } else {
+      eventId = event.message.messageId;
+    }
+
+    payload.eventId = eventId;
+    payload.eventType = event.destination.Config.eventName;
+    payload.sentAt = event.message.sentAt;
+    payload.properties = property;
+    payload.sessionId = event.message.originalTimestamp;
+    payload.trackingId = event.destination.Config.trackingId;
+    payload.userId = event.message.userId;
   }
   return payload;
 }

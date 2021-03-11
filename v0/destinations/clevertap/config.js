@@ -1,24 +1,12 @@
 const { getMappingConfig } = require("../../util");
 
-const BASE_ENDPOINT = "https://api.clevertap.com/1/upload";
-const IN_ENDPOINT = "https://in1.api.clevertap.com/1/upload";
-const US_ENDPOINT = "https://us1.api.clevertap.com/1/upload";
-const SK_ENDPOINT = "https://sk1.api.clevertap.com/1/upload";
-const SG_ENDPOINT = "https://sg1.api.clevertap.com/1/upload";
-
 const getEndpoint = destination => {
-  switch (destination.Config.region) {
-    case "in1":
-      return IN_ENDPOINT;
-    case "sg1":
-      return SG_ENDPOINT;
-    case "us1":
-      return US_ENDPOINT;
-    case "sk1":
-      return SK_ENDPOINT;
-    default:
-      return BASE_ENDPOINT;
+  const { region } = destination.Config;
+  if (region && region !== "none") {
+    return `https://${region}.api.clevertap.com/1/upload`;
   }
+
+  return "https://api.clevertap.com/1/upload";
 };
 
 const CONFIG_CATEGORIES = {

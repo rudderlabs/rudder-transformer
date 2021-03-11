@@ -327,6 +327,19 @@ function responseBuilderSimple(
     default:
       if (message.channel === "mobile") {
         set(payload, "device_brand", message.context.device.manufacturer);
+
+        if (
+          message.context.device.type &&
+          message.context.device.type.toLowerCase() === "ios"
+        ) {
+          set(payload, "idfa", message.context.device.id);
+          set(payload, "idfv", message.context.device.id);
+        } else if (
+          message.context.device.type &&
+          message.context.device.type.toLowerCase() === "android"
+        ) {
+          set(payload, "adid", message.context.device.id);
+        }
       }
 
       payload.time = new Date(

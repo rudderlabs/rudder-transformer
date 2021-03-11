@@ -2,8 +2,13 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
+const stats = require("../../../util/stats");
 const { EventType } = require("../../../constants");
-const { identifyConfig, formatConfig } = require("./config");
+const {
+  identifyConfig,
+  formatConfig,
+  MARKETO_STATS_CONFIGS
+} = require("./config");
 const {
   isDefined,
   removeUndefinedValues,
@@ -79,6 +84,10 @@ const lookupLead = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
+    stats.increment(MARKETO_STATS_CONFIGS.LEAD_LOOKUP.userid_conf, 1, {
+      integration: "Marketo",
+      type: "Lead Lookup using userId"
+    });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -117,6 +126,10 @@ const lookupLeadUsingEmail = async (
   email
 ) => {
   return emailLeadCache.get(email, async () => {
+    stats.increment(MARKETO_STATS_CONFIGS.LEAD_LOOKUP.email_conf, 1, {
+      integration: "Marketo",
+      type: "Lead Lookup using email"
+    });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -310,7 +323,10 @@ const processTrack = async (
       }
     ]
   };
-
+  stats.increment(MARKETO_STATS_CONFIGS.ACTIVITY.activity_conf, 1, {
+    integration: "Marketo",
+    type: "Activity"
+  });
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },

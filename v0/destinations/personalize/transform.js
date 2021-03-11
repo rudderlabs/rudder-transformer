@@ -2,7 +2,7 @@ const { EventType } = require("../../../constants");
 const { getFieldValueFromMessage } = require("../../util");
 
 async function process(event) {
-  const payload = {};
+  let payload = {};
   const noOfFields = event.destination.Config.customMappings.length;
   const keyField = []; // schema field
   const mappedField = []; // payload field
@@ -82,38 +82,52 @@ async function process(event) {
       }
     }
 
-    if (property.eventValue) {
-      payload.eventValue = property.eventValue;
-      delete property.eventValue;
-    }
-    if (property.impression) {
-      payload.impression = property.impression;
-      delete property.impression;
-    }
-    if (property.itemId) {
-      payload.itemId = property.itemId;
-      delete property.itemId;
-    }
-    if (property.recommendationId) {
-      payload.recommendationId = property.recommendationId;
-      delete property.recommendationId;
-    }
-    let eventId;
-    if (property.eventId) {
-      eventId = property.eventId;
-      delete property.eventId;
-    } else {
-      eventId = event.message.messageId;
-    }
+    // if (property.eventValue) {
+    //   payload.eventValue = property.eventValue;
+    //   delete property.eventValue;
+    // }
+    // if (property.impression) {
+    //   payload.impression = property.impression;
+    //   delete property.impression;
+    // }
+    // if (property.itemId) {
+    //   payload.itemId = property.itemId;
+    //   delete property.itemId;
+    // }
+    // if (property.recommendationId) {
+    //   payload.recommendationId = property.recommendationId;
+    //   delete property.recommendationId;
+    // }
+    // let eventId;
+    // if (property.eventId) {
+    //   eventId = property.eventId;
+    //   delete property.eventId;
+    // } else {
+    //   eventId = event.message.messageId;
+    // }
 
-    payload.eventId = eventId;
-    payload.eventType = event.destination.Config.eventName;
-    payload.sentAt = event.message.sentAt;
-    payload.properties = property;
-    payload.sessionId = event.message.originalTimestamp;
-    payload.trackingId = event.destination.Config.trackingId;
-    payload.userId = event.message.userId;
+    // payload.eventId = eventId;
+    // payload.eventType = event.destination.Config.eventName;
+    // payload.sentAt = event.message.sentAt;
+    // payload.properties = property;
+    // payload.sessionId = event.message.originalTimestamp;
+    // payload.trackingId = event.destination.Config.trackingId;
+    // payload.userId = event.message.userId;
+    payload = {
+      eventList: [
+        {
+          eventId: event.message.messageId,
+          eventType: event.destination.Config.eventName,
+          properties: property,
+          sentAt: event.message.sentAt
+        }
+      ],
+      sessionId: event.message.originalTimestamp,
+      trackingId: event.destination.Config.trackingId,
+      userId: event.message.userId
+    };
   }
   return payload;
 }
+
 exports.process = process;

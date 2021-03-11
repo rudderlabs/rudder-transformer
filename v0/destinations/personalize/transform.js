@@ -82,37 +82,6 @@ async function process(event) {
       }
     }
 
-    // if (property.eventValue) {
-    //   payload.eventValue = property.eventValue;
-    //   delete property.eventValue;
-    // }
-    // if (property.impression) {
-    //   payload.impression = property.impression;
-    //   delete property.impression;
-    // }
-    // if (property.itemId) {
-    //   payload.itemId = property.itemId;
-    //   delete property.itemId;
-    // }
-    // if (property.recommendationId) {
-    //   payload.recommendationId = property.recommendationId;
-    //   delete property.recommendationId;
-    // }
-    // let eventId;
-    // if (property.eventId) {
-    //   eventId = property.eventId;
-    //   delete property.eventId;
-    // } else {
-    //   eventId = event.message.messageId;
-    // }
-
-    // payload.eventId = eventId;
-    // payload.eventType = event.destination.Config.eventName;
-    // payload.sentAt = event.message.sentAt;
-    // payload.properties = property;
-    // payload.sessionId = event.message.originalTimestamp;
-    // payload.trackingId = event.destination.Config.trackingId;
-    // payload.userId = event.message.userId;
     payload = {
       eventList: [
         {

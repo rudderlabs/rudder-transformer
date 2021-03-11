@@ -142,7 +142,7 @@ const postAxiosResponse = async (
       integration: "Marketo",
       url,
       status: 200,
-      state: "succeeded"
+      state: "Succeeded"
     });
     return resp.data;
   }

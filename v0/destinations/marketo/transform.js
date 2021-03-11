@@ -8,7 +8,8 @@ const {
   identifyConfig,
   formatConfig,
   LEAD_LOOKUP_METRIC,
-  ACTIVITY_METRIC
+  ACTIVITY_METRIC,
+  FETCH_TOKEN_METRIC
 } = require("./config");
 const {
   isDefined,
@@ -55,8 +56,10 @@ const getAuthToken = async formattedDestination => {
       "During getting auth token"
     );
     if (resp) {
+      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
       return resp.access_token;
     }
+    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
   });
 };

@@ -105,12 +105,12 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
+    const valInMap = columnMapping[key];
     let val;
-    // if (_.isFunction(columnMapping[key])) {
-    if (key === "context_ip") {
-      val = columnMapping[key](input);
+    if (_.isFunction(valInMap)) {
+      val = valInMap(input);
     } else {
-      val = get(input, columnMapping[key]);
+      val = get(input, valInMap);
     }
 
     const columnName = utils.safeColumnName(options.provider, key);

@@ -71,6 +71,16 @@ describe("event types", () => {
         expect(received).toMatchObject(output("screen", integrations[index]));
       });
     });
+    it("should take name from properties if top-level name is missing", () => {
+      let i = input("screen");
+      i.message.properties.name = i.message.name;
+      delete i.message.name;
+      console.log(i.message.properties.name);
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toMatchObject(output("screen", integrations[index]));
+      });
+    });
   });
 
   describe("alias", () => {

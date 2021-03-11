@@ -7,7 +7,8 @@ const { EventType } = require("../../../constants");
 const {
   identifyConfig,
   formatConfig,
-  MARKETO_STATS_CONFIGS
+  LEAD_LOOKUP_METRIC,
+  ACTIVITY_METRIC
 } = require("./config");
 const {
   isDefined,
@@ -84,10 +85,7 @@ const lookupLead = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
-    stats.increment(MARKETO_STATS_CONFIGS.LEAD_LOOKUP.userid_conf, 1, {
-      integration: "Marketo",
-      type: "Lead Lookup using userId"
-    });
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -126,10 +124,7 @@ const lookupLeadUsingEmail = async (
   email
 ) => {
   return emailLeadCache.get(email, async () => {
-    stats.increment(MARKETO_STATS_CONFIGS.LEAD_LOOKUP.email_conf, 1, {
-      integration: "Marketo",
-      type: "Lead Lookup using email"
-    });
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -323,10 +318,7 @@ const processTrack = async (
       }
     ]
   };
-  stats.increment(MARKETO_STATS_CONFIGS.ACTIVITY.activity_conf, 1, {
-    integration: "Marketo",
-    type: "Activity"
-  });
+  stats.increment(ACTIVITY_METRIC, 1);
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const stats = require("../../util/stats");
-const { MARKETO_STATS_CONFIGS } = require("../destinations/marketo/config");
 const { getHashFromArray } = require("./index");
+const { API_CALL } = require("./constant");
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -34,30 +34,27 @@ function handleResponseRules(responseRules, errorCode, url) {
       false
     );
     if (abortable[errorCode] === "false") {
-      stats.increment(MARKETO_STATS_CONFIGS.API_CALL.failure, 1, {
+      stats.increment(API_CALL, 1, {
         integration: "Marketo",
         url,
-        type: "API CALL",
         status: 400,
         state: "Abortable"
       });
       return 400;
     }
     if (retryable[errorCode] === "false") {
-      stats.increment(MARKETO_STATS_CONFIGS.API_CALL.retryable, 1, {
+      stats.increment(API_CALL, 1, {
         integration: "Marketo",
         url,
-        type: "API CALL",
         status: 500,
         state: "Retryable"
       });
       return 500;
     }
     if (throttled[errorCode] === "false") {
-      stats.increment(MARKETO_STATS_CONFIGS.API_CALL.throttled, 1, {
+      stats.increment(API_CALL, 1, {
         integration: "Marketo",
         url,
-        type: "API CALL",
         status: 429,
         state: "Throttled"
       });
@@ -99,10 +96,17 @@ const getAxiosResponse = async (url, params, responseRules, errorMessage) => {
         );
       }
     }
+    stats.increment(API_CALL, 1, {
+      integration: "Marketo",
+      url,
+      status: 200,
+      state: "Succeeded"
+    });
     return resp.data;
   }
   return null;
 };
+
 const postAxiosResponse = async (
   url,
   data,
@@ -134,10 +138,9 @@ const postAxiosResponse = async (
         );
       }
     }
-    stats.increment(MARKETO_STATS_CONFIGS.API_CALL.success, 1, {
+    stats.increment(API_CALL, 1, {
       integration: "Marketo",
       url,
-      type: "API CALL",
       status: 200,
       state: "succeeded"
     });
@@ -145,6 +148,7 @@ const postAxiosResponse = async (
   }
   return null;
 };
+
 module.exports = {
   getAxiosResponse,
   postAxiosResponse

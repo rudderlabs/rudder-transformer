@@ -50,7 +50,7 @@ schema += '], "version": "1.0"}';
       .promise();
     const { datasetGroupArn } = responseDatasetGroup;
     // describe dataset group
-    console.log(datasetGroupArn)
+    console.log(datasetGroupArn);
     const paramsDescribeDatasetGroup = {
       datasetGroupArn /* required */
     };

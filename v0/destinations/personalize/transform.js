@@ -1,3 +1,12 @@
+const { getHashFromArray } = require("../../util");
+
+function getDeliveryStreamMapTo(event) {
+  const { message } = event;
+  const { eventName } = event.destination.Config;
+  const hashMap = getHashFromArray(eventName, "from", "to");
+  return hashMap[message.event.toLowerCase()];
+}
+
 async function process(event) {
   const payload = {};
   const noOfFields = event.destination.Config.customMappings.length;
@@ -13,7 +22,8 @@ async function process(event) {
   for (let j = 0; j < noOfFields; j += 1) {
     mappedField.push(event.destination.Config.customMappings[j].to);
   }
-  if (message.event === event.destination.Config.eventName) {
+  const deliveryStreamMapTo = getDeliveryStreamMapTo(event);
+  if (deliveryStreamMapTo) {
     for (let k = 0; k < noOfFields; k += 1) {
       if (
         !(
@@ -66,7 +76,7 @@ async function process(event) {
     }
 
     eventObj.eventId = eventId;
-    eventObj.eventType = event.destination.Config.eventName;
+    eventObj.eventType = deliveryStreamMapTo;
     eventObj.sentAt = event.message.sentAt;
     eventObj.properties = property;
     payload.sessionId = event.message.originalTimestamp;
@@ -74,7 +84,7 @@ async function process(event) {
     payload.userId = event.message.userId;
     eventList.push(eventObj);
     payload.eventList = eventList;
-  }
+  } else throw new Error("Event type not set for this event");
   return payload;
 }
 

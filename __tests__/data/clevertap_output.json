@@ -1,0 +1,208 @@
+[
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "identity": "anon_id",
+            "type": "profile",
+            "profileData": {
+              "Email": "jamesDoe@gmail.com",
+              "Name": "James Doe",
+              "Phone": "92374162212",
+              "Gender": "M",
+              "Employed": true,
+              "DOB": "1614775793",
+              "Education": "Science",
+              "Married": true,
+              "Customer Type": "Prime",
+              "graduate": true,
+              "msgSms": true,
+              "msg_push": true,
+              "msgemail": true,
+              "msgwhatsapp": false,
+              "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+              "custom_mappings": {
+                "Office": "Trastkiv",
+                "Country": "Russia"
+              },
+              "address": {
+                "city": "kolkata",
+                "country": "India",
+                "postalCode": 789223,
+                "state": "WB",
+                "street": ""
+              }
+            }
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-CleverTap-Account-Id": "476550467",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "identity": "anon-id-new",
+            "type": "event",
+            "evtName": "Web Page Viewed: Rudder",
+            "evtData": {
+              "title": "Home",
+              "path": "/"
+            }
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-CleverTap-Account-Id": "476550467",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "identity": "identified_user_id",
+            "type": "event",
+            "evtName": "Screen Viewed: Rudder-Screen",
+            "evtData": {
+              "prop1": "5"
+            }
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-CleverTap-Account-Id": "476550467",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "identity": "user123",
+            "type": "event",
+            "evtName": "Product Purchased",
+            "evtData": {
+              "name": "Rubik's Cube",
+              "revenue": 4.99
+            }
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-CleverTap-Account-Id": "476550467",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "error": "Message type not supported"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "type": "event",
+            "evtData": {
+              "tax": 1,
+              "Items": [
+                {
+                  "sku": "G-32",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Monopoly",
+                  "price": 14,
+                  "category": "Games",
+                  "quantity": 1,
+                  "image_url": "https://www.website.com/product/path.jpg",
+                  "product_id": "123"
+                },
+                {
+                  "sku": "F-32",
+                  "name": "UNO",
+                  "price": 3.45,
+                  "category": "Games",
+                  "quantity": 2,
+                  "product_id": "345"
+                }
+              ],
+              "total": 20,
+              "Amount": 15,
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "shipping": 22,
+              "Charged ID": "12345",
+              "affiliation": "Apple Store"
+            },
+            "evtName": "Charged",
+            "identity": "riverjohn"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "X-CleverTap-Account-Id": "476550467"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  }
+]

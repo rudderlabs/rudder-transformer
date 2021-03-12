@@ -204,5 +204,8 @@
     },
     "version": "1",
     "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "error": "userId, not present cannot track anonymous user"
   }
 ]

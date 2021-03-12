@@ -95,6 +95,12 @@ const getAxiosResponse = async (url, params, responseRules, errorMessage) => {
           400
         );
       }
+      if (getResponseCode === 429) {
+        throw new CustomError(
+          `${errors[0].message}. ${errorMessage}. Throttled`,
+          429
+        );
+      }
     }
     stats.increment(API_CALL, 1, {
       integration: "Marketo",
@@ -117,6 +123,10 @@ const postAxiosResponse = async (
   const resp = await axios.post(url, data, params).catch(error => {
     throw error;
   });
+  console.log("resp.data: " + JSON.stringify({
+    resp:  resp.data,
+    req: { data, params }
+  }));
   if (resp.data) {
     const { success, errors } = resp.data;
     if (success === false) {
@@ -135,6 +145,12 @@ const postAxiosResponse = async (
         throw new CustomError(
           `${errors[0].message}. ${errorMessage}. Abortable`,
           400
+        );
+      }
+      if (getResponseCode === 429) {
+        throw new CustomError(
+          `${errors[0].message}. ${errorMessage}. Throttled`,
+          429
         );
       }
     }

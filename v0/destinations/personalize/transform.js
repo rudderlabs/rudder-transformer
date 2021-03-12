@@ -1,6 +1,6 @@
 const { getHashFromArray } = require("../../util");
 
-function getDeliveryStreamMapTo(event) {
+function mapEventName(event) {
   const { message, destination } = event;
   const { eventName } = destination.Config;
   const hashMap = getHashFromArray(eventName, "from", "to");
@@ -27,10 +27,11 @@ async function process(event) {
   for (let j = 0; j < noOfFields; j += 1) {
     mappedField.push(Config.customMappings[j].to);
   }
-  const deliveryStreamMapTo = getDeliveryStreamMapTo(event);
-  if (deliveryStreamMapTo) {
+  const mappedEvent = mapEventName(event);
+  if (mappedEvent) {
     for (let k = 0; k < noOfFields; k += 1) {
       if (
+        // except these every thing will go inside properties
         !(
           keyField[k].toUpperCase() === "USER_ID" ||
           keyField[k].toUpperCase() === "EVENT_TYPE" ||
@@ -56,6 +57,7 @@ async function process(event) {
           throw new Error(`Mapped Field ${mappedFields} not found`);
         }
       } else if (
+        // userId and eventType is externally saved as shown below and others are saved outside properties
         !(
           keyField[k].toUpperCase() === "USER_ID" ||
           keyField[k].toUpperCase() === "EVENT_TYPE"
@@ -70,12 +72,12 @@ async function process(event) {
         eventObj[keyField[k]] = properties[mappedFields];
       }
     }
-    if (!property.itemId) {
+    // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
+    if (!properties.itemId) {
       itemId = message.messageId;
     }
-
     eventObj.itemId = itemId;
-    eventObj.eventType = deliveryStreamMapTo;
+    eventObj.eventType = mappedEvent;
     eventObj.sentAt = sentAt;
     eventObj.properties = property;
     payload.sessionId = anonymousId;

@@ -43,6 +43,7 @@ const getAuthToken = async formattedDestination => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
+      // `https://httpstat.us/200`,
       {
         params: {
           client_id: clientId,
@@ -91,6 +92,7 @@ const lookupLead = async (
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         action: "createOrUpdate",
         input: [attribute],
@@ -130,6 +132,7 @@ const lookupLeadUsingEmail = async (
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         params: { filterValues: email, filterType: "email" },
         headers: { Authorization: `Bearer ${token}` }

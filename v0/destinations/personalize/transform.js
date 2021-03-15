@@ -88,7 +88,10 @@ async function process(event) {
       }
 
       eventObj.eventType = mappedEvent;
-      eventObj.sentAt = sentAt;
+      eventObj.sentAt = getFieldValueFromMessage(
+        message,
+        "historicalTimestamp"
+      );
       eventObj.properties = property;
       payload.sessionId =
         anonymousId || getFieldValueFromMessage(message, "userIdOnly");

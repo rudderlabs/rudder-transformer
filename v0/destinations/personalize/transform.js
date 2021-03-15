@@ -72,33 +72,31 @@ async function process(event) {
       }
       // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
 
-      if (properties.itemId) {
-        if (mappedField.includes("itemId")) {
-          eventObj.itemId = properties.itemId;
-        } else {
-          eventObj.itemId = message.messageId;
-        }
+      const mapKeys = getHashFromArray(
+        Config.customMappings,
+        "from",
+        "to",
+        false
+      );
+      if (mapKeys["ITEM_ID"] && properties[mapKeys["ITEM_ID"]]) {
+        eventObj.itemId = properties[mapKeys["ITEM_ID"]];
       } else {
         eventObj.itemId = message.messageId;
       }
+
+      // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
+
+      if (mapKeys["USER_ID"] && properties[mapKeys["USER_ID"]]) {
+        payload.userId = properties[mapKeys["USER_ID"]];
+      } else {
+        payload.userId = userId;
+      }
+
       eventObj.eventType = mappedEvent;
       eventObj.sentAt = sentAt;
       eventObj.properties = property;
       payload.sessionId = anonymousId;
       payload.trackingId = Config.trackingId;
-
-      // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
-
-      if (properties.userId) {
-        if (mappedField.includes("userId")) {
-          payload.userId = properties.userId;
-        } else {
-          payload.userId = userId;
-        }
-      } else {
-        payload.userId = userId;
-      }
-
       eventList.push(eventObj);
       payload.eventList = eventList;
     } else throw new Error("Event type not set for this event");

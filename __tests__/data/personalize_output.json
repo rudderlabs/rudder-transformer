@@ -1,1 +1,130 @@
-[]
+[
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productAdded",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "item 1",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "user 1",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    },
+    {
+        "sessionId": "anon-id-new",
+        "trackingId": "c60",
+        "userId": "identified user id",
+        "eventList": [
+            {
+                "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+                "eventType": "productDeleted",
+                "sentAt": "2021-03-13T01:56:46.896+05:30",
+                "properties": {
+                    "typeOfMovie": "Art Film",
+                    "numberOfRatings": "checking with webapp change"
+                }
+            }
+        ]
+    }
+]

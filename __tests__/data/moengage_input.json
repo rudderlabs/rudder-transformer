@@ -4,7 +4,7 @@
       "anonymousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
       "channel": "web",
       "context": {
-        "timezone": "America/Toronto",
+        "timezone": "Asia/Tokyo",
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",

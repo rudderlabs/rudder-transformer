@@ -36,7 +36,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json",
     "headers": {
       "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
       "Content-Type": "application/json",
@@ -45,22 +45,16 @@
       "X-Zendesk-Marketplace-Organization-Id": "3339"
     },
     "params": {},
-    "body": {
+    "body":  {
       "JSON": {
-        "user": {
-          "email": "example124@email.com",
-          "name": "abcd124",
-          "external_id": "abcd-124",
-          "user_fields": {
-            "id": "abcd-124"
-          },
-          "verified": true,
-          "organization_id": 900001329943
-        }
+          "organization_membership": {
+              "user_id": 900113780483,
+              "organization_id": 900001329943
+          }
       },
       "XML": {},
       "FORM": {}
-    },
+  },
     "files": {},
     "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },

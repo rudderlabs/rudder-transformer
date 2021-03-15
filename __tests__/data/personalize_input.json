@@ -1,1 +1,874 @@
-[]
+[
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT ADDED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "eventValue": 7.06
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "itemId"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "itemId": "item 1"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    },
+                    {
+                        "from": "ITEM_ID",
+                        "to": "itemId"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "itemId": "item 1"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "itemId": "item 1"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    },
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "itemId": "item 1",
+                "userId": "user 1"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    },
+                    {
+                        "from": "USER_ID",
+                        "to": "userId"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "anonymousId": "anon-id-new",
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "event": "PRODUCT DELETED",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
+            "properties": {
+                "numberOfRatings": "checking with webapp change",
+                "typeOfMovie": "Art Film",
+                "itemId": "item 1",
+                "userId": "user 1"
+            },
+            "receivedAt": "2021-03-13T01:56:44.340+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "sentAt": "2021-03-13T01:56:46.896+05:30",
+            "timestamp": "2020-02-02T00:23:09.544Z",
+            "type": "track",
+            "userId": "identified user id"
+        },
+        "metadata": {
+            "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+            "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "jobId": 1,
+            "destinationType": "PERSONALIZE",
+            "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+            "messageIds": null,
+            "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+            "receivedAt": "2021-03-13T01:56:44.340+05:30"
+        },
+        "destination": {
+            "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+            "Name": "personalize Dev Testing",
+            "DestinationDefinition": {
+                "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+                "Name": "PERSONALIZE",
+                "DisplayName": "AWS Personalize",
+                "Config": {
+                    "destConfig": {
+                        "defaultConfig": [
+                            "accessKeyId",
+                            "secretAccessKey",
+                            "region",
+                            "trackingId",
+                            "eventName",
+                            "customMappings"
+                        ]
+                    },
+                    "excludeKeys": [],
+                    "includeKeys": [],
+                    "saveDestinationResponse": true,
+                    "secretKeys": [
+                        "accessKeyId",
+                        "secretAccessKey"
+                    ],
+                    "supportedSourceTypes": [
+                        "android",
+                        "ios",
+                        "web",
+                        "unity",
+                        "amp",
+                        "cloud",
+                        "reactnative"
+                    ],
+                    "transformAt": "processor"
+                }
+            },
+            "Config": {
+                "accessKeyId": "ABC",
+                "customMappings": [
+                    {
+                        "from": "TYPE_OF_MOVIE",
+                        "to": "typeOfMovie"
+                    },
+                    {
+                        "from": "NUMBER_OF_RATINGS",
+                        "to": "numberOfRatings"
+                    }
+                ],
+                "eventName": [
+                    {
+                        "from": "PRODUCT ADDED",
+                        "to": "productAdded"
+                    },
+                    {
+                        "from": "PRODUCT DELETED",
+                        "to": "productDeleted"
+                    }
+                ],
+                "region": "us-east-1",
+                "secretAccessKey": "DEF",
+                "trackingId": "c60"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    }
+]

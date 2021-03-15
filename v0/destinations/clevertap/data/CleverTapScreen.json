@@ -1,0 +1,26 @@
+[
+  {
+    "destKey": "evtName",
+    "sourceKeys": ["event", "properties.event", "name", "properties.name"],
+    "required": true,
+    "metadata": {
+      "defaultValue": "Screen Viewed",
+      "template": "Screen Viewed: {{value}}"
+    }
+  },
+  {
+    "destKey": "identity",
+    "sourceKeys": "userId",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "evtData",
+    "sourceKeys": "properties",
+    "required": true,
+    "metadata": {
+      "defaultValue": {}
+    }
+  }
+]
+

@@ -127,7 +127,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new Error(`Invalid Url: ${url}`);
+        throw new Error(`Invalid Url: ${documentUrl}`);
       }
     }
   }

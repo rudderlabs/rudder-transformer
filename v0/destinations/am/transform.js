@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -332,13 +329,31 @@ function responseBuilderSimple(
           message.context.device.type &&
           message.context.device.type.toLowerCase() === "ios"
         ) {
-          set(payload, "idfa", message.context.device.id);
-          set(payload, "idfv", message.context.device.id);
+          set(
+            payload,
+            "idfa",
+            message.context.device.idfa
+              ? message.context.device.idfa
+              : message.context.device.id
+          );
+          set(
+            payload,
+            "idfv",
+            message.context.device.idfv
+              ? message.context.device.idfv
+              : message.context.device.id
+          );
         } else if (
           message.context.device.type &&
           message.context.device.type.toLowerCase() === "android"
         ) {
-          set(payload, "adid", message.context.device.id);
+          set(
+            payload,
+            "adid",
+            message.context.device.adid
+              ? message.context.device.adid
+              : message.context.device.id
+          );
         }
       }
 

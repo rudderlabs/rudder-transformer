@@ -1,4 +1,4 @@
-const { getHashFromArray } = require("../../util");
+const { getHashFromArray, getFieldValueFromMessage } = require("../../util");
 
 function mapEventName(event) {
   const { message, destination } = event;
@@ -78,11 +78,6 @@ async function process(event) {
         "to",
         false
       );
-      if (mapKeys["ITEM_ID"] && properties[mapKeys["ITEM_ID"]]) {
-        eventObj.itemId = properties[mapKeys["ITEM_ID"]];
-      } else {
-        eventObj.itemId = message.messageId;
-      }
 
       // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
 
@@ -95,8 +90,10 @@ async function process(event) {
       eventObj.eventType = mappedEvent;
       eventObj.sentAt = sentAt;
       eventObj.properties = property;
-      payload.sessionId = anonymousId;
+      payload.sessionId =
+        anonymousId || getFieldValueFromMessage(message, "userIdOnly");
       payload.trackingId = Config.trackingId;
+      eventObj.itemId = eventObj.itemId ? eventObj.itemId : message.messageId;
       eventList.push(eventObj);
       payload.eventList = eventList;
     } else throw new Error("Event type not set for this event");

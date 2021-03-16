@@ -519,9 +519,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": [
-          "Comapny-ABC"
-        ]
+        "value_trait": ["Comapny-ABC"]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -1778,3 +1776,4 @@
     }
   }
 ]
+

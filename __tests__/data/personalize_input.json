@@ -83,16 +83,7 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT ADDED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -189,16 +180,7 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -299,16 +281,7 @@
                         "to": "itemId"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -410,16 +383,7 @@
                         "to": "itemId"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -517,16 +481,7 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -628,16 +583,7 @@
                         "to": "userId"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -740,16 +686,7 @@
                         "to": "userId"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -848,16 +785,7 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": [
-                    {
-                        "from": "PRODUCT ADDED",
-                        "to": "productAdded"
-                    },
-                    {
-                        "from": "PRODUCT DELETED",
-                        "to": "productDeleted"
-                    }
-                ],
+                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"

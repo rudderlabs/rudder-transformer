@@ -325,35 +325,16 @@ function responseBuilderSimple(
       if (message.channel === "mobile") {
         set(payload, "device_brand", message.context.device.manufacturer);
 
-        if (
-          message.context.device.type &&
-          message.context.device.type.toLowerCase() === "ios"
-        ) {
-          set(
-            payload,
-            "idfa",
-            message.context.device.idfa
-              ? message.context.device.idfa
-              : message.context.device.id
-          );
-          set(
-            payload,
-            "idfv",
-            message.context.device.idfv
-              ? message.context.device.idfv
-              : message.context.device.id
-          );
-        } else if (
-          message.context.device.type &&
-          message.context.device.type.toLowerCase() === "android"
-        ) {
-          set(
-            payload,
-            "adid",
-            message.context.device.adid
-              ? message.context.device.adid
-              : message.context.device.id
-          );
+        const deviceId = get(message, "context.device.id");
+        const platform = get(message, "context.device.type");
+        const tracking = get(message, "context.device.adTrackingEnabled");
+        const advertId = get(message, "context.device.advertisingId");
+
+        if (tracking && platform.toLowerCase() === "ios") {
+          set(payload, "idfa", advertId);
+          set(payload, "idfv", deviceId);
+        } else if (tracking && platform.toLowerCase() === "android") {
+          set(payload, "adid", advertId);
         }
       }
 

@@ -50,6 +50,8 @@ function responseBuilder(message, evType, evName, destination) {
     message.userId && message.userId !== "" ? message.userId : undefined;
 
   const response = defaultRequestConfig();
+  // set default domain based on account data center
+  const region = destination.Config.datacenterEU ? "eu" : "us";
   response.userId = message.userId || message.anonymousId;
   response.headers = {
     Authorization: `Basic ${btoa(
@@ -116,7 +118,7 @@ function responseBuilder(message, evType, evName, destination) {
         )
       );
     }
-    endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
+    endpoint = IDENTITY_ENDPOINT[region].replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
     // any other event type except identify
@@ -127,10 +129,9 @@ function responseBuilder(message, evType, evName, destination) {
       // DEVICE DELETE from CustomerIO
       if (deviceDeleteRelatedEventName === evName) {
         if (userId && token) {
-          endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
-            ":device_id",
-            token
-          );
+          endpoint = DEVICE_DELETE_ENDPOINT[region]
+            .replace(":id", userId)
+            .replace(":device_id", token);
 
           response.endpoint = endpoint;
           response.method = "DELETE";
@@ -179,12 +180,12 @@ function responseBuilder(message, evType, evName, destination) {
 
     if (userId) {
       if (deviceRelatedEventNames.includes(evName) && token) {
-        endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
+        endpoint = DEVICE_REGISTER_ENDPOINT[region].replace(":id", userId);
       } else {
-        endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);
+        endpoint = USER_EVENT_ENDPOINT[region].replace(":id", userId);
       }
     } else {
-      endpoint = ANON_EVENT_ENDPOINT;
+      endpoint = ANON_EVENT_ENDPOINT[region];
     }
   }
   const payload = removeUndefinedValues(rawPayload);
@@ -220,14 +221,6 @@ function processSingleMessage(message, destination) {
       throw new Error(`could not determine type ${messageType}`);
   }
   const response = responseBuilder(message, evType, evName, destination);
-
-  // replace default domain with EU data center domainc for EU based account
-  if (destination.Config.datacenterEU) {
-    response.endpoint = response.endpoint.replace(
-      "track.customer.io",
-      "track-eu.customer.io"
-    );
-  }
 
   return response;
 }

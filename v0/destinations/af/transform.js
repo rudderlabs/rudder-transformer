@@ -62,7 +62,7 @@ function responseBuilderSimple(payload, message, destination) {
 
 function getEventValueForUnIdentifiedTrackEvent(message) {
   return {
-    eventValue: message.properties
+    eventValue: JSON.stringify(message.properties)
   };
 }
 
@@ -88,11 +88,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       quantities.push(product.quantity);
       prices.push(product.price);
     });
-    rawPayload.eventValue = {
+    rawPayload.eventValue = JSON.stringify({
       af_content_id: contentIds,
       af_quantity: quantities,
       af_price: prices
-    };
+    });
   }
   return rawPayload;
 }
@@ -167,7 +167,8 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  const response = processSingleMessage(event.message, event.destination); 
+  return response;
 }
 
 exports.process = process;

@@ -16,13 +16,7 @@
     "userId": "00000000000000000000000000",
     "body": {
       "JSON": {
-        "eventValue": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        },
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "af_events_api": "true",
         "appsflyer_id": "afUid"
@@ -45,10 +39,7 @@
     "userId": "00000000000000000000000000",
     "body": {
       "JSON": {
-        "eventValue": {
-          "user_actual_role": "system_admin, system_user",
-          "user_actual_id": 12345
-        },
+        "eventValue":  "{\"user_actual_role\":\"system_admin, system_user\",\"user_actual_id\":12345}",
         "eventName": "test track event hs",
         "af_events_api": "true",
         "appsflyer_id": "afUid"
@@ -76,13 +67,7 @@
     "params": {},
     "body": {
       "JSON": {
-        "eventValue": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        },
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "af_events_api": "true",
         "appsflyer_id": "some_other2345_sample_external_id"
@@ -106,13 +91,7 @@
     "userId": "00000000000000000000000000",
     "body": {
       "JSON": {
-        "eventValue": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        },
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "af_events_api": "true",
         "appsflyer_id": "afUid"
@@ -135,13 +114,7 @@
     "userId": "00000000000000000000000000",
     "body": {
       "JSON": {
-        "eventValue": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        },
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "af_events_api": "true",
         "appsflyer_id": "afUid"

@@ -70,8 +70,8 @@ async function process(event) {
 
     // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
 
-    if (mapKeys["USER_ID"] && properties[mapKeys["USER_ID"]]) {
-      payload.userId = properties[mapKeys["USER_ID"]];
+    if (mapKeys.USER_ID && properties[mapKeys.USER_ID]) {
+      payload.userId = properties[mapKeys.USER_ID];
     } else {
       payload.userId = userId;
     }

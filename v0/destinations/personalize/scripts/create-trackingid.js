@@ -135,4 +135,7 @@ schema += '], "version": "1.0"}';
     }
     return e;
   }
-})().then(result => {console.log(result)});
+})().then(result => {
+  console.log(result);
+});
+

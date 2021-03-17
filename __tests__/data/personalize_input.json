@@ -83,7 +83,6 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": "PRODUCT ADDED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -180,7 +179,6 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -281,7 +279,6 @@
                         "to": "itemId"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -383,7 +380,6 @@
                         "to": "itemId"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -481,7 +477,6 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -583,7 +578,6 @@
                         "to": "userId"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -686,7 +680,6 @@
                         "to": "userId"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"
@@ -785,7 +778,6 @@
                         "to": "numberOfRatings"
                     }
                 ],
-                "eventName": "PRODUCT DELETED",
                 "region": "us-east-1",
                 "secretAccessKey": "DEF",
                 "trackingId": "c60"

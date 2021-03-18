@@ -473,11 +473,6 @@ function batch(destEvents) {
       );
 
       if (maxCount > TRACK_BRAZE_MAX_REQ_COUNT) {
-        // form a batch and start over
-        // reuse the last message response for the auth and endpoint
-        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        //  TODO: Need to think about reusing the code
-        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
         if (
           attributesBatch.length > 0 ||
           eventsBatch.length > 0 ||
@@ -511,7 +506,6 @@ function batch(destEvents) {
           purchasesBatch = [];
           trackMetadataBatch = [];
         }
-        // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
       }
 
       // add only if present
@@ -531,47 +525,6 @@ function batch(destEvents) {
       trackMetadataBatch.push(metadata);
     } else {
       // identify
-      // form a batch with whatever we have till now
-      // reuse the last message response for the auth and endpoint
-      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-      //  TODO: Need to think about reusing the code
-      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-      // don't add the response if everything is empty
-      // if (
-      //   attributesBatch.length > 0 ||
-      //   eventsBatch.length > 0 ||
-      //   purchasesBatch.length > 0
-      // ) {
-      //   const batchResponse = defaultRequestConfig();
-      //   batchResponse.headers = message.headers;
-      //   batchResponse.endpoint = trackEndpoint;
-      //   const responseBodyJson = {
-      //     partner: BRAZE_PARTNER_NAME
-      //   };
-      //   if (attributesBatch.length > 0) {
-      //     responseBodyJson.attributes = attributesBatch;
-      //   }
-      //   if (eventsBatch.length > 0) {
-      //     responseBodyJson.events = eventsBatch;
-      //   }
-      //   if (purchasesBatch.length > 0) {
-      //     responseBodyJson.purchases = purchasesBatch;
-      //   }
-      //   batchResponse.body.JSON = responseBodyJson;
-      //   // modify the endpoint as message object will have identify endpoint
-      //   batchResponse.endpoint = trackEndpoint;
-      //   respList.push(
-      //     formatBatchResponse(batchResponse, metadataBatch, destination)
-      //   );
-
-      //   // clear the arrays and reuse
-      //   attributesBatch = [];
-      //   eventsBatch = [];
-      //   purchasesBatch = [];
-      //   metadataBatch = [];
-      // }
-      // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
       if (!identifyEndpoint) {
         identifyEndpoint = endPoint;
       }
@@ -666,6 +619,7 @@ function batch(destEvents) {
 
   return respList;
 }
+
 module.exports = {
   process,
   batch

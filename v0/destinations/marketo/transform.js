@@ -2,8 +2,15 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
+const stats = require("../../../util/stats");
 const { EventType } = require("../../../constants");
-const { identifyConfig, formatConfig } = require("./config");
+const {
+  identifyConfig,
+  formatConfig,
+  LEAD_LOOKUP_METRIC,
+  ACTIVITY_METRIC,
+  FETCH_TOKEN_METRIC
+} = require("./config");
 const {
   isDefined,
   removeUndefinedValues,
@@ -36,6 +43,7 @@ const getAuthToken = async formattedDestination => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
+      // `https://httpstat.us/200`,
       {
         params: {
           client_id: clientId,
@@ -49,8 +57,10 @@ const getAuthToken = async formattedDestination => {
       "During getting auth token"
     );
     if (resp) {
+      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
       return resp.access_token;
     }
+    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
   });
 };
@@ -79,8 +89,10 @@ const lookupLead = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         action: "createOrUpdate",
         input: [attribute],
@@ -117,8 +129,10 @@ const lookupLeadUsingEmail = async (
   email
 ) => {
   return emailLeadCache.get(email, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         params: { filterValues: email, filterType: "email" },
         headers: { Authorization: `Bearer ${token}` }
@@ -310,7 +324,7 @@ const processTrack = async (
       }
     ]
   };
-
+  stats.increment(ACTIVITY_METRIC, 1);
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },

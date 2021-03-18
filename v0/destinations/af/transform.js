@@ -67,14 +67,12 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
 }
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
-  const rawPayload = {};
-  set(rawPayload, "properties", message.properties);
-
+  let eventValue = {};
+  set(eventValue, "properties", message.properties);
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-
   if (
     isMultiSupport &&
     message.properties.products &&
@@ -88,13 +86,14 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       quantities.push(product.quantity);
       prices.push(product.price);
     });
-    rawPayload.eventValue = JSON.stringify({
+    eventValue = JSON.stringify({
+      ...eventValue,
       af_content_id: contentIds,
       af_quantity: quantities,
       af_price: prices
     });
   }
-  return rawPayload;
+  return { eventValue };
 }
 
 function processNonTrackEvents(message, destination, eventName) {

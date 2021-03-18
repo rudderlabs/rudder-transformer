@@ -40,7 +40,8 @@
     "traits.lastname",
     "traits.last_name",
     "context.traits.lastName",
-    "context.traits.lastname"
+    "context.traits.lastname",
+    "context.traits.last_name"
   ],
   "phone": [
     "traits.phone",

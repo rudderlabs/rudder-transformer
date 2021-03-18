@@ -632,6 +632,156 @@
         "api_key": "abcde",
         "events": [
           {
+            "os_name": "Android",
+            "os_version": "9",
+            "device_model": "AOSP on IA Emulator",
+            "device_manufacturer": "Google",
+            "platform": "Android",
+            "device_id": "0572f78fa49c648e",
+            "adid": "44c97318-9040-4361-8bc7-4eb30f665ca8",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "carrier": "Android",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "device_brand": "Google",
+            "time": 1600355223515,
+            "user_id": "0572f78fa49c648e",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "iOS",
+            "os_version": "14.4.1",
+            "device_model": "iPhone XR",
+            "device_manufacturer": "Apple",
+            "platform": "iOS",
+            "device_id": "0572f78fa49c648e",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "carrier": "AT&T",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "device_brand": "Apple",
+            "time": 1600355223515,
+            "user_id": "0572f78fa49c648e",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "iOS",
+            "os_version": "14.4.1",
+            "device_model": "iPhone XR",
+            "device_manufacturer": "Apple",
+            "platform": "iOS",
+            "device_id": "0572f78fa49c648e",
+            "idfa": "1606e649-c97e-4d5f-a2ef-b81dbc66741a",
+            "idfv": "0572f78fa49c648e",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "carrier": "AT&T",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "device_brand": "Apple",
+            "time": 1600355223515,
+            "user_id": "0572f78fa49c648e",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
             "device_id": "anon-id-new",
             "event_properties": {
               "prop1": "5",

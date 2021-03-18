@@ -810,6 +810,7 @@ module.exports = {
   getValuesAsArrayFromConfig,
   isBlank,
   isDefined,
+  isDefinedAndNotNull,
   isEmpty,
   isObject,
   isPrimitive,

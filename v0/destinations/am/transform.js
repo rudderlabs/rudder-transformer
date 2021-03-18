@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -290,6 +287,18 @@ function responseBuilderSimple(
           "device_brand",
           get(message, "context.device.manufacturer")
         );
+
+        const deviceId = get(message, "context.device.id");
+        const platform = get(message, "context.device.type");
+        const tracking = get(message, "context.device.adTrackingEnabled");
+        const advertId = get(message, "context.device.advertisingId");
+
+        if (tracking && platform.toLowerCase() === "ios") {
+          set(payload, "idfa", advertId);
+          set(payload, "idfv", deviceId);
+        } else if (tracking && platform.toLowerCase() === "android") {
+          set(payload, "adid", advertId);
+        }
       }
 
       payload.time = new Date(

@@ -123,10 +123,6 @@ const postAxiosResponse = async (
   const resp = await axios.post(url, data, params).catch(error => {
     throw error;
   });
-  console.log("resp.data: " + JSON.stringify({
-    resp:  resp.data,
-    req: { data, params }
-  }));
   if (resp.data) {
     const { success, errors } = resp.data;
     if (success === false) {

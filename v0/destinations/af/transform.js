@@ -61,8 +61,14 @@ function responseBuilderSimple(payload, message, destination) {
 }
 
 function getEventValueForUnIdentifiedTrackEvent(message) {
+  let eventValue;
+  if (message.properties) {
+    eventValue = JSON.stringify(message.properties);
+  } else {
+    eventValue = "";
+  }
   return {
-    eventValue: JSON.stringify(message.properties)
+    eventValue
   };
 }
 
@@ -75,6 +81,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
   });
   if (
     isMultiSupport &&
+    message.properties &&
     message.properties.products &&
     message.properties.products.length > 0
   ) {
@@ -86,12 +93,18 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       quantities.push(product.quantity);
       prices.push(product.price);
     });
-    eventValue = JSON.stringify({
+    eventValue = {
       ...eventValue,
       af_content_id: contentIds,
       af_quantity: quantities,
       af_price: prices
-    });
+    };
+  }
+  eventValue = removeUndefinedValues(eventValue);
+  if (Object.keys(eventValue).length > 0) {
+    eventValue = JSON.stringify(eventValue);
+  } else {
+    eventValue = "";
   }
   return { eventValue };
 }

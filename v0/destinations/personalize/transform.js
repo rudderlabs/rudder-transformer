@@ -1,94 +1,65 @@
-const { getHashFromArray, getFieldValueFromMessage } = require("../../util");
+const _ = require("lodash");
+const { KEY_CHECK_LIST } = require("./config");
+const {
+  isDefinedAndNotNull,
+  getHashFromArray,
+  getFieldValueFromMessage
+} = require("../../util");
 
-async function process(event) {
-  const { message, destination } = event;
-  const { Config } = destination;
-  const { properties, anonymousId, userId } = message;
-  const payload = {};
-  const noOfFields = Config.customMappings.length;
-  const keyField = []; // schema field
-  const mappedFields = []; // payload fields
-  const property = {};
-  const eventObj = {};
-  const eventList = [];
-  const keyCheckList = [
-    "USER_ID",
-    "EVENT_TYPE",
-    "TIMESTAMP",
-    "ITEM_ID",
-    "EVENT_VALUE",
-    "IMPRESSION",
-    "RECOMMENDATION_ID",
-    "EVENT_ID"
-  ];
+async function process(ev) {
+  const { destination, message } = ev;
+  const { properties, anonymousId, event } = message;
+  const { customMappings, trackingId } = destination.Config;
 
-  if (message.event) {
-    for (let i = 0; i < noOfFields; i += 1) {
-      keyField.push(Config.customMappings[i].from);
-      mappedFields.push(Config.customMappings[i].to);
-    }
-    for (let k = 0; k < noOfFields; k += 1) {
-      if (
-        // except these every thing will go inside properties
-        !keyCheckList.includes(keyField[k].toUpperCase())
-      ) {
-        const mappedField = mappedFields[k];
-        keyField[k] = keyField[k]
-          .toLowerCase()
-          .replace(/_([a-z])/g, function camelCase(g) {
-            return g[1].toUpperCase();
-          });
-        if (properties && properties[mappedField]) {
-          property[keyField[k]] = properties[mappedField];
-        } else {
-          throw new Error(`Mapped Field ${mappedField} not found`);
-        }
-      } else if (
-        // userId and eventType is handled later as shown below and others are saved outside properties
-        !(
-          keyField[k].toUpperCase() === "USER_ID" ||
-          keyField[k].toUpperCase() === "EVENT_TYPE"
-        )
-      ) {
-        keyField[k] = keyField[k]
-          .toLowerCase()
-          .replace(/_([a-z])/g, function camelCase(g) {
-            return g[1].toUpperCase();
-          });
-        const mappedField = mappedFields[k];
-        eventObj[keyField[k]] = properties[mappedField];
-      }
-    }
-    // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
-
-    const mapKeys = getHashFromArray(
-      Config.customMappings,
-      "from",
-      "to",
-      false
-    );
-
-    // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
-
-    if (mapKeys.USER_ID && properties[mapKeys.USER_ID]) {
-      payload.userId = properties[mapKeys.USER_ID];
-    } else {
-      payload.userId = userId;
-    }
-
-    eventObj.eventType = message.event;
-    eventObj.sentAt = getFieldValueFromMessage(message, "historicalTimestamp");
-    eventObj.properties = property;
-    payload.sessionId =
-      anonymousId || getFieldValueFromMessage(message, "userIdOnly");
-    payload.trackingId = Config.trackingId;
-    eventObj.itemId = eventObj.itemId ? eventObj.itemId : message.messageId;
-    eventList.push(eventObj);
-    payload.eventList = eventList;
-  } else {
+  if (!event) {
     throw new Error(" Cannot process if no event name specified");
   }
-  return payload;
+
+  // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
+  const keyMap = getHashFromArray(customMappings, "from", "to", false);
+
+  // process event properties
+  const outputEvent = {
+    eventType: event,
+    sentAt: getFieldValueFromMessage(message, "historicalTimestamp"),
+    properties: {}
+  };
+  Object.keys(keyMap).forEach(key => {
+    // name of the key in event.properties
+    const value = properties && properties[keyMap[key]];
+
+    if (!KEY_CHECK_LIST.includes(key.toUpperCase())) {
+      if (!isDefinedAndNotNull(value)) {
+        throw new Error(`Mapped Field ${keyMap[key]} not found`);
+      }
+
+      outputEvent.properties[_.camelCase(key)] = value;
+    } else if (
+      !(key.toUpperCase() === "USER_ID" || key.toUpperCase() === "EVENT_TYPE")
+    ) {
+      outputEvent[_.camelCase(key)] = value;
+    }
+  });
+
+  // manipulate for itemId
+  outputEvent.itemId = outputEvent.itemId
+    ? outputEvent.itemId
+    : message.messageId;
+
+  // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+
+  return {
+    userId:
+      keyMap.USER_ID && isDefinedAndNotNull(properties[keyMap.USER_ID])
+        ? properties[keyMap.USER_ID]
+        : userId,
+    // not using getFieldValueFromMessage(message, "userId") as we want to
+    // prioritize anonymousId over userId
+    sessionId: anonymousId || userId,
+    trackingId,
+    eventList: [outputEvent]
+  };
 }
 
 exports.process = process;

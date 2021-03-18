@@ -19,22 +19,14 @@ const {
   deleteObjectProperty
 } = require("../../util");
 const {
-  Event,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
   GROUP_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap,
   batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
-// const {
-//   getOSName,
-//   getOSVersion,
-//   getDeviceModel,
-//   getDeviceManufacturer
-// } = require("./utils");
 
 const AMUtils = require("./utils");
 
@@ -42,35 +34,6 @@ const logger = require("../../../logger");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
-
-// Get the spec'd traits, for now only address needs treatment as 2 layers.
-// const populateSpecedTraits = (payload, message) => {
-//   const traits = getFieldValueFromMessage(message, "traits");
-//   if (traits) {
-//     SpecedTraits.forEach(trait => {
-//       const mapping = TraitsMapping[trait];
-//       const keys = Object.keys(mapping);
-//       keys.forEach(key => {
-//         set(payload, `user_properties.${key}`, get(traits, mapping[key]));
-//       });
-//     });
-//   }
-// };
-
-// Utility method for creating the structure required for single message processing
-// with basic fields populated
-
-// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
-/* function stringToHash(string) {
-  let hash = 0;
-  if (string.length == 0) return hash;
-  for (i = 0; i < string.length; i++) {
-    char = string.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash &= hash;
-  }
-  return Math.abs(hash);
-} */
 
 function getSessionId(payload) {
   const sessionId = payload.session_id;
@@ -82,12 +45,6 @@ function getSessionId(payload) {
   }
   return -1;
 }
-
-// function fixVersion(payload, message) {
-//   if (message.context.library.name.includes("android")) {
-//     payload.app_version = message.context.app.version;
-//   }
-// }
 
 function addMinIdlength() {
   return { min_id_length: 1 };
@@ -219,6 +176,7 @@ function responseBuilderSimple(
     Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
     delete campaign[oldKey];
   });
+
   // append campaign info extracted above(2.) to user_properties.
   // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
   // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
@@ -297,6 +255,7 @@ function responseBuilderSimple(
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
+
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
@@ -326,7 +285,11 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(payload, "device_brand", message.context.device.manufacturer);
+        set(
+          payload,
+          "device_brand",
+          get(message, "context.device.manufacturer")
+        );
       }
 
       payload.time = new Date(
@@ -406,21 +369,21 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        get(message, "properties.category") ||
         ""} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name: message.name || get(message, "properties.category")
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        get(message, "properties.category") ||
         ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name: message.name || get(message, "properties.category")
       };
       category = ConfigCategory.SCREEN;
       break;
@@ -553,14 +516,6 @@ function trackRevenueEvent(message, destination) {
       originalEvent.isRevenue = true;
     }
   } else {
-    /* if (isProductArrayInPayload(message)) {
-      // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
-      if (destination.Config.trackRevenuePerProduct === false) {
-        originalEvent.isRevenue = true;
-      }
-    } else {
-      originalEvent.isRevenue = true;
-    } */
     // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
     // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
     // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
@@ -657,10 +612,6 @@ function getBatchEvents(message, metadata, batchEventResponse) {
       });
       set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
       batchEventResponse.metadata = [metadata];
-    } else {
-      // check not required as max individual event size is always less than 20MB
-      // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
-      // batchComplete = true;
     }
   } else {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch

@@ -1,0 +1,304 @@
+[
+  {
+    "error": "Creating or updating contacts is disabled"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/contacts/v1/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer undefined"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributeSets": [],
+          "contactKey": "12345"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:f3ffa19b-e0b3-4967-829f-549b781080e6/rows/Contact Key:12345",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer undefined"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "values": {
+            "Contact Key": "12345",
+            "App Name": "RudderLabs JavaScript SDK",
+            "App Version": "1.0.0",
+            "App Build": "1.0.0",
+            "UTM Campaign": "Demo Campaign",
+            "UTM Source": "facebook",
+            "UTM Medium": "online",
+            "UTM Term": "Demo terms",
+            "UTM Content": "Demo content",
+            "Locale": "en-GB",
+            "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "IP Address": "0.0.0.0",
+            "Screen Density": 2,
+            "Screen Height": 860,
+            "Screen Width": 1280,
+            "Email": "tonmoy@rudderstack.com",
+            "Name": "Tonmoy Malik"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  {
+    "error": "Either userId or email is required"
+  },
+  {
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/contacts/v1/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer undefined"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributeSets": [],
+          "contactKey": "12345"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:f3ffa19b-e0b3-4967-829f-549b781080e6/rows/Contact Key:12345",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer undefined"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "values": {
+            "Name": "Tonmoy Malik",
+            "Email": "tonmoy@rudderstack.com",
+            "Locale": "en-GB",
+            "App Name": "RudderLabs JavaScript SDK",
+            "UTM Term": "Demo terms",
+            "App Build": "1.0.0",
+            "IP Address": "0.0.0.0",
+            "UTM Medium": "online",
+            "UTM Source": "facebook",
+            "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "App Version": "1.0.0",
+            "Contact Key": "12345",
+            "Device Name": "Apple iPhone XR",
+            "Device Type": "iOS",
+            "UTM Content": "Demo content",
+            "Device-model": "iPhone XR",
+            "Screen Width": 1280,
+            "UTM Campaign": "Demo Campaign",
+            "Wifi Enabled": "connceted",
+            "Screen Height": 860,
+            "Screen Density": 2,
+            "Network Carrier": "Verizon",
+            "Cellular Enabled": "active",
+            "Bluetooth Enabled": "off",
+            "Ad Tracking Enabled": true,
+            "Device Manufacturer": "Apple"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Contact Key:12345",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "values": {
+          "Plan": "plan value",
+          "Locale": "en-GB",
+          "App Name": "RudderLabs JavaScript SDK",
+          "UTM Term": "Demo terms",
+          "App Build": "1.0.0",
+          "IP Address": "0.0.0.0",
+          "UTM Medium": "online",
+          "UTM Source": "facebook",
+          "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "App Version": "1.0.0",
+          "Contact Key": "12345",
+          "UTM Content": "Demo content",
+          "Screen Width": 1280,
+          "UTM Campaign": "Demo Campaign",
+          "Screen Height": 860,
+          "Screen Density": 2
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "values": {
+          "Plan": "plan value",
+          "Uuid": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+          "Locale": "en-GB",
+          "App Name": "RudderLabs JavaScript SDK",
+          "UTM Term": "Demo terms",
+          "App Build": "1.0.0",
+          "IP Address": "0.0.0.0",
+          "UTM Medium": "online",
+          "UTM Source": "facebook",
+          "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "App Version": "1.0.0",
+          "Device Name": "Apple iPhone XR",
+          "Device Type": "iOS",
+          "UTM Content": "Demo content",
+          "Device-model": "iPhone XR",
+          "Screen Width": 1280,
+          "UTM Campaign": "Demo Campaign",
+          "Wifi Enabled": "connceted",
+          "Screen Height": 860,
+          "Screen Density": 2,
+          "Network Carrier": "Verizon",
+          "Cellular Enabled": "active",
+          "Bluetooth Enabled": "off",
+          "Ad Tracking Enabled": true,
+          "Device Manufacturer": "Apple"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined"
+    },
+    "version": "1",
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Uuid:50360b9c-ea8d-409c-b672-c9230f91cce5"
+  },
+  {
+    "error": "Event not mapped for this track call"
+  },
+  {
+    "error": "Either userId or email is required"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "values": {
+          "Plan": "plan value",
+          "Locale": "en-GB",
+          "App Name": "RudderLabs JavaScript SDK",
+          "UTM Term": "Demo terms",
+          "App Build": "1.0.0",
+          "Price Key": 29.99,
+          "Guest Key": "2323-34343-3434",
+          "IP Address": "0.0.0.0",
+          "UTM Medium": "online",
+          "UTM Source": "facebook",
+          "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "App Version": "1.0.0",
+          "UTM Content": "Demo content",
+          "Screen Width": 1280,
+          "UTM Campaign": "Demo Campaign",
+          "Screen Height": 860,
+          "Screen Density": 2
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined"
+    },
+    "version": "1",
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "values": {
+          "Plan": "plan value",
+          "Locale": "en-GB",
+          "App Name": "RudderLabs JavaScript SDK",
+          "UTM Term": "Demo terms",
+          "App Build": "1.0.0",
+          "Price Key": 29.99,
+          "Contact Key": 12345,
+          "Guest Key": "2323-34343-3434",
+          "IP Address": "0.0.0.0",
+          "UTM Medium": "online",
+          "UTM Source": "facebook",
+          "User Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "App Version": "1.0.0",
+          "UTM Content": "Demo content",
+          "Screen Width": 1280,
+          "UTM Campaign": "Demo Campaign",
+          "Screen Height": 860,
+          "Screen Density": 2
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer undefined"
+    },
+    "version": "1",
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434,Contact Key:12345"
+  }
+]
+

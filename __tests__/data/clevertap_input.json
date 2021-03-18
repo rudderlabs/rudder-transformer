@@ -3,7 +3,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -64,7 +65,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -88,7 +90,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -111,7 +114,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -132,7 +136,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -152,7 +157,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -173,7 +179,8 @@
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467"
+        "accountId": "476550467",
+        "trackAnonymous": true
       }
     },
     "message": {
@@ -260,5 +267,28 @@
       },
       "originalTimestamp": "2021-03-10T11:59:22.080Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": false
+      }
+    },
+    "message": {
+      "type": "track",
+      "anonymousId": "random_anon_id",
+      "event": "FailTest_with_anon",
+      "properties": {
+        "name": "Random2",
+        "revenue": 4.99
+      },
+      "context": {
+        "ip": "14.5.67.21"
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    }
   }
+
 ]

@@ -299,11 +299,17 @@ function responseBuilderSimple(
       ? message.integrations[gaDisplayName].clientId
       : undefined
     : undefined;
-  finalPayload.cid =
-    integrationsClientId ||
-    getDestinationExternalID(message, "gaExternalId") ||
-    message.anonymousId ||
-    md5(message.userId);
+
+  const disableMd5 = get(message, "disableMd5");
+  if (disableMd5) {
+    finalPayload.cid = undefined;
+  } else {
+    finalPayload.cid =
+      integrationsClientId ||
+      getDestinationExternalID(message, "gaExternalId") ||
+      message.anonymousId ||
+      md5(message.userId);
+  }
 
   finalPayload.uip = getParsedIP(message);
 

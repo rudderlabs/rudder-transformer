@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
@@ -109,7 +109,7 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   [
     {
@@ -140,7 +140,7 @@
         "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
       },
       "version": "1",
-      "endpoint": "https://api.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
     },
     {
       "body": {
@@ -169,7 +169,7 @@
         "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
       },
       "version": "1",
-      "endpoint": "https://api.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
+      "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
     }
   ],
   {
@@ -200,7 +200,7 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-eu.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   {
     "body": {
@@ -230,7 +230,7 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-serv3.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   {
     "statusCode": 400,
@@ -248,7 +248,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
@@ -330,7 +330,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",

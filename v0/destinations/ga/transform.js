@@ -300,9 +300,12 @@ function responseBuilderSimple(
       : undefined
     : undefined;
 
-  const disableMd5 = get(message, "disableMd5");
-  if (disableMd5) {
-    finalPayload.cid = undefined;
+  if (destination.Config.disableMd5) {
+    finalPayload.cid =
+      integrationsClientId ||
+      getDestinationExternalID(message, "gaExternalId") ||
+      message.anonymousId ||
+      message.userId;
   } else {
     finalPayload.cid =
       integrationsClientId ||

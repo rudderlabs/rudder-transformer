@@ -1,0 +1,29 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["event", "properties.event", "name", "properties.name"],
+    "required": true,
+    "metadata": {
+      "defaultValue": "Web-Page-Viewed",
+      "template": "Web-Page-Viewed-{{value}}"
+    }
+  },
+  {
+    "destKey": "sessionId",
+    "sourceKeys": "properties.kustomer_session_id",
+    "required": false
+  },
+  {
+    "destKey": "trackingId",
+    "sourceKeys": "properties.kustomer_tracking_id",
+    "required": false
+  },
+  {
+    "destKey": "meta",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": ["kustomer_session_id", "kustomer_tracking_id"]
+    }
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "sessionId",
+    "sourceKeys": "properties.kustomer_session_id",
+    "required": false
+  },
+  {
+    "destKey": "trackingId",
+    "sourceKeys": "properties.kustomer_tracking_id",
+    "required": false
+  },
+  {
+    "destKey": "meta",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": ["kustomer_session_id", "kustomer_tracking_id"]
+    }
+  }
+]

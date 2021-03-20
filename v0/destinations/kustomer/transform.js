@@ -8,11 +8,14 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  removeUndefinedAndNullValues
 } = require("../../util");
+const { validateEvent } = require("./util");
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload = {};
+  let targetUrl = BASE_ENDPOINT;
   if (message.type.toLowerCase() == EventType.IDENTIFY) {
     /*
     Find the user with externalId (rudder userId/anonymousId)
@@ -24,21 +27,31 @@ const responseBuilderSimple = (message, category, destination) => {
 
     Create New user using create API —> useriD/ anonymous Id will be mapped to externalId
     New user will be created with the payload attributes */
+    throw Error("Not implemented yet");
   } else {
-    /*
-      Logic for creating tracking event type payload goes here (track, screen, page)
-      */
+    targetUrl = `${targetUrl}/v1/tracking/identityEvent`;
+    const eventPayload = constructPayload(
+      message,
+      MAPPING_CONFIG[category.name]
+    );
+    removeUndefinedAndNullValues(eventPayload);
+    validateEvent(eventPayload);
+    payload = {
+      identity: {
+        externalId: getFieldValueFromMessage(message, "userId")
+      },
+      event: eventPayload
+    };
   }
   if (payload) {
     const responseBody = { ...payload };
     const response = defaultRequestConfig();
-    response.endpoint = BASE_ENDPOINT; // Exact Endpoint to be appended based on above logic
+    response.endpoint = targetUrl;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${destination.Config.apiKey}`
     };
-    response.userId = getFieldValueFromMessage(message, "userId");
     response.body.JSON = responseBody;
     return response;
   }

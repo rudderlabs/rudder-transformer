@@ -111,6 +111,34 @@
     "version": "1",
     "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "customer",
+        "attributes": {
+          "CID": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+          "RC_DATE": "2021-03-22T12:36:34Z",
+          "RC_NO_OF_SKUS": 1,
+          "RC_PN_SKU_LIST": "9317"
+        },
+        "customer_id": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+    "headers": {
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Content-Type": "application/json",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "version": "1",
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+  },
   [
     {
       "body": {

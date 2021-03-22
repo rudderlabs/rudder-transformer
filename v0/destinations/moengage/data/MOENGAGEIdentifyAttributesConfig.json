@@ -172,5 +172,33 @@
         "transactions"
       ]
     }
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "traits",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "_id",
+        "age",
+        "email",
+        "firstName",
+        "first_name",
+        "firstname",
+        "gender",
+        "id",
+        "lastName",
+        "lastSeen",
+        "last_name",
+        "last_seen",
+        "lastname",
+        "mobile",
+        "moeUnsubscribe",
+        "moe_unsubscribe",
+        "revenue",
+        "source",
+        "transactions"
+      ]
+    }
   }
 ]

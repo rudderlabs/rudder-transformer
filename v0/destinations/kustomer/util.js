@@ -8,6 +8,11 @@ const numVadiate = RegExp(EVENT_REGEX.NUMBER);
 const stringValidate = RegExp(EVENT_REGEX.STRING);
 const dateTimeValidate = RegExp(EVENT_REGEX.DATE_TIME);
 
+// A validation function responsible for validating
+// various parameters of an event payload based on
+// which type of data they are storing.
+// -------------------------------------------------
+// Ref: https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8
 const validateEvent = event => {
   const { name, meta } = event;
   if (!eventNameValidate.test(name)) {

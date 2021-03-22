@@ -1,1 +1,83 @@
-[]
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "externalId",
+    "sourceKeys": "userId",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "username",
+    "sourceKeys": ["traits.userName", "context.traits.userName"],
+    "required": false
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": ["traits.company", "context.traits.company"],
+    "required": false
+  },
+  {
+    "destKey": "signedUpAt",
+    "sourceKeys": ["traits.signedUpAt", "context.traits.signedUpAt"],
+    "required": false
+  },
+  {
+    "destKey": "lastActivityAt",
+    "sourceKeys": ["traits.lastActivityAt", "context.traits.lastActivityAt"],
+    "required": false
+  },
+  {
+    "destKey": "lastCustomerActivityAt",
+    "sourceKeys": ["traits.lastCustomerActivityAt", "context.traits.lastCustomerActivityAt"],
+    "required": false
+  },
+  {
+    "destKey": "lastSeenAt",
+    "sourceKeys": ["traits.lastSeenAt", "context.traits.lastSeenAt"],
+    "required": false
+  },
+  {
+    "destKey": "avatarUrl",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": ["traits.tags", "context.traits.tags"],
+    "required": false
+  },
+  {
+    "destKey": "locale",
+    "sourceKeys": ["traits.locale", "context.traits.locale"],
+    "required": false
+  },
+  {
+    "destKey": "emails",
+    "sourceKeys": ["traits.emails", "context.traits.emails"],
+    "required": false
+  },
+  {
+    "destKey": "phones",
+    "sourceKeys": ["traits.phones", "context.traits.phones"],
+    "required": false
+  },
+  {
+    "destKey": "socials",
+    "sourceKeys": ["traits.socials", "context.traits.socials"],
+    "required": false
+  },
+  {
+    "destKey": "birthdayAt",
+    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+    "required": false
+  }
+]

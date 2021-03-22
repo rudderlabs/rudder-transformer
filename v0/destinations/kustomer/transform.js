@@ -1,4 +1,7 @@
+const get = require("get-value");
+const axios = require("axios");
 const { EventType } = require("../../../constants");
+const logger = require("../../../logger");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -8,27 +11,114 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
+  removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues
+  defaultPutRequestConfig
+  ,
+  
 } = require("../../util");
 const { validateEvent } = require("./util");
 
-const responseBuilderSimple = (message, category, destination) => {
+// Function responsible for constructing the Kustomer (User) Payload for identify
+// type of events.
+const constructKustomerPayload = (message, category) => {
+  const kustomerPayload = constructPayload(
+    message,
+    MAPPING_CONFIG[category.name]
+  );
+  if (getFieldValueFromMessage(message, "email")) {
+    kustomerPayload.emails = kustomerPayload.emails
+      ? kustomerPayload.emails
+      : [{ type: "home", email: getFieldValueFromMessage(message, "email") }];
+  }
+
+  if (getFieldValueFromMessage(message, "phone")) {
+    kustomerPayload.phones = kustomerPayload.phones
+      ? kustomerPayload.phones
+      : [{ type: "home", phone: getFieldValueFromMessage(message, "phone") }];
+  }
+  const url = get(message, "traits.website")
+    ? get(message, "traits.website")
+    : get(message, "context.traits.website");
+  if (url) {
+    kustomerPayload.urls = [
+      {
+        url
+      }
+    ];
+  }
+
+  const address = getFieldValueFromMessage(message, "address");
+  if (address) {
+    kustomerPayload.locations = [
+      {
+        type: "home",
+        address:
+          typeof address === "string"
+            ? address
+            : `${address.street}, ${address.city}, ${address.state}, ${address.postalCode}`
+      }
+    ];
+  }
+
+  removeUndefinedAndNullValues(kustomerPayload);
+  return kustomerPayload;
+};
+
+// Main process function responsible for building payload for all
+// type of events.
+const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
   let targetUrl = BASE_ENDPOINT;
+  let userExists = false;
+  // In case of identify type of event first extract the anonymousId, userId
+  // and search if any Kustomer is present in destination.
+  // If present update the same kustomer with the given payload.
+  // else create a new kustomer.
+  //-------------------------------------------------------------
+  // Get Kustomer: https://apidocs.kustomer.com/#ff41f372-6144-4c64-9712-662ee5ef1c33
+  // Create Kustomer: https://apidocs.kustomer.com/#07bd1072-4d4b-4875-b526-8369d711e811
+  // Update Kustomer: https://apidocs.kustomer.com/#077d653a-184e-4153-8133-d24b6427c1ae
   if (message.type.toLowerCase() == EventType.IDENTIFY) {
-    /*
-    Find the user with externalId (rudder userId/anonymousId)
-    If anonymousId is present search using it/ else use userID to search
-
-    If User Present —> Use the update api for creating request and update the payload attributes
-
-    Else 
-
-    Create New user using create API —> useriD/ anonymous Id will be mapped to externalId
-    New user will be created with the payload attributes */
-    throw Error("Not implemented yet");
-  } else {
+    const idArr = [
+      get(message, "anonymousId"),
+      getFieldValueFromMessage(message, "userIdOnly")
+    ];
+    let response;
+    await Promise.all(
+      idArr.map(async id => {
+        try {
+          response = await axios.get(
+            `${BASE_ENDPOINT}/v1/customers/externalId=${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${destination.Config.apiKey}`
+              }
+            }
+          );
+        } catch (err) {
+          logger.debug("Error while fetching customer info");
+        }
+        // If Kustomer Exists url to user : Update kustomer
+        if (response && response.status === 200) {
+          userExists = true;
+          targetUrl = `${targetUrl}/v1/customers/${response.data.data.id}?replace=false`;
+        }
+      })
+    );
+    // URL to use for creating new Kustomer
+    if (!userExists) {
+      targetUrl = `${targetUrl}/v1/customers`;
+    }
+    payload = constructKustomerPayload(message, category);
+  }
+  // Section responsible for handling screen, page, and track type of
+  // events. An userId, or anonymous id of the user who is already
+  // identified is required for logging events into their timeline.
+  // -----------------------------------------------------------
+  // Ref: https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8
+  // Ref: https://apidocs.kustomer.com/#0b0da19f-fca2-401d-af78-5d054c75a9b2
+  else {
     targetUrl = `${targetUrl}/v1/tracking/identityEvent`;
     const eventPayload = constructPayload(
       message,
@@ -47,7 +137,9 @@ const responseBuilderSimple = (message, category, destination) => {
     const responseBody = { ...payload };
     const response = defaultRequestConfig();
     response.endpoint = targetUrl;
-    response.method = defaultPostRequestConfig.requestMethod;
+    response.method = userExists
+      ? defaultPutRequestConfig.requestMethod
+      : defaultPostRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${destination.Config.apiKey}`

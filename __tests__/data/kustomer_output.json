@@ -1,0 +1,237 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/customers",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Utsab Chowdhury",
+        "externalId": "utsabc",
+        "username": "utsabc47",
+        "company": "Rudderstack",
+        "signedUpAt": "2015-04-17T12:37:42.146Z",
+        "lastActivityAt": "2016-04-17T12:37:42.146Z",
+        "lastCustomerActivityAt": "2017-04-17T12:37:42.146Z",
+        "lastSeenAt": "2017-04-17T12:37:42.146Z",
+        "avatarUrl": "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+        "gender": "m",
+        "tags": ["happy", "satisfied"],
+        "locale": "en-US",
+        "socials": [
+          {
+            "verified": true,
+            "userid": "100",
+            "type": "twitter",
+            "username": "@utsabc",
+            "url": "http://twitter.com/utsabc"
+          },
+          {
+            "verified": false,
+            "userid": "200",
+            "type": "facebook",
+            "username": "utsabc",
+            "url": "http://facebook.com/utsabc"
+          }
+        ],
+        "birthdayAt": "2005-01-01T23:28:56.782Z",
+        "emails": [
+          {
+            "type": "home",
+            "email": "utsab@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578900"
+          }
+        ],
+        "urls": [
+          {
+            "url": "www.mattertoast873.com"
+          }
+        ],
+        "locations": [
+          {
+            "type": "home",
+            "address": "24 Dovers Lane, Miami, Florida, 1890001"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.kustomerapp.com/v1/customers/58210c3db0f09110006b7953?replace=false",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Ano Domeni",
+        "externalId": "annodD",
+        "locale": "en-US",
+        "birthdayAt": "2005-01-01T23:28:56.782Z",
+        "emails": [
+          {
+            "type": "home",
+            "email": "ano@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578000"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "utsabc"
+        },
+        "event": {
+          "name": "Screen-Viewed-Test-Event-Screen",
+          "meta": {
+            "hasAccount": "true",
+            "YearSelectedNum": 1801,
+            "originalServing": "2021-01-25T15:32:56.409Z"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "user@doe"
+        },
+        "event": {
+          "name": "Web-Page-Viewed-Cart-Viewed",
+          "meta": {
+            "url": "http://morkey.in",
+            "name": "Cart Viewed",
+            "path": "/cart",
+            "title": "miphone",
+            "search": "MI",
+            "category": "Cart",
+            "referrer": "morkey",
+            "domain": "morkey.com"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "user@doe"
+        },
+        "event": {
+          "name": "Web-Page-Viewed",
+          "sessionId": "hsad522",
+          "trackingId": "829131sjad",
+          "meta": {
+            "url": "http://morkey.in",
+            "path": "/cart",
+            "title": "miphone",
+            "search": "MI",
+            "category": "Cart",
+            "referrer": "morkey",
+            "domain": "morkey.com"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "user@doe"
+        },
+        "event": {
+          "name": "Tracking-Weekender",
+          "sessionId": "63nsa22",
+          "trackingId": "sahetwiac",
+          "meta": {
+            "YearServicedNum": 211,
+            "region": "strapis"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "error": "Property: reg_8-821x, event property not supported, ref:https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8"
+  }
+]

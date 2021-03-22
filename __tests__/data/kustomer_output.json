@@ -233,5 +233,67 @@
   },
   {
     "error": "Property: reg_8-821x, event property not supported, ref:https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "user@doe"
+        },
+        "event": {
+          "name": "Web-Page-Viewed",
+          "meta": {
+            "url": "http://morkey.in",
+            "path": "/cart",
+            "title": "miphone",
+            "search": "MI",
+            "category": "Cart",
+            "referrer": "morkey",
+            "domain": "morkey.com"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "utsabc"
+        },
+        "event": {
+          "name": "Screen-Viewed",
+          "meta": {
+            "hasAccount": "true",
+            "YearSelectedNum": 1801,
+            "originalServing": "2021-01-25T15:32:56.409Z"
+          }
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

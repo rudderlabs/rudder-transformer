@@ -17,12 +17,17 @@
   },
   {
     "destKey": "company",
-    "sourceKeys": ["traits.company", "context.traits.company"],
+    "sourceKeys": [
+      "traits.company.name",
+      "context.traits.company.name",
+      "traits.company",
+      "context.traits.company"
+    ],
     "required": false
   },
   {
     "destKey": "signedUpAt",
-    "sourceKeys": ["traits.signedUpAt", "context.traits.signedUpAt"],
+    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
     "required": false
   },
   {
@@ -32,7 +37,10 @@
   },
   {
     "destKey": "lastCustomerActivityAt",
-    "sourceKeys": ["traits.lastCustomerActivityAt", "context.traits.lastCustomerActivityAt"],
+    "sourceKeys": [
+      "traits.lastCustomerActivityAt",
+      "context.traits.lastCustomerActivityAt"
+    ],
     "required": false
   },
   {
@@ -57,7 +65,7 @@
   },
   {
     "destKey": "locale",
-    "sourceKeys": ["traits.locale", "context.traits.locale"],
+    "sourceKeys": "context.locale",
     "required": false
   },
   {
@@ -77,7 +85,7 @@
   },
   {
     "destKey": "birthdayAt",
-    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+    "sourceKeys": ["traits.dob", "context.traits.dob", "traits.birthday", "context.traits.birthday"],
     "required": false
   }
 ]

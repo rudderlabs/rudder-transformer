@@ -1,7 +1,5 @@
 const get = require("get-value");
-const axios = require("axios");
 const { EventType } = require("../../../constants");
-const logger = require("../../../logger");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -15,7 +13,7 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig
 } = require("../../util");
-const { validateEvent } = require("./util");
+const { fetchKustomer, validateEvent } = require("./util");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
@@ -47,28 +45,34 @@ const constructKustomerPayload = (message, category) => {
       ? kustomerPayload.phones
       : [{ type: "home", phone: getFieldValueFromMessage(message, "phone") }];
   }
-  const url = get(message, "traits.website")
-    ? get(message, "traits.website")
-    : get(message, "context.traits.website");
-  if (url) {
+  if (getFieldValueFromMessage(message, "website")) {
     kustomerPayload.urls = [
       {
-        url
+        url: getFieldValueFromMessage(message, "website")
       }
     ];
   }
 
   const address = getFieldValueFromMessage(message, "address");
   if (address) {
-    kustomerPayload.locations = [
-      {
-        type: "home",
-        address:
-          typeof address === "string"
-            ? address
-            : `${address.street}, ${address.city}, ${address.state}, ${address.postalCode}`
-      }
-    ];
+    let addrStr;
+    if (typeof address === "string") {
+      addrStr = address;
+    } else {
+      const { street, city, state, postalCode } = address;
+      addrStr =
+        street && city && state && postalCode
+          ? `${street}, ${city}, ${state}, ${postalCode}`
+          : addrStr;
+    }
+    if (typeof addrStr === "string") {
+      kustomerPayload.locations = [
+        {
+          type: "home",
+          address: addrStr
+        }
+      ];
+    }
   }
 
   removeUndefinedAndNullValues(kustomerPayload);
@@ -79,7 +83,7 @@ const constructKustomerPayload = (message, category) => {
 // type of events.
 const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
-  let targetUrl = BASE_ENDPOINT;
+  let targetUrl;
   let userExists = false;
   // In case of identify type of event first extract the anonymousId, userId
   // and search if any Kustomer is present in destination.
@@ -90,35 +94,60 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Create Kustomer: https://apidocs.kustomer.com/#07bd1072-4d4b-4875-b526-8369d711e811
   // Update Kustomer: https://apidocs.kustomer.com/#077d653a-184e-4153-8133-d24b6427c1ae
   if (message.type.toLowerCase() == EventType.IDENTIFY) {
-    const idArr = [
-      get(message, "anonymousId"),
-      getFieldValueFromMessage(message, "userIdOnly")
-    ];
     let response;
-    await Promise.all(
-      idArr.map(async id => {
-        try {
-          response = await axios.get(
-            `${BASE_ENDPOINT}/v1/customers/externalId=${id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${destination.Config.apiKey}`
-              }
-            }
-          );
-        } catch (err) {
-          logger.debug("Error while fetching customer info");
-        }
-        // If Kustomer Exists url to user : Update kustomer
-        if (response && response.status === 200) {
-          userExists = true;
-          targetUrl = `${targetUrl}/v1/customers/${response.data.data.id}?replace=false`;
-        }
-      })
-    );
+    // If email exists we first search Kustomer with email if present then we mark it
+    // for update call.
+    if (getFieldValueFromMessage(message, "email")) {
+      response = await fetchKustomer(
+        `${BASE_ENDPOINT}/v1/customers/email=${getFieldValueFromMessage(
+          message,
+          "email"
+        )}`,
+        destination
+      );
+      // If Kustomer Exists url to user : Update kustomer
+      if (response && response.status === 200 && response.data.data.id) {
+        userExists = true;
+        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
+      }
+    }
+    // If userExists flag is false
+    // If Kustomer has userId we search using userId as externalId if user
+    // is present or not. If yes then we mark it for update.
+    if (!userExists && getFieldValueFromMessage(message, "userIdOnly")) {
+      response = await fetchKustomer(
+        `${BASE_ENDPOINT}/v1/customers/externalId=${getFieldValueFromMessage(
+          message,
+          "userIdOnly"
+        )}`,
+        destination
+      );
+      // If Kustomer Exists url to user : Update kustomer
+      if (response && response.status === 200 && response.data.data.id) {
+        userExists = true;
+        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
+      }
+    }
+    // If userExists flag is still false
+    // and the Kustomer has anonymousId we search using anonymousId as externalId.
+    // If present we mark it for update
+    if (!userExists && get(message, "anonymousId")) {
+      response = await fetchKustomer(
+        `${BASE_ENDPOINT}/v1/customers/externalId=${get(
+          message,
+          "anonymousId"
+        )}`,
+        destination
+      );
+      // If Kustomer Exists url to user : Update kustomer
+      if (response && response.status === 200 && response.data.data.id) {
+        userExists = true;
+        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
+      }
+    }
     // URL to use for creating new Kustomer
     if (!userExists) {
-      targetUrl = `${targetUrl}/v1/customers`;
+      targetUrl = `${BASE_ENDPOINT}/v1/customers`;
     }
     payload = constructKustomerPayload(message, category);
   }
@@ -129,11 +158,24 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Ref: https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8
   // Ref: https://apidocs.kustomer.com/#0b0da19f-fca2-401d-af78-5d054c75a9b2
   else {
-    targetUrl = `${targetUrl}/v1/tracking/identityEvent`;
+    targetUrl = `${BASE_ENDPOINT}/v1/tracking/identityEvent`;
     const eventPayload = constructPayload(
       message,
       MAPPING_CONFIG[category.name]
     );
+    // eslint-disable-next-line default-case
+    switch (message.type.toLowerCase()) {
+      case EventType.PAGE:
+        if (destination.Config.genericPage) {
+          eventPayload.name = "Web-Page-Viewed";
+        }
+        break;
+      case EventType.SCREEN:
+        if (destination.Config.genericScreen) {
+          eventPayload.name = "Screen-Viewed";
+        }
+        break;
+    }
     removeUndefinedAndNullValues(eventPayload);
     validateEvent(eventPayload);
     payload = {
@@ -144,7 +186,6 @@ const responseBuilderSimple = async (message, category, destination) => {
     };
   }
   if (payload) {
-    const responseBody = { ...payload };
     const response = defaultRequestConfig();
     response.endpoint = targetUrl;
     response.method = userExists
@@ -154,7 +195,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${destination.Config.apiKey}`
     };
-    response.body.JSON = responseBody;
+    response.body.JSON = { ...payload };
     return response;
   }
   // fail-safety for developer error
@@ -165,10 +206,8 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
-  const messageType = message.type.toLowerCase();
-
   let category;
-  switch (messageType) {
+  switch (message.type.toLowerCase()) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;

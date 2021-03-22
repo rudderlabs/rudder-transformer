@@ -1,4 +1,6 @@
+const axios = require("axios");
 const { EVENT_REGEX } = require("./config");
+const logger = require("../../../logger");
 
 const UNSUPPORTED_ERROR_MESSAGE =
   "event property not supported, ref:https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8";
@@ -35,7 +37,21 @@ const validateEvent = event => {
     }
   });
 };
+const fetchKustomer = async (url, destination) => {
+  let response;
+  try {
+    response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiKey}`
+      }
+    });
+  } catch (err) {
+    logger.debug("Error while fetching customer info");
+  }
+  return response;
+};
 
 module.exports = {
+  fetchKustomer,
   validateEvent
 };

@@ -56,6 +56,11 @@
     "context.page.url",
     "properties.url"
   ],
+  "website": [
+    "traits.website",
+    "context.traits.website",
+    "properties.website"
+  ],
   "GApageUrl": [
     "properties.url",
     "context.page.url"

@@ -14,8 +14,6 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig
-  ,
-  
 } = require("../../util");
 const { validateEvent } = require("./util");
 

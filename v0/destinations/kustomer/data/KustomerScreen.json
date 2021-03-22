@@ -10,12 +10,18 @@
   },
   {
     "destKey": "sessionId",
-    "sourceKeys": "properties.kustomerSessionId",
+    "sourceKeys": [
+      "properties.kustomerSessionId",
+      "properties.kustomer_session_id"
+    ],
     "required": false
   },
   {
     "destKey": "trackingId",
-    "sourceKeys": "properties.kustomerTrackingId",
+    "sourceKeys": [
+      "properties.kustomerTrackingId",
+      "properties.kustomer_tracking_id"
+    ],
     "required": false
   },
   {
@@ -23,7 +29,12 @@
     "sourceKeys": "properties",
     "required": false,
     "metadata": {
-      "excludes": ["kustomerSessionId", "kustomerTrackingId"]
+      "excludes": [
+        "kustomerSessionId",
+        "kustomer_session_id",
+        "kustomerTrackingId",
+        "kustomer_tracking_id"
+      ]
     }
   }
 ]

@@ -2,7 +2,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -37,7 +37,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -72,7 +72,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -105,7 +105,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -154,7 +154,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -197,7 +197,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -240,7 +240,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -283,7 +283,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -326,7 +326,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -369,7 +369,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -407,7 +407,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -450,7 +450,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -493,7 +493,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -534,7 +534,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -575,7 +575,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -621,7 +621,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -667,7 +667,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -702,7 +702,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -737,7 +737,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -775,7 +775,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -808,7 +808,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -838,7 +838,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -870,7 +870,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -902,7 +902,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -935,7 +935,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -968,7 +968,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1005,7 +1005,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1041,7 +1041,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1077,7 +1077,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1110,7 +1110,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1140,7 +1140,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1173,7 +1173,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1207,7 +1207,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1252,7 +1252,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1287,7 +1287,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1322,7 +1322,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1367,7 +1367,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1401,7 +1401,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1438,7 +1438,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1483,7 +1483,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1532,7 +1532,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1581,7 +1581,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1631,7 +1631,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1685,7 +1685,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1734,7 +1734,7 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1771,7 +1771,7 @@
     "version": "1",
     "type": "REST",
     "userId": "12345",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1805,7 +1805,7 @@
     "version": "1",
     "type": "REST",
     "userId": "12345",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
@@ -1839,7 +1839,7 @@
     "version": "1",
     "type": "REST",
     "userId": "12345",
-    "method": "GET",
+    "method": "POST",
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {

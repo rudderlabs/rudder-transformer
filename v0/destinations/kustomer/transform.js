@@ -24,6 +24,18 @@ const constructKustomerPayload = (message, category) => {
     message,
     MAPPING_CONFIG[category.name]
   );
+
+  if (
+    !get(kustomerPayload, "name") &&
+    getFieldValueFromMessage(message, "firstName") &&
+    getFieldValueFromMessage(message, "lastName")
+  ) {
+    kustomerPayload.name = `${getFieldValueFromMessage(
+      message,
+      "firstName"
+    )} ${getFieldValueFromMessage(message, "lastName")}`;
+  }
+
   if (getFieldValueFromMessage(message, "email")) {
     kustomerPayload.emails = kustomerPayload.emails
       ? kustomerPayload.emails

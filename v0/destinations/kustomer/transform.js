@@ -17,38 +17,36 @@ const { fetchKustomer, validateEvent } = require("./util");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
-const constructKustomerPayload = (message, category) => {
+const constructKustomerPayload = (message, category, email) => {
   const kustomerPayload = constructPayload(
     message,
     MAPPING_CONFIG[category.name]
   );
 
-  if (
-    !get(kustomerPayload, "name") &&
-    getFieldValueFromMessage(message, "firstName") &&
-    getFieldValueFromMessage(message, "lastName")
-  ) {
-    kustomerPayload.name = `${getFieldValueFromMessage(
-      message,
-      "firstName"
-    )} ${getFieldValueFromMessage(message, "lastName")}`;
+  const firstName = getFieldValueFromMessage(message, "firstName");
+  const lastName = getFieldValueFromMessage(message, "lastName");
+  const phone = getFieldValueFromMessage(message, "phone");
+  const url = getFieldValueFromMessage(message, "website");
+
+  if (!get(kustomerPayload, "name") && firstName && lastName) {
+    kustomerPayload.name = `${firstName} ${lastName}`;
   }
 
-  if (getFieldValueFromMessage(message, "email")) {
+  if (email) {
     kustomerPayload.emails = kustomerPayload.emails
       ? kustomerPayload.emails
-      : [{ type: "home", email: getFieldValueFromMessage(message, "email") }];
+      : [{ type: "home", email }];
   }
 
-  if (getFieldValueFromMessage(message, "phone")) {
+  if (phone) {
     kustomerPayload.phones = kustomerPayload.phones
       ? kustomerPayload.phones
-      : [{ type: "home", phone: getFieldValueFromMessage(message, "phone") }];
+      : [{ type: "home", phone }];
   }
-  if (getFieldValueFromMessage(message, "website")) {
+  if (url) {
     kustomerPayload.urls = [
       {
-        url: getFieldValueFromMessage(message, "website")
+        url
       }
     ];
   }
@@ -61,8 +59,8 @@ const constructKustomerPayload = (message, category) => {
     } else {
       const { street, city, state, postalCode } = address;
       addrStr =
-        street && city && state && postalCode
-          ? `${street}, ${city}, ${state}, ${postalCode}`
+        street || city || state || postalCode
+          ? `${street || ""} ${city || ""} ${state || ""} ${postalCode || ""}`
           : addrStr;
     }
     if (typeof addrStr === "string") {
@@ -84,7 +82,9 @@ const constructKustomerPayload = (message, category) => {
 const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
   let targetUrl;
-  let userExists = false;
+  let storedState = {
+    userExists: false
+  };
   // In case of identify type of event first extract the anonymousId, userId
   // and search if any Kustomer is present in destination.
   // If present update the same kustomer with the given payload.
@@ -94,62 +94,54 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Create Kustomer: https://apidocs.kustomer.com/#07bd1072-4d4b-4875-b526-8369d711e811
   // Update Kustomer: https://apidocs.kustomer.com/#077d653a-184e-4153-8133-d24b6427c1ae
   if (message.type.toLowerCase() == EventType.IDENTIFY) {
-    let response;
+    const userEmail = getFieldValueFromMessage(message, "email");
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    const anonymousId = get(message, "anonymousId");
+    const externalId = get(message, "context.externalId");
+    if (externalId && externalId.id && externalId.type === "kustomerId") {
+      storedState = {
+        userExists: true,
+        targetUrl: `${BASE_ENDPOINT}/v1/customers/${externalId.id}?replace=false`
+      };
+    }
     // If email exists we first search Kustomer with email if present then we mark it
     // for update call.
-    if (getFieldValueFromMessage(message, "email")) {
-      response = await fetchKustomer(
-        `${BASE_ENDPOINT}/v1/customers/email=${getFieldValueFromMessage(
-          message,
-          "email"
-        )}`,
+    if (!storedState.userExists && userEmail) {
+      storedState = await fetchKustomer(
+        `${BASE_ENDPOINT}/v1/customers/email=${userEmail}`,
         destination
       );
-      // If Kustomer Exists url to user : Update kustomer
-      if (response && response.status === 200 && response.data.data.id) {
-        userExists = true;
-        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
-      }
     }
-    // If userExists flag is false
+    // If response.userExists flag is false
     // If Kustomer has userId we search using userId as externalId if user
     // is present or not. If yes then we mark it for update.
-    if (!userExists && getFieldValueFromMessage(message, "userIdOnly")) {
-      response = await fetchKustomer(
-        `${BASE_ENDPOINT}/v1/customers/externalId=${getFieldValueFromMessage(
-          message,
-          "userIdOnly"
-        )}`,
+    if (!storedState.userExists && userId) {
+      storedState = await fetchKustomer(
+        `${BASE_ENDPOINT}/v1/customers/externalId=${userId}`,
         destination
       );
-      // If Kustomer Exists url to user : Update kustomer
-      if (response && response.status === 200 && response.data.data.id) {
-        userExists = true;
-        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
-      }
     }
-    // If userExists flag is still false
+    // If response.userExists flag is still false
     // and the Kustomer has anonymousId we search using anonymousId as externalId.
     // If present we mark it for update
-    if (!userExists && get(message, "anonymousId")) {
-      response = await fetchKustomer(
+    if (!storedState.userExists && anonymousId) {
+      storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/externalId=${get(
           message,
           "anonymousId"
         )}`,
         destination
       );
-      // If Kustomer Exists url to user : Update kustomer
-      if (response && response.status === 200 && response.data.data.id) {
-        userExists = true;
-        targetUrl = `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`;
-      }
     }
     // URL to use for creating new Kustomer
-    if (!userExists) {
+    if (!storedState.userExists) {
       targetUrl = `${BASE_ENDPOINT}/v1/customers`;
     }
-    payload = constructKustomerPayload(message, category);
+    // URL to use for updating Kustomer
+    else {
+      targetUrl = storedState.targetUrl;
+    }
+    payload = constructKustomerPayload(message, category, userEmail);
   }
   // Section responsible for handling screen, page, and track type of
   // events. An userId, or anonymous id of the user who is already
@@ -188,7 +180,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = targetUrl;
-    response.method = userExists
+    response.method = storedState.userExists
       ? defaultPutRequestConfig.requestMethod
       : defaultPostRequestConfig.requestMethod;
     response.headers = {

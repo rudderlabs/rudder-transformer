@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { EVENT_REGEX } = require("./config");
+const { EVENT_REGEX, BASE_ENDPOINT } = require("./config");
 const logger = require("../../../logger");
 
 const UNSUPPORTED_ERROR_MESSAGE =
@@ -48,7 +48,13 @@ const fetchKustomer = async (url, destination) => {
   } catch (err) {
     logger.debug("Error while fetching customer info");
   }
-  return response;
+  if (response && response.status === 200 && response.data.data.id) {
+    return {
+      userExists: true,
+      targetUrl: `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`
+    };
+  }
+  return { userExists: false };
 };
 
 module.exports = {

@@ -174,15 +174,18 @@ async function isUserAlreadyAssociated(userId, orgId, headers) {
   if (
     response.data &&
     response.data.organization_memberships.length > 0 &&
-    response.data.organization_memberships[0].id === orgId
+    response.data.organization_memberships[0].organization_id === orgId
   ) {
     return true;
   }
   return false;
 }
 
-async function createUser(message, headers, destinationConfig) {
-  const traits = getFieldValueFromMessage(message, "traits");
+async function createUser(message, headers, destinationConfig, type) {
+  const traits =
+    type === "group"
+      ? get(message, "context.traits")
+      : getFieldValueFromMessage(message, "traits");
   const { name, email } = traits;
   const userId = getFieldValueFromMessage(message, "userId");
 
@@ -227,7 +230,8 @@ async function getUserMembershipPayload(
       const { zendeskUserId } = await createUser(
         message,
         headers,
-        destinationConfig
+        destinationConfig,
+        "group"
       );
       zendeskUserID = zendeskUserId;
     }

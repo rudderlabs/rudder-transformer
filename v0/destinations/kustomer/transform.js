@@ -8,6 +8,7 @@ const {
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
+  getDestinationExternalID,
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
@@ -97,11 +98,11 @@ const responseBuilderSimple = async (message, category, destination) => {
     const userEmail = getFieldValueFromMessage(message, "email");
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     const anonymousId = get(message, "anonymousId");
-    const externalId = get(message, "context.externalId");
-    if (externalId && externalId.id && externalId.type === "kustomerId") {
+    const externalId = getDestinationExternalID(message, "kustomerExternalId");
+    if (externalId) {
       storedState = {
         userExists: true,
-        targetUrl: `${BASE_ENDPOINT}/v1/customers/${externalId.id}?replace=false`
+        targetUrl: `${BASE_ENDPOINT}/v1/customers/${externalId}?replace=false`
       };
     }
     // If email exists we first search Kustomer with email if present then we mark it

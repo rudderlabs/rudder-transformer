@@ -94,7 +94,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Get Kustomer: https://apidocs.kustomer.com/#ff41f372-6144-4c64-9712-662ee5ef1c33
   // Create Kustomer: https://apidocs.kustomer.com/#07bd1072-4d4b-4875-b526-8369d711e811
   // Update Kustomer: https://apidocs.kustomer.com/#077d653a-184e-4153-8133-d24b6427c1ae
-  if (message.type.toLowerCase() == EventType.IDENTIFY) {
+  if (message.type.toLowerCase() === EventType.IDENTIFY) {
     const userEmail = getFieldValueFromMessage(message, "email");
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     const anonymousId = get(message, "anonymousId");

@@ -33,17 +33,35 @@ const constructKustomerPayload = (message, category, email) => {
     kustomerPayload.name = `${firstName} ${lastName}`;
   }
 
-  if (email) {
-    kustomerPayload.emails = kustomerPayload.emails
-      ? kustomerPayload.emails
-      : [{ type: "home", email }];
+  if (!kustomerPayload.emails && email) {
+    kustomerPayload.emails = [
+      {
+        type: "home",
+        email
+      }
+    ];
   }
 
-  if (phone) {
-    kustomerPayload.phones = kustomerPayload.phones
-      ? kustomerPayload.phones
-      : [{ type: "home", phone }];
+  if (!kustomerPayload.phones && phone) {
+    kustomerPayload.phones = [
+      {
+        type: "home",
+        phone
+      }
+    ];
   }
+
+  // if (email) {
+  //   kustomerPayload.emails = kustomerPayload.emails
+  //     ? kustomerPayload.emails
+  //     : ;
+  // }
+  // if (phone) {
+  //   kustomerPayload.phones = kustomerPayload.phones
+  //     ? kustomerPayload.phones
+  //     : [{ type: "home", phone }];
+  // }
+
   if (url) {
     kustomerPayload.urls = [
       {
@@ -98,7 +116,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     const userEmail = getFieldValueFromMessage(message, "email");
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     const anonymousId = get(message, "anonymousId");
-    const externalId = getDestinationExternalID(message, "kustomerExternalId");
+    const externalId = getDestinationExternalID(message, "kustomerId");
     if (externalId) {
       storedState = {
         userExists: true,

@@ -490,5 +490,238 @@
       },
       "originalTimestamp": "2021-01-25T15:32:56.409Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "WJqij952gdy251"
+      }
+    },
+    "message": {
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "utsabc",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "firstName": "Utsab",
+          "lastName": "Chowdhury",
+          "email": "utsab@rudderstack.com",
+          "phone": "+12345578900",
+          "birthday": "2005-01-01T23:28:56.782Z",
+          "userId": "utsabc",
+          "address": {
+            "street": "24 Dovers Lane",
+            "city": "Miami",
+            "state": "Florida",
+            "postalCode": "1890001"
+          },
+          "userName": "utsabc47",
+          "company": "Rudderstack",
+          "createdAt": "2015-04-17T12:37:42.146Z",
+          "lastActivityAt": "2016-04-17T12:37:42.146Z",
+          "lastCustomerActivityAt": "2017-04-17T12:37:42.146Z",
+          "lastSeenAt": "2017-04-17T12:37:42.146Z",
+          "avatar": "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+          "gender": "m",
+          "tags": ["happy", "satisfied"],
+          "website": "www.mattertoast873.com",
+          "socials": [
+            {
+              "verified": true,
+              "userid": "100",
+              "type": "twitter",
+              "username": "@utsabc",
+              "url": "http://twitter.com/utsabc"
+            },
+            {
+              "verified": false,
+              "userid": "200",
+              "type": "facebook",
+              "username": "utsabc",
+              "url": "http://facebook.com/utsabc"
+            }
+          ]
+        },
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "WJqij952gdy251"
+      }
+    },
+    "message": {
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "utsabc",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "firstName": "Utsab",
+          "lastName": "Chowdhury",
+          "emails": [
+            {
+              "type": "home",
+              "email": "utsab@rudderstack.com"
+            }
+          ],
+          "phones": [
+            {
+              "type": "home",
+              "phone": "+12345578900"
+            }
+          ],
+          "birthday": "2005-01-01T23:28:56.782Z",
+          "userId": "utsabc",
+          "address": "test address string",
+          "userName": "utsabc47",
+          "company": "Rudderstack",
+          "createdAt": "2015-04-17T12:37:42.146Z",
+          "lastActivityAt": "2016-04-17T12:37:42.146Z",
+          "lastCustomerActivityAt": "2017-04-17T12:37:42.146Z",
+          "lastSeenAt": "2017-04-17T12:37:42.146Z",
+          "avatar": "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+          "gender": "m",
+          "tags": ["happy", "satisfied"],
+          "website": "www.mattertoast873.com",
+          "socials": [
+            {
+              "verified": true,
+              "userid": "100",
+              "type": "twitter",
+              "username": "@utsabc",
+              "url": "http://twitter.com/utsabc"
+            },
+            {
+              "verified": false,
+              "userid": "200",
+              "type": "facebook",
+              "username": "utsabc",
+              "url": "http://facebook.com/utsabc"
+            }
+          ]
+        },
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
+  },
+
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "WJqij952gdy251"
+      }
+    },
+    "message": {
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "utsabc",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "firstName": "Utsab",
+          "lastName": "Chowdhury",
+          "emails": [
+            {
+              "type": "home",
+              "email": "utsab@rudderstack.com"
+            }
+          ],
+          "phones": [
+            {
+              "type": "home",
+              "phone": "+12345578900"
+            }
+          ],
+          "birthday": "2005-01-01T23:28:56.782Z",
+          "userId": "utsabc",
+          "address": "test address string",
+          "userName": "utsabc47",
+          "company": "Rudderstack",
+          "createdAt": "2015-04-17T12:37:42.146Z",
+          "lastActivityAt": "2016-04-17T12:37:42.146Z",
+          "lastCustomerActivityAt": "2017-04-17T12:37:42.146Z",
+          "lastSeenAt": "2017-04-17T12:37:42.146Z",
+          "avatar": "https://homepages.cae.wisc.edu/~ece533/images/boat.png",
+          "gender": "m",
+          "tags": ["happy", "satisfied"],
+          "website": "www.mattertoast873.com",
+          "socials": [
+            {
+              "verified": true,
+              "userid": "100",
+              "type": "twitter",
+              "username": "@utsabc",
+              "url": "http://twitter.com/utsabc"
+            },
+            {
+              "verified": false,
+              "userid": "200",
+              "type": "facebook",
+              "username": "utsabc",
+              "url": "http://facebook.com/utsabc"
+            }
+          ]
+        },
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+        "externalId": [
+          {
+            "type": "kustomerId",
+            "id": "abcd1234"
+          }
+        ]
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
   }
 ]

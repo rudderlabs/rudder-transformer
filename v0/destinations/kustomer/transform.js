@@ -51,17 +51,6 @@ const constructKustomerPayload = (message, category, email) => {
     ];
   }
 
-  // if (email) {
-  //   kustomerPayload.emails = kustomerPayload.emails
-  //     ? kustomerPayload.emails
-  //     : ;
-  // }
-  // if (phone) {
-  //   kustomerPayload.phones = kustomerPayload.phones
-  //     ? kustomerPayload.phones
-  //     : [{ type: "home", phone }];
-  // }
-
   if (url) {
     kustomerPayload.urls = [
       {

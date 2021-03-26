@@ -79,7 +79,15 @@ function transformName(name = "") {
     extractedValues.push(extractedValue);
   }
   let key = extractedValues.join("_");
-  key = _.snakeCase(key);
+  if (name.startsWith("_")) {
+    // do not remove leading underscores to allow esacaping rudder keywords with underscore
+    // _timestamp -> _timestamp
+    // __timestamp -> __timestamp
+    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ""));
+  } else {
+    key = _.snakeCase(key);
+  }
+
   if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
     key = `_${key}`;
   }

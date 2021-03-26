@@ -539,3 +539,36 @@ describe("id column datatype for users table", () => {
     });
   });
 });
+
+describe("should not remove leading underscores in properties", () => {
+  it("should set id column datatype for users as one received and not always string", () => {
+    let i = input("track");
+    i.message.properties = {
+      _timestamp: "1",
+      __timestamp: "2",
+      __timestamp_new: "3"
+    };
+
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "_timestamp")
+      );
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp")
+      );
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp_new")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "_timestamp")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp_new")
+      );
+    });
+  });
+});

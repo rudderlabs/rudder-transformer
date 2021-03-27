@@ -44,7 +44,9 @@ async function process(ev) {
       if (!(key.toUpperCase() === "IMPRESSION"))
         outputEvent[_.camelCase(key)] = value;
       else
-        outputEvent[_.camelCase(key)] = Array.isArray(value) ? value : [value];
+        outputEvent[_.camelCase(key)] = Array.isArray(value)
+          ? value.map(String)
+          : [String(value)];
     }
   });
 

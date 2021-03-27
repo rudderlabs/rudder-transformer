@@ -35,9 +35,16 @@ async function process(ev) {
 
       outputEvent.properties[_.camelCase(key)] = value;
     } else if (
-      !(key.toUpperCase() === "USER_ID" || key.toUpperCase() === "EVENT_TYPE")
+      !(
+        key.toUpperCase() === "USER_ID" ||
+        key.toUpperCase() === "EVENT_TYPE" ||
+        key.toUpperCase() === "TIMESTAMP"
+      )
     ) {
-      outputEvent[_.camelCase(key)] = value;
+      if (!(key.toUpperCase() === "IMPRESSION"))
+        outputEvent[_.camelCase(key)] = value;
+      else
+        outputEvent[_.camelCase(key)] = Array.isArray(value) ? value : [value];
     }
   });
 

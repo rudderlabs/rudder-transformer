@@ -431,22 +431,6 @@
     "type":"REST",
     "userId":"223b5f40-9543-4456-a7aa-945c43048185",
     "version":"1"
-  },
-  [
-    {
-        "metadata": {
-            "sourceId": "1pvRRLH8kBCH6c88kNAQjRmhb8Z",
-            "destinationId": "1qEz66UWpXTKwgCc8BPvyWPorpz",
-            "jobId": 38,
-            "destinationType": "ZENDESK",
-            "messageId": "dd72a843-f865-4f7e-80eb-1f859e84e48c",
-            "messageIds": null,
-            "rudderId": "32cea78b-a0d6-41de-9d23-201c49bd80b7",
-            "receivedAt": "2021-03-25T18:18:42.193+05:30"
-        },
-        "statusCode": 400,
-        "error": "Zendesk : UserId is a mandatory field for identify"
-    }
-  ] 
+  }
 ]
 

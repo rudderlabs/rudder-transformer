@@ -45,16 +45,16 @@
       "X-Zendesk-Marketplace-Organization-Id": "3339"
     },
     "params": {},
-    "body":  {
+    "body": {
       "JSON": {
-          "organization_membership": {
-              "user_id": 900113780483,
-              "organization_id": 900001329943
-          }
+        "organization_membership": {
+          "user_id": 900113780483,
+          "organization_id": 900001329943
+        }
       },
       "XML": {},
       "FORM": {}
-  },
+    },
     "files": {},
     "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },
@@ -208,229 +208,196 @@
   ],
   [
     {
-      "version":"1",
-      "type":"REST",
-      "method":"POST",
-      "endpoint":"https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
-      "headers":{
-        "Authorization":"Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
-        "Content-Type":"application/json",
-        "X-Zendesk-Marketplace-Name":"RudderStack",
-        "X-Zendesk-Marketplace-Organization-Id":"3339",
-        "X-Zendesk-Marketplace-App-Id":"263241"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
       },
-      "params":{
-        
-      },
-      "body":{
-        "JSON":{
-          "user":{
-            "email":"johnwick@example.com",
-            "name":"John Wick",
-            "external_id":"abcd-124",
-            "user_fields":{
-              "id":"abcd-124",
-              "country":"UK"
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "johnwick@example.com",
+            "name": "John Wick",
+            "external_id": "abcd-124",
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
             }
           }
         },
-        "XML":{
-          
-        },
-        "FORM":{
-          
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files":{
-        
-      },
-      "userId":"223b5f40-9543-4456-a7aa-945c43048185"
+      "files": {},
+      "userId": "223b5f40-9543-4456-a7aa-945c43048185"
     }
   ],
   [
     {
-      "version":"1",
-      "type":"REST",
-      "method":"POST",
-      "endpoint":"https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
-      "headers":{
-        "Authorization":"Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
-        "Content-Type":"application/json",
-        "X-Zendesk-Marketplace-Name":"RudderStack",
-        "X-Zendesk-Marketplace-Organization-Id":"3339",
-        "X-Zendesk-Marketplace-App-Id":"263241"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
       },
-      "params":{
-        
-      },
-      "body":{
-        "JSON":{
-          "user":{
-            "email":"johnwick@example.com",
-            "name":"John Wick",
-            "external_id":"abcd-124",
-            "user_fields":{
-              "id":"abcd-124",
-              "country":"UK"
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "johnwick@example.com",
+            "name": "John Wick",
+            "external_id": "abcd-124",
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
             }
           }
         },
-        "XML":{
-          
-        },
-        "FORM":{
-          
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files":{
-        
-      },
-      "userId":"223b5f40-9543-4456-a7aa-945c43048185"
+      "files": {},
+      "userId": "223b5f40-9543-4456-a7aa-945c43048185"
     }
   ],
   [
     {
-      "version":"1",
-      "type":"REST",
-      "method":"POST",
-      "endpoint":"https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
-      "headers":{
-        "Authorization":"Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
-        "Content-Type":"application/json",
-        "X-Zendesk-Marketplace-Name":"RudderStack",
-        "X-Zendesk-Marketplace-Organization-Id":"3339",
-        "X-Zendesk-Marketplace-App-Id":"263241"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjprRkxhRmNuZEJSOVlIRnhOVnA3a1E1eHhMcjlzeUxXb0U4andvdDYw",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
       },
-      "params":{
-        
-      },
-      "body":{
-        "JSON":{
-          "user":{
-            "email":"johnwick@example.com",
-            "name":"John Wick",
-            "external_id":"abcd-124",
-            "user_fields":{
-              "id":"abcd-124",
-              "country":"UK"
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "johnwick@example.com",
+            "name": "John Wick",
+            "external_id": "abcd-124",
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
             },
-            "verified":true
+            "verified": true
           }
         },
-        "XML":{
-          
-        },
-        "FORM":{
-          
-        }
+        "XML": {},
+        "FORM": {}
       },
-      "files":{
-        
-      },
-      "userId":"223b5f40-9543-4456-a7aa-945c43048185"
+      "files": {},
+      "userId": "223b5f40-9543-4456-a7aa-945c43048185"
     }
   ],
   {
-    "body":{
-      "FORM":{
-        
-      },
-      "JSON":{
-        "event":{
-          "description":"Abhishek Track me",
-          "properties":{
-            "category":"category",
-            "label":"label",
-            "userId":"abcd-124",
-            "value":"value"
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "event": {
+          "description": "Abhishek Track me",
+          "properties": {
+            "category": "category",
+            "label": "label",
+            "userId": "abcd-124",
+            "value": "value"
           },
-          "source":"Rudder",
-          "type":"Abhishek Track me"
+          "source": "Rudder",
+          "type": "Abhishek Track me"
         },
-        "profile":{
-          "identifiers":[
+        "profile": {
+          "identifiers": [
             {
-              "type":"email",
-              "value":"example124@email.com"
+              "type": "email",
+              "value": "example124@email.com"
             }
           ],
-          "source":"Rudder",
-          "type":"Abhishek Track me"
+          "source": "Rudder",
+          "type": "Abhishek Track me"
         }
       },
-      "XML":{
-        
-      }
+      "XML": {}
     },
-    "endpoint":"https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
-    "files":{
-      
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpidWRXQnZ1aEJzb3ZzUHBoNFM3TEl2Q25RRVZ2emZjcUFvMDd2UEhk",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-App-Id": "263241",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339"
     },
-    "headers":{
-      "Authorization":"Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpidWRXQnZ1aEJzb3ZzUHBoNFM3TEl2Q25RRVZ2emZjcUFvMDd2UEhk",
-      "Content-Type":"application/json",
-      "X-Zendesk-Marketplace-App-Id":"263241",
-      "X-Zendesk-Marketplace-Name":"RudderStack",
-      "X-Zendesk-Marketplace-Organization-Id":"3339"
-    },
-    "method":"POST",
-    "params":{
-      
-    },
-    "type":"REST",
-    "userId":"223b5f40-9543-4456-a7aa-945c43048185",
-    "version":"1"
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "223b5f40-9543-4456-a7aa-945c43048185",
+    "version": "1"
   },
   {
-    "body":{
-      "FORM":{
-        
-      },
-      "JSON":{
-        "event":{
-          "description":"Abhishek Track me",
-          "properties":{
-            "category":"category",
-            "label":"label",
-            "userId":"abcd-124",
-            "value":"value"
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "event": {
+          "description": "Abhishek Track me",
+          "properties": {
+            "category": "category",
+            "label": "label",
+            "userId": "abcd-124",
+            "value": "value"
           },
-          "source":"Rudder",
-          "type":"Abhishek Track me"
+          "source": "Rudder",
+          "type": "Abhishek Track me"
         },
-        "profile":{
-          "identifiers":[
+        "profile": {
+          "identifiers": [
             {
-              "type":"email",
-              "value":"example124@email.com"
+              "type": "email",
+              "value": "example124@email.com"
             }
           ],
-          "source":"Rudder",
-          "type":"Abhishek Track me"
+          "source": "Rudder",
+          "type": "Abhishek Track me"
         }
       },
-      "XML":{
-        
-      }
+      "XML": {}
     },
-    "endpoint":"https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
-    "files":{
-      
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpidWRXQnZ1aEJzb3ZzUHBoNFM3TEl2Q25RRVZ2emZjcUFvMDd2UEhk",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-App-Id": "263241",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339"
     },
-    "headers":{
-      "Authorization":"Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpidWRXQnZ1aEJzb3ZzUHBoNFM3TEl2Q25RRVZ2emZjcUFvMDd2UEhk",
-      "Content-Type":"application/json",
-      "X-Zendesk-Marketplace-App-Id":"263241",
-      "X-Zendesk-Marketplace-Name":"RudderStack",
-      "X-Zendesk-Marketplace-Organization-Id":"3339"
-    },
-    "method":"POST",
-    "params":{
-      
-    },
-    "type":"REST",
-    "userId":"223b5f40-9543-4456-a7aa-945c43048185",
-    "version":"1"
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "223b5f40-9543-4456-a7aa-945c43048185",
+    "version": "1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Zendesk : UserId is a mandatory field for group"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
   }
 ]
-

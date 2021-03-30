@@ -3,7 +3,9 @@ const { KEY_CHECK_LIST } = require("./config");
 const {
   isDefinedAndNotNull,
   getHashFromArray,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  isBlank,
+  checkEmptyStringInarray
 } = require("../../util");
 
 async function process(ev) {
@@ -15,7 +17,6 @@ async function process(ev) {
     throw new Error(" Cannot process if no event name specified");
   }
 
-  // itemId is a mandatory field, so even if user doesn't mention, it is needed to be provided
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
   // process event properties
@@ -33,7 +34,10 @@ async function process(ev) {
         throw new Error(`Mapped Field ${keyMap[key]} not found`);
       }
       // all the values inside property has to be sent as strings
-      outputEvent.properties[_.camelCase(key)] = String(value);
+      outputEvent.properties[_.camelCase(key)] =
+        String(value) === "" || String(value) === " "
+          ? "undefined"
+          : String(value);
     } else if (
       !(
         key.toUpperCase() === "USER_ID" ||
@@ -47,12 +51,15 @@ async function process(ev) {
           key.toUpperCase() === "EVENT_VALUE"
         )
       )
-        outputEvent[_.camelCase(key)] = String(value);
-      else if (key.toUpperCase() === "IMPRESSION")
+        outputEvent[_.camelCase(key)] =
+          String(value) === "" ? " " : String(value);
+      else if (key.toUpperCase() === "IMPRESSION") {
         outputEvent[_.camelCase(key)] = Array.isArray(value)
           ? value.map(String)
-          : [String(value)];
-      else if (!Number.isNaN(parseFloat(value))) {
+          : [String(value) === "" ? " " : String(value)];
+        if (!checkEmptyStringInarray(outputEvent[_.camelCase(key)]))
+          throw new Error(" You cannot parse empty string through impression");
+      } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
         outputEvent[_.camelCase(key)] = parseFloat(value);
       } else throw new Error(" EVENT_VALUE should be a float value");
@@ -61,7 +68,9 @@ async function process(ev) {
 
   // manipulate for itemId
   outputEvent.itemId =
-    outputEvent.itemId && outputEvent.itemId !== "undefined"
+    outputEvent.itemId &&
+    outputEvent.itemId !== "undefined" &&
+    outputEvent.itemId !== " "
       ? outputEvent.itemId
       : message.messageId;
 
@@ -70,7 +79,10 @@ async function process(ev) {
 
   return {
     userId:
-      keyMap.USER_ID && isDefinedAndNotNull(properties[keyMap.USER_ID])
+      keyMap.USER_ID &&
+      isDefinedAndNotNull(properties[keyMap.USER_ID]) &&
+      !isBlank(properties[keyMap.USER_ID]) &&
+      properties[keyMap.USER_ID] !== " "
         ? properties[keyMap.USER_ID]
         : userId,
     // not using getFieldValueFromMessage(message, "userId") as we want to

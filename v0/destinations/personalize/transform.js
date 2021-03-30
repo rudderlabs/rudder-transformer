@@ -32,8 +32,8 @@ async function process(ev) {
       if (!isDefinedAndNotNull(value)) {
         throw new Error(`Mapped Field ${keyMap[key]} not found`);
       }
-
-      outputEvent.properties[_.camelCase(key)] = value;
+      // all the values inside property has to be sent as strings
+      outputEvent.properties[_.camelCase(key)] = String(value);
     } else if (
       !(
         key.toUpperCase() === "USER_ID" ||
@@ -41,19 +41,29 @@ async function process(ev) {
         key.toUpperCase() === "TIMESTAMP"
       )
     ) {
-      if (!(key.toUpperCase() === "IMPRESSION"))
-        outputEvent[_.camelCase(key)] = value;
-      else
+      if (
+        !(
+          key.toUpperCase() === "IMPRESSION" ||
+          key.toUpperCase() === "EVENT_VALUE"
+        )
+      )
+        outputEvent[_.camelCase(key)] = String(value);
+      else if (key.toUpperCase() === "IMPRESSION")
         outputEvent[_.camelCase(key)] = Array.isArray(value)
           ? value.map(String)
           : [String(value)];
+      else if (!Number.isNaN(parseFloat(value))) {
+        // for eventValue
+        outputEvent[_.camelCase(key)] = parseFloat(value);
+      } else throw new Error(" EVENT_VALUE should be a float value");
     }
   });
 
   // manipulate for itemId
-  outputEvent.itemId = outputEvent.itemId
-    ? outputEvent.itemId
-    : message.messageId;
+  outputEvent.itemId =
+    outputEvent.itemId && outputEvent.itemId !== "undefined"
+      ? outputEvent.itemId
+      : message.messageId;
 
   // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
   const userId = getFieldValueFromMessage(message, "userIdOnly");

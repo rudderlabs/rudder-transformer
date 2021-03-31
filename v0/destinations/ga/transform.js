@@ -766,9 +766,9 @@ function processSingleMessage(message, destination) {
         let eventValue;
         let setCategory;
         if (message.properties) {
-          eventValue = message.properties.value
-            ? message.properties.value
-            : message.properties.revenue;
+          const { value, revenue, total } = message.properties;
+          eventValue = value || revenue || total;
+
           setCategory = message.properties.category;
         }
         customParams.ec = setCategory || "EnhancedEcommerce";

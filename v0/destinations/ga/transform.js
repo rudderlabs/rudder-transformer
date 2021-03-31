@@ -556,11 +556,6 @@ function processProductListEvent(message, destination) {
         parameters[`il1pi${prodIndex}pr`] = value.price;
         parameters[`il1pi${prodIndex}qt`] = value.quantity || 1;
       }
-    } else {
-      // throw error, empty Product List in Product List Viewed event payload
-      throw new Error(
-        "Empty Product List provided for Product List Viewed Event"
-      );
     }
   }
   return parameters;

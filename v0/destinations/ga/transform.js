@@ -10,7 +10,7 @@ const {
 } = require("./config");
 const {
   removeUndefinedAndNullValues,
-  defaultGetRequestConfig,
+  defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP,
   formatValue,
@@ -308,7 +308,7 @@ function responseBuilderSimple(
   finalPayload.uip = getParsedIP(message);
 
   const response = defaultRequestConfig();
-  response.method = defaultGetRequestConfig.requestMethod;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = GA_ENDPOINT;
   response.userId = message.anonymousId || message.userId;
   response.params = finalPayload;
@@ -766,9 +766,9 @@ function processSingleMessage(message, destination) {
         let eventValue;
         let setCategory;
         if (message.properties) {
-          eventValue = message.properties.value
-            ? message.properties.value
-            : message.properties.revenue;
+          const { value, revenue, total } = message.properties;
+          eventValue = value || revenue || total;
+
           setCategory = message.properties.category;
         }
         customParams.ec = setCategory || "EnhancedEcommerce";

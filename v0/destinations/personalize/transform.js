@@ -1,11 +1,11 @@
 const _ = require("lodash");
-const { KEY_CHECK_LIST } = require("./config");
+const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require("./config");
 const {
   isDefinedAndNotNull,
   getHashFromArray,
   getFieldValueFromMessage,
   isBlank,
-  checkEmptyStringInarray
+  isDefined
 } = require("../../util");
 
 async function process(ev) {
@@ -30,42 +30,41 @@ async function process(ev) {
     const value = properties && properties[keyMap[key]];
 
     if (!KEY_CHECK_LIST.includes(key.toUpperCase())) {
-      if (!isDefinedAndNotNull(value)) {
-        throw new Error(`Mapped Field ${keyMap[key]} not found`);
+      if (!isDefined(value)) {
+        throw new Error(`Mapped property ${keyMap[key]} not found`);
       }
       // all the values inside property has to be sent as strings
-      outputEvent.properties[_.camelCase(key)] =
-        String(value) === "" || String(value) === " "
-          ? "undefined"
-          : String(value);
-    } else if (
-      !(
-        key.toUpperCase() === "USER_ID" ||
-        key.toUpperCase() === "EVENT_TYPE" ||
-        key.toUpperCase() === "TIMESTAMP"
-      )
-    ) {
+      outputEvent.properties[_.camelCase(key)] = String(value);
+    } else if (!MANDATORY_PROPERTIES.includes(key.toUpperCase())) {
+      if (
+        (!isDefinedAndNotNull(value) || isBlank(value)) &&
+        key.toUpperCase() !== "ITEM_ID"
+      ) {
+        throw new Error(`Null values cannot be sent for ${keyMap[key]} `);
+      }
       if (
         !(
           key.toUpperCase() === "IMPRESSION" ||
           key.toUpperCase() === "EVENT_VALUE"
         )
       )
-        outputEvent[_.camelCase(key)] =
-          String(value) === "" ? " " : String(value);
+        outputEvent[_.camelCase(key)] = String(value);
       else if (key.toUpperCase() === "IMPRESSION") {
         outputEvent[_.camelCase(key)] = Array.isArray(value)
           ? value.map(String)
-          : [String(value) === "" ? " " : String(value)];
-        if (!checkEmptyStringInarray(outputEvent[_.camelCase(key)]))
-          throw new Error(" You cannot parse empty string through impression");
+          : [String(value)];
+        outputEvent[_.camelCase(key)] = _.without(
+          outputEvent[_.camelCase(key)],
+          undefined,
+          null,
+          ""
+        );
       } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
         outputEvent[_.camelCase(key)] = parseFloat(value);
       } else throw new Error(" EVENT_VALUE should be a float value");
     }
   });
-
   // manipulate for itemId
   outputEvent.itemId =
     outputEvent.itemId &&
@@ -73,7 +72,6 @@ async function process(ev) {
     outputEvent.itemId !== " "
       ? outputEvent.itemId
       : message.messageId;
-
   // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
   const userId = getFieldValueFromMessage(message, "userIdOnly");
 

@@ -61,22 +61,27 @@ function responseBuilderSimple(payload, message, destination) {
 }
 
 function getEventValueForUnIdentifiedTrackEvent(message) {
+  let eventValue;
+  if (message.properties) {
+    eventValue = JSON.stringify(message.properties);
+  } else {
+    eventValue = "";
+  }
   return {
-    eventValue: message.properties
+    eventValue
   };
 }
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
-  const rawPayload = {};
-  set(rawPayload, "properties", message.properties);
-
+  let eventValue = {};
+  set(eventValue, "properties", message.properties);
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-
   if (
     isMultiSupport &&
+    message.properties &&
     message.properties.products &&
     message.properties.products.length > 0
   ) {
@@ -88,13 +93,20 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       quantities.push(product.quantity);
       prices.push(product.price);
     });
-    rawPayload.eventValue = {
+    eventValue = {
+      ...eventValue,
       af_content_id: contentIds,
       af_quantity: quantities,
       af_price: prices
     };
   }
-  return rawPayload;
+  eventValue = removeUndefinedValues(eventValue);
+  if (Object.keys(eventValue).length > 0) {
+    eventValue = JSON.stringify(eventValue);
+  } else {
+    eventValue = "";
+  }
+  return { eventValue };
 }
 
 function processNonTrackEvents(message, destination, eventName) {
@@ -167,7 +179,8 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  const response = processSingleMessage(event.message, event.destination); 
+  return response;
 }
 
 exports.process = process;

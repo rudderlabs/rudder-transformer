@@ -105,12 +105,12 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
+    const valInMap = columnMapping[key];
     let val;
-    // if (_.isFunction(columnMapping[key])) {
-    if (key === "context_ip") {
-      val = columnMapping[key](input);
+    if (_.isFunction(valInMap)) {
+      val = valInMap(input);
     } else {
-      val = get(input, columnMapping[key]);
+      val = get(input, valInMap);
     }
 
     const columnName = utils.safeColumnName(options.provider, key);
@@ -660,7 +660,9 @@ function processWarehouseMessage(message, options) {
       );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
-      usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
+      usersColumnTypes[
+        utils.safeColumnName(options.provider, "id")
+      ] = getDataType(message.userId, options);
       // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")

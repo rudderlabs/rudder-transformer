@@ -64,12 +64,12 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
     }
   },
-
   {
     "message": {
       "channel": "web",
@@ -119,6 +119,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -171,6 +172,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -223,6 +225,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -280,6 +283,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -337,6 +341,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -396,6 +401,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -454,6 +460,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -512,6 +519,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -571,6 +579,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -629,6 +638,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -687,6 +697,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -746,6 +757,7 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }
@@ -805,6 +817,831 @@
     },
     "destination": {
       "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "user_properties": {
+        "prop1": "val1",
+        "prop2": "val2"
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "anon-id",
+        "email": "test@gmail.com",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "test track event",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "",
+      "event": "test track event",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "7e32188a4dab669f",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.torpedolabs.wynn.wscci.dev",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "token": "abcxyz"
+        },
+        "library": {
+          "name": "com.rudderlabs.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": { "name": "Android", "version": "9" },
+        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "timezone": "Asia/Kolkata",
+        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "event": "Application Installed",
+      "integrations": { "All": true },
+      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+      "properties": {
+        "review_id": "some_review_id",
+        "product_id": "some_product_id_a",
+        "rating": 2.0,
+        "review_body": "Some Review Body"
+      },
+      "userId": "12345",
+      "originalTimestamp": "2020-01-09T10:01:53.558Z",
+      "type": "track",
+      "sentAt": "2020-01-09T10:02:03.257Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "7e32188a4dab669f",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.torpedolabs.wynn.wscci.dev",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "token": "abcxyz"
+        },
+        "library": {
+          "name": "com.rudderlabs.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": { "name": "Android", "version": "9" },
+        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "timezone": "Asia/Kolkata",
+        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "event": "Application Uninstalled",
+      "integrations": { "All": true },
+      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+      "properties": {
+        "review_id": "some_review_id",
+        "product_id": "some_product_id_a",
+        "rating": 2.0,
+        "review_body": "Some Review Body"
+      },
+      "userId": "12345",
+      "originalTimestamp": "2020-01-09T10:01:53.558Z",
+      "type": "track",
+      "sentAt": "2020-01-09T10:02:03.257Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Application Uninstalled",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Uninstalled",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Installed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Installed",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Installed",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Opened",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "sample_device_token"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Opened",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "sample_device_token"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "Application Uninstalled",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }

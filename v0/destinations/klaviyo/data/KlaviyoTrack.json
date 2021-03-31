@@ -1,0 +1,14 @@
+[
+  {
+    "destKey": "event",
+    "sourceKeys": ["event", "properties.event", "properties.name"],
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["email", "phone"]
+    }
+  }
+]

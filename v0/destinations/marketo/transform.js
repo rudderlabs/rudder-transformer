@@ -1,9 +1,19 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
+const stats = require("../../../util/stats");
 const { EventType } = require("../../../constants");
-const { identifyConfig, formatConfig } = require("./config");
 const {
+  identifyConfig,
+  formatConfig,
+  LEAD_LOOKUP_METRIC,
+  ACTIVITY_METRIC,
+  FETCH_TOKEN_METRIC
+} = require("./config");
+const {
+  isDefined,
+  removeUndefinedValues,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -33,6 +43,7 @@ const getAuthToken = async formattedDestination => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
+      // `https://httpstat.us/200`,
       {
         params: {
           client_id: clientId,
@@ -46,8 +57,10 @@ const getAuthToken = async formattedDestination => {
       "During getting auth token"
     );
     if (resp) {
+      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
       return resp.access_token;
     }
+    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
   });
 };
@@ -76,8 +89,10 @@ const lookupLead = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         action: "createOrUpdate",
         input: [attribute],
@@ -114,8 +129,10 @@ const lookupLeadUsingEmail = async (
   email
 ) => {
   return emailLeadCache.get(email, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         params: { filterValues: email, filterType: "email" },
         headers: { Authorization: `Bearer ${token}` }
@@ -188,16 +205,17 @@ const processIdentify = async (
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-    throw new Error("Lead lookup failed");
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
   }
 
-  const attribute = constructPayload(traits, identifyConfig);
+  let attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
     const val = traits[key];
-    if (val) {
-      attribute[leadTraitMapping[key]] = val;
-    }
+    attribute[leadTraitMapping[key]] = val;
   });
+  attribute = removeUndefinedValues(attribute);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
@@ -278,7 +296,9 @@ const processTrack = async (
     );
   }
   if (!leadId) {
-    throw new Error("Lead lookup failed");
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
   }
 
   // handle custom activy attributes
@@ -287,7 +307,7 @@ const processTrack = async (
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
-      if (value) {
+      if (isDefined(value)) {
         attributes.push({ apiName: customActivityPropertyMap[key], value });
       }
     }
@@ -304,7 +324,7 @@ const processTrack = async (
       }
     ]
   };
-
+  stats.increment(ACTIVITY_METRIC, 1);
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },
@@ -405,7 +425,11 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 500,
           error.message || "Error occurred while processing payload."
         );
       }

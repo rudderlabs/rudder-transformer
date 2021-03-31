@@ -1,5 +1,7 @@
 const axios = require("axios");
+const stats = require("../../util/stats");
 const { getHashFromArray } = require("./index");
+const { API_CALL } = require("./constant");
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -9,7 +11,7 @@ class CustomError extends Error {
 }
 
 // handle response rules
-function handleResponseRules(responseRules, errorCode) {
+function handleResponseRules(responseRules, errorCode, url) {
   const { responseType, rules } = responseRules;
   // handle for json
   if (responseType === "JSON") {
@@ -32,12 +34,30 @@ function handleResponseRules(responseRules, errorCode) {
       false
     );
     if (abortable[errorCode] === "false") {
+      stats.increment(API_CALL, 1, {
+        integration: "Marketo",
+        url,
+        status: 400,
+        state: "Abortable"
+      });
       return 400;
     }
     if (retryable[errorCode] === "false") {
+      stats.increment(API_CALL, 1, {
+        integration: "Marketo",
+        url,
+        status: 500,
+        state: "Retryable"
+      });
       return 500;
     }
     if (throttled[errorCode] === "false") {
+      stats.increment(API_CALL, 1, {
+        integration: "Marketo",
+        url,
+        status: 429,
+        state: "Throttled"
+      });
       return 429;
     }
     // is there any case possible that non of the above matches? if there is what should we send?
@@ -60,7 +80,8 @@ const getAxiosResponse = async (url, params, responseRules, errorMessage) => {
     if (success === false) {
       const getResponseCode = handleResponseRules(
         responseRules,
-        errors[0].code
+        errors[0].code,
+        url
       );
       if (getResponseCode === 500) {
         throw new CustomError(
@@ -74,11 +95,24 @@ const getAxiosResponse = async (url, params, responseRules, errorMessage) => {
           400
         );
       }
+      if (getResponseCode === 429) {
+        throw new CustomError(
+          `${errors[0].message}. ${errorMessage}. Throttled`,
+          429
+        );
+      }
     }
+    stats.increment(API_CALL, 1, {
+      integration: "Marketo",
+      url,
+      status: 200,
+      state: "Succeeded"
+    });
     return resp.data;
   }
   return null;
 };
+
 const postAxiosResponse = async (
   url,
   data,
@@ -94,7 +128,8 @@ const postAxiosResponse = async (
     if (success === false) {
       const getResponseCode = handleResponseRules(
         responseRules,
-        errors[0].code
+        errors[0].code,
+        url
       );
       if (getResponseCode === 500) {
         throw new CustomError(
@@ -108,11 +143,24 @@ const postAxiosResponse = async (
           400
         );
       }
+      if (getResponseCode === 429) {
+        throw new CustomError(
+          `${errors[0].message}. ${errorMessage}. Throttled`,
+          429
+        );
+      }
     }
+    stats.increment(API_CALL, 1, {
+      integration: "Marketo",
+      url,
+      status: 200,
+      state: "Succeeded"
+    });
     return resp.data;
   }
   return null;
 };
+
 module.exports = {
   getAxiosResponse,
   postAxiosResponse

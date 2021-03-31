@@ -1,3 +1,7 @@
+/* eslint-disable  consistent-return */
+/* eslint-disable  no-param-reassign */
+/* eslint-disable  array-callback-return */
+
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -56,7 +60,7 @@ const isPrimitive = arg => {
 };
 
 const formatValue = value => {
-  if (!value || value < 0) return 0;
+  if (!value || value < 0) return null;
   return Math.round(value);
 };
 
@@ -564,6 +568,17 @@ const constructPayload = (message, mappingJson) => {
   return null;
 };
 
+// External ID format
+// {
+//   "context": {
+//     "externalId": [
+//       {
+//         "type": "kustomerId",
+//         "id": "12345678"
+//       }
+//     ]
+//   }
+// }
 // to get destination specific external id passed in context.
 function getDestinationExternalID(message, type) {
   let externalIdArray = null;
@@ -683,6 +698,66 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+/**
+ * Extract fileds from message with exclusions
+ * Pass the keys of message for extraction and
+ * exclusion fields to exlude and the payload to map into
+ *
+ * Example:
+ * extractCustomFields(
+ *   message,
+ *   payload,
+ *   ["traits", "context.traits", "properties"],
+ *   [
+ *     "firstName",
+ *     "lastName",
+ *     "phone",
+ *     "title",
+ *     "organization",
+ *     "city",
+ *     "region",
+ *     "country",
+ *     "zip",
+ *     "image",
+ *     "timezone"
+ *   ]
+ * )
+ * -------------------------------------------
+ * The above call will map the fields other than the
+ * exlusion list from the given keys to the destination payload
+ *
+ */
+function extractCustomFields(message, destination, keys, exclusionFields) {
+  const mappingKeys = [];
+  if (Array.isArray(keys)) {
+    keys.map(key => {
+      const messageContext = get(message, key);
+      if (messageContext) {
+        Object.keys(messageContext).map(k => {
+          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+        });
+        mappingKeys.map(mappingKey => {
+          if (!(typeof messageContext[mappingKey] === "undefined")) {
+            set(destination, mappingKey, get(messageContext, mappingKey));
+          }
+        });
+      }
+    });
+  } else if (keys === "root") {
+    Object.keys(message).map(k => {
+      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+    });
+    mappingKeys.map(mappingKey => {
+      if (!(typeof message[mappingKey] === "undefined")) {
+        set(destination, mappingKey, get(message, mappingKey));
+      }
+    });
+  } else {
+    logger.debug("unable to parse keys");
+  }
+
+  return destination;
+}
 
 // Deleting nested properties from objects
 function deleteObjectProperty(object, pathToObject) {
@@ -704,6 +779,28 @@ function deleteObjectProperty(object, pathToObject) {
   delete object[pathToObject.pop()];
 }
 
+// function convert keys in a object to title case
+
+function toTitleCase(payload) {
+  const newPayload = payload;
+  Object.keys(payload).forEach(key => {
+    const value = newPayload[key];
+    delete newPayload[key];
+    const newKey = key
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+      .replace(/([a-z])([0-9])/gi, "$1 $2")
+      .replace(/([0-9])([a-z])/gi, "$1 $2")
+      .trim()
+      .replace(/(_)/g, ` `)
+      .replace(/(^\w{1})|(\s+\w{1})/g, match => {
+        return match.toUpperCase();
+      });
+    newPayload[newKey] = value;
+  });
+  return newPayload;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -718,6 +815,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  extractCustomFields,
   flattenJson,
   formatValue,
   getBrowserInfo,
@@ -735,6 +833,8 @@ module.exports = {
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
+  isDefined,
+  isDefinedAndNotNull,
   isEmpty,
   isObject,
   isPrimitive,
@@ -745,6 +845,7 @@ module.exports = {
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,
+  toTitleCase,
   toUnixTimestamp,
   updatePayload
 };

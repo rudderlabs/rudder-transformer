@@ -252,6 +252,7 @@ function responseBuilderSimple(
   let pageParams;
   if (hitType !== "pageview") {
     pageParams = processPageViews(message, destination);
+    delete pageParams.dr;
   }
 
   // Remove keys with undefined values
@@ -505,14 +506,24 @@ function processProductListEvent(message, destination) {
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
-    filters = filters || [];
-    sorts = sorts || [];
+    filters = Array.isArray(filters) ? filters : [];
+    sorts = Array.isArray(sorts) ? sorts : [];
     filters = filters
+      .filter(
+        obj =>
+          Object.prototype.hasOwnProperty.call(obj, "type") &&
+          Object.prototype.hasOwnProperty.call(obj, "value")
+      )
       .map(obj => {
         return `${obj.type}:${obj.value}`;
       })
       .join();
     sorts = sorts
+      .filter(
+        obj =>
+          Object.prototype.hasOwnProperty.call(obj, "type") &&
+          Object.prototype.hasOwnProperty.call(obj, "value")
+      )
       .map(obj => {
         return `${obj.type}:${obj.value}`;
       })

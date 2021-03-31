@@ -708,7 +708,6 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
  *   message,
  *   payload,
  *   ["traits", "context.traits", "properties"],
- *   "email",
  *   [
  *     "firstName",
  *     "lastName",
@@ -729,20 +728,34 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
  *
  */
 function extractCustomFields(message, destination, keys, exclusionFields) {
-  keys.map(key => {
-    const messageContext = get(message, key);
-    if (messageContext) {
-      const values = [];
-      Object.keys(messageContext).map(value => {
-        if (!exclusionFields.includes(value)) values.push(value);
-      });
-      values.map(val => {
-        if (!(typeof messageContext[val] === "undefined")) {
-          set(destination, val, get(messageContext, val));
-        }
-      });
-    }
-  });
+  const mappingKeys = [];
+  if (Array.isArray(keys)) {
+    keys.map(key => {
+      const messageContext = get(message, key);
+      if (messageContext) {
+        Object.keys(messageContext).map(k => {
+          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+        });
+        mappingKeys.map(mappingKey => {
+          if (!(typeof messageContext[mappingKey] === "undefined")) {
+            set(destination, mappingKey, get(messageContext, mappingKey));
+          }
+        });
+      }
+    });
+  } else if (keys === "root") {
+    Object.keys(message).map(k => {
+      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+    });
+    mappingKeys.map(mappingKey => {
+      if (!(typeof message[mappingKey] === "undefined")) {
+        set(destination, mappingKey, get(message, mappingKey));
+      }
+    });
+  } else {
+    logger.debug("unable to parse keys");
+  }
+
   return destination;
 }
 

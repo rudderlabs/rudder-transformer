@@ -29,7 +29,10 @@ async function process(ev) {
     // name of the key in event.properties
     const value = properties && properties[keyMap[key]];
 
-    if (!KEY_CHECK_LIST.includes(key.toUpperCase())) {
+    if (
+      !KEY_CHECK_LIST.includes(key.toUpperCase()) &&
+      !MANDATORY_PROPERTIES.includes(key.toUpperCase())
+    ) {
       if (!isDefined(value)) {
         throw new Error(`Mapped property ${keyMap[key]} not found`);
       }

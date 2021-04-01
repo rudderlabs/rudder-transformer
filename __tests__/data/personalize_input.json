@@ -885,7 +885,7 @@
         "itemId": "item 1",
         "userId": "user 1",
         "impressions": "abc",
-        "eventValue":"3.4abc"
+        "eventValue": "3.4abc"
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
       "request_ip": "[::1]",
@@ -956,8 +956,8 @@
           },
           {
             "from": "EVENT_VALUE",
-           "to": "eventValue" 
-         }
+            "to": "eventValue"
+          }
         ],
         "region": "us-east-1",
         "secretAccessKey": "DEF",
@@ -989,8 +989,8 @@
         "typeOfMovie": "Art Film",
         "itemId": "item 1",
         "userId": "user 1",
-        "impressions": [2,3],
-        "eventValue":"3.4abc"
+        "impressions": [2, 3],
+        "eventValue": "3.4abc"
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
       "request_ip": "[::1]",
@@ -1061,8 +1061,8 @@
           },
           {
             "from": "EVENT_VALUE",
-           "to": "eventValue" 
-         }
+            "to": "eventValue"
+          }
         ],
         "region": "us-east-1",
         "secretAccessKey": "DEF",
@@ -1093,8 +1093,8 @@
         "typeOfMovie": "Art Film",
         "itemId": "item 1",
         "userId": "user 1",
-        "impressions": [2,3],
-        "eventValue":"3.4abc"
+        "impressions": [2, 3],
+        "eventValue": "3.4abc"
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
       "request_ip": "[::1]",
@@ -1164,8 +1164,8 @@
             "to": "impressions"
           },
           {
-             "from": "EVENT_VALUE",
-            "to": "eventValue" 
+            "from": "EVENT_VALUE",
+            "to": "eventValue"
           }
         ],
         "region": "us-east-1",
@@ -1182,4 +1182,3 @@
     }
   }
 ]
-

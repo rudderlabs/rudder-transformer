@@ -132,81 +132,70 @@
     "sessionId": "anon-id-new",
     "trackingId": "c60",
     "eventList": [
-        {
-            "eventType": "PRODUCT DELETED",
-            "sentAt": "2020-02-02T00:23:09.544Z",
-            "properties": {
-                "typeOfMovie": "Art Film",
-                "numberOfRatings": "checking with webapp change"
-            },
-            "impression": [
-                "abc"
-            ],
-            "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
-        }
+      {
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["abc"],
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      }
     ]
-},
-{
-  "userId": "identified user id",
-  "sessionId": "anon-id-new",
-  "trackingId": "c60",
-  "eventList": [
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "eventList": [
       {
-          "eventType": "PRODUCT DELETED",
-          "sentAt": "2020-02-02T00:23:09.544Z",
-          "properties": {
-              "typeOfMovie": "Art Film",
-              "numberOfRatings": "checking with webapp change"
-          },
-          "impression": [
-              "abc"
-          ],
-          "eventValue": 3.4,
-          "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["abc"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-  ]
-},
-{
-  "userId": "identified user id",
-  "sessionId": "anon-id-new",
-  "trackingId": "c60",
-  "eventList": [
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "eventList": [
       {
-          "eventType": "PRODUCT DELETED",
-          "sentAt": "2020-02-02T00:23:09.544Z",
-          "properties": {
-              "typeOfMovie": "Art Film",
-              "numberOfRatings": "checking with webapp change"
-          },
-          "impression": [
-              "2",
-              "3"
-          ],
-          "eventValue": 3.4,
-          "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["2", "3"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-  ]
-},
-{
-  "userId": "identified user id",
-  "sessionId": "identified user id",
-  "trackingId": "c60",
-  "eventList": [
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "identified user id",
+    "trackingId": "c60",
+    "eventList": [
       {
-          "eventType": "PRODUCT DELETED",
-          "sentAt": "2020-02-02T00:23:09.544Z",
-          "properties": {
-              "typeOfMovie": "Art Film",
-              "numberOfRatings": "checking with webapp change"
-          },
-          "impression": [
-              "2",
-              "3"
-          ],
-          "eventValue": 3.4,
-          "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["2", "3"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-  ]
-}
+    ]
+  }
 ]
-

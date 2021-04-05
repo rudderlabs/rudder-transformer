@@ -801,6 +801,13 @@ function toTitleCase(payload) {
   return newPayload;
 }
 
+// returns false if there is any empty string inside an array or true otherwise
+
+function checkEmptyStringInarray(array) {
+  const result = array.filter(item => item === "").length === 0;
+  return result;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -808,6 +815,7 @@ function toTitleCase(payload) {
 module.exports = {
   ErrorMessage,
   constructPayload,
+  checkEmptyStringInarray,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,

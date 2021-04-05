@@ -55,7 +55,9 @@
         "search": "",
         "title": "",
         "url": "http://localhost/tests/html/index2.html",
-        "category": "communication"
+        "category": "communication",
+        "initial_referrer": "$direct",
+        "initial_referring_domain": "localhost"
       },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53708",
@@ -368,6 +370,16 @@
       },
       "integrations": {
         "All": true
+      },
+      "properties": {
+        "path": "/tests/html/index2.html",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "http://localhost/tests/html/index2.html",
+        "category": "communication",
+        "initial_referrer": "$direct",
+        "initial_referring_domain": "localhost"
       },
       "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
       "originalTimestamp": "2020-01-24T06:29:02.362Z",

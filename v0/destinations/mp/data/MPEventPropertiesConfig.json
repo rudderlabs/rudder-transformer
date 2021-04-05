@@ -101,5 +101,13 @@
   {
     "sourceKeys": "context.library.name",
     "destKey": "mp_lib"
+  },
+  {
+    "sourceKeys": "properties.initial_referrer",
+    "destKey": "$initial_referrer"
+  },
+  {
+    "sourceKeys": "properties.initial_referring_domain",
+    "destKey": "$initial_referring_domain"
   }
 ]

@@ -1,0 +1,30 @@
+[
+  {
+    "destKey": "address.phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "address.street1",
+    "sourceKeys": ["traits.address.street", "context.traits.address.street"]
+  },
+  {
+    "destKey": "address.city",
+    "sourceKeys": ["traits.address.city", "context.traits.address.city"]
+  },
+  {
+    "destKey": "address.region",
+    "sourceKeys": ["traits.address.state", "context.traits.address.state"]
+  },
+  {
+    "destKey": "address.postal_code",
+    "sourceKeys": [
+      "traits.address.postalCode",
+      "context.traits.address.postalCode"
+    ]
+  },
+  {
+    "destKey": "address.country",
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"]
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "destKey": "code",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "preferred_locale",
+    "sourceKeys": "context.locale"
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"]
+  },
+  {
+    "destKey": "custom_fields",
+    "sourceKeys": ""
+  }
+]

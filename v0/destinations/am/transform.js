@@ -167,6 +167,10 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const initialRef = {
+    initial_referrer: get(message, "properties.initial_referrer"),
+    initial_ref_domain: get(message, "properties.initial_referring_domain")
+  };
   const oldKeys = Object.keys(campaign);
   // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
   oldKeys.forEach(oldKey => {
@@ -180,6 +184,7 @@ function responseBuilderSimple(
   rawPayload.user_properties = rawPayload.user_properties || {};
   rawPayload.user_properties = {
     ...rawPayload.user_properties,
+    ...initialRef,
     ...campaign
   };
 

@@ -37,6 +37,16 @@
           "density": 2
         }
       },
+      "properties": {
+        "url": "http://localhost:1111/example-1.html",
+        "path": "/example-1.html",
+        "title": "",
+        "search": "",
+        "referrer": "$direct",
+        "initial_referrer": "$direct",
+        "referring_domain": "",
+        "initial_referring_domain": ""
+      },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",

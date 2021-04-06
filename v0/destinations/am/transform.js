@@ -169,7 +169,10 @@ function responseBuilderSimple(
   const campaign = get(message, "context.campaign") || {};
   const initialRef = {
     initial_referrer: get(message, "properties.initial_referrer"),
-    initial_ref_domain: get(message, "properties.initial_referring_domain")
+    initial_referring_domain: get(
+      message,
+      "properties.initial_referring_domain"
+    )
   };
   const oldKeys = Object.keys(campaign);
   // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`

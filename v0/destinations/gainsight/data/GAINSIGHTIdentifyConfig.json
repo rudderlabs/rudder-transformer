@@ -1,0 +1,84 @@
+[
+    {
+      "destKey": "FirstName",
+      "sourceKeys": "firstName",
+      "required": false,
+      "sourceFromGenericMap": true
+    },
+    {
+        "destKey": "LastName",
+        "sourceKeys": "lastName",
+        "required": false,
+        "sourceFromGenericMap": true
+    },
+    {
+        "destKey": "Email",
+        "sourceKeys": "email",        
+        "required": true,
+        "sourceFromGenericMap": true    
+    },
+    {
+        "destKey": "LinkedinUrl",
+        "sourceKeys": ["traits.linkedinUrl", "context.traits.linkedinUrl"],
+        "required": false
+    },
+    {
+        "destKey": "MiddleName",
+        "sourceKeys": ["traits.middleName", "context.traits.middleName"],
+        "required": false        
+    },
+    {
+        "destKey": "Timezone",
+        "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+        "required": false        
+    },
+    {
+        "destKey": "Comments",
+        "sourceKeys": ["traits.comments", "context.traits.comments"],
+        "required": false        
+    },
+    {
+        "destKey": "DynamicResolutionKey",
+        "sourceKeys": ["traits.dynamicResolutionKey", "context.traits.dynamicResolutionKey"],
+        "required": false        
+    },
+    
+    {
+        "destKey": "EmailOptOut",
+        "sourceKeys": ["traits.emailOptOut", "context.traits.emailOptOut"],
+        "required": false        
+    },
+    {
+        "destKey": "ExternalRecordID__gc",
+        "sourceKeys": ["traits.externalRecordID__gc", "context.traits.externalRecordID__gc"],
+        "required": false        
+    },
+    {
+        "destKey": "Location",
+        "sourceKeys": ["traits.location", "context.traits.location"],
+        "required": false        
+    },
+    {
+        "destKey": "MasterAvatarTypeCode",
+        "sourceKeys": ["traits.masterAvatarTypeCode", "context.traits.masterAvatarTypeCode"],
+        "required": false        
+    },
+    {
+        "destKey": "MasterRecordID",
+        "sourceKeys": ["traits.masterRecordID", "context.traits.masterRecordID"],
+        "required": false        
+    },
+    {
+        "destKey": "Name",
+        "sourceKeys": ["traits.name", "context.traits.name"],
+        "required": false        
+    },
+    {
+        "destKey": "Timezone",
+        "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+        "required": false        
+    }
+    
+
+  ]
+  

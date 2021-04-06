@@ -27,9 +27,5 @@
   {
     "destKey": "company",
     "sourceKeys": ["traits.company.name", "context.traits.company.name"]
-  },
-  {
-    "destKey": "custom_fields",
-    "sourceKeys": ""
   }
 ]

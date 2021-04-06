@@ -8,8 +8,7 @@ const BILL_TO_PARENT = "parent";
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "RCIdentifyConfig",
-    type: "identify",
-    relativeURI: "/accounts"
+    type: "identify"
   },
   ADDRESS: {
     name: "RCAddressConfig",

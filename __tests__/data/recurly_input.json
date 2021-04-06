@@ -1,0 +1,155 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "userId": "123456",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "jamesDoe@gmail.com",
+        "firstName": "James",
+        "lastName": "Doe",
+        "phone": "92374162212",
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        },
+        "company": {
+          "id": 900001329943,
+          "name": "test",
+          "remove": true
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "userId": "123456",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email--704@gmail.com",
+        "firstName": "Shivam",
+        "lastName": "Gupta",
+        "phone": "90071967788",
+        "address": {
+          "city": "Hooghly",
+          "country": "India",
+          "postalCode": "712310",
+          "state": "West Bengal",
+          "street": "Himnagar"
+        },
+        "company": {
+          "id": 900001329943,
+          "name": "Rudder",
+          "remove": true
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        }
+      },
+      "anonymousId": "anon_id-718",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email@gmail.com",
+        "firstName": "Manashi",
+        "lastName": "Mukherjee",
+        "phone": "1234567890",
+        "company": {
+          "name": "Map"
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "customFields": {
+        "planName": "free",
+        "isSubscribed": "true"
+      }
+    }
+  }
+]

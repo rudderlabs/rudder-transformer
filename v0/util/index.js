@@ -301,7 +301,8 @@ const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
 const ErrorMessage = {
   TypeNotFound: "Invalid payload. Property Type is not present",
   TypeNotSupported: "Message type not supported",
-  FailedToConstructPayload: "Payload could not be constructed"
+  FailedToConstructPayload: "Payload could not be constructed",
+  ObjectNotFound: "Error while fetching object"
 };
 
 // ========================================================================

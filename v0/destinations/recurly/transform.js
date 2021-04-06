@@ -2,88 +2,62 @@ const btoa = require("btoa");
 const { EventType } = require("../../../constants");
 const {
   ACCEPT_HEADERS,
-  DEFAULT_BASE_ENDPOINT,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  BILL_TO_SELF,
-  BILL_TO_PARENT
+  BILL_TO_SELF
 } = require("./config");
 const {
   defaultRequestConfig,
   ErrorMessage,
-  defaultPostRequestConfig,
-  constructPayload,
-  stripTrailingSlash
+  constructPayload
 } = require("../../util");
 
-/**
- * Backup Code If required
- * @param {*} isSubDomain
- * @param {*} name
- * @returns
- */
-const appendSubDomain = (isSubDomain, name) => {
-  return isSubDomain ? `${name}-recurly` : "";
-};
+const { fetchAccount, createCustomFields } = require("./util");
 
-const processIdentify = (message, category) => {
+const processIdentify = async (message, category, config) => {
   const { address } = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESS.name]
   );
-  address.postal_code = address.postal_code.toString();
-  const payload = {
+  if (address && address.postal_code) {
+    address.postal_code = address.postal_code.toString();
+  }
+  const data = {
     ...constructPayload(message, MAPPING_CONFIG[category.name]),
     address
   };
-  payload.bill_to = BILL_TO_SELF;
-  if (!payload) {
-    // fail-safety for developer error
+  data.bill_to = BILL_TO_SELF;
+  if (message.customFields) {
+    data.custom_fields = createCustomFields(message.customFields);
+  }
+  if (!data) {
     throw Error(ErrorMessage.FailedToConstructPayload);
   }
-  return payload;
-};
-
-const processTrack = (message, category) => {
-  return {};
-};
-
-const processGroup = (message, category) => {
-  return {};
-};
-
-const responseBuilderSimple = (message, category, destination) => {
-  let payload;
-  switch (message.type) {
-    case EventType.IDENTIFY:
-      payload = processIdentify(message, category);
-      break;
-    case EventType.GROUP:
-      payload = processGroup(message, category);
-      break;
-    case EventType.TRACK:
-      payload = processTrack(message, category);
-      break;
-    default:
-      break;
+  const account = await fetchAccount(data.code, config);
+  if (account.isExist) {
+    delete data.code;
   }
-  const response = defaultRequestConfig();
-  response.endpoint = `${stripTrailingSlash(destination.Config.siteId) ||
-    DEFAULT_BASE_ENDPOINT}${
-    CONFIG_CATEGORIES[message.type.toUpperCase()].relativeURI
-  }`;
+  return {
+    payload: data,
+    httpMethod: account.httpMethod,
+    endPoint: account.endPoint
+  };
+};
 
-  response.method = defaultPostRequestConfig.requestMethod;
+const responseBuilderSimple = (payload, requestMethod, endPoint, apiKey) => {
+  const response = defaultRequestConfig();
+  response.endpoint = endPoint;
+  response.method = requestMethod;
   response.headers = {
     "Content-Type": "application/json",
     Accept: ACCEPT_HEADERS,
-    Authorization: `Basic ${btoa(`${destination.Config.apiKey}:`)}`
+    Authorization: `Basic ${btoa(`${apiKey}:`)}`
   };
   response.body.JSON = payload;
   return response;
 };
 
-const processEvent = (message, destination) => {
+const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error(ErrorMessage.TypeNotFound);
   }
@@ -91,11 +65,31 @@ const processEvent = (message, destination) => {
   if (!category) {
     throw Error(ErrorMessage.TypeNotSupported);
   }
-  return responseBuilderSimple(message, category, destination);
+  let response;
+  switch (message.type) {
+    case EventType.IDENTIFY:
+      response = await processIdentify(message, category, destination.Config);
+      break;
+    // case EventType.GROUP:
+    //   payload = processGroup(message, category);
+    //   break;
+    // case EventType.TRACK:
+    //   payload = processTrack(message, category);
+    //   break;
+    default:
+      throw Error(ErrorMessage.TypeNotSupported);
+  }
+  return responseBuilderSimple(
+    response.payload,
+    response.httpMethod,
+    response.endPoint,
+    destination.Config.apiKey
+  );
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
+const process = async event => {
+  const response = await processEvent(event.message, event.destination);
+  return response;
 };
 
 exports.process = process;

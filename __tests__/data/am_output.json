@@ -34,7 +34,7 @@
               "street": "",
               "ip": "0.0.0.0",
               "age": 26,
-              "initial_ref_domain": "",
+              "initial_referring_domain": "",
               "initial_referrer": "$direct"
             },
             "time": 1571043797562,

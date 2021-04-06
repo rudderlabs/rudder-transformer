@@ -252,7 +252,6 @@ function responseBuilderSimple(
   let pageParams;
   if (hitType !== "pageview") {
     pageParams = processPageViews(message, destination);
-    delete pageParams.dr;
   }
 
   // Remove keys with undefined values
@@ -515,24 +514,14 @@ function processProductListEvent(message, destination) {
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
-    filters = Array.isArray(filters) ? filters : [];
-    sorts = Array.isArray(sorts) ? sorts : [];
+    filters = filters || [];
+    sorts = sorts || [];
     filters = filters
-      .filter(
-        obj =>
-          Object.prototype.hasOwnProperty.call(obj, "type") &&
-          Object.prototype.hasOwnProperty.call(obj, "value")
-      )
       .map(obj => {
         return `${obj.type}:${obj.value}`;
       })
       .join();
     sorts = sorts
-      .filter(
-        obj =>
-          Object.prototype.hasOwnProperty.call(obj, "type") &&
-          Object.prototype.hasOwnProperty.call(obj, "value")
-      )
       .map(obj => {
         return `${obj.type}:${obj.value}`;
       })
@@ -565,6 +554,11 @@ function processProductListEvent(message, destination) {
         parameters[`il1pi${prodIndex}pr`] = value.price;
         parameters[`il1pi${prodIndex}qt`] = value.quantity || 1;
       }
+    } else {
+      // throw error, empty Product List in Product List Viewed event payload
+      throw new Error(
+        "Empty Product List provided for Product List Viewed Event"
+      );
     }
   }
   return parameters;

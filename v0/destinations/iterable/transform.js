@@ -204,14 +204,16 @@ function responseBuilderSimple(message, category, destination) {
 
 function responseBuilderSimpleForIdentify(message, category, destination) {
   const response = defaultRequestConfig();
-  if (message.context.device) {
+  const { os, device } = message.context;
+
+  if (device) {
     response.endpoint = category.endpointDevice;
     response.body.JSON = constructPayloadItem(
       message,
       { ...category, action: category.actionDevice },
       destination
     );
-  } else if (message.context.os) {
+  } else if (os) {
     response.endpoint = category.endpointBrowser;
     response.body.JSON = constructPayloadItem(
       message,
@@ -261,17 +263,30 @@ function processSingleMessage(message, destination) {
   const response = responseBuilderSimple(message, category, destination);
 
   if (
-    (message.type === EventType.IDENTIFY &&
-      message.context.device &&
-      message.context.device.token) ||
-    (message.context.os && message.context.os.token)
+    message.type === EventType.IDENTIFY &&
+    message.context &&
+    ((message.context.device && message.context.device.token) ||
+      (message.context.os && message.context.os.token))
   ) {
     return [
       response,
       responseBuilderSimpleForIdentify(message, category, destination)
     ];
   }
-  logger.debug("No token present thus device/browser not mapped with user");
+
+  // if (
+  //   (message.type === EventType.IDENTIFY &&
+  //     message.context &&
+  //     message.context.device &&
+  //     message.context.device.token) ||
+  //   (message.context && message.context.os && message.context.os.token)
+  // ) {
+  //   return [
+  //     response,
+  //     responseBuilderSimpleForIdentify(message, category, destination)
+  //   ];
+  // }
+  // logger.debug("No token present thus device/browser not mapped with user");
 
   return response;
 }

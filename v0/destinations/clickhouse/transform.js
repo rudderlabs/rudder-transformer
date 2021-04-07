@@ -7,6 +7,18 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
+function getDataType(val) {
+  if (typeof val === "number") {
+    return Number.isInteger(val) ? "int" : "float";
+  }
+  if (typeof val === "boolean") {
+    return "boolean";
+  }
+  if (validTimestamp(val)) {
+    return "datetime";
+  }
+  return "string";
+}
 function getDataTypeOverride(val, options) {
   // TODO: make sure all values are of same type
   // check for [] empty arrays
@@ -15,22 +27,29 @@ function getDataTypeOverride(val, options) {
     if (val.length === 0) {
       return "string";
     }
-    // check for different data types in the array. if there are different then return string
-    if (val.length > 1) {
-      if (typeof val[0] !== typeof val[1]) {
-        return "string";
+    // check for different data types in the array. if there are different then return array(string)
+    const firstValueDataType = getDataType(val[0]);
+    let finalDataType = firstValueDataType;
+    for (let i = 1; i < val.length; i += 1) {
+      const dataType = getDataType(val[i]);
+      if (finalDataType !== dataType) {
+        if (finalDataType === "string") {
+          break;
+        }
+        if (dataType === "float" && finalDataType === "int") {
+          finalDataType = "float";
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        if (dataType === "int" && finalDataType === "float") {
+          finalDataType = "float";
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        finalDataType = "string";
       }
     }
-    if (typeof val[0] === "number") {
-      return Number.isInteger(val[0]) ? "array(int)" : "array(float)";
-    }
-    if (typeof val[0] === "boolean") {
-      return "array(boolean)";
-    }
-    if (validTimestamp(val[0])) {
-      return "array(datetime)";
-    }
-    return "array(string)";
+    return `array(${finalDataType})`;
   }
   return "string";
 }

@@ -16,7 +16,8 @@ function process(event) {
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,
-    provider
+    provider,
+    sourceCategory: event.metadata ? event.metadata.sourceCategory : null
   });
 }
 

@@ -1,0 +1,29 @@
+[
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ip_address",
+    "sourceKeys": "context.ip"
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": ["context.traits.company.name"]
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": "RCAddressConfig",
+    "isJsonKey": true
+  },
+  {
+    "destKey": "number",
+    "sourceKeys": "number"
+  }
+]

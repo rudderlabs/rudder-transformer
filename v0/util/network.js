@@ -68,7 +68,7 @@ function handleResponseRules(responseRules, errorCode, url) {
 
 const getAxiosResponse = async (url, params, responseRules, errorMessage) => {
   const resp = await axios.get(url, params).catch(error => {
-    throw error;
+    throw new CustomError(error, 400);
   });
   // resp.data = {
   //   requestId: "1629e#1774791e46d",
@@ -121,7 +121,7 @@ const postAxiosResponse = async (
   errorMessage
 ) => {
   const resp = await axios.post(url, data, params).catch(error => {
-    throw error;
+    throw new CustomError(error, 400);
   });
   if (resp.data) {
     const { success, errors } = resp.data;

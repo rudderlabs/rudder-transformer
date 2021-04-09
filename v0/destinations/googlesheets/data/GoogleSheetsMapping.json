@@ -5,6 +5,12 @@
     "required": false
   },
   {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "context_traits",
     "sourceKeys": "context.traits",
     "required": false

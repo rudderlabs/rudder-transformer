@@ -1,14 +1,7 @@
-const {
-  getHashFromArray,
-  getMappingConfig,
-  constructPayload
-} = require("../../util");
+const { getHashFromArray, constructPayload } = require("../../util");
+const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require("./config");
 
-const CONFIG_CATEGORIES = {
-  SHEETS: { name: "GoogleSheetsMapping" }
-};
-const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-
+// Retrieve Google-Sheets Tab name based on the destination event-to-tab map
 const getTabName = event => {
   const { message } = event;
   const { eventToTabMap } = event.destination.Config;
@@ -21,13 +14,14 @@ const getTabName = event => {
   );
 };
 
+// Main process Function to handle transformation
 const process = event => {
   const { message, destination } = event;
   const tabName = getTabName(event);
   if (tabName) {
     const payload = constructPayload(
       message,
-      MAPPING_CONFIG.GoogleSheetsMapping
+      MAPPING_CONFIG[CONFIG_CATEGORIES.SHEETS.name]
     );
     payload.spreadSheetId = destination.Config.sheetId;
     payload.spreadSheetTab = tabName;

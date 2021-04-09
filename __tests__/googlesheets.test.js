@@ -23,5 +23,5 @@ inputData.forEach((input, index) => {
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].error);
     }
-  })
+  });
 });

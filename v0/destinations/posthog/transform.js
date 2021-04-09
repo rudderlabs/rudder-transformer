@@ -79,7 +79,12 @@ const responseBuilderSimple = (message, category, destination) => {
     payload.distinct_id = payload.distinct_id.toString();
   }
   if (payload.properties) {
-    if (!(payload.distinct_id === null || payload.distinct_id === undefined)) {
+    if (
+      !(
+        payload.properties.distinct_id === null ||
+        payload.properties.distinct_id === undefined
+      )
+    ) {
       payload.properties.distinct_id = payload.properties.distinct_id.toString();
     }
   }

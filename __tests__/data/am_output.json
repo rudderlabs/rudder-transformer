@@ -34,8 +34,8 @@
               "street": "",
               "ip": "0.0.0.0",
               "age": 26,
-              "initial_referring_domain": "",
-              "initial_referrer": "$direct"
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "time": 1571043797562,
             "user_id": "123456",
@@ -77,12 +77,15 @@
             "language": "en-US",
             "event_type": "Viewed ApplicationLoaded Page",
             "event_properties": {
-              "path": "/test",
-              "referrer": "Rudder",
-              "search": "abc",
-              "title": "Test Page",
-              "url": "www.rudderlabs.com",
-              "name": "ApplicationLoaded"
+              "category": "destination",
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "name": "ApplicationLoaded",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
             "ip": "1.1.1.1",
@@ -90,7 +93,9 @@
             "user_id": "12345",
             "user_properties": {
               "anonymousId": "12345",
-              "email": "sayan@gmail.com"
+              "email": "sayan@gmail.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             }
           }
         ],
@@ -129,12 +134,15 @@
             "language": "en-US",
             "event_type": "Viewed ApplicationLoaded Page",
             "event_properties": {
-              "path": "/test",
-              "referrer": "Rudder",
-              "search": "abc",
-              "title": "Test Page",
-              "url": "www.rudderlabs.com",
-              "name": "ApplicationLoaded"
+              "category": "destination",
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "name": "ApplicationLoaded",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
             "ip": "1.1.1.1",
@@ -145,7 +153,9 @@
             "user_id": "12345",
             "user_properties": {
               "anonymousId": "12345",
-              "email": "sayan@gmail.com"
+              "email": "sayan@gmail.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             }
           }
         ],
@@ -193,7 +203,9 @@
             "user_id": "12345",
             "user_properties": {
               "anonymousId": "12345",
-              "email": "sayan@gmail.com"
+              "email": "sayan@gmail.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "ip": "0.0.0.0"
           }
@@ -242,7 +254,9 @@
               "state": "WB",
               "street": "",
               "ip": "0.0.0.0",
-              "age": 26
+              "age": 26,
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "time": 1571043797562,
             "user_id": "123456",
@@ -442,7 +456,9 @@
                 "utm_name": "some campaign",
                 "utm_source": "google",
                 "utm_term": "keyword",
-                "utm_test": "other value"
+                "utm_test": "other value",
+                "initial_referring_domain": "docs.rudderstack.com",
+                "initial_referrer": "https://docs.rudderstack.com"
               },
               "groups": {
                 "Company": "Comapny-ABC"
@@ -499,7 +515,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"initial_referrer\":\"https://docs.rudderstack.com\",\"initial_referring_domain\":\"docs.rudderstack.com\",\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
         ]
       }
     },
@@ -519,7 +535,7 @@
       "FORM": {
         "api_key": "abcde",
         "mapping": [
-          "{\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"},\"unmap\":true}"
+          "{\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"initial_referrer\":\"https://docs.rudderstack.com\",\"initial_referring_domain\":\"docs.rudderstack.com\",\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"},\"unmap\":true}"
         ]
       }
     },
@@ -556,7 +572,9 @@
               "userId": "0572f78fa49c648e",
               "address": {},
               "company": {},
-              "anonymousId": "0572f78fa49c648e"
+              "anonymousId": "0572f78fa49c648e",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "session_id": -1
           }
@@ -1572,7 +1590,9 @@
               "$add": {
                 "age": 12,
                 "friends": 3
-              }
+              },
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
             },
             "time": 1605853102342,
             "user_id": "User_111",

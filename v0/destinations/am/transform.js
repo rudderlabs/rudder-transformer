@@ -168,10 +168,10 @@ function responseBuilderSimple(
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
   const initialRef = {
-    initial_referrer: get(message, "properties.initial_referrer"),
+    initial_referrer: get(message, "context.page.initial_referrer"),
     initial_referring_domain: get(
       message,
-      "properties.initial_referring_domain"
+      "context.page.initial_referring_domain"
     )
   };
   const oldKeys = Object.keys(campaign);

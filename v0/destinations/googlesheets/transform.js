@@ -9,6 +9,7 @@ const getTabName = event => {
 
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||
+    (message.name ? hashMap[message.name.toLowerCase()] : null) ||
     hashMap[message.type.toLowerCase()] ||
     hashMap["*"]
   );

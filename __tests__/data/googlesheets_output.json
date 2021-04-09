@@ -1,0 +1,140 @@
+[
+  {
+    "anonymous_id": "anon_id",
+    "user_id": "sheetuser001",
+    "context_traits": {
+      "userId": "sheetuser001",
+      "firstName": "James",
+      "lastName": "Doe",
+      "address": {
+        "city": "Kolkata",
+        "country": "India",
+        "postalCode": "789003",
+        "state": "WB"
+      }
+    },
+    "traits": {
+      "anonymousId": "anon_id",
+      "email": "jamesDoe@gmail.com",
+      "name": "James Doe",
+      "phone": "92374162212",
+      "gender": "M",
+      "employed": true,
+      "birthday": "1614775793",
+      "education": "Science",
+      "graduate": true,
+      "married": true,
+      "customerType": "Prime",
+      "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+      "custom_mappings": {
+        "Office": "Trastkiv",
+        "Country": "Russia"
+      },
+      "address": {
+        "city": "kolkata",
+        "country": "India",
+        "postalCode": 789223,
+        "state": "WB",
+        "street": ""
+      }
+    },
+    "context_app_build": "1.0.0",
+    "context_app_name": "RudderLabs JavaScript SDK",
+    "context_app_namespace": "com.rudderlabs.javascript",
+    "context_app_version": "1.0.0",
+    "context_library_name": "RudderLabs JavaScript SDK",
+    "context_library_version": "1.0.0",
+    "context_locale": "en-US",
+    "context_os_name": "OS-X",
+    "context_os_version": "19.02.3",
+    "context_screen": {
+      "density": 2
+    },
+    "context_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+    "id": "84e26acc-56a5-4835-8233-591137fca468",
+    "original_timestamp": "2019-10-14T09:03:17.562Z",
+    "sent_at": "2019-10-14T09:03:22.563Z",
+    "spreadSheetId": "rudder_sheet_id",
+    "spreadSheetTab": "Identify"
+  },
+  {
+    "user_id": "userTest004",
+    "properties": {
+      "name": "HomePage",
+      "revenue": 5.99,
+      "value": 5.5,
+      "offer": "Discount",
+      "Sale": false
+    },
+    "context_app_build": "1",
+    "context_app_name": "RudderAndroidClient",
+    "context_app_namespace": "com.rudderstack.demo.android",
+    "context_app_version": "1.0",
+    "context_device_id": "7e32188a4dab669f",
+    "context_device_manufacturer": "Google",
+    "context_device_model": "Android SDK built for x86",
+    "context_device_name": "generic_x86",
+    "context_device_type": "android",
+    "context_library_name": "com.rudderstack.android.sdk.core",
+    "context_library_version": "0.1.4",
+    "context_locale": "en-US",
+    "context_network_carrier": "Android",
+    "context_network_cellular": true,
+    "context_network_wifi": true,
+    "context_os_name": "Android",
+    "context_os_version": "9",
+    "context_screen": {
+      "density": 420,
+      "height": 1794,
+      "width": 1080
+    },
+    "context_timezone": "Asia/Kolkata",
+    "event": "Added to Cart",
+    "event_name": "Added to Cart",
+    "event_text": "Added to Cart",
+    "timestamp": "2020-02-02T00:23:09.544Z",
+    "spreadSheetId": "rudder_sheet_id",
+    "spreadSheetTab": "Added To Cart"
+  },
+  {
+    "anonymous_id": "anon-id-new",
+    "user_id": "userTest004",
+    "properties": {
+      "title": "Cart",
+      "path": "/",
+      "Cart Value": 7800,
+      "revenue": 7500
+    },
+    "context_library_name": "http",
+    "event_name": "1mg Cart",
+    "event_text": "1mg Cart",
+    "timestamp": "2020-02-02T00:23:09.544Z",
+    "spreadSheetId": "rudder_sheet_id",
+    "spreadSheetTab": "Page"
+  },
+  {
+    "anonymous_id": "anon-id-test",
+    "user_id": "userTest005",
+    "properties": {
+      "title": "Home",
+      "path": "/home"
+    },
+    "context_library_name": "http",
+    "event_name": "Viewed Home Screen",
+    "event_text": "Viewed Home Screen",
+    "timestamp": "2020-02-02T00:23:09.544Z",
+    "spreadSheetId": "rudder_sheet_id",
+    "spreadSheetTab": "Home Screen"
+  },
+  {
+    "context_library_name": "http",
+    "event_name": "Trello home Screen",
+    "event_text": "Trello home Screen",
+    "timestamp": "2020-02-02T00:23:09.544Z",
+    "spreadSheetId": "rudder_sheet_id",
+    "spreadSheetTab": "Main"
+  },
+  {
+      "error": "No Spread Sheet Tab set for this event"
+  }
+]

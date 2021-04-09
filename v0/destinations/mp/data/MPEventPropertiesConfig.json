@@ -103,11 +103,11 @@
     "destKey": "mp_lib"
   },
   {
-    "sourceKeys": "properties.initial_referrer",
+    "sourceKeys": "context.page.initial_referrer",
     "destKey": "$initial_referrer"
   },
   {
-    "sourceKeys": "properties.initial_referring_domain",
+    "sourceKeys": "context.page.initial_referring_domain",
     "destKey": "$initial_referring_domain"
   }
 ]

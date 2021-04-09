@@ -161,12 +161,12 @@ function getTransformedJSON(message, mappingJson) {
   set(
     rawPayload,
     '$initial_referrer',
-    get(message, "properties.initial_referrer")
+    get(message, "context.page.initial_referrer")
   );
   set(
     rawPayload,
     '$initial_referring_domain',
-    get(message, "properties.initial_referring_domain")
+    get(message, "context.page.initial_referring_domain")
   );
 
   return rawPayload;

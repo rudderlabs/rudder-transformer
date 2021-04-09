@@ -75,11 +75,13 @@ const responseBuilderSimple = (message, category, destination) => {
   };
 
   // Convert the distinct_id to string as that is the needed type in destinations.
-  if (payload.distinct_id) {
+  if (!(payload.distinct_id === null || payload.distinct_id === undefined)) {
     payload.distinct_id = payload.distinct_id.toString();
   }
-  if (payload.properties.distinct_id) {
-    payload.properties.distinct_id = payload.properties.distinct_id.toString();
+  if (payload.properties) {
+    if (!(payload.distinct_id === null || payload.distinct_id === undefined)) {
+      payload.properties.distinct_id = payload.properties.distinct_id.toString();
+    }
   }
 
   // Mapping Destination Event with correct value

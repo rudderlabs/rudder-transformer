@@ -274,20 +274,6 @@ function processSingleMessage(message, destination) {
     ];
   }
 
-  // if (
-  //   (message.type === EventType.IDENTIFY &&
-  //     message.context &&
-  //     message.context.device &&
-  //     message.context.device.token) ||
-  //   (message.context && message.context.os && message.context.os.token)
-  // ) {
-  //   return [
-  //     response,
-  //     responseBuilderSimpleForIdentify(message, category, destination)
-  //   ];
-  // }
-  // logger.debug("No token present thus device/browser not mapped with user");
-
   return response;
 }
 

@@ -28,7 +28,8 @@ function process(event) {
     whStoreEvent,
     getDataTypeOverride,
     provider,
-    rsAlterStringToText
+    rsAlterStringToText,
+    sourceCategory: event.metadata ? event.metadata.sourceCategory : null
   });
 }
 

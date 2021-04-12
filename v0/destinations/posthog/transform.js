@@ -12,7 +12,8 @@ const {
   defaultPostRequestConfig,
   ErrorMessage,
   isValidUrl,
-  stripTrailingSlash
+  stripTrailingSlash,
+  isDefinedAndNotNull
 } = require("../../util");
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
@@ -73,6 +74,17 @@ const responseBuilderSimple = (message, category, destination) => {
     ...generatePropertyDefination(message),
     ...payload.properties
   };
+
+  // Convert the distinct_id to string as that is the needed type in destinations.
+  if (isDefinedAndNotNull(payload.distinct_id)) {
+    payload.distinct_id = payload.distinct_id.toString();
+  }
+  if (
+    payload.properties &&
+    isDefinedAndNotNull(payload.properties.distinct_id)
+  ) {
+    payload.properties.distinct_id = payload.properties.distinct_id.toString();
+  }
 
   // Mapping Destination Event with correct value
   if (category.type !== CONFIG_CATEGORIES.TRACK.type) {

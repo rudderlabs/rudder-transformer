@@ -878,5 +878,6 @@ function processWarehouseMessage(message, options) {
 
 module.exports = {
   processWarehouseMessage,
-  fullEventColumnTypeByProvider
+  fullEventColumnTypeByProvider,
+  getDataType
 };

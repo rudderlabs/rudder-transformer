@@ -65,7 +65,7 @@ const responseBuilderSimple = (message, category, destination) => {
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
     if (
       get(message.event) &&
-      get(message.event).toLowerCase() == "order completed"
+      get(message.event).toLowerCase() === "order completed"
     ) {
       eventPayload = {
         evtName: "Charged",

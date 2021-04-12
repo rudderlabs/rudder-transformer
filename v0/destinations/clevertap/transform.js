@@ -40,13 +40,13 @@ const responseBuilderSimple = (message, category, destination) => {
       ["traits", "context.traits"],
       CLEVERTAP_DEFAULT_EXCLUSION
     );
-    removeUndefinedAndNullValues(profile);
+
     payload = {
       d: [
         {
           identity: getFieldValueFromMessage(message, "userId"),
           type: "profile",
-          profileData: profile
+          profileData: removeUndefinedAndNullValues(profile)
         }
       ]
     };
@@ -88,10 +88,10 @@ const responseBuilderSimple = (message, category, destination) => {
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
-    removeUndefinedAndNullValues(eventPayload);
+
     eventPayload.type = "event";
     payload = {
-      d: [eventPayload]
+      d: [removeUndefinedAndNullValues(eventPayload)]
     };
   }
 

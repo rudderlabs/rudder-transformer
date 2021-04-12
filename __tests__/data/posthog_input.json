@@ -23,6 +23,12 @@
           "name": "android",
           "version": "8.1.0"
         },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.7"
+        },
         "traits": {
           "address": {
             "city": "Dhaka",

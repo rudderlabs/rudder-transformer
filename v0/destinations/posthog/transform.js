@@ -13,26 +13,27 @@ const {
   ErrorMessage,
   isValidUrl,
   stripTrailingSlash,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {
   const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
-  let propertyJson = MAPPING_CONFIG[PHPropertyJson];
+  const propertyJson = MAPPING_CONFIG[PHPropertyJson];
   let data = {};
 
   // Filter out property specific to mobile or web. isMobile key takes care of it.
   // Array Filter() will map propeerty on basis of given condition and filters it.
-  if (message.channel === "mobile") {
-    propertyJson = propertyJson.filter(d => {
-      return d.isMobile || d.all;
-    });
-  } else {
-    propertyJson = propertyJson.filter(d => {
-      return !d.isMobile || d.all;
-    });
-  }
+  // if (message.channel === "mobile") {
+  //   propertyJson = propertyJson.filter(d => {
+  //     return d.isMobile || d.all;
+  //   });
+  // } else {
+  //   propertyJson = propertyJson.filter(d => {
+  //     return !d.isMobile || d.all;
+  //   });
+  // }
 
   data = constructPayload(message, propertyJson);
 
@@ -60,7 +61,7 @@ const generatePropertyDefination = message => {
     data.$host = url.host;
   }
 
-  return data;
+  return removeUndefinedAndNullValues(data);
 };
 
 const responseBuilderSimple = (message, category, destination) => {

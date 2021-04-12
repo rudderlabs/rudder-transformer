@@ -521,8 +521,7 @@ const handleMetadataForValue = (value, metadata) => {
           return true;
         }
 
-        const keySet = new Set(map.sourceVal);
-        if (keySet.has(formattedVal)) {
+        if (map.sourceVal.includes(formattedVal)) {
           formattedVal = map.destVal;
           return true;
         }

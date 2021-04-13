@@ -1064,7 +1064,7 @@
       "type": "screen",
       "userId": "identified user id",
       "anonymousId": "anon-id-new",
-      "name": "Screen View",
+      "event": "Screen View",
       "properties": {
         "prop1": "5"
       },

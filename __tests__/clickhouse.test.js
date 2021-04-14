@@ -85,7 +85,7 @@ var testCases = [
     },
     {
         "name": "arrayRandomArrays",
-        "data": [[1, 2, "ganesh"],[2, true, "2019-08-12T05:08:30.909Z"]],
+        "data": [[1, 2, "random"],[2, true, "2019-08-12T05:08:30.909Z"]],
         "type": "array(string)"
     },
     {

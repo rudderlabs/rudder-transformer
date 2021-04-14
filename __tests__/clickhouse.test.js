@@ -2,59 +2,107 @@
 const { getDataType } = require("../warehouse/index")
 const { getDataTypeOverride} = require("../v0/destinations/clickhouse/transform")
 
-var input = {
-    "normalInt": 1,
-    "normalFloat": 2.01,
-    "normalBoolean": true,
-    "normalString":"clickhouse transformation[*007}",
-    "object":{
-        "a":"random value 1",
-        "b":"random value 2"
+var testCases = [
+    {
+        "name": "normalInt",
+        "data": 1,
+        "type": "int"
     },
-    "arrayInt" : [1,2,3],
-    "arrayFloat": [1.01, 2.01, 5.09012],
-    "arrayFloatMixedInt1": [1, 2, 5.09012],
-    "arrayFloatMixedInt2": [1.09, 2, 5],
-    "arrayFloatMixedInt3": [1.09, 2.09123, 5, 1],
-    "arrayBoolean": [true, false, true, true, false],
-    "arrayDateTime": ["2019-08-12T05:08:30.909Z","2019-08-12T06:08:30.909Z"],
-    "arrayDateTimeWrongDate": ["2019-08-12T05:08:30.909Z","2019-083-12T06:08:30.909Z"],
-    "arrayString": ["rudderstack","clickhouse"],
-    "arrayRandomDataTypes1": [1,1.01, true],
-    "arrayRandomDataTypes2": [1,1.01, {"a":"random value 1","b":"random value 2"}],
-    "arrayRandomIntArrays": [[1,2,3],[3,4,5]],
-    "arrayRandomArrays": [[1,2,"ganesh"],[2,true,"2019-08-12T05:08:30.909Z"]]
-}
+    {
+        "name": "normalFloat",
+        "data": 2.01,
+        "type": "float"
+    },
+    {
+        "name": "normalBoolean",
+        "data": true,
+        "type": "boolean"
+    },
+    {
+        "name": "normalString",
+        "data": "clickhouse transformation[*007}",
+        "type": "string"
+    },
+    {
+        "name": "arrayInt",
+        "data": [1, 2, 3],
+        "type": "array(int)"
+    },
+    {
+        "name": "arrayFloat",
+        "data": [1.01, 2.01, 5.09012],
+        "type": "array(float)"
+    },
+    {
+        "name": "arrayFloatMixedInt1",
+        "data": [1, 2, 5.09012],
+        "type": "array(float)"
+    },
+    {
+        "name": "arrayFloatMixedInt2",
+        "data": [1.09, 2, 5],
+        "type": "array(float)"
+    },
+    {
+        "name": "arrayFloatMixedInt3",
+        "data": [1.09, 2.09123, 5, 1],
+        "type": "array(float)"
+    },
+    {
+        "name": "arrayBoolean",
+        "data": [true, false, true, true, false],
+        "type": "array(boolean)"
+    },
+    {
+        "name": "arrayDateTime",
+        "data": ["2019-08-12T05:08:30.909Z", "2019-08-12T06:08:30.909Z"],
+        "type": "array(datetime)"
+    },
+    {
+        "name": "arrayDateTimeWrongDate",
+        "data": ["2019-08-12T05:08:30.909Z", "2019-083-12T06:08:30.909Z"],
+        "type": "array(string)"
+    },
+    {
+        "name": "arrayString",
+        "data": ["rudderstack", "clickhouse"],
+        "type": "array(string)"
+    },
+    {
+        "name": "arrayRandomDataTypes1",
+        "data": [1, 1.01, true],
+        "type": "array(string)"
+    },
+    {
+        "name": "arrayRandomDataTypes2",
+        "data": [1, 1.01, {"a": "random value 1", "b": "random value 2"}],
+        "type": "array(string)"
+    },
+    {
+        "name": "arrayRandomIntArrays",
+        "data": [[1, 2, 3],[3, 4, 5]],
+        "type": "array(string)"
+    },
+    {
+        "name": "arrayRandomArrays",
+        "data": [[1, 2, "ganesh"],[2, true, "2019-08-12T05:08:30.909Z"]],
+        "type": "array(string)"
+    },
+    {
+        "name": "object",
+        "data": {"a": "random value 1","b": "random value 2"},
+        "type": "string"
+    }
+]
 
-const output = {
-    "normalInt": "int",
-    "normalFloat": "float",
-    "normalBoolean": "boolean",
-    "normalString":"string",
-    "object": "string",
-    "arrayInt": "array(int)",
-    "arrayFloat": "array(float)",
-    "arrayFloatMixedInt1": "array(float)",
-    "arrayFloatMixedInt2": "array(float)",
-    "arrayFloatMixedInt3": "array(float)",
-    "arrayDateTime":"array(datetime)",
-    "arrayBoolean":"array(boolean)",
-    "arrayString":"array(string)",
-    "arrayDateTimeWrongDate": "array(string)",
-    "arrayRandomDataTypes1": "array(string)",
-    "arrayRandomDataTypes2": "array(string)",
-    "arrayRandomIntArrays": "array(string)",
-    "arrayRandomArrays": "array(string)"
-
-}
 describe("ClickHouse data types testing", ()=> {
 
     options = {}
     options.getDataTypeOverride = getDataTypeOverride
-    Object.keys(input).forEach((key)=>{
-            it(`should return data type ${output[key]} for this input data ${input[key]} everytime`, ()=> {
-                var dataType = getDataType(input[key], options)
-                expect(dataType).toEqual(output[key])
+    testCases.forEach((testCase)=>{
+            it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, ()=> {
+                var dataType = getDataType(testCase.data, options)
+                expect(dataType).toEqual(testCase.type)
             })
     })
 

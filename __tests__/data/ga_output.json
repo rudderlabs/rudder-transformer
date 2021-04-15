@@ -1083,7 +1083,6 @@
     "headers": {},
     "params": {
       "ea": "User Enriched",
-      "dr": "http://0.0.0.0:1112/tests/html/",
       "dt": "GA Ecommerce Test",
       "ec": "All",
       "v": "1",
@@ -1533,8 +1532,39 @@
     "userId": "00000000000000000000000000"
   },
   {
-    "statusCode": 400,
-    "message": "Empty Product List provided for Product List Viewed Event"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ni": 1,
+      "ea": "Product List Clicked",
+      "ec": "Sample Product List",
+      "pa": "click",
+      "el": "event",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "il1nm": "Sample Product List",
+      "uid": "12345",
+      "cid": "00000000000000000000000000"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   },
   {
     "version": "1",
@@ -1910,5 +1940,83 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ni": 1,
+      "ea": "product list viewed",
+      "ec": "cat 1",
+      "pa": "detail",
+      "il1pi1id": "507f1f77bcf86cd799439011",
+      "il1pi1va": "::price:desc",
+      "il1pi1ps": 10,
+      "il1pi1qt": 1,
+      "il1pi2id": "507f1f77bcf86cdef799439011",
+      "il1pi2va": "::price:desc",
+      "il1pi2ps": -10,
+      "il1pi2qt": 1,
+      "el": "event",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "il1nm": "1234",
+      "uid": "12345",
+      "cid": "00000000000000000000000000"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ni": 1,
+      "ea": "product list viewed",
+      "ec": "cat 1",
+      "pa": "detail",
+      "el": "event",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "npa": 1,
+      "aip": 1,
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "il1nm": "1234",
+      "uid": "12345",
+      "cid": "00000000000000000000000000"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   }
 ]

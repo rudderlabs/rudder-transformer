@@ -1,178 +1,213 @@
 [
   {
+    "mappingKey": "0",
+    "destKey": "id",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "mappingKey": "1",
     "destKey": "anonymous_id",
     "sourceKeys": "anonymousId",
     "required": false
   },
   {
+    "mappingKey": "2",
     "destKey": "user_id",
     "sourceKeys": "userIdOnly",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "context_traits",
-    "sourceKeys": "context.traits",
-    "required": false
-  },
-  {
-    "destKey": "properties",
-    "sourceKeys": "properties",
-    "required": false
-  },
-  {
-    "destKey": "traits",
-    "sourceKeys": "traits",
-    "required": false
-  },
-  {
-    "destKey": "context_app_build",
-    "sourceKeys": "context.app.build",
-    "required": false
-  },
-  {
-    "destKey": "context_app_name",
-    "sourceKeys": "context.app.name",
-    "required": false
-  },
-  {
-    "destKey": "context_app_namespace",
-    "sourceKeys": "context.app.namespace",
-    "required": false
-  },
-  {
-    "destKey": "context_app_version",
-    "sourceKeys": "context.app.version",
-    "required": false
-  },
-  {
-    "destKey": "context_device_id",
-    "sourceKeys": "context.device.id",
-    "required": false
-  },
-  {
-    "destKey": "context_device_manufacturer",
-    "sourceKeys": "context.device.manufacturer",
-    "required": false
-  },
-  {
-    "destKey": "context_device_model",
-    "sourceKeys": "context.device.model",
-    "required": false
-  },
-  {
-    "destKey": "context_device_name",
-    "sourceKeys": "context.device.name",
-    "required": false
-  },
-  {
-    "destKey": "context_device_type",
-    "sourceKeys": "context.device.type",
-    "required": false
-  },
-  {
-    "destKey": "context_library_name",
-    "sourceKeys": "context.library.name",
-    "required": false
-  },
-  {
-    "destKey": "context_library_version",
-    "sourceKeys": "context.library.version",
-    "required": false
-  },
-  {
-    "destKey": "context_locale",
-    "sourceKeys": "context.locale",
-    "required": false
-  },
-  {
-    "destKey": "context_network_carrier",
-    "sourceKeys": "context.network.carrier",
-    "required": false
-  },
-  {
-    "destKey": "context_network_bluetooth",
-    "sourceKeys": "context.network.bluetooth",
-    "required": false
-  },
-  {
-    "destKey": "context_network_cellular",
-    "sourceKeys": "context.network.cellular",
-    "required": false
-  },
-  {
-    "destKey": "context_network_wifi",
-    "sourceKeys": "context.network.wifi",
-    "required": false
-  },
-  {
-    "destKey": "context_os_name",
-    "sourceKeys": "context.os.name",
-    "required": false
-  },
-  {
-    "destKey": "context_os_version",
-    "sourceKeys": "context.os.version",
-    "required": false
-  },
-  {
-    "destKey": "context_screen",
-    "sourceKeys": "context.screen",
-    "required": false
-  },
-  {
-    "destKey": "context_timezone",
-    "sourceKeys": "context.timezone",
-    "required": false
-  },
-  {
-    "destKey": "context_traits",
-    "sourceKeys": "context.traits",
-    "required": false
-  },
-  {
-    "destKey": "context_userAgent",
-    "sourceKeys": "context.userAgent",
-    "required": false
-  },
-  {
+    "mappingKey": "3",
     "destKey": "event",
     "sourceKeys": "event",
     "required": false
   },
   {
+    "mappingKey": "4",
     "destKey": "event_name",
     "sourceKeys": ["event", "name"],
     "required": false
   },
   {
+    "mappingKey": "5",
     "destKey": "event_text",
     "sourceKeys": ["event", "name"],
     "required": false
   },
   {
-    "destKey": "id",
-    "sourceKeys": "messageId",
+    "mappingKey": "6",
+    "destKey": "page",
+    "sourceKeys": "page",
     "required": false
   },
   {
+    "mappingKey": "7",
     "destKey": "original_timestamp",
     "sourceKeys": "originalTimestamp",
     "required": false
   },
   {
+    "mappingKey": "8",
     "destKey": "received_at",
     "sourceKeys": "receivedAt",
     "required": false
   },
   {
+    "mappingKey": "9",
     "destKey": "timestamp",
     "sourceKeys": "timestamp",
     "required": false
   },
   {
+    "mappingKey": "10",
     "destKey": "sent_at",
     "sourceKeys": "sentAt",
+    "required": false
+  },
+  {
+    "mappingKey": "11",
+    "destKey": "context_traits",
+    "sourceKeys": "context.traits",
+    "required": false
+  },
+  {
+    "mappingKey": "12",
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "mappingKey": "13",
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "required": false
+  },
+  {
+    "mappingKey": "14",
+    "destKey": "context_app_build",
+    "sourceKeys": "context.app.build",
+    "required": false
+  },
+  {
+    "mappingKey": "15",
+    "destKey": "context_app_name",
+    "sourceKeys": "context.app.name",
+    "required": false
+  },
+  {
+    "mappingKey": "16",
+    "destKey": "context_app_namespace",
+    "sourceKeys": "context.app.namespace",
+    "required": false
+  },
+  {
+    "mappingKey": "17",
+    "destKey": "context_app_version",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "mappingKey": "18",
+    "destKey": "context_device_id",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "mappingKey": "19",
+    "destKey": "context_device_manufacturer",
+    "sourceKeys": "context.device.manufacturer",
+    "required": false
+  },
+  {
+    "mappingKey": "20",
+    "destKey": "context_device_model",
+    "sourceKeys": "context.device.model",
+    "required": false
+  },
+  {
+    "mappingKey": "21",
+    "destKey": "context_device_name",
+    "sourceKeys": "context.device.name",
+    "required": false
+  },
+  {
+    "mappingKey": "22",
+    "destKey": "context_device_type",
+    "sourceKeys": "context.device.type",
+    "required": false
+  },
+  {
+    "mappingKey": "23",
+    "destKey": "context_library_name",
+    "sourceKeys": "context.library.name",
+    "required": false
+  },
+  {
+    "mappingKey": "24",
+    "destKey": "context_library_version",
+    "sourceKeys": "context.library.version",
+    "required": false
+  },
+  {
+    "mappingKey": "25",
+    "destKey": "context_locale",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "mappingKey": "26",
+    "destKey": "context_network_carrier",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "mappingKey": "27",
+    "destKey": "context_network_bluetooth",
+    "sourceKeys": "context.network.bluetooth",
+    "required": false
+  },
+  {
+    "mappingKey": "28",
+    "destKey": "context_network_cellular",
+    "sourceKeys": "context.network.cellular",
+    "required": false
+  },
+  {
+    "mappingKey": "29",
+    "destKey": "context_network_wifi",
+    "sourceKeys": "context.network.wifi",
+    "required": false
+  },
+  {
+    "mappingKey": "30",
+    "destKey": "context_os_name",
+    "sourceKeys": "context.os.name",
+    "required": false
+  },
+  {
+    "mappingKey": "31",
+    "destKey": "context_os_version",
+    "sourceKeys": "context.os.version",
+    "required": false
+  },
+  {
+    "mappingKey": "32",
+    "destKey": "context_screen",
+    "sourceKeys": "context.screen",
+    "required": false
+  },
+  {
+    "mappingKey": "33",
+    "destKey": "context_timezone",
+    "sourceKeys": "context.timezone",
+    "required": false
+  },
+  {
+    "mappingKey": "34",
+    "destKey": "context_userAgent",
+    "sourceKeys": "context.userAgent",
     "required": false
   }
 ]

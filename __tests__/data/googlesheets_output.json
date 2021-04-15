@@ -1,136 +1,785 @@
 [
   {
-    "anonymous_id": "anon_id",
-    "user_id": "sheetuser001",
-    "context_traits": {
-      "userId": "sheetuser001",
-      "firstName": "James",
-      "lastName": "Doe",
-      "address": {
-        "city": "Kolkata",
-        "country": "India",
-        "postalCode": "789003",
-        "state": "WB"
-      }
-    },
-    "traits": {
-      "anonymousId": "anon_id",
-      "email": "jamesDoe@gmail.com",
-      "name": "James Doe",
-      "phone": "92374162212",
-      "gender": "M",
-      "employed": true,
-      "birthday": "1614775793",
-      "education": "Science",
-      "graduate": true,
-      "married": true,
-      "customerType": "Prime",
-      "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-      "custom_mappings": {
-        "Office": "Trastkiv",
-        "Country": "Russia"
+    "message": {
+      "0": {
+        "key": "id",
+        "value": "84e26acc-56a5-4835-8233-591137fca468"
       },
-      "address": {
-        "city": "kolkata",
-        "country": "India",
-        "postalCode": 789223,
-        "state": "WB",
-        "street": ""
+      "1": {
+        "key": "anonymous_id",
+        "value": "anon_id"
+      },
+      "2": {
+        "key": "user_id",
+        "value": "sheetuser001"
+      },
+      "3": {
+        "key": "event",
+        "value": ""
+      },
+      "4": {
+        "key": "event_name",
+        "value": ""
+      },
+      "5": {
+        "key": "event_text",
+        "value": ""
+      },
+      "6": {
+        "key": "page",
+        "value": ""
+      },
+      "7": {
+        "key": "original_timestamp",
+        "value": "2019-10-14T09:03:17.562Z"
+      },
+      "8": {
+        "key": "received_at",
+        "value": ""
+      },
+      "9": {
+        "key": "timestamp",
+        "value": ""
+      },
+      "10": {
+        "key": "sent_at",
+        "value": "2019-10-14T09:03:22.563Z"
+      },
+      "11": {
+        "key": "context_traits",
+        "value": {
+          "userId": "sheetuser001",
+          "firstName": "James",
+          "lastName": "Doe",
+          "address": {
+            "city": "Kolkata",
+            "country": "India",
+            "postalCode": "789003",
+            "state": "WB"
+          }
+        }
+      },
+      "12": {
+        "key": "properties",
+        "value": ""
+      },
+      "13": {
+        "key": "traits",
+        "value": {
+          "anonymousId": "anon_id",
+          "email": "jamesDoe@gmail.com",
+          "name": "James Doe",
+          "phone": "92374162212",
+          "gender": "M",
+          "employed": true,
+          "birthday": "1614775793",
+          "education": "Science",
+          "graduate": true,
+          "married": true,
+          "customerType": "Prime",
+          "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+          "custom_mappings": {
+            "Office": "Trastkiv",
+            "Country": "Russia"
+          },
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 789223,
+            "state": "WB",
+            "street": ""
+          }
+        }
+      },
+      "14": {
+        "key": "context_app_build",
+        "value": "1.0.0"
+      },
+      "15": {
+        "key": "context_app_name",
+        "value": "RudderLabs JavaScript SDK"
+      },
+      "16": {
+        "key": "context_app_namespace",
+        "value": "com.rudderlabs.javascript"
+      },
+      "17": {
+        "key": "context_app_version",
+        "value": "1.0.0"
+      },
+      "18": {
+        "key": "context_device_id",
+        "value": ""
+      },
+      "19": {
+        "key": "context_device_manufacturer",
+        "value": ""
+      },
+      "20": {
+        "key": "context_device_model",
+        "value": ""
+      },
+      "21": {
+        "key": "context_device_name",
+        "value": ""
+      },
+      "22": {
+        "key": "context_device_type",
+        "value": ""
+      },
+      "23": {
+        "key": "context_library_name",
+        "value": "RudderLabs JavaScript SDK"
+      },
+      "24": {
+        "key": "context_library_version",
+        "value": "1.0.0"
+      },
+      "25": {
+        "key": "context_locale",
+        "value": "en-US"
+      },
+      "26": {
+        "key": "context_network_carrier",
+        "value": ""
+      },
+      "27": {
+        "key": "context_network_bluetooth",
+        "value": ""
+      },
+      "28": {
+        "key": "context_network_cellular",
+        "value": ""
+      },
+      "29": {
+        "key": "context_network_wifi",
+        "value": ""
+      },
+      "30": {
+        "key": "context_os_name",
+        "value": "OS-X"
+      },
+      "31": {
+        "key": "context_os_version",
+        "value": "19.02.3"
+      },
+      "32": {
+        "key": "context_screen",
+        "value": {
+          "density": 2
+        }
+      },
+      "33": {
+        "key": "context_timezone",
+        "value": ""
+      },
+      "34": {
+        "key": "context_userAgent",
+        "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       }
     },
-    "context_app_build": "1.0.0",
-    "context_app_name": "RudderLabs JavaScript SDK",
-    "context_app_namespace": "com.rudderlabs.javascript",
-    "context_app_version": "1.0.0",
-    "context_library_name": "RudderLabs JavaScript SDK",
-    "context_library_version": "1.0.0",
-    "context_locale": "en-US",
-    "context_os_name": "OS-X",
-    "context_os_version": "19.02.3",
-    "context_screen": {
-      "density": 2
-    },
-    "context_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-    "id": "84e26acc-56a5-4835-8233-591137fca468",
-    "original_timestamp": "2019-10-14T09:03:17.562Z",
-    "sent_at": "2019-10-14T09:03:22.563Z",
     "spreadSheetId": "rudder_sheet_id",
     "spreadSheetTab": "Identify"
   },
   {
-    "user_id": "userTest004",
-    "properties": {
-      "name": "HomePage",
-      "revenue": 5.99,
-      "value": 5.5,
-      "offer": "Discount",
-      "Sale": false
+    "message": {
+      "0": {
+        "key": "id",
+        "value": ""
+      },
+      "1": {
+        "key": "anonymous_id",
+        "value": ""
+      },
+      "2": {
+        "key": "user_id",
+        "value": "userTest004"
+      },
+      "3": {
+        "key": "event",
+        "value": "Added to Cart"
+      },
+      "4": {
+        "key": "event_name",
+        "value": "Added to Cart"
+      },
+      "5": {
+        "key": "event_text",
+        "value": "Added to Cart"
+      },
+      "6": {
+        "key": "page",
+        "value": ""
+      },
+      "7": {
+        "key": "original_timestamp",
+        "value": ""
+      },
+      "8": {
+        "key": "received_at",
+        "value": ""
+      },
+      "9": {
+        "key": "timestamp",
+        "value": "2020-02-02T00:23:09.544Z"
+      },
+      "10": {
+        "key": "sent_at",
+        "value": ""
+      },
+      "11": {
+        "key": "context_traits",
+        "value": ""
+      },
+      "12": {
+        "key": "properties",
+        "value": {
+          "name": "HomePage",
+          "revenue": 5.99,
+          "value": 5.5,
+          "offer": "Discount",
+          "Sale": false
+        }
+      },
+      "13": {
+        "key": "traits",
+        "value": ""
+      },
+      "14": {
+        "key": "context_app_build",
+        "value": "1"
+      },
+      "15": {
+        "key": "context_app_name",
+        "value": "RudderAndroidClient"
+      },
+      "16": {
+        "key": "context_app_namespace",
+        "value": "com.rudderstack.demo.android"
+      },
+      "17": {
+        "key": "context_app_version",
+        "value": "1.0"
+      },
+      "18": {
+        "key": "context_device_id",
+        "value": "7e32188a4dab669f"
+      },
+      "19": {
+        "key": "context_device_manufacturer",
+        "value": "Google"
+      },
+      "20": {
+        "key": "context_device_model",
+        "value": "Android SDK built for x86"
+      },
+      "21": {
+        "key": "context_device_name",
+        "value": "generic_x86"
+      },
+      "22": {
+        "key": "context_device_type",
+        "value": "android"
+      },
+      "23": {
+        "key": "context_library_name",
+        "value": "com.rudderstack.android.sdk.core"
+      },
+      "24": {
+        "key": "context_library_version",
+        "value": "0.1.4"
+      },
+      "25": {
+        "key": "context_locale",
+        "value": "en-US"
+      },
+      "26": {
+        "key": "context_network_carrier",
+        "value": "Android"
+      },
+      "27": {
+        "key": "context_network_bluetooth",
+        "value": ""
+      },
+      "28": {
+        "key": "context_network_cellular",
+        "value": true
+      },
+      "29": {
+        "key": "context_network_wifi",
+        "value": true
+      },
+      "30": {
+        "key": "context_os_name",
+        "value": "Android"
+      },
+      "31": {
+        "key": "context_os_version",
+        "value": "9"
+      },
+      "32": {
+        "key": "context_screen",
+        "value": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        }
+      },
+      "33": {
+        "key": "context_timezone",
+        "value": "Asia/Kolkata"
+      },
+      "34": {
+        "key": "context_userAgent",
+        "value": ""
+      }
     },
-    "context_app_build": "1",
-    "context_app_name": "RudderAndroidClient",
-    "context_app_namespace": "com.rudderstack.demo.android",
-    "context_app_version": "1.0",
-    "context_device_id": "7e32188a4dab669f",
-    "context_device_manufacturer": "Google",
-    "context_device_model": "Android SDK built for x86",
-    "context_device_name": "generic_x86",
-    "context_device_type": "android",
-    "context_library_name": "com.rudderstack.android.sdk.core",
-    "context_library_version": "0.1.4",
-    "context_locale": "en-US",
-    "context_network_carrier": "Android",
-    "context_network_cellular": true,
-    "context_network_wifi": true,
-    "context_os_name": "Android",
-    "context_os_version": "9",
-    "context_screen": {
-      "density": 420,
-      "height": 1794,
-      "width": 1080
-    },
-    "context_timezone": "Asia/Kolkata",
-    "event": "Added to Cart",
-    "event_name": "Added to Cart",
-    "event_text": "Added to Cart",
-    "timestamp": "2020-02-02T00:23:09.544Z",
     "spreadSheetId": "rudder_sheet_id",
     "spreadSheetTab": "Added To Cart"
   },
   {
-    "anonymous_id": "anon-id-new",
-    "user_id": "userTest004",
-    "properties": {
-      "title": "Cart",
-      "path": "/",
-      "Cart Value": 7800,
-      "revenue": 7500
+    "message": {
+      "0": {
+        "key": "id",
+        "value": ""
+      },
+      "1": {
+        "key": "anonymous_id",
+        "value": "anon-id-new"
+      },
+      "2": {
+        "key": "user_id",
+        "value": "userTest004"
+      },
+      "3": {
+        "key": "event",
+        "value": ""
+      },
+      "4": {
+        "key": "event_name",
+        "value": "1mg Cart"
+      },
+      "5": {
+        "key": "event_text",
+        "value": "1mg Cart"
+      },
+      "6": {
+        "key": "page",
+        "value": ""
+      },
+      "7": {
+        "key": "original_timestamp",
+        "value": ""
+      },
+      "8": {
+        "key": "received_at",
+        "value": ""
+      },
+      "9": {
+        "key": "timestamp",
+        "value": "2020-02-02T00:23:09.544Z"
+      },
+      "10": {
+        "key": "sent_at",
+        "value": ""
+      },
+      "11": {
+        "key": "context_traits",
+        "value": ""
+      },
+      "12": {
+        "key": "properties",
+        "value": {
+          "title": "Cart",
+          "path": "/",
+          "Cart Value": 7800,
+          "revenue": 7500
+        }
+      },
+      "13": {
+        "key": "traits",
+        "value": ""
+      },
+      "14": {
+        "key": "context_app_build",
+        "value": ""
+      },
+      "15": {
+        "key": "context_app_name",
+        "value": ""
+      },
+      "16": {
+        "key": "context_app_namespace",
+        "value": ""
+      },
+      "17": {
+        "key": "context_app_version",
+        "value": ""
+      },
+      "18": {
+        "key": "context_device_id",
+        "value": ""
+      },
+      "19": {
+        "key": "context_device_manufacturer",
+        "value": ""
+      },
+      "20": {
+        "key": "context_device_model",
+        "value": ""
+      },
+      "21": {
+        "key": "context_device_name",
+        "value": ""
+      },
+      "22": {
+        "key": "context_device_type",
+        "value": ""
+      },
+      "23": {
+        "key": "context_library_name",
+        "value": "http"
+      },
+      "24": {
+        "key": "context_library_version",
+        "value": ""
+      },
+      "25": {
+        "key": "context_locale",
+        "value": ""
+      },
+      "26": {
+        "key": "context_network_carrier",
+        "value": ""
+      },
+      "27": {
+        "key": "context_network_bluetooth",
+        "value": ""
+      },
+      "28": {
+        "key": "context_network_cellular",
+        "value": ""
+      },
+      "29": {
+        "key": "context_network_wifi",
+        "value": ""
+      },
+      "30": {
+        "key": "context_os_name",
+        "value": ""
+      },
+      "31": {
+        "key": "context_os_version",
+        "value": ""
+      },
+      "32": {
+        "key": "context_screen",
+        "value": ""
+      },
+      "33": {
+        "key": "context_timezone",
+        "value": ""
+      },
+      "34": {
+        "key": "context_userAgent",
+        "value": ""
+      }
     },
-    "context_library_name": "http",
-    "event_name": "1mg Cart",
-    "event_text": "1mg Cart",
-    "timestamp": "2020-02-02T00:23:09.544Z",
     "spreadSheetId": "rudder_sheet_id",
     "spreadSheetTab": "Page"
   },
   {
-    "anonymous_id": "anon-id-test",
-    "user_id": "userTest005",
-    "properties": {
-      "title": "Home",
-      "path": "/home"
+    "message": {
+      "0": {
+        "key": "id",
+        "value": ""
+      },
+      "1": {
+        "key": "anonymous_id",
+        "value": "anon-id-test"
+      },
+      "2": {
+        "key": "user_id",
+        "value": "userTest005"
+      },
+      "3": {
+        "key": "event",
+        "value": ""
+      },
+      "4": {
+        "key": "event_name",
+        "value": "Viewed Home Screen"
+      },
+      "5": {
+        "key": "event_text",
+        "value": "Viewed Home Screen"
+      },
+      "6": {
+        "key": "page",
+        "value": ""
+      },
+      "7": {
+        "key": "original_timestamp",
+        "value": ""
+      },
+      "8": {
+        "key": "received_at",
+        "value": ""
+      },
+      "9": {
+        "key": "timestamp",
+        "value": "2020-02-02T00:23:09.544Z"
+      },
+      "10": {
+        "key": "sent_at",
+        "value": ""
+      },
+      "11": {
+        "key": "context_traits",
+        "value": ""
+      },
+      "12": {
+        "key": "properties",
+        "value": {
+          "title": "Home",
+          "path": "/home"
+        }
+      },
+      "13": {
+        "key": "traits",
+        "value": ""
+      },
+      "14": {
+        "key": "context_app_build",
+        "value": ""
+      },
+      "15": {
+        "key": "context_app_name",
+        "value": ""
+      },
+      "16": {
+        "key": "context_app_namespace",
+        "value": ""
+      },
+      "17": {
+        "key": "context_app_version",
+        "value": ""
+      },
+      "18": {
+        "key": "context_device_id",
+        "value": ""
+      },
+      "19": {
+        "key": "context_device_manufacturer",
+        "value": ""
+      },
+      "20": {
+        "key": "context_device_model",
+        "value": ""
+      },
+      "21": {
+        "key": "context_device_name",
+        "value": ""
+      },
+      "22": {
+        "key": "context_device_type",
+        "value": ""
+      },
+      "23": {
+        "key": "context_library_name",
+        "value": "http"
+      },
+      "24": {
+        "key": "context_library_version",
+        "value": ""
+      },
+      "25": {
+        "key": "context_locale",
+        "value": ""
+      },
+      "26": {
+        "key": "context_network_carrier",
+        "value": ""
+      },
+      "27": {
+        "key": "context_network_bluetooth",
+        "value": ""
+      },
+      "28": {
+        "key": "context_network_cellular",
+        "value": ""
+      },
+      "29": {
+        "key": "context_network_wifi",
+        "value": ""
+      },
+      "30": {
+        "key": "context_os_name",
+        "value": ""
+      },
+      "31": {
+        "key": "context_os_version",
+        "value": ""
+      },
+      "32": {
+        "key": "context_screen",
+        "value": ""
+      },
+      "33": {
+        "key": "context_timezone",
+        "value": ""
+      },
+      "34": {
+        "key": "context_userAgent",
+        "value": ""
+      }
     },
-    "context_library_name": "http",
-    "event_name": "Viewed Home Screen",
-    "event_text": "Viewed Home Screen",
-    "timestamp": "2020-02-02T00:23:09.544Z",
     "spreadSheetId": "rudder_sheet_id",
     "spreadSheetTab": "Home Screen"
   },
   {
-    "context_library_name": "http",
-    "event_name": "Trello home Screen",
-    "event_text": "Trello home Screen",
-    "timestamp": "2020-02-02T00:23:09.544Z",
+    "message": {
+      "0": {
+        "key": "id",
+        "value": ""
+      },
+      "1": {
+        "key": "anonymous_id",
+        "value": ""
+      },
+      "2": {
+        "key": "user_id",
+        "value": ""
+      },
+      "3": {
+        "key": "event",
+        "value": ""
+      },
+      "4": {
+        "key": "event_name",
+        "value": "Trello home Screen"
+      },
+      "5": {
+        "key": "event_text",
+        "value": "Trello home Screen"
+      },
+      "6": {
+        "key": "page",
+        "value": ""
+      },
+      "7": {
+        "key": "original_timestamp",
+        "value": ""
+      },
+      "8": {
+        "key": "received_at",
+        "value": ""
+      },
+      "9": {
+        "key": "timestamp",
+        "value": "2020-02-02T00:23:09.544Z"
+      },
+      "10": {
+        "key": "sent_at",
+        "value": ""
+      },
+      "11": {
+        "key": "context_traits",
+        "value": ""
+      },
+      "12": {
+        "key": "properties",
+        "value": ""
+      },
+      "13": {
+        "key": "traits",
+        "value": ""
+      },
+      "14": {
+        "key": "context_app_build",
+        "value": ""
+      },
+      "15": {
+        "key": "context_app_name",
+        "value": ""
+      },
+      "16": {
+        "key": "context_app_namespace",
+        "value": ""
+      },
+      "17": {
+        "key": "context_app_version",
+        "value": ""
+      },
+      "18": {
+        "key": "context_device_id",
+        "value": ""
+      },
+      "19": {
+        "key": "context_device_manufacturer",
+        "value": ""
+      },
+      "20": {
+        "key": "context_device_model",
+        "value": ""
+      },
+      "21": {
+        "key": "context_device_name",
+        "value": ""
+      },
+      "22": {
+        "key": "context_device_type",
+        "value": ""
+      },
+      "23": {
+        "key": "context_library_name",
+        "value": "http"
+      },
+      "24": {
+        "key": "context_library_version",
+        "value": ""
+      },
+      "25": {
+        "key": "context_locale",
+        "value": ""
+      },
+      "26": {
+        "key": "context_network_carrier",
+        "value": ""
+      },
+      "27": {
+        "key": "context_network_bluetooth",
+        "value": ""
+      },
+      "28": {
+        "key": "context_network_cellular",
+        "value": ""
+      },
+      "29": {
+        "key": "context_network_wifi",
+        "value": ""
+      },
+      "30": {
+        "key": "context_os_name",
+        "value": ""
+      },
+      "31": {
+        "key": "context_os_version",
+        "value": ""
+      },
+      "32": {
+        "key": "context_screen",
+        "value": ""
+      },
+      "33": {
+        "key": "context_timezone",
+        "value": ""
+      },
+      "34": {
+        "key": "context_userAgent",
+        "value": ""
+      }
+    },
     "spreadSheetId": "rudder_sheet_id",
     "spreadSheetTab": "Main"
   },

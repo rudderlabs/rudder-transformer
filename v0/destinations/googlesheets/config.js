@@ -1,7 +1,7 @@
 const { getMappingConfig } = require("../../util");
 
 const CONFIG_CATEGORIES = {
-  SHEETS: { name: "GoogleSheetsMapping" }
+  SHEETS: { name: "GSMapping" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

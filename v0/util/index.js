@@ -512,23 +512,28 @@ const handleMetadataForValue = (value, metadata) => {
   //   }
   // ]
   if (multikeyMap) {
+    let foundVal = false;
     if (Array.isArray(multikeyMap)) {
       multikeyMap.some(map => {
         if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
           logger.warn(
             "multikeyMap skipped: sourceVal and destVal must be of valid type"
           );
+          foundVal = true;
           return true;
         }
 
         if (map.sourceVal.includes(formattedVal)) {
           formattedVal = map.destVal;
+          foundVal = true;
           return true;
         }
       });
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
+    if (!foundVal)
+      formattedVal = undefined
   }
 
   return formattedVal;

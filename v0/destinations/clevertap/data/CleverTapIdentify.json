@@ -22,11 +22,11 @@
     "metadata": {
       "multikeyMap": [
         {
-          "sourceVal": ["f", "F", "Female", "female"],
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
           "destVal": "F"
         },
         {
-          "sourceVal": ["m", "M", "Male", "male"],
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
           "destVal": "M"
         }
       ]

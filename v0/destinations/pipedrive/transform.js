@@ -1,14 +1,6 @@
 /* eslint-disable camelcase */
 const get = require("get-value");
-const {
-  MAPPING_CONFIG,
-  CONFIG_CATEGORIES,
-  PERSONS_ENDPOINT,
-  PIPEDRIVE_IDENTIFY_EXCLUSION,
-  PIPEDRIVE_GROUP_EXCLUSION,
-  getMergeEndpoint,
-  LEADS_ENDPOINT
-} = require("./config");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
@@ -18,14 +10,24 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   getValueFromMessage,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  isEmpty
 } = require("../../util");
+const {
+  MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
+  PERSONS_ENDPOINT,
+  PIPEDRIVE_IDENTIFY_EXCLUSION,
+  PIPEDRIVE_GROUP_EXCLUSION,
+  getMergeEndpoint,
+  LEADS_ENDPOINT
+} = require("./config");
 const {
   createNewOrganisation,
   searchPersonByCustomId,
-  searchOrganisationByCustomId
+  searchOrganisationByCustomId,
+  mergeTwoPersons
 } = require("./util");
-const set = require("set-value");
 
 const identifyResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
@@ -135,6 +137,14 @@ const groupResponseBuilder = async (message, category, destination) => {
   return response;
 };
 
+/**
+ * TODO: change implementation to call merge endpoint first
+ * and then call update on person with merge_with_id
+ * @param {*} message 
+ * @param {*} category 
+ * @param {*} destination 
+ * @returns 
+ */
 const aliasResponseBuilder = async (message, category, destination) => {
   /**
    * merge previous Id to userId
@@ -144,17 +154,51 @@ const aliasResponseBuilder = async (message, category, destination) => {
   const previousId = getValueFromMessage(mesage, "previousId");
   if (!previousId) throw new Error("error: cannot merge without previousId");
 
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const userId = getFieldValueFromMessage(message, "userId");
+  let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+  /**
+   * if no traits present in payload, just call
+   * the merge persons endpoint
+   */
+  if (isEmpty(removeUndefinedAndNullValues(updatePayload))) {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    response.body.JSON = {
+      "merge_with_id": userId
+    };
+    response.endpoint = getMergeEndpoint(previousId);
+    response.params = {
+      api_token: destination.Config.api_token
+    };
+    return response;
+  }
+
+  /**
+   * if traits have been provided, then call merge endpoint first
+   * and then update the person object with the provided traits
+   */
+
+  await mergeTwoPersons(previousId, userId, destination);
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  response.endpoint = getMergeEndpoint(previousId);
+  response.headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  };
+  response.body.JSON = removeUndefinedAndNullValues(updatePayload);
+  response.endpoint = `${PERSONS_ENDPOINT}/${userId}`;
   response.params = {
     api_token: destination.Config.api_token
   };
 
   return response;
+
 };
 
 // Associate a Lead with a person

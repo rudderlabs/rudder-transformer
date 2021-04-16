@@ -117,8 +117,11 @@ const createNewOrganisation = async (data, destination) => {
   throw new Error("failed to create new organisation");
 };
 
-// not required for the moment
-const mergeTwoPersons = async (previousId, payload, destination) => {
+const mergeTwoPersons = async (previousId, userId, destination) => {
+  const payload = {
+    // eslint-disable-next-line prettier/prettier
+    "merge_with_id": userId
+  };
   try {
     const mergeResponse = await axios.put(
       getMergeEndpoint(previousId),

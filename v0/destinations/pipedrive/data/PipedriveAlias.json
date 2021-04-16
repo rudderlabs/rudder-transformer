@@ -1,0 +1,8 @@
+[
+  {
+    "destKey": "merge_with_id",
+    "sourceKey": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

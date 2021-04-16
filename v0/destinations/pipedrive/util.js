@@ -1,7 +1,11 @@
 /* eslint-disable camelcase */
 const axios = require("axios");
 const logger = require("../../../logger");
-const { ORGANISATION_ENDPOINT, PERSONS_ENDPOINT } = require("./config");
+const {
+  ORGANISATION_ENDPOINT,
+  PERSONS_ENDPOINT,
+  getMergeEndpoint
+} = require("./config");
 
 const findPersonById = async (id, destination) => {
   try {
@@ -113,9 +117,29 @@ const createNewOrganisation = async (data, destination) => {
   throw new Error("failed to create new organisation");
 };
 
+// not required for the moment
+const mergeTwoPersons = async (previousId, payload, destination) => {
+  try {
+    const mergeResponse = await axios.put(
+      getMergeEndpoint(previousId),
+      payload,
+      {
+        params: {
+          api_token: destination.Config.api_token
+        }
+      }
+    );
+    if (!mergeResponse || !mergeResponse.status === 200)
+      throw new Error("error while merging persons");
+  } catch (err) {
+    throw new Error("error while merging persons");
+  }
+};
+
 module.exports = {
   findPersonById,
   createNewOrganisation,
   searchOrganisationByCustomId,
-  searchPersonByCustomId
+  searchPersonByCustomId,
+  mergeTwoPersons
 };

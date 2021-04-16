@@ -8,7 +8,9 @@ const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 // ALIAS: { name: "PipedriveAlias", type: "alias" },
 // GROUP: { name: "PipedriveGroup", type: "group" }
 const CONFIG_CATEGORIES = {
-  IDENTIFY: { name: "PipedriveIdentify", type: "identify" }
+  IDENTIFY: { name: "PipedriveIdentify", type: "identify" },
+  GROUP: { name: "PipedriveGroup", type: "group" },
+  ALIAS: { name: "PipedriveAlias", type: "alias" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

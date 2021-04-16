@@ -4,9 +4,9 @@ const {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   PERSONS_ENDPOINT,
-  ORGANISATION_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
-  PIPEDRIVE_GROUP_EXCLUSION
+  PIPEDRIVE_GROUP_EXCLUSION,
+  getMergeEndpoint
 } = require("./config");
 const { EventType } = require("../../../constants");
 const {
@@ -26,12 +26,11 @@ const {
 } = require("./util");
 const set = require("set-value");
 
-
 const identifyResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  
+
   payload = extractCustomFields(
     message,
     payload,
@@ -39,16 +38,11 @@ const identifyResponseBuilder = async (message, category, destination) => {
     PIPEDRIVE_IDENTIFY_EXCLUSION
   );
 
-  const userIdValue = getFieldValueFromMessage(message, "userIdOnly");
+  const userIdValue = getFieldValueFromMessage(message, "userId");
   const person = await searchPersonByCustomId(userIdValue, destination);
 
   // update person since person already exists
   if (person) {
-    // TODO: Below destructuring is probably not needed at all
-    // Below are the available feilds As per Persons Update endpoint doc
-    const { name, owner_id, org_id, email, phone, visible_to } = person;
-    payload = { name, owner_id, org_id, email, phone, visible_to };
-
     const response = defaultRequestConfig();
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
@@ -64,6 +58,10 @@ const identifyResponseBuilder = async (message, category, destination) => {
 
     return response;
   }
+
+  // mapping userId to custom userId key field
+  // in destination payload
+  set(payload, destination.Config.userIdKey, userIdValue);
 
   // create a new person
   const response = defaultRequestConfig();
@@ -81,7 +79,6 @@ const identifyResponseBuilder = async (message, category, destination) => {
   return response;
 };
 
-
 // for group call, only extracting from traits, and not context.traits
 // verify once
 const groupResponseBuilder = async (message, category, destination) => {
@@ -89,15 +86,14 @@ const groupResponseBuilder = async (message, category, destination) => {
   // throw error
 
   const groupId = getFieldValueFromMessage(message, "groupId");
-  if(!groupId)
-    throw new Error("groupId is required for group call");
+  if (!groupId) throw new Error("groupId is required for group call");
 
-  let orgPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
-  orgPayload = extractCustomFields(
+  groupPayload = extractCustomFields(
     message,
-    orgPayload,
-    ["traits"],
+    groupPayload,
+    ["traits", "context.traits"],
     PIPEDRIVE_GROUP_EXCLUSION
   );
 
@@ -105,26 +101,50 @@ const groupResponseBuilder = async (message, category, destination) => {
 
   // if org does not exist, create a new org
   // and add the person to that org
-  if(!org) {
-    org = await createNewOrganisation(orgPayload, destination);
+  if (!org) {
+    org = await createNewOrganisation(groupPayload, destination);
     // set custom org Id field value to groupId
     set(org, destination.Config.groupIdKey, groupId);
   }
-  
+
   // check if the person actually exists
-  const userIdVal = getFieldValueFromMessage(message, "userIdOnly");
+  // either userId or anonId is required for group call
+  const userIdVal = getFieldValueFromMessage(message, "userId");
   const person = await searchPersonByCustomId(userIdVal, destination);
-  
-  if(!person)
-      throw new Error("person not found");
+
+  if (!person) throw new Error("person not found");
+
+  // TODO: should the group be updated with the new traits if any ?
 
   // update org_id field for that person
   const response = defaultRequestConfig();
   response.body.JSON = {
-    "org_id": org.id
+    org_id: org.id
   };
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
+  response.params = {
+    api_token: destination.Config.api_token
+  };
+
+  return response;
+};
+
+const aliasResponseBuilder = async (message, category, destination) => {
+  /**
+   * merge previous Id to userId
+   * merge id to merge_with_id
+   * destination payload structure: { "merge_with_id": "userId"}
+   */
+  const previousId = getValueFromMessage(mesage, "previousId");
+  if (!previousId) throw new Error("error: cannot merge without previousId");
+
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+  const response = defaultRequestConfig();
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.endpoint = getMergeEndpoint(previousId);
   response.params = {
     api_token: destination.Config.api_token
   };
@@ -143,8 +163,17 @@ async function responseBuilderSimple(message, category, destination) {
         destination
       );
       break;
+
     case EventType.GROUP:
       builderResponse = await groupResponseBuilder(
+        message,
+        category,
+        destination
+      );
+      break;
+
+    case EventType.ALIAS:
+      builderResponse = await aliasResponseBuilder(
         message,
         category,
         destination

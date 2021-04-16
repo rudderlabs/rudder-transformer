@@ -1,0 +1,42 @@
+[
+  {
+    "destKey": "event",
+    "sourceKeys": "name",
+    "required": true
+  },
+  {
+    "destKey": "code",
+    "sourceKeys": "properties.code",
+    "required": false
+  },
+  {
+    "destKey": "unit",
+    "sourceKeys": "properties.unit",
+    "required": false
+  },
+  {
+    "destKey": "tax",
+    "sourceKeys": "properties.tax",
+    "required": false
+  },
+  {
+    "destKey": "selectable",
+    "sourceKeys": "properties.selectable",
+    "required": false
+  },
+  {
+    "destKey": "visible_to",
+    "sourceKeys": "properties.visible_to",
+    "required": false
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": "properties.owner_id",
+    "required": false
+  },
+  {
+    "destKey": "proces",
+    "sourceKeys": "properties.prices",
+    "required": false
+  }
+]

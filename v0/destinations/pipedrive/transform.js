@@ -220,14 +220,28 @@ const aliasResponseBuilder = async (message, category, destination) => {
 
 };
 
-// Associate a Lead with a person
+/**
+ * Creates a lead and links it to user.
+ * Supports Ecom Events: "product viewed", "order completed"
+ * @param {*} message 
+ * @param {*} category 
+ * @param {*} destination 
+ * @returns 
+ */
 const trackResponseBuilder = async (message, category, destination) => {
-  const userId = getFieldValueFromMessage(message, "userId");
-  if(!userId)
-    throw new Error("userId is required for lead");
+  const userId = getFieldValueOrThrowError(
+    message, 
+    "userId",
+    new Error("userId required for event tracking")
+  );
 
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   
+  if(get(payload, "event").toLowerCase().trim() === "product viewed")
+    set(payload, "active_flag", 0);
+  else if(get(payload, "event").toLowerCase().trim() === "order completed")
+    set(payload, "active_flag", 1);
+
   const response = defaultRequestConfig();
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;

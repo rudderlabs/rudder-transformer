@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "event",
+    "sourceKeys": "title",
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "organization_id",
+    "sourceKeys": "properties.organization_id",
+    "required": false
+  },
+  {
+    "destKey": "expected_close_date",
+    "sourceKeys": "properties.expected_close_date",
+    "required": false
+  },
+  {
+    "destKey": "label_ids",
+    "sourceKeys": "properties.label_ids",
+    "required": false
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": "properties.owner_id",
+    "required": false
+  }
+]

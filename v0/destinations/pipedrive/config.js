@@ -3,14 +3,14 @@ const { getMappingConfig } = require("../../util");
 const BASE_ENDPOINT = "https://api.pipedrive.com/v1";
 const PERSONS_ENDPOINT = `${BASE_ENDPOINT}/persons`;
 const ORGANISATION_ENDPOINT = `${BASE_ENDPOINT}/organisations`;
+const LEADS_ENDPOINT = `${BASE_ENDPOINT}/leads`;
 const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 
-// ALIAS: { name: "PipedriveAlias", type: "alias" },
-// GROUP: { name: "PipedriveGroup", type: "group" }
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "PipedriveIdentify", type: "identify" },
   GROUP: { name: "PipedriveGroup", type: "group" },
-  ALIAS: { name: "PipedriveAlias", type: "alias" }
+  ALIAS: { name: "PipedriveAlias", type: "alias" },
+  TRACK: { name: "PipedriveTrack", type: "track" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -35,5 +35,6 @@ module.exports = {
   PERSONS_ENDPOINT,
   ORGANISATION_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
-  PIPEDRIVE_GROUP_EXCLUSION
+  PIPEDRIVE_GROUP_EXCLUSION,
+  LEADS_ENDPOINT
 };

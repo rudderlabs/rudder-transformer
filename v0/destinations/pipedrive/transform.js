@@ -6,7 +6,8 @@ const {
   PERSONS_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
-  getMergeEndpoint
+  getMergeEndpoint,
+  LEADS_ENDPOINT
 } = require("./config");
 const { EventType } = require("../../../constants");
 const {
@@ -47,7 +48,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
-      Accept: "application/json"
+      "Accept": "application/json"
     };
 
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -69,7 +70,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
-    Accept: "application/json"
+    "Accept": "application/json"
   };
   response.endpoint = PERSONS_ENDPOINT;
   response.params = {
@@ -126,6 +127,10 @@ const groupResponseBuilder = async (message, category, destination) => {
   response.params = {
     api_token: destination.Config.api_token
   };
+  response.headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  };
 
   return response;
 };
@@ -147,6 +152,29 @@ const aliasResponseBuilder = async (message, category, destination) => {
   response.endpoint = getMergeEndpoint(previousId);
   response.params = {
     api_token: destination.Config.api_token
+  };
+
+  return response;
+};
+
+// Associate a Lead with a person
+const trackResponseBuilder = async (message, category, destination) => {
+  const userId = getFieldValueFromMessage(message, "userId");
+  if(!userId)
+    throw new Error("userId is required for lead");
+
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  
+  const response = defaultRequestConfig();
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = LEADS_ENDPOINT;
+  response.params = {
+    api_token: destination.Config.api_token
+  }
+  response.headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
   };
 
   return response;
@@ -174,6 +202,14 @@ async function responseBuilderSimple(message, category, destination) {
 
     case EventType.ALIAS:
       builderResponse = await aliasResponseBuilder(
+        message,
+        category,
+        destination
+      );
+      break;
+    
+    case EventType.TRACK:
+      builderResponse = await trackResponseBuilder(
         message,
         category,
         destination

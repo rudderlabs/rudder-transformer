@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "traits.name",
+    "required": true
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": "traits.owner_id",
+    "required": false
+  },
+  {
+    "destKey": "add_time",
+    "sourceKeys": ["traits.add_time", "originalTimestamp"],
+    "required": false
+  },
+  {
+    "destKey": "visible_to",
+    "sourceKeys": "traits.visible_to",
+    "required": false
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": true
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.owner_id", "context.traits.owner_id"],
+    "required": false
+  },
+  {
+    "destKey": "org_id",
+    "sourceKeys": ["traits.org_id", "context.traits.org_id"],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "visible_to",
+    "sourceKeys": ["traits.visible_to", "context.traits.visible_to"],
+    "required": false
+  },
+  {
+    "destKey": "add_time",
+    "sourceKeys": ["traits.add_time", "context.traits.add_time", "originalTimestamp"],
+    "required": false
+  }
+]

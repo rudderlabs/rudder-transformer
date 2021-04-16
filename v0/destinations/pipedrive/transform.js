@@ -23,7 +23,7 @@ const {
   createNewOrganisation,
   searchPersonByCustomId,
   searchOrganisationByCustomId
-} = require("./utils");
+} = require("./util");
 const set = require("set-value");
 
 

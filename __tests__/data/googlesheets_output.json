@@ -176,6 +176,82 @@
       "34": {
         "key": "context_userAgent",
         "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+      },
+      "35": {
+        "key": "context_id",
+        "value": ""
+      },
+      "36": {
+        "key": "context_ip",
+        "value": "0.0.0.0"
+      },
+      "37": {
+        "key": "context_page_url",
+        "value": ""
+      },
+      "38": {
+        "key": "context_page_path",
+        "value": ""
+      },
+      "39": {
+        "key": "context_page_title",
+        "value": ""
+      },
+      "40": {
+        "key": "context_page_search",
+        "value": ""
+      },
+      "41": {
+        "key": "context_page_tab_url",
+        "value": ""
+      },
+      "42": {
+        "key": "context_page_referrer",
+        "value": ""
+      },
+      "43": {
+        "key": "context_page_initial_referrer",
+        "value": ""
+      },
+      "44": {
+        "key": "context_page_referring_domain",
+        "value": ""
+      },
+      "45": {
+        "key": "context_page_initial_referring_domain",
+        "value": ""
+      },
+      "46": {
+        "key": "context_event",
+        "value": ""
+      },
+      "47": {
+        "key": "context_sent_at",
+        "value": ""
+      },
+      "48": {
+        "key": "context_campaign",
+        "value": ""
+      },
+      "49": {
+        "key": "context_timestamp",
+        "value": ""
+      },
+      "50": {
+        "key": "context_event_text",
+        "value": ""
+      },
+      "51": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "52": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "53": {
+        "key": "context_original_timestamp",
+        "value": ""
       }
     },
     "spreadSheetId": "rudder_sheet_id",
@@ -332,6 +408,82 @@
       "34": {
         "key": "context_userAgent",
         "value": ""
+      },
+      "35": {
+        "key": "context_id",
+        "value": ""
+      },
+      "36": {
+        "key": "context_ip",
+        "value": "14.5.67.21"
+      },
+      "37": {
+        "key": "context_page_url",
+        "value": ""
+      },
+      "38": {
+        "key": "context_page_path",
+        "value": ""
+      },
+      "39": {
+        "key": "context_page_title",
+        "value": ""
+      },
+      "40": {
+        "key": "context_page_search",
+        "value": ""
+      },
+      "41": {
+        "key": "context_page_tab_url",
+        "value": ""
+      },
+      "42": {
+        "key": "context_page_referrer",
+        "value": ""
+      },
+      "43": {
+        "key": "context_page_initial_referrer",
+        "value": ""
+      },
+      "44": {
+        "key": "context_page_referring_domain",
+        "value": ""
+      },
+      "45": {
+        "key": "context_page_initial_referring_domain",
+        "value": ""
+      },
+      "46": {
+        "key": "context_event",
+        "value": ""
+      },
+      "47": {
+        "key": "context_sent_at",
+        "value": ""
+      },
+      "48": {
+        "key": "context_campaign",
+        "value": ""
+      },
+      "49": {
+        "key": "context_timestamp",
+        "value": ""
+      },
+      "50": {
+        "key": "context_event_text",
+        "value": ""
+      },
+      "51": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "52": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "53": {
+        "key": "context_original_timestamp",
+        "value": ""
       }
     },
     "spreadSheetId": "rudder_sheet_id",
@@ -483,6 +635,82 @@
       "34": {
         "key": "context_userAgent",
         "value": ""
+      },
+      "35": {
+        "key": "context_id",
+        "value": ""
+      },
+      "36": {
+        "key": "context_ip",
+        "value": "14.5.67.21"
+      },
+      "37": {
+        "key": "context_page_url",
+        "value": ""
+      },
+      "38": {
+        "key": "context_page_path",
+        "value": ""
+      },
+      "39": {
+        "key": "context_page_title",
+        "value": ""
+      },
+      "40": {
+        "key": "context_page_search",
+        "value": ""
+      },
+      "41": {
+        "key": "context_page_tab_url",
+        "value": ""
+      },
+      "42": {
+        "key": "context_page_referrer",
+        "value": ""
+      },
+      "43": {
+        "key": "context_page_initial_referrer",
+        "value": ""
+      },
+      "44": {
+        "key": "context_page_referring_domain",
+        "value": ""
+      },
+      "45": {
+        "key": "context_page_initial_referring_domain",
+        "value": ""
+      },
+      "46": {
+        "key": "context_event",
+        "value": ""
+      },
+      "47": {
+        "key": "context_sent_at",
+        "value": ""
+      },
+      "48": {
+        "key": "context_campaign",
+        "value": ""
+      },
+      "49": {
+        "key": "context_timestamp",
+        "value": ""
+      },
+      "50": {
+        "key": "context_event_text",
+        "value": ""
+      },
+      "51": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "52": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "53": {
+        "key": "context_original_timestamp",
+        "value": ""
       }
     },
     "spreadSheetId": "rudder_sheet_id",
@@ -632,6 +860,82 @@
       "34": {
         "key": "context_userAgent",
         "value": ""
+      },
+      "35": {
+        "key": "context_id",
+        "value": ""
+      },
+      "36": {
+        "key": "context_ip",
+        "value": "14.5.67.21"
+      },
+      "37": {
+        "key": "context_page_url",
+        "value": ""
+      },
+      "38": {
+        "key": "context_page_path",
+        "value": ""
+      },
+      "39": {
+        "key": "context_page_title",
+        "value": ""
+      },
+      "40": {
+        "key": "context_page_search",
+        "value": ""
+      },
+      "41": {
+        "key": "context_page_tab_url",
+        "value": ""
+      },
+      "42": {
+        "key": "context_page_referrer",
+        "value": ""
+      },
+      "43": {
+        "key": "context_page_initial_referrer",
+        "value": ""
+      },
+      "44": {
+        "key": "context_page_referring_domain",
+        "value": ""
+      },
+      "45": {
+        "key": "context_page_initial_referring_domain",
+        "value": ""
+      },
+      "46": {
+        "key": "context_event",
+        "value": ""
+      },
+      "47": {
+        "key": "context_sent_at",
+        "value": ""
+      },
+      "48": {
+        "key": "context_campaign",
+        "value": ""
+      },
+      "49": {
+        "key": "context_timestamp",
+        "value": ""
+      },
+      "50": {
+        "key": "context_event_text",
+        "value": ""
+      },
+      "51": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "52": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "53": {
+        "key": "context_original_timestamp",
+        "value": ""
       }
     },
     "spreadSheetId": "rudder_sheet_id",
@@ -777,6 +1081,82 @@
       },
       "34": {
         "key": "context_userAgent",
+        "value": ""
+      },
+      "35": {
+        "key": "context_id",
+        "value": ""
+      },
+      "36": {
+        "key": "context_ip",
+        "value": "14.5.67.21"
+      },
+      "37": {
+        "key": "context_page_url",
+        "value": ""
+      },
+      "38": {
+        "key": "context_page_path",
+        "value": ""
+      },
+      "39": {
+        "key": "context_page_title",
+        "value": ""
+      },
+      "40": {
+        "key": "context_page_search",
+        "value": ""
+      },
+      "41": {
+        "key": "context_page_tab_url",
+        "value": ""
+      },
+      "42": {
+        "key": "context_page_referrer",
+        "value": ""
+      },
+      "43": {
+        "key": "context_page_initial_referrer",
+        "value": ""
+      },
+      "44": {
+        "key": "context_page_referring_domain",
+        "value": ""
+      },
+      "45": {
+        "key": "context_page_initial_referring_domain",
+        "value": ""
+      },
+      "46": {
+        "key": "context_event",
+        "value": ""
+      },
+      "47": {
+        "key": "context_sent_at",
+        "value": ""
+      },
+      "48": {
+        "key": "context_campaign",
+        "value": ""
+      },
+      "49": {
+        "key": "context_timestamp",
+        "value": ""
+      },
+      "50": {
+        "key": "context_event_text",
+        "value": ""
+      },
+      "51": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "52": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "53": {
+        "key": "context_original_timestamp",
         "value": ""
       }
     },

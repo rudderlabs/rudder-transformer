@@ -24,6 +24,7 @@ const {
   searchPersonByCustomId,
   searchOrganisationByCustomId
 } = require("./utils");
+const set = require("set-value");
 
 
 const identifyResponseBuilder = async (message, category, destination) => {
@@ -95,16 +96,19 @@ const groupResponseBuilder = async (message, category, destination) => {
     PIPEDRIVE_GROUP_EXCLUSION
   );
 
-  let orgIdValue = get(orgPayload, destination.Config.orgIdKey);
-  if(!orgIdValue)
-    throw new Error("invalid value for custom organisation id field");
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if(!groupId)
+    throw new Error("groupId is required for group call");
 
-  const org = await searchOrganisationByCustomId(orgIdValue, destination);
+  let org = await searchOrganisationByCustomId(groupId, destination);
 
   // if org does not exist, create a new org
   // and add the person to that org
-
-  if(!org) org = await createNewOrganisation(orgPayload, destination);
+  if(!org) {
+    org = await createNewOrganisation(orgPayload, destination);
+    // set custom org Id field value to groupId
+    set(org, destination.Config.orgIdKey, groupId);
+  }
   
   // check if the person actually exists
   const userIdVal = getFieldValueFromMessage(message, "userIdOnly");

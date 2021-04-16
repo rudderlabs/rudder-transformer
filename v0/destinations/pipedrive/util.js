@@ -72,11 +72,11 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
   }
 };
 
-const searchOrganisationByCustomId = async (orgIdValue, destination) => {
+const searchOrganisationByCustomId = async (groupId, destination) => {
   try {
     const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
-        term: orgIdValue,
+        term: groupId,
         field: destination.Config.orgIdKey,
         api_token: destination.Config.api_token
       },

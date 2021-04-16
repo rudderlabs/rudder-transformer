@@ -87,6 +87,11 @@ const identifyResponseBuilder = async (message, category, destination) => {
 const groupResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
+
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if(!groupId)
+    throw new Error("groupId is required for group call");
+
   let orgPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   orgPayload = extractCustomFields(
@@ -96,10 +101,6 @@ const groupResponseBuilder = async (message, category, destination) => {
     PIPEDRIVE_GROUP_EXCLUSION
   );
 
-  const groupId = getFieldValueFromMessage(message, "groupId");
-  if(!groupId)
-    throw new Error("groupId is required for group call");
-
   let org = await searchOrganisationByCustomId(groupId, destination);
 
   // if org does not exist, create a new org
@@ -107,7 +108,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   if(!org) {
     org = await createNewOrganisation(orgPayload, destination);
     // set custom org Id field value to groupId
-    set(org, destination.Config.orgIdKey, groupId);
+    set(org, destination.Config.groupIdKey, groupId);
   }
   
   // check if the person actually exists

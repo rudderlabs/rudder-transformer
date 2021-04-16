@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const axios = require("axios");
 const logger = require("../../../logger");
+const { getFieldValueFromMessage } = require("../../util");
 const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
@@ -139,10 +140,17 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
   }
 };
 
+const getFieldValueOrThrowError = (message, field, err) => {
+  const val = getFieldValueFromMessage(message, field);
+  if (!val) throw err;
+  return val;
+};
+
 module.exports = {
   findPersonById,
   createNewOrganisation,
   searchOrganisationByCustomId,
   searchPersonByCustomId,
-  mergeTwoPersons
+  mergeTwoPersons,
+  getFieldValueOrThrowError
 };

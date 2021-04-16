@@ -26,7 +26,8 @@ const {
   createNewOrganisation,
   searchPersonByCustomId,
   searchOrganisationByCustomId,
-  mergeTwoPersons
+  mergeTwoPersons,
+  getFieldValueOrThrowError
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, destination) => {
@@ -41,7 +42,11 @@ const identifyResponseBuilder = async (message, category, destination) => {
     PIPEDRIVE_IDENTIFY_EXCLUSION
   );
 
-  const userIdValue = getFieldValueFromMessage(message, "userId");
+  const userIdValue = getFieldValueOrThrowError(
+    message, 
+    "userId",
+    new Error("userId is required")
+  );
   const person = await searchPersonByCustomId(userIdValue, destination);
 
   // update person since person already exists
@@ -88,8 +93,11 @@ const groupResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
 
-  const groupId = getFieldValueFromMessage(message, "groupId");
-  if (!groupId) throw new Error("groupId is required for group call");
+  const groupId = getFieldValueOrThrowError(
+    message,
+    "groupId",
+    new Error("groupId is required for group call")
+  );
 
   let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
@@ -106,13 +114,16 @@ const groupResponseBuilder = async (message, category, destination) => {
   // and add the person to that org
   if (!org) {
     org = await createNewOrganisation(groupPayload, destination);
-    // set custom org Id field value to groupId
     set(org, destination.Config.groupIdKey, groupId);
   }
 
   // check if the person actually exists
   // either userId or anonId is required for group call
-  const userIdVal = getFieldValueFromMessage(message, "userId");
+  const userIdVal = getFieldValueOrThrowError(
+    message,
+    "userId", 
+    new Error("userId", "error: userId is required")
+  );
   const person = await searchPersonByCustomId(userIdVal, destination);
 
   if (!person) throw new Error("person not found");
@@ -151,10 +162,18 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * merge id to merge_with_id
    * destination payload structure: { "merge_with_id": "userId"}
    */
-  const previousId = getValueFromMessage(mesage, "previousId");
-  if (!previousId) throw new Error("error: cannot merge without previousId");
+  const previousId = getFieldValueOrThrowError(
+    message,
+    "previousId",
+    new Error("userId", "error: cannot merge without previousId")
+  );
 
-  const userId = getFieldValueFromMessage(message, "userId");
+  const userId = getFieldValueOrThrowError(
+    message,
+    "userId",
+    new Error("userId", "error: cannot merge without userId")
+  );
+
   let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   /**

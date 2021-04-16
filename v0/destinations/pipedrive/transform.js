@@ -261,7 +261,7 @@ async function responseBuilderSimple(message, category, destination) {
       break;
 
     default:
-      break;
+      throw new Error("invalid event type");
   }
 
   return builderResponse;

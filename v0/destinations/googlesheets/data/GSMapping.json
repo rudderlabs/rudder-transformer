@@ -140,186 +140,198 @@
   },
   {
     "mappingKey": "23",
+    "destKey": "context_device_advertisingId",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "mappingKey": "24",
+    "destKey": "context_device_token",
+    "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
+    "mappingKey": "25",
     "destKey": "context_library_name",
     "sourceKeys": "context.library.name",
     "required": false
   },
   {
-    "mappingKey": "24",
+    "mappingKey": "26",
     "destKey": "context_library_version",
     "sourceKeys": "context.library.version",
     "required": false
   },
   {
-    "mappingKey": "25",
+    "mappingKey": "27",
     "destKey": "context_locale",
     "sourceKeys": "context.locale",
     "required": false
   },
   {
-    "mappingKey": "26",
+    "mappingKey": "28",
     "destKey": "context_network_carrier",
     "sourceKeys": "context.network.carrier",
     "required": false
   },
   {
-    "mappingKey": "27",
+    "mappingKey": "29",
     "destKey": "context_network_bluetooth",
     "sourceKeys": "context.network.bluetooth",
     "required": false
   },
   {
-    "mappingKey": "28",
+    "mappingKey": "30",
     "destKey": "context_network_cellular",
     "sourceKeys": "context.network.cellular",
     "required": false
   },
   {
-    "mappingKey": "29",
+    "mappingKey": "31",
     "destKey": "context_network_wifi",
     "sourceKeys": "context.network.wifi",
     "required": false
   },
   {
-    "mappingKey": "30",
+    "mappingKey": "32",
     "destKey": "context_os_name",
     "sourceKeys": "context.os.name",
     "required": false
   },
   {
-    "mappingKey": "31",
+    "mappingKey": "33",
     "destKey": "context_os_version",
     "sourceKeys": "context.os.version",
     "required": false
   },
   {
-    "mappingKey": "32",
+    "mappingKey": "34",
     "destKey": "context_screen",
     "sourceKeys": "context.screen",
     "required": false
   },
   {
-    "mappingKey": "33",
+    "mappingKey": "35",
     "destKey": "context_timezone",
     "sourceKeys": "context.timezone",
     "required": false
   },
   {
-    "mappingKey": "34",
+    "mappingKey": "36",
     "destKey": "context_userAgent",
     "sourceKeys": "context.userAgent",
     "required": false
   },
   {
-    "mappingKey": "35",
+    "mappingKey": "37",
     "destKey": "context_id",
     "sourceKeys": "context.id",
     "required": false
   },
   {
-    "mappingKey": "36",
+    "mappingKey": "38",
     "destKey": "context_ip",
     "sourceKeys": "context.ip",
     "required": false
   },
   {
-    "mappingKey": "37",
+    "mappingKey": "39",
     "destKey": "context_page_url",
     "sourceKeys": "context.page.url",
     "required": false
   },
   {
-    "mappingKey": "38",
+    "mappingKey": "40",
     "destKey": "context_page_path",
     "sourceKeys": "context.page.path",
     "required": false
   },
   {
-    "mappingKey": "39",
+    "mappingKey": "41",
     "destKey": "context_page_title",
     "sourceKeys": "context.page.title",
     "required": false
   },
   {
-    "mappingKey": "40",
+    "mappingKey": "42",
     "destKey": "context_page_search",
     "sourceKeys": "context.page.search",
     "required": false
   },
   {
-    "mappingKey": "41",
+    "mappingKey": "43",
     "destKey": "context_page_tab_url",
     "sourceKeys": "context.page.tab_url",
     "required": false
   },
   {
-    "mappingKey": "42",
+    "mappingKey": "44",
     "destKey": "context_page_referrer",
     "sourceKeys": "context.page.referrer",
     "required": false
   },
   {
-    "mappingKey": "43",
+    "mappingKey": "45",
     "destKey": "context_page_initial_referrer",
     "sourceKeys": "context.page.initial_referrer",
     "required": false
   },
   {
-    "mappingKey": "44",
+    "mappingKey": "46",
     "destKey": "context_page_referring_domain",
     "sourceKeys": "context.page.referring_domain",
     "required": false
   },
   {
-    "mappingKey": "45",
+    "mappingKey": "47",
     "destKey": "context_page_initial_referring_domain",
     "sourceKeys": "context.page.initial_referring_domain",
     "required": false
   },
   {
-    "mappingKey": "46",
+    "mappingKey": "48",
     "destKey": "context_event",
     "sourceKeys": "context.event",
     "required": false
   },
   {
-    "mappingKey": "47",
+    "mappingKey": "49",
     "destKey": "context_sent_at",
     "sourceKeys": "context.sent_at",
     "required": false
   },
   {
-    "mappingKey": "48",
+    "mappingKey": "50",
     "destKey": "context_campaign",
     "sourceKeys": "context.campaign",
     "required": false
   },
   {
-    "mappingKey": "49",
+    "mappingKey": "51",
     "destKey": "context_timestamp",
     "sourceKeys": "context.timestamp",
     "required": false
   },
   {
-    "mappingKey": "50",
+    "mappingKey": "52",
     "destKey": "context_event_text",
     "sourceKeys": "context.event_text",
     "required": false
   },
   {
-    "mappingKey": "51",
+    "mappingKey": "53",
     "destKey": "context_externalId",
     "sourceKeys": "context.externalId",
     "required": false
   },
   {
-    "mappingKey": "52",
+    "mappingKey": "54",
     "destKey": "context_received_at",
     "sourceKeys": "context.received_at",
     "required": false
   },
   {
-    "mappingKey": "53",
+    "mappingKey": "55",
     "destKey": "context_original_timestamp",
     "sourceKeys": "context.original_timestamp",
     "required": false

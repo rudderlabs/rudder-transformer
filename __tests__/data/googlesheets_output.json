@@ -128,128 +128,136 @@
         "value": ""
       },
       "23": {
+        "key": "context_device_advertisingId",
+        "value": ""
+      },
+      "24": {
+        "key": "context_device_token",
+        "value": ""
+      },
+      "25": {
         "key": "context_library_name",
         "value": "RudderLabs JavaScript SDK"
       },
-      "24": {
+      "26": {
         "key": "context_library_version",
         "value": "1.0.0"
       },
-      "25": {
+      "27": {
         "key": "context_locale",
         "value": "en-US"
       },
-      "26": {
+      "28": {
         "key": "context_network_carrier",
         "value": ""
       },
-      "27": {
+      "29": {
         "key": "context_network_bluetooth",
         "value": ""
       },
-      "28": {
+      "30": {
         "key": "context_network_cellular",
         "value": ""
       },
-      "29": {
+      "31": {
         "key": "context_network_wifi",
         "value": ""
       },
-      "30": {
+      "32": {
         "key": "context_os_name",
         "value": "OS-X"
       },
-      "31": {
+      "33": {
         "key": "context_os_version",
         "value": "19.02.3"
       },
-      "32": {
+      "34": {
         "key": "context_screen",
         "value": {
           "density": 2
         }
       },
-      "33": {
+      "35": {
         "key": "context_timezone",
         "value": ""
       },
-      "34": {
+      "36": {
         "key": "context_userAgent",
         "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       },
-      "35": {
+      "37": {
         "key": "context_id",
         "value": ""
       },
-      "36": {
+      "38": {
         "key": "context_ip",
         "value": "0.0.0.0"
       },
-      "37": {
+      "39": {
         "key": "context_page_url",
         "value": ""
       },
-      "38": {
+      "40": {
         "key": "context_page_path",
         "value": ""
       },
-      "39": {
+      "41": {
         "key": "context_page_title",
         "value": ""
       },
-      "40": {
+      "42": {
         "key": "context_page_search",
         "value": ""
       },
-      "41": {
+      "43": {
         "key": "context_page_tab_url",
         "value": ""
       },
-      "42": {
+      "44": {
         "key": "context_page_referrer",
         "value": ""
       },
-      "43": {
+      "45": {
         "key": "context_page_initial_referrer",
         "value": ""
       },
-      "44": {
+      "46": {
         "key": "context_page_referring_domain",
         "value": ""
       },
-      "45": {
+      "47": {
         "key": "context_page_initial_referring_domain",
         "value": ""
       },
-      "46": {
+      "48": {
         "key": "context_event",
         "value": ""
       },
-      "47": {
+      "49": {
         "key": "context_sent_at",
         "value": ""
       },
-      "48": {
+      "50": {
         "key": "context_campaign",
         "value": ""
       },
-      "49": {
+      "51": {
         "key": "context_timestamp",
         "value": ""
       },
-      "50": {
+      "52": {
         "key": "context_event_text",
         "value": ""
       },
-      "51": {
+      "53": {
         "key": "context_externalId",
         "value": ""
       },
-      "52": {
+      "54": {
         "key": "context_received_at",
         "value": ""
       },
-      "53": {
+      "55": {
         "key": "context_original_timestamp",
         "value": ""
       }
@@ -358,42 +366,50 @@
         "value": "android"
       },
       "23": {
+        "key": "context_device_advertisingId",
+        "value": ""
+      },
+      "24": {
+        "key": "context_device_token",
+        "value": ""
+      },
+      "25": {
         "key": "context_library_name",
         "value": "com.rudderstack.android.sdk.core"
       },
-      "24": {
+      "26": {
         "key": "context_library_version",
         "value": "0.1.4"
       },
-      "25": {
+      "27": {
         "key": "context_locale",
         "value": "en-US"
       },
-      "26": {
+      "28": {
         "key": "context_network_carrier",
         "value": "Android"
       },
-      "27": {
+      "29": {
         "key": "context_network_bluetooth",
         "value": ""
       },
-      "28": {
+      "30": {
         "key": "context_network_cellular",
         "value": true
       },
-      "29": {
+      "31": {
         "key": "context_network_wifi",
         "value": true
       },
-      "30": {
+      "32": {
         "key": "context_os_name",
         "value": "Android"
       },
-      "31": {
+      "33": {
         "key": "context_os_version",
         "value": "9"
       },
-      "32": {
+      "34": {
         "key": "context_screen",
         "value": {
           "density": 420,
@@ -401,87 +417,87 @@
           "width": 1080
         }
       },
-      "33": {
+      "35": {
         "key": "context_timezone",
         "value": "Asia/Kolkata"
       },
-      "34": {
+      "36": {
         "key": "context_userAgent",
         "value": ""
       },
-      "35": {
+      "37": {
         "key": "context_id",
         "value": ""
       },
-      "36": {
+      "38": {
         "key": "context_ip",
         "value": "14.5.67.21"
       },
-      "37": {
+      "39": {
         "key": "context_page_url",
         "value": ""
       },
-      "38": {
+      "40": {
         "key": "context_page_path",
         "value": ""
       },
-      "39": {
+      "41": {
         "key": "context_page_title",
         "value": ""
       },
-      "40": {
+      "42": {
         "key": "context_page_search",
         "value": ""
       },
-      "41": {
+      "43": {
         "key": "context_page_tab_url",
         "value": ""
       },
-      "42": {
+      "44": {
         "key": "context_page_referrer",
         "value": ""
       },
-      "43": {
+      "45": {
         "key": "context_page_initial_referrer",
         "value": ""
       },
-      "44": {
+      "46": {
         "key": "context_page_referring_domain",
         "value": ""
       },
-      "45": {
+      "47": {
         "key": "context_page_initial_referring_domain",
         "value": ""
       },
-      "46": {
+      "48": {
         "key": "context_event",
         "value": ""
       },
-      "47": {
+      "49": {
         "key": "context_sent_at",
         "value": ""
       },
-      "48": {
+      "50": {
         "key": "context_campaign",
         "value": ""
       },
-      "49": {
+      "51": {
         "key": "context_timestamp",
         "value": ""
       },
-      "50": {
+      "52": {
         "key": "context_event_text",
         "value": ""
       },
-      "51": {
+      "53": {
         "key": "context_externalId",
         "value": ""
       },
-      "52": {
+      "54": {
         "key": "context_received_at",
         "value": ""
       },
-      "53": {
+      "55": {
         "key": "context_original_timestamp",
         "value": ""
       }
@@ -589,126 +605,134 @@
         "value": ""
       },
       "23": {
-        "key": "context_library_name",
-        "value": "http"
+        "key": "context_device_advertisingId",
+        "value": ""
       },
       "24": {
-        "key": "context_library_version",
+        "key": "context_device_token",
         "value": ""
       },
       "25": {
-        "key": "context_locale",
-        "value": ""
+        "key": "context_library_name",
+        "value": "http"
       },
       "26": {
-        "key": "context_network_carrier",
+        "key": "context_library_version",
         "value": ""
       },
       "27": {
-        "key": "context_network_bluetooth",
+        "key": "context_locale",
         "value": ""
       },
       "28": {
-        "key": "context_network_cellular",
+        "key": "context_network_carrier",
         "value": ""
       },
       "29": {
-        "key": "context_network_wifi",
+        "key": "context_network_bluetooth",
         "value": ""
       },
       "30": {
-        "key": "context_os_name",
+        "key": "context_network_cellular",
         "value": ""
       },
       "31": {
-        "key": "context_os_version",
+        "key": "context_network_wifi",
         "value": ""
       },
       "32": {
-        "key": "context_screen",
+        "key": "context_os_name",
         "value": ""
       },
       "33": {
-        "key": "context_timezone",
+        "key": "context_os_version",
         "value": ""
       },
       "34": {
-        "key": "context_userAgent",
+        "key": "context_screen",
         "value": ""
       },
       "35": {
-        "key": "context_id",
+        "key": "context_timezone",
         "value": ""
       },
       "36": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
+        "key": "context_userAgent",
+        "value": ""
       },
       "37": {
-        "key": "context_page_url",
+        "key": "context_id",
         "value": ""
       },
       "38": {
-        "key": "context_page_path",
-        "value": ""
+        "key": "context_ip",
+        "value": "14.5.67.21"
       },
       "39": {
-        "key": "context_page_title",
+        "key": "context_page_url",
         "value": ""
       },
       "40": {
-        "key": "context_page_search",
+        "key": "context_page_path",
         "value": ""
       },
       "41": {
-        "key": "context_page_tab_url",
+        "key": "context_page_title",
         "value": ""
       },
       "42": {
-        "key": "context_page_referrer",
+        "key": "context_page_search",
         "value": ""
       },
       "43": {
-        "key": "context_page_initial_referrer",
+        "key": "context_page_tab_url",
         "value": ""
       },
       "44": {
-        "key": "context_page_referring_domain",
+        "key": "context_page_referrer",
         "value": ""
       },
       "45": {
-        "key": "context_page_initial_referring_domain",
+        "key": "context_page_initial_referrer",
         "value": ""
       },
       "46": {
-        "key": "context_event",
+        "key": "context_page_referring_domain",
         "value": ""
       },
       "47": {
-        "key": "context_sent_at",
+        "key": "context_page_initial_referring_domain",
         "value": ""
       },
       "48": {
-        "key": "context_campaign",
+        "key": "context_event",
         "value": ""
       },
       "49": {
-        "key": "context_timestamp",
+        "key": "context_sent_at",
         "value": ""
       },
       "50": {
-        "key": "context_event_text",
+        "key": "context_campaign",
         "value": ""
       },
       "51": {
-        "key": "context_externalId",
+        "key": "context_timestamp",
         "value": ""
       },
       "52": {
-        "key": "context_received_at",
+        "key": "context_event_text",
         "value": ""
       },
       "53": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "54": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "55": {
         "key": "context_original_timestamp",
         "value": ""
       }
@@ -814,126 +838,134 @@
         "value": ""
       },
       "23": {
-        "key": "context_library_name",
-        "value": "http"
+        "key": "context_device_advertisingId",
+        "value": ""
       },
       "24": {
-        "key": "context_library_version",
+        "key": "context_device_token",
         "value": ""
       },
       "25": {
-        "key": "context_locale",
-        "value": ""
+        "key": "context_library_name",
+        "value": "http"
       },
       "26": {
-        "key": "context_network_carrier",
+        "key": "context_library_version",
         "value": ""
       },
       "27": {
-        "key": "context_network_bluetooth",
+        "key": "context_locale",
         "value": ""
       },
       "28": {
-        "key": "context_network_cellular",
+        "key": "context_network_carrier",
         "value": ""
       },
       "29": {
-        "key": "context_network_wifi",
+        "key": "context_network_bluetooth",
         "value": ""
       },
       "30": {
-        "key": "context_os_name",
+        "key": "context_network_cellular",
         "value": ""
       },
       "31": {
-        "key": "context_os_version",
+        "key": "context_network_wifi",
         "value": ""
       },
       "32": {
-        "key": "context_screen",
+        "key": "context_os_name",
         "value": ""
       },
       "33": {
-        "key": "context_timezone",
+        "key": "context_os_version",
         "value": ""
       },
       "34": {
-        "key": "context_userAgent",
+        "key": "context_screen",
         "value": ""
       },
       "35": {
-        "key": "context_id",
+        "key": "context_timezone",
         "value": ""
       },
       "36": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
+        "key": "context_userAgent",
+        "value": ""
       },
       "37": {
-        "key": "context_page_url",
+        "key": "context_id",
         "value": ""
       },
       "38": {
-        "key": "context_page_path",
-        "value": ""
+        "key": "context_ip",
+        "value": "14.5.67.21"
       },
       "39": {
-        "key": "context_page_title",
+        "key": "context_page_url",
         "value": ""
       },
       "40": {
-        "key": "context_page_search",
+        "key": "context_page_path",
         "value": ""
       },
       "41": {
-        "key": "context_page_tab_url",
+        "key": "context_page_title",
         "value": ""
       },
       "42": {
-        "key": "context_page_referrer",
+        "key": "context_page_search",
         "value": ""
       },
       "43": {
-        "key": "context_page_initial_referrer",
+        "key": "context_page_tab_url",
         "value": ""
       },
       "44": {
-        "key": "context_page_referring_domain",
+        "key": "context_page_referrer",
         "value": ""
       },
       "45": {
-        "key": "context_page_initial_referring_domain",
+        "key": "context_page_initial_referrer",
         "value": ""
       },
       "46": {
-        "key": "context_event",
+        "key": "context_page_referring_domain",
         "value": ""
       },
       "47": {
-        "key": "context_sent_at",
+        "key": "context_page_initial_referring_domain",
         "value": ""
       },
       "48": {
-        "key": "context_campaign",
+        "key": "context_event",
         "value": ""
       },
       "49": {
-        "key": "context_timestamp",
+        "key": "context_sent_at",
         "value": ""
       },
       "50": {
-        "key": "context_event_text",
+        "key": "context_campaign",
         "value": ""
       },
       "51": {
-        "key": "context_externalId",
+        "key": "context_timestamp",
         "value": ""
       },
       "52": {
-        "key": "context_received_at",
+        "key": "context_event_text",
         "value": ""
       },
       "53": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "54": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "55": {
         "key": "context_original_timestamp",
         "value": ""
       }
@@ -1036,126 +1068,134 @@
         "value": ""
       },
       "23": {
-        "key": "context_library_name",
-        "value": "http"
+        "key": "context_device_advertisingId",
+        "value": ""
       },
       "24": {
-        "key": "context_library_version",
+        "key": "context_device_token",
         "value": ""
       },
       "25": {
-        "key": "context_locale",
-        "value": ""
+        "key": "context_library_name",
+        "value": "http"
       },
       "26": {
-        "key": "context_network_carrier",
+        "key": "context_library_version",
         "value": ""
       },
       "27": {
-        "key": "context_network_bluetooth",
+        "key": "context_locale",
         "value": ""
       },
       "28": {
-        "key": "context_network_cellular",
+        "key": "context_network_carrier",
         "value": ""
       },
       "29": {
-        "key": "context_network_wifi",
+        "key": "context_network_bluetooth",
         "value": ""
       },
       "30": {
-        "key": "context_os_name",
+        "key": "context_network_cellular",
         "value": ""
       },
       "31": {
-        "key": "context_os_version",
+        "key": "context_network_wifi",
         "value": ""
       },
       "32": {
-        "key": "context_screen",
+        "key": "context_os_name",
         "value": ""
       },
       "33": {
-        "key": "context_timezone",
+        "key": "context_os_version",
         "value": ""
       },
       "34": {
-        "key": "context_userAgent",
+        "key": "context_screen",
         "value": ""
       },
       "35": {
-        "key": "context_id",
+        "key": "context_timezone",
         "value": ""
       },
       "36": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
+        "key": "context_userAgent",
+        "value": ""
       },
       "37": {
-        "key": "context_page_url",
+        "key": "context_id",
         "value": ""
       },
       "38": {
-        "key": "context_page_path",
-        "value": ""
+        "key": "context_ip",
+        "value": "14.5.67.21"
       },
       "39": {
-        "key": "context_page_title",
+        "key": "context_page_url",
         "value": ""
       },
       "40": {
-        "key": "context_page_search",
+        "key": "context_page_path",
         "value": ""
       },
       "41": {
-        "key": "context_page_tab_url",
+        "key": "context_page_title",
         "value": ""
       },
       "42": {
-        "key": "context_page_referrer",
+        "key": "context_page_search",
         "value": ""
       },
       "43": {
-        "key": "context_page_initial_referrer",
+        "key": "context_page_tab_url",
         "value": ""
       },
       "44": {
-        "key": "context_page_referring_domain",
+        "key": "context_page_referrer",
         "value": ""
       },
       "45": {
-        "key": "context_page_initial_referring_domain",
+        "key": "context_page_initial_referrer",
         "value": ""
       },
       "46": {
-        "key": "context_event",
+        "key": "context_page_referring_domain",
         "value": ""
       },
       "47": {
-        "key": "context_sent_at",
+        "key": "context_page_initial_referring_domain",
         "value": ""
       },
       "48": {
-        "key": "context_campaign",
+        "key": "context_event",
         "value": ""
       },
       "49": {
-        "key": "context_timestamp",
+        "key": "context_sent_at",
         "value": ""
       },
       "50": {
-        "key": "context_event_text",
+        "key": "context_campaign",
         "value": ""
       },
       "51": {
-        "key": "context_externalId",
+        "key": "context_timestamp",
         "value": ""
       },
       "52": {
-        "key": "context_received_at",
+        "key": "context_event_text",
         "value": ""
       },
       "53": {
+        "key": "context_externalId",
+        "value": ""
+      },
+      "54": {
+        "key": "context_received_at",
+        "value": ""
+      },
+      "55": {
         "key": "context_original_timestamp",
         "value": ""
       }

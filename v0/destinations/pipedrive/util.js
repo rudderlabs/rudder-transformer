@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 const axios = require("axios");
 const logger = require("../../../logger");
@@ -12,7 +13,7 @@ const findPersonById = async (id, destination) => {
   try {
     const axiosResponse = await axios.get(`${PERSONS_ENDPOINT}/${id}`, {
       params: {
-        api_token: destination.Config.api_token
+        "api_token": destination.Config.api_token
       },
       headers: {
         "Content-Type": "application/json"
@@ -56,12 +57,12 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
   try {
     const response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
       params: {
-        term: userIdValue,
-        field: destination.Config.userIdKey,
-        api_token: destination.Config.api_token
+        "term": userIdValue,
+        "field": destination.Config.userIdKey,
+        "api_token": destination.Config.api_token
       },
       headers: {
-        Accept: "application/json"
+        "Accept": "application/json"
       }
     });
 
@@ -81,12 +82,12 @@ const searchOrganisationByCustomId = async (groupId, destination) => {
   try {
     const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
-        term: groupId,
-        field: destination.Config.groupIdKey,
-        api_token: destination.Config.api_token
+        "term": groupId,
+        "field": destination.Config.groupIdKey,
+        "api_token": destination.Config.api_token
       },
       headers: {
-        Accept: "application/json"
+        "Accept": "application/json"
       }
     });
     if (response && response.status === 200) {
@@ -104,7 +105,7 @@ const createNewOrganisation = async (data, destination) => {
   const resp = await axios
     .post(ORGANISATION_ENDPOINT, data, {
       params: {
-        api_token: destination.Config.api_token
+        "api_token": destination.Config.api_token
       },
       headers: {
         "Content-Type": "application/json"
@@ -118,9 +119,38 @@ const createNewOrganisation = async (data, destination) => {
   throw new Error("failed to create new organisation");
 };
 
+/**
+ * Updates already existing organisation with
+ * the supplied payload and groupId
+ * @param {*} groupId
+ * @param {*} groupPayload
+ * @param {*} destination
+ */
+const updateOrganisationTraits = async (groupId, groupPayload, destination) => {
+  try {
+    const response = await axios.put(
+      `${ORGANISATION_ENDPOINT}/${groupId}`,
+      groupPayload,
+      {
+        params: {
+          api_token: destination.Config.api_token
+        },
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
+    );
+
+    if (!response || response.status !== 200)
+      throw new Error("error while updating group");
+  } catch (err) {
+    throw new Error(`error while updating group: ${err}`);
+  }
+};
+
 const mergeTwoPersons = async (previousId, userId, destination) => {
   const payload = {
-    // eslint-disable-next-line prettier/prettier
     "merge_with_id": userId
   };
   try {
@@ -129,7 +159,11 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
       payload,
       {
         params: {
-          api_token: destination.Config.api_token
+          "api_token": destination.Config.api_token
+        },
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
         }
       }
     );
@@ -149,6 +183,7 @@ const getFieldValueOrThrowError = (message, field, err) => {
 module.exports = {
   findPersonById,
   createNewOrganisation,
+  updateOrganisationTraits,
   searchOrganisationByCustomId,
   searchPersonByCustomId,
   mergeTwoPersons,

@@ -27,7 +27,8 @@ const {
   searchPersonByCustomId,
   searchOrganisationByCustomId,
   mergeTwoPersons,
-  getFieldValueOrThrowError
+  getFieldValueOrThrowError,
+  updateOrganisationTraits
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, destination) => {
@@ -87,8 +88,14 @@ const identifyResponseBuilder = async (message, category, destination) => {
   return response;
 };
 
-// for group call, only extracting from traits, and not context.traits
-// verify once
+/**
+ * for group call, extracting from both traits and context.traits
+ * VERIFY ONCE
+ * @param {*} message 
+ * @param {*} category 
+ * @param {*} destination 
+ * @returns 
+ */
 const groupResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
@@ -100,6 +107,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   );
 
   let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  groupPayload = removeUndefinedAndNullValues(groupPayload);
 
   groupPayload = extractCustomFields(
     message,
@@ -110,15 +118,10 @@ const groupResponseBuilder = async (message, category, destination) => {
 
   let org = await searchOrganisationByCustomId(groupId, destination);
 
-  // if org does not exist, create a new org
-  // and add the person to that org
-  if (!org) {
-    org = await createNewOrganisation(groupPayload, destination);
-    set(org, destination.Config.groupIdKey, groupId);
-  }
-
-  // check if the person actually exists
-  // either userId or anonId is required for group call
+  /**
+   * check if the person actually exists
+   * either userId or anonId is required for group call
+   */
   const userIdVal = getFieldValueOrThrowError(
     message,
     "userId", 
@@ -127,10 +130,21 @@ const groupResponseBuilder = async (message, category, destination) => {
 
   const person = await searchPersonByCustomId(userIdVal, destination);
   if (!person) throw new Error("person not found");
+  
+  /**
+   * if org does not exist, create a new org,
+   * else update existing org with new traits
+   * throws error if create or udpate fails
+   */
+  if (!org) {
+    org = await createNewOrganisation(groupPayload, destination);
+    set(org, destination.Config.groupIdKey, groupId);
+  } else await updateOrganisationTraits(groupId, groupPayload, destination);
 
-  // TODO: should the group be updated with the new traits if any ?
-
-  // update org_id field for that person
+  /**
+   * Add the person to that org
+   * update org_id field for that person
+   */
   const response = defaultRequestConfig();
   response.body.JSON = {
     "org_id": org.id
@@ -305,7 +319,7 @@ async function process(event) {
 
   if (!message.type) throw new Error("message type is invalid");
 
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type.toLowerCase().trim();
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;

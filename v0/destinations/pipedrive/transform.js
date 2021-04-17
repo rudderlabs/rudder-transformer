@@ -122,10 +122,10 @@ const groupResponseBuilder = async (message, category, destination) => {
   const userIdVal = getFieldValueOrThrowError(
     message,
     "userId", 
-    new Error("userId", "error: userId is required")
+    new Error("error: userId is required")
   );
-  const person = await searchPersonByCustomId(userIdVal, destination);
 
+  const person = await searchPersonByCustomId(userIdVal, destination);
   if (!person) throw new Error("person not found");
 
   // TODO: should the group be updated with the new traits if any ?
@@ -133,7 +133,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   // update org_id field for that person
   const response = defaultRequestConfig();
   response.body.JSON = {
-    org_id: org.id
+    "org_id": org.id
   };
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
@@ -149,8 +149,7 @@ const groupResponseBuilder = async (message, category, destination) => {
 };
 
 /**
- * TODO: change implementation to call merge endpoint first
- * and then call update on person with merge_with_id
+ * Merges two Persons
  * @param {*} message 
  * @param {*} category 
  * @param {*} destination 

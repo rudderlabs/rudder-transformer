@@ -50,6 +50,8 @@ const identifyResponseBuilder = async (message, category, destination) => {
   );
   const person = await searchPersonByCustomId(userIdValue, destination);
 
+  if(get(payload, "userId"))  delete payload.userId;
+
   // update person since person already exists
   if (person) {
     const response = defaultRequestConfig();

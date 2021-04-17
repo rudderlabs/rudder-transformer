@@ -1,0 +1,18 @@
+
+  [{
+    "destKey": "2fa",
+    "sourceKeys": [
+      "traits.2fa",
+      "context.traits.2fa"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "status",
+    "sourceKeys": [
+      "traits.status",
+      "context.traits.status"
+    ],
+    "required": false
+  }
+]

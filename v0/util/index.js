@@ -450,6 +450,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "toNumber":
         formattedVal = Number(formattedVal);
         break;
+      case "toFloat":
+        formattedVal = parseFloat(formattedVal);
+        break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
         break;

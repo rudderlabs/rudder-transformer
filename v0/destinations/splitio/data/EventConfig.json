@@ -1,0 +1,66 @@
+[
+  {
+    "destKey": "eventTypeId",
+    "sourceKeys": [
+      "eventTypeId",
+      "properties.eventTypeId",
+      "event",
+      "name"
+    ],
+    "metadata": {
+      "type": "toString"
+    },
+    "required": true
+  },
+  {
+    "destKey": "environmentName",
+    "sourceKeys": [
+      "environmentName",
+      "properties.environmentName"
+    ],
+    "metadata": {
+      "type": "toString"
+    },
+    "required": false
+  },
+  {
+    "destKey": "trafficTypeName",
+    "sourceKeys": [
+      "trafficTypeName",
+      "properties.trafficTypeName"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "key",
+    "sourceKeys": [
+      "key",
+      "properties.key",
+      "userId",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": [
+      "timestamp",
+      "properties.timestamp"
+    ],
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "value",
+      "properties.value"
+    ],
+    "metadata": {
+      "type": "toFloat"
+    },
+    "required": false
+  }
+]

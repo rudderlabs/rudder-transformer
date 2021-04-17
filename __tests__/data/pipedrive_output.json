@@ -84,5 +84,34 @@
     },
     "version": "1",
     "endpoint": "https://api.pipedrive.com/v1/persons/46"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name":"Guthrie Govan",
+        "email": [
+          {
+            "value": "guthrie@govan.com",
+            "primary": true
+          }
+        ],
+        "add_time":"2019-10-14T09:03:17.562Z",
+        "some_other_custom_field_api_key": "some_value"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {
+      "api_token": "03f3251d27e1d44438889"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.pipedrive.com/v1/persons/46"
   }
 ]

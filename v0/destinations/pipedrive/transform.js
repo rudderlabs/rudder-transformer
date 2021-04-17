@@ -62,7 +62,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
     response.params = {
-      api_token: destination.Config.api_token
+      "api_token": destination.Config.api_token
     };
 
     return response;
@@ -82,7 +82,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
   };
   response.endpoint = PERSONS_ENDPOINT;
   response.params = {
-    api_token: destination.Config.api_token
+    "api_token": destination.Config.api_token
   };
 
   return response;
@@ -152,7 +152,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
   response.params = {
-    api_token: destination.Config.api_token
+    "api_token": destination.Config.api_token
   };
   response.headers = {
     "Content-Type": "application/json",
@@ -205,7 +205,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
     };
     response.endpoint = getMergeEndpoint(previousId);
     response.params = {
-      api_token: destination.Config.api_token
+      "api_token": destination.Config.api_token
     };
     return response;
   }
@@ -260,7 +260,7 @@ const trackResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = LEADS_ENDPOINT;
   response.params = {
-    api_token: destination.Config.api_token
+    "api_token": destination.Config.api_token
   }
   response.headers = {
     "Content-Type": "application/json",

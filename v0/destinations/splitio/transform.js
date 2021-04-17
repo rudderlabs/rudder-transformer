@@ -70,6 +70,8 @@ function sendEvent(message, destination, category) {
     if (type === "page" || type === "screen") {
       outputPayload.eventTypeId = `viewed ${outputPayload.eventTypeId}`;
     }
+  } else {
+    throw new Error("eventTypeId does not match with ideal format");
   }
   if (!Object.prototype.hasOwnProperty.call(outputPayload, "environmentName")) {
     outputPayload.environmentName = environment;

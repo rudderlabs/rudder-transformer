@@ -5,6 +5,7 @@ const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
+const { pipedriveGetRequestHandler } = require("./pipedrive.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -34,13 +35,20 @@ function getData(url) {
   return {};
 }
 
-function get(url) {
+function get(url, config) {
   const mockData = getData(url);
   if (url.includes("https://api.kustomerapp.com")) {
     return new Promise((resolve, reject) => {
       resolve(kustomerGetRequestHandler(url));
     });
   }
+
+  if(url.includes("https://api.pipedrive.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(pipedriveGetRequestHandler(url, config));
+    });
+  }
+
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 const get = require("get-value");
 const set = require("set-value");
@@ -9,8 +11,6 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getValueFromMessage,
-  getFieldValueFromMessage,
   isEmpty
 } = require("../../util");
 const {

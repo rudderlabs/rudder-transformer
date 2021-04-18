@@ -44,13 +44,13 @@ const identifyResponseBuilder = async (message, category, destination) => {
   );
 
   const userIdValue = getFieldValueOrThrowError(
-    message, 
+    message,
     "userId",
     new Error("userId is required")
   );
   const person = await searchPersonByCustomId(userIdValue, destination);
 
-  if(get(payload, "userId"))  delete payload.userId;
+  if (get(payload, "userId")) delete payload.userId;
 
   // update person since person already exists
   if (person) {
@@ -58,13 +58,13 @@ const identifyResponseBuilder = async (message, category, destination) => {
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
-      "Accept": "application/json"
+      Accept: "application/json"
     };
 
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
     response.params = {
-      "api_token": destination.Config.api_token
+      api_token: destination.Config.api_token
     };
 
     return response;
@@ -80,11 +80,11 @@ const identifyResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    Accept: "application/json"
   };
   response.endpoint = PERSONS_ENDPOINT;
   response.params = {
-    "api_token": destination.Config.api_token
+    api_token: destination.Config.api_token
   };
 
   return response;
@@ -93,10 +93,10 @@ const identifyResponseBuilder = async (message, category, destination) => {
 /**
  * for group call, extracting from both traits and context.traits
  * VERIFY ONCE
- * @param {*} message 
- * @param {*} category 
- * @param {*} destination 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
  */
 const groupResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
@@ -126,13 +126,13 @@ const groupResponseBuilder = async (message, category, destination) => {
    */
   const userIdVal = getFieldValueOrThrowError(
     message,
-    "userId", 
+    "userId",
     new Error("error: userId is required")
   );
 
   const person = await searchPersonByCustomId(userIdVal, destination);
   if (!person) throw new Error("person not found");
-  
+
   /**
    * if org does not exist, create a new org,
    * else update existing org with new traits
@@ -149,16 +149,16 @@ const groupResponseBuilder = async (message, category, destination) => {
    */
   const response = defaultRequestConfig();
   response.body.JSON = {
-    "org_id": org.id
+    org_id: org.id
   };
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
   response.params = {
-    "api_token": destination.Config.api_token
+    api_token: destination.Config.api_token
   };
   response.headers = {
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    Accept: "application/json"
   };
 
   return response;
@@ -166,10 +166,10 @@ const groupResponseBuilder = async (message, category, destination) => {
 
 /**
  * Merges two Persons
- * @param {*} message 
- * @param {*} category 
- * @param {*} destination 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
  */
 const aliasResponseBuilder = async (message, category, destination) => {
   /**
@@ -200,14 +200,14 @@ const aliasResponseBuilder = async (message, category, destination) => {
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
-      "Accept": "application/json"
+      Accept: "application/json"
     };
     response.body.JSON = {
-      "merge_with_id": userId
+      merge_with_id: userId
     };
     response.endpoint = getMergeEndpoint(previousId);
     response.params = {
-      "api_token": destination.Config.api_token
+      api_token: destination.Config.api_token
     };
     return response;
   }
@@ -223,7 +223,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    Accept: "application/json"
   };
   response.body.JSON = removeUndefinedAndNullValues(updatePayload);
   response.endpoint = `${PERSONS_ENDPOINT}/${userId}`;
@@ -232,29 +232,40 @@ const aliasResponseBuilder = async (message, category, destination) => {
   };
 
   return response;
-
 };
 
 /**
  * Creates a lead and links it to user.
  * Supports Ecom Events: "product viewed", "order completed"
- * @param {*} message 
- * @param {*} category 
- * @param {*} destination 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
  */
 const trackResponseBuilder = async (message, category, destination) => {
   const userId = getFieldValueOrThrowError(
-    message, 
+    message,
     "userId",
     new Error("userId required for event tracking")
   );
 
+  const person = await searchPersonByCustomId(userId, destination);
+  if (!person) throw new Error("person not found, cannot add track event");
+
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  
-  if(get(payload, "event").toLowerCase().trim() === "product viewed")
+  set(payload, "person_id", person.id);
+
+  if (
+    get(payload, "title")
+      .toLowerCase()
+      .trim() === "product viewed"
+  )
     set(payload, "active_flag", 0);
-  else if(get(payload, "event").toLowerCase().trim() === "order completed")
+  else if (
+    get(payload, "title")
+      .toLowerCase()
+      .trim() === "order completed"
+  )
     set(payload, "active_flag", 1);
 
   const response = defaultRequestConfig();
@@ -262,11 +273,11 @@ const trackResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = LEADS_ENDPOINT;
   response.params = {
-    "api_token": destination.Config.api_token
-  }
+    api_token: destination.Config.api_token
+  };
   response.headers = {
     "Content-Type": "application/json",
-    "Accept": "application/json"
+    Accept: "application/json"
   };
 
   return response;
@@ -299,7 +310,7 @@ async function responseBuilderSimple(message, category, destination) {
         destination
       );
       break;
-    
+
     case EventType.TRACK:
       builderResponse = await trackResponseBuilder(
         message,
@@ -331,6 +342,9 @@ async function process(event) {
       break;
     case EventType.GROUP:
       category = CONFIG_CATEGORIES.GROUP;
+      break;
+    case EventType.TRACK:
+      category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
       throw new Error("invalid message type");

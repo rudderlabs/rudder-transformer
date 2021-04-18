@@ -1,7 +1,7 @@
 [
   {
-    "destKey": "event",
-    "sourceKeys": "title",
+    "destKey": "title",
+    "sourceKeys": "event",
     "required": true
   },
   {

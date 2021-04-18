@@ -5,7 +5,10 @@ const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
-const { pipedriveGetRequestHandler } = require("./pipedrive.mock");
+const {
+  pipedriveGetRequestHandler,
+  pipedrivePostRequestHandler
+} = require("./pipedrive.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -43,7 +46,7 @@ function get(url, config) {
     });
   }
 
-  if(url.includes("https://api.pipedrive.com")) {
+  if (url.includes("https://api.pipedrive.com")) {
     return new Promise((resolve, reject) => {
       resolve(pipedriveGetRequestHandler(url, config));
     });
@@ -58,16 +61,21 @@ function get(url, config) {
   });
 }
 
-function post(url, payload) {
+function post(url, payload, config) {
   const mockData = getData(url);
   if (url.includes("https://active.campaigns.rudder.com")) {
     return new Promise((resolve, reject) => {
       resolve(acPostRequestHandler(url, payload));
     });
   }
-  if(url.includes("https://a.klaviyo.com")) {
+  if (url.includes("https://a.klaviyo.com")) {
     return new Promise((resolve, reject) => {
       resolve(klaviyoPostRequestHandler(url, payload));
+    });
+  }
+  if (url.includes("https://api.pipedrive.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(pipedrivePostRequestHandler(url, payload, config));
     });
   }
   return new Promise((resolve, reject) => {

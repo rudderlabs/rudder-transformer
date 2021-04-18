@@ -2,7 +2,7 @@ const { getMappingConfig } = require("../../util");
 
 const BASE_ENDPOINT = "https://api.pipedrive.com/v1";
 const PERSONS_ENDPOINT = `${BASE_ENDPOINT}/persons`;
-const ORGANISATION_ENDPOINT = `${BASE_ENDPOINT}/organisations`;
+const ORGANISATION_ENDPOINT = `${BASE_ENDPOINT}/organizations`;
 const LEADS_ENDPOINT = `${BASE_ENDPOINT}/leads`;
 const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 

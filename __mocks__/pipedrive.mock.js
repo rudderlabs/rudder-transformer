@@ -23,6 +23,13 @@ const pipedriveGetRequestHandler = (url, config) => {
   return { data, status: 200 };
 };
 
+const pipedrivePostRequestHandler = (url, payload, config) => {
+  const encodedUrl = `${url}?${generateQueryString(config.params)}`;
+  const data = storedData[encodedUrl];
+  return { data, status: 201 };
+};
+
 module.exports = {
-  pipedriveGetRequestHandler
+  pipedriveGetRequestHandler,
+  pipedrivePostRequestHandler
 }

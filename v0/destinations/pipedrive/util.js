@@ -174,6 +174,14 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
   }
 };
 
+/**
+ * Wrapper on top of getFieldValueFromMessage
+ * If value is not found, throws passed error
+ * @param {*} message 
+ * @param {*} field 
+ * @param {*} err 
+ * @returns 
+ */
 const getFieldValueOrThrowError = (message, field, err) => {
   const val = getFieldValueFromMessage(message, field);
   if (!val) throw err;

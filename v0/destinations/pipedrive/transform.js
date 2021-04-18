@@ -329,6 +329,9 @@ async function process(event) {
     case EventType.ALIAS:
       category = CONFIG_CATEGORIES.ALIAS;
       break;
+    case EventType.GROUP:
+      category = CONFIG_CATEGORIES.GROUP;
+      break;
     default:
       throw new Error("invalid message type");
   }

@@ -5,7 +5,9 @@
       "eventTypeId",
       "properties.eventTypeId",
       "event",
-      "name"
+      "name",
+      "traits.eventTypeId",
+      "context.traits.eventTypeId"
     ],
     "metadata": {
       "type": "toString"
@@ -16,7 +18,9 @@
     "destKey": "environmentName",
     "sourceKeys": [
       "environmentName",
-      "properties.environmentName"
+      "properties.environmentName",
+      "traits.environmentName",
+      "context.traits.environmentName"
     ],
     "metadata": {
       "type": "toString"
@@ -27,7 +31,9 @@
     "destKey": "trafficTypeName",
     "sourceKeys": [
       "trafficTypeName",
-      "properties.trafficTypeName"
+      "properties.trafficTypeName",
+      "traits.trafficTypeName",
+      "context.traits.trafficTypeName"
     ],
     "required": true
   },
@@ -36,6 +42,8 @@
     "sourceKeys": [
       "key",
       "properties.key",
+      "traits.key",
+      "context.traits.key",
       "userId",
       "anonymousId"
     ],
@@ -44,8 +52,10 @@
   {
     "destKey": "timestamp",
     "sourceKeys": [
-      "timestamp",
-      "properties.timestamp"
+      "properties.timestamp",
+      "traits.timestamp",
+      "context.traits.timestamp",
+      "timestamp"
     ],
     "metadata": {
       "type": "secondTimestamp"
@@ -56,7 +66,9 @@
     "destKey": "value",
     "sourceKeys": [
       "value",
-      "properties.value"
+      "properties.value",
+      "traits.value",
+      "context.traits.value"
     ],
     "metadata": {
       "type": "toFloat"

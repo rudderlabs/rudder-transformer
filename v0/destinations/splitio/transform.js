@@ -8,13 +8,12 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage,
-  isDefined,
   constructPayload
 } = require("../../util");
 
+let bufferProperty = {};
+
 function responseBuilderSimple(payload, category, destination) {
-  // const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
     const responseBody = payload;
     const response = defaultRequestConfig();
@@ -22,7 +21,7 @@ function responseBuilderSimple(payload, category, destination) {
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer${destination.Config.apiKey}`
+      Authorization: `Bearer ${destination.Config.apiKey}`
     };
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
     return response;
@@ -31,42 +30,44 @@ function responseBuilderSimple(payload, category, destination) {
   throw new Error("Payload could not be constructed");
 }
 
-function sendEvent(message, destination, category) {
-  const { trafficType, environment } = destination.Config;
-  const { userId, anonymousId, properties, type } = message;
-  const { eventTypeId, environmentName, value } = message.properties;
-  const bufferProperty = {};
-  const eventTypeIdRegex = new RegExp("[a-zA-Z0-9][-_.a-zA-Z0-9]{0,62}");
-
-  Object.keys(properties).forEach(key => {
+function populateOutputProperty(inputObject) {
+  Object.keys(inputObject).forEach(key => {
     if (!KEY_CHECK_LIST.includes(key)) {
-      bufferProperty[key] = properties[key];
+      bufferProperty[key] = inputObject[key];
     }
   });
+  return bufferProperty;
+}
 
-  // const outputPayload = {
-  //   eventTypeId: isDefined(eventTypeId)
-  //     ? String(eventTypeId)
-  //     : isDefined(message.event)
-  //     ? message.event
-  //     : `Viewed ${message.name}`,
-  //   environmentName: isDefined(environmentName)
-  //     ? String(environmentName)
-  //     : environment,
-  //   trafficTypeName: trafficType,
-  //   key: userId ? message.userId : anonymousId,
-  //   timestamp: (
-  //     getFieldValueFromMessage(message, "historicalTimestamp") / 1000
-  //   ).toFixed(0),
-  //   value: parseFloat(value),
-  //   properties: bufferProperty
-  // };
+function sendEvent(message, destination, category) {
+  const { environment } = destination.Config;
+  const { type } = message;
+  const eventTypeIdRegex = new RegExp("[a-zA-Z0-9][-_.a-zA-Z0-9]{0,62}");
+  let outputPayload = {};
+  let bufferProperty1 = {};
+  let bufferProperty2 = {};
 
-  const outputPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
+  switch (type) {
+    case EventType.IDENTIFY:
+    case EventType.GROUP:
+      if (message.traits) {
+        bufferProperty1 = populateOutputProperty(message.traits);
+      }
+      if (message.context && message.context.traits) {
+        bufferProperty2 = populateOutputProperty(message.context.traits);
+      }
+      bufferProperty = Object.assign(bufferProperty1, bufferProperty2);
+      break;
+    case EventType.TRACK:
+    case EventType.PAGE:
+    case EventType.SCREEN:
+      bufferProperty = populateOutputProperty(message.properties);
+      break;
+    default:
+      throw new Error("Message type not supported");
+  }
   if (eventTypeIdRegex.test(outputPayload.eventTypeId)) {
+    outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     if (type === "page" || type === "screen") {
       outputPayload.eventTypeId = `viewed ${outputPayload.eventTypeId}`;
     }
@@ -91,7 +92,8 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
+      category = CONFIG_CATEGORIES.EVENT;
+      response = sendEvent(message, destination, category);
       break;
     case EventType.TRACK:
     case EventType.PAGE:
@@ -100,6 +102,8 @@ const processEvent = (message, destination) => {
       response = sendEvent(message, destination, category);
       break;
     case EventType.GROUP:
+      category = CONFIG_CATEGORIES.EVENT;
+      response = sendEvent(message, destination, category);
       break;
     default:
       throw new Error("Message type not supported");

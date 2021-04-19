@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const BASE_URL = "https://api.split.io";
+const BASE_URL = "https://events.split.io";
 
 const endpoints = {
   eventUrl: `${BASE_URL}/api/events`,

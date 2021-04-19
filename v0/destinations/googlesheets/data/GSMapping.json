@@ -1,0 +1,339 @@
+[
+  {
+    "mappingKey": "0",
+    "destKey": "id",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "mappingKey": "1",
+    "destKey": "anonymous_id",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "mappingKey": "2",
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "mappingKey": "3",
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": false
+  },
+  {
+    "mappingKey": "4",
+    "destKey": "event_name",
+    "sourceKeys": ["event", "name"],
+    "required": false
+  },
+  {
+    "mappingKey": "5",
+    "destKey": "event_text",
+    "sourceKeys": ["event", "name"],
+    "required": false
+  },
+  {
+    "mappingKey": "6",
+    "destKey": "page",
+    "sourceKeys": "page",
+    "required": false
+  },
+  {
+    "mappingKey": "7",
+    "destKey": "original_timestamp",
+    "sourceKeys": "originalTimestamp",
+    "required": false
+  },
+  {
+    "mappingKey": "8",
+    "destKey": "received_at",
+    "sourceKeys": "receivedAt",
+    "required": false
+  },
+  {
+    "mappingKey": "9",
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "required": false
+  },
+  {
+    "mappingKey": "10",
+    "destKey": "sent_at",
+    "sourceKeys": "sentAt",
+    "required": false
+  },
+  {
+    "mappingKey": "11",
+    "destKey": "context_traits",
+    "sourceKeys": "context.traits",
+    "required": false
+  },
+  {
+    "mappingKey": "12",
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "mappingKey": "13",
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "required": false
+  },
+  {
+    "mappingKey": "14",
+    "destKey": "context_app_build",
+    "sourceKeys": "context.app.build",
+    "required": false
+  },
+  {
+    "mappingKey": "15",
+    "destKey": "context_app_name",
+    "sourceKeys": "context.app.name",
+    "required": false
+  },
+  {
+    "mappingKey": "16",
+    "destKey": "context_app_namespace",
+    "sourceKeys": "context.app.namespace",
+    "required": false
+  },
+  {
+    "mappingKey": "17",
+    "destKey": "context_app_version",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "mappingKey": "18",
+    "destKey": "context_device_id",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "mappingKey": "19",
+    "destKey": "context_device_manufacturer",
+    "sourceKeys": "context.device.manufacturer",
+    "required": false
+  },
+  {
+    "mappingKey": "20",
+    "destKey": "context_device_model",
+    "sourceKeys": "context.device.model",
+    "required": false
+  },
+  {
+    "mappingKey": "21",
+    "destKey": "context_device_name",
+    "sourceKeys": "context.device.name",
+    "required": false
+  },
+  {
+    "mappingKey": "22",
+    "destKey": "context_device_type",
+    "sourceKeys": "context.device.type",
+    "required": false
+  },
+  {
+    "mappingKey": "23",
+    "destKey": "context_device_advertisingId",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "mappingKey": "24",
+    "destKey": "context_device_token",
+    "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
+    "mappingKey": "25",
+    "destKey": "context_library_name",
+    "sourceKeys": "context.library.name",
+    "required": false
+  },
+  {
+    "mappingKey": "26",
+    "destKey": "context_library_version",
+    "sourceKeys": "context.library.version",
+    "required": false
+  },
+  {
+    "mappingKey": "27",
+    "destKey": "context_locale",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "mappingKey": "28",
+    "destKey": "context_network_carrier",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "mappingKey": "29",
+    "destKey": "context_network_bluetooth",
+    "sourceKeys": "context.network.bluetooth",
+    "required": false
+  },
+  {
+    "mappingKey": "30",
+    "destKey": "context_network_cellular",
+    "sourceKeys": "context.network.cellular",
+    "required": false
+  },
+  {
+    "mappingKey": "31",
+    "destKey": "context_network_wifi",
+    "sourceKeys": "context.network.wifi",
+    "required": false
+  },
+  {
+    "mappingKey": "32",
+    "destKey": "context_os_name",
+    "sourceKeys": "context.os.name",
+    "required": false
+  },
+  {
+    "mappingKey": "33",
+    "destKey": "context_os_version",
+    "sourceKeys": "context.os.version",
+    "required": false
+  },
+  {
+    "mappingKey": "34",
+    "destKey": "context_screen",
+    "sourceKeys": "context.screen",
+    "required": false
+  },
+  {
+    "mappingKey": "35",
+    "destKey": "context_timezone",
+    "sourceKeys": "context.timezone",
+    "required": false
+  },
+  {
+    "mappingKey": "36",
+    "destKey": "context_userAgent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "mappingKey": "37",
+    "destKey": "context_id",
+    "sourceKeys": "context.id",
+    "required": false
+  },
+  {
+    "mappingKey": "38",
+    "destKey": "context_ip",
+    "sourceKeys": "context.ip",
+    "required": false
+  },
+  {
+    "mappingKey": "39",
+    "destKey": "context_page_url",
+    "sourceKeys": "context.page.url",
+    "required": false
+  },
+  {
+    "mappingKey": "40",
+    "destKey": "context_page_path",
+    "sourceKeys": "context.page.path",
+    "required": false
+  },
+  {
+    "mappingKey": "41",
+    "destKey": "context_page_title",
+    "sourceKeys": "context.page.title",
+    "required": false
+  },
+  {
+    "mappingKey": "42",
+    "destKey": "context_page_search",
+    "sourceKeys": "context.page.search",
+    "required": false
+  },
+  {
+    "mappingKey": "43",
+    "destKey": "context_page_tab_url",
+    "sourceKeys": "context.page.tab_url",
+    "required": false
+  },
+  {
+    "mappingKey": "44",
+    "destKey": "context_page_referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  },
+  {
+    "mappingKey": "45",
+    "destKey": "context_page_initial_referrer",
+    "sourceKeys": "context.page.initial_referrer",
+    "required": false
+  },
+  {
+    "mappingKey": "46",
+    "destKey": "context_page_referring_domain",
+    "sourceKeys": "context.page.referring_domain",
+    "required": false
+  },
+  {
+    "mappingKey": "47",
+    "destKey": "context_page_initial_referring_domain",
+    "sourceKeys": "context.page.initial_referring_domain",
+    "required": false
+  },
+  {
+    "mappingKey": "48",
+    "destKey": "context_event",
+    "sourceKeys": "context.event",
+    "required": false
+  },
+  {
+    "mappingKey": "49",
+    "destKey": "context_sent_at",
+    "sourceKeys": "context.sent_at",
+    "required": false
+  },
+  {
+    "mappingKey": "50",
+    "destKey": "context_campaign",
+    "sourceKeys": "context.campaign",
+    "required": false
+  },
+  {
+    "mappingKey": "51",
+    "destKey": "context_timestamp",
+    "sourceKeys": "context.timestamp",
+    "required": false
+  },
+  {
+    "mappingKey": "52",
+    "destKey": "context_event_text",
+    "sourceKeys": "context.event_text",
+    "required": false
+  },
+  {
+    "mappingKey": "53",
+    "destKey": "context_externalId",
+    "sourceKeys": "context.externalId",
+    "required": false
+  },
+  {
+    "mappingKey": "54",
+    "destKey": "context_received_at",
+    "sourceKeys": "context.received_at",
+    "required": false
+  },
+  {
+    "mappingKey": "55",
+    "destKey": "context_original_timestamp",
+    "sourceKeys": "context.original_timestamp",
+    "required": false
+  }
+]

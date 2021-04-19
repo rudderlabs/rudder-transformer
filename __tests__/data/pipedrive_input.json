@@ -289,10 +289,7 @@
       "userId": "guthrie123",
       "event": "Product Viewed",
       "properties": {
-        "value": {
-          "amount": 200,
-          "currency": "USD"
-        }
+        "tax": 10
       },
       "context": {
         "ip": "14.5.67.21"

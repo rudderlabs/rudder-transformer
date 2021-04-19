@@ -20,7 +20,8 @@ const {
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
   getMergeEndpoint,
-  LEADS_ENDPOINT
+  LEADS_ENDPOINT,
+  PRODUCTS_ENDPOINT
 } = require("./config");
 const {
   createNewOrganisation,
@@ -196,16 +197,16 @@ const aliasResponseBuilder = async (message, category, destination) => {
     "userId",
     new Error("error: cannot merge without userId")
   );
-  
+
   /**
    * Need to extract the pipedrive side integer id for the provided userId
    * and previous Id, i.e mapping Rudder side userId to pipedrive integer id
    */
   const prevPerson = await searchPersonByCustomId(previousId, destination);
-  if(!prevPerson) throw new Error("person not found. cannot merge");
+  if (!prevPerson) throw new Error("person not found. cannot merge");
 
   const currPerson = await searchPersonByCustomId(userId, destination);
-  if(!currPerson) throw new Error("person not found. cannot merge");
+  if (!currPerson) throw new Error("person not found. cannot merge");
 
   let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   updatePayload = removeUndefinedAndNullValues(updatePayload);
@@ -214,7 +215,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * if traits is not empty, update the current person first
    * and then call the merge endpoint
    */
-   if (Object.keys(updatePayload).length !== 0) 
+  if (Object.keys(updatePayload).length !== 0)
     updatePerson(currPerson.id, updatePayload, destination);
 
   const response = defaultRequestConfig();
@@ -252,26 +253,37 @@ const trackResponseBuilder = async (message, category, destination) => {
   const person = await searchPersonByCustomId(userId, destination);
   if (!person) throw new Error("person not found, cannot add track event");
 
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  set(payload, "person_id", person.id);
+  let payload;
+  let endpoint = LEADS_ENDPOINT;
+  const productCategory = CONFIG_CATEGORIES.PRODUCT.name;
 
   if (
-    get(payload, "title")
+    get(message, "event")
       .toLowerCase()
       .trim() === "product viewed"
-  )
+  ) {
+    payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
     set(payload, "active_flag", 0);
+    endpoint = PRODUCTS_ENDPOINT;
+  } 
   else if (
-    get(payload, "title")
+    get(message, "event")
       .toLowerCase()
       .trim() === "order completed"
-  )
+  ) {
+    payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
     set(payload, "active_flag", 1);
+    endpoint = PRODUCTS_ENDPOINT;
+  } 
+  else {
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    set(payload, "person_id", person.id);
+  }
 
   const response = defaultRequestConfig();
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = LEADS_ENDPOINT;
+  response.endpoint = endpoint;
   response.params = {
     api_token: destination.Config.api_token
   };

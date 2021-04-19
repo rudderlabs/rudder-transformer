@@ -35,7 +35,7 @@
     "required": false
   },
   {
-    "destKey": "proces",
+    "destKey": "prices",
     "sourceKeys": "properties.prices",
     "required": false
   }

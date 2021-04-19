@@ -1,6 +1,8 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 const axios = require("axios");
+const { set } = require("lodash");
 const logger = require("../../../logger");
 const { getFieldValueFromMessage } = require("../../util");
 const {
@@ -208,6 +210,27 @@ const getFieldValueOrThrowError = (message, field, err) => {
   return val;
 };
 
+/**
+ * * Util function to rename the custom fields
+ * based on fieldsMap in destination Config
+ * @param {*} message 
+ * @param {*} fieldsMap 
+ * @param {*} type 
+ * @returns 
+ */
+ const renameCustomFields = (message, fieldsMap, type) => {
+  const specificMap = fieldsMap[type];
+  const payload = {};
+  Object.keys(message).map(key => {
+    if(Object.keys(specificMap).includes(key))
+      set(payload, specificMap[key], message[key]);
+    else
+      set(payload, key, message[key]);
+  });
+
+  return payload;
+};
+
 module.exports = {
   findPersonById,
   createNewOrganisation,
@@ -216,5 +239,6 @@ module.exports = {
   searchPersonByCustomId,
   mergeTwoPersons,
   getFieldValueOrThrowError,
-  updatePerson
+  updatePerson,
+  renameCustomFields
 };

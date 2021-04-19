@@ -23,7 +23,8 @@
       "anonymousId": "anon_id",
       "type": "identify",
       "traits": {
-        "name": "Roddur Roy"
+        "name": "Roddur Roy",
+        "district": "N. 24 parganas"
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
@@ -32,7 +33,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -81,7 +93,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -124,7 +147,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -158,8 +192,7 @@
             "value": "guthrie@govan.com",
             "primary": true
           }
-        ],
-        "some_other_custom_field_api_key": "some_value"
+        ]
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
@@ -168,7 +201,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -208,7 +252,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -248,7 +303,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   },
@@ -257,7 +323,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     },
     "message": {
@@ -281,7 +358,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     },
     "message": {
@@ -337,7 +425,18 @@
       "Config": {
         "api_token": "03f3251d27e1d44438889",
         "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf"
+        "groupIdKey": "groupidapikey1241asfasf",
+
+        "fieldsMap": {
+          "person": {
+            "district": "districtapikey2987",
+            "someCustomKey": "someCustomKey467"
+          },
+          "organization": {},
+          "product": {},
+          "leads": {},
+          "track": {}
+        }
       }
     }
   }

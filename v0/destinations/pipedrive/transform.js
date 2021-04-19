@@ -11,7 +11,7 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
 } = require("../../util");
 const {
   MAPPING_CONFIG,
@@ -19,6 +19,8 @@ const {
   PERSONS_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
+  PIPEDRIVE_PRODUCT_EXCLUSION,
+  PIPEDRIVE_TRACK_EXCLUSION,
   getMergeEndpoint,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT
@@ -29,9 +31,38 @@ const {
   searchOrganisationByCustomId,
   getFieldValueOrThrowError,
   updateOrganisationTraits,
-  updatePerson
+  updatePerson,
+  renameCustomFields
 } = require("./util");
 
+/** 
+ * Config structure so far
+ * {
+ *    "api_token": "asfaaf31423csaf",
+ *    "groupIdToken": "sfhijsfh",
+ *    "userIdToken": "nzoicb88714sCV"
+ * }
+ * 
+ * New potential Config structure
+ * shall contain all custom field id vs api_key mappings
+ * {
+ *    "api_token": "asfaaf31423csaf",
+ *    "r_group_id": "sfhijsfh",
+ *    "r_user_id": "nzoicb88714sCV",
+ *    "customFieldsMap": {
+ *        "person": {
+ *          "relation_status": "relstatusapi_key",
+ *          "district": "distapi_key",
+ *          ...
+ *        },
+ *        "product": {...},
+ *        "leads": {...},
+ *        "organization": {...},
+ *        "track": {...}
+ *     }
+ * }
+ * 
+*/
 const identifyResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
@@ -43,6 +74,8 @@ const identifyResponseBuilder = async (message, category, destination) => {
     ["traits", "context.traits"],
     PIPEDRIVE_IDENTIFY_EXCLUSION
   );
+
+  payload = renameCustomFields(payload, destination.Config.fieldsMap, "person");
 
   const userIdValue = getFieldValueOrThrowError(
     message,
@@ -116,6 +149,8 @@ const groupResponseBuilder = async (message, category, destination) => {
     ["traits", "context.traits"],
     PIPEDRIVE_GROUP_EXCLUSION
   );
+
+  groupPayload = renameCustomFields(groupPayload, destination.Config.fieldsMap, "organization");
 
   let org = await searchOrganisationByCustomId(groupId, destination);
 
@@ -207,6 +242,14 @@ const aliasResponseBuilder = async (message, category, destination) => {
   if (!currPerson) throw new Error("person not found. cannot merge");
 
   let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  updatePayload = extractCustomFields(
+    message,
+    updatePayload,
+    ["traits", "context.traits"],
+    PIPEDRIVE_IDENTIFY_EXCLUSION
+  );
+
+  updatePayload = renameCustomFields(updatePayload, destination.Config.fieldsMap, "person");
   updatePayload = removeUndefinedAndNullValues(updatePayload);
 
   /**
@@ -252,7 +295,7 @@ const trackResponseBuilder = async (message, category, destination) => {
   if (!person) throw new Error("person not found, cannot add track event");
 
   let payload;
-  let endpoint = LEADS_ENDPOINT;
+  let endpoint;
   const productCategory = CONFIG_CATEGORIES.PRODUCT.name;
 
   if (
@@ -261,6 +304,13 @@ const trackResponseBuilder = async (message, category, destination) => {
       .trim() === "product viewed"
   ) {
     payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
+    payload = extractCustomFields(
+      message,
+      payload,
+      ["traits", "context.traits"],
+      PIPEDRIVE_PRODUCT_EXCLUSION
+    );
+    payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
     set(payload, "active_flag", 0);
     endpoint = PRODUCTS_ENDPOINT;
   } 
@@ -270,12 +320,29 @@ const trackResponseBuilder = async (message, category, destination) => {
       .trim() === "order completed"
   ) {
     payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
+    payload = extractCustomFields(
+      message,
+      payload,
+      ["traits", "context.traits"],
+      PIPEDRIVE_PRODUCT_EXCLUSION
+    );
+    payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
+    
     set(payload, "active_flag", 1);
     endpoint = PRODUCTS_ENDPOINT;
   } 
   else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    payload = extractCustomFields(
+      message,
+      payload,
+      ["traits", "context.traits"],
+      PIPEDRIVE_TRACK_EXCLUSION
+    );
+    payload = renameCustomFields(payload, destination.Config.fieldsMap, "track");
+
     set(payload, "person_id", person.id);
+    endpoint = LEADS_ENDPOINT;
   }
 
   const response = defaultRequestConfig();

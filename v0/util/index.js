@@ -399,7 +399,14 @@ const handleMetadataForValue = (value, metadata) => {
   }
 
   // get infor from metadata
-  const { type, typeFormat, template, defaultValue, excludes } = metadata;
+  const {
+    type,
+    typeFormat,
+    template,
+    defaultValue,
+    excludes,
+    multikeyMap
+  } = metadata;
 
   // if value is null and defaultValue is supplied - use that
   if (!value) {
@@ -488,6 +495,47 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
+
+  // handle multikeyMap
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  if (multikeyMap) {
+    let foundVal = false;
+    if (Array.isArray(multikeyMap)) {
+      multikeyMap.some(map => {
+        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+          logger.warn(
+            "multikeyMap skipped: sourceVal and destVal must be of valid type"
+          );
+          foundVal = true;
+          return true;
+        }
+
+        if (map.sourceVal.includes(formattedVal)) {
+          formattedVal = map.destVal;
+          foundVal = true;
+          return true;
+        }
+      });
+    } else {
+      logger.warn("multikeyMap skipped: multikeyMap must be an array");
+    }
+    if (!foundVal)
+      formattedVal = undefined
+  }
+
   return formattedVal;
 };
 

@@ -18,7 +18,19 @@
   {
     "destKey": "Gender",
     "sourceKeys": ["traits.gender", "context.traits.gender"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "F"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "M"
+        }
+      ]
+    }
   },
   {
     "destKey": "Employed",

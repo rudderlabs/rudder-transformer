@@ -11,7 +11,6 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  isEmpty,
   getValueFromMessage
 } = require("../../util");
 const {
@@ -27,7 +26,6 @@ const {
   createNewOrganisation,
   searchPersonByCustomId,
   searchOrganisationByCustomId,
-  mergeTwoPersons,
   getFieldValueOrThrowError,
   updateOrganisationTraits,
   updatePerson

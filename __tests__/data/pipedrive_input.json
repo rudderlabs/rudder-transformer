@@ -84,7 +84,8 @@
             "value": "123-100-200",
             "primary": true
           }
-        ]
+        ],
+        "someCustomKey": "some custom val"
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
@@ -333,7 +334,9 @@
           "organization": {},
           "product": {},
           "leads": {},
-          "track": {}
+          "track": {
+            "rating": "ratingapikey"
+          }
         }
       }
     },
@@ -342,6 +345,7 @@
       "userId": "guthrie123",
       "event": "Product Purchased",
       "properties": {
+        "rating": 4,
         "value": {
           "amount": 200,
           "currency": "USD"

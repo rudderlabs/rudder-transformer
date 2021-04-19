@@ -307,7 +307,7 @@ const trackResponseBuilder = async (message, category, destination) => {
     payload = extractCustomFields(
       message,
       payload,
-      ["traits", "context.traits"],
+      ["properties"],
       PIPEDRIVE_PRODUCT_EXCLUSION
     );
     payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
@@ -323,7 +323,7 @@ const trackResponseBuilder = async (message, category, destination) => {
     payload = extractCustomFields(
       message,
       payload,
-      ["traits", "context.traits"],
+      ["properties"],
       PIPEDRIVE_PRODUCT_EXCLUSION
     );
     payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
@@ -336,7 +336,7 @@ const trackResponseBuilder = async (message, category, destination) => {
     payload = extractCustomFields(
       message,
       payload,
-      ["traits", "context.traits"],
+      ["properties"],
       PIPEDRIVE_TRACK_EXCLUSION
     );
     payload = renameCustomFields(payload, destination.Config.fieldsMap, "track");

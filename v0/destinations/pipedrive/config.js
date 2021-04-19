@@ -24,7 +24,8 @@ const PIPEDRIVE_IDENTIFY_EXCLUSION = [
   "add_time",
   "org_id",
   "email",
-  "phone"
+  "phone",
+  "userId"
 ];
 
 const PIPEDRIVE_GROUP_EXCLUSION = PIPEDRIVE_IDENTIFY_EXCLUSION.slice(0, 4);

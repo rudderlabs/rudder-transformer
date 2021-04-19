@@ -7,7 +7,8 @@ const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const {
   pipedriveGetRequestHandler,
-  pipedrivePostRequestHandler
+  pipedrivePostRequestHandler,
+  pipedrivePutRequestHandler
 } = require("./pipedrive.mock");
 
 const urlDirectoryMap = {
@@ -38,7 +39,7 @@ function getData(url) {
   return {};
 }
 
-function get(url, config) {
+function get(url, options) {
   const mockData = getData(url);
   if (url.includes("https://api.kustomerapp.com")) {
     return new Promise((resolve, reject) => {
@@ -48,7 +49,7 @@ function get(url, config) {
 
   if (url.includes("https://api.pipedrive.com")) {
     return new Promise((resolve, reject) => {
-      resolve(pipedriveGetRequestHandler(url, config));
+      resolve(pipedriveGetRequestHandler(url, options));
     });
   }
 
@@ -61,7 +62,7 @@ function get(url, config) {
   });
 }
 
-function post(url, payload, config) {
+function post(url, payload, options) {
   const mockData = getData(url);
   if (url.includes("https://active.campaigns.rudder.com")) {
     return new Promise((resolve, reject) => {
@@ -75,7 +76,7 @@ function post(url, payload, config) {
   }
   if (url.includes("https://api.pipedrive.com")) {
     return new Promise((resolve, reject) => {
-      resolve(pipedrivePostRequestHandler(url, payload, config));
+      resolve(pipedrivePostRequestHandler(url, payload, options));
     });
   }
   return new Promise((resolve, reject) => {
@@ -87,6 +88,15 @@ function post(url, payload, config) {
   });
 }
 
+function put(url, payload, options) {
+  if (url.includes("https://api.pipedrive.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(pipedrivePutRequestHandler(url, payload, options));
+    });
+  }
+}
+
 axios.get = get;
 axios.post = post;
+axios.put = put;
 module.exports = axios;

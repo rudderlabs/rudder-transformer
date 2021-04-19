@@ -598,7 +598,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (value) {
+      if (value === 0 || value) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {

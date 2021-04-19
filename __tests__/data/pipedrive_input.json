@@ -289,7 +289,7 @@
       "userId": "guthrie123",
       "event": "Product Viewed",
       "properties": {
-        "tax": 10
+        "tax": 0
       },
       "context": {
         "ip": "14.5.67.21"

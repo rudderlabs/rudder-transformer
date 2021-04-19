@@ -171,7 +171,7 @@
       "JSON": {
         "name": "Product Viewed",
         "active_flag": 0,
-        "tax": 10
+        "tax": 0
       }
     },
     "type": "REST",

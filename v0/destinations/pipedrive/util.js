@@ -13,7 +13,7 @@ const findPersonById = async (id, destination) => {
   try {
     const axiosResponse = await axios.get(`${PERSONS_ENDPOINT}/${id}`, {
       params: {
-        "api_token": destination.Config.api_token
+        api_token: destination.Config.api_token
       },
       headers: {
         "Content-Type": "application/json"
@@ -57,12 +57,12 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
   try {
     const response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
       params: {
-        "term": userIdValue,
-        "field": destination.Config.userIdKey,
-        "api_token": destination.Config.api_token
+        term: userIdValue,
+        field: destination.Config.userIdKey,
+        api_token: destination.Config.api_token
       },
       headers: {
-        "Accept": "application/json"
+        Accept: "application/json"
       }
     });
 
@@ -78,16 +78,36 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
   }
 };
 
+const updatePerson = async (userIdvalue, data, destination) => {
+  try {
+    const response = await axios.put(`${PERSONS_ENDPOINT}/${userIdvalue}`, data, {
+      params: {
+        api_token: destination.Config.api_token
+      },
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    });
+
+    if (!response || response.status !== 200)
+      throw new Error("error while updating person");
+
+  } catch (err) {
+    throw new Error(`error while updating person: ${err}`);
+  }
+};
+
 const searchOrganisationByCustomId = async (groupId, destination) => {
   try {
     const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
-        "term": groupId,
-        "field": destination.Config.groupIdKey,
-        "api_token": destination.Config.api_token
+        term: groupId,
+        field: destination.Config.groupIdKey,
+        api_token: destination.Config.api_token
       },
       headers: {
-        "Accept": "application/json"
+        Accept: "application/json"
       }
     });
     if (response && response.status === 200) {
@@ -105,7 +125,7 @@ const createNewOrganisation = async (data, destination) => {
   const resp = await axios
     .post(ORGANISATION_ENDPOINT, data, {
       params: {
-        "api_token": destination.Config.api_token
+        api_token: destination.Config.api_token
       },
       headers: {
         "Content-Type": "application/json"
@@ -136,7 +156,7 @@ const updateOrganisationTraits = async (groupId, groupPayload, destination) => {
           api_token: destination.Config.api_token
         },
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
         }
       }
@@ -151,7 +171,7 @@ const updateOrganisationTraits = async (groupId, groupPayload, destination) => {
 
 const mergeTwoPersons = async (previousId, userId, destination) => {
   const payload = {
-    "merge_with_id": userId
+    merge_with_id: userId
   };
   try {
     const mergeResponse = await axios.put(
@@ -159,28 +179,28 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
       payload,
       {
         params: {
-          "api_token": destination.Config.api_token
+          api_token: destination.Config.api_token
         },
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
         }
       }
     );
-    if (!mergeResponse || !mergeResponse.status === 200)
-      throw new Error("error while merging persons");
+    if (!mergeResponse || mergeResponse.status !== 200)
+      throw new Error("merge failed");
   } catch (err) {
-    throw new Error("error while merging persons");
+    throw new Error(`error while merging persons: ${err}`);
   }
 };
 
 /**
  * Wrapper on top of getFieldValueFromMessage
- * If value is not found, throws passed error
- * @param {*} message 
- * @param {*} field 
- * @param {*} err 
- * @returns 
+ * If value is not found, throws custom error
+ * @param {*} message
+ * @param {*} field
+ * @param {*} err
+ * @returns
  */
 const getFieldValueOrThrowError = (message, field, err) => {
   const val = getFieldValueFromMessage(message, field);
@@ -195,5 +215,6 @@ module.exports = {
   searchOrganisationByCustomId,
   searchPersonByCustomId,
   mergeTwoPersons,
-  getFieldValueOrThrowError
+  getFieldValueOrThrowError,
+  updatePerson
 };

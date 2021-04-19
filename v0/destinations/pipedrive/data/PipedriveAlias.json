@@ -2,7 +2,7 @@
   {
     "destKey": "name",
     "sourceKeys": ["traits.name", "context.traits.name"],
-    "required": true
+    "required": false
   },
   {
     "destKey": "owner_id",

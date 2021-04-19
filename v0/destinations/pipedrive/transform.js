@@ -11,7 +11,8 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  isEmpty
+  isEmpty,
+  getValueFromMessage
 } = require("../../util");
 const {
   MAPPING_CONFIG,
@@ -28,7 +29,8 @@ const {
   searchOrganisationByCustomId,
   mergeTwoPersons,
   getFieldValueOrThrowError,
-  updateOrganisationTraits
+  updateOrganisationTraits,
+  updatePerson
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, destination) => {
@@ -177,47 +179,45 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * merge id to merge_with_id
    * destination payload structure: { "merge_with_id": "userId"}
    */
-  const previousId = getFieldValueOrThrowError(
-    message,
+
+  // const previousId = getFieldValueOrThrowError(
+  //   message,
+  //   "previousId",
+  //   new Error("error: cannot merge without previousId")
+  // );
+
+  const previousId = getValueFromMessage(message, [
     "previousId",
-    new Error("userId", "error: cannot merge without previousId")
-  );
+    "traits.previousId",
+    "context.traits.previousId"
+  ]);
+  if (!previousId) throw new Error("error: cannot merge without previousId");
 
   const userId = getFieldValueOrThrowError(
     message,
     "userId",
-    new Error("userId", "error: cannot merge without userId")
+    new Error("error: cannot merge without userId")
   );
+  
+  /**
+   * Need to extract the pipedrive side integer id for the provided userId
+   * and previous Id, i.e mapping Rudder side userId to pipedrive integer id
+   */
+  const prevPerson = await searchPersonByCustomId(previousId, destination);
+  if(!prevPerson) throw new Error("person not found. cannot merge");
+
+  const currPerson = await searchPersonByCustomId(userId, destination);
+  if(!currPerson) throw new Error("person not found. cannot merge");
 
   let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  updatePayload = removeUndefinedAndNullValues(updatePayload);
 
   /**
-   * if no traits present in payload, just call
-   * the merge persons endpoint
+   * if traits is not empty, update the current person first
+   * and then call the merge endpoint
    */
-  if (isEmpty(removeUndefinedAndNullValues(updatePayload))) {
-    const response = defaultRequestConfig();
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
-    response.body.JSON = {
-      merge_with_id: userId
-    };
-    response.endpoint = getMergeEndpoint(previousId);
-    response.params = {
-      api_token: destination.Config.api_token
-    };
-    return response;
-  }
-
-  /**
-   * if traits have been provided, then call merge endpoint first
-   * and then update the person object with the provided traits
-   */
-
-  await mergeTwoPersons(previousId, userId, destination);
+   if (Object.keys(updatePayload).length !== 0) 
+    updatePerson(currPerson.id, updatePayload, destination);
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
@@ -225,8 +225,10 @@ const aliasResponseBuilder = async (message, category, destination) => {
     "Content-Type": "application/json",
     Accept: "application/json"
   };
-  response.body.JSON = removeUndefinedAndNullValues(updatePayload);
-  response.endpoint = `${PERSONS_ENDPOINT}/${userId}`;
+  response.body.JSON = {
+    merge_with_id: currPerson.id
+  };
+  response.endpoint = getMergeEndpoint(prevPerson.id);
   response.params = {
     api_token: destination.Config.api_token
   };

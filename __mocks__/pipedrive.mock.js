@@ -17,19 +17,25 @@ const generateQueryString = (params) => {
   return queryString.slice(0, queryString.length - 1);
 };
 
-const pipedriveGetRequestHandler = (url, config) => {
-  const encodedUrl = `${url}?${generateQueryString(config.params)}`;
+const pipedriveGetRequestHandler = (url, options) => {
+  const encodedUrl = `${url}?${generateQueryString(options.params)}`;
   const data = storedData[encodedUrl];
   return { data, status: 200 };
 };
 
-const pipedrivePostRequestHandler = (url, payload, config) => {
-  const encodedUrl = `${url}?${generateQueryString(config.params)}`;
+const pipedrivePostRequestHandler = (url, payload, options) => {
+  const encodedUrl = `${url}?${generateQueryString(options.params)}`;
   const data = storedData[encodedUrl];
   return { data, status: 201 };
 };
 
+// just mocking the response status currently
+const pipedrivePutRequestHandler = (url, payload, options) => {
+  return { data: {}, status: 200 };
+};
+
 module.exports = {
   pipedriveGetRequestHandler,
-  pipedrivePostRequestHandler
+  pipedrivePostRequestHandler,
+  pipedrivePutRequestHandler
 }

@@ -275,5 +275,73 @@
       },
       "timestamp": "2020-02-02T00:23:09.544Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "api_token": "03f3251d27e1d44438889",
+        "userIdKey": "useridapikey1231212",
+        "groupIdKey": "groupidapikey1241asfasf"
+      }
+    },
+    "message": {
+      "type": "track",
+      "userId": "guthrie123",
+      "event": "Product Viewed",
+      "properties": {
+        "value": {
+          "amount": 200,
+          "currency": "USD"
+        }
+      },
+      "context": {
+        "ip": "14.5.67.21"
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "brian123",
+      "integrations": {
+        "All": true
+      },
+      "previousId": "guthrie123",
+      "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "api_token": "03f3251d27e1d44438889",
+        "userIdKey": "useridapikey1231212",
+        "groupIdKey": "groupidapikey1241asfasf"
+      }
+    }
   }
 ]

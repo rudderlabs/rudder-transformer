@@ -163,5 +163,53 @@
     },
     "version": "1",
     "endpoint": "https://api.pipedrive.com/v1/leads"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "title": "Product Viewed",
+        "active_flag": 0,
+        "person_id": 46,
+        "value": {
+          "amount": 200,
+          "currency": "USD"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {
+      "api_token": "03f3251d27e1d44438889"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.pipedrive.com/v1/leads"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "merge_with_id": 50
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {
+      "api_token": "03f3251d27e1d44438889"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.pipedrive.com/v1/persons/46/merge"
   }
 ]

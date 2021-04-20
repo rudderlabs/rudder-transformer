@@ -306,7 +306,7 @@ function responseBuilderSimple(
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
       message.anonymousId ||
-      message.userId;
+      undefined;
   } else {
     finalPayload.cid =
       integrationsClientId ||

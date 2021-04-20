@@ -396,11 +396,13 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name ||
+        message.event ||
         get(message, "properties.category") ||
         ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, "properties.category")
+        name:
+          message.name || message.event || get(message, "properties.category")
       };
       category = ConfigCategory.SCREEN;
       break;

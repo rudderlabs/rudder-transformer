@@ -1,0 +1,148 @@
+[
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "group",
+                "key": "user123",
+                "timestamp": 1579566094,
+                "environmentName": "staging",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "vertical": "restaurant",
+                    "GMV": false
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "identify",
+                "key": "user123",
+                "timestamp": 1579566094,
+                "environmentName": "staging",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "vertical": "restaurant",
+                    "GMV": false,
+                    "abc": "new-val"
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "split.io test 1",
+                "key": "user 1",
+                "timestamp": 1614639354,
+                "value": 0.93,
+                "environmentName": "production",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "vertical": "restaurant",
+                    "GMV": true,
+                    "abc": "new-val"
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "viewed_split.io test 1_page",
+                "key": "user 1",
+                "timestamp": 1614639354,
+                "value": 0.93,
+                "environmentName": "production",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "vertical": "restaurant",
+                    "GMV": true,
+                    "abc":"new-val"                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "viewed_split.io test 1_screen",
+                "key": "user 1",
+                "timestamp": 1614639354,
+                "value": 0.93,
+                "environmentName": "staging",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "vertical": "restaurant",
+                    "GMV": true,
+                    "abc":"new-val"
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    }
+]

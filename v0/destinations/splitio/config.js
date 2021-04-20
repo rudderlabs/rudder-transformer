@@ -3,15 +3,11 @@ const { getMappingConfig } = require("../../util");
 const BASE_URL = "https://events.split.io";
 
 const endpoints = {
-  eventUrl: `${BASE_URL}/api/events`,
-  identifyUrl: `${BASE_URL}/internal/api/v2/users `,
-  GroupUrl: `${BASE_URL}/internal/api/v2/groups`
+  eventUrl: `${BASE_URL}/api/events`
 };
 
 const CONFIG_CATEGORIES = {
-  EVENT: { endPoint: endpoints.eventUrl, name: "EventConfig" },
-  IDENTIFY: { endPoint: endpoints.identifyUrl, name: "IdentifyConfig" },
-  GROUP: { endPoint: endpoints.groupUrl, name: "GroupConfig" }
+  EVENT: { endPoint: endpoints.eventUrl, name: "EventConfig" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

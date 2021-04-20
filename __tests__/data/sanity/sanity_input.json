@@ -1,7 +1,8 @@
 {
-    "message": {
-
-    },
+    "messages": [
+        {},
+        {}
+    ],
     "config": {
         "active_campaign": {}
     }

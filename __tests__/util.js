@@ -8,6 +8,12 @@ const compareJSON = (obj1, obj2) => {
   return ret;
 };
 
+const getDirectories = source =>
+  readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
 module.exports = {
-  compareJSON
+  compareJSON,
+  getDirectories
 };

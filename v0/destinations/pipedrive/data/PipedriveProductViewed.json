@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["properties.name", "properties.product_id", "properties.productId", "properties.sku"],
+    "required": true
+  },
+  {
+    "destKey": "code",
+    "sourceKeys": ["properties.product_id", "properties.productId", "properties.sku"],
+    "required": false
+  },
+  {
+    "destKey": "unit",
+    "sourceKeys": "properties.quantity",
+    "required": false
+  },
+  {
+    "destKey": "prices",
+    "sourceKeys": ["properties.price", "properties.revenue", "properties.value", "properties.total"],
+    "required": false
+  }
+]

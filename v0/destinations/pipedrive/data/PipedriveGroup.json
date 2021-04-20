@@ -1,17 +1,17 @@
 [
   {
     "destKey": "name",
-    "sourceKeys": ["traits.name", "context.traits.name"],
+    "sourceKeys": "traits.name",
     "required": true
   },
   {
     "destKey": "add_time",
-    "sourceKeys": ["traits.add_time", "context.traits.add_time", "originalTimestamp"],
+    "sourceKeys": ["traits.add_time", "originalTimestamp", "timestamp"],
     "required": false
   },
   {
     "destKey": "visible_to",
-    "sourceKeys": ["traits.visible_to", "context.traits.visible_to"],
+    "sourceKeys": "traits.visible_to",
     "required": false
   }
 ]

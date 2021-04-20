@@ -69,7 +69,9 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
     });
 
     if (response && response.status === 200) {
-      if (response.data.data.items.length === 0) return null;
+      if (response.data.data.items.length === 0) {
+        return null;
+      }
       return response.data.data.items[0].item;
     }
 
@@ -92,9 +94,9 @@ const updatePerson = async (userIdvalue, data, destination) => {
       }
     });
 
-    if (!response || response.status !== 200)
+    if (!response || response.status !== 200) {
       throw new Error("error while updating person");
-
+    }
   } catch (err) {
     throw new Error(`error while updating person: ${err}`);
   }
@@ -113,7 +115,9 @@ const searchOrganisationByCustomId = async (groupId, destination) => {
       }
     });
     if (response && response.status === 200) {
-      if (response.data.data.items.length === 0) return null;
+      if (response.data.data.items.length === 0) {
+        return null;
+      }
       return response.data.data.items[0].item;
     }
     return null;
@@ -137,7 +141,9 @@ const createNewOrganisation = async (data, destination) => {
       throw new Error(`failed to create new organisation: ${err}`);
     });
 
-  if (resp && resp.status === 201) return resp.data.data;
+  if (resp && resp.status === 201) {
+    return resp.data.data;
+  }
   throw new Error("failed to create new organisation");
 };
 
@@ -164,8 +170,9 @@ const updateOrganisationTraits = async (groupId, groupPayload, destination) => {
       }
     );
 
-    if (!response || response.status !== 200)
+    if (!response || response.status !== 200) {
       throw new Error("error while updating group");
+    }
   } catch (err) {
     throw new Error(`error while updating group: ${err}`);
   }
@@ -189,8 +196,9 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
         }
       }
     );
-    if (!mergeResponse || mergeResponse.status !== 200)
+    if (!mergeResponse || mergeResponse.status !== 200) {
       throw new Error("merge failed");
+    }
   } catch (err) {
     throw new Error(`error while merging persons: ${err}`);
   }
@@ -206,7 +214,9 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
  */
 const getFieldValueOrThrowError = (message, field, err) => {
   const val = getFieldValueFromMessage(message, field);
-  if (!val) throw err;
+  if (!val) {
+    throw err;
+  }
   return val;
 };
 
@@ -219,16 +229,24 @@ const getFieldValueOrThrowError = (message, field, err) => {
  * @param {*} type 
  * @returns 
  */
- const renameCustomFields = (message, fieldsMap, type) => {
+ const renameCustomFields = (message, fieldsMap, type, exclusionKeys) => {
   const specificMap = fieldsMap[type];
-  if(!specificMap)  throw new Error(`fieldsMap doest not contain type ${type}`);
-
+  if(!specificMap) {
+    throw new Error(`fieldsMap does not contain type ${type}`);
+  }
+  const mapKeys = Object.keys(specificMap);
   const payload = {};
+
   Object.keys(message).map(key => {
-    if(Object.keys(specificMap).includes(key))
+    if(mapKeys.includes(key)) {
       set(payload, specificMap[key], message[key]);
-    else
+    }
+    else if(exclusionKeys.includes(key)) {
       set(payload, key, message[key]);
+    }
+    else {
+      logger.warn(`${key} not specified in fieldsMap, skipped`);
+    }
   });
 
   return payload;

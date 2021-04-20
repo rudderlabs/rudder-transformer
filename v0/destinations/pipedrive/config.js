@@ -12,7 +12,8 @@ const CONFIG_CATEGORIES = {
   GROUP: { name: "PipedriveGroup", type: "group" },
   ALIAS: { name: "PipedriveAlias", type: "alias" },
   TRACK: { name: "PipedriveTrack", type: "track" },
-  PRODUCT: { name: "PipedriveProduct" }
+  PRODUCT_VIEWED: { name: "PipedriveProductViewed" },
+  ORDER_COMPLETED: { name: "PipedriveOrderCompleted" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -30,7 +31,13 @@ const PIPEDRIVE_IDENTIFY_EXCLUSION = [
   "userId"
 ];
 
-const PIPEDRIVE_GROUP_EXCLUSION = PIPEDRIVE_IDENTIFY_EXCLUSION.slice(0, 4);
+const PIPEDRIVE_GROUP_EXCLUSION = [
+  "name",
+  "owner_id",
+  "visible_to",
+  "add_time"
+];
+
 const PIPEDRIVE_TRACK_EXCLUSION = [
   "title",
   "value",
@@ -39,15 +46,26 @@ const PIPEDRIVE_TRACK_EXCLUSION = [
   "label_ids",
   "owner_id"
 ];
-const PIPEDRIVE_PRODUCT_EXCLUSION = [
+
+const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [
   "name",
-  "code",
-  "unit",
+  "quantity",
+  "price",
+  "product_id",
+  "sku",
+  "productId",
+  "revenue",
+  "value",
+  "total"
+];
+
+const PIPEDRIVE_ORDER_COMPLETED_EXCLUSION = [
+  "name",
+  "order_id",
+  "checkout_id",
   "tax",
-  "selectable",
-  "visible_to",
-  "owner_id",
-  "prices"
+  "revenue",
+  "total"
 ];
 
 module.exports = {
@@ -59,7 +77,8 @@ module.exports = {
   ORGANISATION_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
-  PIPEDRIVE_PRODUCT_EXCLUSION,
+  PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
+  PIPEDRIVE_ORDER_COMPLETED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT,

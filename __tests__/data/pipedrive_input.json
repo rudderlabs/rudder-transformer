@@ -358,38 +358,6 @@
     }
   },
   {
-    "destination": {
-      "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
-      }
-    },
-    "message": {
-      "type": "track",
-      "userId": "guthrie123",
-      "event": "Product Viewed",
-      "properties": {
-        "tax": 0
-      },
-      "context": {
-        "ip": "14.5.67.21"
-      },
-      "timestamp": "2020-02-02T00:23:09.544Z"
-    }
-  },
-  {
     "message": {
       "channel": "web",
       "context": {
@@ -442,41 +410,6 @@
           "track": {}
         }
       }
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {
-            "rating": "ratingapikey"
-          },
-          "leads": {},
-          "track": {}
-        }
-      }
-    },
-    "message": {
-      "type": "track",
-      "userId": "guthrie123",
-      "event": "Order Completed",
-      "properties": {
-        "rating": 4,
-        "code": "prod123"
-      },
-      "context": {
-        "ip": "14.5.67.21"
-      },
-      "timestamp": "2020-02-02T00:23:09.544Z"
     }
   },
   {
@@ -558,7 +491,6 @@
     "message": {
       "type": "track",
       "userId": "guthrie123",
-      "event": "Order Completed",
       "properties": {
         "rating": 4,
         "code": "prod123"
@@ -582,6 +514,9 @@
             "someCustomKey": "someCustomKey467"
           },
           "organization": {},
+          "product": {
+            "customkey": "customkeyapi"
+          },
           "leads": {},
           "track": {}
         }
@@ -590,9 +525,16 @@
     "message": {
       "type": "track",
       "userId": "guthrie123",
+      "event": "Product Viewed",
       "properties": {
+        "name": "Bike",
         "rating": 4,
-        "code": "prod123"
+        "value": {
+          "amount": 200,
+          "currency": "USD"
+        },
+        "customkey": "some value",
+        "toBeDropped": "random"
       },
       "context": {
         "ip": "14.5.67.21"

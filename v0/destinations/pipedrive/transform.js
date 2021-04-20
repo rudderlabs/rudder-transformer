@@ -283,6 +283,8 @@ const trackResponseBuilder = async (message, category, destination) => {
     "userId",
     new Error("userId required for event tracking")
   );
+  
+  if(!get(message, "event"))  throw new Error("event type not specified");
 
   const person = await searchPersonByCustomId(userId, destination);
   if (!person) throw new Error("person not found, cannot add track event");

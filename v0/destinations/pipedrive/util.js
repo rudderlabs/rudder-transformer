@@ -221,6 +221,7 @@ const getFieldValueOrThrowError = (message, field, err) => {
  */
  const renameCustomFields = (message, fieldsMap, type) => {
   const specificMap = fieldsMap[type];
+  if(!specificMap)  throw new Error(`fieldsMap doest not contain type ${type}`);
   const payload = {};
   Object.keys(message).map(key => {
     if(Object.keys(specificMap).includes(key))

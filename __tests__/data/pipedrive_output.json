@@ -254,5 +254,11 @@
     },
     "version": "1",
     "endpoint": "https://api.pipedrive.com/v1/persons/46/merge"
+  },
+  {
+    "error": "fieldsMap doest not contain type product"
+  },
+  {
+    "error": "event type not specified"
   }
 ]

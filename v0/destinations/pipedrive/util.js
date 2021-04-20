@@ -213,6 +213,7 @@ const getFieldValueOrThrowError = (message, field, err) => {
 /**
  * * Util function to rename the custom fields
  * based on fieldsMap in destination Config
+ * Supported type: product, track, leads, organization, person
  * @param {*} message 
  * @param {*} fieldsMap 
  * @param {*} type 

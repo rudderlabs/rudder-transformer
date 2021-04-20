@@ -211,13 +211,6 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * merge id to merge_with_id
    * destination payload structure: { "merge_with_id": "userId"}
    */
-
-  // const previousId = getFieldValueOrThrowError(
-  //   message,
-  //   "previousId",
-  //   new Error("error: cannot merge without previousId")
-  // );
-
   const previousId = getValueFromMessage(message, [
     "previousId",
     "traits.previousId",

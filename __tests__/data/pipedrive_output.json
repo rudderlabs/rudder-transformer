@@ -209,5 +209,50 @@
     },
     "version": "1",
     "endpoint": "https://api.pipedrive.com/v1/persons/46/merge"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "Order Completed",
+        "ratingapikey": 4,
+        "active_flag": 1,
+        "code": "prod123"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {
+      "api_token": "03f3251d27e1d44438889"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.pipedrive.com/v1/products"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "merge_with_id": 50
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {
+      "api_token": "03f3251d27e1d44438889"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.pipedrive.com/v1/persons/46/merge"
   }
 ]

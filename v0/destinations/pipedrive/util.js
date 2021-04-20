@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 const axios = require("axios");
-const { set } = require("lodash");
+const set = require("set-value");
 const logger = require("../../../logger");
 const { getFieldValueFromMessage } = require("../../util");
 const {
@@ -222,6 +222,7 @@ const getFieldValueOrThrowError = (message, field, err) => {
  const renameCustomFields = (message, fieldsMap, type) => {
   const specificMap = fieldsMap[type];
   if(!specificMap)  throw new Error(`fieldsMap doest not contain type ${type}`);
+
   const payload = {};
   Object.keys(message).map(key => {
     if(Object.keys(specificMap).includes(key))

@@ -5,11 +5,6 @@
     "required": true
   },
   {
-    "destKey": "owner_id",
-    "sourceKeys": ["traits.owner_id", "context.traits.owner_id"],
-    "required": false
-  },
-  {
     "destKey": "add_time",
     "sourceKeys": ["traits.add_time", "context.traits.add_time", "originalTimestamp"],
     "required": false

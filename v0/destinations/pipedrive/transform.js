@@ -23,7 +23,8 @@ const {
   PIPEDRIVE_TRACK_EXCLUSION,
   getMergeEndpoint,
   LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT
+  PRODUCTS_ENDPOINT,
+  PRODUCT_EVENTS
 } = require("./config");
 const {
   createNewOrganisation,
@@ -175,7 +176,10 @@ const groupResponseBuilder = async (message, category, destination) => {
   if (!org) {
     org = await createNewOrganisation(groupPayload, destination);
     set(org, destination.Config.groupIdKey, groupId);
-  } else await updateOrganisationTraits(groupId, groupPayload, destination);
+  } else {
+    if(get(groupPayload, "add_time")) delete groupPayload.add_time;
+    await updateOrganisationTraits(groupId, groupPayload, destination);
+  }
 
   /**
    * Add the person to that org
@@ -284,7 +288,8 @@ const trackResponseBuilder = async (message, category, destination) => {
     new Error("userId required for event tracking")
   );
   
-  if(!get(message, "event"))  throw new Error("event type not specified");
+  let event = get(message, "event");
+  if(!event)  throw new Error("event type not specified");
 
   const person = await searchPersonByCustomId(userId, destination);
   if (!person) throw new Error("person not found, cannot add track event");
@@ -292,28 +297,9 @@ const trackResponseBuilder = async (message, category, destination) => {
   let payload;
   let endpoint;
   const productCategory = CONFIG_CATEGORIES.PRODUCT.name;
+  event = event.toLowerCase().trim();
 
-  if (
-    get(message, "event")
-      .toLowerCase()
-      .trim() === "product viewed"
-  ) {
-    payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
-    payload = extractCustomFields(
-      message,
-      payload,
-      ["properties"],
-      PIPEDRIVE_PRODUCT_EXCLUSION
-    );
-    payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
-    set(payload, "active_flag", 0);
-    endpoint = PRODUCTS_ENDPOINT;
-  } 
-  else if (
-    get(message, "event")
-      .toLowerCase()
-      .trim() === "order completed"
-  ) {
+  if(PRODUCT_EVENTS.includes(event)) {
     payload = constructPayload(message, MAPPING_CONFIG[productCategory]);
     payload = extractCustomFields(
       message,
@@ -323,9 +309,11 @@ const trackResponseBuilder = async (message, category, destination) => {
     );
     payload = renameCustomFields(payload, destination.Config.fieldsMap, "product");
     
-    set(payload, "active_flag", 1);
+    if(event === "product viewed")  set(payload, "active_flag", 0);
+    else  set(payload, "active_flag", 1);
+    
     endpoint = PRODUCTS_ENDPOINT;
-  } 
+  }
   else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
     payload = extractCustomFields(

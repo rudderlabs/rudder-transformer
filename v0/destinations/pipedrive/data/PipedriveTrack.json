@@ -23,10 +23,5 @@
     "destKey": "label_ids",
     "sourceKeys": "properties.label_ids",
     "required": false
-  },
-  {
-    "destKey": "owner_id",
-    "sourceKeys": "properties.owner_id",
-    "required": false
   }
 ]

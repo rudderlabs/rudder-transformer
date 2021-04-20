@@ -30,11 +30,6 @@
     "required": false
   },
   {
-    "destKey": "owner_id",
-    "sourceKeys": "properties.owner_id",
-    "required": false
-  },
-  {
     "destKey": "prices",
     "sourceKeys": "properties.prices",
     "required": false

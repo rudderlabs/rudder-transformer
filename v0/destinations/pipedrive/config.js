@@ -17,6 +17,8 @@ const CONFIG_CATEGORIES = {
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
+const PRODUCT_EVENTS = ["product viewed", "order completed"];
+
 const PIPEDRIVE_IDENTIFY_EXCLUSION = [
   "name",
   "owner_id",
@@ -60,5 +62,6 @@ module.exports = {
   PIPEDRIVE_PRODUCT_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT
+  PRODUCTS_ENDPOINT,
+  PRODUCT_EVENTS
 };

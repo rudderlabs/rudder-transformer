@@ -5,11 +5,6 @@
     "required": true
   },
   {
-    "destKey": "owner_id",
-    "sourceKeys": ["traits.owner_id", "context.traits.owner_id"],
-    "required": false
-  },
-  {
     "destKey": "org_id",
     "sourceKeys": ["traits.org_id", "context.traits.org_id"],
     "required": false

@@ -44,7 +44,9 @@ const PIPEDRIVE_TRACK_EXCLUSION = [
   "organization_id",
   "expected_close_date",
   "label_ids",
-  "owner_id"
+  "owner_id",
+  "revenue",
+  "total"
 ];
 
 const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [

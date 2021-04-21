@@ -31,20 +31,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -92,20 +85,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -146,20 +132,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -200,20 +179,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -251,20 +223,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -302,42 +267,29 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
   {
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {
-            "rating": "ratingapikey"
-          }
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ],
+        "leadsMap": [
+          { "from": "rating", "to": "ratingapikey" }
+        ]
       }
     },
     "message": {
@@ -395,20 +347,13 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
@@ -453,39 +398,28 @@
     },
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ]
       }
     }
   },
   {
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": {
+          "district": "districtapikey2987",
+          "someCustomKey": "someCustomKey467"
+        },
+        "organizationMap": {},
+        "leadsMap": {}
       }
     },
     "message": {
@@ -504,22 +438,16 @@
   {
     "destination": {
       "Config": {
-        "api_token": "03f3251d27e1d44438889",
-        "userIdKey": "useridapikey1231212",
-        "groupIdKey": "groupidapikey1241asfasf",
-
-        "fieldsMap": {
-          "person": {
-            "district": "districtapikey2987",
-            "someCustomKey": "someCustomKey467"
-          },
-          "organization": {},
-          "product": {
-            "customkey": "customkeyapi"
-          },
-          "leads": {},
-          "track": {}
-        }
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" }
+        ],
+        "productsMap": [
+          { "from": "customkey", "to": "customkeyapi" }
+        ]
       }
     },
     "message": {

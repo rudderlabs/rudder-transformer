@@ -11,23 +11,6 @@ const {
   getMergeEndpoint
 } = require("./config");
 
-const findPersonById = async (id, destination) => {
-  try {
-    const axiosResponse = await axios.get(`${PERSONS_ENDPOINT}/${id}`, {
-      params: {
-        api_token: destination.Config.api_token
-      },
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    return axiosResponse.data;
-  } catch (err) {
-    logger.warn(`Error while searching person by Id: ${err}`);
-    return null;
-  }
-};
-
 /**
  * Utility function to find person with max score
  */
@@ -60,8 +43,8 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
     const response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
       params: {
         term: userIdValue,
-        field: destination.Config.userIdKey,
-        api_token: destination.Config.api_token
+        field: destination.Config.userIdToken,
+        api_token: destination.Config.apiToken
       },
       headers: {
         Accept: "application/json"
@@ -84,18 +67,22 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
 
 const updatePerson = async (userIdvalue, data, destination) => {
   try {
-    const response = await axios.put(`${PERSONS_ENDPOINT}/${userIdvalue}`, data, {
-      params: {
-        api_token: destination.Config.api_token
-      },
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded"
+    const response = await axios.put(
+      `${PERSONS_ENDPOINT}/${userIdvalue}`,
+      data,
+      {
+        params: {
+          api_token: destination.Config.apiToken
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        }
       }
-    });
+    );
 
     if (!response || response.status !== 200) {
-      throw new Error("error while updating person");
+      throw new Error("invalid response");
     }
   } catch (err) {
     throw new Error(`error while updating person: ${err}`);
@@ -107,8 +94,8 @@ const searchOrganisationByCustomId = async (groupId, destination) => {
     const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
         term: groupId,
-        field: destination.Config.groupIdKey,
-        api_token: destination.Config.api_token
+        field: destination.Config.groupIdToken,
+        api_token: destination.Config.apiToken
       },
       headers: {
         Accept: "application/json"
@@ -131,7 +118,7 @@ const createNewOrganisation = async (data, destination) => {
   const resp = await axios
     .post(ORGANISATION_ENDPOINT, data, {
       params: {
-        api_token: destination.Config.api_token
+        api_token: destination.Config.apiToken
       },
       headers: {
         "Content-Type": "application/json"
@@ -154,24 +141,24 @@ const createNewOrganisation = async (data, destination) => {
  * @param {*} groupPayload
  * @param {*} destination
  */
-const updateOrganisationTraits = async (groupId, groupPayload, destination) => {
+const updateOrganisationTraits = async (orgId, groupPayload, destination) => {
   try {
     const response = await axios.put(
-      `${ORGANISATION_ENDPOINT}/${groupId}`,
+      `${ORGANISATION_ENDPOINT}/${orgId}`,
       groupPayload,
       {
         params: {
-          api_token: destination.Config.api_token
+          api_token: destination.Config.apiToken
         },
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/json"
         }
       }
     );
 
     if (!response || response.status !== 200) {
-      throw new Error("error while updating group");
+      throw new Error("invalid response");
     }
   } catch (err) {
     throw new Error(`error while updating group: ${err}`);
@@ -188,7 +175,7 @@ const mergeTwoPersons = async (previousId, userId, destination) => {
       payload,
       {
         params: {
-          api_token: destination.Config.api_token
+          api_token: destination.Config.apiToken
         },
         headers: {
           Accept: "application/json",
@@ -224,28 +211,54 @@ const getFieldValueOrThrowError = (message, field, err) => {
  * * Util function to rename the custom fields
  * based on fieldsMap in destination Config
  * Supported type: product, track, leads, organization, person
- * @param {*} message 
- * @param {*} fieldsMap 
- * @param {*} type 
- * @returns 
+ * @param {*} message
+ * @param {*} fieldsMap
+ * @param {*} type
+ * @returns
  */
- const renameCustomFields = (message, fieldsMap, type, exclusionKeys) => {
-  const specificMap = fieldsMap[type];
-  if(!specificMap) {
-    throw new Error(`fieldsMap does not contain type ${type}`);
+const renameCustomFields = (message, Config, type, exclusionKeys) => {
+  /**
+   * Util function to reshape Config fields map to
+   * usable format
+   */
+  function reshapeMap(fieldMap) {
+    const resMap = new Map();
+    fieldMap.map(item => {
+      resMap.set(item.from, item.to);
+    });
+    return resMap;
   }
-  const mapKeys = Object.keys(specificMap);
+
+  /**
+   * inner function needed for cases where field map is not provided
+   * but payload still contains custom key-val pairs.
+   * Filters out all such pairs
+   */
+  function filterOutCustomKeys(payload, allowedKeys) {
+    const filteredPayload = {};
+    Object.keys(payload).forEach(key => {
+      if (allowedKeys.has(key)) set(filteredPayload, key, payload[key]);
+    });
+    return filteredPayload;
+  }
+
+  const exclusionSet = new Set(exclusionKeys);
+  let specificMap = Config[type];
+  
+  if (!specificMap || specificMap.length === 0) {
+    return filterOutCustomKeys(message, exclusionSet);
+  }
+
+  specificMap = reshapeMap(specificMap);
   const payload = {};
 
   Object.keys(message).map(key => {
-    if(mapKeys.includes(key)) {
-      set(payload, specificMap[key], message[key]);
-    }
-    else if(exclusionKeys.includes(key)) {
+    if (exclusionSet.has(key)) {
       set(payload, key, message[key]);
-    }
-    else {
-      logger.warn(`${key} not specified in fieldsMap, skipped`);
+    } else if (specificMap.has(key)) {
+      set(payload, specificMap.get(key), message[key]);
+    } else {
+      logger.warn(`custom field ${key} not specified in fields Map, skipped`);
     }
   });
 
@@ -253,7 +266,6 @@ const getFieldValueOrThrowError = (message, field, err) => {
 };
 
 module.exports = {
-  findPersonById,
   createNewOrganisation,
   updateOrganisationTraits,
   searchOrganisationByCustomId,

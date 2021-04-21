@@ -36,34 +36,7 @@ const {
   renameCustomFields
 } = require("./util");
 
-/**
- * Config structure so far
- * {
- *    "api_token": "asfaaf31423csaf",
- *    "groupIdToken": "sfhijsfh",
- *    "userIdToken": "nzoicb88714sCV"
- * }
- *
- * New potential Config structure
- * shall contain all custom field id vs api_key mappings
- * {
- *    "api_token": "asfaaf31423csaf",
- *    "r_group_id": "sfhijsfh",
- *    "r_user_id": "nzoicb88714sCV",
- *    "customFieldsMap": {
- *        "person": {
- *          "relation_status": "relstatusapi_key",
- *          "district": "distapi_key",
- *          ...
- *        },
- *        "product": {...},
- *        "leads": {...},
- *        "organization": {...},
- *        "track": {...}
- *     }
- * }
- *
- */
+
 const identifyResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
@@ -85,8 +58,8 @@ const identifyResponseBuilder = async (message, category, destination) => {
 
   payload = renameCustomFields(
     payload, 
-    destination.Config.fieldsMap, 
-    "person",
+    destination.Config, 
+    "personsMap",
     renameExclusionKeys
   );
 
@@ -104,7 +77,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
     response.params = {
-      api_token: destination.Config.api_token
+      api_token: destination.Config.apiToken
     };
 
     return response;
@@ -112,7 +85,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
 
   // mapping userId to custom userId key field
   // in destination payload
-  set(payload, destination.Config.userIdKey, userIdValue);
+  set(payload, destination.Config.userIdToken, userIdValue);
 
   // create a new person
   const response = defaultRequestConfig();
@@ -124,7 +97,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
   };
   response.endpoint = PERSONS_ENDPOINT;
   response.params = {
-    api_token: destination.Config.api_token
+    api_token: destination.Config.apiToken
   };
 
   return response;
@@ -166,14 +139,14 @@ const groupResponseBuilder = async (message, category, destination) => {
   groupPayload = extractCustomFields(
     message,
     groupPayload,
-    ["traits", "context.traits"],
+    ["traits"],
     PIPEDRIVE_GROUP_EXCLUSION
   );
 
   groupPayload = renameCustomFields(
     groupPayload,
-    destination.Config.fieldsMap,
-    "organization",
+    destination.Config,
+    "organizationMap",
     renameExclusionKeys
   );
 
@@ -185,11 +158,11 @@ const groupResponseBuilder = async (message, category, destination) => {
    * throws error if create or udpate fails
    */
   if (!org) {
+    set(groupPayload, destination.Config.groupIdToken, groupId);
     org = await createNewOrganisation(groupPayload, destination);
-    set(org, destination.Config.groupIdKey, groupId);
   } else {
     if (get(groupPayload, "add_time")) delete groupPayload.add_time;
-    await updateOrganisationTraits(groupId, groupPayload, destination);
+    await updateOrganisationTraits(org.id, groupPayload, destination);
   }
 
   /**
@@ -203,7 +176,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
   response.params = {
-    api_token: destination.Config.api_token
+    api_token: destination.Config.apiToken
   };
   response.headers = {
     "Content-Type": "application/json",
@@ -261,8 +234,8 @@ const aliasResponseBuilder = async (message, category, destination) => {
 
   updatePayload = renameCustomFields(
     updatePayload,
-    destination.Config.fieldsMap,
-    "person",
+    destination.Config,
+    "personsMap",
     renameExclusionKeys
   );
 
@@ -272,8 +245,9 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * if traits is not empty, update the current person first
    * and then call the merge endpoint
    */
-  if (Object.keys(updatePayload).length !== 0)
-    updatePerson(currPerson.id, updatePayload, destination);
+  if (Object.keys(updatePayload).length !== 0) {
+    await updatePerson(currPerson.id, updatePayload, destination);
+  }
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
@@ -286,7 +260,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
   };
   response.endpoint = getMergeEndpoint(prevPerson.id);
   response.params = {
-    api_token: destination.Config.api_token
+    api_token: destination.Config.apiToken
   };
 
   return response;
@@ -301,7 +275,6 @@ const aliasResponseBuilder = async (message, category, destination) => {
  * @returns
  */
 const trackResponseBuilder = async (message, category, destination) => {
-
   let event = get(message, "event");
   if (!event) throw new Error("event type not specified");
 
@@ -326,8 +299,8 @@ const trackResponseBuilder = async (message, category, destination) => {
 
     payload = renameCustomFields(
       payload,
-      destination.Config.fieldsMap,
-      "product",
+      destination.Config,
+      "productsMap",
       renameExclusionKeys
     );
     set(payload, "active_flag", 0);
@@ -351,8 +324,8 @@ const trackResponseBuilder = async (message, category, destination) => {
 
     payload = renameCustomFields(
       payload,
-      destination.Config.fieldsMap,
-      "product",
+      destination.Config,
+      "productsMap",
       renameExclusionKeys
     );
     set(payload, "active_flag", 1);
@@ -383,8 +356,8 @@ const trackResponseBuilder = async (message, category, destination) => {
     
     payload = renameCustomFields(
       payload,
-      destination.Config.fieldsMap,
-      "track",
+      destination.Config,
+      "leadsMap",
       renameExclusionKeys
     );
 
@@ -397,7 +370,7 @@ const trackResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
   response.params = {
-    api_token: destination.Config.api_token
+    api_token: destination.Config.apiToken
   };
   response.headers = {
     "Content-Type": "application/json",

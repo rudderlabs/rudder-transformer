@@ -1,3 +1,5 @@
+const { readdirSync } = require("fs");
+
 const compareJSON = (obj1, obj2) => {
   const ret = {};
   for (const i in obj2) {

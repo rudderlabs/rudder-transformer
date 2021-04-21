@@ -399,7 +399,14 @@ const handleMetadataForValue = (value, metadata) => {
   }
 
   // get infor from metadata
-  const { type, typeFormat, template, defaultValue, excludes } = metadata;
+  const {
+    type,
+    typeFormat,
+    template,
+    defaultValue,
+    excludes,
+    multikeyMap
+  } = metadata;
 
   // if value is null and defaultValue is supplied - use that
   if (!value) {
@@ -488,6 +495,47 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
+
+  // handle multikeyMap
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  if (multikeyMap) {
+    let foundVal = false;
+    if (Array.isArray(multikeyMap)) {
+      multikeyMap.some(map => {
+        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+          logger.warn(
+            "multikeyMap skipped: sourceVal and destVal must be of valid type"
+          );
+          foundVal = true;
+          return true;
+        }
+
+        if (map.sourceVal.includes(formattedVal)) {
+          formattedVal = map.destVal;
+          foundVal = true;
+          return true;
+        }
+      });
+    } else {
+      logger.warn("multikeyMap skipped: multikeyMap must be an array");
+    }
+    if (!foundVal)
+      formattedVal = undefined
+  }
+
   return formattedVal;
 };
 
@@ -558,6 +606,56 @@ const constructPayload = (message, mappingJson) => {
         throw new Error(
           `Missing required value from ${JSON.stringify(sourceKeys)}`
         );
+      }
+    });
+
+    return payload;
+  }
+
+  // invalid mappingJson
+  return null;
+};
+
+// pt 1. Here we are following a different style of mapping json where we want to maintain
+// the {dest_key, and , source_key} on a higher key called mappingKey.
+// Example of generated payload:
+// { message:
+// 	 { 	'0': { key: 'anonymous_id', value: '' },
+// 	 	'1': { key: 'user_id', value: 'userTest004' },
+// 	 	'2': { key: 'event', value: 'Page Call' },
+// 	 	..}
+// }
+// pt 2. This is a similar method to construct payload w.r.t where we do-not remove the keys
+// having undefined and null values.
+// Usage - Google Sheets destination where we require all the keys of the message
+// irrespective of values.
+// Future enhancements: Need to validate uniqueness mapping-keys on the mapping-json
+// in order to avoid mapping conflicts
+// ################## Note to devs: Currently we are assuming the mapping-keys are all unique
+const constructPayloadWithKeys = (message, mappingJson) => {
+  if (Array.isArray(mappingJson) && mappingJson.length > 0) {
+    const payload = {};
+    mappingJson.forEach(mapping => {
+      const {
+        sourceKeys,
+        mappingKey,
+        destKey,
+        metadata,
+        sourceFromGenericMap
+      } = mapping;
+      const value = handleMetadataForValue(
+        sourceFromGenericMap
+          ? getFieldValueFromMessage(message, sourceKeys)
+          : getValueFromMessage(message, sourceKeys),
+        metadata
+      );
+
+      if (value) {
+        // set the value only if correct
+        set(payload, mappingKey, { key: destKey, value });
+      } else {
+        // set empty string as value if the value is not defined
+        set(payload, mappingKey, { key: destKey, value: "" });
       }
     });
 
@@ -815,6 +913,7 @@ function checkEmptyStringInarray(array) {
 module.exports = {
   ErrorMessage,
   constructPayload,
+  constructPayloadWithKeys,
   checkEmptyStringInarray,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,

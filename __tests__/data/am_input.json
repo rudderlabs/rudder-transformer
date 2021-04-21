@@ -35,6 +35,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "identify",
@@ -82,6 +92,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "request_ip": "1.1.1.1",
@@ -92,11 +112,14 @@
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
-        "path": "/test",
-        "referrer": "Rudder",
-        "search": "abc",
-        "title": "Test Page",
-        "url": "www.rudderlabs.com"
+        "path": "/destinations/amplitude",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/amplitude",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "integrations": {
         "All": true
@@ -136,6 +159,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "request_ip": "1.1.1.1",
@@ -146,11 +179,14 @@
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
-        "path": "/test",
-        "referrer": "Rudder",
-        "search": "abc",
-        "title": "Test Page",
-        "url": "www.rudderlabs.com"
+        "path": "/destinations/amplitude",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/amplitude",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "integrations": {
         "All": false,
@@ -196,6 +232,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -244,6 +290,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "traits": {
@@ -415,11 +471,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "group",
@@ -493,11 +552,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "group",
@@ -571,11 +633,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "alias",
@@ -635,11 +700,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "alias",
@@ -702,6 +770,16 @@
           "carrier": "Android",
           "cellular": true,
           "bluetooth": false
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "timezone": "Asia/Kolkata",
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
@@ -986,7 +1064,7 @@
       "type": "screen",
       "userId": "identified user id",
       "anonymousId": "anon-id-new",
-      "name": "Screen View",
+      "event": "Screen View",
       "properties": {
         "prop1": "5"
       },
@@ -1486,11 +1564,14 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "page": {
-          "url": "http://localhost:1111/RudderAmplitude.html",
-          "path": "/RudderAmplitude.html",
-          "title": "Amplitude Testing By Rudder",
+          "path": "/destinations/amplitude",
+          "referrer": "",
           "search": "",
-          "referrer": "http://localhost:1111/"
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "locale": "en-GB",
         "screen": {

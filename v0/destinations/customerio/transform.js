@@ -80,7 +80,12 @@ function responseBuilder(message, evType, evName, destination) {
           trait !== "userId" &&
           trait !== "anonymousId"
         ) {
-          set(rawPayload, trait, get(message, `${pathToTraits}.${trait}`));
+          const dotEscapedTrait = trait.replace(".", "\\.");
+          set(
+            rawPayload,
+            dotEscapedTrait,
+            get(message, `${pathToTraits}.${trait}`)
+          );
         }
       });
     }

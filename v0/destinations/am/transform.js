@@ -167,6 +167,13 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const initialRef = {
+    initial_referrer: get(message, "context.page.initial_referrer"),
+    initial_referring_domain: get(
+      message,
+      "context.page.initial_referring_domain"
+    )
+  };
   const oldKeys = Object.keys(campaign);
   // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
   oldKeys.forEach(oldKey => {
@@ -180,6 +187,7 @@ function responseBuilderSimple(
   rawPayload.user_properties = rawPayload.user_properties || {};
   rawPayload.user_properties = {
     ...rawPayload.user_properties,
+    ...initialRef,
     ...campaign
   };
 
@@ -388,11 +396,13 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name ||
+        message.event ||
         get(message, "properties.category") ||
         ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, "properties.category")
+        name:
+          message.name || message.event || get(message, "properties.category")
       };
       category = ConfigCategory.SCREEN;
       break;

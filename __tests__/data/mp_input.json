@@ -42,6 +42,16 @@
           "density": 2
         },
         "traits": {},
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "integrations": {
@@ -49,13 +59,15 @@
       },
       "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
       "originalTimestamp": "2020-01-24T06:29:02.358Z",
-      "properties": {
-        "path": "/tests/html/index2.html",
+      "page": {
+        "path": "/destinations/mixpanel",
         "referrer": "",
         "search": "",
         "title": "",
-        "url": "http://localhost/tests/html/index2.html",
-        "category": "communication"
+        "url": "https://docs.rudderstack.com/destinations/mixpanel",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53708",
@@ -109,6 +121,16 @@
           "density": 2
         },
         "traits": {},
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "integrations": {
@@ -116,13 +138,15 @@
       },
       "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
       "originalTimestamp": "2020-01-24T06:29:02.358Z",
-      "properties": {
-        "path": "/tests/html/index2.html",
+      "page": {
+        "path": "/destinations/mixpanel",
         "referrer": "",
         "search": "",
         "title": "",
-        "url": "http://localhost/tests/html/index2.html",
-        "category": "Contact"
+        "url": "https://docs.rudderstack.com/destinations/mixpanel",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53708",
@@ -364,10 +388,30 @@
           "email": "mickey@disney.com",
           "firstname": "Mickey"
         },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "integrations": {
         "All": true
+      },
+      "page": {
+        "path": "/destinations/mixpanel",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/mixpanel",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
       "originalTimestamp": "2020-01-24T06:29:02.362Z",
@@ -425,6 +469,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -493,6 +547,16 @@
           "email": "mickey@disney.com",
           "firstname": "Mickey"
         },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "integrations": {
@@ -555,6 +619,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -651,6 +725,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -755,6 +839,16 @@
           "email": "mickey@disney.com",
           "firstname": "Mickey"
         },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "event": " new Order Completed totally",
@@ -856,6 +950,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -1017,6 +1121,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -1233,6 +1347,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
@@ -1483,6 +1607,16 @@
           "density": 2
         },
         "traits": {},
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },
       "integrations": {
@@ -1551,6 +1685,16 @@
           "country": "USA",
           "email": "mickey@disney.com",
           "firstname": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
       },

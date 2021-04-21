@@ -1116,6 +1116,33 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "type": "page",
+      "sentAt": "2020-08-28T16:26:16.473Z",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
   }
 ]
 

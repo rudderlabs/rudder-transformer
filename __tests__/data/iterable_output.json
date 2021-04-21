@@ -676,6 +676,10 @@
   {
     "statusCode": 400,
     "message": "userId or email is mandatory for this request"
+  },
+  {
+    "statusCode": 400,
+    "message": "Invalid page call"
   }
 ]
 

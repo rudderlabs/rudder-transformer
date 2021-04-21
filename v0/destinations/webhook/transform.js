@@ -38,7 +38,7 @@ function process(event) {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "Content-Type": "application/json"
+          "content-type": "application/json"
         };
       }
 

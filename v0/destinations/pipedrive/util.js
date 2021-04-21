@@ -244,7 +244,7 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
 
   const exclusionSet = new Set(exclusionKeys);
   let specificMap = Config[type];
-  
+
   if (!specificMap || specificMap.length === 0) {
     return filterOutCustomKeys(message, exclusionSet);
   }
@@ -258,7 +258,7 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
     } else if (specificMap.has(key)) {
       set(payload, specificMap.get(key), message[key]);
     } else {
-      logger.warn(`custom field ${key} not specified in fields Map, skipped`);
+      logger.info(`custom field ${key} not specified in fields Map, skipped`);
     }
   });
 

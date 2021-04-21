@@ -45,20 +45,16 @@ function sendEvent(message, destination, category) {
   const { type } = message;
   const eventTypeIdRegex = new RegExp("[a-zA-Z0-9][-_.a-zA-Z0-9]{0,62}");
   let outputPayload = {};
-  let bufferProperty1 = {};
-  let bufferProperty2 = {};
 
   outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (eventTypeIdRegex.test(outputPayload.eventTypeId)) {
     switch (type) {
       case EventType.IDENTIFY:
         if (message.traits) {
-          bufferProperty1 = populateOutputProperty(message.traits);
+          bufferProperty = populateOutputProperty(message.traits);
+        } else if (message.context && message.context.traits) {
+          bufferProperty = populateOutputProperty(message.context.traits);
         }
-        if (message.context && message.context.traits) {
-          bufferProperty2 = populateOutputProperty(message.context.traits);
-        }
-        bufferProperty = Object.assign(bufferProperty1, bufferProperty2);
         break;
       case EventType.GROUP:
         if (message.traits) {

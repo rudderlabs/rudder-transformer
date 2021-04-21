@@ -47,8 +47,7 @@
                 "properties": {
                     "martin": 21.565,
                     "vertical": "restaurant",
-                    "GMV": false,
-                    "abc": "new-val"
+                    "GMV": false
                 }
             },
             "XML": {},
@@ -108,7 +107,8 @@
                     "martin": 21.565,
                     "vertical": "restaurant",
                     "GMV": true,
-                    "abc":"new-val"                }
+                    "abc": "new-val"
+                }
             },
             "XML": {},
             "FORM": {}
@@ -137,12 +137,51 @@
                     "martin": 21.565,
                     "vertical": "restaurant",
                     "GMV": true,
-                    "abc":"new-val"
+                    "abc": "new-val"
                 }
             },
             "XML": {},
             "FORM": {}
         },
         "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "identify",
+                "key": "user123",
+                "timestamp": 1579566094,
+                "environmentName": "staging",
+                "trafficTypeName": "user",
+                "properties": {
+                    "abc": "new-val",
+                    "newProperty": "1",
+                    "martin": 21.565000000000001,
+                    "vertical": "restaurant",
+                    "GMV": false
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
+    },
+    {
+        "error": "Message Type is not present. Aborting message."
+    },
+    {
+        "error": "Message type not supported"
+    },
+    {
+        "error": "eventTypeId does not match with ideal format"
     }
 ]

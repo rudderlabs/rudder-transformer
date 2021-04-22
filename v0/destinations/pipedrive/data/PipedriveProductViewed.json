@@ -16,7 +16,7 @@
   },
   {
     "destKey": "prices",
-    "sourceKeys": ["properties.price", "properties.revenue", "properties.value", "properties.total"],
+    "sourceKeys": "properties.price",
     "required": false
   }
 ]

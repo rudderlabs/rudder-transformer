@@ -208,9 +208,8 @@ const getFieldValueOrThrowError = (message, field, err) => {
 };
 
 /**
- * * Util function to rename the custom fields
- * based on fieldsMap in destination Config
- * Supported type: product, track, leads, organization, person
+ * Util function to rename the custom fields
+ * based on fields Map in destination Config
  * @param {*} message
  * @param {*} fieldsMap
  * @param {*} type
@@ -237,7 +236,9 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
   function filterOutCustomKeys(payload, allowedKeys) {
     const filteredPayload = {};
     Object.keys(payload).forEach(key => {
-      if (allowedKeys.has(key)) set(filteredPayload, key, payload[key]);
+      if (allowedKeys.has(key)) {
+        set(filteredPayload, key, payload[key]);
+      }
     });
     return filteredPayload;
   }

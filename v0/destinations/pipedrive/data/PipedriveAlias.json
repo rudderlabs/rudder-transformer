@@ -5,11 +5,6 @@
     "required": false
   },
   {
-    "destKey": "org_id",
-    "sourceKeys": ["traits.org_id", "context.traits.org_id"],
-    "required": false
-  },
-  {
     "destKey": "email",
     "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false

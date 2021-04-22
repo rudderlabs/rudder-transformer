@@ -10,11 +10,6 @@
     "required": false
   },
   {
-    "destKey": "organization_id",
-    "sourceKeys": "properties.organization_id",
-    "required": false
-  },
-  {
     "destKey": "expected_close_date",
     "sourceKeys": "properties.expected_close_date",
     "required": false

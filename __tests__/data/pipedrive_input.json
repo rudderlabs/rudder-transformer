@@ -457,7 +457,7 @@
       "properties": {
         "name": "Bike",
         "rating": 4,
-        "value": {
+        "price": {
           "amount": 200,
           "currency": "USD"
         },

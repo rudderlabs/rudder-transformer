@@ -36,10 +36,14 @@ const {
   renameCustomFields
 } = require("./util");
 
-
 const identifyResponseBuilder = async (message, category, destination) => {
   // name is required field. If name is not present, construct payload will
   // throw error
+
+  if (!get(destination.Config, "userIdToken")) {
+    throw new Error("userIdToken is required for identify");
+  }
+
   const userIdValue = getFieldValueOrThrowError(
     message,
     "userId",
@@ -57,8 +61,8 @@ const identifyResponseBuilder = async (message, category, destination) => {
   );
 
   payload = renameCustomFields(
-    payload, 
-    destination.Config, 
+    payload,
+    destination.Config,
     "personsMap",
     renameExclusionKeys
   );
@@ -116,6 +120,12 @@ const groupResponseBuilder = async (message, category, destination) => {
    * check if the person actually exists
    * either userId or anonId is required for group call
    */
+
+  if (!get(destination.Config, "userIdToken") ||
+      !get(destination.Config, "groupIdToken")) {
+    throw new Error("both userIdToken and groupIdToken required for group");
+  }
+
   const userIdVal = getFieldValueOrThrowError(
     message,
     "userId",
@@ -133,7 +143,7 @@ const groupResponseBuilder = async (message, category, destination) => {
 
   let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   groupPayload = removeUndefinedAndNullValues(groupPayload);
-  
+
   const renameExclusionKeys = Object.keys(groupPayload);
 
   groupPayload = extractCustomFields(
@@ -199,6 +209,11 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * merge id to merge_with_id
    * destination payload structure: { "merge_with_id": "userId"}
    */
+
+  if (!get(destination.Config, "userIdToken")) {
+    throw new Error("userIdToken required for alias");
+  }
+
   const previousId = getValueFromMessage(message, [
     "previousId",
     "traits.previousId",
@@ -276,7 +291,9 @@ const aliasResponseBuilder = async (message, category, destination) => {
  */
 const trackResponseBuilder = async (message, category, destination) => {
   let event = get(message, "event");
-  if (!event) throw new Error("event type not specified");
+  if (!event) {
+    throw new Error("event type not specified");
+  }
 
   let payload;
   let endpoint;
@@ -333,6 +350,10 @@ const trackResponseBuilder = async (message, category, destination) => {
     endpoint = PRODUCTS_ENDPOINT;
   } 
   else {
+    if(!get(destination.Config, "userIdToken")) {
+      throw new Error("userIdToken required for track");
+    }
+
     const userId = getFieldValueOrThrowError(
       message,
       "userId",
@@ -353,7 +374,7 @@ const trackResponseBuilder = async (message, category, destination) => {
       ["properties"],
       PIPEDRIVE_TRACK_EXCLUSION
     );
-    
+
     payload = renameCustomFields(
       payload,
       destination.Config,

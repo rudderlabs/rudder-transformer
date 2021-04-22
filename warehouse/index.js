@@ -247,6 +247,7 @@ const fullEventColumnTypeByProvider = {
   rs: "text",
   bq: "string",
   postgres: "json",
+  mssql: "json",
   clickhouse: "string"
 };
 

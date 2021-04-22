@@ -8,7 +8,7 @@ const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.js
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
-const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake"];
+const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake", "mssql"];
 const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );
@@ -190,7 +190,7 @@ describe("handle reserved words", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
     process.env = { ...OLD_ENV };
-    process.env.WH_MAX_COLUMNS_IN_EVENT = 500;
+    process.env.WH_MAX_COLUMNS_IN_EVENT = 600;
     jest.resetModules();
   });
   afterAll(() => {

@@ -142,7 +142,6 @@ const groupResponseBuilder = async (message, category, destination) => {
   );
 
   let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  groupPayload = removeUndefinedAndNullValues(groupPayload);
 
   const renameExclusionKeys = Object.keys(groupPayload);
 
@@ -159,7 +158,8 @@ const groupResponseBuilder = async (message, category, destination) => {
     "organizationMap",
     renameExclusionKeys
   );
-
+  groupPayload = removeUndefinedAndNullValues(groupPayload);
+  
   let org = await searchOrganisationByCustomId(groupId, destination);
 
   /**
@@ -171,7 +171,9 @@ const groupResponseBuilder = async (message, category, destination) => {
     set(groupPayload, destination.Config.groupIdToken, groupId);
     org = await createNewOrganisation(groupPayload, destination);
   } else {
-    if (get(groupPayload, "add_time")) delete groupPayload.add_time;
+    if (get(groupPayload, "add_time")) {
+      delete groupPayload.add_time;
+    }
     await updateOrganisationTraits(org.id, groupPayload, destination);
   }
 

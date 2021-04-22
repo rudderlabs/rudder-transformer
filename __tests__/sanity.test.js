@@ -21,13 +21,12 @@ const { getDirectories } = require("./util");
 //  |       sanity_router_input.json
 //  |       destination_config.json
 
-
 // ------ destination_config.json ------
 // JSON to store the destination-config of all the destinations
 // Each destination-config object has a config object storing the
 // processor/ router (transform-at) configs
 // -------------------------------------
-// If transformation is only done at processor 
+// If transformation is only done at processor
 // only use the processor as key and store the
 // destination definition as value.
 //
@@ -43,7 +42,6 @@ const { getDirectories } = require("./util");
 //    ..
 // }
 
-
 //  ----- sanity_input.json -----
 // JSON to store the sanity input messages which will be
 // used to test sanity for all the destination.
@@ -57,7 +55,6 @@ const { getDirectories } = require("./util");
 //          ...
 //      ]
 // }
-
 
 //  ----- sanity_router_input.json -----
 // JSON to store the sanity input messages which will be
@@ -85,7 +82,7 @@ const { getDirectories } = require("./util");
 //   {sanity_output_for_message_1},
 //   {sanity_output_for_message_2},
 //   ..
-// ] 
+// ]
 
 //  ------ {integration(s)}_router_output.json ------
 // These are specific output for each of the destinations
@@ -97,20 +94,17 @@ const { getDirectories } = require("./util");
 //   {router_sanity_output_for_message_1},
 //   {router_sanity_output_for_message_2},
 //   ..
-// ] 
-
-
-
+// ]
 
 // Parsing all the destination names from /v0/destinations dir structure
 // parsing it into an array of string. This keeping the destinations to test
 // dynamic.
-const integrations = getDirectories(
-  path.resolve(__dirname, `../${version}/destinations/`)
-);
+// const integrations = getDirectories(
+//   path.resolve(__dirname, `../${version}/destinations/`)
+// );
 // For Testing Current:
 // Uncomment this Line and comment the above 3 lines
-// const integrations = ["active_campaign"];
+const integrations = ["marketo"];
 
 // Parsing the sanity input JSON which will be used for testing each destination
 const processorSanityInput = JSON.parse(
@@ -172,7 +166,7 @@ integrations.forEach(intg => {
 
       case "router":
         {
-           // Parsing the expected router output data for this particular destination
+          // Parsing the expected router output data for this particular destination
           const expectedData = JSON.parse(
             fs.readFileSync(
               path.resolve(
@@ -181,17 +175,22 @@ integrations.forEach(intg => {
               )
             )
           );
-           // For each of the messages we are processing using the router transformer
+          // For each of the messages we are processing using the router transformer
           routerSanityInputRouter.messages.forEach((message, index) => {
             // Building the event object with specified destination-definition
-            const event = {
-              message,
-              destination: config[`${processAt}`]
-            };
+            const events = [
+              {
+                message,
+                metadata: {
+                  jobId: 1
+                },
+                destination: config[`${processAt}`]
+              }
+            ];
             // Sending the event to router transformer of this destinationand matching the result with expected output
             it(`${name} - integration(Router): ${intg} payload:${index}`, async () => {
-              const routerOutput = await transformer.processRouterDest(event);
-              expect(routerOutput).toEqual(expectedData[index]);
+              const routerOutput = await transformer.processRouterDest(events);
+              expect(routerOutput[0]).toEqual(expectedData[index]);
             });
           });
         }

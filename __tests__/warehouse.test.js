@@ -190,7 +190,7 @@ describe("handle reserved words", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
     process.env = { ...OLD_ENV };
-    process.env.WH_MAX_COLUMNS_IN_EVENT = 500;
+    process.env.WH_MAX_COLUMNS_IN_EVENT = 600;
     jest.resetModules();
   });
   afterAll(() => {

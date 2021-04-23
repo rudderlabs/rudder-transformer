@@ -33,7 +33,7 @@ function responseBuilderSimple(payload, category, destination) {
 
 function populateOutputProperty(inputObject) {
   Object.keys(inputObject).forEach(key => {
-    if (!KEY_CHECK_LIST.includes(key)) {
+    if (!KEY_CHECK_LIST.includes(key) && !Array.isArray(inputObject[key])) {
       bufferProperty[key] = inputObject[key];
     }
   });
@@ -43,7 +43,8 @@ function populateOutputProperty(inputObject) {
 function sendEvent(message, destination, category) {
   const { environment, trafficType } = destination.Config;
   const { type } = message;
-  const eventTypeIdRegex = new RegExp("[a-zA-Z0-9][-_.a-zA-Z0-9]{0,62}");
+  const eventTypeIdRegex = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}");
+
   let outputPayload = {};
 
   outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -64,7 +65,9 @@ function sendEvent(message, destination, category) {
       case EventType.TRACK:
       case EventType.PAGE:
       case EventType.SCREEN:
-        bufferProperty = populateOutputProperty(message.properties);
+        if (message.properties) {
+          bufferProperty = populateOutputProperty(message.properties);
+        }
         if (type !== "track") {
           outputPayload.eventTypeId = `viewed_${outputPayload.eventTypeId}_${type}`;
         }

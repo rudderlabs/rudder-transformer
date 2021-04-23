@@ -1,5 +1,6 @@
 const _ = require("lodash");
 
+const util = require("util");
 const { input, output } = require(`./data/warehouse/events.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
@@ -7,7 +8,7 @@ const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.js
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
-const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake"];
+const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake", "mssql"];
 const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );
@@ -65,7 +66,6 @@ describe("event types", () => {
       let i = input("page");
       i.message.properties.name = i.message.name;
       delete i.message.name;
-      console.log(i.message.properties.name);
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received).toMatchObject(output("page", integrations[index]));
@@ -85,7 +85,6 @@ describe("event types", () => {
       let i = input("screen");
       i.message.properties.name = i.message.name;
       delete i.message.name;
-      console.log(i.message.properties.name);
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received).toMatchObject(output("screen", integrations[index]));
@@ -191,7 +190,7 @@ describe("handle reserved words", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
     process.env = { ...OLD_ENV };
-    process.env.WH_MAX_COLUMNS_IN_EVENT = 500;
+    process.env.WH_MAX_COLUMNS_IN_EVENT = 600;
     jest.resetModules();
   });
   afterAll(() => {
@@ -536,6 +535,168 @@ describe("id column datatype for users table", () => {
           integrationCasedString(integrations[index], "id")
         ]
       ).toEqual("float");
+    });
+  });
+});
+
+describe("handle leading underscores in properties", () => {
+  it("should not remove leading underscores in properties", () => {
+    let i = input("track");
+    i.message.properties = {
+      _timestamp: "1",
+      __timestamp: "2",
+      __timestamp_new: "3"
+    };
+
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "_timestamp")
+      );
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp")
+      );
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp_new")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "_timestamp")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "__timestamp_new")
+      );
+    });
+  });
+});
+
+describe("handle recordId from cloud sources", () => {
+  it("should not set id based on recordId if sourceCategory is missing", () => {
+    let i = input("track");
+    i.message.recordId = 42;
+    if (i.metadata) delete i.metadata.sourceCategory;
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[0].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[0].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(
+        received[0].data[integrationCasedString(integrations[index], "id")]
+      ).toEqual(i.message.messageId);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(
+        received[1].data[integrationCasedString(integrations[index], "id")]
+      ).toEqual(i.message.messageId);
+    });
+  });
+
+  it("should not set id based on recordId if source version is missing", () => {
+    let i = input("track");
+    i.message.recordId = 42;
+    i.metadata = { sourceCategory: "cloud" };
+    if (i.message.context.sources) delete i.message.context.sources.version;
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[0].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[0].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(
+        received[0].data[integrationCasedString(integrations[index], "id")]
+      ).toEqual(i.message.messageId);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(
+        received[1].data[integrationCasedString(integrations[index], "id")]
+      ).toEqual(i.message.messageId);
+    });
+  });
+
+  it("should not set id based on recordId if event type is not track", () => {
+    let i = input("page");
+    i.message.recordId = 42;
+    i.metadata = { sourceCategory: "cloud" };
+    if (i.message.context.sources) delete i.message.context.sources.version;
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[0].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[0].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(
+        received[0].data[integrationCasedString(integrations[index], "id")]
+      ).toEqual(i.message.messageId);
+      expect(
+        received[0].metadata.columns[
+          integrationCasedString(integrations[index], "id")
+        ]
+      ).toEqual("string");
+    });
+  });
+
+  it("should set id based on recordId when sourceCategory is cloud and has source version", () => {
+    let i = input("track");
+    i.message.recordId = 42;
+    i.message.properties.recordId = "anotherRecordId";
+    i.metadata = { sourceCategory: "cloud" };
+    i.message.context.sources = { version: 1.12 };
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(
+        received[0].metadata.columns[
+          integrationCasedString(integrations[index], "record_id")
+        ]
+      ).toEqual("string");
+      expect(
+        received[0].data[
+          integrationCasedString(integrations[index], "record_id")
+        ]
+      ).toBe("42");
+
+      expect(
+        received[1].metadata.columns[
+          integrationCasedString(integrations[index], "id")
+        ]
+      ).toEqual("int");
+      expect(
+        received[1].data[integrationCasedString(integrations[index], "id")]
+      ).toBe(42);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+    });
+  });
+
+  it("should throw error when sourceCategory is cloud and has source version and recordId is missing", () => {
+    let i = input("track");
+    i.message.properties.recordId = "anotherRecordId";
+    i.metadata = { sourceCategory: "cloud" };
+    i.message.context.sources = { version: 1.12 };
+    transformers.forEach((transformer, index) => {
+      expect(() => transformer.process(i)).toThrow(
+        "recordId cannot be empty for cloud sources events"
+      );
     });
   });
 });

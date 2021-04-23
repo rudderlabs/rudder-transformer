@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const { fetchWithProxy } = require("./fetch");
 const NodeCache = require("node-cache");
 const logger = require("../logger");
 const stats = require("./stats");
@@ -17,7 +17,7 @@ async function getTransformationCode(versionId) {
   if (transformation) return transformation;
   try {
     const startTime = new Date();
-    const response = await fetch(
+    const response = await fetchWithProxy(
       `${getTransformationURL}?versionId=${versionId}`
     );
     stats.increment("get_transformation_code.success");

@@ -1,5 +1,4 @@
 const get = require("get-value");
-const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   getEndpoint,
@@ -41,24 +40,32 @@ const responseBuilderSimple = (message, category, destination) => {
       ["traits", "context.traits"],
       CLEVERTAP_DEFAULT_EXCLUSION
     );
-    removeUndefinedAndNullValues(profile);
+
     payload = {
       d: [
         {
           identity: getFieldValueFromMessage(message, "userId"),
           type: "profile",
-          profileData: profile
+          profileData: removeUndefinedAndNullValues(profile)
         }
       ]
     };
   } else {
+    // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
+    // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
+    if (
+      !destination.Config.trackAnonymous &&
+      !getFieldValueFromMessage(message, "userIdOnly")
+    ) {
+      throw new Error("userId, not present cannot track anonymous user");
+    }
     let eventPayload;
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
     if (
       get(message.event) &&
-      get(message.event).toLowerCase() == "order completed"
+      get(message.event).toLowerCase() === "order completed"
     ) {
       eventPayload = {
         evtName: "Charged",
@@ -81,10 +88,10 @@ const responseBuilderSimple = (message, category, destination) => {
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
-    removeUndefinedAndNullValues(eventPayload);
+
     eventPayload.type = "event";
     payload = {
-      d: [eventPayload]
+      d: [removeUndefinedAndNullValues(eventPayload)]
     };
   }
 

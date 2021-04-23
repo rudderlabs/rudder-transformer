@@ -1,108 +1,97 @@
-const crypto = require("crypto-js");
+const _ = require("lodash");
+const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require("./config");
+const {
+  isDefinedAndNotNull,
+  getHashFromArray,
+  getFieldValueFromMessage,
+  isBlank,
+  isDefined
+} = require("../../util");
 
-async function process(event) {
-  let payload = {};
-  const noOfFields = event.destination.Config.customMappings.length;
-  const keyField = [];
-  const mappedField = [];
+async function process(ev) {
+  const { destination, message } = ev;
+  const { properties, anonymousId, event } = message;
+  const { customMappings, trackingId } = destination.Config;
 
-  function getSignatureKey(key, dateStamp, regionName, serviceName) {
-    const kDate = crypto.HmacSHA256(dateStamp, `AWS4${key}`);
-    const kRegion = crypto.HmacSHA256(regionName, kDate);
-    const kService = crypto.HmacSHA256(serviceName, kRegion);
-    const kSigning = crypto.HmacSHA256("aws4_request", kService);
-
-    return kSigning;
+  if (!event) {
+    throw new Error(" Cannot process if no event name specified");
   }
 
-  function getAmzDate(dateStr) {
-    const chars = [":", "-"];
-    for (let i = 0; i < chars.length; i += 1) {
-      while (dateStr.indexOf(chars[i]) !== -1) {
-        dateStr = dateStr.replace(chars[i], "");
+  const keyMap = getHashFromArray(customMappings, "from", "to", false);
+
+  // process event properties
+  const outputEvent = {
+    eventType: event,
+    sentAt: getFieldValueFromMessage(message, "historicalTimestamp"),
+    properties: {}
+  };
+  Object.keys(keyMap).forEach(key => {
+    // name of the key in event.properties
+    const value = properties && properties[keyMap[key]];
+
+    if (
+      !KEY_CHECK_LIST.includes(key.toUpperCase()) &&
+      !MANDATORY_PROPERTIES.includes(key.toUpperCase())
+    ) {
+      if (!isDefined(value)) {
+        throw new Error(`Mapped property ${keyMap[key]} not found`);
       }
-    }
-    dateStr = `${dateStr.split(".")[0]}Z`;
-    return dateStr;
-  }
-  // get the various date formats needed to form our request
-  const amzDate = getAmzDate(new Date().toISOString());
-  const authDate = amzDate.split("T")[0];
-  const signature = getSignatureKey(
-    event.destination.Config.secretAccessKey,
-    authDate,
-    event.destination.Config.region,
-    "personalize"
-  );
-
-  for (let i = 0; i < noOfFields; i += 1) {
-    keyField.push(event.destination.Config.customMappings[i].from);
-  }
-
-  for (let j = 0; j < noOfFields; j += 1) {
-    mappedField.push(event.destination.Config.customMappings[j].to);
-  }
-  if (event.message.event === event.destination.Config.eventName) {
-    const property = {};
-    for (let k = 0; k < noOfFields; k += 1) {
+      // all the values inside property has to be sent as strings
+      outputEvent.properties[_.camelCase(key)] = String(value);
+    } else if (!MANDATORY_PROPERTIES.includes(key.toUpperCase())) {
       if (
-        keyField[k].toUpperCase() === "USER_ID" ||
-        keyField[k].toUpperCase() === "EVENT_TYPE" ||
-        keyField[k].toUpperCase() === "TIMESTAMP"
+        (!isDefinedAndNotNull(value) || isBlank(value)) &&
+        key.toUpperCase() !== "ITEM_ID"
       ) {
-        keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
-          return g[1].toUpperCase();
-        });
-      } else {
-        const mappedFields = mappedField[k];
-
-        if (typeof event.message[mappedFields] !== "undefined") {
-          keyField[k] = keyField[k].replace(/_([a-z])/g, function(g) {
-            return g[1].toUpperCase();
-          });
-          property[keyField[k]] = event.message[mappedFields];
-        } else {
-          throw new Error(`Mapped Field ${mappedFields} not found`);
-        }
+        throw new Error(`Null values cannot be sent for ${keyMap[key]} `);
       }
+      if (
+        !(
+          key.toUpperCase() === "IMPRESSION" ||
+          key.toUpperCase() === "EVENT_VALUE"
+        )
+      )
+        outputEvent[_.camelCase(key)] = String(value);
+      else if (key.toUpperCase() === "IMPRESSION") {
+        outputEvent[_.camelCase(key)] = Array.isArray(value)
+          ? value.map(String)
+          : [String(value)];
+        outputEvent[_.camelCase(key)] = _.without(
+          outputEvent[_.camelCase(key)],
+          undefined,
+          null,
+          ""
+        );
+      } else if (!Number.isNaN(parseFloat(value))) {
+        // for eventValue
+        outputEvent[_.camelCase(key)] = parseFloat(value);
+      } else throw new Error(" EVENT_VALUE should be a float value");
     }
+  });
+  // manipulate for itemId
+  outputEvent.itemId =
+    outputEvent.itemId &&
+    outputEvent.itemId !== "undefined" &&
+    outputEvent.itemId !== " "
+      ? outputEvent.itemId
+      : message.messageId;
+  // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
 
-    payload = {
-      version: "1",
-      type: "REST",
-      method: "POST",
-      endpoint: `https://personalize-events.${event.destination.Config.region}.amazonaws.com/events`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `AWS4-HMAC-SHA256 Credential=${
-          event.destination.Config.accessKeyId
-        }/${authDate}/${
-          event.destination.Config.region
-        }/personalize/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=${signature.toString()}`,
-        "X-Amz-Date": amzDate
-      },
-      params: {},
-      body: {
-        JSON: {
-          eventList: [
-            {
-              eventId: event.message.messageId,
-              eventType: event.destination.Config.eventName,
-              properties: property,
-              sentAt: event.message.sentAt
-            }
-          ],
-          sessionId: event.message.originalTimestamp,
-          trackingId: event.destination.Config.trackingId,
-          userId: event.message.userId
-        },
-        XML: {},
-        FORM: {}
-      },
-      statusCode: 200
-    };
-  }
-
-  return payload;
+  return {
+    userId:
+      keyMap.USER_ID &&
+      isDefinedAndNotNull(properties[keyMap.USER_ID]) &&
+      !isBlank(properties[keyMap.USER_ID]) &&
+      properties[keyMap.USER_ID] !== " "
+        ? properties[keyMap.USER_ID]
+        : userId,
+    // not using getFieldValueFromMessage(message, "userId") as we want to
+    // prioritize anonymousId over userId
+    sessionId: anonymousId || userId,
+    trackingId,
+    eventList: [outputEvent]
+  };
 }
+
 exports.process = process;

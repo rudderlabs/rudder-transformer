@@ -242,11 +242,15 @@ if (startDestTransformer) {
               );
             } catch (error) {
               logger.error(error);
-              transformedEvents.push({
-                statusCode: 400,
-                error: error.toString(),
-                metadata: commonMetadata
+              const errorString = error.toString();
+              destTransformedEvents = destEvents.map(e => {
+                return {
+                  statusCode: 400,
+                  metadata: e.metadata,
+                  error: errorString
+                };
               });
+              transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions

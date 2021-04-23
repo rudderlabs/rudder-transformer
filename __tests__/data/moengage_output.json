@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
@@ -71,7 +71,7 @@
             },
             "app_version": "1.1.6",
             "current_time": "2020-10-16T13:40:12.791+05:30",
-            "user_timezone_offset": -18000
+            "user_timezone_offset": 32400
           }
         ]
       },
@@ -109,7 +109,35 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "customer",
+        "attributes": {
+          "CID": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+          "RC_DATE": "2021-03-22T12:36:34Z",
+          "RC_NO_OF_SKUS": 1,
+          "RC_PN_SKU_LIST": "9317"
+        },
+        "customer_id": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+    "headers": {
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Content-Type": "application/json",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "version": "1",
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   [
     {
@@ -140,7 +168,7 @@
         "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
       },
       "version": "1",
-      "endpoint": "https://api.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
     },
     {
       "body": {
@@ -169,7 +197,7 @@
         "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
       },
       "version": "1",
-      "endpoint": "https://api.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
+      "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
     }
   ],
   {
@@ -200,7 +228,7 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-eu.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   {
     "body": {
@@ -230,7 +258,7 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-serv3.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
   },
   {
     "statusCode": 400,
@@ -248,7 +276,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
@@ -330,7 +358,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",

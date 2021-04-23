@@ -12,7 +12,8 @@
         "country": "USA",
         "postalCode": 712136,
         "created_at": 1571043797,
-        "email": "test@gmail.com"
+        "email": "test@gmail.com",
+        "dot.name": "Arnab Pal"
       },
       "FORM": {}
     },
@@ -307,6 +308,324 @@
     "body": { "XML": {}, "JSON": {}, "FORM": {} },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/sample_device_token",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "DELETE",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "_timestamp": 1571043797,
+        "city": "NY",
+        "state": "CA",
+        "street": "",
+        "prop1": "val1",
+        "prop2": "val2",
+        "country": "USA",
+        "postalCode": 712136,
+        "created_at": 1571043797,
+        "email": "test@gmail.com"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/123456",
+    "userId": "123456",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "page",
+        "data": {
+          "url": "www.rudderlabs.com",
+          "path": "/test",
+          "search": "abc",
+          "referrer": "Rudder",
+          "title": "Test Page"
+        },
+        "timestamp": 1571051718,
+        "name": "ApplicationLoaded"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "test track event"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "test track event"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/events",
+    "userId": "00000000000000000000000000",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "device": {
+          "review_body": "Some Review Body",
+          "rating": 2,
+          "review_id": "some_review_id",
+          "last_used": 1578564113,
+          "platform": "android",
+          "id": "abcxyz",
+          "product_id": "some_product_id_a"
+        }
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
+    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "DELETE",
+    "statusCode": 200
+  },
+  {
+    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/somel",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "DELETE",
+    "statusCode": 200
+  },
+  { "message": "userId or device_token not present", "statusCode": 400 },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "Application Installed"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/events",
+    "userId": "00000000000000000000000000",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "device": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "last_used": 1571051718,
+          "user_time_spent": 50000,
+          "platform": "mobile",
+          "id": "somel"
+        }
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "Application Installed"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "Application Opened"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON": {
+        "device": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "last_used": 1571051718,
+          "user_time_spent": 50000,
+          "platform": "mobile",
+          "id": "sample_device_token"
+        }
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
+    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="

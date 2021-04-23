@@ -8,7 +8,6 @@ const { getFieldValueFromMessage } = require("../../util");
 const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
-  getMergeEndpoint
 } = require("./config");
 
 /**
@@ -38,13 +37,13 @@ const {
  * @param {*} destination
  * @returns
  */
-const searchPersonByCustomId = async (userIdValue, destination) => {
+const searchPersonByCustomId = async (userIdValue, Config) => {
   try {
     const response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
       params: {
         term: userIdValue,
-        field: destination.Config.userIdToken,
-        api_token: destination.Config.apiToken
+        field: Config.userIdToken,
+        api_token: Config.apiToken
       },
       headers: {
         Accept: "application/json"
@@ -65,14 +64,14 @@ const searchPersonByCustomId = async (userIdValue, destination) => {
   }
 };
 
-const updatePerson = async (userIdvalue, data, destination) => {
+const updatePerson = async (userIdvalue, data, Config) => {
   try {
     const response = await axios.put(
       `${PERSONS_ENDPOINT}/${userIdvalue}`,
       data,
       {
         params: {
-          api_token: destination.Config.apiToken
+          api_token: Config.apiToken
         },
         headers: {
           "Content-Type": "application/json",
@@ -89,13 +88,13 @@ const updatePerson = async (userIdvalue, data, destination) => {
   }
 };
 
-const searchOrganisationByCustomId = async (groupId, destination) => {
+const searchOrganisationByCustomId = async (groupId, Config) => {
   try {
     const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
         term: groupId,
-        field: destination.Config.groupIdToken,
-        api_token: destination.Config.apiToken
+        field: Config.groupIdToken,
+        api_token: Config.apiToken
       },
       headers: {
         Accept: "application/json"
@@ -114,11 +113,11 @@ const searchOrganisationByCustomId = async (groupId, destination) => {
   }
 };
 
-const createNewOrganisation = async (data, destination) => {
+const createNewOrganisation = async (data, Config) => {
   const resp = await axios
     .post(ORGANISATION_ENDPOINT, data, {
       params: {
-        api_token: destination.Config.apiToken
+        api_token: Config.apiToken
       },
       headers: {
         "Content-Type": "application/json"
@@ -141,14 +140,14 @@ const createNewOrganisation = async (data, destination) => {
  * @param {*} groupPayload
  * @param {*} destination
  */
-const updateOrganisationTraits = async (orgId, groupPayload, destination) => {
+const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
   try {
     const response = await axios.put(
       `${ORGANISATION_ENDPOINT}/${orgId}`,
       groupPayload,
       {
         params: {
-          api_token: destination.Config.apiToken
+          api_token: Config.apiToken
         },
         headers: {
           Accept: "application/json",
@@ -165,31 +164,31 @@ const updateOrganisationTraits = async (orgId, groupPayload, destination) => {
   }
 };
 
-const mergeTwoPersons = async (previousId, userId, destination) => {
-  const payload = {
-    merge_with_id: userId
-  };
-  try {
-    const mergeResponse = await axios.put(
-      getMergeEndpoint(previousId),
-      payload,
-      {
-        params: {
-          api_token: destination.Config.apiToken
-        },
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      }
-    );
-    if (!mergeResponse || mergeResponse.status !== 200) {
-      throw new Error("merge failed");
-    }
-  } catch (err) {
-    throw new Error(`error while merging persons: ${err}`);
-  }
-};
+// const mergeTwoPersons = async (previousId, userId, Config) => {
+//   const payload = {
+//     merge_with_id: userId
+//   };
+//   try {
+//     const mergeResponse = await axios.put(
+//       getMergeEndpoint(previousId),
+//       payload,
+//       {
+//         params: {
+//           api_token: Config.apiToken
+//         },
+//         headers: {
+//           Accept: "application/json",
+//           "Content-Type": "application/x-www-form-urlencoded"
+//         }
+//       }
+//     );
+//     if (!mergeResponse || mergeResponse.status !== 200) {
+//       throw new Error("merge failed");
+//     }
+//   } catch (err) {
+//     throw new Error(`error while merging persons: ${err}`);
+//   }
+// };
 
 /**
  * Wrapper on top of getFieldValueFromMessage
@@ -271,7 +270,6 @@ module.exports = {
   updateOrganisationTraits,
   searchOrganisationByCustomId,
   searchPersonByCustomId,
-  mergeTwoPersons,
   getFieldValueOrThrowError,
   updatePerson,
   renameCustomFields

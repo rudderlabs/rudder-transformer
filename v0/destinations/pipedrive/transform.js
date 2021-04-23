@@ -14,6 +14,7 @@ const {
   getValueFromMessage
 } = require("../../util");
 const {
+  getMergeEndpoint,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   PERSONS_ENDPOINT,
@@ -22,7 +23,6 @@ const {
   PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   PIPEDRIVE_ORDER_COMPLETED_EXCLUSION,
-  getMergeEndpoint,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT
 } = require("./config");
@@ -36,11 +36,11 @@ const {
   renameCustomFields
 } = require("./util");
 
-const identifyResponseBuilder = async (message, category, destination) => {
+const identifyResponseBuilder = async (message, category, { Config }) => {
   // name is required field. If name is not present, construct payload will
   // throw error
 
-  if (!get(destination.Config, "userIdToken")) {
+  if (!get(Config, "userIdToken")) {
     throw new Error("userIdToken is required for identify");
   }
 
@@ -62,12 +62,12 @@ const identifyResponseBuilder = async (message, category, destination) => {
 
   payload = renameCustomFields(
     payload,
-    destination.Config,
+    Config,
     "personsMap",
     renameExclusionKeys
   );
 
-  const person = await searchPersonByCustomId(userIdValue, destination);
+  const person = await searchPersonByCustomId(userIdValue, Config);
 
   // update person since person already exists
   if (person) {
@@ -81,7 +81,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
     response.params = {
-      api_token: destination.Config.apiToken
+      api_token: Config.apiToken
     };
 
     return response;
@@ -89,7 +89,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
 
   // mapping userId to custom userId key field
   // in destination payload
-  set(payload, destination.Config.userIdToken, userIdValue);
+  set(payload, Config.userIdToken, userIdValue);
 
   // create a new person
   const response = defaultRequestConfig();
@@ -101,7 +101,7 @@ const identifyResponseBuilder = async (message, category, destination) => {
   };
   response.endpoint = PERSONS_ENDPOINT;
   response.params = {
-    api_token: destination.Config.apiToken
+    api_token: Config.apiToken
   };
 
   return response;
@@ -115,14 +115,14 @@ const identifyResponseBuilder = async (message, category, destination) => {
  * @param {*} destination
  * @returns
  */
-const groupResponseBuilder = async (message, category, destination) => {
+const groupResponseBuilder = async (message, category, { Config }) => {
   /**
    * check if the person actually exists
    * either userId or anonId is required for group call
    */
 
-  if (!get(destination.Config, "userIdToken") ||
-      !get(destination.Config, "groupIdToken")) {
+  if (!get(Config, "userIdToken") ||
+      !get(Config, "groupIdToken")) {
     throw new Error("both userIdToken and groupIdToken required for group");
   }
 
@@ -132,7 +132,7 @@ const groupResponseBuilder = async (message, category, destination) => {
     new Error("error: userId is required")
   );
 
-  const person = await searchPersonByCustomId(userIdVal, destination);
+  const person = await searchPersonByCustomId(userIdVal, Config);
   if (!person) throw new Error("person not found");
 
   const groupId = getFieldValueOrThrowError(
@@ -154,13 +154,13 @@ const groupResponseBuilder = async (message, category, destination) => {
 
   groupPayload = renameCustomFields(
     groupPayload,
-    destination.Config,
+    Config,
     "organizationMap",
     renameExclusionKeys
   );
   groupPayload = removeUndefinedAndNullValues(groupPayload);
-  
-  let org = await searchOrganisationByCustomId(groupId, destination);
+
+  let org = await searchOrganisationByCustomId(groupId, Config);
 
   /**
    * if org does not exist, create a new org,
@@ -168,13 +168,13 @@ const groupResponseBuilder = async (message, category, destination) => {
    * throws error if create or udpate fails
    */
   if (!org) {
-    set(groupPayload, destination.Config.groupIdToken, groupId);
-    org = await createNewOrganisation(groupPayload, destination);
+    set(groupPayload, Config.groupIdToken, groupId);
+    org = await createNewOrganisation(groupPayload, Config);
   } else {
     if (get(groupPayload, "add_time")) {
       delete groupPayload.add_time;
     }
-    await updateOrganisationTraits(org.id, groupPayload, destination);
+    await updateOrganisationTraits(org.id, groupPayload, Config);
   }
 
   /**
@@ -188,7 +188,7 @@ const groupResponseBuilder = async (message, category, destination) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
   response.params = {
-    api_token: destination.Config.apiToken
+    api_token: Config.apiToken
   };
   response.headers = {
     "Content-Type": "application/json",
@@ -205,14 +205,14 @@ const groupResponseBuilder = async (message, category, destination) => {
  * @param {*} destination
  * @returns
  */
-const aliasResponseBuilder = async (message, category, destination) => {
+const aliasResponseBuilder = async (message, category, { Config }) => {
   /**
    * merge previous Id to userId
    * merge id to merge_with_id
    * destination payload structure: { "merge_with_id": "userId"}
    */
 
-  if (!get(destination.Config, "userIdToken")) {
+  if (!get(Config, "userIdToken")) {
     throw new Error("userIdToken required for alias");
   }
 
@@ -233,10 +233,10 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * Need to extract the pipedrive side integer id for the provided userId
    * and previous Id, i.e mapping Rudder side userId to pipedrive integer id
    */
-  const prevPerson = await searchPersonByCustomId(previousId, destination);
+  const prevPerson = await searchPersonByCustomId(previousId, Config);
   if (!prevPerson) throw new Error("person not found. cannot merge");
 
-  const currPerson = await searchPersonByCustomId(userId, destination);
+  const currPerson = await searchPersonByCustomId(userId, Config);
   if (!currPerson) throw new Error("person not found. cannot merge");
 
   let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -251,7 +251,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
 
   updatePayload = renameCustomFields(
     updatePayload,
-    destination.Config,
+    Config,
     "personsMap",
     renameExclusionKeys
   );
@@ -263,7 +263,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
    * and then call the merge endpoint
    */
   if (Object.keys(updatePayload).length !== 0) {
-    await updatePerson(currPerson.id, updatePayload, destination);
+    await updatePerson(currPerson.id, updatePayload, Config);
   }
 
   const response = defaultRequestConfig();
@@ -277,7 +277,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
   };
   response.endpoint = getMergeEndpoint(prevPerson.id);
   response.params = {
-    api_token: destination.Config.apiToken
+    api_token: Config.apiToken
   };
 
   return response;
@@ -291,7 +291,7 @@ const aliasResponseBuilder = async (message, category, destination) => {
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = async (message, category, destination) => {
+const trackResponseBuilder = async (message, category, { Config }) => {
   let event = get(message, "event");
   if (!event) {
     throw new Error("event type not specified");
@@ -318,7 +318,7 @@ const trackResponseBuilder = async (message, category, destination) => {
 
     payload = renameCustomFields(
       payload,
-      destination.Config,
+      Config,
       "productsMap",
       renameExclusionKeys
     );
@@ -343,7 +343,7 @@ const trackResponseBuilder = async (message, category, destination) => {
 
     payload = renameCustomFields(
       payload,
-      destination.Config,
+      Config,
       "productsMap",
       renameExclusionKeys
     );
@@ -352,7 +352,7 @@ const trackResponseBuilder = async (message, category, destination) => {
     endpoint = PRODUCTS_ENDPOINT;
   } 
   else {
-    if(!get(destination.Config, "userIdToken")) {
+    if(!get(Config, "userIdToken")) {
       throw new Error("userIdToken required for track");
     }
 
@@ -362,7 +362,7 @@ const trackResponseBuilder = async (message, category, destination) => {
       new Error("userId required for event tracking")
     );
 
-    const person = await searchPersonByCustomId(userId, destination);
+    const person = await searchPersonByCustomId(userId, Config);
     if (!person) {
       throw new Error("person not found, cannot add track event");
     }
@@ -379,7 +379,7 @@ const trackResponseBuilder = async (message, category, destination) => {
 
     payload = renameCustomFields(
       payload,
-      destination.Config,
+      Config,
       "leadsMap",
       renameExclusionKeys
     );
@@ -393,7 +393,7 @@ const trackResponseBuilder = async (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
   response.params = {
-    api_token: destination.Config.apiToken
+    api_token: Config.apiToken
   };
   response.headers = {
     "Content-Type": "application/json",

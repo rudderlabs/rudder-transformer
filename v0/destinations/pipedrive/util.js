@@ -220,10 +220,10 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
    * Util function to reshape Config fields map to
    * usable format
    */
-  function reshapeMap(fieldMap) {
+  function reshapeMap(fieldMap, isLowerCase=true) {
     const resMap = new Map();
     fieldMap.map(item => {
-      resMap.set(item.from, item.to);
+      resMap.set(isLowerCase ? item.from.toLowerCase() : item.from, item.to);
     });
     return resMap;
   }
@@ -250,7 +250,7 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
     return filterOutCustomKeys(message, exclusionSet);
   }
 
-  specificMap = reshapeMap(specificMap);
+  specificMap = reshapeMap(specificMap, false);
   const payload = {};
 
   Object.keys(message).map(key => {

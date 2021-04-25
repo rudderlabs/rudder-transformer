@@ -56,18 +56,21 @@ const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [
   "product_id",
   "sku",
   "productId",
-  "revenue",
-  "value",
-  "total"
+  "owner_id",
+  "active_flag"
 ];
 
 const PIPEDRIVE_ORDER_COMPLETED_EXCLUSION = [
   "name",
   "order_id",
   "checkout_id",
+  "product_id",
+  "productId",
+  "sku",
   "tax",
-  "revenue",
-  "total"
+  "owner_id",
+  "price",
+  "active_flag"
 ];
 
 module.exports = {

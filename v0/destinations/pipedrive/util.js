@@ -11,35 +11,15 @@ const {
 } = require("./config");
 
 /**
- * Utility function to find person with max score
- */
-// const findPersonWithMaxScore = persons => {
-//   if (!persons || persons.length === 0) return null;
-
-//   const maxScorePerson = {
-//     data: null,
-//     score: Number.MIN_VALUE
-//   };
-
-//   persons.forEach(obj => {
-//     if (obj.result_score > maxScorePerson.score) {
-//       maxScorePerson.score = obj.result_score;
-//       maxScorePerson.data = obj.item;
-//     }
-//   });
-
-//   return maxScorePerson.data;
-// };
-
-/**
  * Search for person with Custom UserId value
  * @param {*} userIdValue
  * @param {*} destination
  * @returns
  */
 const searchPersonByCustomId = async (userIdValue, Config) => {
+  let response;
   try {
-    const response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
+    response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
       params: {
         term: userIdValue,
         field: Config.userIdToken,
@@ -49,19 +29,18 @@ const searchPersonByCustomId = async (userIdValue, Config) => {
         Accept: "application/json"
       }
     });
-
-    if (response && response.status === 200) {
-      if (response.data.data.items.length === 0) {
-        return null;
-      }
-      return response.data.data.items[0].item;
-    }
-
-    return null;
   } catch (err) {
-    logger.warn(`error while searching person: ${err}`);
-    return null;
+    throw new Error(`error while searching person: ${err}`);
   }
+
+  if (response && response.status === 200) {
+    if (response.data.data.items.length === 0) {
+      return null;
+    }
+    return response.data.data.items[0].item;
+  }
+
+  return null;
 };
 
 const updatePerson = async (userIdvalue, data, Config) => {
@@ -89,8 +68,9 @@ const updatePerson = async (userIdvalue, data, Config) => {
 };
 
 const searchOrganisationByCustomId = async (groupId, Config) => {
+  let response;
   try {
-    const response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
+    response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
         term: groupId,
         field: Config.groupIdToken,
@@ -100,17 +80,17 @@ const searchOrganisationByCustomId = async (groupId, Config) => {
         Accept: "application/json"
       }
     });
-    if (response && response.status === 200) {
-      if (response.data.data.items.length === 0) {
-        return null;
-      }
-      return response.data.data.items[0].item;
-    }
-    return null;
   } catch (err) {
-    logger.warn(`error while searching organisation: ${err}`);
-    return null;
+    throw new Error(`error while searching organisation ${err}`);
   }
+
+  if (response && response.status === 200) {
+    if (response.data.data.items.length === 0) {
+      return null;
+    }
+    return response.data.data.items[0].item;
+  }
+  return null;
 };
 
 const createNewOrganisation = async (data, Config) => {
@@ -163,32 +143,6 @@ const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
     throw new Error(`error while updating group: ${err}`);
   }
 };
-
-// const mergeTwoPersons = async (previousId, userId, Config) => {
-//   const payload = {
-//     merge_with_id: userId
-//   };
-//   try {
-//     const mergeResponse = await axios.put(
-//       getMergeEndpoint(previousId),
-//       payload,
-//       {
-//         params: {
-//           api_token: Config.apiToken
-//         },
-//         headers: {
-//           Accept: "application/json",
-//           "Content-Type": "application/x-www-form-urlencoded"
-//         }
-//       }
-//     );
-//     if (!mergeResponse || mergeResponse.status !== 200) {
-//       throw new Error("merge failed");
-//     }
-//   } catch (err) {
-//     throw new Error(`error while merging persons: ${err}`);
-//   }
-// };
 
 /**
  * Wrapper on top of getFieldValueFromMessage

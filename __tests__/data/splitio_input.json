@@ -77,7 +77,7 @@
   },
   {
     "message": {
-      "event": "split.io test 1",
+      "event": "splitio_test_1",
       "messageId": "9b200548-5961-4448-9dbc-098b7ce85751",
       "properties": {
         "eventTypeId": "page_load",
@@ -106,7 +106,7 @@
   },
   {
     "message": {
-      "name": "split.io test 1",
+      "name": "splitio_test_1",
       "messageId": "9b200548-5961-4448-9dbc-098b7ce85751",
       "properties": {
         "eventTypeId": "page_load",
@@ -135,7 +135,7 @@
   },
   {
     "message": {
-      "event": "split.io test 1",
+      "event": "splitio_test_1",
       "messageId": "9b200548-5961-4448-9dbc-098b7ce85751",
       "properties": {
         "eventTypeId": "page_load",

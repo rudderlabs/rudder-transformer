@@ -43,7 +43,7 @@ function populateOutputProperty(inputObject) {
 function sendEvent(message, destination, category) {
   const { environment, trafficType } = destination.Config;
   const { type } = message;
-  const eventTypeIdRegex = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}");
+  const eventTypeIdRegex = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}$");
 
   let outputPayload = {};
 

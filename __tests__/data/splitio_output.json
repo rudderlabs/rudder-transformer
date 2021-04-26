@@ -67,7 +67,7 @@
         "params": {},
         "body": {
             "JSON": {
-                "eventTypeId": "split.io test 1",
+                "eventTypeId": "splitio_test_1",
                 "key": "user 1",
                 "timestamp": 1614639354,
                 "value": 0.93,
@@ -97,7 +97,7 @@
         "params": {},
         "body": {
             "JSON": {
-                "eventTypeId": "viewed_split.io test 1_page",
+                "eventTypeId": "viewed_splitio_test_1_page",
                 "key": "user 1",
                 "timestamp": 1614639354,
                 "value": 0.93,
@@ -127,7 +127,7 @@
         "params": {},
         "body": {
             "JSON": {
-                "eventTypeId": "viewed_split.io test 1_screen",
+                "eventTypeId": "viewed_splitio_test_1_screen",
                 "key": "user 1",
                 "timestamp": 1614639354,
                 "value": 0.93,

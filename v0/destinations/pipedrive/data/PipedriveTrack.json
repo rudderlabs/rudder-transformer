@@ -5,8 +5,13 @@
     "required": true
   },
   {
-    "destKey": "value",
-    "sourceKeys": ["properties.revenue", "properties.value", "properties.total"],
+    "destKey": "amount",
+    "sourceKeys": ["properties.price", "properties.value", "properties.amount"],
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
     "required": false
   },
   {

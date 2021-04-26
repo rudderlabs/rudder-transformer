@@ -41,12 +41,13 @@ const PIPEDRIVE_GROUP_EXCLUSION = [
 const PIPEDRIVE_TRACK_EXCLUSION = [
   "title",
   "value",
+  "amount",
+  "price",
+  "currency",
   "organization_id",
   "expected_close_date",
   "label_ids",
-  "owner_id",
-  "revenue",
-  "total"
+  "owner_id"
 ];
 
 const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [

@@ -331,7 +331,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   } 
   else if (event === "order completed") {
     const products = get(message, "properties.products");
-    
+
     if(!products || !Array.isArray(products)) {
       throw new Error("products must be of type array");
     }
@@ -419,6 +419,19 @@ const trackResponseBuilder = async (message, category, { Config }) => {
 
     set(payload, "person_id", person.id);
     endpoint = LEADS_ENDPOINT;
+
+    /* map price and currency to value object
+    * in destination payload
+    */
+    if(payload.amount && payload.currency) {
+      const value = {
+        amount: payload.amount,
+        currency: payload.currency
+      };
+      set(payload, "value", value);
+    }
+    delete payload.amount;
+    delete payload.currency;
   }
 
   const response = defaultRequestConfig();

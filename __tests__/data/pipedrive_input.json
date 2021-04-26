@@ -298,10 +298,8 @@
       "event": "Product Purchased",
       "properties": {
         "rating": 4,
-        "value": {
-          "amount": 200,
-          "currency": "USD"
-        }
+        "amount": 200,
+        "currency": "USD"
       },
       "context": {
         "ip": "14.5.67.21"

@@ -53,6 +53,7 @@ const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [
   "name",
   "quantity",
   "price",
+  "currency",
   "product_id",
   "sku",
   "productId",

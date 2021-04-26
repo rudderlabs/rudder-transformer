@@ -15,8 +15,13 @@
     "required": false
   },
   {
-    "destKey": "prices",
+    "destKey": "price",
     "sourceKeys": "properties.price",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
     "required": false
   }
 ]

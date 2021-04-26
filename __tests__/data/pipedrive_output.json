@@ -219,10 +219,10 @@
         "name": "Bike",
         "active_flag": 0,
         "customkeyapi": "some value",
-        "prices": {
-          "amount": 200,
+        "prices": [{
+          "price": 200,
           "currency": "USD"
-        }
+        }]
       }
     },
     "type": "REST",

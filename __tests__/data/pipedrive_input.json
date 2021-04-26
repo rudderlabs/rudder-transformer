@@ -457,10 +457,8 @@
       "properties": {
         "name": "Bike",
         "rating": 4,
-        "price": {
-          "amount": 200,
-          "currency": "USD"
-        },
+        "price": 200,
+        "currency": "USD",
         "customkey": "some value",
         "toBeDropped": "random"
       },

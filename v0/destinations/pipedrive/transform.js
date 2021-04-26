@@ -322,6 +322,17 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       "productsMap",
       renameExclusionKeys
     );
+
+    if(get(payload, "price") && get(payload, "currency")) {
+      const prices = {
+        price: payload.price,
+        currency: payload.currency
+      };
+      set(payload, "prices", [prices]);
+    }
+    delete payload.price;
+    delete payload.currency;
+
     set(payload, "active_flag", 0);
 
     endpoint = PRODUCTS_ENDPOINT;

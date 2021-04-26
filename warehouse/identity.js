@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const { getVersionedUtils } = require("./util");
 
-const identityEnabledWarehouses = ["snowflake"];
+const identityEnabledWarehouses = ["snowflake", "bq"];
 const versionedMergePropColumns = {};
 const versionedMergeRuleTableNames = {};
 
@@ -53,7 +53,6 @@ function getMergeRulesTableName(version, provider) {
 // Get Merge rule event from any given event
 function getMergeRuleEvent(message = {}, eventType, options) {
   const { whSchemaVersion, provider, whIDResolve } = options;
-
   if (!whIDResolve) {
     return null;
   }
@@ -61,7 +60,6 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   if (!identityEnabledWarehouses.includes(provider)) {
     return null;
   }
-
   let mergeProp1 = {};
   let mergeProp2 = {};
   if (eventType === "merge") {

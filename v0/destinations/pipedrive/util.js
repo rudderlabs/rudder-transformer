@@ -44,8 +44,9 @@ const searchPersonByCustomId = async (userIdValue, Config) => {
 };
 
 const updatePerson = async (userIdvalue, data, Config) => {
+  let response;
   try {
-    const response = await axios.put(
+    response = await axios.put(
       `${PERSONS_ENDPOINT}/${userIdvalue}`,
       data,
       {
@@ -65,6 +66,8 @@ const updatePerson = async (userIdvalue, data, Config) => {
   } catch (err) {
     throw new Error(`error while updating person: ${err}`);
   }
+
+  return response;
 };
 
 const searchOrganisationByCustomId = async (groupId, Config) => {
@@ -121,8 +124,9 @@ const createNewOrganisation = async (data, Config) => {
  * @param {*} destination
  */
 const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
+  let response;
   try {
-    const response = await axios.put(
+    response = await axios.put(
       `${ORGANISATION_ENDPOINT}/${orgId}`,
       groupPayload,
       {
@@ -142,6 +146,8 @@ const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
   } catch (err) {
     throw new Error(`error while updating group: ${err}`);
   }
+
+  return response;
 };
 
 /**

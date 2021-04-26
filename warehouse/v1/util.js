@@ -9,6 +9,9 @@ function safeTableName(provider, name = "") {
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
+  } else if (provider === "postgres") {
+    tableName = tableName.substr(0, 63);
+    tableName = tableName.toLowerCase();
   } else {
     tableName = tableName.toLowerCase();
   }
@@ -27,6 +30,9 @@ function safeColumnName(provider, name = "") {
   }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
+  } else if (provider === "postgres") {
+    columnName = columnName.substr(0, 63);
+    columnName = columnName.toLowerCase();
   } else {
     columnName = columnName.toLowerCase();
   }

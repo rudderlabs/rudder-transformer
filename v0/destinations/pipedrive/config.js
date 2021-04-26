@@ -71,6 +71,7 @@ const PIPEDRIVE_ORDER_COMPLETED_EXCLUSION = [
   "tax",
   "owner_id",
   "price",
+  "currency",
   "active_flag"
 ];
 

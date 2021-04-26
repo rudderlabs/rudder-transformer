@@ -225,6 +225,31 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
   return payload;
 };
 
+/**
+ * Util function to create price mapping
+ * returns a new Object
+ * @param {*} payload 
+ * @returns 
+ */
+const createPriceMapping = payload => {
+  // creating the prices mapping only when both price and currency provided
+  // to avoid discrepancy
+  const mappedPayload = { ...payload };
+
+  if(mappedPayload.price && mappedPayload.currency) {
+    const prices = {
+      price: mappedPayload.price,
+      currency: mappedPayload.currency
+    };
+    set(mappedPayload, "prices", [prices]);
+  }
+  delete mappedPayload.price;
+  delete mappedPayload.currency;
+
+  return mappedPayload;
+}
+
+
 module.exports = {
   createNewOrganisation,
   updateOrganisationTraits,
@@ -232,5 +257,6 @@ module.exports = {
   searchPersonByCustomId,
   getFieldValueOrThrowError,
   updatePerson,
-  renameCustomFields
+  renameCustomFields,
+  createPriceMapping
 };

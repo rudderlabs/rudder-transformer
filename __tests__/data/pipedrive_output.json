@@ -237,5 +237,61 @@
     },
     "version": "1",
     "endpoint": "https://api.pipedrive.com/v1/products"
-  }
+  },
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "name": "Monopoly",
+          "code": "monopoly123",
+          "active_flag": 1,
+          "prices": [{
+            "price": 600,
+            "currency": "INR"
+          }]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_token": "03f3251d27e1d44438889"
+      },
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.pipedrive.com/v1/products"
+    },
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "name": "Uno",
+          "code": "uno123",
+          "active_flag": 1,
+          "prices": [{
+            "price": 400,
+            "currency": "INR"
+          }]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_token": "03f3251d27e1d44438889"
+      },
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.pipedrive.com/v1/products"
+    }
+  ]
 ]

@@ -1,22 +1,27 @@
 [
   {
     "destKey": "name",
-    "sourceKeys": ["properties.name", "properties.product_id", "properties.productId", "properties.sku"],
+    "sourceKeys": ["name", "product_id", "productId", "sku"],
     "required": true
   },
   {
     "destKey": "code",
-    "sourceKeys": ["properties.order_id", "properties.checkout_id"],
+    "sourceKeys": ["product_id", "productId", "sku"],
     "required": false
   },
   {
     "destKey": "tax",
-    "sourceKeys": "properties.tax",
+    "sourceKeys": "tax",
     "required": false
   },
   {
-    "destKey": "prices",
-    "sourceKeys": "properties.price",
+    "destKey": "price",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "currency",
     "required": false
   }
 ]

@@ -33,7 +33,8 @@ const {
   getFieldValueOrThrowError,
   updateOrganisationTraits,
   updatePerson,
-  renameCustomFields
+  renameCustomFields,
+  createPriceMapping
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
@@ -322,45 +323,66 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       "productsMap",
       renameExclusionKeys
     );
-
-    if(get(payload, "price") && get(payload, "currency")) {
-      const prices = {
-        price: payload.price,
-        currency: payload.currency
-      };
-      set(payload, "prices", [prices]);
-    }
-    delete payload.price;
-    delete payload.currency;
-
+    
+    payload = createPriceMapping(payload);
     set(payload, "active_flag", 0);
 
     endpoint = PRODUCTS_ENDPOINT;
   } 
   else if (event === "order completed") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
-    );
+    const products = get(message, "properties.products");
+    
+    if(!products || !Array.isArray(products)) {
+      throw new Error("products must be of type array");
+    }
 
-    const renameExclusionKeys = Object.keys(payload);
+    if(products.length === 0) {
+      throw new Error("products list is empty");
+    }
+    
+    const batchResponse = [];
+    products.forEach(product => {
+      payload = constructPayload(
+        product,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
+      );
 
-    payload = extractCustomFields(
-      message,
-      payload,
-      ["properties"],
-      PIPEDRIVE_ORDER_COMPLETED_EXCLUSION
-    );
+      const renameExclusionKeys = Object.keys(payload);
 
-    payload = renameCustomFields(
-      payload,
-      Config,
-      "productsMap",
-      renameExclusionKeys
-    );
-    set(payload, "active_flag", 1);
+      payload = extractCustomFields(
+        product,
+        payload,
+        "root",
+        PIPEDRIVE_ORDER_COMPLETED_EXCLUSION
+      );
 
-    endpoint = PRODUCTS_ENDPOINT;
+      payload = renameCustomFields(
+        payload,
+        Config,
+        "productsMap",
+        renameExclusionKeys
+      );
+
+      payload = createPriceMapping(payload);
+      set(payload, "active_flag", 1);
+
+      const response = defaultRequestConfig();
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = PRODUCTS_ENDPOINT;
+      response.params = {
+        api_token: Config.apiToken
+      };
+      response.headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      };
+
+      batchResponse.push(response);
+
+    });
+
+    return batchResponse;
   } 
   else {
     if(!get(Config, "userIdToken")) {

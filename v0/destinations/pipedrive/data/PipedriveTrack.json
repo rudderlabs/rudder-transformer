@@ -6,7 +6,12 @@
   },
   {
     "destKey": "amount",
-    "sourceKeys": ["properties.price", "properties.value", "properties.amount"],
+    "sourceKeys": [
+      "properties.revenue",
+      "properties.value",
+      "properties.total",
+      "properties.amount"
+    ],
     "required": false
   },
   {

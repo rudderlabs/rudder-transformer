@@ -62,7 +62,7 @@ function safeColumnName(provider, name = "") {
   1CComega to _1_c_comega
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformName(name = "") {
+function transformName(provider, name = "") {
   const extractedValues = [];
   let extractedValue = "";
   for (let i = 0; i < name.length; i += 1) {
@@ -97,15 +97,18 @@ function transformName(name = "") {
   if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
     key = `_${key}`;
   }
+  if (provider === "postgres") {
+    key = key.substr(0, 63);
+  }
   return key;
 }
 
 function transformTableName(name = "") {
-  return transformName(name);
+  return transformName("", name);
 }
 
-function transformColumnName(name = "") {
-  return transformName(name);
+function transformColumnName(provider, name = "") {
+  return transformName(provider, name);
 }
 
 module.exports = {

@@ -11,14 +11,17 @@ const toSnakeCase = str => {
     .toLowerCase();
 };
 
-const toSafeDBString = str => {
-  let parsedStr = str;
-  if (parseInt(str[0], 10) >= 0) {
-    parsedStr = `_${str}`;
+function toSafeDBString(provider, name = "") {
+  let parsedStr = name;
+  if (parseInt(name[0], 10) >= 0) {
+    parsedStr = `_${name}`;
   }
   parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");
-  return parsedStr.substr(0, 127);
-};
+  if (provider === "postgres") {
+    parsedStr = parsedStr.substr(0, 63);
+  } else parsedStr = parsedStr.substr(0, 127);
+  return parsedStr;
+}
 
 function safeTableName(provider, name = "") {
   let tableName = name;
@@ -70,8 +73,8 @@ function transformTableName(name = "") {
   return toSnakeCase(name);
 }
 
-function transformColumnName(name = "") {
-  return toSafeDBString(name);
+function transformColumnName(provider, name = "") {
+  return toSafeDBString(provider, name);
 }
 
 module.exports = {

@@ -217,7 +217,7 @@
       "FORM": {},
       "JSON": {
         "name": "Bike",
-        "active_flag": 0,
+        "active_flag": 1,
         "customkeyapi": "some value",
         "prices": [{
           "price": 200,

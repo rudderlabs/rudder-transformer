@@ -197,7 +197,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      let safeKey = utils.transformColumnName(prefix + key);
+      let safeKey = utils.transformColumnName(options.provider, prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
         // remove rudder reserved columns name if set by user
@@ -247,6 +247,7 @@ const fullEventColumnTypeByProvider = {
   rs: "text",
   bq: "string",
   postgres: "json",
+  mssql: "json",
   clickhouse: "string"
 };
 
@@ -559,7 +560,10 @@ function processWarehouseMessage(message, options) {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options.provider,
-            utils.transformColumnName(eventTableEvent[eventColName])
+            utils.transformColumnName(
+              options.provider,
+              eventTableEvent[eventColName]
+            )
           )
         ),
         columns: getColumns(options, eventTableEvent, {

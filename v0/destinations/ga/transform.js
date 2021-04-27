@@ -15,7 +15,9 @@ const {
   getParsedIP,
   formatValue,
   getFieldValueFromMessage,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -878,5 +880,19 @@ function process(event) {
 
   return response;
 }
+const processRouterDest = inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+  const respList = inputs.map(input => {
+    return getSuccessRespEvents(
+      process(input),
+      [input.metadata],
+      input.destination
+    );
+  });
+  return respList;
+};
 
-exports.process = process;
+module.exports = { process, processRouterDest };

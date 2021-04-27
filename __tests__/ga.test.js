@@ -25,6 +25,7 @@ inputData.forEach((input, index) => {
     try {
       output = transformer.process(input);
       expected = expectedData[index];
+      expected.params.qt = output.params.qt;
     } catch (error) {
       output = error.message;
       expected = expectedData[index].message;

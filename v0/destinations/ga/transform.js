@@ -314,8 +314,12 @@ function responseBuilderSimple(
       message.anonymousId ||
       md5(message.userId);
   }
-
   finalPayload.uip = getParsedIP(message);
+
+  const timestamp = message.originalTimestamp
+    ? new Date(message.originalTimestamp)
+    : new Date(message.timestamp);
+  finalPayload.qt = Date.now() - timestamp.getTime();
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

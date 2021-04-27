@@ -1,3 +1,7 @@
+/* eslint-disable  consistent-return */
+/* eslint-disable  no-param-reassign */
+/* eslint-disable  array-callback-return */
+
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -21,11 +25,16 @@ const logger = require("../../logger");
 // ========================================================================
 
 const isDefined = x => !_.isUndefined(x);
+const isNotEmpty = x => !_.isEmpty(x);
 const isNotNull = x => x != null;
 const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
+const isDefinedAndNotNullAndNotEmpty = x =>
+  isDefined(x) && isNotNull(x) && isNotEmpty(x);
 const removeUndefinedValues = obj => _.pickBy(obj, isDefined);
 const removeNullValues = obj => _.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const removeUndefinedAndNullAndEmptyValues = obj =>
+  _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
 
 // ========================================================================
@@ -51,7 +60,7 @@ const isPrimitive = arg => {
 };
 
 const formatValue = value => {
-  if (!value || value < 0) return 0;
+  if (!value || value < 0) return null;
   return Math.round(value);
 };
 
@@ -173,6 +182,7 @@ const formatTimeStamp = (dateStr, format) => {
       return date.getTime();
   }
 };
+
 //
 
 const hashToSha256 = value => {
@@ -262,6 +272,29 @@ const defaultBatchRequestConfig = () => {
   };
 };
 
+// Router transformer
+// Success responses
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false
+) => {
+  return {
+    batchedRequest: message,
+    metadata,
+    batched,
+    statusCode: 200,
+    destination
+  };
+};
+
+// Router transformer
+// Error responses
+const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
+  return { metadata, batched, statusCode, error };
+};
+
 // ========================================================================
 // Error Message UTILITIES
 // ========================================================================
@@ -312,9 +345,6 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-// Important !@!
-// - get value from a list of sourceKeys in precedence order
-// - get value from a string key
 const getValueFromMessage = (message, sourceKey) => {
   if (Array.isArray(sourceKey) && sourceKey.length > 0) {
     if (sourceKey.length === 1) {
@@ -343,6 +373,20 @@ const getValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+// get a field value from message.
+// if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
+// else use sourceKey from `data/message.json` for actual field precedence
+// Example usage: getFieldValueFromMessage(message, "userId",true)
+//                This will return the first nonnull value from
+//                ["userId", "traits.userId", "traits.id", "context.traits.userId", "context.traits.id", "anonymousId"]
+const getFieldValueFromMessage = (message, sourceKey) => {
+  const sourceKeyMap = MESSAGE_MAPPING[sourceKey];
+  if (sourceKeyMap) {
+    return getValueFromMessage(message, sourceKeyMap);
+  }
+  return null;
+};
+
 // format the value as per the metadata values
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
@@ -355,13 +399,19 @@ const handleMetadataForValue = (value, metadata) => {
   }
 
   // get infor from metadata
-  const { type, typeFormat, template, defaultValue, excludes } = metadata;
+  const {
+    type,
+    typeFormat,
+    template,
+    defaultValue,
+    excludes,
+    multikeyMap
+  } = metadata;
 
   // if value is null and defaultValue is supplied - use that
   if (!value) {
     return defaultValue || value;
   }
-
   // we've got a correct value. start processing
   let formattedVal = value;
 
@@ -397,7 +447,7 @@ const handleMetadataForValue = (value, metadata) => {
           formattedVal = formattedVal.substring(1);
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
-        if (isNaN(formattedVal)) {
+        if (Number.isNaN(formattedVal)) {
           throw new Error("Revenue is not in the correct format");
         }
         break;
@@ -415,6 +465,11 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "getOffsetInSec":
         formattedVal = getOffsetInSec(formattedVal);
+        break;
+      case "domainUrl":
+        formattedVal = formattedVal
+          .replace("https://", "")
+          .replace("http://", "");
         break;
       default:
         break;
@@ -439,6 +494,45 @@ const handleMetadataForValue = (value, metadata) => {
         "exludes doesn't work with non-object data type. Ignoring exludes"
       );
     }
+  }
+
+  // handle multikeyMap
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  if (multikeyMap) {
+    let foundVal = false;
+    if (Array.isArray(multikeyMap)) {
+      multikeyMap.some(map => {
+        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+          logger.warn(
+            "multikeyMap skipped: sourceVal and destVal must be of valid type"
+          );
+          foundVal = true;
+          return true;
+        }
+
+        if (map.sourceVal.includes(formattedVal)) {
+          formattedVal = map.destVal;
+          foundVal = true;
+          return true;
+        }
+      });
+    } else {
+      logger.warn("multikeyMap skipped: multikeyMap must be an array");
+    }
+    if (!foundVal) formattedVal = undefined;
   }
 
   return formattedVal;
@@ -487,10 +581,19 @@ const constructPayload = (message, mappingJson) => {
     //   ...
     // ];
     mappingJson.forEach(mapping => {
-      const { sourceKeys, destKey, required, metadata } = mapping;
-      // get the value from event
+      const {
+        sourceKeys,
+        destKey,
+        required,
+        metadata,
+        sourceFromGenericMap
+      } = mapping;
+      // get the value from event, pass sourceFromGenericMap in the mapping to force this to take the
+      // sourcekeys from GenericFieldMapping, else take the sourceKeys from specific destination mapping sourceKeys
       const value = handleMetadataForValue(
-        getValueFromMessage(message, sourceKeys),
+        sourceFromGenericMap
+          ? getFieldValueFromMessage(message, sourceKeys)
+          : getValueFromMessage(message, sourceKeys),
         metadata
       );
 
@@ -512,19 +615,67 @@ const constructPayload = (message, mappingJson) => {
   return null;
 };
 
-// get a field value from message.
-// check `data/message.json` for actual field precedence
-// Example usage: getFieldValueFromMessage(message, "userId")
-//                This will return the first nonnull value from
-//                ["userId", "context.traits.userId", "context.traits.id", "anonymousId"]
-const getFieldValueFromMessage = (message, field) => {
-  const sourceKey = MESSAGE_MAPPING[field];
-  if (sourceKey) {
-    return getValueFromMessage(message, sourceKey);
+// pt 1. Here we are following a different style of mapping json where we want to maintain
+// the {dest_key, and , source_key} on a higher key called mappingKey.
+// Example of generated payload:
+// { message:
+// 	 { 	'0': { key: 'anonymous_id', value: '' },
+// 	 	'1': { key: 'user_id', value: 'userTest004' },
+// 	 	'2': { key: 'event', value: 'Page Call' },
+// 	 	..}
+// }
+// pt 2. This is a similar method to construct payload w.r.t where we do-not remove the keys
+// having undefined and null values.
+// Usage - Google Sheets destination where we require all the keys of the message
+// irrespective of values.
+// Future enhancements: Need to validate uniqueness mapping-keys on the mapping-json
+// in order to avoid mapping conflicts
+// ################## Note to devs: Currently we are assuming the mapping-keys are all unique
+const constructPayloadWithKeys = (message, mappingJson) => {
+  if (Array.isArray(mappingJson) && mappingJson.length > 0) {
+    const payload = {};
+    mappingJson.forEach(mapping => {
+      const {
+        sourceKeys,
+        mappingKey,
+        destKey,
+        metadata,
+        sourceFromGenericMap
+      } = mapping;
+      const value = handleMetadataForValue(
+        sourceFromGenericMap
+          ? getFieldValueFromMessage(message, sourceKeys)
+          : getValueFromMessage(message, sourceKeys),
+        metadata
+      );
+
+      if (value) {
+        // set the value only if correct
+        set(payload, mappingKey, { key: destKey, value });
+      } else {
+        // set empty string as value if the value is not defined
+        set(payload, mappingKey, { key: destKey, value: "" });
+      }
+    });
+
+    return payload;
   }
+
+  // invalid mappingJson
   return null;
 };
 
+// External ID format
+// {
+//   "context": {
+//     "externalId": [
+//       {
+//         "type": "kustomerId",
+//         "id": "12345678"
+//       }
+//     ]
+//   }
+// }
 // to get destination specific external id passed in context.
 function getDestinationExternalID(message, type) {
   let externalIdArray = null;
@@ -649,6 +800,115 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+/**
+ * Extract fileds from message with exclusions
+ * Pass the keys of message for extraction and
+ * exclusion fields to exlude and the payload to map into
+ *
+ * Example:
+ * extractCustomFields(
+ *   message,
+ *   payload,
+ *   ["traits", "context.traits", "properties"],
+ *   [
+ *     "firstName",
+ *     "lastName",
+ *     "phone",
+ *     "title",
+ *     "organization",
+ *     "city",
+ *     "region",
+ *     "country",
+ *     "zip",
+ *     "image",
+ *     "timezone"
+ *   ]
+ * )
+ * -------------------------------------------
+ * The above call will map the fields other than the
+ * exlusion list from the given keys to the destination payload
+ *
+ */
+function extractCustomFields(message, destination, keys, exclusionFields) {
+  const mappingKeys = [];
+  if (Array.isArray(keys)) {
+    keys.map(key => {
+      const messageContext = get(message, key);
+      if (messageContext) {
+        Object.keys(messageContext).map(k => {
+          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+        });
+        mappingKeys.map(mappingKey => {
+          if (!(typeof messageContext[mappingKey] === "undefined")) {
+            set(destination, mappingKey, get(messageContext, mappingKey));
+          }
+        });
+      }
+    });
+  } else if (keys === "root") {
+    Object.keys(message).map(k => {
+      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+    });
+    mappingKeys.map(mappingKey => {
+      if (!(typeof message[mappingKey] === "undefined")) {
+        set(destination, mappingKey, get(message, mappingKey));
+      }
+    });
+  } else {
+    logger.debug("unable to parse keys");
+  }
+
+  return destination;
+}
+
+// Deleting nested properties from objects
+function deleteObjectProperty(object, pathToObject) {
+  let i;
+  if (!object || !pathToObject) {
+    return;
+  }
+  if (typeof pathToObject === "string") {
+    pathToObject = pathToObject.split(".");
+  }
+  for (i = 0; i < pathToObject.length - 1; i += 1) {
+    object = object[pathToObject[i]];
+
+    if (typeof object === "undefined") {
+      return;
+    }
+  }
+
+  delete object[pathToObject.pop()];
+}
+
+// function convert keys in a object to title case
+
+function toTitleCase(payload) {
+  const newPayload = payload;
+  Object.keys(payload).forEach(key => {
+    const value = newPayload[key];
+    delete newPayload[key];
+    const newKey = key
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+      .replace(/([a-z])([0-9])/gi, "$1 $2")
+      .replace(/([0-9])([a-z])/gi, "$1 $2")
+      .trim()
+      .replace(/(_)/g, ` `)
+      .replace(/(^\w{1})|(\s+\w{1})/g, match => {
+        return match.toUpperCase();
+      });
+    newPayload[newKey] = value;
+  });
+  return newPayload;
+}
+
+// returns false if there is any empty string inside an array or true otherwise
+
+function checkEmptyStringInarray(array) {
+  const result = array.filter(item => item === "").length === 0;
+  return result;
+}
 
 // ========================================================================
 // EXPORTS
@@ -657,37 +917,47 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
 module.exports = {
   ErrorMessage,
   constructPayload,
+  constructPayloadWithKeys,
+  checkEmptyStringInarray,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
+  deleteObjectProperty,
+  extractCustomFields,
   flattenJson,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
   getDeviceModel,
+  getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getSuccessRespEvents,
   getTimeDifference,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
+  isBlank,
+  isDefined,
+  isDefinedAndNotNull,
   isEmpty,
   isObject,
   isNonFuncObject,
   isPrimitive,
   isValidUrl,
-  isBlank,
   removeNullValues,
+  removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,
+  toTitleCase,
   toUnixTimestamp,
   updatePayload
 };

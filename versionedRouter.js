@@ -6,6 +6,7 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
+require("dotenv").config();
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -64,22 +65,24 @@ async function handleDest(ctx, version, destination) {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        if (!Array.isArray(respEvents)) {
-          respEvents = [respEvents];
+        if (respEvents) {
+          if (!Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
+          respList.push(
+            ...respEvents.map(ev => {
+              let { userId } = ev;
+              if (ev.statusCode !== 400 && userId) {
+                userId = `${userId}`;
+              }
+              return {
+                output: { ...ev, userId },
+                metadata: event.metadata,
+                statusCode: 200
+              };
+            })
+          );
         }
-        respList.push(
-          ...respEvents.map(ev => {
-            let { userId } = ev;
-            if (ev.statusCode !== 400 && userId) {
-              userId = `${userId}`;
-            }
-            return {
-              output: { ...ev, userId },
-              metadata: event.metadata,
-              statusCode: 200
-            };
-          })
-        );
       } catch (error) {
         logger.error(error);
 
@@ -99,6 +102,25 @@ async function handleDest(ctx, version, destination) {
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
+}
+
+async function routerHandleDest(ctx) {
+  const { destType, input } = ctx.request.body;
+  const routerDestHandler = getDestHandler("v0", destType);
+  if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support router transform`;
+    return;
+  }
+  const respEvents = [];
+  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+  await Promise.all(
+    Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      const listOutput = await routerDestHandler.processRouterDest(desInput);
+      respEvents.push(...listOutput);
+    })
+  );
+  ctx.body = { output: respEvents };
 }
 
 if (startDestTransformer) {
@@ -124,6 +146,9 @@ if (startDestTransformer) {
           version
         });
         stats.increment("dest_transform_requests", 1, { destination, version });
+      });
+      router.post("/routerTransform", async ctx => {
+        await routerHandleDest(ctx);
       });
     });
   });
@@ -200,25 +225,42 @@ if (startDestTransformer) {
               );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
+                  if (ev.error) {
+                    return {
+                      statusCode: 400,
+                      error: ev.error,
+                      metadata: ev.metadata
+                    };
+                  }
                   if (!isNonFuncObject(ev.transformedEvent)) {
-                    throw new Error(
-                      `returned event in events from user transformation is not an object, transformationVersionId:${transformationVersionId}`
-                    );
+                    return {
+                      statusCode: 400,
+                      error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                        ev.transformedEvent
+                      )}`,
+                      metadata: ev.metadata
+                    };
                   }
                   return {
                     output: ev.transformedEvent,
-                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
+                    metadata: _.isEmpty(ev.metadata)
+                      ? commonMetadata
+                      : ev.metadata,
                     statusCode: 200
                   };
                 })
               );
             } catch (error) {
               logger.error(error);
-              transformedEvents.push({
-                statusCode: 400,
-                error: error.toString(),
-                metadata: commonMetadata
+              const errorString = error.toString();
+              destTransformedEvents = destEvents.map(e => {
+                return {
+                  statusCode: 400,
+                  metadata: e.metadata,
+                  error: errorString
+                };
               });
+              transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions

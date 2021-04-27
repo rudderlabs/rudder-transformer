@@ -6,7 +6,8 @@ const {
   defaultRequestConfig,
   getHashFromArray,
   getFieldValueFromMessage,
-  flattenJson
+  flattenJson,
+  isDefinedAndNotNull
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -21,7 +22,7 @@ function process(event) {
   try {
     const { message, destination } = event;
     // set context.ip from request_ip if it is missing
-    if (!get(message, "context.ip")) {
+    if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
       set(message, "context.ip", message.request_ip);
     }
     const response = defaultRequestConfig();
@@ -38,7 +39,7 @@ function process(event) {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "Content-Type": "application/json"
+          "content-type": "application/json"
         };
       }
 
@@ -54,4 +55,21 @@ function process(event) {
   }
 }
 
-exports.process = process;
+const getRouterTransformResponse = (message, metadata, destination) => {
+  const returnResponse = {};
+  returnResponse.batchedRequest = message;
+  returnResponse.metadata = metadata;
+  returnResponse.batched = false;
+  returnResponse.statusCode = 200;
+  returnResponse.destination = destination;
+  return returnResponse;
+};
+
+function processRouterDest(events) {
+  return events.map(ev => {
+    const resp = process(ev);
+    return getRouterTransformResponse(resp, [ev.metadata], ev.destination);
+  });
+}
+
+module.exports = { process, processRouterDest };

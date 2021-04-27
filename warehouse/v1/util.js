@@ -9,6 +9,9 @@ function safeTableName(provider, name = "") {
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
+  } else if (provider === "postgres") {
+    tableName = tableName.substr(0, 63);
+    tableName = tableName.toLowerCase();
   } else {
     tableName = tableName.toLowerCase();
   }
@@ -27,6 +30,9 @@ function safeColumnName(provider, name = "") {
   }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
+  } else if (provider === "postgres") {
+    columnName = columnName.substr(0, 63);
+    columnName = columnName.toLowerCase();
   } else {
     columnName = columnName.toLowerCase();
   }
@@ -56,7 +62,7 @@ function safeColumnName(provider, name = "") {
   1CComega to _1_c_comega
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformName(name = "") {
+function transformName(provider, name = "") {
   const extractedValues = [];
   let extractedValue = "";
   for (let i = 0; i < name.length; i += 1) {
@@ -79,19 +85,30 @@ function transformName(name = "") {
     extractedValues.push(extractedValue);
   }
   let key = extractedValues.join("_");
-  key = _.snakeCase(key);
+  if (name.startsWith("_")) {
+    // do not remove leading underscores to allow esacaping rudder keywords with underscore
+    // _timestamp -> _timestamp
+    // __timestamp -> __timestamp
+    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ""));
+  } else {
+    key = _.snakeCase(key);
+  }
+
   if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
     key = `_${key}`;
+  }
+  if (provider === "postgres") {
+    key = key.substr(0, 63);
   }
   return key;
 }
 
 function transformTableName(name = "") {
-  return transformName(name);
+  return transformName("", name);
 }
 
-function transformColumnName(name = "") {
-  return transformName(name);
+function transformColumnName(provider, name = "") {
+  return transformName(provider, name);
 }
 
 module.exports = {

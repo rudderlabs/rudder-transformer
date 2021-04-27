@@ -80,7 +80,12 @@ function responseBuilder(message, evType, evName, destination) {
           trait !== "userId" &&
           trait !== "anonymousId"
         ) {
-          set(rawPayload, trait, get(message, `${pathToTraits}.${trait}`));
+          const dotEscapedTrait = trait.replace(".", "\\.");
+          set(
+            rawPayload,
+            dotEscapedTrait,
+            get(message, `${pathToTraits}.${trait}`)
+          );
         }
       });
     }
@@ -220,6 +225,15 @@ function processSingleMessage(message, destination) {
       throw new Error(`could not determine type ${messageType}`);
   }
   const response = responseBuilder(message, evType, evName, destination);
+
+  // replace default domain with EU data center domainc for EU based account
+  if (destination.Config.datacenterEU) {
+    response.endpoint = response.endpoint.replace(
+      "track.customer.io",
+      "track-eu.customer.io"
+    );
+  }
+
   return response;
 }
 

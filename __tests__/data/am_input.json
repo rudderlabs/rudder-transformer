@@ -35,6 +35,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "identify",
@@ -82,6 +92,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "request_ip": "1.1.1.1",
@@ -92,11 +112,14 @@
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
-        "path": "/test",
-        "referrer": "Rudder",
-        "search": "abc",
-        "title": "Test Page",
-        "url": "www.rudderlabs.com"
+        "path": "/destinations/amplitude",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/amplitude",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "integrations": {
         "All": true
@@ -136,6 +159,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "request_ip": "1.1.1.1",
@@ -146,15 +179,22 @@
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
-        "path": "/test",
-        "referrer": "Rudder",
-        "search": "abc",
-        "title": "Test Page",
-        "url": "www.rudderlabs.com"
+        "path": "/destinations/amplitude",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/amplitude",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "integrations": {
         "All": false,
-        "Amplitude": { "groups": { "Company": "ABC" } }
+        "Amplitude": {
+          "groups": {
+            "Company": "ABC"
+          }
+        }
       },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
@@ -192,6 +232,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -240,6 +290,16 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "traits": {
@@ -389,11 +449,19 @@
           "logins": 5,
           "createdAt": 1599264000
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 0.8999999761581421 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
         "campaign": {
           "source": "google",
           "medium": "medium",
@@ -403,11 +471,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "group",
@@ -415,11 +486,19 @@
       "originalTimestamp": "2020-10-20T07:54:58.983Z",
       "anonymousId": "my-anonymous-id-new",
       "userId": "sampleusrRudder3",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "groupId": "Sample_groupId23",
       "traits": {
-        "KEY_3": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
-        "KEY_2": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
         "name_trait": "Company",
         "value_trait": "Comapny-ABC"
       },
@@ -451,11 +530,19 @@
           "logins": 5,
           "createdAt": 1599264000
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 0.8999999761581421 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
         "campaign": {
           "source": "google",
           "medium": "medium",
@@ -465,11 +552,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "group",
@@ -477,11 +567,19 @@
       "originalTimestamp": "2020-10-20T07:54:58.983Z",
       "anonymousId": "my-anonymous-id-new",
       "userId": "sampleusrRudder3",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "groupId": "Sample_groupId23",
       "traits": {
-        "KEY_3": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
-        "KEY_2": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
         "name_trait": "Company",
         "value_trait": ["Comapny-ABC"]
       },
@@ -513,11 +611,19 @@
           "logins": 5,
           "createdAt": 1599264000
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 0.8999999761581421 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
         "campaign": {
           "source": "google",
           "medium": "medium",
@@ -527,11 +633,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "alias",
@@ -539,7 +648,9 @@
       "originalTimestamp": "2020-10-20T08:14:28.778Z",
       "anonymousId": "my-anonymous-id-new",
       "userId": "newUserIdAlias",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "previousId": "sampleusrRudder3",
       "sentAt": "2020-10-20T08:14:28.778Z"
     },
@@ -567,11 +678,19 @@
           "logins": 5,
           "createdAt": 1599264000
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 0.8999999761581421 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
         "campaign": {
           "source": "google",
           "medium": "medium",
@@ -581,11 +700,14 @@
           "test": "other value"
         },
         "page": {
-          "path": "/html/sajal.html",
+          "path": "/destinations/amplitude",
           "referrer": "",
-          "search": "?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value",
+          "search": "",
           "title": "",
-          "url": "http://localhost:9116/html/sajal.html?utm_source=google&utm_medium=medium&utm_term=keyword&utm_content=some%20content&utm_campaign=some%20campaign&utm_test=other%20value"
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "alias",
@@ -595,10 +717,79 @@
       "userId": "newUserIdAlias",
       "integrations": {
         "All": false,
-        "Amplitude": { "unmap": "sampleusrRudder3" }
+        "Amplitude": {
+          "unmap": "sampleusrRudder3"
+        }
       },
       "previousId": "sampleusrRudder3",
       "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "Android",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
     },
     "destination": {
       "Config": {
@@ -629,7 +820,8 @@
           "name": "generic_x86_arm",
           "type": "Android",
           "model": "AOSP on IA Emulator",
-          "manufacturer": "Google"
+          "manufacturer": "Google",
+          "adTrackingEnabled": false
         },
         "locale": "en-US",
         "screen": {
@@ -672,10 +864,207 @@
   },
   {
     "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "0572f78fa49c648e",
+          "name": "generic_x86_arm",
+          "type": "Android",
+          "model": "AOSP on IA Emulator",
+          "manufacturer": "Google",
+          "adTrackingEnabled": true,
+          "advertisingId": "44c97318-9040-4361-8bc7-4eb30f665ca8"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "Android",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "0572f78fa49c648e",
+          "name": "iphone_xr_64",
+          "type": "iOS",
+          "model": "iPhone XR",
+          "manufacturer": "Apple",
+          "adTrackingEnabled": false
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "AT&T",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "device": {
+          "id": "0572f78fa49c648e",
+          "name": "iphone_xr_64",
+          "type": "iOS",
+          "model": "iPhone XR",
+          "manufacturer": "Apple",
+          "adTrackingEnabled": true,
+          "advertisingId": "1606e649-c97e-4d5f-a2ef-b81dbc66741a"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "AT&T",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
       "type": "screen",
       "userId": "identified user id",
       "anonymousId": "anon-id-new",
-      "name": "Screen View",
+      "event": "Screen View",
       "properties": {
         "prop1": "5"
       },
@@ -695,476 +1084,833 @@
   },
   {
     "message": {
-        "type": "track",
-        "event": "Order Completed",
-        "sentAt": "2020-08-14T05:30:30.118Z",
-        "context": {
-            "source": "test",
-            "traits": {
-                "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-            },
-            "library": {
-                "name": "rudder-sdk-ruby-sync",
-                "version": "1.0.6"
-            }
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
-        "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "timestamp": "2020-08-14T05:30:30.118Z",
-        "properties": {
-            "tax": 2,
-            "total": 27.5,
-            "coupon": "hasbros",
-            "revenue": 48,
-            "price": 25,
-            "quantity": 2,
-            "currency": "USD",
-            "discount": 2.5,
-            "order_id": "50314b8e9bcf000000000000",
-            "products": [
-                {
-                    "sku": "45790-32",
-                    "url": "https://www.example.com/product/path",
-                    "name": "Monopoly: 3rd Edition",
-                    "price": 19,
-                    "category": "Games",
-                    "quantity": 1,
-                    "image_url": "https:///www.example.com/product/path.jpg",
-                    "product_id": "507f1f77bcf86cd799439011"
-                },
-                {
-                    "sku": "46493-32",
-                    "name": "Uno Card Game",
-                    "price": 3,
-                    "category": "Games",
-                    "quantity": 2,
-                    "product_id": "505bd76785ebb509fc183733"
-                }
-            ],
-            "shipping": 3,
-            "subtotal": 22.5,
-            "affiliation": "Google Store",
-            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
-        },
-        "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-        "integrations": {
-            "S3": false,
-            "All": true
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
         }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
     },
     "destination": {
-        "Config": {
-            "apiKey": "abcde",
-            "groupTypeTrait": "email",
-            "groupValueTrait": "age",
-            "trackProductsOnce": false,
-            "trackRevenuePerProduct":false
-        }
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": false,
+        "trackRevenuePerProduct": false
+      }
     }
-},
-
-
-{
-  "message": {
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "products": [
-              {
-                  "sku": "45790-32",
-                  "url": "https://www.example.com/product/path",
-                  "name": "Monopoly: 3rd Edition",
-                  "price": 19,
-                  "category": "Games",
-                  "quantity": 1,
-                  "image_url": "https:///www.example.com/product/path.jpg",
-                  "product_id": "507f1f77bcf86cd799439011"
-              },
-              {
-                  "sku": "46493-32",
-                  "name": "Uno Card Game",
-                  "price": 3,
-                  "category": "Games",
-                  "quantity": 2,
-                  "product_id": "505bd76785ebb509fc183733"
-              }
-          ],
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": true,
-          "trackRevenuePerProduct":false
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
       }
-  }
-},
-{
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "products": [
-              {
-                  "sku": "45790-32",
-                  "url": "https://www.example.com/product/path",
-                  "name": "Monopoly: 3rd Edition",
-                  "price": 19,
-                  "category": "Games",
-                  "quantity": 1,
-                  "image_url": "https:///www.example.com/product/path.jpg",
-                  "product_id": "507f1f77bcf86cd799439011"
-              },
-              {
-                  "sku": "46493-32",
-                  "name": "Uno Card Game",
-                  "price": 3,
-                  "category": "Games",
-                  "quantity": 2,
-                  "product_id": "505bd76785ebb509fc183733"
-              }
-          ],
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": false,
-          "trackRevenuePerProduct":true
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": false,
+        "trackRevenuePerProduct": true
       }
-  }
-},
-
-
-
-
-
-{
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "products": [
-              {
-                  "sku": "45790-32",
-                  "url": "https://www.example.com/product/path",
-                  "name": "Monopoly: 3rd Edition",
-                  "price": 19,
-                  "category": "Games",
-                  "quantity": 1,
-                  "image_url": "https:///www.example.com/product/path.jpg",
-                  "product_id": "507f1f77bcf86cd799439011"
-              },
-              {
-                  "sku": "46493-32",
-                  "name": "Uno Card Game",
-                  "price": 3,
-                  "category": "Games",
-                  "quantity": 2,
-                  "product_id": "505bd76785ebb509fc183733"
-              }
-          ],
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": true,
-          "trackRevenuePerProduct":true
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": true
       }
-  }
-},
- {
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": true,
-          "trackRevenuePerProduct":true
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": true
       }
-  }
-},
- {
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": true,
-          "trackRevenuePerProduct":false
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
       }
-  }
-},
- {
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": false,
-          "trackRevenuePerProduct":true
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": false,
+        "trackRevenuePerProduct": true
       }
-  }
-},
- {
-  "message": {
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
-          }
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "price": 25,
-          "quantity": 2,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "S3": false,
-          "All": true
+        "S3": false,
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "Config": {
-          "apiKey": "abcde",
-          "groupTypeTrait": "email",
-          "groupValueTrait": "age",
-          "trackProductsOnce": false,
-          "trackRevenuePerProduct":false
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": false,
+        "trackRevenuePerProduct": false
       }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Durgapur",
+          "name": "Manashi",
+          "phone": "990099009900",
+          "friends": 3,
+          "age": 12,
+          "subjects": 5,
+          "experience": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToIncrement": [
+          {
+            "traits": "age"
+          },
+          {
+            "traits": "friends"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/RudderAmplitude.html",
+          "path": "/RudderAmplitude.html",
+          "title": "Amplitude Testing By Rudder",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Durgapur",
+          "name": "Manashi",
+          "phone": "990099009900",
+          "friends": 3,
+          "age": 12,
+          "subjects": 5,
+          "experience": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToSetOnce": [
+          {
+            "traits": "subjects"
+          },
+          {
+            "traits": ""
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/RudderAmplitude.html",
+          "path": "/RudderAmplitude.html",
+          "title": "Amplitude Testing By Rudder",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Durgapur",
+          "name": "Manashi",
+          "phone": "990099009900",
+          "friends": 3,
+          "age": 12,
+          "subjects": 5,
+          "experience": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToAppend": [
+          {
+            "traits": "name"
+          },
+          {
+            "traits": ""
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/RudderAmplitude.html",
+          "path": "/RudderAmplitude.html",
+          "title": "Amplitude Testing By Rudder",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Durgapur",
+          "name": "Manashi",
+          "phone": "990099009900",
+          "friends": 3,
+          "age": 12,
+          "subjects": 5,
+          "experience": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToPrepend": [
+          {
+            "traits": "experience"
+          },
+          {
+            "traits": ""
+          }
+        ]
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://localhost:1111/RudderAmplitude.html",
+          "path": "/RudderAmplitude.html",
+          "title": "Amplitude Testing By Rudder",
+          "search": "",
+          "referrer": "http://localhost:1111/"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "traits": {
+          "city": "Durgapur",
+          "name": "Manashi",
+          "phone": "990099009900",
+          "friends": 3,
+          "age": 12,
+          "subjects": 5,
+          "experience": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToIncrement": [
+          {
+            "traits": "age"
+          },
+          {
+            "traits": "friends"
+          }
+        ],
+        "traitsToSetOnce": [
+          {
+            "traits": "subjects"
+          },
+          {
+            "traits": ""
+          }
+        ],
+        "traitsToAppend": [
+          {
+            "traits": "name"
+          },
+          {
+            "traits": ""
+          }
+        ],
+        "traitsToPrepend": [
+          {
+            "traits": "experience"
+          },
+          {
+            "traits": ""
+          }
+        ]
+      }
+    }
   }
-}
-     
 ]
-
-

@@ -2,6 +2,7 @@
 const get = require("get-value");
 const _ = require("lodash");
 
+const util = require("util");
 const {
   isObject,
   isBlank,
@@ -12,6 +13,8 @@ const { getMergeRuleEvent } = require("./identity");
 
 const whDefaultColumnMappingRules = require("./config/WHDefaultConfig.js");
 const whTrackColumnMappingRules = require("./config/WHTrackConfig.js");
+const whTracksTableColumnMappingRules = require("./config/WHTracksTableConfig.js");
+const whTrackEventTableColumnMappingRules = require("./config/WHTrackEventTableConfig.js");
 const whUserColumnMappingRules = require("./config/WHUserConfig.js");
 const whPageColumnMappingRules = require("./config/WHPageConfig.js");
 const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
@@ -57,7 +60,12 @@ const rudderCreatedTables = [
 ];
 
 const rudderReservedColums = {
-  track: { ...whDefaultColumnMappingRules, ...whTrackColumnMappingRules },
+  track: {
+    ...whDefaultColumnMappingRules,
+    ...whTrackColumnMappingRules,
+    ...whTracksTableColumnMappingRules,
+    ...whTrackEventTableColumnMappingRules
+  },
   identify: { ...whDefaultColumnMappingRules, ...whUserColumnMappingRules },
   page: { ...whDefaultColumnMappingRules, ...whPageColumnMappingRules },
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
@@ -105,12 +113,12 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 ) {
   if (!isObject(columnMapping)) return;
   Object.keys(columnMapping).forEach(key => {
+    const valInMap = columnMapping[key];
     let val;
-    // if (_.isFunction(columnMapping[key])) {
-    if (key === "context_ip") {
-      val = columnMapping[key](input);
+    if (_.isFunction(valInMap)) {
+      val = valInMap(input, options);
     } else {
-      val = get(input, columnMapping[key]);
+      val = get(input, valInMap);
     }
 
     const columnName = utils.safeColumnName(options.provider, key);
@@ -189,7 +197,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      let safeKey = utils.transformColumnName(prefix + key);
+      let safeKey = utils.transformColumnName(options.provider, prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);
         // remove rudder reserved columns name if set by user
@@ -239,6 +247,7 @@ const fullEventColumnTypeByProvider = {
   rs: "text",
   bq: "string",
   postgres: "json",
+  mssql: "json",
   clickhouse: "string"
 };
 
@@ -473,16 +482,25 @@ function processWarehouseMessage(message, options) {
         options
       );
 
-      // -----start: tracks table------
-      const tracksColumnTypes = {};
       // set event column based on event_text in the tracks table
       const eventColName = utils.safeColumnName(options.provider, "event");
       commonProps[eventColName] = utils.transformTableName(
         commonProps[utils.safeColumnName(options.provider, "event_text")]
       );
-      tracksColumnTypes[eventColName] = "string";
+      commonColumnTypes[eventColName] = "string";
+
+      // -----start: tracks table------
+      const tracksColumnTypes = {};
       // shallow copy is sufficient since it does not contains nested objects
       const tracksEvent = { ...commonProps };
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        tracksEvent,
+        message,
+        whTracksTableColumnMappingRules,
+        tracksColumnTypes,
+        options
+      );
       storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
       const tracksMetadata = {
         table: utils.safeTableName(options.provider, "tracks"),
@@ -524,13 +542,28 @@ function processWarehouseMessage(message, options) {
         eventTableColumnTypes,
         options
       );
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        commonProps,
+        message,
+        whTrackEventTableColumnMappingRules,
+        commonColumnTypes,
+        options
+      );
+
       // always set commonProps last so that they are not overwritten
-      const eventTableEvent = { ...trackProps, ...commonProps };
+      const eventTableEvent = {
+        ...trackProps,
+        ...commonProps
+      };
       const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options.provider,
-            utils.transformColumnName(eventTableEvent[eventColName])
+            utils.transformColumnName(
+              options.provider,
+              eventTableEvent[eventColName]
+            )
           )
         ),
         columns: getColumns(options, eventTableEvent, {
@@ -660,7 +693,9 @@ function processWarehouseMessage(message, options) {
       );
       // set id
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
-      usersColumnTypes[utils.safeColumnName(options.provider, "id")] = "string";
+      usersColumnTypes[
+        utils.safeColumnName(options.provider, "id")
+      ] = getDataType(message.userId, options);
       // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")

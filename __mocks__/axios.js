@@ -2,12 +2,16 @@
 // TODO: Need to figure out a way to mock failed requests based on post body
 ////////////////////////////////////////////////////////////////////////////////
 const axios = jest.genMockFromModule("axios");
+const acPostRequestHandler = require("./active_campaign.mock");
+const klaviyoPostRequestHandler = require("./klaviyo.mock");
+const kustomerGetRequestHandler = require("./kustomer.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
-  "mktorest.com": "marketo"
+  "mktorest.com": "marketo",
+  "active.campaigns.rudder.com": "active_campaigns"
 };
 
 const fs = require("fs");
@@ -31,26 +35,42 @@ function getData(url) {
 }
 
 function get(url) {
-  const data = getData(url);
+  const mockData = getData(url);
+  if (url.includes("https://api.kustomerapp.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(kustomerGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
-    if (data) {
-      resolve({ data });
+    if (mockData) {
+      resolve({ data: mockData, status: 200 });
     } else {
       resolve({ error: "Request failed" });
     }
   });
 }
 
-function post(url) {
-  const data = getData(url);
+function post(url, payload) {
+  const mockData = getData(url);
+  if (url.includes("https://active.campaigns.rudder.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(acPostRequestHandler(url, payload));
+    });
+  }
+  if(url.includes("https://a.klaviyo.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(klaviyoPostRequestHandler(url, payload));
+    });
+  }
   return new Promise((resolve, reject) => {
-    if (data) {
-      resolve({ data });
+    if (mockData) {
+      resolve({ data: mockData });
     } else {
       resolve({ error: "Request failed" });
     }
   });
 }
+
 axios.get = get;
 axios.post = post;
 module.exports = axios;

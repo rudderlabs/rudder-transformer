@@ -1,0 +1,345 @@
+{
+  "https://active.campaigns.rudder.com/api/3/contact/sync": {
+    "fieldValues": [
+      {
+        "contact": "113",
+        "field": "1",
+        "value": "The Value for First Field",
+        "cdate": "2020-08-01T10:54:59-05:00",
+        "udate": "2020-08-01T14:13:34-05:00",
+        "links": {
+          "owner": "https://:account.api-us1.com/api/3/fieldValues/11797/owner",
+          "field": "https://:account.api-us1.com/api/3/fieldValues/11797/field"
+        },
+        "id": "11797",
+        "owner": "113"
+      },
+      {
+        "contact": "113",
+        "field": "6",
+        "value": "2008-01-20",
+        "cdate": "2020-08-01T10:54:59-05:00",
+        "udate": "2020-08-01T14:13:34-05:00",
+        "links": {
+          "owner": "https://:account.api-us1.com/api/3/fieldValues/11798/owner",
+          "field": "https://:account.api-us1.com/api/3/fieldValues/11798/field"
+        },
+        "id": "11798",
+        "owner": "113"
+      }
+    ],
+    "contact": {
+      "email": "jamesDoe@gmail.com",
+      "cdate": "2018-09-28T13:50:41-05:00",
+      "udate": "2018-09-28T13:50:41-05:00",
+      "orgid": "",
+      "links": {
+        "bounceLogs": "https://:account.api-us1.com/api/:version/contacts/113/bounceLogs",
+        "contactAutomations": "https://:account.api-us1.com/api/:version/contacts/113/contactAutomations",
+        "contactData": "https://:account.api-us1.com/api/:version/contacts/113/contactData",
+        "contactGoals": "https://:account.api-us1.com/api/:version/contacts/113/contactGoals",
+        "contactLists": "https://:account.api-us1.com/api/:version/contacts/113/contactLists",
+        "contactLogs": "https://:account.api-us1.com/api/:version/contacts/113/contactLogs",
+        "contactTags": "https://:account.api-us1.com/api/:version/contacts/113/contactTags",
+        "contactDeals": "https://:account.api-us1.com/api/:version/contacts/113/contactDeals",
+        "deals": "https://:account.api-us1.com/api/:version/contacts/113/deals",
+        "fieldValues": "https://:account.api-us1.com/api/:version/contacts/113/fieldValues",
+        "geoIps": "https://:account.api-us1.com/api/:version/contacts/113/geoIps",
+        "notes": "https://:account.api-us1.com/api/:version/contacts/113/notes",
+        "organization": "https://:account.api-us1.com/api/:version/contacts/113/organization",
+        "plusAppend": "https://:account.api-us1.com/api/:version/contacts/113/plusAppend",
+        "trackingLogs": "https://:account.api-us1.com/api/:version/contacts/113/trackingLogs",
+        "scoreValues": "https://:account.api-us1.com/api/:version/contacts/113/scoreValues"
+      },
+      "id": "2",
+      "organization": ""
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/tags": {
+    "tag": {
+      "cdate": "2018-09-29T19:21:25-05:00",
+      "links": {
+        "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/16/contactGoalTags"
+      }
+    },
+    "tags": [
+      {
+        "tagType": "contact",
+        "tag": "one",
+        "description": "",
+        "cdate": "2018-08-17T09:43:15-05:00",
+        "links": {
+          "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/1/contactGoalTags"
+        },
+        "id": "1"
+      },
+      {
+        "tagType": "contact",
+        "tag": "two",
+        "description": "",
+        "cdate": "2018-08-17T13:41:16-05:00",
+        "links": {
+          "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/2/contactGoalTags"
+        },
+        "id": "2"
+      },
+      {
+        "tagType": "contact",
+        "tag": "three",
+        "description": "",
+        "cdate": "2018-08-17T13:41:18-05:00",
+        "links": {
+          "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/3/contactGoalTags"
+        },
+        "id": "3"
+      },
+      {
+        "tagType": "template",
+        "tag": "test1",
+        "description": "",
+        "cdate": "2018-08-28T11:54:36-05:00",
+        "links": {
+          "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/4/contactGoalTags"
+        },
+        "id": "4"
+      },
+      {
+        "tagType": "template",
+        "tag": "DIY_Hobby",
+        "description": "",
+        "cdate": "2018-08-28T11:54:38-05:00",
+        "links": {
+          "contactGoalTags": "https://:account.api-us1.com/api/:version/tags/5/contactGoalTags"
+        },
+        "id": "5"
+      }
+    ],
+    "meta": {
+      "total": "5"
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/contactTags": {
+    "contactTag": {
+      "cdate": "2017-06-08T16:11:53-05:00",
+      "links": {
+        "contact": "/1/contact",
+        "tag": "/1/tag"
+      }
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/fields": {
+    "fieldOptions": [],
+    "fieldRels": [],
+    "fields": [
+      {
+        "title": "Likes",
+        "descript": "Likes  description",
+        "type": "multivalue",
+        "isrequired": "1",
+        "perstag": "PERSONALIZEDTAG",
+        "defval": "Defaut Value",
+        "show_in_list": "1",
+        "rows": "2",
+        "cols": "2",
+        "visible": "1",
+        "service": "google",
+        "ordernum": "3",
+        "cdate": "2018-11-15T21:42:40-06:00",
+        "udate": "2018-11-15T21:49:52-06:00",
+        "options": [],
+        "relations": [],
+        "links": {
+          "options": "https://:account.api-us1.com/api/:version/fields/1/options",
+          "relations": "https://:account.api-us1.com/api/:version/fields/1/relations"
+        },
+        "id": "3"
+      },
+      {
+        "title": "Another Test Title",
+        "descript": null,
+        "type": "",
+        "isrequired": "0",
+        "perstag": "ANOTHER_TEST_TITLE",
+        "defval": null,
+        "show_in_list": "0",
+        "rows": "0",
+        "cols": "0",
+        "visible": "1",
+        "service": "",
+        "ordernum": "2",
+        "cdate": "2018-11-15T21:43:38-06:00",
+        "udate": "2018-11-15T21:43:38-06:00",
+        "options": [],
+        "relations": [],
+        "links": {
+          "options": "https://:account.api-us1.com/api/:version/fields/2/options",
+          "relations": "https://:account.api-us1.com/api/:version/fields/2/relations"
+        },
+        "id": "2"
+      },
+      {
+        "title": "Country",
+        "descript": "Country  description",
+        "type": "textarea",
+        "isrequired": "1",
+        "perstag": "PERSONALIZEDTAG",
+        "defval": "Defaut Value",
+        "show_in_list": "1",
+        "rows": "2",
+        "cols": "2",
+        "visible": "1",
+        "service": "google",
+        "ordernum": "3",
+        "cdate": "2018-11-15T21:42:40-06:00",
+        "udate": "2018-11-15T21:49:52-06:00",
+        "options": [],
+        "relations": [],
+        "links": {
+          "options": "https://:account.api-us1.com/api/:version/fields/1/options",
+          "relations": "https://:account.api-us1.com/api/:version/fields/1/relations"
+        },
+        "id": "1"
+      }
+    ],
+    "meta": {
+      "total": "2"
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/fieldValues": {
+    "contacts": [
+      {
+        "email": "jamesDoe@gmail.com",
+        "cdate": "2018-09-28T13:50:41-05:00",
+        "udate": "2018-09-28T13:50:41-05:00",
+        "orgid": "",
+        "links": {
+          "bounceLogs": "https://:account.api-us1.com/api/:version/contacts/113/bounceLogs",
+          "contactAutomations": "https://:account.api-us1.com/api/:version/contacts/113/contactAutomations",
+          "contactData": "https://:account.api-us1.com/api/:version/contacts/113/contactData",
+          "contactGoals": "https://:account.api-us1.com/api/:version/contacts/113/contactGoals",
+          "contactLists": "https://:account.api-us1.com/api/:version/contacts/113/contactLists",
+          "contactLogs": "https://:account.api-us1.com/api/:version/contacts/113/contactLogs",
+          "contactTags": "https://:account.api-us1.com/api/:version/contacts/113/contactTags",
+          "contactDeals": "https://:account.api-us1.com/api/:version/contacts/113/contactDeals",
+          "deals": "https://:account.api-us1.com/api/:version/contacts/113/deals",
+          "fieldValues": "https://:account.api-us1.com/api/:version/contacts/113/fieldValues",
+          "geoIps": "https://:account.api-us1.com/api/:version/contacts/113/geoIps",
+          "notes": "https://:account.api-us1.com/api/:version/contacts/113/notes",
+          "organization": "https://:account.api-us1.com/api/:version/contacts/113/organization",
+          "plusAppend": "https://:account.api-us1.com/api/:version/contacts/113/plusAppend",
+          "trackingLogs": "https://:account.api-us1.com/api/:version/contacts/113/trackingLogs",
+          "scoreValues": "https://:account.api-us1.com/api/:version/contacts/113/scoreValues"
+        },
+        "id": "2",
+        "organization": ""
+      }
+    ],
+    "fieldValue": {
+      "cdate": "2018-10-01T17:18:40-05:00",
+      "udate": "2018-10-01T17:18:40-05:00",
+      "links": {
+        "owner": "https://:account.api-us1.com/api/:version/fieldValues/15/owner",
+        "field": "https://:account.api-us1.com/api/:version/fieldValues/15/field"
+      },
+      "owner": 2
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/eventTrackingEvents": {
+    "eventTrackingEvents": [
+      {
+        "name": "__pagevisit"
+      },
+      {
+        "name": "__redir"
+      }
+    ],
+    "meta": {
+      "total": 2
+    }
+  },
+  "https://active.campaigns.rudder.com/api/3/contactLists": {
+    "contacts": [
+      {
+        "cdate": "2017-07-24T12:09:52-05:00",
+        "email": "johndoe@example.com",
+        "phone": "",
+        "firstName": "John",
+        "lastName": "Doe",
+        "orgid": "0",
+        "segmentio_id": "",
+        "bounced_hard": "0",
+        "bounced_soft": "0",
+        "bounced_date": "0000-00-00",
+        "ip": "0",
+        "ua": "",
+        "hash": "1234567890",
+        "socialdata_lastcheck": "0000-00-00 00:00:00",
+        "email_local": "",
+        "email_domain": "",
+        "sentcnt": "1",
+        "rating_tstamp": "0000-00-00",
+        "gravatar": "0",
+        "deleted": "0",
+        "anonymized": "0",
+        "adate": "2018-10-16T13:52:32-05:00",
+        "udate": "2018-10-16T13:50:18-05:00",
+        "deleted_at": "0000-00-00 00:00:00",
+        "created_utc_timestamp": "2018-10-01 08:40:10",
+        "updated_utc_timestamp": "2018-10-16 13:50:18",
+        "links": {
+          "bounceLogs": "https://:account.api-us1.com/api/:version/contacts/1/bounceLogs",
+          "contactAutomations": "https://:account.api-us1.com/api/:version/contacts/1/contactAutomations",
+          "contactData": "https://:account.api-us1.com/api/:version/contacts/1/contactData",
+          "contactGoals": "https://:account.api-us1.com/api/:version/contacts/1/contactGoals",
+          "contactLists": "https://:account.api-us1.com/api/:version/contacts/1/contactLists",
+          "contactLogs": "https://:account.api-us1.com/api/:version/contacts/1/contactLogs",
+          "contactTags": "https://:account.api-us1.com/api/:version/contacts/1/contactTags",
+          "contactDeals": "https://:account.api-us1.com/api/:version/contacts/1/contactDeals",
+          "deals": "https://staging-tjahn.api-us1.com/api/3/contacts/1/deals",
+          "fieldValues": "https://:account.api-us1.com/api/:version/contacts/1/fieldValues",
+          "geoIps": "https://:account.api-us1.com/api/:version/contacts/1/geoIps",
+          "notes": "https://:account.api-us1.com/api/:version/contacts/1/notes",
+          "organization": "https://:account.api-us1.com/api/:version/contacts/1/organization",
+          "plusAppend": "https://:account.api-us1.com/api/:version/contacts/1/plusAppend",
+          "trackingLogs": "https://:account.api-us1.com/api/:version/contacts/1/trackingLogs",
+          "scoreValues": "https://:account.api-us1.com/api/:version/contacts/1/scoreValues"
+        },
+        "id": "1",
+        "organization": null
+      }
+    ],
+    "contactList": {
+      "contact": "1",
+      "list": "2",
+      "form": null,
+      "seriesid": "0",
+      "sdate": "2018-10-16T13:52:35-05:00",
+      "status": 1,
+      "responder": "1",
+      "sync": "0",
+      "unsubreason": "",
+      "campaign": null,
+      "message": null,
+      "first_name": "John",
+      "last_name": "Doe",
+      "ip4Sub": "0",
+      "sourceid": "3",
+      "autosyncLog": null,
+      "ip4_last": "0",
+      "ip4Unsub": "0",
+      "unsubscribeAutomation": null,
+      "links": {
+        "automation": "https://:account.api-us1.com/api/:version/contactLists/2/automation",
+        "list": "https://:account.api-us1.com/api/:version/contactLists/2/list",
+        "contact": "https://:account.api-us1.com/api/:version/contactLists/2/contact",
+        "form": "https://:account.api-us1.com/api/:version/contactLists/2/form",
+        "autosyncLog": "https://:account.api-us1.com/api/:version/contactLists/2/autosyncLog",
+        "campaign": "https://:account.api-us1.com/api/:version/contactLists/2/campaign",
+        "unsubscribeAutomation": "https://:account.api-us1.com/api/:version/contactLists/2/unsubscribeAutomation",
+        "message": "https://:account.api-us1.com/api/:version/contactLists/2/message"
+      },
+      "id": "2",
+      "automation": null
+    }
+  }
+}

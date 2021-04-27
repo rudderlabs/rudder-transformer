@@ -1,13 +1,34 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-use-before-define */
 const get = require("get-value");
-const axios = require("axios");
+const stats = require("../../../util/stats");
 const { EventType } = require("../../../constants");
-const { identifyConfig, formatConfig } = require("./config");
 const {
+  identifyConfig,
+  formatConfig,
+  LEAD_LOOKUP_METRIC,
+  ACTIVITY_METRIC,
+  FETCH_TOKEN_METRIC
+} = require("./config");
+const {
+  isDefined,
+  removeUndefinedValues,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
+const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
+const Cache = require("../../util/cache");
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
+
+const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
+const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
+const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
 // //////////////////////////////////////////////////////////////////////
 // BASE URL REF: https://developers.marketo.com/rest-api/base-url/
@@ -17,25 +38,31 @@ const {
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async destination => {
-  const { accountId, clientId, clientSecret } = destination;
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/identity/oauth/token`, {
-      params: {
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: "client_credentials"
-      }
-    })
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    return resp.data.access_token;
-  }
-
-  return null;
+const getAuthToken = async formattedDestination => {
+  return authCache.get(formattedDestination.ID, async () => {
+    const { accountId, clientId, clientSecret } = formattedDestination;
+    const resp = await getAxiosResponse(
+      `https://${accountId}.mktorest.com/identity/oauth/token`,
+      // `https://httpstat.us/200`,
+      {
+        params: {
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "client_credentials"
+        }
+      },
+      formattedDestination.responseRules
+        ? formattedDestination.responseRules
+        : null,
+      "During getting auth token"
+    );
+    if (resp) {
+      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
+      return resp.access_token;
+    }
+    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
+    return null;
+  });
 };
 
 // lookup Marketo with userId or anonymousId
@@ -53,11 +80,19 @@ const getAuthToken = async destination => {
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const lookupLead = async (accountId, token, userId, anonymousId) => {
-  const attribute = userId ? { userId } : { anonymousId };
-  const resp = await axios
-    .post(
+const lookupLead = async (
+  formattedDestination,
+  accountId,
+  token,
+  userId,
+  anonymousId
+) => {
+  return userIdLeadCache.get(userId || anonymousId, async () => {
+    const attribute = userId ? { userId } : { anonymousId };
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
+    const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
       {
         action: "createOrUpdate",
         input: [attribute],
@@ -68,19 +103,18 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
           Authorization: `Bearer ${token}`,
           "Content-type": "application/json"
         }
+      },
+      formattedDestination ? formattedDestination.responseRules : null,
+      "During lookup lead"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
       }
-    )
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    const { result } = resp.data;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
     }
-  }
-  return null;
+    return null;
+  });
 };
 
 // lookup Marketo using email
@@ -88,23 +122,32 @@ const lookupLead = async (accountId, token, userId, anonymousId) => {
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (accountId, token, email) => {
-  const resp = await axios
-    .get(`https://${accountId}.mktorest.com/rest/v1/leads.json`, {
-      params: { filterValues: email, filterType: "email" },
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .catch(error => {
-      throw error;
-    });
-
-  if (resp.data) {
-    const { result } = resp.data;
-    if (result && Array.isArray(result) && result.length > 0) {
-      return result[0].id;
+const lookupLeadUsingEmail = async (
+  formattedDestination,
+  accountId,
+  token,
+  email
+) => {
+  return emailLeadCache.get(email, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
+    const resp = await getAxiosResponse(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
+      {
+        params: { filterValues: email, filterType: "email" },
+        headers: { Authorization: `Bearer ${token}` }
+      },
+      formattedDestination ? formattedDestination.responseRules : null,
+      "During lead look up using email"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
+      }
     }
-  }
-  return null;
+    return null;
+  });
 };
 
 // Handles identify calls
@@ -114,42 +157,65 @@ const lookupLeadUsingEmail = async (accountId, token, email) => {
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (message, destination) => {
+const processIdentify = async (
+  message,
+  formattedDestination,
+  destinationDefinition,
+  token
+) => {
   // get bearer token
   // lookup using email. if present use that
   // else lookup using userId
   // if exists use that leadId
   // else make the call to create the lead
-  const { accountId, leadTraitMapping } = destination;
+  const { accountId, leadTraitMapping } = formattedDestination;
 
   const traits = getFieldValueFromMessage(message, "traits");
-
   if (!traits) {
     throw new Error("Invalid traits value for Marketo");
   }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const token = await getAuthToken(destination);
-  if (!token) {
-    throw new Error("Invalid credentials");
-  }
 
   const email = getFieldValueFromMessage(message, "email");
-  const leadId =
-    (email && (await lookupLeadUsingEmail(accountId, token, email))) ||
-    (await lookupLead(accountId, token, userId, message.anonymousId));
-
+  let leadId = getDestinationExternalID(message, "marketoLeadId");
   if (!leadId) {
-    throw new Error("Lead lookup failed");
+    if (email) {
+      leadId = await lookupLeadUsingEmail(
+        formattedDestination,
+        accountId,
+        token,
+        email
+      );
+    } else {
+      leadId = await lookupLead(
+        formattedDestination,
+        accountId,
+        token,
+        userId,
+        message.anonymousId
+      );
+    }
   }
 
-  const attribute = constructPayload(traits, identifyConfig);
+  if (!leadId) {
+    // throwing here as lookup failed because of
+    // either "anonymousId" or "userId" field is not created in marketo - resulting to lookup failure
+    // or lead doesn't exist with "email".
+    //
+    // In the scenario of either of these, we should abort the event and the top level
+    // try-catch should handle this
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
+  }
+
+  let attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
     const val = traits[key];
-    if (val) {
-      attribute[leadTraitMapping[key]] = val;
-    }
+    attribute[leadTraitMapping[key]] = val;
   });
+  attribute = removeUndefinedValues(attribute);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
@@ -173,7 +239,12 @@ const processIdentify = async (message, destination) => {
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (message, destination) => {
+const processTrack = async (
+  message,
+  destination,
+  destinationDefinition,
+  token
+) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
@@ -213,21 +284,21 @@ const processTrack = async (message, destination) => {
     throw new Error("Primary Key value is invalid for the event");
   }
 
-  // get auth token
-  const token = await getAuthToken(destination);
-  if (!token) {
-    throw new Error("Invalid credentials");
-  }
-
   // get leadId
-  const leadId = await lookupLead(
-    accountId,
-    token,
-    userId,
-    message.anonymousId
-  );
+  let leadId = getDestinationExternalID(message, "marketoLeadId");
   if (!leadId) {
-    throw new Error("Lead lookup failed");
+    leadId = await lookupLead(
+      destinationDefinition,
+      accountId,
+      token,
+      userId,
+      message.anonymousId
+    );
+  }
+  if (!leadId) {
+    const error = new Error("Lead lookup failed");
+    error.code = 400;
+    throw error;
   }
 
   // handle custom activy attributes
@@ -236,7 +307,7 @@ const processTrack = async (message, destination) => {
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
-      if (value) {
+      if (isDefined(value)) {
         attributes.push({ apiName: customActivityPropertyMap[key], value });
       }
     }
@@ -253,7 +324,7 @@ const processTrack = async (message, destination) => {
       }
     ]
   };
-
+  stats.increment(ACTIVITY_METRIC, 1);
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },
@@ -270,7 +341,7 @@ const responseWrapper = response => {
   return resp;
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, token) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -279,10 +350,20 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await processIdentify(message, formatConfig(destination));
+      response = await processIdentify(
+        message,
+        formatConfig(destination),
+        destination.DestinationDefinition,
+        token
+      );
       break;
     case EventType.TRACK:
-      response = await processTrack(message, formatConfig(destination));
+      response = await processTrack(
+        message,
+        formatConfig(destination),
+        destination.DestinationDefinition,
+        token
+      );
       break;
     default:
       throw new Error("Message type not supported");
@@ -293,8 +374,68 @@ const processEvent = async (message, destination) => {
 };
 
 const process = async event => {
-  const response = await processEvent(event.message, event.destination);
+  const token = await getAuthToken(formatConfig(event.destination));
+  if (!token) {
+    throw Error("Authorisation failed");
+  }
+  const response = await processEvent(event.message, event.destination, token);
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  // Token needs to be generated for marketo which will be done on input level.
+  // If destination information is not present Error should be thrown
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+  let token;
+  try {
+    token = await getAuthToken(formatConfig(inputs[0].destination));
+  } catch (error) {
+    const respEvents = getErrorRespEvents(
+      inputs.map(input => input.metadata),
+      error.response ? error.response.status : 500, // default to retryable
+      error.message || "Error occurred while processing payload."
+    );
+    return [respEvents];
+  }
+
+  // If token is null track/identify calls cannot be executed.
+  if (!token) {
+    const respEvents = getErrorRespEvents(
+      inputs.map(input => input.metadata),
+      400,
+      "Authorisation failed"
+    );
+    return [respEvents];
+  }
+
+  // Checking previous status Code. Initially setting to false.
+  // If true then previous status is 500 and every subsequent event output should be
+  // sent with status code 500 to the router to be retried.
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        return getSuccessRespEvents(
+          await processEvent(input.message, input.destination, token),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 500,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

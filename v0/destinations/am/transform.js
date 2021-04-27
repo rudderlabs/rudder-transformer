@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-lonely-if */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -14,25 +11,19 @@ const {
   defaultRequestConfig,
   defaultBatchRequestConfig,
   getParsedIP,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getValueFromMessage,
+  deleteObjectProperty
 } = require("../../util");
 const {
-  Event,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
   GROUP_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap,
   batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
-// const {
-//   getOSName,
-//   getOSVersion,
-//   getDeviceModel,
-//   getDeviceManufacturer
-// } = require("./utils");
 
 const AMUtils = require("./utils");
 
@@ -40,38 +31,6 @@ const logger = require("../../../logger");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
-
-// Get the spec'd traits, for now only address needs treatment as 2 layers.
-// const populateSpecedTraits = (payload, message) => {
-//   const traits = getFieldValueFromMessage(message, "traits");
-//   if (traits) {
-//     SpecedTraits.forEach(trait => {
-//       const mapping = TraitsMapping[trait];
-//       const keys = Object.keys(mapping);
-//       keys.forEach(key => {
-//         set(payload, `user_properties.${key}`, get(traits, mapping[key]));
-//       });
-//     });
-//   }
-// };
-
-// Utility method for creating the structure required for single message processing
-// with basic fields populated
-
-// https://www.geeksforgeeks.org/how-to-create-hash-from-string-in-javascript/
-/* function stringToHash(string) {
-  let hash = 0;
-
-  if (string.length == 0) return hash;
-
-  for (i = 0; i < string.length; i++) {
-    char = string.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash &= hash;
-  }
-
-  return Math.abs(hash);
-} */
 
 function getSessionId(payload) {
   const sessionId = payload.session_id;
@@ -83,12 +42,6 @@ function getSessionId(payload) {
   }
   return -1;
 }
-
-// function fixVersion(payload, message) {
-//   if (message.context.library.name.includes("android")) {
-//     payload.app_version = message.context.app.version;
-//   }
-// }
 
 function addMinIdlength() {
   return { min_id_length: 1 };
@@ -111,14 +64,66 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
-  if (message.isRevenue) {
-    rawPayload.revenueType =
-      message.properties.revenueType ||
-      message.properties.revenue_type ||
-      "Purchased";
-    rawPayload = setPriceQuanityInPayload(message, rawPayload);
-  }
+  rawPayload.revenueType =
+    message.properties.revenueType ||
+    message.properties.revenue_type ||
+    "Purchased";
+  rawPayload = setPriceQuanityInPayload(message, rawPayload);
   return rawPayload;
+}
+
+function updateTraitsObject(property, traitsObject, actionKey) {
+  const propertyToUpdate = getValueFromMessage(traitsObject, property);
+  traitsObject[actionKey][property] = propertyToUpdate;
+  deleteObjectProperty(traitsObject, property);
+  return traitsObject;
+}
+
+function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
+  traitsObject[actionKey] = {};
+  configPropertyTrait.forEach(traitsElement => {
+    const property = traitsElement.traits;
+    traitsObject = updateTraitsObject(property, traitsObject, actionKey);
+  });
+  return traitsObject;
+}
+
+function handleTraits(messageTrait, destination) {
+  let traitsObject = JSON.parse(JSON.stringify(messageTrait));
+
+  if (destination.Config.traitsToIncrement) {
+    const actionKey = "$add";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToIncrement,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToSetOnce) {
+    const actionKey = "$setOnce";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToSetOnce,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToAppend) {
+    const actionKey = "$append";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToAppend,
+      actionKey,
+      traitsObject
+    );
+  }
+  if (destination.Config.traitsToPrepend) {
+    const actionKey = "$prepend";
+    traitsObject = prepareTraitsConfig(
+      destination.Config.traitsToPrepend,
+      actionKey,
+      traitsObject
+    );
+  }
+  return traitsObject;
 }
 
 function responseBuilderSimple(
@@ -162,6 +167,29 @@ function responseBuilderSimple(
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
+  const initialRef = {
+    initial_referrer: get(message, "context.page.initial_referrer"),
+    initial_referring_domain: get(
+      message,
+      "context.page.initial_referring_domain"
+    )
+  };
+  const oldKeys = Object.keys(campaign);
+  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
+  oldKeys.forEach(oldKey => {
+    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
+    delete campaign[oldKey];
+  });
+
+  // append campaign info extracted above(2.) to user_properties.
+  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
+  rawPayload.user_properties = rawPayload.user_properties || {};
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...initialRef,
+    ...campaign
+  };
 
   switch (evType) {
     case EventType.IDENTIFY:
@@ -173,8 +201,12 @@ function responseBuilderSimple(
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
-        set(rawPayload, "user_properties", message.userProperties);
         traits = getFieldValueFromMessage(message, "traits");
+        traits = handleTraits(traits, destination);
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...message.userProperties
+        };
         if (traits) {
           Object.keys(traits).forEach(trait => {
             if (SpecedTraits.includes(trait)) {
@@ -191,14 +223,6 @@ function responseBuilderSimple(
             }
           });
         }
-        // append campaign info extracted above(2.) to user_properties.
-        // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
-        // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
-        rawPayload.user_properties = rawPayload.user_properties || {};
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...campaign
-        };
       }
 
       if (evType === EventType.GROUP) {
@@ -219,21 +243,24 @@ function responseBuilderSimple(
       endpoint = ALIAS_ENDPOINT;
       break;
     default:
+      traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
-      if (message.type === EventType.TRACK)
-        set(rawPayload, "user_properties", message.context.traits);
+      if (traits) {
+        rawPayload.user_properties = {
+          ...rawPayload.user_properties,
+          ...traits
+        };
+      }
 
       rawPayload.event_type = evType;
       rawPayload.user_id = message.userId;
-      if (
-        (message.properties && message.properties.revenue) ||
-        evType === "Product Purchased"
-      ) {
+      if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
+
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
@@ -263,7 +290,23 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(payload, "device_brand", message.context.device.manufacturer);
+        set(
+          payload,
+          "device_brand",
+          get(message, "context.device.manufacturer")
+        );
+
+        const deviceId = get(message, "context.device.id");
+        const platform = get(message, "context.device.type");
+        const tracking = get(message, "context.device.adTrackingEnabled");
+        const advertId = get(message, "context.device.advertisingId");
+
+        if (tracking && platform.toLowerCase() === "ios") {
+          set(payload, "idfa", advertId);
+          set(payload, "idfv", deviceId);
+        } else if (tracking && platform.toLowerCase() === "android") {
+          set(payload, "adid", advertId);
+        }
       }
 
       payload.time = new Date(
@@ -343,21 +386,23 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        get(message, "properties.category") ||
         ""} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name: message.name || get(message, "properties.category")
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
       evType = `Viewed ${message.name ||
-        get(message.properties.category) ||
+        message.event ||
+        get(message, "properties.category") ||
         ""} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message.properties.category)
+        name:
+          message.name || message.event || get(message, "properties.category")
       };
       category = ConfigCategory.SCREEN;
       break;
@@ -490,14 +535,6 @@ function trackRevenueEvent(message, destination) {
       originalEvent.isRevenue = true;
     }
   } else {
-    /* if (isProductArrayInPayload(message)) {
-      // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
-      if (destination.Config.trackRevenuePerProduct === false) {
-        originalEvent.isRevenue = true;
-      }
-    } else {
-      originalEvent.isRevenue = true;
-    } */
     // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
     // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
     // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
@@ -594,10 +631,6 @@ function getBatchEvents(message, metadata, batchEventResponse) {
       });
       set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
       batchEventResponse.metadata = [metadata];
-    } else {
-      // check not required as max individual event size is always less than 20MB
-      // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
-      // batchComplete = true;
     }
   } else {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch

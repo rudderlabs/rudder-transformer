@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "_lastBrowserLanguage",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "destKey": "_updatedAt",
+    "sourceKeys": "timestamp",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "_userAgent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "_currentPageTitle",
+    "sourceKeys": "pageTitle",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "_currentPageUrl",
+    "sourceKeys": "pageUrl",
+    "required": false,
+    "sourceFromGenericMap": true
+  }
+]

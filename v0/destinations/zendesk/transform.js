@@ -139,8 +139,11 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
   return payload;
 }
 
-async function getUserId(message, headers) {
-  const traits = getFieldValueFromMessage(message, "traits");
+async function getUserId(message, headers, type) {
+  const traits =
+    type === "group"
+      ? get(message, "context.traits")
+      : getFieldValueFromMessage(message, "traits");
   const userEmail = traits.email;
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
@@ -148,7 +151,6 @@ async function getUserId(message, headers) {
 
   try {
     const resp = await axios.get(url, config);
-
     if (!resp || !resp.data || resp.data.count === 0) {
       logger.debug("User not found");
       return undefined;
@@ -165,22 +167,25 @@ async function getUserId(message, headers) {
   }
 }
 
-// async function isUserAlreadyAssociated(userId, orgId, headers) {
-//   const url = `${endPoint}/users/${userId}/organization_memberships.json`;
-//   const config = { headers };
-//   const response = await axios.get(url, config);
-//   if (
-//     response.data &&
-//     response.data.organization_memberships.length > 0 &&
-//     response.data.organization_memberships[0].id == orgId
-//   ) {
-//     return true;
-//   }
-//   return false;
-// }
+async function isUserAlreadyAssociated(userId, orgId, headers) {
+  const url = `${endPoint}/users/${userId}/organization_memberships.json`;
+  const config = { headers };
+  const response = await axios.get(url, config);
+  if (
+    response.data &&
+    response.data.organization_memberships.length > 0 &&
+    response.data.organization_memberships[0].organization_id === orgId
+  ) {
+    return true;
+  }
+  return false;
+}
 
-async function createUser(message, headers, destinationConfig) {
-  const traits = getFieldValueFromMessage(message, "traits");
+async function createUser(message, headers, destinationConfig, type) {
+  const traits =
+    type === "group"
+      ? get(message, "context.traits")
+      : getFieldValueFromMessage(message, "traits");
   const { name, email } = traits;
   const userId = getFieldValueFromMessage(message, "userId");
 
@@ -211,35 +216,36 @@ async function createUser(message, headers, destinationConfig) {
   }
 }
 
-// async function getUserMembershipPayload(
-//   message,
-//   headers,
-//   orgId,
-//   destinationConfig
-// ) {
-//   // let zendeskUserID = await getUserId(message.userId, headers);
-//   let zendeskUserID = await getUserId(message, headers);
-//   const traits = getFieldValueFromMessage(message, "traits");
-//   if (!zendeskUserID) {
-//     if (traits.name && traits.email) {
-//       const { zendeskUserId } = await createUser(
-//         message,
-//         headers,
-//         destinationConfig
-//       );
-//       zendeskUserID = zendeskUserId;
-//     }
-//   }
-//
-//   const payload = {
-//     organization_membership: {
-//       user_id: zendeskUserID,
-//       organization_id: orgId
-//     }
-//   };
-//
-//   return payload;
-// }
+async function getUserMembershipPayload(
+  message,
+  headers,
+  orgId,
+  destinationConfig
+) {
+  // let zendeskUserID = await getUserId(message.userId, headers);
+  let zendeskUserID = await getUserId(message, headers, "group");
+  const traits = get(message, "context.traits");
+  if (!zendeskUserID) {
+    if (traits.name && traits.email) {
+      const { zendeskUserId } = await createUser(
+        message,
+        headers,
+        destinationConfig,
+        "group"
+      );
+      zendeskUserID = zendeskUserId;
+    }
+  }
+
+  const payload = {
+    organization_membership: {
+      user_id: zendeskUserID,
+      organization_id: orgId
+    }
+  };
+
+  return payload;
+}
 
 async function createOrganization(
   message,
@@ -422,7 +428,7 @@ async function processTrack(message, destinationConfig, headers) {
 
 async function processGroup(message, destinationConfig, headers) {
   validateUserId(message);
-  let category = ConfigCategory.GROUP;
+  const category = ConfigCategory.GROUP;
   let payload;
   let url;
 
@@ -446,20 +452,30 @@ async function processGroup(message, destinationConfig, headers) {
         `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
       );
     }
-    // not removing this code - as it is a different implementation for group membership - may be needed later.
-    /* payload = await getUserMembershipPayload(message, headers, orgId, destinationConfig);
+    // adds an organization against a user and can add multiple organisation. the last one does not override but adds to the previously added organizations.
+    // Docs: https://developer.zendesk.com/rest_api/docs/support/organization_memberships#create-membership
+    payload = await getUserMembershipPayload(
+      message,
+      headers,
+      orgId,
+      destinationConfig
+    );
     url = endPoint + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
-    if(isUserAlreadyAssociated(userId, orgId, headers)) {
+    if (await isUserAlreadyAssociated(userId, orgId, headers)) {
       throw new Error("user is already associated with organization");
-    } */
-    category = ConfigCategory.IDENTIFY;
-    payload = getIdentifyPayload(message, category, destinationConfig, "group");
-    payload.user.organization_id = orgId;
-    url = endPoint + category.createOrUpdateUserEndpoint;
-    // return responseBuilder(message, headers, payload, url);
+    }
   }
+
+  // not removing this code - as it is a different implementation for group membership - may be needed later.
+  // this implementation does not let you add more than one organization to a particular user. The last one overrides the previously added organization.
+
+  // category = ConfigCategory.IDENTIFY;
+  // payload = getIdentifyPayload(message, category, destinationConfig, "group");
+  // payload.user.organization_id = orgId;
+  // url = endPoint + category.createOrUpdateUserEndpoint;
+  // return responseBuilder(message, headers, payload, url);
 
   return responseBuilder(message, headers, payload, url);
 }

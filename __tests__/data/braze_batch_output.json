@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
+        "endpoint": "https://rest.iad-01.braze.com/users/identify",
         "headers": {
           "Content-Type": "application/json",
           "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
@@ -14,41 +14,7 @@
         "params": {},
         "body": {
           "JSON": {
-            "attributes": [
-              {
-                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
-                "userId": "1df80683-ca18-492e-930d-be338cd4fcc9"
-              }
-            ],
-            "events": [
-              {
-                "properties": {
-                  "sessionId": "43272E27-6D22-41A0-84A1-5CAA2BA686EB",
-                  "screen": "requestLaterWithdrawal",
-                  "object_name": "requestLaterWithdrawal",
-                  "event": "screen_viewed",
-                  "screen_name": "requestLaterWithdrawal"
-                },
-                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
-                "name": "Screen Viewed",
-                "time": "2020-10-20T03:36:47.776Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 1 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
+            "partner": "RudderStack",
             "aliases_to_identify": [
               {
                 "user_alias": {
@@ -56,25 +22,104 @@
                   "alias_name": "d49d901c-85ee-4c2d-aceb-85bfd6af4bb9"
                 },
                 "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "960d5d02-8041-4440-bb02-3a39620d9515"
+                },
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "960d5d02-8041-4440-bb02-3a39620d9515"
+                },
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "66b95048-1b3a-46e3-ae89-a1a6fa63bcc8"
+                },
+                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
+                }
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
+                },
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
+                },
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c908f308-02e3-45a6-bbb9-2cede3688a78"
+                },
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c908f308-02e3-45a6-bbb9-2cede3688a78"
+                },
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
+                },
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
+                },
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
+                },
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
               }
             ]
           },
+          "XML": {},
           "FORM": {}
         },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "1df80683-ca18-492e-930d-be338cd4fcc9",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
+        "files": {}
       },
-      "metadata": [{ "job_id": 2 }],
+      "metadata": [
+        { "job_id": 2 },
+        { "job_id": 8 },
+        { "job_id": 11 },
+        { "job_id": 16 },
+        { "job_id": 21 },
+        { "job_id": 24 },
+        { "job_id": 26 },
+        { "job_id": 29 },
+        { "job_id": 32 },
+        { "job_id": 35 },
+        { "job_id": 38 },
+        { "job_id": 49 }
+      ],
       "destination": { "ID": "a" }
     },
     {
@@ -91,7 +136,12 @@
         "params": {},
         "body": {
           "JSON": {
+            "partner": "RudderStack",
             "attributes": [
+              {
+                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
+                "userId": "1df80683-ca18-492e-930d-be338cd4fcc9"
+              },
               {
                 "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
                 "userId": "1df80683-ca18-492e-930d-be338cd4fcc9"
@@ -111,9 +161,146 @@
               {
                 "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
                 "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
+                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
+                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c20af279-f3b1-4d33-abd0-42cf148ab919"
+                },
+                "userId": ""
+              },
+              {
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "c20af279-f3b1-4d33-abd0-42cf148ab919"
+                },
+                "userId": ""
+              },
+              {
+                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
+                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
+              },
+              {
+                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
+                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
+              },
+              {
+                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
+                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
+              },
+              {
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
+                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
+                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "tier_price": 3,
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
+                },
+                "userId": ""
+              },
+              {
+                "tier_price": 3,
+                "_update_existing_only": false,
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
+                },
+                "userId": ""
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
+                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
+              },
+              {
+                "external_id": "86758654-a903-43c6-b8ce-cdb28f2a306c",
+                "userId": "86758654-a903-43c6-b8ce-cdb28f2a306c"
+              },
+              { "external_id": "4bb6f737-7abc-479b-9d6e-e487c490e495" },
+              { "external_id": "99c2c061-9ec6-4d30-97a3-965f21a861a1" },
+              { "external_id": "d870be11-7994-4b74-ad86-0faf1f137e53" },
+              { "external_id": "98d65021-d05b-45c4-8e9d-b107e2938693" },
+              { "external_id": "645d69f0-10e7-44ce-a980-0650b577d92e" },
+              { "external_id": "6f76a317-558e-48e7-91c5-318d060ab775" },
+              { "external_id": "b2cafdc9-70ea-4d59-8a7f-2dd821b023c3" },
+              {
+                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
+                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
+              },
+              {
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
               }
             ],
             "events": [
+              {
+                "properties": {
+                  "sessionId": "43272E27-6D22-41A0-84A1-5CAA2BA686EB",
+                  "screen": "requestLaterWithdrawal",
+                  "object_name": "requestLaterWithdrawal",
+                  "event": "screen_viewed",
+                  "screen_name": "requestLaterWithdrawal"
+                },
+                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
+                "name": "Screen Viewed",
+                "time": "2020-10-20T03:36:47.776Z"
+              },
               {
                 "properties": {
                   "event_text": "Container Rendered",
@@ -185,82 +372,7 @@
                 "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
                 "name": "Button Tapped",
                 "time": "2020-10-20T03:36:47.872Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 3 },
-        { "job_id": 4 },
-        { "job_id": 5 },
-        { "job_id": 6 },
-        { "job_id": 7 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "960d5d02-8041-4440-bb02-3a39620d9515"
-                },
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 8 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
               },
-              {
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "event_text": "Container Rendered",
@@ -279,92 +391,7 @@
                 "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
                 "name": "Container Rendered",
                 "time": "2020-10-20T03:36:47.892Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 9 }, { "job_id": 10 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "960d5d02-8041-4440-bb02-3a39620d9515"
-                },
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 11 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
               },
-              {
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c20af279-f3b1-4d33-abd0-42cf148ab919"
-                },
-                "userId": ""
-              },
-              {
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c20af279-f3b1-4d33-abd0-42cf148ab919"
-                },
-                "userId": ""
-              },
-              {
-                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
-                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "",
@@ -422,89 +449,7 @@
                 "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
                 "name": "Button Tapped",
                 "time": "2020-10-20T03:36:48.098Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 12 },
-        { "job_id": 13 },
-        { "job_id": 14 },
-        { "job_id": 15 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "66b95048-1b3a-46e3-ae89-a1a6fa63bcc8"
-                },
-                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 16 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
-                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
               },
-              {
-                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
-                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
-              },
-              {
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
-              },
-              {
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "",
@@ -537,90 +482,7 @@
                 "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.297Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 17 },
-        { "job_id": 18 },
-        { "job_id": 19 },
-        { "job_id": 20 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
-                }
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "ec205cbd-4a27-4028-b9db-3f8e42927351",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 21 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "tier_price": 3,
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
-                },
-                "userId": ""
               },
-              {
-                "tier_price": 3,
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "ec205cbd-4a27-4028-b9db-3f8e42927351"
-                },
-                "userId": ""
-              }
-            ],
-            "events": [
               {
                 "_update_existing_only": false,
                 "user_alias": {
@@ -635,139 +497,7 @@
                 },
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.485Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 22 }, { "job_id": 23 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
-                },
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 24 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 25 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
-                },
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 26 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
               },
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "?account_timeframe=one_day&etf_timeframe=one_day",
@@ -782,76 +512,7 @@
                 "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.584Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 27 }, { "job_id": 28 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c908f308-02e3-45a6-bbb9-2cede3688a78"
-                },
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 29 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
               },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "",
@@ -866,76 +527,7 @@
                 "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.604Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 30 }, { "job_id": 31 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c908f308-02e3-45a6-bbb9-2cede3688a78"
-                },
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 32 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
               },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "style": "main",
@@ -954,76 +546,7 @@
                 "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.618Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 33 }, { "job_id": 34 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
-                },
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 35 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
               },
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "",
@@ -1038,87 +561,7 @@
                 "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:48.652Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 36 }, { "job_id": 37 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "c0dfe0cb-06cc-4a5f-9f82-be2108748e7d"
-                },
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 38 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "47e25bd8-1ade-49a6-b724-fe748b3008a7",
-                "userId": "47e25bd8-1ade-49a6-b724-fe748b3008a7"
               },
-              {
-                "external_id": "86758654-a903-43c6-b8ce-cdb28f2a306c",
-                "userId": "86758654-a903-43c6-b8ce-cdb28f2a306c"
-              },
-              { "external_id": "4bb6f737-7abc-479b-9d6e-e487c490e495" },
-              { "external_id": "99c2c061-9ec6-4d30-97a3-965f21a861a1" },
-              { "external_id": "d870be11-7994-4b74-ad86-0faf1f137e53" },
-              { "external_id": "98d65021-d05b-45c4-8e9d-b107e2938693" },
-              { "external_id": "645d69f0-10e7-44ce-a980-0650b577d92e" },
-              { "external_id": "6f76a317-558e-48e7-91c5-318d060ab775" },
-              { "external_id": "b2cafdc9-70ea-4d59-8a7f-2dd821b023c3" },
-              {
-                "external_id": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4",
-                "userId": "ea7f5797-bc5c-45ce-b96c-480ea2c6f0e4"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "event_text": "Container Viewed",
@@ -1179,8 +622,7 @@
                 "name": "user.login_attempt_blocked",
                 "time": "2020-10-20T03:36:48.659Z"
               }
-            ],
-            "partner": "RudderStack"
+            ]
           },
           "XML": {},
           "FORM": {}
@@ -1188,6 +630,33 @@
         "files": {}
       },
       "metadata": [
+        { "job_id": 1 },
+        { "job_id": 3 },
+        { "job_id": 4 },
+        { "job_id": 5 },
+        { "job_id": 6 },
+        { "job_id": 7 },
+        { "job_id": 9 },
+        { "job_id": 10 },
+        { "job_id": 12 },
+        { "job_id": 13 },
+        { "job_id": 14 },
+        { "job_id": 15 },
+        { "job_id": 17 },
+        { "job_id": 18 },
+        { "job_id": 19 },
+        { "job_id": 20 },
+        { "job_id": 22 },
+        { "job_id": 23 },
+        { "job_id": 25 },
+        { "job_id": 27 },
+        { "job_id": 28 },
+        { "job_id": 30 },
+        { "job_id": 31 },
+        { "job_id": 33 },
+        { "job_id": 34 },
+        { "job_id": 36 },
+        { "job_id": 37 },
         { "job_id": 39 },
         { "job_id": 40 },
         { "job_id": 41 },
@@ -1197,80 +666,28 @@
         { "job_id": 45 },
         { "job_id": 46 },
         { "job_id": 47 },
-        { "job_id": 48 }
+        { "job_id": 48 },
+        { "job_id": 50 }
       ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
-                },
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "f009deca-0bae-4052-9a59-82c9662fb007",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 49 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 50 }],
       "destination": { "ID": "a" }
     }
   ],
   [
     {
       "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://rest.iad-01.braze.com/users/identify",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
+          "Accept": "application/json"
+        },
+        "params": {},
         "body": {
-          "XML": {},
           "JSON": {
+            "partner": "RudderStack",
             "aliases_to_identify": [
               {
                 "user_alias": {
@@ -1278,25 +695,75 @@
                   "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
                 },
                 "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "fbb46588-8dfc-470d-8920-1c5b53987242"
+                },
+                "external_id": "9fdd5aa5-967d-4cf0-acda-57e42e0f1c2b"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "30abf1ff-ecfc-47de-8a09-19298f82422d"
+                },
+                "external_id": "2095b690-2992-4388-b03a-c75534df9264"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
+                },
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
+                },
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              { "external_id": "556bec01-fbc8-447a-a85a-530b928d4cb6" },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "fc85aafa-b604-4322-b403-6ceb39633fc6"
+                },
+                "external_id": "3a4c02fb-d7d8-43f3-8e61-f46497b97ece"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "533607a4-b4b5-409d-a0d4-66ed3f732201"
+                },
+                "external_id": "ad7658a2-0a79-4061-a4bd-dc46942948f9"
+              },
+              {
+                "user_alias": {
+                  "alias_label": "rudder_id",
+                  "alias_name": "d49d901c-85ee-4c2d-aceb-85bfd6af4bb9"
+                },
+                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9"
               }
             ]
           },
+          "XML": {},
           "FORM": {}
         },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "f009deca-0bae-4052-9a59-82c9662fb007",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
+        "files": {}
       },
-      "metadata": [{ "job_id": 51 }],
+      "metadata": [
+        { "job_id": 51 },
+        { "job_id": 57 },
+        { "job_id": 65 },
+        { "job_id": 68 },
+        { "job_id": 71 },
+        { "job_id": 75 },
+        { "job_id": 88 },
+        { "job_id": 92 },
+        { "job_id": 101 }
+      ],
       "destination": { "ID": "a" }
     },
     {
@@ -1313,6 +780,7 @@
         "params": {},
         "body": {
           "JSON": {
+            "partner": "RudderStack",
             "attributes": [
               {
                 "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
@@ -1331,101 +799,7 @@
                 "external_id": "7df4201b-9fdc-46aa-820d-5043ce481759",
                 "anonymousId": "f90b48b7-f0a2-429e-a745-b5b385af0857",
                 "userId": "7df4201b-9fdc-46aa-820d-5043ce481759"
-              }
-            ],
-            "events": [
-              {
-                "properties": { "reason": "SUSPICIOUS_ACTIVITY" },
-                "external_id": "9e082b23-5452-40b0-a57e-6282f26b736a",
-                "name": "user.login_attempt_blocked",
-                "time": "2020-10-20T03:36:50.441Z"
               },
-              {
-                "properties": {
-                  "search": "?account_timeframe=one_day&etf_timeframe=one_day",
-                  "hash": "",
-                  "title": "Performance | Acorns",
-                  "event_text": "Screen Viewed",
-                  "platform": "desktop",
-                  "sessionId": "B5KMZcoj7R4qxUjag4CqB9b0xUSWYxsI",
-                  "path": "/performance/voo",
-                  "event": "screen_viewed"
-                },
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "name": "Screen Viewed",
-                "time": "2020-10-20T03:36:49.701Z"
-              },
-              {
-                "properties": {},
-                "external_id": "7df4201b-9fdc-46aa-820d-5043ce481759",
-                "name": "investment.funding_source_at_risk_disabled",
-                "time": "2020-10-20T03:36:47.446Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 52 },
-        { "job_id": 53 },
-        { "job_id": 54 },
-        { "job_id": 55 },
-        { "job_id": 56 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "fbb46588-8dfc-470d-8920-1c5b53987242"
-                },
-                "external_id": "9fdd5aa5-967d-4cf0-acda-57e42e0f1c2b"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "9fdd5aa5-967d-4cf0-acda-57e42e0f1c2b",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 57 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
               {
                 "external_id": "9fdd5aa5-967d-4cf0-acda-57e42e0f1c2b",
                 "investment_account.basic.portfolio_name": "Moderate"
@@ -1461,9 +835,130 @@
                   "alias_name": "c20af279-f3b1-4d33-abd0-42cf148ab919"
                 },
                 "userId": ""
+              },
+              {
+                "external_id": "2095b690-2992-4388-b03a-c75534df9264",
+                "userId": "2095b690-2992-4388-b03a-c75534df9264"
+              },
+              {
+                "external_id": "2095b690-2992-4388-b03a-c75534df9264",
+                "userId": "2095b690-2992-4388-b03a-c75534df9264"
+              },
+              {
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
+              },
+              {
+                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
+                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              { "external_id": "ec5502a7-2c73-4cfe-a70f-111f531cf9f5" },
+              { "external_id": "41a2c3ef-3072-4fc4-8ba1-4abff3862891" },
+              { "external_id": "6c9c1239-9a36-4f09-9146-d42ea4006ea9" },
+              { "external_id": "99c2c061-9ec6-4d30-97a3-965f21a861a1" },
+              {
+                "age": 36,
+                "external_id": "9db23015-8101-4f30-9e5c-d4d9dfe264df"
+              },
+              { "external_id": "ec5502a7-2c73-4cfe-a70f-111f531cf9f5" },
+              { "external_id": "41a2c3ef-3072-4fc4-8ba1-4abff3862891" },
+              { "external_id": "c617a9ee-1394-4f3d-a5cd-272f89e27eb7" },
+              { "external_id": "b2cafdc9-70ea-4d59-8a7f-2dd821b023c3" },
+              { "external_id": "4bb6f737-7abc-479b-9d6e-e487c490e495" },
+              { "external_id": "6f76a317-558e-48e7-91c5-318d060ab775" },
+              {
+                "external_id": "556bec01-fbc8-447a-a85a-530b928d4cb6",
+                "funding_source_changes": 1
+              },
+              {
+                "recurring_amount": 20,
+                "recurring_day": 3,
+                "external_id": "3a4c02fb-d7d8-43f3-8e61-f46497b97ece",
+                "recurring_frequency": 2
+              },
+              {
+                "external_id": "bf8c7e5d-8442-4113-b777-cee23f962628",
+                "anonymousId": "0df8269b-7598-4ddf-87a1-229fa0dfa949",
+                "userId": "bf8c7e5d-8442-4113-b777-cee23f962628"
+              },
+              {
+                "external_id": "3e13427e-6c8b-4211-9d6e-e25f5fe5a879",
+                "anonymousId": "1b66f2be-95fe-4674-a3d3-eca786e5a0f2",
+                "userId": "3e13427e-6c8b-4211-9d6e-e25f5fe5a879"
+              },
+              {
+                "external_id": "86758654-a903-43c6-b8ce-cdb28f2a306c",
+                "userId": "86758654-a903-43c6-b8ce-cdb28f2a306c"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
+                "userId": "1df80683-ca18-492e-930d-be338cd4fcc9"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
+              },
+              {
+                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
+                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
               }
             ],
             "events": [
+              {
+                "properties": { "reason": "SUSPICIOUS_ACTIVITY" },
+                "external_id": "9e082b23-5452-40b0-a57e-6282f26b736a",
+                "name": "user.login_attempt_blocked",
+                "time": "2020-10-20T03:36:50.441Z"
+              },
+              {
+                "properties": {
+                  "search": "?account_timeframe=one_day&etf_timeframe=one_day",
+                  "hash": "",
+                  "title": "Performance | Acorns",
+                  "event_text": "Screen Viewed",
+                  "platform": "desktop",
+                  "sessionId": "B5KMZcoj7R4qxUjag4CqB9b0xUSWYxsI",
+                  "path": "/performance/voo",
+                  "event": "screen_viewed"
+                },
+                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
+                "name": "Screen Viewed",
+                "time": "2020-10-20T03:36:49.701Z"
+              },
+              {
+                "properties": {},
+                "external_id": "7df4201b-9fdc-46aa-820d-5043ce481759",
+                "name": "investment.funding_source_at_risk_disabled",
+                "time": "2020-10-20T03:36:47.446Z"
+              },
               {
                 "properties": {
                   "unlock_link": "https://client.acorns.com/user/unlock?locale=en&unlock_token=yDYFTWfRgSX2WbYB1bxj"
@@ -1527,84 +1022,7 @@
                 },
                 "name": "Time Analysis",
                 "time": "2020-10-20T03:36:49.038Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 58 },
-        { "job_id": 59 },
-        { "job_id": 60 },
-        { "job_id": 61 },
-        { "job_id": 62 },
-        { "job_id": 63 },
-        { "job_id": 64 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "30abf1ff-ecfc-47de-8a09-19298f82422d"
-                },
-                "external_id": "2095b690-2992-4388-b03a-c75534df9264"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "2095b690-2992-4388-b03a-c75534df9264",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 65 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "2095b690-2992-4388-b03a-c75534df9264",
-                "userId": "2095b690-2992-4388-b03a-c75534df9264"
               },
-              {
-                "external_id": "2095b690-2992-4388-b03a-c75534df9264",
-                "userId": "2095b690-2992-4388-b03a-c75534df9264"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "style": "default",
@@ -1623,76 +1041,7 @@
                 "external_id": "2095b690-2992-4388-b03a-c75534df9264",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:49.232Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 66 }, { "job_id": 67 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
-                },
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "f009deca-0bae-4052-9a59-82c9662fb007",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 68 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
               },
-              {
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "search": "",
@@ -1707,80 +1056,7 @@
                 "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
                 "name": "Screen Viewed",
                 "time": "2020-10-20T03:36:49.760Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 69 }, { "job_id": 70 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "7ee308c2-d76b-4b75-94b6-9293bf30cbba"
-                },
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "f009deca-0bae-4052-9a59-82c9662fb007",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 71 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "f009deca-0bae-4052-9a59-82c9662fb007",
-                "userId": "f009deca-0bae-4052-9a59-82c9662fb007"
               },
-              {
-                "external_id": "a658f2ab-b69b-4d4b-832e-d42580e00d79",
-                "userId": "a658f2ab-b69b-4d4b-832e-d42580e00d79"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "institution_id": "",
@@ -1811,80 +1087,7 @@
                 "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
                 "name": "Container Viewed",
                 "time": "2020-10-20T03:36:50.187Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 72 }, { "job_id": 73 }, { "job_id": 74 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              { "external_id": "556bec01-fbc8-447a-a85a-530b928d4cb6" }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "556bec01-fbc8-447a-a85a-530b928d4cb6",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 75 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              { "external_id": "ec5502a7-2c73-4cfe-a70f-111f531cf9f5" },
-              { "external_id": "41a2c3ef-3072-4fc4-8ba1-4abff3862891" },
-              { "external_id": "6c9c1239-9a36-4f09-9146-d42ea4006ea9" },
-              { "external_id": "99c2c061-9ec6-4d30-97a3-965f21a861a1" },
-              {
-                "age": 36,
-                "external_id": "9db23015-8101-4f30-9e5c-d4d9dfe264df"
               },
-              { "external_id": "ec5502a7-2c73-4cfe-a70f-111f531cf9f5" },
-              { "external_id": "41a2c3ef-3072-4fc4-8ba1-4abff3862891" },
-              { "external_id": "c617a9ee-1394-4f3d-a5cd-272f89e27eb7" },
-              { "external_id": "b2cafdc9-70ea-4d59-8a7f-2dd821b023c3" },
-              { "external_id": "4bb6f737-7abc-479b-9d6e-e487c490e495" },
-              { "external_id": "6f76a317-558e-48e7-91c5-318d060ab775" },
-              {
-                "external_id": "556bec01-fbc8-447a-a85a-530b928d4cb6",
-                "funding_source_changes": 1
-              }
-            ],
-            "events": [
               {
                 "properties": { "reason": "SUSPICIOUS_ACTIVITY" },
                 "external_id": "ec5502a7-2c73-4cfe-a70f-111f531cf9f5",
@@ -1944,97 +1147,7 @@
                 "external_id": "6f76a317-558e-48e7-91c5-318d060ab775",
                 "name": "user.login_attempt_blocked",
                 "time": "2020-10-20T03:36:52.002Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        { "job_id": 76 },
-        { "job_id": 77 },
-        { "job_id": 78 },
-        { "job_id": 79 },
-        { "job_id": 80 },
-        { "job_id": 81 },
-        { "job_id": 82 },
-        { "job_id": 83 },
-        { "job_id": 84 },
-        { "job_id": 85 },
-        { "job_id": 86 },
-        { "job_id": 87 }
-      ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "fc85aafa-b604-4322-b403-6ceb39633fc6"
-                },
-                "external_id": "3a4c02fb-d7d8-43f3-8e61-f46497b97ece"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "3a4c02fb-d7d8-43f3-8e61-f46497b97ece",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 88 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "recurring_amount": 20,
-                "recurring_day": 3,
-                "external_id": "3a4c02fb-d7d8-43f3-8e61-f46497b97ece",
-                "recurring_frequency": 2
               },
-              {
-                "external_id": "bf8c7e5d-8442-4113-b777-cee23f962628",
-                "anonymousId": "0df8269b-7598-4ddf-87a1-229fa0dfa949",
-                "userId": "bf8c7e5d-8442-4113-b777-cee23f962628"
-              },
-              {
-                "external_id": "3e13427e-6c8b-4211-9d6e-e25f5fe5a879",
-                "anonymousId": "1b66f2be-95fe-4674-a3d3-eca786e5a0f2",
-                "userId": "3e13427e-6c8b-4211-9d6e-e25f5fe5a879"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "transaction_amount": "5.00",
@@ -2065,100 +1178,7 @@
                 "external_id": "3e13427e-6c8b-4211-9d6e-e25f5fe5a879",
                 "name": "investment.create",
                 "time": "2020-10-20T03:36:55.794Z"
-              }
-            ],
-            "partner": "RudderStack"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [{ "job_id": 89 }, { "job_id": 90 }, { "job_id": 91 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "533607a4-b4b5-409d-a0d4-66ed3f732201"
-                },
-                "external_id": "ad7658a2-0a79-4061-a4bd-dc46942948f9"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "ad7658a2-0a79-4061-a4bd-dc46942948f9",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 92 }],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "external_id": "86758654-a903-43c6-b8ce-cdb28f2a306c",
-                "userId": "86758654-a903-43c6-b8ce-cdb28f2a306c"
               },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              },
-              {
-                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9",
-                "userId": "1df80683-ca18-492e-930d-be338cd4fcc9"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              },
-              {
-                "external_id": "3d9752e2-f7ab-43ab-a70a-828c8531febd",
-                "userId": "3d9752e2-f7ab-43ab-a70a-828c8531febd"
-              }
-            ],
-            "events": [
               {
                 "properties": {
                   "event_text": "Container Viewed",
@@ -2305,8 +1325,7 @@
                 "name": "Container Rendered",
                 "time": "2020-10-20T03:36:51.559Z"
               }
-            ],
-            "partner": "RudderStack"
+            ]
           },
           "XML": {},
           "FORM": {}
@@ -2314,6 +1333,40 @@
         "files": {}
       },
       "metadata": [
+        { "job_id": 52 },
+        { "job_id": 53 },
+        { "job_id": 54 },
+        { "job_id": 55 },
+        { "job_id": 56 },
+        { "job_id": 58 },
+        { "job_id": 59 },
+        { "job_id": 60 },
+        { "job_id": 61 },
+        { "job_id": 62 },
+        { "job_id": 63 },
+        { "job_id": 64 },
+        { "job_id": 66 },
+        { "job_id": 67 },
+        { "job_id": 69 },
+        { "job_id": 70 },
+        { "job_id": 72 },
+        { "job_id": 73 },
+        { "job_id": 74 },
+        { "job_id": 76 },
+        { "job_id": 77 },
+        { "job_id": 78 },
+        { "job_id": 79 },
+        { "job_id": 80 },
+        { "job_id": 81 },
+        { "job_id": 82 },
+        { "job_id": 83 },
+        { "job_id": 84 },
+        { "job_id": 85 },
+        { "job_id": 86 },
+        { "job_id": 87 },
+        { "job_id": 89 },
+        { "job_id": 90 },
+        { "job_id": 91 },
         { "job_id": 93 },
         { "job_id": 94 },
         { "job_id": 95 },
@@ -2323,39 +1376,6 @@
         { "job_id": 99 },
         { "job_id": 100 }
       ],
-      "destination": { "ID": "a" }
-    },
-    {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_label": "rudder_id",
-                  "alias_name": "d49d901c-85ee-4c2d-aceb-85bfd6af4bb9"
-                },
-                "external_id": "1df80683-ca18-492e-930d-be338cd4fcc9"
-              }
-            ]
-          },
-          "FORM": {}
-        },
-        "files": {},
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "userId": "1df80683-ca18-492e-930d-be338cd4fcc9",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74",
-          "Accept": "application/json"
-        },
-        "version": "1",
-        "params": {},
-        "type": "REST",
-        "method": "POST"
-      },
-      "metadata": [{ "job_id": 101 }],
       "destination": { "ID": "a" }
     }
   ],

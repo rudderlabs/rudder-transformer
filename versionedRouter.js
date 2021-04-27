@@ -238,7 +238,9 @@ if (startDestTransformer) {
                       error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
                         ev.transformedEvent
                       )}`,
-                      metadata: ev.metadata
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
                     };
                   }
                   return {

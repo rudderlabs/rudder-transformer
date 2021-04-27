@@ -43,10 +43,8 @@
       "traits": {
         "martin": 21.565000000000001,
         "trafficTypeName": "user",
-        "vertical": "restaurant",
         "eventTypeId": "page_load end to end",
-        "timestamp": 1513357833000,
-        "GMV": false
+        "timestamp": 1513357833000
       },
       "userId": "user123",
       "messageId": "c73198a8-41d8-4426-9fd9-de167194d5f3",
@@ -135,7 +133,7 @@
   },
   {
     "message": {
-      "event": "splitio_test_1",
+      "name": "splitio_test_1",
       "messageId": "9b200548-5961-4448-9dbc-098b7ce85751",
       "properties": {
         "eventTypeId": "page_load",
@@ -282,5 +280,35 @@
         "trafficType": "user"
       }
     }
-  }
+  },
+  {
+    "message": {
+        "name": "1pplication accepted",
+        "messageId": "9b200548-5961-4448-9dbc-098b7ce85751",
+        "category":"food",
+        "properties": {
+            "eventTypeId": "page_load",
+            "trafficTypeName": "user",
+            "key": "key_user_0",
+            "timestamp": 1513357833000,
+            "value": "bc2",
+            "martin": 21.565,
+            "vertical": ["restaurant","mall"],
+            "GMV": true,
+            "abc": "new-val"
+        },
+        "receivedAt": "2021-03-01T22:55:54.806Z",
+        "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
+        "timestamp": "2021-03-01T22:55:54.771Z",
+        "type": "page",
+        "userId": "user 1"
+    },
+    "destination": {
+        "Config": {
+            "apiKey": "abcde",
+            "environment": "production",
+            "trafficType": "user"
+        }
+    }
+}
 ]

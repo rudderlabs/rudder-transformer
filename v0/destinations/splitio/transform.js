@@ -12,7 +12,7 @@ const {
   isDefined
 } = require("../../util");
 
-let bufferProperty = {};
+
 
 function responseBuilderSimple(payload, category, destination) {
   if (payload) {
@@ -32,15 +32,17 @@ function responseBuilderSimple(payload, category, destination) {
 }
 
 function populateOutputProperty(inputObject) {
+  const outputProperty = {};
   Object.keys(inputObject).forEach(key => {
     if (!KEY_CHECK_LIST.includes(key) && !Array.isArray(inputObject[key])) {
-      bufferProperty[key] = inputObject[key];
+      outputProperty[key] = inputObject[key];
     }
   });
-  return bufferProperty;
+  return outputProperty;
 }
 
 function sendEvent(message, destination, category) {
+  let bufferProperty = {};
   const { environment, trafficType } = destination.Config;
   const { type } = message;
   const eventTypeIdRegex = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}$");
@@ -48,6 +50,7 @@ function sendEvent(message, destination, category) {
   let outputPayload = {};
 
   outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  outputPayload.eventTypeId = outputPayload.eventTypeId.replace(/ /g, "_");
   if (eventTypeIdRegex.test(outputPayload.eventTypeId)) {
     switch (type) {
       case EventType.IDENTIFY:
@@ -68,8 +71,11 @@ function sendEvent(message, destination, category) {
         if (message.properties) {
           bufferProperty = populateOutputProperty(message.properties);
         }
+        if (message.category) {
+          bufferProperty.category = message.category;
+        }
         if (type !== "track") {
-          outputPayload.eventTypeId = `viewed_${outputPayload.eventTypeId}_${type}`;
+          outputPayload.eventTypeId = `Viewed_${outputPayload.eventTypeId}_${type}`;
         }
         break;
       default:

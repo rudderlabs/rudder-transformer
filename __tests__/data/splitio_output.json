@@ -45,9 +45,7 @@
                 "environmentName": "staging",
                 "trafficTypeName": "user",
                 "properties": {
-                    "martin": 21.565,
-                    "vertical": "restaurant",
-                    "GMV": false
+                    "martin": 21.565
                 }
             },
             "XML": {},
@@ -97,7 +95,7 @@
         "params": {},
         "body": {
             "JSON": {
-                "eventTypeId": "viewed_splitio_test_1_page",
+                "eventTypeId": "Viewed_splitio_test_1_page",
                 "key": "user 1",
                 "timestamp": 1614639354,
                 "value": 0.93,
@@ -127,7 +125,7 @@
         "params": {},
         "body": {
             "JSON": {
-                "eventTypeId": "viewed_splitio_test_1_screen",
+                "eventTypeId": "Viewed_splitio_test_1_screen",
                 "key": "user 1",
                 "timestamp": 1614639354,
                 "value": 0.93,
@@ -183,5 +181,34 @@
     },
     {
         "error": "eventTypeId does not match with ideal format"
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "Viewed_1pplication_accepted_page",
+                "key": "user 1",
+                "timestamp": 1614639354,
+                "environmentName": "production",
+                "trafficTypeName": "user",
+                "properties": {
+                    "martin": 21.565,
+                    "GMV": true,
+                    "abc": "new-val",
+                    "category": "food"
+                }
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
     }
 ]

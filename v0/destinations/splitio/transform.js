@@ -9,10 +9,9 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
-  isDefined
+  isDefined,
+  flattenJson
 } = require("../../util");
-
-
 
 function responseBuilderSimple(payload, category, destination) {
   if (payload) {
@@ -88,7 +87,7 @@ function sendEvent(message, destination, category) {
     outputPayload.environmentName = environment;
   }
   outputPayload.trafficTypeName = trafficType;
-  outputPayload.properties = bufferProperty;
+  outputPayload.properties = flattenJson(bufferProperty);
 
   return outputPayload;
 }

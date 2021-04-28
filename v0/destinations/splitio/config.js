@@ -18,7 +18,9 @@ const KEY_CHECK_LIST = [
   "trafficTypeName",
   "key",
   "timestamp",
-  "value"
+  "value",
+  "revenue",
+  "total"
 ];
 
 module.exports = {

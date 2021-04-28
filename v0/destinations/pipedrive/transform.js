@@ -22,7 +22,7 @@ const {
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
-  PIPEDRIVE_ORDER_COMPLETED_EXCLUSION,
+  PIPEDRIVE_PRODUCT_LIST_EXCLUSION,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT
 } = require("./config");
@@ -331,19 +331,29 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   else if (event === "order completed") {
     const products = get(message, "properties.products");
 
-    if(!products || !Array.isArray(products)) {
-      throw new Error("products must be of type array");
+    if(products && !Array.isArray(products)) {
+      throw new Error("products list must be of type array");
     }
 
-    if(products.length === 0) {
-      throw new Error("products list is empty");
+    if(!products || (products && products.length === 0)) {
+      throw new Error("products list is required order completed call");
     }
+
+    /**
+     * If product list is mentioned, returns a batch response
+     * Adds each product as a separate Pipedrive Product Object
+     */
     
+    let orderData = constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
+    );
+
     const batchResponse = [];
     products.forEach(product => {
       payload = constructPayload(
         product,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
+        MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_LIST.name]
       );
 
       const renameExclusionKeys = Object.keys(payload);
@@ -352,7 +362,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
         product,
         payload,
         "root",
-        PIPEDRIVE_ORDER_COMPLETED_EXCLUSION
+        PIPEDRIVE_PRODUCT_LIST_EXCLUSION
       );
 
       payload = renameCustomFields(
@@ -362,7 +372,23 @@ const trackResponseBuilder = async (message, category, { Config }) => {
         renameExclusionKeys
       );
 
-      payload = createPriceMapping(payload);
+      if(get(orderData, "tax")) {
+        set(payload, "tax", orderData.tax);
+      }
+
+      if(get(payload, "price") && get(orderData, "currency")) {
+        /* create price field value for Pipedrive product, only when
+        * both currency and price are available
+        */
+        const priceObject = [{
+          price: payload.price,
+          currency: orderData.currency
+        }];
+        
+        delete payload.price;
+        set(payload, "prices", priceObject);
+      }
+
       set(payload, "active_flag", 1);
 
       const response = defaultRequestConfig();
@@ -503,7 +529,8 @@ async function process(event) {
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
     case EventType.ALIAS:
-      category = CONFIG_CATEGORIES.ALIAS;
+      // work around since alias does have a mapping json
+      category = { type: "alias" };
       break;
     case EventType.GROUP:
       category = CONFIG_CATEGORIES.GROUP;

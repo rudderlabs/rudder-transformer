@@ -1,27 +1,27 @@
 [
   {
     "destKey": "name",
-    "sourceKeys": ["name", "product_id", "productId", "sku"],
+    "sourceKeys": ["properties.order_id", "properties.transaction_id"],
     "required": true
   },
   {
     "destKey": "code",
-    "sourceKeys": ["product_id", "productId", "sku"],
+    "sourceKeys": ["properties.order_id", "properties.transaction_id"],
     "required": false
   },
   {
     "destKey": "tax",
-    "sourceKeys": "tax",
-    "required": false
-  },
-  {
-    "destKey": "price",
-    "sourceKeys": "price",
+    "sourceKeys": "properties.tax",
     "required": false
   },
   {
     "destKey": "currency",
-    "sourceKeys": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "revenue",
+    "sourceKeys": "properties.revenue",
     "required": false
   }
 ]

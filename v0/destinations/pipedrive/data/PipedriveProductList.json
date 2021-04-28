@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["name", "product_id", "productId", "sku"],
+    "required": true
+  },
+  {
+    "destKey": "code",
+    "sourceKeys": ["product_id", "productId", "sku"],
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": ["price", "amount", "value"],
+    "required": false
+  }
+]

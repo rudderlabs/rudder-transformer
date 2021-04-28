@@ -10,10 +10,10 @@ const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "PipedriveIdentify", type: "identify" },
   GROUP: { name: "PipedriveGroup", type: "group" },
-  ALIAS: { name: "PipedriveAlias", type: "alias" },
   TRACK: { name: "PipedriveTrack", type: "track" },
   PRODUCT_VIEWED: { name: "PipedriveProductViewed" },
-  ORDER_COMPLETED: { name: "PipedriveOrderCompleted" }
+  ORDER_COMPLETED: { name: "PipedriveOrderCompleted" },
+  PRODUCT_LIST: { name: "PipedriveProductList" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -73,7 +73,19 @@ const PIPEDRIVE_ORDER_COMPLETED_EXCLUSION = [
   "owner_id",
   "price",
   "currency",
-  "active_flag"
+  "active_flag",
+  "products"
+];
+
+const PIPEDRIVE_PRODUCT_LIST_EXCLUSION = [
+  "name",
+  "code",
+  "price",
+  "amount",
+  "value",
+  "product_id",
+  "productId",
+  "sku"
 ];
 
 module.exports = {
@@ -88,6 +100,7 @@ module.exports = {
   PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
   PIPEDRIVE_ORDER_COMPLETED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
+  PIPEDRIVE_PRODUCT_LIST_EXCLUSION,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT,
   PRODUCT_EVENTS

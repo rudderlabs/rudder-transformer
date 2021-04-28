@@ -482,18 +482,17 @@
       "type": "track",
       "userId": "guthrie123",
       "event": "Order Completed",
-      "order_id": "board_games_123",
       "properties": {
+        "order_id": "board_games_123",
+        "currency": "INR",
         "products": [
             {
                 "name": "Monopoly",
-                "currency": "INR",
                 "price": 600,
                 "product_id": "monopoly123"
             },
             {
                 "name": "Uno",
-                "currency": "INR",
                 "price": 400,
                 "product_id": "uno123"
             }

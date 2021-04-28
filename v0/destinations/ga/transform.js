@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const md5 = require("md5");
 const { EventType } = require("../../../constants");
@@ -885,12 +886,21 @@ const processRouterDest = inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
+
   const respList = inputs.map(input => {
-    return getSuccessRespEvents(
-      process(input),
-      [input.metadata],
-      input.destination
-    );
+    try {
+      return getSuccessRespEvents(
+        process(input),
+        [input.metadata],
+        input.destination
+      );
+    } catch (error) {
+      return getErrorRespEvents(
+        [input.metadata],
+        error.response ? error.response.status : error.code ? error.code : 400,
+        error.message || "Error occurred while processing payload."
+      );
+    }
   });
   return respList;
 };

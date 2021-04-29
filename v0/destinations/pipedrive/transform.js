@@ -239,33 +239,6 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
   const currPerson = await searchPersonByCustomId(userId, Config);
   if (!currPerson) throw new Error("person not found. cannot merge");
 
-  // let updatePayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // const renameExclusionKeys = Object.keys(updatePayload);
-
-  // updatePayload = extractCustomFields(
-  //   message,
-  //   updatePayload,
-  //   ["traits", "context.traits"],
-  //   PIPEDRIVE_IDENTIFY_EXCLUSION
-  // );
-
-  // updatePayload = renameCustomFields(
-  //   updatePayload,
-  //   Config,
-  //   "personsMap",
-  //   renameExclusionKeys
-  // );
-
-  // updatePayload = removeUndefinedAndNullValues(updatePayload);
-
-  // /**
-  //  * if traits is not empty, update the current person first
-  //  * and then call the merge endpoint
-  //  */
-  // if (Object.keys(updatePayload).length !== 0) {
-  //   await updatePerson(currPerson.id, updatePayload, Config);
-  // }
-
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
@@ -284,7 +257,7 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
 };
 
 /**
- * Creates a lead and links it to user.
+ * Creates a lead and links it to user for track call.
  * Supports Ecom Events: "product viewed", "order completed"
  * @param {*} message
  * @param {*} category

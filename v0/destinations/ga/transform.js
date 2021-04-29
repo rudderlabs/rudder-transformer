@@ -889,6 +889,15 @@ const processRouterDest = inputs => {
 
   const respList = inputs.map(input => {
     try {
+      if (input.message.statusCode) {
+        // already transformed event
+        return getSuccessRespEvents(
+          input.message,
+          [input.metadata],
+          input.destination
+        );
+      }
+      // if not transformed
       return getSuccessRespEvents(
         process(input),
         [input.metadata],

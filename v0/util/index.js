@@ -532,8 +532,7 @@ const handleMetadataForValue = (value, metadata) => {
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
-    if (!foundVal)
-      formattedVal = undefined
+    if (!foundVal) formattedVal = undefined;
   }
 
   return formattedVal;
@@ -705,6 +704,11 @@ const isObject = value => {
     (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
+};
+
+const isNonFuncObject = value => {
+  const type = typeof value;
+  return value != null && type === "object" && !Array.isArray(value);
 };
 
 function getBrowserInfo(userAgent) {
@@ -944,6 +948,7 @@ module.exports = {
   isDefinedAndNotNull,
   isEmpty,
   isObject,
+  isNonFuncObject,
   isPrimitive,
   isValidUrl,
   removeNullValues,

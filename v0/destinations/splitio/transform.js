@@ -9,8 +9,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
-  isDefined,
-  flattenJson
+  flattenJson,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 function responseBuilderSimple(payload, category, destination) {
@@ -83,7 +83,7 @@ function sendEvent(message, destination, category) {
   } else {
     throw new Error("eventTypeId does not match with ideal format");
   }
-  if (isDefined(environment)) {
+  if (isDefinedAndNotNullAndNotEmpty(environment)) {
     outputPayload.environmentName = environment;
   }
   outputPayload.trafficTypeName = trafficType;

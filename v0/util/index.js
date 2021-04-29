@@ -846,6 +846,7 @@ module.exports = {
   isBlank,
   isDefined,
   isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isObject,
   isPrimitive,

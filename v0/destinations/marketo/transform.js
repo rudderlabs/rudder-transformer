@@ -90,7 +90,10 @@ const lookupLead = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userid" });
+    stats.increment(LEAD_LOOKUP_METRIC, 1, {
+      type: "userid",
+      action: "create"
+    });
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
@@ -130,7 +133,7 @@ const lookupLeadUsingEmail = async (
   email
 ) => {
   return emailLeadCache.get(email, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email" });
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
     const resp = await getAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
@@ -140,6 +143,43 @@ const lookupLeadUsingEmail = async (
       },
       formattedDestination ? formattedDestination.responseRules : null,
       "During lead look up using email"
+    );
+    if (resp) {
+      const { result } = resp;
+      if (result && Array.isArray(result) && result.length > 0) {
+        return result[0].id;
+      }
+    }
+    return null;
+  });
+};
+
+// lookup Marketo using userId/anonymousId
+// fails transformer if lookup fails - and create if not exist is disabled
+// if userId is present searches using userId else searches using anonymousId
+// ------------------------
+// Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
+// ------------------------
+const lookupLeadUsingId = async (
+  formattedDestination,
+  accountId,
+  token,
+  userId,
+  anonymousId
+) => {
+  return userIdLeadCache.get(userId || anonymousId, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
+    const resp = await getAxiosResponse(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        params: {
+          filterValues: userId || anonymousId,
+          filterType: userId ? "userId" : "anonymousId"
+        },
+        headers: { Authorization: `Bearer ${token}` }
+      },
+      formattedDestination ? formattedDestination.responseRules : null,
+      "During lead look up using userId"
     );
     if (resp) {
       const { result } = resp;
@@ -189,13 +229,22 @@ const processIdentify = async (
         email
       );
     } else {
-      leadId = await lookupLead(
+      leadId = await lookupLeadUsingId(
         formattedDestination,
         accountId,
         token,
         userId,
         message.anonymousId
       );
+      if (!leadId && formattedDestination.createIfNotExist) {
+        leadId = await lookupLead(
+          formattedDestination,
+          accountId,
+          token,
+          userId,
+          message.anonymousId
+        );
+      }
     }
   }
 

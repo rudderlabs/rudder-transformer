@@ -23,8 +23,11 @@ const KEY_CHECK_LIST = [
   "total"
 ];
 
+const EVENT_TYPE_ID_REGEX = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}$");
+
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  KEY_CHECK_LIST
+  KEY_CHECK_LIST,
+  EVENT_TYPE_ID_REGEX
 };

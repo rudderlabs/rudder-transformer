@@ -13,14 +13,8 @@
   },
   {
     "destKey": "key",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys":"userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {

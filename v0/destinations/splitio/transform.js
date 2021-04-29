@@ -1,7 +1,8 @@
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  KEY_CHECK_LIST
+  KEY_CHECK_LIST,
+  EVENT_TYPE_ID_REGEX
 } = require("./config");
 const { EventType } = require("../../../constants");
 const {
@@ -10,7 +11,8 @@ const {
   defaultRequestConfig,
   constructPayload,
   flattenJson,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  getFieldValueFromMessage
 } = require("../../util");
 
 function responseBuilderSimple(payload, category, destination) {
@@ -40,24 +42,21 @@ function populateOutputProperty(inputObject) {
   return outputProperty;
 }
 
-function sendEvent(message, destination, category) {
+function prepareResponse(message, destination, category) {
   let bufferProperty = {};
   const { environment, trafficType } = destination.Config;
   const { type } = message;
-  const eventTypeIdRegex = new RegExp("^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,79}$");
 
   let outputPayload = {};
 
   outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   outputPayload.eventTypeId = outputPayload.eventTypeId.replace(/ /g, "_");
-  if (eventTypeIdRegex.test(outputPayload.eventTypeId)) {
+  if (EVENT_TYPE_ID_REGEX.test(outputPayload.eventTypeId)) {
     switch (type) {
       case EventType.IDENTIFY:
-        if (message.traits) {
-          bufferProperty = populateOutputProperty(message.traits);
-        } else if (message.context && message.context.traits) {
-          bufferProperty = populateOutputProperty(message.context.traits);
-        }
+        bufferProperty = populateOutputProperty(
+          getFieldValueFromMessage(message, "traits")
+        );
         break;
       case EventType.GROUP:
         if (message.traits) {
@@ -97,7 +96,7 @@ const processEvent = (message, destination) => {
     throw Error("Message Type is not present. Aborting message.");
   }
   const category = CONFIG_CATEGORIES.EVENT;
-  const response = sendEvent(message, destination, category);
+  const response = prepareResponse(message, destination, category);
   // build the response
   return responseBuilderSimple(response, category, destination);
 };

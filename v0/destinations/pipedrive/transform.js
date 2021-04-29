@@ -11,7 +11,8 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   getMergeEndpoint,
@@ -51,6 +52,17 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   );
 
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+  if (!get(payload, "name")) {
+    const fname = getFieldValueFromMessage(message, "firstName");
+    const lname = getFieldValueFromMessage(message, "lastName");
+    if (!fname && !lname) {
+      throw new Error("no name field found");
+    }
+    const name = `${fname || ""} ${lname || ""}`.trim();
+    set(payload, "name", name);
+  }
+
   const renameExclusionKeys = Object.keys(payload);
 
   payload = extractCustomFields(
@@ -121,8 +133,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
    * either userId or anonId is required for group call
    */
 
-  if (!get(Config, "userIdToken") ||
-      !get(Config, "groupIdToken")) {
+  if (!get(Config, "userIdToken") || !get(Config, "groupIdToken")) {
     throw new Error("both userIdToken and groupIdToken required for group");
   }
 
@@ -295,20 +306,19 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       "productsMap",
       renameExclusionKeys
     );
-    
+
     payload = createPriceMapping(payload);
     set(payload, "active_flag", 1);
 
     endpoint = PRODUCTS_ENDPOINT;
-  } 
-  else if (event === "order completed") {
+  } else if (event === "order completed") {
     const products = get(message, "properties.products");
 
-    if(products && !Array.isArray(products)) {
+    if (products && !Array.isArray(products)) {
       throw new Error("products list must be of type array");
     }
 
-    if(!products || (products && products.length === 0)) {
+    if (!products || (products && products.length === 0)) {
       throw new Error("products list is required order completed call");
     }
 
@@ -316,7 +326,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
      * If product list is mentioned, returns a batch response
      * Adds each product as a separate Pipedrive Product Object
      */
-    
+
     let orderData = constructPayload(
       message,
       MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
@@ -345,19 +355,21 @@ const trackResponseBuilder = async (message, category, { Config }) => {
         renameExclusionKeys
       );
 
-      if(get(orderData, "tax")) {
+      if (get(orderData, "tax")) {
         set(payload, "tax", orderData.tax);
       }
 
-      if(get(payload, "price") && get(orderData, "currency")) {
+      if (get(payload, "price") && get(orderData, "currency")) {
         /* create price field value for Pipedrive product, only when
-        * both currency and price are available
-        */
-        const priceObject = [{
-          price: payload.price,
-          currency: orderData.currency
-        }];
-        
+         * both currency and price are available
+         */
+        const priceObject = [
+          {
+            price: payload.price,
+            currency: orderData.currency
+          }
+        ];
+
         delete payload.price;
         set(payload, "prices", priceObject);
       }
@@ -377,13 +389,11 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       };
 
       batchResponse.push(response);
-
     });
 
     return batchResponse;
-  } 
-  else {
-    if(!get(Config, "userIdToken")) {
+  } else {
+    if (!get(Config, "userIdToken")) {
       throw new Error("userIdToken required for track");
     }
 
@@ -419,9 +429,9 @@ const trackResponseBuilder = async (message, category, { Config }) => {
     endpoint = LEADS_ENDPOINT;
 
     /* map price and currency to value object
-    * in destination payload
-    */
-    if(payload.amount && payload.currency) {
+     * in destination payload
+     */
+    if (payload.amount && payload.currency) {
       const value = {
         amount: payload.amount,
         currency: payload.currency

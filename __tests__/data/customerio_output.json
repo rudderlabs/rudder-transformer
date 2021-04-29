@@ -12,7 +12,8 @@
         "country": "USA",
         "postalCode": 712136,
         "created_at": 1571043797,
-        "email": "test@gmail.com"
+        "email": "test@gmail.com",
+        "dot.name": "Arnab Pal"
       },
       "FORM": {}
     },

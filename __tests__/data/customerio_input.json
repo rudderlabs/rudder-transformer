@@ -52,6 +52,7 @@
       "traits": {
         "anonymousId": "anon-id",
         "email": "test@gmail.com",
+        "dot.name": "Arnab Pal",
         "address": {
           "city": "NY",
           "country": "USA",

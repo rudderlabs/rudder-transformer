@@ -53,7 +53,8 @@ function process(event) {
     whStoreEvent,
     getDataTypeOverride,
     provider,
-    chEnableArraySupport
+    chEnableArraySupport,
+    sourceCategory: event.metadata ? event.metadata.sourceCategory : null
   });
 }
 

@@ -5,6 +5,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const { isNonFuncObject } = require("./v0/util");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -231,6 +232,17 @@ if (startDestTransformer) {
                       metadata: ev.metadata
                     };
                   }
+                  if (!isNonFuncObject(ev.transformedEvent)) {
+                    return {
+                      statusCode: 400,
+                      error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                        ev.transformedEvent
+                      )}`,
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
+                    };
+                  }
                   return {
                     output: ev.transformedEvent,
                     metadata: _.isEmpty(ev.metadata)
@@ -242,11 +254,15 @@ if (startDestTransformer) {
               );
             } catch (error) {
               logger.error(error);
-              transformedEvents.push({
-                statusCode: 400,
-                error: error.toString(),
-                metadata: commonMetadata
+              const errorString = error.toString();
+              destTransformedEvents = destEvents.map(e => {
+                return {
+                  statusCode: 400,
+                  metadata: e.metadata,
+                  error: errorString
+                };
               });
+              transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions

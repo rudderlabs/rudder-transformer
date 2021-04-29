@@ -4,6 +4,7 @@
 const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
+const kustomerGetRequestHandler = require("./kustomer.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -35,6 +36,11 @@ function getData(url) {
 
 function get(url) {
   const mockData = getData(url);
+  if (url.includes("https://api.kustomerapp.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(kustomerGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });

@@ -6,7 +6,8 @@ const {
   defaultRequestConfig,
   getHashFromArray,
   getFieldValueFromMessage,
-  flattenJson
+  flattenJson,
+  isDefinedAndNotNull
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -21,7 +22,7 @@ function process(event) {
   try {
     const { message, destination } = event;
     // set context.ip from request_ip if it is missing
-    if (!get(message, "context.ip")) {
+    if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
       set(message, "context.ip", message.request_ip);
     }
     const response = defaultRequestConfig();
@@ -38,7 +39,7 @@ function process(event) {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "Content-Type": "application/json"
+          "content-type": "application/json"
         };
       }
 

@@ -247,8 +247,27 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
   const prevPerson = await searchPersonByCustomId(previousId, Config);
   if (!prevPerson) throw new Error("person not found. cannot merge");
 
+  // const currPerson = await searchPersonByCustomId(userId, Config);
+  // if (!currPerson) throw new Error("person not found. cannot merge");
+
   const currPerson = await searchPersonByCustomId(userId, Config);
-  if (!currPerson) throw new Error("person not found. cannot merge");
+  if (currPerson) {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.body.JSON = {
+      merge_with_id: currPerson.id
+    };
+    response.endpoint = getMergeEndpoint(prevPerson.id);
+    response.params = {
+      api_token: Config.apiToken
+    };
+
+    return response;
+  }
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
@@ -257,9 +276,9 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
     Accept: "application/json"
   };
   response.body.JSON = {
-    merge_with_id: currPerson.id
+    [get(Config, "userIdToken")]: userId
   };
-  response.endpoint = getMergeEndpoint(prevPerson.id);
+  response.endpoint = `${PERSONS_ENDPOINT}/${prevPerson.id}`;
   response.params = {
     api_token: Config.apiToken
   };

@@ -3,10 +3,12 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
+const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
 require("dotenv").config();
+
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -371,6 +373,11 @@ router.get("/transformerBuildVersion", ctx => {
 
 router.get("/health", ctx => {
   ctx.body = "OK";
+});
+
+router.get("/features", ctx =>{
+  const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
+  ctx.body = JSON.stringify(obj);
 });
 
 router.post("/batch", ctx => {

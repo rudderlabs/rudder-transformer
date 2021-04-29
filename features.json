@@ -1,0 +1,8 @@
+{
+    "routerTranform": {
+      "SalesForce": true,
+      "GA": true,
+      "Marketo": true,
+      "Hubspot":true
+    }
+  }

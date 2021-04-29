@@ -12,7 +12,8 @@ const {
   constructPayload,
   flattenJson,
   isDefinedAndNotNullAndNotEmpty,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  isDefinedAndNotNull
 } = require("../../util");
 
 function responseBuilderSimple(payload, category, destination) {
@@ -46,6 +47,7 @@ function prepareResponse(message, destination, category) {
   let bufferProperty = {};
   const { environment, trafficType } = destination.Config;
   const { type } = message;
+  let traits;
 
   let outputPayload = {};
 
@@ -54,9 +56,9 @@ function prepareResponse(message, destination, category) {
   if (EVENT_TYPE_ID_REGEX.test(outputPayload.eventTypeId)) {
     switch (type) {
       case EventType.IDENTIFY:
-        bufferProperty = populateOutputProperty(
-          getFieldValueFromMessage(message, "traits")
-        );
+        traits = getFieldValueFromMessage(message, "traits");
+        if (isDefinedAndNotNull(traits))
+          bufferProperty = populateOutputProperty(traits);
         break;
       case EventType.GROUP:
         if (message.traits) {

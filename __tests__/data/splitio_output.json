@@ -210,5 +210,29 @@
             "FORM": {}
         },
         "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://events.split.io/api/events",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer abcde"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "eventTypeId": "identify",
+                "key": "user123",
+                "timestamp": 1579566094,
+                "environmentName": "staging",
+                "trafficTypeName": "user",
+                "properties": {}
+            },
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {}
     }
 ]

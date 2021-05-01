@@ -545,8 +545,6 @@ function batch(destEvents) {
           responseBodyJson.aliases_to_identify = attributesBatch;
         }
         batchResponse.body.JSON = responseBodyJson;
-        // modify the endpoint to track endpoint
-        batchResponse.endpoint = trackEndpoint;
         respList.push(
           formatBatchResponse(batchResponse, identifyMetadataBatch, destination)
         );

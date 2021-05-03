@@ -25,3 +25,9 @@ if (clusterEnabled) {
   app.listen(PORT);
   logger.info(`Listening on Port: ${PORT}`);
 }
+
+process.on("SIGTERM", () => {
+  logger.info(
+    "SIGTERM signal received. Not performing any explicit clean shutdown handling"
+  );
+});

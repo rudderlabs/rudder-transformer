@@ -12,7 +12,8 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   getValueFromMessage,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID,
 } = require("../../util");
 const {
   getMergeEndpoint,
@@ -21,11 +22,8 @@ const {
   PERSONS_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
-  PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
-  PIPEDRIVE_PRODUCT_LIST_EXCLUSION,
-  LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT
+  LEADS_ENDPOINT
 } = require("./config");
 const {
   createNewOrganisation,
@@ -34,22 +32,32 @@ const {
   getFieldValueOrThrowError,
   updateOrganisationTraits,
   renameCustomFields,
-  createPriceMapping
+  getUserIDorExternalID,
+  createPerson
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
-  // name is required field. If name is not present, construct payload will
-  // throw error
+  // name is required field for destination payload
+  
+  // destUserId is external Id or provided userId
+  let destUserId = getDestinationExternalID(message, "person_id");
 
-  if (!get(Config, "userIdToken")) {
-    throw new Error("userIdToken is required for identify");
+  if(!destUserId) {
+    if (!get(Config, "userIdToken")) {
+      throw new Error("userId Token is required");
+    }
+
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    if(!userId) {
+      throw new Error("userId or person_id required");
+    }
+    destUserId = userId;
   }
 
-  const userIdValue = getFieldValueOrThrowError(
-    message,
-    "userId",
-    new Error("userId is required")
-  );
+  /**
+   * If userId token not provided, user with provided Id exists
+   * make an update call with that id.
+   */
 
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
@@ -79,7 +87,25 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     renameExclusionKeys
   );
 
-  const person = await searchPersonByCustomId(userIdValue, Config);
+  if (!get(Config, "userIdToken")) {
+    // in this case, destUserId would be a valid person_id
+
+    const response = defaultRequestConfig();
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.endpoint = PERSONS_ENDPOINT;
+    response.params = {
+      api_token: Config.apiToken
+    };
+
+    return response;
+  }
+
+  const person = await searchPersonByCustomId(destUserId, Config);
 
   // update person since person already exists
   if (person) {
@@ -99,14 +125,26 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     return response;
   }
 
-  // mapping userId to custom userId key field
-  // in destination payload
-  set(payload, Config.userIdToken, userIdValue);
+  /**
+   * If person does not exist
+   * create a new person with just the name field
+   * and let the router make the update call with
+   * rest of the payload properties.
+   */
 
-  // create a new person
+  set(payload, Config.userIdToken, destUserId);
+
+  const createPayload = { name: get(payload, "name") };
+  // eslint-disable-next-line no-unused-vars
+  const createResp = await createPerson(createPayload, Config);
+
+  delete payload.name;
+  delete payload.add_time;
+
+  // update call from Router
   const response = defaultRequestConfig();
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
     Accept: "application/json"
@@ -118,6 +156,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   return response;
 };
+
 
 /**
  * for group call, extracting from both traits and context.traits
@@ -133,27 +172,70 @@ const groupResponseBuilder = async (message, category, { Config }) => {
    * either userId or anonId is required for group call
    */
 
-  if (!get(Config, "userIdToken") || !get(Config, "groupIdToken")) {
-    throw new Error("both userIdToken and groupIdToken required for group");
+  const destUserId = await getUserIDorExternalID(
+    message, 
+    Config
+  );
+  
+  let groupId; let groupPayload; let org;
+
+  if (!get(Config, "groupIdToken")) {
+    /**
+    * if groupId token is not provided, extract the ExternalId val for org_id
+    */
+    groupId = getDestinationExternalID(message, "org_id");
+    if(!groupId) {
+      throw new Error("groupId or externalId required for group call");
+    }
+
+    groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    const renameExclusionKeys = Object.keys(groupPayload);
+
+    groupPayload = extractCustomFields(
+      message,
+      groupPayload,
+      ["traits"],
+      PIPEDRIVE_GROUP_EXCLUSION
+    );
+
+    groupPayload = renameCustomFields(
+      groupPayload,
+      Config,
+      "organizationMap",
+      renameExclusionKeys
+    );
+    
+    groupPayload = removeUndefinedAndNullValues(groupPayload);
+    if (get(groupPayload, "add_time")) {
+      delete groupPayload.add_time;
+    }
+
+    org = await updateOrganisationTraits(groupId, groupPayload, Config);
+    
+    const response = defaultRequestConfig();
+    response.body.JSON = {
+      org_id: groupId
+    };
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `${PERSONS_ENDPOINT}/${destUserId}`;
+    response.params = {
+      api_token: Config.apiToken
+    };
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+
+    return response;
   }
 
-  const userIdVal = getFieldValueOrThrowError(
-    message,
-    "userId",
-    new Error("error: userId is required")
-  );
-
-  const person = await searchPersonByCustomId(userIdVal, Config);
-  if (!person) throw new Error("person not found");
-
-  const groupId = getFieldValueOrThrowError(
+  groupId = getFieldValueOrThrowError(
     message,
     "groupId",
     new Error("groupId is required for group call")
   );
 
-  let groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
+  groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const renameExclusionKeys = Object.keys(groupPayload);
 
   groupPayload = extractCustomFields(
@@ -171,7 +253,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
   );
   groupPayload = removeUndefinedAndNullValues(groupPayload);
 
-  let org = await searchOrganisationByCustomId(groupId, Config);
+  org = await searchOrganisationByCustomId(groupId, Config);
 
   /**
    * if org does not exist, create a new org,
@@ -185,7 +267,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     if (get(groupPayload, "add_time")) {
       delete groupPayload.add_time;
     }
-    await updateOrganisationTraits(org.id, groupPayload, Config);
+    org = await updateOrganisationTraits(org.id, groupPayload, Config);
   }
 
   /**
@@ -197,7 +279,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     org_id: org.id
   };
   response.method = defaultPutRequestConfig.requestMethod;
-  response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
+  response.endpoint = `${PERSONS_ENDPOINT}/${destUserId}`;
   response.params = {
     api_token: Config.apiToken
   };
@@ -223,10 +305,6 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
    * destination payload structure: { "merge_with_id": "userId"}
    */
 
-  if (!get(Config, "userIdToken")) {
-    throw new Error("userIdToken required for alias");
-  }
-
   const previousId = getValueFromMessage(message, [
     "previousId",
     "traits.previousId",
@@ -236,19 +314,39 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
 
   const userId = getFieldValueOrThrowError(
     message,
-    "userId",
+    "userIdOnly",
     new Error("error: cannot merge without userId")
   );
+
+  if (!get(Config, "userIdToken")) {
+    // if userId token not supplied
+    // both userId and previousId are expected to be valid Pipedrive id
+
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.body.JSON = {
+      "merge_with_id": userId
+    };
+    response.endpoint = `${PERSONS_ENDPOINT}/${previousId}`;
+    response.params = {
+      api_token: Config.apiToken
+    };
+
+    return response;
+  }
 
   /**
    * Need to extract the pipedrive side integer id for the provided userId
    * and previous Id, i.e mapping Rudder side userId to pipedrive integer id
    */
   const prevPerson = await searchPersonByCustomId(previousId, Config);
-  if (!prevPerson) throw new Error("person not found. cannot merge");
-
-  // const currPerson = await searchPersonByCustomId(userId, Config);
-  // if (!currPerson) throw new Error("person not found. cannot merge");
+  if (!prevPerson) {
+    throw new Error("person not found. cannot merge");
+  }
 
   const currPerson = await searchPersonByCustomId(userId, Config);
   if (currPerson) {
@@ -295,171 +393,52 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
  * @returns
  */
 const trackResponseBuilder = async (message, category, { Config }) => {
-  let event = get(message, "event");
-  if (!event) {
+  // TODO: maybe drop this check
+  if (!get(message, "event")) {
     throw new Error("event type not specified");
   }
 
   let payload;
   let endpoint;
-  event = event.toLowerCase().trim();
 
-  if (event === "product viewed") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_VIEWED.name]
-    );
+  const destUserId = await getUserIDorExternalID(
+    message,
+    Config,
+    new Error("cannot add track event without userId or external Id")
+  );
 
-    const renameExclusionKeys = Object.keys(payload);
+  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const renameExclusionKeys = Object.keys(payload);
 
-    payload = extractCustomFields(
-      message,
-      payload,
-      ["properties"],
-      PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION
-    );
+  payload = extractCustomFields(
+    message,
+    payload,
+    ["properties"],
+    PIPEDRIVE_TRACK_EXCLUSION
+  );
 
-    payload = renameCustomFields(
-      payload,
-      Config,
-      "productsMap",
-      renameExclusionKeys
-    );
+  payload = renameCustomFields(
+    payload,
+    Config,
+    "leadsMap",
+    renameExclusionKeys
+  );
 
-    payload = createPriceMapping(payload);
-    set(payload, "active_flag", 1);
+  set(payload, "person_id", destUserId);
+  endpoint = LEADS_ENDPOINT;
 
-    endpoint = PRODUCTS_ENDPOINT;
-  } else if (event === "order completed") {
-    const products = get(message, "properties.products");
-
-    if (products && !Array.isArray(products)) {
-      throw new Error("products list must be of type array");
-    }
-
-    if (!products || (products && products.length === 0)) {
-      throw new Error("products list is required order completed call");
-    }
-
-    /**
-     * If product list is mentioned, returns a batch response
-     * Adds each product as a separate Pipedrive Product Object
-     */
-
-    let orderData = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
-    );
-
-    const batchResponse = [];
-    products.forEach(product => {
-      payload = constructPayload(
-        product,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_LIST.name]
-      );
-
-      const renameExclusionKeys = Object.keys(payload);
-
-      payload = extractCustomFields(
-        product,
-        payload,
-        "root",
-        PIPEDRIVE_PRODUCT_LIST_EXCLUSION
-      );
-
-      payload = renameCustomFields(
-        payload,
-        Config,
-        "productsMap",
-        renameExclusionKeys
-      );
-
-      if (get(orderData, "tax")) {
-        set(payload, "tax", orderData.tax);
-      }
-
-      if (get(payload, "price") && get(orderData, "currency")) {
-        /* create price field value for Pipedrive product, only when
-         * both currency and price are available
-         */
-        const priceObject = [
-          {
-            price: payload.price,
-            currency: orderData.currency
-          }
-        ];
-
-        delete payload.price;
-        set(payload, "prices", priceObject);
-      }
-
-      set(payload, "active_flag", 1);
-
-      const response = defaultRequestConfig();
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = PRODUCTS_ENDPOINT;
-      response.params = {
-        api_token: Config.apiToken
-      };
-      response.headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      };
-
-      batchResponse.push(response);
-    });
-
-    return batchResponse;
-  } else {
-    if (!get(Config, "userIdToken")) {
-      throw new Error("userIdToken required for track");
-    }
-
-    const userId = getFieldValueOrThrowError(
-      message,
-      "userId",
-      new Error("userId required for event tracking")
-    );
-
-    const person = await searchPersonByCustomId(userId, Config);
-    if (!person) {
-      throw new Error("person not found, cannot add track event");
-    }
-
-    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    const renameExclusionKeys = Object.keys(payload);
-
-    payload = extractCustomFields(
-      message,
-      payload,
-      ["properties"],
-      PIPEDRIVE_TRACK_EXCLUSION
-    );
-
-    payload = renameCustomFields(
-      payload,
-      Config,
-      "leadsMap",
-      renameExclusionKeys
-    );
-
-    set(payload, "person_id", person.id);
-    endpoint = LEADS_ENDPOINT;
-
-    /* map price and currency to value object
-     * in destination payload
-     */
-    if (payload.amount && payload.currency) {
-      const value = {
-        amount: payload.amount,
-        currency: payload.currency
-      };
-      set(payload, "value", value);
-    }
-    delete payload.amount;
-    delete payload.currency;
+  /* map price and currency to value object
+  * in destination payload
+  */
+  if (payload.amount && payload.currency) {
+    const value = {
+      amount: payload.amount,
+      currency: payload.currency
+    };
+    set(payload, "value", value);
   }
+  delete payload.amount;
+  delete payload.currency;
 
   const response = defaultRequestConfig();
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -531,7 +510,7 @@ async function process(event) {
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
     case EventType.ALIAS:
-      // work around since alias does have a mapping json
+      // dummy since alias does have a mapping json
       category = { type: "alias" };
       break;
     case EventType.GROUP:

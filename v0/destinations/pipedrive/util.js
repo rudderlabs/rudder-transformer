@@ -2,9 +2,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 const axios = require("axios");
+const get = require("get-value");
 const set = require("set-value");
 const logger = require("../../../logger");
-const { getFieldValueFromMessage } = require("../../util");
+const { getFieldValueFromMessage, getDestinationExternalID } = require("../../util");
 const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
@@ -249,6 +250,64 @@ const createPriceMapping = payload => {
   return mappedPayload;
 }
 
+/**
+ * Gets ExternalId if present. 
+ * Else gets userId and also checks if person exists for that userId
+ * Else throws provided custom error.
+ * Note: UserId token is required if external id is not present.
+ * @param {*} message 
+ * @param {*} Config 
+ * @returns 
+ */
+const getUserIDorExternalID = async (message, Config, error) => {
+  const pipedrivePersonId = getDestinationExternalID(message, "person_id");
+  
+  let destUserId;
+  if(!pipedrivePersonId) {
+    if (!get(Config, "userIdToken")) {
+      throw new Error("userId Token is required");
+    }
+
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    if(!userId) {
+      throw new Error("userId or person_id required");
+    }
+    
+    const person = await searchPersonByCustomId(userId, Config);
+    if (!person) {
+      throw new Error(`person not found ${error || ""}`);
+    }
+    destUserId = person.id;
+  }
+  else {
+    destUserId = pipedrivePersonId;
+  }
+
+  return destUserId;
+};
+
+const createPerson = async (data, Config) => {
+  let resp;
+  try {
+    resp = await axios.post(PERSONS_ENDPOINT, data, {
+      params: {
+        api_token: Config.apiToken
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    });
+  }
+  catch (err) {
+    throw new Error(`failed to create new person {err}`);
+  }
+  if (resp && resp.status === 201) {
+    return resp.data.data;
+  }
+  throw new Error("failed to create new person");
+};
+
 
 module.exports = {
   createNewOrganisation,
@@ -258,5 +317,7 @@ module.exports = {
   getFieldValueOrThrowError,
   updatePerson,
   renameCustomFields,
-  createPriceMapping
+  createPriceMapping,
+  getUserIDorExternalID,
+  createPerson
 };

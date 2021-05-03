@@ -4,15 +4,13 @@
       "XML": {},
       "FORM": {},
       "JSON": {
-        "name": "Roddur Roy",
         "useridapikey1231212": "roddurroy123",
-        "add_time": "2019-10-14T09:03:17.562Z",
         "districtapikey2987": "N. 24 parganas"
       }
     },
     "type": "REST",
     "files": {},
-    "method": "POST",
+    "method": "PUT",
     "params": {
       "api_token": "03f3251d27e1d44438889"
     },
@@ -28,7 +26,6 @@
       "XML": {},
       "FORM": {},
       "JSON": {
-        "name": "Roddur Roy",
         "useridapikey1231212": "roddurroy123",
         "someCustomKey467": "some custom val",
         "email": [
@@ -42,13 +39,12 @@
             "value": "123-100-200",
             "primary": true
           }
-        ],
-        "add_time": "2019-10-14T09:03:17.562Z"
+        ]
       }
     },
     "type": "REST",
     "files": {},
-    "method": "POST",
+    "method": "PUT",
     "params": {
       "api_token": "03f3251d27e1d44438889"
     },
@@ -137,7 +133,7 @@
     "endpoint": "https://api.pipedrive.com/v1/persons/46"
   },
   {
-    "error": "person not found"
+    "error": "person not found "
   },
   {
     "body": {
@@ -210,88 +206,5 @@
   },
   {
     "error": "event type not specified"
-  },
-  {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "name": "Bike",
-        "active_flag": 1,
-        "customkeyapi": "some value",
-        "prices": [{
-          "price": 200,
-          "currency": "USD"
-        }]
-      }
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {
-      "api_token": "03f3251d27e1d44438889"
-    },
-    "headers": {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    "version": "1",
-    "endpoint": "https://api.pipedrive.com/v1/products"
-  },
-  [
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "name": "Monopoly",
-          "code": "monopoly123",
-          "active_flag": 1,
-          "prices": [{
-            "price": 600,
-            "currency": "INR"
-          }]
-        }
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {
-        "api_token": "03f3251d27e1d44438889"
-      },
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      "version": "1",
-      "endpoint": "https://api.pipedrive.com/v1/products"
-    },
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "name": "Uno",
-          "code": "uno123",
-          "active_flag": 1,
-          "prices": [{
-            "price": 400,
-            "currency": "INR"
-          }]
-        }
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {
-        "api_token": "03f3251d27e1d44438889"
-      },
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      "version": "1",
-      "endpoint": "https://api.pipedrive.com/v1/products"
-    }
-  ]
+  }
 ]

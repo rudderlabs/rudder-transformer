@@ -10,15 +10,10 @@ const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "PipedriveIdentify", type: "identify" },
   GROUP: { name: "PipedriveGroup", type: "group" },
-  TRACK: { name: "PipedriveTrack", type: "track" },
-  PRODUCT_VIEWED: { name: "PipedriveProductViewed" },
-  ORDER_COMPLETED: { name: "PipedriveOrderCompleted" },
-  PRODUCT_LIST: { name: "PipedriveProductList" }
+  TRACK: { name: "PipedriveTrack", type: "track" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-
-const PRODUCT_EVENTS = ["product viewed", "order completed"];
 
 const PIPEDRIVE_IDENTIFY_EXCLUSION = [
   "name",
@@ -50,58 +45,16 @@ const PIPEDRIVE_TRACK_EXCLUSION = [
   "owner_id"
 ];
 
-const PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION = [
-  "name",
-  "quantity",
-  "price",
-  "currency",
-  "product_id",
-  "sku",
-  "productId",
-  "owner_id",
-  "active_flag"
-];
-
-const PIPEDRIVE_ORDER_COMPLETED_EXCLUSION = [
-  "name",
-  "order_id",
-  "checkout_id",
-  "product_id",
-  "productId",
-  "sku",
-  "tax",
-  "owner_id",
-  "price",
-  "currency",
-  "active_flag",
-  "products"
-];
-
-const PIPEDRIVE_PRODUCT_LIST_EXCLUSION = [
-  "name",
-  "code",
-  "price",
-  "amount",
-  "value",
-  "product_id",
-  "productId",
-  "sku"
-];
-
 module.exports = {
+  getMergeEndpoint,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
-  getMergeEndpoint,
   PERSONS_ENDPOINT,
   ORGANISATION_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
-  PIPEDRIVE_PRODUCT_VIEWED_EXCLUSION,
-  PIPEDRIVE_ORDER_COMPLETED_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
-  PIPEDRIVE_PRODUCT_LIST_EXCLUSION,
   LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT,
-  PRODUCT_EVENTS
+  PRODUCTS_ENDPOINT
 };

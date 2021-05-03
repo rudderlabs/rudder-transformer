@@ -1,8 +1,8 @@
 {
-    "routerTransform": {
-      "SALESFORCE": true,
-      "GA": true,
-      "MARKETO": true,
-      "HUBSPOT":true
-    }
+  "routerTransform": {
+    "SALESFORCE": true,
+    "GA": true,
+    "MARKETO": true,
+    "HS":true
   }
+}

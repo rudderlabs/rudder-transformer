@@ -100,14 +100,15 @@ function responseBuilder(message, evType, evName, destination) {
     }
 
     // make user creation time
-    set(
-      rawPayload,
-      "created_at",
-      Math.floor(
-        new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
-          1000
-      )
-    );
+    const createAt = getFieldValueFromMessage(message, "createdAtOnly");
+    // set the created_at field if traits.createAt or context.traits.createAt is passed
+    if (createAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(createAt).getTime() / 1000)
+      );
+    }
 
     // Impportant for historical import
     if (getFieldValueFromMessage(message, "historicalTimestamp")) {

@@ -6,6 +6,7 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
+const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -27,6 +28,9 @@ const getIntegrations = type =>
   readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
+  if (Object.keys(DestHandlerMap).includes(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
   return require(`./${version}/destinations/${dest}/transform`);
 };
 

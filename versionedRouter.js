@@ -229,7 +229,9 @@ if (startDestTransformer) {
                     return {
                       statusCode: 400,
                       error: ev.error,
-                      metadata: ev.metadata
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
                     };
                   }
                   if (!isNonFuncObject(ev.transformedEvent)) {

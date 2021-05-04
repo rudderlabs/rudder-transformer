@@ -41,28 +41,59 @@ async function createIvm(code, libraryVersionIds) {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
+      const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
+
       var metadata = function(event) {
         const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
-        return eventMetadata
+        return eventMetadata;
       }
       switch(transformType) {
         case "transformBatch":
-          outputEvents = await transformBatch(eventMessages, metadata);
-          outputEvents = outputEvents.map(transformedEvent => ({transformedEvent, metadata: metadata(transformedEvent)}))
+          const transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          if (!Array.isArray(transformedEventsBatch)) {
+            outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
+            break;
+          }
+          outputEvents = transformedEventsBatch.map(transformedEvent => {
+            if (!isObject(transformedEvent)) {
+              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: {}};
+            }
+            return{transformedEvent, metadata: metadata(transformedEvent)};
+          })
           break;
         case "transformEvent":
-
-          outputEvents = await Promise.all(eventMessages.map(async ev => {
+          await Promise.all(eventMessages.map(async ev => {
+            const currMsgId = ev.messageId;
             try{
-              const currMsgId = ev.messageId;
-              let transformedEvent = await transformEvent(ev, metadata);
-              return {transformedEvent, metadata: eventsMetadata[currMsgId] || {}};
+              let transformedOutput = await transformEvent(ev, metadata);
+              // if func returns null/undefined drop event
+              if (transformedOutput === null || transformedOutput === undefined) return;
+              if (Array.isArray(transformedOutput)) {
+                const producedEvents = [];
+                const encounteredError = !transformedOutput.every(e => {
+                  if (isObject(e)) {
+                    producedEvents.push({transformedEvent: e, metadata: eventsMetadata[currMsgId] || {}});
+                    return true;
+                  } else {
+                    outputEvents.push({error: "returned event in events array from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
+                    return false;
+                  }
+                })
+                if (!encounteredError) {
+                  outputEvents.push(...producedEvents);
+                }
+                return;
+              }
+              if (!isObject(transformedOutput)) {
+                return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
+              } 
+              outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
+              return;
             } catch (error) {
               // Handling the errors in versionedRouter.js
-              return {error: error.toString(), metadata: metadata(ev)};
+              return outputEvents.push({error: error.toString(), metadata: eventsMetadata[currMsgId] || {}});
             }
           }));
-          outputEvents = outputEvents.filter(e => (e.transformedEvent != null || e.error));
           break;
       }
       return outputEvents

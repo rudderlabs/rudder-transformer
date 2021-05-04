@@ -70,13 +70,11 @@ async function createIvm(code, libraryVersionIds) {
               if (transformedOutput === null || transformedOutput === undefined) return;
               if (Array.isArray(transformedOutput)) {
                 const producedEvents = [];
-                let encounteredError = false;
-                transformedOutput.every(e => {
+                const encounteredError = !transformedOutput.every(e => {
                   if (isObject(e)) {
-                    producedEvents.push({transformedOutput: e, metadata: eventsMetadata[currMsgId] || {}});
+                    producedEvents.push({transformedEvent: e, metadata: eventsMetadata[currMsgId] || {}});
                     return true;
                   } else {
-                    encounteredError = true;
                     outputEvents.push({error: "returned event in events array from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
                     return false;
                   }
@@ -89,7 +87,7 @@ async function createIvm(code, libraryVersionIds) {
               if (!isObject(transformedOutput)) {
                 return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
               } 
-              outputEvents.push({transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
+              outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
               return;
             } catch (error) {
               // Handling the errors in versionedRouter.js

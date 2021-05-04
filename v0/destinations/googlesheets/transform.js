@@ -1,11 +1,10 @@
-const { getHashFromArray, constructPayloadWithKeys } = require("../../util");
-const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require("./config");
+const { getHashFromArray, getValueFromMessage } = require("../../util");
 
 // Retrieve Google-Sheets Tab name based on the destination event-to-tab map
-const getTabName = event => {
+const getSheet = event => {
   const { message } = event;
-  const { eventToTabMap } = event.destination.Config;
-  const hashMap = getHashFromArray(eventToTabMap, "from", "to");
+  const { eventSheetMapping } = event.destination.Config;
+  const hashMap = getHashFromArray(eventSheetMapping, "from", "to");
 
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||
@@ -15,18 +14,40 @@ const getTabName = event => {
   );
 };
 
+const processWithCustomMapping = (message, attributeMap) => {
+  const responseMessage = {};
+  let count = 0;
+  Object.keys(attributeMap).forEach(key => {
+    const keyArr = [
+      `${key}`,
+      `properties.${key}`,
+      `traits.${key}`,
+      `context.traits.${key}`
+    ];
+    const value = getValueFromMessage(message, keyArr);
+    responseMessage[count] = {
+      attributeKey: attributeMap[key],
+      attributeValue: value || ""
+    };
+    count += 1;
+  });
+  return responseMessage;
+};
 // Main process Function to handle transformation
 const process = event => {
   const { message, destination } = event;
-  const tabName = getTabName(event);
-  if (tabName) {
+  const sheet = getSheet(event);
+  const eventAttributeMap = getHashFromArray(
+    destination.Config.eventKeyMap,
+    "from",
+    "to",
+    false
+  );
+  if (sheet) {
     const payload = {
-      message: constructPayloadWithKeys(
-        message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.SHEETS.name]
-      ),
+      message: processWithCustomMapping(message, eventAttributeMap),
       spreadSheetId: destination.Config.sheetId,
-      spreadSheetTab: tabName
+      spreadSheet: sheet
     };
     return payload;
   }

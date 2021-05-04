@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require("sha256");
 const get = require("get-value");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  ACTION_SOURCES_VALUES,
+  FB_PIXEL_DEFAULT_EXCLUSION
+} = require("./config");
 const { EventType } = require("../../../constants");
 
 const {
@@ -9,7 +14,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   flattenJson,
-  isObject
+  isObject,
+  extractCustomFields
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -375,10 +381,22 @@ const responseBuilderSimple = (message, category, destination) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
   );
+  if (commonData.action_source) {
+    const isActionSourceValid =
+      ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
+    if (!isActionSourceValid) {
+      throw Error("Invalid Action Source type");
+    }
+  }
   if (category.type !== "identify") {
-    customData = {
-      ...flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
-    };
+    customData = flattenJson(
+      extractCustomFields(
+        message,
+        customData,
+        ["properties"],
+        FB_PIXEL_DEFAULT_EXCLUSION
+      )
+    );
     if (Object.keys(customData).length === 0 && category.standard) {
       throw Error("No properties for the event so the event cannot be sent.");
     }

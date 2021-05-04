@@ -46,7 +46,12 @@ const WhiteListedTraits = [
   "properties"
 ];
 
+const DestHandlerMap = {
+  ga360: "ga"
+};
+
 module.exports = {
+  DestHandlerMap,
   EventType,
   SpecedTraits,
   TraitsMapping,

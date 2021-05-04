@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require("koa-router");
@@ -6,6 +7,7 @@ const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
+const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -27,6 +29,9 @@ const getIntegrations = type =>
   readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
@@ -229,7 +234,9 @@ if (startDestTransformer) {
                     return {
                       statusCode: 400,
                       error: ev.error,
-                      metadata: ev.metadata
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
                     };
                   }
                   if (!isNonFuncObject(ev.transformedEvent)) {

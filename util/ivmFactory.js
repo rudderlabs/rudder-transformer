@@ -38,7 +38,7 @@ async function createIvm(code, libraryVersionIds) {
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
       events.forEach(ev => {
-        eventsMetadata[ev.metadata ? ev.metadata.messageId : ev.message.messageId] = ev.metadata;
+        eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
       const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';

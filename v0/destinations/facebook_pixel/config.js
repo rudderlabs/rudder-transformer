@@ -46,8 +46,21 @@ const CONFIG_CATEGORIES = {
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const ACTION_SOURCES_VALUES = [
+  "email",
+  "website",
+  "phone_call",
+  "chat",
+  "physical_store",
+  "system_generated",
+  "other"
+];
+
+const FB_PIXEL_DEFAULT_EXCLUSION = ["opt_out", "event_id", "action_source"];
 
 module.exports = {
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
+  ACTION_SOURCES_VALUES,
+  FB_PIXEL_DEFAULT_EXCLUSION
 };

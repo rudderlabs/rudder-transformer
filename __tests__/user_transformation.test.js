@@ -222,13 +222,14 @@ possibleEnvs.forEach(envValue => {
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
 
-      expectedData[0] = {
+      const x = _.cloneDeep(expectedData)
+      x[0] = {
         error:
           "returned event in events array from transformBatch(events) is not an object",
         metadata: {}
       };
 
-      expect(output).toEqual(expectedData);
+      expect(output).toEqual(x);
     });
 
     it(`Simple ${name} async test for V1 transformation - transformEvent`, async () => {
@@ -415,8 +416,6 @@ possibleEnvs.forEach(envValue => {
           metadata: {}
         });
       });
-
-      console.log(util.inspect(output, false, null, true));
 
       expect(output).toEqual(matchData);
     });

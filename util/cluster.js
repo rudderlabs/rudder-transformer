@@ -3,6 +3,7 @@ const numCPUs = require("os").cpus().length;
 const util = require("util");
 const logger = require("../logger");
 const gracefulShutdown = require('http-graceful-shutdown');
+const numWorkers = process.env.NUM_PROCS || numCPUs
 
 function processInfo() {
   return {
@@ -32,7 +33,7 @@ function start(port, app) {
     logger.info(`Master ${process.pid} is running`);
 
     // Fork workers.
-    for (let i = 0; i < numCPUs; i += 1) {
+    for (let i = 0; i < numWorkers; i += 1) {
       cluster.fork();
     }
 

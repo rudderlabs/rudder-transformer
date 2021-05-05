@@ -69,7 +69,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     const fname = getFieldValueFromMessage(message, "firstName");
     const lname = getFieldValueFromMessage(message, "lastName");
     if (!fname && !lname) {
-      throw new Error("no name field found");
+      throw new CustomError("no name field found", 400);
     }
     const name = `${fname || ""} ${lname || ""}`.trim();
     set(payload, "name", name);
@@ -189,7 +189,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     */
     groupId = getDestinationExternalID(message, "org_id");
     if(!groupId) {
-      throw new Error("groupId or externalId required for group call");
+      throw new CustomError("groupId or externalId required for group call", 400);
     }
 
     groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);

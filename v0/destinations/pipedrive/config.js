@@ -13,6 +13,8 @@ const CONFIG_CATEGORIES = {
   TRACK: { name: "PipedriveTrack", type: "track" }
 };
 
+const DOT_SUPPORT = true;
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const PIPEDRIVE_IDENTIFY_EXCLUSION = [
@@ -56,5 +58,6 @@ module.exports = {
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT
+  PRODUCTS_ENDPOINT,
+  DOT_SUPPORT
 };

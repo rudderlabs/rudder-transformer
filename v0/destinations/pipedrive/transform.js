@@ -26,7 +26,8 @@ const {
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
-  LEADS_ENDPOINT
+  LEADS_ENDPOINT,
+  DOT_SUPPORT
 } = require("./config");
 const {
   createNewOrganisation,
@@ -81,7 +82,8 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     message,
     payload,
     ["traits", "context.traits"],
-    PIPEDRIVE_IDENTIFY_EXCLUSION
+    PIPEDRIVE_IDENTIFY_EXCLUSION,
+    DOT_SUPPORT
   );
 
   payload = renameCustomFields(
@@ -199,7 +201,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
       message,
       groupPayload,
       ["traits"],
-      PIPEDRIVE_GROUP_EXCLUSION
+      PIPEDRIVE_GROUP_EXCLUSION,
+      DOT_SUPPORT
     );
 
     groupPayload = renameCustomFields(
@@ -246,7 +249,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     message,
     groupPayload,
     ["traits"],
-    PIPEDRIVE_GROUP_EXCLUSION
+    PIPEDRIVE_GROUP_EXCLUSION,
+    DOT_SUPPORT
   );
 
   groupPayload = renameCustomFields(
@@ -418,7 +422,8 @@ const trackResponseBuilder = async (message, category, { Config }) => {
     message,
     payload,
     ["properties"],
-    PIPEDRIVE_TRACK_EXCLUSION
+    PIPEDRIVE_TRACK_EXCLUSION,
+    DOT_SUPPORT
   );
 
   payload = renameCustomFields(

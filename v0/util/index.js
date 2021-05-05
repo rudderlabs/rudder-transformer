@@ -532,8 +532,7 @@ const handleMetadataForValue = (value, metadata) => {
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
-    if (!foundVal)
-      formattedVal = undefined
+    if (!foundVal) formattedVal = undefined;
   }
 
   return formattedVal;
@@ -775,7 +774,13 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
  * exlusion list from the given keys to the destination payload
  *
  */
-function extractCustomFields(message, destination, keys, exclusionFields) {
+function extractCustomFields(
+  message,
+  destination,
+  keys,
+  exclusionFields,
+  dotSupport = false
+) {
   const mappingKeys = [];
   if (Array.isArray(keys)) {
     keys.map(key => {
@@ -786,7 +791,11 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
         });
         mappingKeys.map(mappingKey => {
           if (!(typeof messageContext[mappingKey] === "undefined")) {
-            set(destination, mappingKey, get(messageContext, mappingKey));
+            if (dotSupport) {
+              destination[mappingKey] = get(messageContext, mappingKey);
+            } else {
+              set(destination, mappingKey, get(messageContext, mappingKey));
+            }
           }
         });
       }
@@ -797,7 +806,11 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
     });
     mappingKeys.map(mappingKey => {
       if (!(typeof message[mappingKey] === "undefined")) {
-        set(destination, mappingKey, get(message, mappingKey));
+        if (dotSupport) {
+          destination[mappingKey] = get(message, mappingKey);
+        } else {
+          set(destination, mappingKey, get(message, mappingKey));
+        }
       }
     });
   } else {

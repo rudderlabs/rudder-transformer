@@ -11,6 +11,24 @@ const {
   PERSONS_ENDPOINT,
 } = require("./config");
 
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
+
+const handleAxiosError = (err, errorMessage) => {
+  if (err.response) {
+    throw new CustomError(
+      errorMessage,
+      err.response.status || 500
+    );
+  }
+
+  throw new CustomError(`${errorMessage} Abortable`, 400);
+};
+
 /**
  * Search for person with Custom UserId value
  * @param {*} userIdValue
@@ -30,18 +48,19 @@ const searchPersonByCustomId = async (userIdValue, Config) => {
         Accept: "application/json"
       }
     });
-  } catch (err) {
-    throw new Error(`error while searching person: ${err}`);
+  } 
+  catch (err) {
+    handleAxiosError(err, "failed to search person");
   }
 
-  if (response && response.status === 200) {
-    if (response.data.data.items.length === 0) {
-      return null;
-    }
+  if(!response.data || !response.data.data) {
+    throw new CustomError("response data not found: Retryable", 500);
+  }
+  else if (response.data.data.items.length === 0) {
+    return null;
+  }
+  else
     return response.data.data.items[0].item;
-  }
-
-  return null;
 };
 
 const updatePerson = async (userIdvalue, data, Config) => {
@@ -60,15 +79,16 @@ const updatePerson = async (userIdvalue, data, Config) => {
         }
       }
     );
-
-    if (!response || response.status !== 200) {
-      throw new Error("invalid response");
-    }
   } catch (err) {
-    throw new Error(`error while updating person: ${err}`);
+    handleAxiosError(err, "failed to update person");
   }
 
-  return response;
+  if (response.status === 200) {
+    return response.data.data;
+  }
+
+  // fallback
+  throw new CustomError(`error while updating person: Abortable`, 500);
 };
 
 const searchOrganisationByCustomId = async (groupId, Config) => {
@@ -85,16 +105,17 @@ const searchOrganisationByCustomId = async (groupId, Config) => {
       }
     });
   } catch (err) {
-    throw new Error(`error while searching organisation ${err}`);
+    handleAxiosError(err, "failed to search organization");
   }
 
-  if (response && response.status === 200) {
-    if (response.data.data.items.length === 0) {
-      return null;
-    }
-    return response.data.data.items[0].item;
+  if(!response.data || !response.data.data) {
+    throw new CustomError("response data not found: Retyrable", 500);
   }
-  return null;
+  else if (response.data.data.items.length === 0) {
+    return null;
+  }
+  else
+    return response.data.data.items[0].item;
 };
 
 const createNewOrganisation = async (data, Config) => {
@@ -108,13 +129,15 @@ const createNewOrganisation = async (data, Config) => {
       }
     })
     .catch(err => {
-      throw new Error(`failed to create new organisation: ${err}`);
+      handleAxiosError(err, "failed to create organization");
     });
 
-  if (resp && resp.status === 201) {
+  if (resp.status === 201) {
     return resp.data.data;
   }
-  throw new Error("failed to create new organisation");
+
+  // fallback
+  throw new CustomError("failed to create new organisation, Retryable", 500);
 };
 
 /**
@@ -140,15 +163,16 @@ const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
         }
       }
     );
-
-    if (!response || response.status !== 200) {
-      throw new Error("invalid response");
-    }
   } catch (err) {
-    throw new Error(`error while updating group: ${err}`);
+    handleAxiosError(err, "failed to update organization");
   }
 
-  return response;
+  if (response.status === 200) {
+    return response.data.data;
+  }
+
+  // fallback
+  throw new CustomError("org update failed: Retryable", 500);
 };
 
 /**
@@ -265,17 +289,17 @@ const getUserIDorExternalID = async (message, Config, error) => {
   let destUserId;
   if(!pipedrivePersonId) {
     if (!get(Config, "userIdToken")) {
-      throw new Error("userId Token is required");
+      throw new CustomError("userId Token is required", 400);
     }
 
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if(!userId) {
-      throw new Error("userId or person_id required");
+      throw new CustomError("userId or person_id required", 400);
     }
     
     const person = await searchPersonByCustomId(userId, Config);
     if (!person) {
-      throw new Error(`person not found ${error || ""}`);
+      throw new CustomError(`person not found ${error || ""}`, 400);
     }
     destUserId = person.id;
   }
@@ -300,12 +324,14 @@ const createPerson = async (data, Config) => {
     });
   }
   catch (err) {
-    throw new Error(`failed to create new person {err}`);
+    handleAxiosError(err, "create person failed");
   }
   if (resp && resp.status === 201) {
     return resp.data.data;
   }
-  throw new Error("failed to create new person");
+  
+  // fallback
+  throw new CustomError("org update failed: Retryable", 500);
 };
 
 
@@ -319,5 +345,6 @@ module.exports = {
   renameCustomFields,
   createPriceMapping,
   getUserIDorExternalID,
-  createPerson
+  createPerson,
+  CustomError
 };

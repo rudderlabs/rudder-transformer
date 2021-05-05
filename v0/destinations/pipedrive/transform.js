@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable prefer-const */
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
@@ -14,6 +15,8 @@ const {
   getValueFromMessage,
   getFieldValueFromMessage,
   getDestinationExternalID,
+  getErrorRespEvents,
+  getSuccessRespEvents,
 } = require("../../util");
 const {
   getMergeEndpoint,
@@ -33,7 +36,8 @@ const {
   updateOrganisationTraits,
   renameCustomFields,
   getUserIDorExternalID,
-  createPerson
+  createPerson,
+  CustomError
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
@@ -44,12 +48,12 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   if(!destUserId) {
     if (!get(Config, "userIdToken")) {
-      throw new Error("userId Token is required");
+      throw new CustomError("userId Token is required", 400);
     }
 
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if(!userId) {
-      throw new Error("userId or person_id required");
+      throw new CustomError("userId or person_id required", 400);
     }
     destUserId = userId;
   }
@@ -136,7 +140,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   const createPayload = { name: get(payload, "name") };
   // eslint-disable-next-line no-unused-vars
-  const createResp = await createPerson(createPayload, Config);
+  const createdPerson = await createPerson(createPayload, Config);
 
   delete payload.name;
   delete payload.add_time;
@@ -149,7 +153,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     "Content-Type": "application/json",
     Accept: "application/json"
   };
-  response.endpoint = PERSONS_ENDPOINT;
+  response.endpoint = `${PERSONS_ENDPOINT}/${createdPerson.id}`;
   response.params = {
     api_token: Config.apiToken
   };
@@ -232,7 +236,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
   groupId = getFieldValueOrThrowError(
     message,
     "groupId",
-    new Error("groupId is required for group call")
+    new CustomError("groupId is required for group call", 400)
   );
 
   groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -310,12 +314,12 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
     "traits.previousId",
     "context.traits.previousId"
   ]);
-  if (!previousId) throw new Error("error: cannot merge without previousId");
+  if (!previousId) throw new CustomError("error: cannot merge without previousId", 400);
 
   const userId = getFieldValueOrThrowError(
     message,
     "userIdOnly",
-    new Error("error: cannot merge without userId")
+    new CustomError("error: cannot merge without userId", 400)
   );
 
   if (!get(Config, "userIdToken")) {
@@ -345,7 +349,7 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
    */
   const prevPerson = await searchPersonByCustomId(previousId, Config);
   if (!prevPerson) {
-    throw new Error("person not found. cannot merge");
+    throw new CustomError("person not found. cannot merge", 400);
   }
 
   const currPerson = await searchPersonByCustomId(userId, Config);
@@ -395,7 +399,7 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
 const trackResponseBuilder = async (message, category, { Config }) => {
   // TODO: maybe drop this check
   if (!get(message, "event")) {
-    throw new Error("event type not specified");
+    throw new CustomError("event type not specified", 400);
   }
 
   let payload;
@@ -404,7 +408,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const destUserId = await getUserIDorExternalID(
     message,
     Config,
-    new Error("cannot add track event without userId or external Id")
+    new CustomError("cannot add track event without userId or external Id", 400)
   );
 
   payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -492,7 +496,7 @@ async function responseBuilderSimple(message, category, destination) {
       break;
 
     default:
-      throw new Error("invalid event type");
+      throw new CustomError("invalid event type", 400);
   }
 
   return builderResponse;
@@ -502,7 +506,7 @@ async function process(event) {
   const { message, destination } = event;
   let category;
 
-  if (!message.type) throw new Error("message type is invalid");
+  if (!message.type) throw new CustomError("message type is invalid", 400);
 
   const messageType = message.type.toLowerCase().trim();
   switch (messageType) {
@@ -520,10 +524,42 @@ async function process(event) {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("invalid message type");
+      throw new CustomError("invalid message type", 400);
   }
   const res = await responseBuilderSimple(message, category, destination);
   return res;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if(!Array.isArray(inputs) || inputs.length === 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid events array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 500,
+          error.message || "Error occurred while processing event."
+        );
+      }
+    })
+  );
+
+  return respList;
+};
+
+
+module.exports = { process, processRouterDest };

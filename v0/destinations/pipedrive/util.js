@@ -283,7 +283,7 @@ const createPriceMapping = payload => {
  * @param {*} Config 
  * @returns 
  */
-const getUserIDorExternalID = async (message, Config, error) => {
+const getUserIDorExternalID = async (message, Config, errorMessage) => {
   const pipedrivePersonId = getDestinationExternalID(message, "person_id");
   
   let destUserId;
@@ -299,7 +299,7 @@ const getUserIDorExternalID = async (message, Config, error) => {
     
     const person = await searchPersonByCustomId(userId, Config);
     if (!person) {
-      throw new CustomError(`person not found ${error || ""}`, 400);
+      throw new CustomError(`person not found ${errorMessage || ""}`, 500);
     }
     destUserId = person.id;
   }

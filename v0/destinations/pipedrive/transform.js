@@ -408,7 +408,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const destUserId = await getUserIDorExternalID(
     message,
     Config,
-    new CustomError("cannot add track event without userId or external Id", 400)
+    "cannot add track event without userId or external Id"
   );
 
   payload = constructPayload(message, MAPPING_CONFIG[category.name]);

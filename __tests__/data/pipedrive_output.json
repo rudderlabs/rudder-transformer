@@ -133,7 +133,7 @@
     "endpoint": "https://api.pipedrive.com/v1/persons/46"
   },
   {
-    "error": "person not found "
+    "error": "person not found for group call"
   },
   {
     "body": {

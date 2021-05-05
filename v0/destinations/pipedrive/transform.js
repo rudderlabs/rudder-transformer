@@ -43,28 +43,69 @@ const {
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
   // name is required field for destination payload
-  
-  // destUserId is external Id or provided userId
-  let destUserId = getDestinationExternalID(message, "person_id");
 
-  if(!destUserId) {
-    if (!get(Config, "userIdToken")) {
-      throw new CustomError("userId Token is required", 400);
+  // externalIdProvided = true;
+  const externalId = getDestinationExternalID(message, "person_id");
+  let payload;
+
+  if(externalId) {
+    // if externalId provided, call update endpoint
+
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+    if (!get(payload, "name")) {
+      const fname = getFieldValueFromMessage(message, "firstName");
+      const lname = getFieldValueFromMessage(message, "lastName");
+      if (!fname && !lname) {
+        throw new CustomError("no name field found", 400);
+      }
+      const name = `${fname || ""} ${lname || ""}`.trim();
+      set(payload, "name", name);
     }
 
-    const userId = getFieldValueFromMessage(message, "userIdOnly");
-    if(!userId) {
-      throw new CustomError("userId or person_id required", 400);
-    }
-    destUserId = userId;
+    const renameExclusionKeys = Object.keys(payload);
+
+    payload = extractCustomFields(
+      message,
+      payload,
+      ["traits", "context.traits"],
+      PIPEDRIVE_IDENTIFY_EXCLUSION,
+      FLATTEN_KEYS
+    );
+
+    payload = renameCustomFields(
+      payload,
+      Config,
+      "personsMap",
+      renameExclusionKeys
+    );
+
+    const response = defaultRequestConfig();
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.endpoint = `${PERSONS_ENDPOINT}/${externalId}`;
+    response.params = {
+      api_token: Config.apiToken
+    };
+
+    return response;
   }
 
-  /**
-   * If userId token not provided, user with provided Id exists
-   * make an update call with that id.
-   */
+  // externalIdProvided = false;
+  if (!get(Config, "userIdToken")) {
+    throw new CustomError("userId Token is required", 400);
+  }
 
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  if(!userId) {
+    throw new CustomError("userId or person_id required", 400);
+  }
+
+  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!get(payload, "name")) {
     const fname = getFieldValueFromMessage(message, "firstName");
@@ -93,25 +134,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     renameExclusionKeys
   );
 
-  if (!get(Config, "userIdToken")) {
-    // in this case, destUserId would be a valid person_id
-
-    const response = defaultRequestConfig();
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
-    response.endpoint = PERSONS_ENDPOINT;
-    response.params = {
-      api_token: Config.apiToken
-    };
-
-    return response;
-  }
-
-  const person = await searchPersonByCustomId(destUserId, Config);
+  const person = await searchPersonByCustomId(userId, Config);
 
   // update person since person already exists
   if (person) {
@@ -138,10 +161,9 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
    * rest of the payload properties.
    */
 
-  set(payload, Config.userIdToken, destUserId);
+  set(payload, Config.userIdToken, userId);
 
   const createPayload = { name: get(payload, "name") };
-  // eslint-disable-next-line no-unused-vars
   const createdPerson = await createPerson(createPayload, Config);
 
   delete payload.name;
@@ -173,74 +195,36 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
  * @returns
  */
 const groupResponseBuilder = async (message, category, { Config }) => {
-  /**
-   * check if the person actually exists
-   * either userId or anonId is required for group call
-   */
+ 
+  let groupId;
+  let userId;
+  let groupPayload;
+  let org;
 
-  const destUserId = await getUserIDorExternalID(
-    message, 
-    Config
-  );
+  const externalGroupId = getDestinationExternalID(message, "org_id");
+  const externalUserId = getDestinationExternalID(message, "person_id");
   
-  let groupId; let groupPayload; let org;
-
-  if (!get(Config, "groupIdToken")) {
-    /**
-    * if groupId token is not provided, extract the ExternalId val for org_id
-    */
-    groupId = getDestinationExternalID(message, "org_id");
-    if(!groupId) {
-      throw new CustomError("groupId or externalId required for group call", 400);
+  if(!externalGroupId) {
+    if(!get(Config, "groupIdToken")) {
+      throw new CustomError("userId token required", 400);
     }
-
-    groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    const renameExclusionKeys = Object.keys(groupPayload);
-
-    groupPayload = extractCustomFields(
+    groupId = getFieldValueOrThrowError(
       message,
-      groupPayload,
-      ["traits"],
-      PIPEDRIVE_GROUP_EXCLUSION,
-      FLATTEN_KEYS
+      "groupId",
+      new CustomError("groupId is required for group call", 400)
     );
-
-    groupPayload = renameCustomFields(
-      groupPayload,
-      Config,
-      "organizationMap",
-      renameExclusionKeys
-    );
-    
-    groupPayload = removeUndefinedAndNullValues(groupPayload);
-    if (get(groupPayload, "add_time")) {
-      delete groupPayload.add_time;
-    }
-
-    org = await updateOrganisationTraits(groupId, groupPayload, Config);
-    
-    const response = defaultRequestConfig();
-    response.body.JSON = {
-      org_id: groupId
-    };
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.endpoint = `${PERSONS_ENDPOINT}/${destUserId}`;
-    response.params = {
-      api_token: Config.apiToken
-    };
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
-
-    return response;
   }
 
-  groupId = getFieldValueOrThrowError(
-    message,
-    "groupId",
-    new CustomError("groupId is required for group call", 400)
-  );
+  if(!externalUserId) {
+    if(!get(Config, "userIdToken")) {
+      throw new CustomError("groupId token required", 400);
+    }
+    userId = await getFieldValueOrThrowError(
+      message, 
+      "userIdOnly",
+      new CustomError("userId is required for group call", 400)
+    );
+  }
 
   groupPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const renameExclusionKeys = Object.keys(groupPayload);
@@ -259,35 +243,71 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     "organizationMap",
     renameExclusionKeys
   );
+  
   groupPayload = removeUndefinedAndNullValues(groupPayload);
 
-  org = await searchOrganisationByCustomId(groupId, Config);
+  let destGroupId;
 
-  /**
-   * if org does not exist, create a new org,
-   * else update existing org with new traits
-   * throws error if create or udpate fails
-   */
-  if (!org) {
-    set(groupPayload, Config.groupIdToken, groupId);
-    org = await createNewOrganisation(groupPayload, Config);
-  } else {
+  if(externalGroupId) {
     if (get(groupPayload, "add_time")) {
       delete groupPayload.add_time;
     }
-    org = await updateOrganisationTraits(org.id, groupPayload, Config);
+    org = await updateOrganisationTraits(externalGroupId, groupPayload, Config);
+    destGroupId = externalGroupId;
+  }
+  else {
+    // search group with custom Id
+    org = await searchOrganisationByCustomId(groupId, Config);
+
+    /**
+     * if org does not exist, create a new org,
+     * else update existing org with new traits
+     * throws error if create or udpate fails
+     */
+    if (!org) {
+      set(groupPayload, Config.groupIdToken, groupId);
+      org = await createNewOrganisation(groupPayload, Config);
+    } else {
+      if (get(groupPayload, "add_time")) {
+        delete groupPayload.add_time;
+      }
+      org = await updateOrganisationTraits(org.id, groupPayload, Config);
+    }
+
+    destGroupId = org.id;
   }
 
-  /**
-   * Add the person to that org
-   * update org_id field for that person
-   */
+  if (externalUserId) {
+    const response = defaultRequestConfig();
+    response.body.JSON = {
+      org_id: destGroupId
+    };
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `${PERSONS_ENDPOINT}/${externalUserId}`;
+    response.params = {
+      api_token: Config.apiToken
+    };
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+
+    return response;
+  }
+
+  // if custom userId is provided, search for person
+  const person = await searchPersonByCustomId(userId, Config);
+  if(!person) {
+    // TODO: create user if flag is on
+    throw new CustomError("person not found for group call", 400);
+  }
+
   const response = defaultRequestConfig();
   response.body.JSON = {
-    org_id: org.id
+    org_id: destGroupId
   };
   response.method = defaultPutRequestConfig.requestMethod;
-  response.endpoint = `${PERSONS_ENDPOINT}/${destUserId}`;
+  response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
   response.params = {
     api_token: Config.apiToken
   };
@@ -329,6 +349,7 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
   if (!get(Config, "userIdToken")) {
     // if userId token not supplied
     // both userId and previousId are expected to be valid Pipedrive id
+    // call the merge endpoint directly
 
     const response = defaultRequestConfig();
     response.method = defaultPutRequestConfig.requestMethod;
@@ -406,16 +427,14 @@ const trackResponseBuilder = async (message, category, { Config }) => {
     throw new CustomError("event type not specified", 400);
   }
 
-  let payload;
-  let endpoint;
-
+  // TODO: create new user when not found(userId) and flag is on
   const destUserId = await getUserIDorExternalID(
     message,
     Config,
     "cannot add track event without userId or external Id"
   );
 
-  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const renameExclusionKeys = Object.keys(payload);
 
   payload = extractCustomFields(
@@ -434,7 +453,6 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   );
 
   set(payload, "person_id", destUserId);
-  endpoint = LEADS_ENDPOINT;
 
   /* map price and currency to value object
   * in destination payload
@@ -452,7 +470,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const response = defaultRequestConfig();
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = endpoint;
+  response.endpoint = LEADS_ENDPOINT;
   response.params = {
     api_token: Config.apiToken
   };

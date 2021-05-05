@@ -19,7 +19,7 @@
       "Accept": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.pipedrive.com/v1/persons/1"
+    "endpoint": "https://api.pipedrive.com/v1/persons"
   },
   {
     "body": {
@@ -53,7 +53,7 @@
       "Accept": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.pipedrive.com/v1/persons/1"
+    "endpoint": "https://api.pipedrive.com/v1/persons"
   },
   {
     "body": {

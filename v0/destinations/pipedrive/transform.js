@@ -136,7 +136,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   const createPayload = { name: get(payload, "name") };
   // eslint-disable-next-line no-unused-vars
-  const createdPerson = await createPerson(createPayload, Config);
+  const createResp = await createPerson(createPayload, Config);
 
   delete payload.name;
   delete payload.add_time;
@@ -149,7 +149,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     "Content-Type": "application/json",
     Accept: "application/json"
   };
-  response.endpoint = `${PERSONS_ENDPOINT}/${createdPerson.id}`;
+  response.endpoint = PERSONS_ENDPOINT;
   response.params = {
     api_token: Config.apiToken
   };

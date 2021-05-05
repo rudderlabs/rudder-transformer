@@ -749,7 +749,8 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
- *
+ * flattenKeys flag will flatten the dot separated keys
+ * i.e address.city would remain as address.city
  * Example:
  * extractCustomFields(
  *   message,
@@ -779,7 +780,7 @@ function extractCustomFields(
   destination,
   keys,
   exclusionFields,
-  dotSupport = false
+  flattenKeys = false
 ) {
   const mappingKeys = [];
   if (Array.isArray(keys)) {
@@ -791,7 +792,7 @@ function extractCustomFields(
         });
         mappingKeys.map(mappingKey => {
           if (!(typeof messageContext[mappingKey] === "undefined")) {
-            if (dotSupport) {
+            if (flattenKeys) {
               destination[mappingKey] = get(messageContext, mappingKey);
             } else {
               set(destination, mappingKey, get(messageContext, mappingKey));
@@ -806,7 +807,7 @@ function extractCustomFields(
     });
     mappingKeys.map(mappingKey => {
       if (!(typeof message[mappingKey] === "undefined")) {
-        if (dotSupport) {
+        if (flattenKeys) {
           destination[mappingKey] = get(message, mappingKey);
         } else {
           set(destination, mappingKey, get(message, mappingKey));

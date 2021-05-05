@@ -13,7 +13,7 @@ const CONFIG_CATEGORIES = {
   TRACK: { name: "PipedriveTrack", type: "track" }
 };
 
-const DOT_SUPPORT = true;
+const FLATTEN_KEYS = true;
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
@@ -59,5 +59,5 @@ module.exports = {
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
   PRODUCTS_ENDPOINT,
-  DOT_SUPPORT
+  FLATTEN_KEYS
 };

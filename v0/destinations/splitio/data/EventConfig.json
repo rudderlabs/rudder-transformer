@@ -22,7 +22,7 @@
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "metadata": {
-      "type": "secondTimestamp"
+      "type": "timestamp"
     },
     "required": false
   },

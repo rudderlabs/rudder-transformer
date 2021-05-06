@@ -13,7 +13,7 @@
             "JSON": {
                 "eventTypeId": "group",
                 "key": "user123",
-                "timestamp": 1579566094,
+                "timestamp": 1579566094208,
                 "environmentName": "staging",
                 "trafficTypeName": "user",
                 "properties": {
@@ -41,7 +41,7 @@
             "JSON": {
                 "eventTypeId": "identify",
                 "key": "user123",
-                "timestamp": 1579566094,
+                "timestamp": 1579566094208,
                 "environmentName": "staging",
                 "trafficTypeName": "user",
                 "properties": {
@@ -67,7 +67,7 @@
             "JSON": {
                 "eventTypeId": "splitio_test_1",
                 "key": "user 1",
-                "timestamp": 1614639354,
+                "timestamp": 1614639354771,
                 "value": 0.93,
                 "environmentName": "production",
                 "trafficTypeName": "user",
@@ -97,7 +97,7 @@
             "JSON": {
                 "eventTypeId": "Viewed_splitio_test_1_page",
                 "key": "user 1",
-                "timestamp": 1614639354,
+                "timestamp": 1614639354771,
                 "value": 0.93,
                 "environmentName": "production",
                 "trafficTypeName": "user",
@@ -127,7 +127,7 @@
             "JSON": {
                 "eventTypeId": "Viewed_splitio_test_1_screen",
                 "key": "user 1",
-                "timestamp": 1614639354,
+                "timestamp": 1614639354771,
                 "value": 0.93,
                 "environmentName": "staging",
                 "trafficTypeName": "user",
@@ -157,7 +157,7 @@
             "JSON": {
                 "eventTypeId": "identify",
                 "key": "user123",
-                "timestamp": 1579566094,
+                "timestamp": 1579566094208,
                 "environmentName": "staging",
                 "trafficTypeName": "user",
                 "properties": {
@@ -196,7 +196,7 @@
             "JSON": {
                 "eventTypeId": "Viewed_1pplication_accepted_page",
                 "key": "user 1",
-                "timestamp": 1614639354,
+                "timestamp": 1614639354771,
                 "environmentName": "production",
                 "trafficTypeName": "user",
                 "properties": {
@@ -225,7 +225,7 @@
             "JSON": {
                 "eventTypeId": "identify",
                 "key": "user123",
-                "timestamp": 1579566094,
+                "timestamp": 1579566094208,
                 "environmentName": "staging",
                 "trafficTypeName": "user",
                 "properties": {}

@@ -366,8 +366,7 @@ const createPriceMapping = payload => {
 // };
 
 /**
- * Util Function to extract person data from context.traits
- * from all event payloads except identify
+ * Util Function to extract person data from all event payloads
  * @param {*} message
  * @param {*} Config
  * @param {*} keys
@@ -431,6 +430,38 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
 
   return payload;
 };
+
+// const retryable = async (func, args, maxWaitout=5) => {
+
+//   let waitTill = new Date(new Date().getTime() + maxWaitout * 1000);
+//   while(waitTill > new Date()){
+//     // creating delay
+//   }
+
+//   const resp = await func(...args);
+//   if(resp) {
+//     logger.info("found");
+//     return resp;
+//   }
+
+//   logger.info("waitOut expired: not found");
+//   return null;
+
+//   // let retries = 0;
+//   // while(retries < maxRetries) {
+//   //   // eslint-disable-next-line no-await-in-loop
+//   //   const resp = await func(...args);
+//   //   if(resp) {
+//   //     logger.info(`found on retry number: ${retries}`);
+//   //     return resp;
+//   //   }
+//   //   retries += 1;
+//   // }
+
+//   // logger.info("retries exhausted: Stopping retry");
+//   // return null;
+// };
+
 
 module.exports = {
   createNewOrganisation,

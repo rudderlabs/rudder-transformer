@@ -37,7 +37,7 @@ const {
   renameCustomFields,
   createPerson,
   extractPersonData,
-  CustomError,
+  CustomError
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
@@ -102,18 +102,24 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   }
 
   /**
-   * If person does not exist
+   * If person does not exist and flag is on
    * create a new person with just the name field
    * and let the router make the update call with
    * rest of the payload properties.
    */
 
-  set(payload, Config.userIdToken, userId);
+  // set(payload, Config.userIdToken, userId);
 
-  const createPayload = { name: get(payload, "name") };
+  const createPayload = { 
+    name: get(payload, "name"),
+    [Config.userIdToken]: userId
+  };
   const createdPerson = await createPerson(createPayload, Config);
 
-  delete payload.name;
+  // NOTE: DO NOT REMOVE NAME.
+  // if only name is provided for identify. it will create here and  fail in router.
+  // let the name pass through anyway
+  // delete payload.name; 
   delete payload.add_time;
 
   // update call from Router
@@ -249,9 +255,12 @@ const groupResponseBuilder = async (message, category, { Config }) => {
   if(!person) {
     if(Config.enableUserCreation) {
       const personPayload = extractPersonData(message, Config, ["context.traits"]);
+      // set userId
+      set(personPayload, Config.userIdToken, userId);
       const createdPerson = await createPerson(personPayload, Config);
       personId = createdPerson.id;
-    }else {
+    }
+    else {
       throw new CustomError("person not found for group call", 400);
     }
   }
@@ -377,7 +386,6 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
 
 /**
  * Creates a lead and links it to user for track call.
- * Supports Ecom Events: "product viewed", "order completed"
  * @param {*} message
  * @param {*} category
  * @param {*} destination
@@ -410,6 +418,8 @@ const trackResponseBuilder = async (message, category, { Config }) => {
 
       // create new person if flag enabled
       let payload = extractPersonData(message, Config, ["context.traits"]);
+      // set userId
+      set(payload, Config.userIdToken, userId);
       const createdPerson = await createPerson(payload, Config);
       destUserId = createdPerson.id;
     } 

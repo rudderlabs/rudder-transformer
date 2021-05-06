@@ -81,7 +81,7 @@ const getAuthToken = async formattedDestination => {
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const lookupLead = async (
+const createOrUpdateLead = async (
   formattedDestination,
   accountId,
   token,
@@ -126,16 +126,11 @@ const lookupLead = async (
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (
-  formattedDestination,
-  accountId,
-  token,
-  email
-) => {
+const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
   return emailLeadCache.get(email, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
     const resp = await getAxiosResponse(
-      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
       {
         params: { filterValues: email, filterType: "email" },
@@ -162,7 +157,6 @@ const lookupLeadUsingEmail = async (
 // ------------------------
 const lookupLeadUsingId = async (
   formattedDestination,
-  accountId,
   token,
   userId,
   anonymousId
@@ -170,7 +164,7 @@ const lookupLeadUsingId = async (
   return userIdLeadCache.get(userId || anonymousId, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
     const resp = await getAxiosResponse(
-      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       {
         params: {
           filterValues: userId || anonymousId,
@@ -191,6 +185,69 @@ const lookupLeadUsingId = async (
   });
 };
 
+const getLeadId = async (message, formattedDestination, token) => {
+  // precedence ->>
+  //  -> externalId (context.externalId[0].type == marketoLeadId)
+  //  -> lookup lead using email
+  //  -> lookup lead using userId or anonymousId
+  //  if nothing is found check if user has given permission to create the leads
+  //  -> -> if provided ---- create the lead and use that ID
+  //  -> -> if not ---- throw with error
+
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const email = getFieldValueFromMessage(message, "email");
+  let leadId = getDestinationExternalID(message, "marketoLeadId");
+
+  // leadId is not supplied through the externalId parameter
+  if (!leadId) {
+    // search for lead using email
+    if (email) {
+      leadId = await lookupLeadUsingEmail(formattedDestination, token, email);
+    } else {
+      // search lead using userId or anonymousId
+      leadId = await lookupLeadUsingId(
+        formattedDestination,
+        token,
+        userId,
+        message.anonymousId
+      );
+    }
+  }
+
+  // if leadId lookup failed
+  if (!leadId) {
+    // check we have permission to create lead on marketo
+    if (formattedDestination.createIfNotExist) {
+      leadId = await createOrUpdateLead(
+        formattedDestination,
+        token,
+        userId,
+        message.anonymousId
+      );
+    } else {
+      const error = new Error("Lead creation is turned off on the dashboard");
+      error.code = 400;
+      throw error;
+    }
+  }
+
+  if (!leadId) {
+    // throwing here as lookup failed because of
+    // either "anonymousId" or "userId" field is not created in marketo
+    // --> resulting to lookup failure or lead doesn't exist with "email".
+    //
+    // In the scenario of either of these, we should abort the event and the top level
+    // try-catch should handle this
+    const error = new Error(
+      "lookup failure - either anonymousId or userId or both fields are not created in marketo"
+    );
+    error.code = 400;
+    throw error;
+  }
+
+  return leadId;
+};
+
 // Handles identify calls
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
@@ -198,17 +255,8 @@ const lookupLeadUsingId = async (
 // ------------------------
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
-const processIdentify = async (
-  message,
-  formattedDestination,
-  destinationDefinition,
-  token
-) => {
-  // get bearer token
-  // lookup using email. if present use that
-  // else lookup using userId
-  // if exists use that leadId
-  // else make the call to create the lead
+const processIdentify = async (message, formattedDestination, token) => {
+  // get the leadId and proceed
   const { accountId, leadTraitMapping } = formattedDestination;
 
   const traits = getFieldValueFromMessage(message, "traits");
@@ -216,49 +264,7 @@ const processIdentify = async (
     throw new Error("Invalid traits value for Marketo");
   }
 
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-
-  const email = getFieldValueFromMessage(message, "email");
-  let leadId = getDestinationExternalID(message, "marketoLeadId");
-  if (!leadId) {
-    if (email) {
-      leadId = await lookupLeadUsingEmail(
-        formattedDestination,
-        accountId,
-        token,
-        email
-      );
-    } else {
-      leadId = await lookupLeadUsingId(
-        formattedDestination,
-        accountId,
-        token,
-        userId,
-        message.anonymousId
-      );
-      if (!leadId && formattedDestination.createIfNotExist) {
-        leadId = await lookupLead(
-          formattedDestination,
-          accountId,
-          token,
-          userId,
-          message.anonymousId
-        );
-      }
-    }
-  }
-
-  if (!leadId) {
-    // throwing here as lookup failed because of
-    // either "anonymousId" or "userId" field is not created in marketo - resulting to lookup failure
-    // or lead doesn't exist with "email".
-    //
-    // In the scenario of either of these, we should abort the event and the top level
-    // try-catch should handle this
-    const error = new Error("Lead lookup failed");
-    error.code = 400;
-    throw error;
-  }
+  const leadId = await getLeadId(message, formattedDestination, token);
 
   let attribute = constructPayload(traits, identifyConfig);
   Object.keys(leadTraitMapping).forEach(key => {
@@ -290,20 +296,14 @@ const processIdentify = async (
 // process track events - only mapped events
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/endpoint-reference/lead-database-endpoint-reference/#!/Activities/addCustomActivityUsingPOST
-const processTrack = async (
-  message,
-  destination,
-  destinationDefinition,
-  token
-) => {
+const processTrack = async (message, formattedDestination, token) => {
   // check if trackAnonymousEvent is turned off and userId is not present - fail
   // check if the event is mapped in customActivityEventMap. if not - fail
   // get primaryKey name for the event
   // - get the value from properties with that name
   // - check if the value is valid. if not - fail
   //
-  // get bearer token
-  // loop up using userId/anonymousId and get the leadId
+  // get the leadId and proceed
   // format the payload
 
   const {
@@ -312,7 +312,7 @@ const processTrack = async (
     customActivityEventMap,
     customActivityPrimaryKeyMap,
     customActivityPropertyMap
-  } = destination;
+  } = formattedDestination;
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!(trackAnonymousEvents || userId)) {
@@ -336,21 +336,7 @@ const processTrack = async (
   }
 
   // get leadId
-  let leadId = getDestinationExternalID(message, "marketoLeadId");
-  if (!leadId) {
-    leadId = await lookupLead(
-      destinationDefinition,
-      accountId,
-      token,
-      userId,
-      message.anonymousId
-    );
-  }
-  if (!leadId) {
-    const error = new Error("Lead lookup failed");
-    error.code = 400;
-    throw error;
-  }
+  const leadId = await getLeadId(message, formattedDestination, token);
 
   // handle custom activy attributes
   const attributes = [];
@@ -375,7 +361,10 @@ const processTrack = async (
       }
     ]
   };
+
+  // metric collection
   stats.increment(ACTIVITY_METRIC, 1);
+
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },
@@ -397,24 +386,15 @@ const processEvent = async (message, destination, token) => {
     throw Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
+  const formattedDestination = formatConfig(destination);
 
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await processIdentify(
-        message,
-        formatConfig(destination),
-        destination.DestinationDefinition,
-        token
-      );
+      response = await processIdentify(message, formattedDestination, token);
       break;
     case EventType.TRACK:
-      response = await processTrack(
-        message,
-        formatConfig(destination),
-        destination.DestinationDefinition,
-        token
-      );
+      response = await processTrack(message, formattedDestination, token);
       break;
     default:
       throw new Error("Message type not supported");

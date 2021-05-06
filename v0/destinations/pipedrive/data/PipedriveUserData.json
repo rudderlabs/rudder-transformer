@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "context.traits.name",
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "context.traits.email",
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "context.traits.phone",
+    "required": false
+  },
+  {
+    "destKey": "visible_to",
+    "sourceKeys": "context.traits.visible_to",
+    "required": false
+  },
+  {
+    "destKey": "add_time",
+    "sourceKeys": ["context.traits.add_time", "originalTimestamp"],
+    "required": false
+  }
+]

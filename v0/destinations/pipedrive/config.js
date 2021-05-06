@@ -10,7 +10,8 @@ const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "PipedriveIdentify", type: "identify" },
   GROUP: { name: "PipedriveGroup", type: "group" },
-  TRACK: { name: "PipedriveTrack", type: "track" }
+  TRACK: { name: "PipedriveTrack", type: "track" },
+  USER_DATA: { name: "PipedriveUserData" }
 };
 
 const FLATTEN_KEYS = true;

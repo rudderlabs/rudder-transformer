@@ -23,7 +23,6 @@ const {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   PERSONS_ENDPOINT,
-  PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
@@ -36,9 +35,9 @@ const {
   getFieldValueOrThrowError,
   updateOrganisationTraits,
   renameCustomFields,
-  getUserIDorExternalID,
   createPerson,
-  CustomError
+  extractPersonData,
+  CustomError,
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
@@ -50,35 +49,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   if(externalId) {
     // if externalId provided, call update endpoint
-
-    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-    if (!get(payload, "name")) {
-      const fname = getFieldValueFromMessage(message, "firstName");
-      const lname = getFieldValueFromMessage(message, "lastName");
-      if (!fname && !lname) {
-        throw new CustomError("no name field found", 400);
-      }
-      const name = `${fname || ""} ${lname || ""}`.trim();
-      set(payload, "name", name);
-    }
-
-    const renameExclusionKeys = Object.keys(payload);
-
-    payload = extractCustomFields(
-      message,
-      payload,
-      ["traits", "context.traits"],
-      PIPEDRIVE_IDENTIFY_EXCLUSION,
-      FLATTEN_KEYS
-    );
-
-    payload = renameCustomFields(
-      payload,
-      Config,
-      "personsMap",
-      renameExclusionKeys
-    );
+    payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
 
     const response = defaultRequestConfig();
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -105,36 +76,12 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     throw new CustomError("userId or person_id required", 400);
   }
 
-  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-  if (!get(payload, "name")) {
-    const fname = getFieldValueFromMessage(message, "firstName");
-    const lname = getFieldValueFromMessage(message, "lastName");
-    if (!fname && !lname) {
-      throw new CustomError("no name field found", 400);
-    }
-    const name = `${fname || ""} ${lname || ""}`.trim();
-    set(payload, "name", name);
+  const person = await searchPersonByCustomId(userId, Config);
+  if(!person && !Config.enableUserCreation) {
+    throw new CustomError("person not found", 400);
   }
 
-  const renameExclusionKeys = Object.keys(payload);
-
-  payload = extractCustomFields(
-    message,
-    payload,
-    ["traits", "context.traits"],
-    PIPEDRIVE_IDENTIFY_EXCLUSION,
-    FLATTEN_KEYS
-  );
-
-  payload = renameCustomFields(
-    payload,
-    Config,
-    "personsMap",
-    renameExclusionKeys
-  );
-
-  const person = await searchPersonByCustomId(userId, Config);
+  payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
 
   // update person since person already exists
   if (person) {
@@ -184,7 +131,6 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   return response;
 };
-
 
 /**
  * for group call, extracting from both traits and context.traits
@@ -297,9 +243,20 @@ const groupResponseBuilder = async (message, category, { Config }) => {
 
   // if custom userId is provided, search for person
   const person = await searchPersonByCustomId(userId, Config);
+
+  // create user if not found and flag is on
+  let personId;
   if(!person) {
-    // TODO: create user if flag is on
-    throw new CustomError("person not found for group call", 400);
+    if(Config.enableUserCreation) {
+      const personPayload = extractPersonData(message, Config, ["context.traits"]);
+      const createdPerson = await createPerson(personPayload, Config);
+      personId = createdPerson.id;
+    }else {
+      throw new CustomError("person not found for group call", 400);
+    }
+  }
+  else {
+    personId = person.id;
   }
 
   const response = defaultRequestConfig();
@@ -307,7 +264,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     org_id: destGroupId
   };
   response.method = defaultPutRequestConfig.requestMethod;
-  response.endpoint = `${PERSONS_ENDPOINT}/${person.id}`;
+  response.endpoint = `${PERSONS_ENDPOINT}/${personId}`;
   response.params = {
     api_token: Config.apiToken
   };
@@ -333,67 +290,73 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
    * destination payload structure: { "merge_with_id": "userId"}
    */
 
+  // extracting all for brevity
+  const prevPipedriveId = getDestinationExternalID(message, "prev_person_id");
+  const currPipedriveId = getDestinationExternalID(message, "curr_person_id");
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
   const previousId = getValueFromMessage(message, [
     "previousId",
     "traits.previousId",
     "context.traits.previousId"
   ]);
-  if (!previousId) throw new CustomError("error: cannot merge without previousId", 400);
 
-  const userId = getFieldValueOrThrowError(
-    message,
-    "userIdOnly",
-    new CustomError("error: cannot merge without userId", 400)
-  );
+  let prevId;
+  let currId;
 
-  if (!get(Config, "userIdToken")) {
-    // if userId token not supplied
-    // both userId and previousId are expected to be valid Pipedrive id
-    // call the merge endpoint directly
+  if(prevPipedriveId) {
+    prevId = prevPipedriveId
+  }
+  else if(previousId) {
+    if(!get(Config, "userIdToken")) {
+      throw new CustomError("userId token not found", 400);
+    }
+    const person = await searchPersonByCustomId(previousId, Config);
+    if(!person) {
+      throw new CustomError("previous user not found", 400);
+    }
 
-    const response = defaultRequestConfig();
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
-    response.body.JSON = {
-      "merge_with_id": userId
-    };
-    response.endpoint = `${PERSONS_ENDPOINT}/${previousId}`;
-    response.params = {
-      api_token: Config.apiToken
-    };
-
-    return response;
+    prevId = person.id;
+  }
+  else {
+    throw new CustomError("previous id not found", 400);
   }
 
-  /**
-   * Need to extract the pipedrive side integer id for the provided userId
-   * and previous Id, i.e mapping Rudder side userId to pipedrive integer id
-   */
-  const prevPerson = await searchPersonByCustomId(previousId, Config);
-  if (!prevPerson) {
-    throw new CustomError("person not found. cannot merge", 400);
+
+  if(currPipedriveId) {
+    currId = currPipedriveId
   }
+  else if (userId) {
+    if(!get(Config, "userIdToken")) {
+      throw new CustomError("userId token not found", 400);
+    }
 
-  const currPerson = await searchPersonByCustomId(userId, Config);
-  if (currPerson) {
-    const response = defaultRequestConfig();
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    };
-    response.body.JSON = {
-      merge_with_id: currPerson.id
-    };
-    response.endpoint = getMergeEndpoint(prevPerson.id);
-    response.params = {
-      api_token: Config.apiToken
-    };
+    const person = await searchPersonByCustomId(userId, Config);
+    if (!person) {
+      // update the prevPipedriveId user with `userId` as new custom user id
+      
+      const response = defaultRequestConfig();
+      response.method = defaultPutRequestConfig.requestMethod;
+      response.headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      };
+      response.body.JSON = {
+        [get(Config, "userIdToken")]: userId
+      };
+      response.endpoint = `${PERSONS_ENDPOINT}/${prevId}`;
+      response.params = {
+        api_token: Config.apiToken
+      };
+      response.body.JSON = {
+        [get(Config, "userIdToken")]: userId
+      };
+      return response;
+    }
 
-    return response;
+    currId = person.id;
+  }
+  else {
+    throw new CustomError("userId not found", 400);
   }
 
   const response = defaultRequestConfig();
@@ -403,13 +366,12 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
     Accept: "application/json"
   };
   response.body.JSON = {
-    [get(Config, "userIdToken")]: userId
+    "merge_with_id": currId
   };
-  response.endpoint = `${PERSONS_ENDPOINT}/${prevPerson.id}`;
+  response.endpoint = getMergeEndpoint(prevId);
   response.params = {
     api_token: Config.apiToken
   };
-
   return response;
 };
 
@@ -427,12 +389,40 @@ const trackResponseBuilder = async (message, category, { Config }) => {
     throw new CustomError("event type not specified", 400);
   }
 
-  // TODO: create new user when not found(userId) and flag is on
-  const destUserId = await getUserIDorExternalID(
-    message,
-    Config,
-    "cannot add track event without userId or external Id"
-  );
+  const pipedrivePersonId = getDestinationExternalID(message, "person_id");
+  let destUserId = pipedrivePersonId;
+
+  if (!pipedrivePersonId) {
+    if (!get(Config, "userIdToken")) {
+      throw new CustomError("userId Token is required", 400);
+    }
+
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    if (!userId) {
+      throw new CustomError("userId or person_id required", 400);
+    }
+
+    const person = await searchPersonByCustomId(userId, Config);
+    if(!person) {
+      if(!Config.enableUserCreation) {
+        throw new CustomError("person not found", 400);
+      }
+
+      // create new person if flag enabled
+      let payload = extractPersonData(message, Config, ["context.traits"]);
+      const createdPerson = await createPerson(payload, Config);
+      destUserId = createdPerson.id;
+    } 
+    else {
+      destUserId = person.id;
+    }
+  }
+
+  // const destUserId = await getUserIDorExternalID(
+  //   message,
+  //   Config,
+  //   "cannot add track event without userId or external Id"
+  // );
 
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const renameExclusionKeys = Object.keys(payload);

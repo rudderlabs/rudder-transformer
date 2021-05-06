@@ -5,10 +5,18 @@ const axios = require("axios");
 const get = require("get-value");
 const set = require("set-value");
 const logger = require("../../../logger");
-const { getFieldValueFromMessage, getDestinationExternalID } = require("../../util");
+const {
+  getFieldValueFromMessage,
+  constructPayload,
+  extractCustomFields,
+  getValueFromMessage
+} = require("../../util");
 const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
+  MAPPING_CONFIG,
+  PIPEDRIVE_IDENTIFY_EXCLUSION,
+  FLATTEN_KEYS
 } = require("./config");
 
 class CustomError extends Error {
@@ -20,10 +28,7 @@ class CustomError extends Error {
 
 const handleAxiosError = (err, errorMessage) => {
   if (err.response) {
-    throw new CustomError(
-      errorMessage,
-      err.response.status || 500
-    );
+    throw new CustomError(errorMessage, err.response.status || 500);
   }
 
   throw new CustomError(`${errorMessage} Abortable`, 400);
@@ -48,37 +53,29 @@ const searchPersonByCustomId = async (userIdValue, Config) => {
         Accept: "application/json"
       }
     });
-  } 
-  catch (err) {
+  } catch (err) {
     handleAxiosError(err, "failed to search person");
   }
 
-  if(!response.data || !response.data.data) {
+  if (!response.data || !response.data.data) {
     throw new CustomError("response data not found: Retryable", 500);
-  }
-  else if (response.data.data.items.length === 0) {
+  } else if (response.data.data.items.length === 0) {
     return null;
-  }
-  else
-    return response.data.data.items[0].item;
+  } else return response.data.data.items[0].item;
 };
 
 const updatePerson = async (userIdvalue, data, Config) => {
   let response;
   try {
-    response = await axios.put(
-      `${PERSONS_ENDPOINT}/${userIdvalue}`,
-      data,
-      {
-        params: {
-          api_token: Config.apiToken
-        },
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        }
+    response = await axios.put(`${PERSONS_ENDPOINT}/${userIdvalue}`, data, {
+      params: {
+        api_token: Config.apiToken
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
       }
-    );
+    });
   } catch (err) {
     handleAxiosError(err, "failed to update person");
   }
@@ -108,14 +105,11 @@ const searchOrganisationByCustomId = async (groupId, Config) => {
     handleAxiosError(err, "failed to search organization");
   }
 
-  if(!response.data || !response.data.data) {
+  if (!response.data || !response.data.data) {
     throw new CustomError("response data not found: Retyrable", 500);
-  }
-  else if (response.data.data.items.length === 0) {
+  } else if (response.data.data.items.length === 0) {
     return null;
-  }
-  else
-    return response.data.data.items[0].item;
+  } else return response.data.data.items[0].item;
 };
 
 const createNewOrganisation = async (data, Config) => {
@@ -176,6 +170,35 @@ const updateOrganisationTraits = async (orgId, groupPayload, Config) => {
 };
 
 /**
+ * Creates new Person
+ * @param {*} data
+ * @param {*} Config
+ * @returns
+ */
+const createPerson = async (data, Config) => {
+  let resp;
+  try {
+    resp = await axios.post(PERSONS_ENDPOINT, data, {
+      params: {
+        api_token: Config.apiToken
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    });
+  } catch (err) {
+    handleAxiosError(err, "create person failed");
+  }
+  if (resp && resp.status === 201) {
+    return resp.data.data;
+  }
+
+  // fallback
+  throw new CustomError("org update failed: Retryable", 500);
+};
+
+/**
  * Wrapper on top of getFieldValueFromMessage
  * If value is not found, throws custom error
  * @param {*} message
@@ -204,7 +227,7 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
    * Util function to reshape Config fields map to
    * usable format
    */
-  function reshapeMap(fieldMap, isLowerCase=true) {
+  function reshapeMap(fieldMap, isLowerCase = true) {
     const resMap = new Map();
     fieldMap.map(item => {
       resMap.set(isLowerCase ? item.from.toLowerCase() : item.from, item.to);
@@ -253,15 +276,15 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
 /**
  * Util function to create price mapping
  * returns a new Object
- * @param {*} payload 
- * @returns 
+ * @param {*} payload
+ * @returns
  */
 const createPriceMapping = payload => {
   // creating the prices mapping only when both price and currency provided
   // to avoid discrepancy
   const mappedPayload = { ...payload };
 
-  if(mappedPayload.price && mappedPayload.currency) {
+  if (mappedPayload.price && mappedPayload.currency) {
     const prices = {
       price: mappedPayload.price,
       currency: mappedPayload.currency
@@ -272,68 +295,142 @@ const createPriceMapping = payload => {
   delete mappedPayload.currency;
 
   return mappedPayload;
-}
+};
 
 /**
- * Gets ExternalId if present. 
+ * Gets ExternalId if present.
  * Else gets userId and also checks if person exists for that userId
  * Else throws provided custom error.
  * Note: UserId token is required if external id is not present.
- * @param {*} message 
- * @param {*} Config 
- * @returns 
+ * @param {*} message
+ * @param {*} Config
+ * @returns
  */
-const getUserIDorExternalID = async (message, Config, errorMessage) => {
-  const pipedrivePersonId = getDestinationExternalID(message, "person_id");
-  
-  let destUserId;
-  if(!pipedrivePersonId) {
-    if (!get(Config, "userIdToken")) {
-      throw new CustomError("userId Token is required", 400);
-    }
+// const getUserIDorExternalID = async (message, Config, errorMessage) => {
+//   const pipedrivePersonId = getDestinationExternalID(message, "person_id");
 
-    const userId = getFieldValueFromMessage(message, "userIdOnly");
-    if(!userId) {
-      throw new CustomError("userId or person_id required", 400);
-    }
-    
-    const person = await searchPersonByCustomId(userId, Config);
-    if (!person) {
-      throw new CustomError(`person not found ${errorMessage || ""}`, 500);
-    }
-    destUserId = person.id;
-  }
+//   let destUserId;
+//   if (!pipedrivePersonId) {
+//     if (!get(Config, "userIdToken")) {
+//       throw new CustomError("userId Token is required", 400);
+//     }
+
+//     const userId = getFieldValueFromMessage(message, "userIdOnly");
+//     if (!userId) {
+//       throw new CustomError("userId or person_id required", 400);
+//     }
+
+//     const person = await searchPersonByCustomId(userId, Config);
+//     if (!person && !Config.enableUserCreation) {
+//       throw new CustomError(`person not found ${errorMessage || ""}`, 500);
+//     }
+
+//     // create person and return ID
+//     let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+//     if (!get(payload, "name")) {
+//       const fname = getFieldValueFromMessage(message, "firstName");
+//       const lname = getFieldValueFromMessage(message, "lastName");
+//       if (!fname && !lname) {
+//         throw new CustomError("no name field found", 400);
+//       }
+//       const name = `${fname || ""} ${lname || ""}`.trim();
+//       set(payload, "name", name);
+//     }
+
+//     const renameExclusionKeys = Object.keys(payload);
+
+//     payload = extractCustomFields(
+//       message,
+//       payload,
+//       ["context.traits"],
+//       PIPEDRIVE_IDENTIFY_EXCLUSION,
+//       FLATTEN_KEYS
+//     );
+
+//     payload = renameCustomFields(
+//       payload,
+//       Config,
+//       "personsMap",
+//       renameExclusionKeys
+//     );
+
+//     const createdPerson = await createPerson(payload, Config);
+
+//     destUserId = createdPerson.id;
+//   } else {
+//     destUserId = pipedrivePersonId;
+//   }
+
+//   return destUserId;
+// };
+
+/**
+ * Util Function to extract person data from context.traits
+ * from all event payloads except identify
+ * @param {*} message
+ * @param {*} Config
+ * @param {*} keys
+ * @param {*} identifyEvent
+ * @returns
+ */
+const extractPersonData = (message, Config, keys, identifyEvent = false) => {
+  let payload;
+
+  if (!identifyEvent) {
+    payload = constructPayload(message, MAPPING_CONFIG.PipedriveUserData);
+  } 
   else {
-    destUserId = pipedrivePersonId;
+    payload = constructPayload(message, MAPPING_CONFIG.PipedriveIdentify);
   }
 
-  return destUserId;
+  if (!get(payload, "name")) {
+    let fname;
+    let lname;
+
+    if (identifyEvent) {
+      fname = getFieldValueFromMessage(message, "firstName");
+      lname = getFieldValueFromMessage(message, "lastName");
+    } 
+    else {
+      fname = getValueFromMessage(message, [
+        "context.traits.firstName",
+        "context.traits.firstname",
+        "context.traits.first_name"
+      ]);
+      lname = getValueFromMessage(message, [
+        "context.traits.lastName",
+        "context.traits.lastname",
+        "context.traits.last_name"
+      ]);
+    }
+
+    if (!fname && !lname) {
+      throw new CustomError("no name field found", 400);
+    }
+    const name = `${fname || ""} ${lname || ""}`.trim();
+    set(payload, "name", name);
+  }
+
+  const renameExclusionKeys = Object.keys(payload);
+
+  payload = extractCustomFields(
+    message,
+    payload,
+    keys,
+    PIPEDRIVE_IDENTIFY_EXCLUSION,
+    FLATTEN_KEYS
+  );
+
+  payload = renameCustomFields(
+    payload,
+    Config,
+    "personsMap",
+    renameExclusionKeys
+  );
+
+  return payload;
 };
-
-const createPerson = async (data, Config) => {
-  let resp;
-  try {
-    resp = await axios.post(PERSONS_ENDPOINT, data, {
-      params: {
-        api_token: Config.apiToken
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      }
-    });
-  }
-  catch (err) {
-    handleAxiosError(err, "create person failed");
-  }
-  if (resp && resp.status === 201) {
-    return resp.data.data;
-  }
-  
-  // fallback
-  throw new CustomError("org update failed: Retryable", 500);
-};
-
 
 module.exports = {
   createNewOrganisation,
@@ -344,7 +441,7 @@ module.exports = {
   updatePerson,
   renameCustomFields,
   createPriceMapping,
-  getUserIDorExternalID,
   createPerson,
+  extractPersonData,
   CustomError
 };

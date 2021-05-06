@@ -91,7 +91,8 @@
         "personsMap": [
           { "from": "district" , "to": "districtapikey2987" },
           { "from": "someCustomKey", "to": "someCustomKey467" }
-        ]
+        ],
+        "enableUserCreation": true
       }
     }
   },

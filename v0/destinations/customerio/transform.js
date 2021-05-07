@@ -1,6 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const btoa = require("btoa");
+const truncate = require("truncate-utf8-bytes");
 const {
   EventType,
   SpecedTraits,
@@ -210,15 +211,21 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = "page"; // customerio mandates sending 'page' for pageview events
-      evName = message.name || message.properties.url;
+      evName = truncate(
+        (message.name || message.properties.url).substring(0, 500),
+        100
+      );
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName = `Viewed ${message.event || message.properties.name} Screen`;
+      evName = `Viewed ${truncate(
+        (message.event || message.properties.name).substring(0, 500),
+        86
+      )} Screen`;
       break;
     case EventType.TRACK:
       evType = "event";
-      evName = message.event;
+      evName = truncate(message.event.substring(0, 500), 100);
       break;
     default:
       logger.error(`could not determine type ${messageType}`);

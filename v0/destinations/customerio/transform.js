@@ -192,7 +192,9 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       }
     } else {
       endpoint = ANON_EVENT_ENDPOINT;
+      // CustomerIO supports 100byte of event name for anonymous users
       if (messageType === EventType.SCREEN) {
+        // 100 - len(`Viewed  Screen`) = 86
         trimmedEvName = `Viewed ${truncate(
           message.event || message.properties.name,
           86

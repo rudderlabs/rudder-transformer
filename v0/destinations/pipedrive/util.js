@@ -17,8 +17,7 @@ const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
   MAPPING_CONFIG,
-  PIPEDRIVE_IDENTIFY_EXCLUSION,
-  FLATTEN_KEYS
+  PIPEDRIVE_IDENTIFY_EXCLUSION
 } = require("./config");
 
 class CustomError extends Error {
@@ -300,74 +299,6 @@ const createPriceMapping = payload => {
 };
 
 /**
- * Gets ExternalId if present.
- * Else gets userId and also checks if person exists for that userId
- * Else throws provided custom error.
- * Note: UserId token is required if external id is not present.
- * @param {*} message
- * @param {*} Config
- * @returns
- */
-// const getUserIDorExternalID = async (message, Config, errorMessage) => {
-//   const pipedrivePersonId = getDestinationExternalID(message, "person_id");
-
-//   let destUserId;
-//   if (!pipedrivePersonId) {
-//     if (!get(Config, "userIdToken")) {
-//       throw new CustomError("userId Token is required", 400);
-//     }
-
-//     const userId = getFieldValueFromMessage(message, "userIdOnly");
-//     if (!userId) {
-//       throw new CustomError("userId or person_id required", 400);
-//     }
-
-//     const person = await searchPersonByCustomId(userId, Config);
-//     if (!person && !Config.enableUserCreation) {
-//       throw new CustomError(`person not found ${errorMessage || ""}`, 500);
-//     }
-
-//     // create person and return ID
-//     let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-//     if (!get(payload, "name")) {
-//       const fname = getFieldValueFromMessage(message, "firstName");
-//       const lname = getFieldValueFromMessage(message, "lastName");
-//       if (!fname && !lname) {
-//         throw new CustomError("no name field found", 400);
-//       }
-//       const name = `${fname || ""} ${lname || ""}`.trim();
-//       set(payload, "name", name);
-//     }
-
-//     const renameExclusionKeys = Object.keys(payload);
-
-//     payload = extractCustomFields(
-//       message,
-//       payload,
-//       ["context.traits"],
-//       PIPEDRIVE_IDENTIFY_EXCLUSION,
-//       FLATTEN_KEYS
-//     );
-
-//     payload = renameCustomFields(
-//       payload,
-//       Config,
-//       "personsMap",
-//       renameExclusionKeys
-//     );
-
-//     const createdPerson = await createPerson(payload, Config);
-
-//     destUserId = createdPerson.id;
-//   } else {
-//     destUserId = pipedrivePersonId;
-//   }
-
-//   return destUserId;
-// };
-
-/**
  * Util Function to extract person data from all event payloads
  * @param {*} message
  * @param {*} Config
@@ -420,7 +351,7 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
     payload,
     keys,
     PIPEDRIVE_IDENTIFY_EXCLUSION,
-    FLATTEN_KEYS
+    true
   );
 
   payload = renameCustomFields(

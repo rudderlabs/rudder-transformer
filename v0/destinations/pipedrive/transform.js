@@ -20,14 +20,12 @@ const {
 } = require("../../util");
 const {
   getMergeEndpoint,
-  groupFieldMapping,
-  MAPPING_CONFIG,
-  CONFIG_CATEGORIES,
+  groupDataMapping,
+  trackDataMapping,
   PERSONS_ENDPOINT,
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
   LEADS_ENDPOINT,
-  FLATTEN_KEYS
 } = require("./config");
 const {
   createNewOrganisation,
@@ -158,7 +156,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     );
   }
 
-  groupPayload = constructPayload(message, groupFieldMapping);
+  groupPayload = constructPayload(message, groupDataMapping);
   const renameExclusionKeys = Object.keys(groupPayload);
 
   groupPayload = extractCustomFields(
@@ -166,7 +164,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     groupPayload,
     ["traits"],
     PIPEDRIVE_GROUP_EXCLUSION,
-    FLATTEN_KEYS
+    true
   );
 
   groupPayload = selectAndFlatten(groupPayload, ["address", "Address"]);
@@ -273,7 +271,7 @@ const groupResponseBuilder = async (message, { Config }) => {
  * @param {*} destination
  * @returns
  */
-const aliasResponseBuilder = async (message, category, { Config }) => {
+const aliasResponseBuilder = async (message, { Config }) => {
   /**
    * merge previous Id to userId
    * merge id to merge_with_id
@@ -372,7 +370,7 @@ const aliasResponseBuilder = async (message, category, { Config }) => {
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = async (message, category, { Config }) => {
+const trackResponseBuilder = async (message, { Config }) => {
   // TODO: maybe drop this check
   if (!get(message, "event")) {
     throw new CustomError("event type not specified", 400);
@@ -415,7 +413,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
     }
   }
 
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, trackDataMapping);
   const renameExclusionKeys = Object.keys(payload);
 
   payload = extractCustomFields(
@@ -463,50 +461,9 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   return response;
 };
 
-async function responseBuilderSimple(message, category, destination) {
-  let builderResponse;
-
-  switch (category.type) {
-    case EventType.IDENTIFY:
-      builderResponse = await identifyResponseBuilder(
-        message,
-        destination
-      );
-      break;
-
-    case EventType.GROUP:
-      builderResponse = await groupResponseBuilder(
-        message,
-        destination
-      );
-      break;
-
-    case EventType.ALIAS:
-      builderResponse = await aliasResponseBuilder(
-        message,
-        category,
-        destination
-      );
-      break;
-
-    case EventType.TRACK:
-      builderResponse = await trackResponseBuilder(
-        message,
-        category,
-        destination
-      );
-      break;
-
-    default:
-      throw new CustomError("invalid event type", 400);
-  }
-
-  return builderResponse;
-}
-
 async function process(event) {
   const { message, destination } = event;
-  let category;
+  let builderResponse;
 
   if (!message.type) {
     throw new CustomError("message type is invalid", 400);
@@ -515,23 +472,34 @@ async function process(event) {
   const messageType = message.type.toLowerCase().trim();
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
+      builderResponse = await identifyResponseBuilder(
+        message,
+        destination
+      );
       break;
     case EventType.ALIAS:
-      // dummy since alias does have a mapping json
-      category = { type: "alias" };
+      builderResponse = await aliasResponseBuilder(
+        message,
+        destination
+      );
       break;
     case EventType.GROUP:
-      category = CONFIG_CATEGORIES.GROUP;
+      builderResponse = await groupResponseBuilder(
+        message,
+        destination
+      );
       break;
     case EventType.TRACK:
-      category = CONFIG_CATEGORIES.TRACK;
+      builderResponse = await trackResponseBuilder(
+        message,
+        destination
+      );
       break;
     default:
       throw new CustomError("invalid message type", 400);
   }
-  const res = await responseBuilderSimple(message, category, destination);
-  return res;
+
+  return builderResponse
 }
 
 const processRouterDest = async inputs => {

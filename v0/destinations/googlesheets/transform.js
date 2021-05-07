@@ -3,6 +3,16 @@ const { getValueFromMessage } = require("../../util");
 
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
 
+/**
+ *
+ * @param {*} message
+ * @param {*} sourceKey
+ * @param {*} mappingKey
+ *
+ * here we iterate through free flowing objects inside our events
+ * and check for the property value. Property with Whitespace between them
+ * is also supported
+ */
 const getMappingFieldValueFormMessage = (message, sourceKey, mappingKey) => {
   let value;
   const tempStore = getValueFromMessage(message, sourceKey);
@@ -12,6 +22,19 @@ const getMappingFieldValueFormMessage = (message, sourceKey, mappingKey) => {
   return value;
 };
 
+/**
+ *
+ * @param {*} message
+ * @param {*} attributeKeyMapping
+ *
+ * Here we process the event based on the custom mapping
+ * (attributeKeyMapping) we get from the destination-definition.
+ * As `attributeKeyMapping` is an array of mapping hence we
+ * dont loose the order of the mapping.
+ *
+ * Returns a json with numbered mapping keys denoting the position
+ * where the value needs to be placed when pared into array in server.
+ */
 const processWithCustomMapping = (message, attributeKeyMapping) => {
   const responseMessage = {};
   const fromKey = "from";
@@ -21,8 +44,10 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   if (Array.isArray(attributeKeyMapping)) {
     attributeKeyMapping.forEach(mapping => {
       let value;
+      // Check in root-level
       value = getValueFromMessage(message, mapping[fromKey]);
       if (!value) {
+        // Check in free-flowing object level
         SOURCE_KEYS.some(sourceKey => {
           value = getMappingFieldValueFormMessage(
             message,
@@ -35,7 +60,7 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
           return false;
         });
       }
-
+      // Set the value if present else set an empty string
       responseMessage[count] = {
         attributeKey: mapping[toKey],
         attributeValue: value || ""
@@ -45,6 +70,7 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   }
   return responseMessage;
 };
+
 // Main process Function to handle transformation
 const process = event => {
   const { message, destination } = event;
@@ -61,4 +87,5 @@ const process = event => {
   }
   throw new Error("No Spread Sheet set for this event");
 };
+
 exports.process = process;

@@ -3,6 +3,9 @@
     "error": "person not found, and userCreation is turned off on dashboard"
   },
   {
+    "error": "userId Token is required"
+  },
+  {
     "body": {
       "XML": {},
       "FORM": {},

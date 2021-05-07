@@ -43,9 +43,10 @@ const populateSpecedTraits = (payload, message) => {
   });
 };
 
-function responseBuilder(message, evType, evName, destination) {
+function responseBuilder(message, evType, evName, destination, messageType) {
   const rawPayload = {};
   let endpoint;
+  let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
   const userId =
     message.userId && message.userId !== "" ? message.userId : undefined;
@@ -191,6 +192,15 @@ function responseBuilder(message, evType, evName, destination) {
       }
     } else {
       endpoint = ANON_EVENT_ENDPOINT;
+      if (messageType === EventType.SCREEN) {
+        trimmedEvName = `Viewed ${truncate(
+          message.event || message.properties.name,
+          86
+        )} Screen`;
+      } else {
+        trimmedEvName = truncate(evName, 100);
+      }
+      set(rawPayload, "name", trimmedEvName);
     }
   }
   const payload = removeUndefinedValues(rawPayload);
@@ -211,27 +221,27 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = "page"; // customerio mandates sending 'page' for pageview events
-      evName = truncate(
-        (message.name || message.properties.url).substring(0, 500),
-        100
-      );
+      evName = message.name || message.properties.url;
       break;
     case EventType.SCREEN:
       evType = "event";
-      evName = `Viewed ${truncate(
-        (message.event || message.properties.name).substring(0, 500),
-        86
-      )} Screen`;
+      evName = `Viewed ${message.event || message.properties.name} Screen`;
       break;
     case EventType.TRACK:
       evType = "event";
-      evName = truncate(message.event.substring(0, 500), 100);
+      evName = message.event;
       break;
     default:
       logger.error(`could not determine type ${messageType}`);
       throw new Error(`could not determine type ${messageType}`);
   }
-  const response = responseBuilder(message, evType, evName, destination);
+  const response = responseBuilder(
+    message,
+    evType,
+    evName,
+    destination,
+    messageType
+  );
 
   // replace default domain with EU data center domainc for EU based account
   if (destination.Config.datacenterEU) {

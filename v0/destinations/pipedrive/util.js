@@ -252,6 +252,46 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
     return filteredPayload;
   }
 
+  /**
+   * Function to flatten object except the keys
+   * in exclusionKeys. If nestedPriority is true, nested keys
+   * will get priority in the final payload.
+   * Example if set to true:
+   * {
+   *  "address.city": "flat",
+   *  "address": {
+   *    "city": "nested"
+   *  }
+   * }
+   * Flattened object will contain
+   * { "address.city" : "nested" }
+   * @param {*} obj
+   * @param {*} nestedPriority
+   * @returns
+   */
+  function selectAndFlatten(obj, nestedPriority = true) {
+    const emptyExclusions = !exclusionKeys || exclusionKeys.length === 0;
+    const copy = Object.assign({}, obj);
+    const toFlatten = {};
+    const keepFixed = {};
+
+    Object.keys(copy).forEach(key => {
+      if ((!emptyExclusions && exclusionKeys.includes(key)) ||
+        Array.isArray(obj[key]) ||
+        typeof obj[key] !== "object"
+      ) {
+        keepFixed[key] = copy[key];
+      } else {
+        toFlatten[key] = copy[key];
+      }
+    });
+
+    const flattened = flattenJson(toFlatten);
+    return nestedPriority
+      ? Object.assign({}, keepFixed, flattened)
+      : Object.assign({}, flattened, keepFixed);
+  }
+
   const exclusionSet = new Set(exclusionKeys);
   let specificMap = Config[type];
 
@@ -260,13 +300,15 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
   }
 
   specificMap = reshapeMap(specificMap, false);
+
+  const flattenedMessage = selectAndFlatten(message);
   const payload = {};
 
-  Object.keys(message).map(key => {
+  Object.keys(flattenedMessage).map(key => {
     if (exclusionSet.has(key)) {
-      set(payload, key, message[key]);
+      set(payload, key, flattenedMessage[key]);
     } else if (specificMap.has(key)) {
-      set(payload, specificMap.get(key), message[key]);
+      set(payload, specificMap.get(key), flattenedMessage[key]);
     } else {
       logger.info(`custom field ${key} not specified in fields Map, skipped`);
     }
@@ -312,8 +354,7 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
 
   if (!identifyEvent) {
     payload = constructPayload(message, userDataMapping);
-  } 
-  else {
+  } else {
     payload = constructPayload(message, identifyDataMapping);
   }
 
@@ -324,8 +365,7 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
     if (identifyEvent) {
       fname = getFieldValueFromMessage(message, "firstName");
       lname = getFieldValueFromMessage(message, "lastName");
-    } 
-    else {
+    } else {
       fname = getValueFromMessage(message, [
         "context.traits.firstName",
         "context.traits.firstname",
@@ -365,59 +405,27 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
   return payload;
 };
 
-// const retryable = async (func, args, maxWaitout=5) => {
-
-//   let waitTill = new Date(new Date().getTime() + maxWaitout * 1000);
-//   while(waitTill > new Date()){
-//     // creating delay
+// function selectAndFlatten(obj, keys) {
+//   if(!keys || keys.length === 0) {
+//     return flattenJson(obj);
 //   }
 
-//   const resp = await func(...args);
-//   if(resp) {
-//     logger.info("found");
-//     return resp;
-//   }
+//   const keySet = new Set(keys);
+//   const copy = Object.assign({}, obj);
+//   const toFlatten = {};
+//   const keepFixed = {};
 
-//   logger.info("waitOut expired: not found");
-//   return null;
+//   Object.keys(copy).forEach(key => {
+//     if(!keySet.has(key)) {
+//       keepFixed[key] = copy[key];
+//     } else {
+//       toFlatten[key] = copy[key];
+//     }
+//   })
 
-//   // let retries = 0;
-//   // while(retries < maxRetries) {
-//   //   // eslint-disable-next-line no-await-in-loop
-//   //   const resp = await func(...args);
-//   //   if(resp) {
-//   //     logger.info(`found on retry number: ${retries}`);
-//   //     return resp;
-//   //   }
-//   //   retries += 1;
-//   // }
-
-//   // logger.info("retries exhausted: Stopping retry");
-//   // return null;
-// };
-
-function selectAndFlatten(obj, keys) {
-  if(!keys || keys.length === 0) {
-    return flattenJson(obj);
-  }
-
-  const keySet = new Set(keys);
-  const copy = Object.assign({}, obj);
-  const toFlatten = {};
-  const keepFixed = {};
-
-  Object.keys(copy).forEach(key => {
-    if(!keySet.has(key)) {
-      keepFixed[key] = copy[key];
-    } else {
-      toFlatten[key] = copy[key];
-    }
-  })
-
-  const flattened = flattenJson(toFlatten);
-  return Object.assign({}, keepFixed, flattened);
-}
-
+//   const flattened = flattenJson(toFlatten);
+//   return Object.assign({}, keepFixed, flattened);
+// }
 
 module.exports = {
   createNewOrganisation,
@@ -430,6 +438,5 @@ module.exports = {
   createPriceMapping,
   createPerson,
   extractPersonData,
-  selectAndFlatten,
   CustomError
 };

@@ -4,7 +4,6 @@ const BASE_ENDPOINT = "https://api.pipedrive.com/v1";
 const PERSONS_ENDPOINT = `${BASE_ENDPOINT}/persons`;
 const ORGANISATION_ENDPOINT = `${BASE_ENDPOINT}/organizations`;
 const LEADS_ENDPOINT = `${BASE_ENDPOINT}/leads`;
-const PRODUCTS_ENDPOINT = `${BASE_ENDPOINT}/products`;
 const getMergeEndpoint = id => `${BASE_ENDPOINT}/persons/${id}/merge`;
 
 const CONFIG_CATEGORIES = {
@@ -60,6 +59,5 @@ module.exports = {
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   PIPEDRIVE_GROUP_EXCLUSION,
   PIPEDRIVE_TRACK_EXCLUSION,
-  LEADS_ENDPOINT,
-  PRODUCTS_ENDPOINT
+  LEADS_ENDPOINT
 };

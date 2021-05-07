@@ -36,8 +36,7 @@ const {
   renameCustomFields,
   createPerson,
   extractPersonData,
-  CustomError,
-  selectAndFlatten
+  CustomError
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
@@ -76,28 +75,33 @@ const identifyResponseBuilder = async (message, { Config }) => {
     throw new CustomError("userId or pipedrivePersonId required", 400);
   }
 
+  let payloadExtracted = false;
   let person = await searchPersonByCustomId(userId, Config);
   if(!person) {
     if(!Config.enableUserCreation) {
       throw new CustomError("person not found, and userCreation is turned off on dashboard", 400);
     }
 
+    payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
+
     const createPayload = {
+      name: get(payload, "name"),
       [userIdToken]: userId,
-      add_time: getValueFromMessage(message, [
-        "traits.add_time", 
-        "context.traits.add_time", 
-        "originalTimestamp"
-      ])
+      add_time: get(payload, "add_time")
     };
   
     person = await createPerson(createPayload, Config);
     if (!person) {
       throw new CustomError("Person could not be created in Pipedrive");
     }
+    payloadExtracted = true;
   }
 
-  payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
+  if(!payloadExtracted) {
+    payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
+  } 
+
+  delete payload.add_time;
 
   // update person from router
   const response = defaultRequestConfig();
@@ -163,8 +167,9 @@ const groupResponseBuilder = async (message, { Config }) => {
     PIPEDRIVE_GROUP_EXCLUSION,
     true
   );
-
-  groupPayload = selectAndFlatten(groupPayload, ["address", "Address"]);
+  
+  // should this be added for all custom fields?
+  // groupPayload = selectAndFlatten(groupPayload, ["address", "Address"]);
 
   groupPayload = renameCustomFields(
     groupPayload,
@@ -447,7 +452,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-async function process(event) {
+const process = async (event) => {
   const { message, destination } = event;
   let builderResponse;
 

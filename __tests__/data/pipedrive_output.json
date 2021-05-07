@@ -1,6 +1,6 @@
 [
   {
-    "error": "person not found"
+    "error": "person not found, and userCreation is turned off on dashboard"
   },
   {
     "body": {
@@ -47,8 +47,7 @@
             "value": "guthrie@govan.com",
             "primary": true
           }
-        ],
-        "add_time": "2019-10-14T09:03:17.562Z"
+        ]
       }
     },
     "type": "REST",
@@ -75,8 +74,7 @@
             "value": "guthrie@govan.com",
             "primary": true
           }
-        ],
-        "add_time": "2019-10-14T09:03:17.562Z"
+        ]
       }
     },
     "type": "REST",

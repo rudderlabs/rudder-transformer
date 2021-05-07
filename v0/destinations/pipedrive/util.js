@@ -197,7 +197,7 @@ const createPerson = async (data, Config) => {
   }
 
   // fallback
-  throw new CustomError("org update failed: Retryable", 500);
+  return null;
 };
 
 /**

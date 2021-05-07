@@ -16,8 +16,9 @@ const {
 const {
   ORGANISATION_ENDPOINT,
   PERSONS_ENDPOINT,
-  MAPPING_CONFIG,
-  PIPEDRIVE_IDENTIFY_EXCLUSION
+  PIPEDRIVE_IDENTIFY_EXCLUSION,
+  userDataMapping,
+  identifyDataMapping
 } = require("./config");
 
 class CustomError extends Error {
@@ -310,10 +311,10 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
   let payload;
 
   if (!identifyEvent) {
-    payload = constructPayload(message, MAPPING_CONFIG.PipedriveUserData);
+    payload = constructPayload(message, userDataMapping);
   } 
   else {
-    payload = constructPayload(message, MAPPING_CONFIG.PipedriveIdentify);
+    payload = constructPayload(message, identifyDataMapping);
   }
 
   if (!get(payload, "name")) {

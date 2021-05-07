@@ -116,17 +116,17 @@ const identifyResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-/**
- * for group call, extracting from both traits and context.traits
- * VERIFY ONCE
- * @param {*} message
- * @param {*} category
- * @param {*} destination
- * @returns
- */
 const groupResponseBuilder = async (message, { Config }) => {
+  
+  if(!get(Config, "groupIdToken")) {
+    throw new CustomError("groupIdToken token required", 400);
+  }
+  const groupId = getFieldValueOrThrowError(
+    message,
+    "groupId",
+    new CustomError("groupId or pipedriveGroupId is required for group call", 400)
+  );
 
-  let groupId;
   let userId;
   let groupPayload;
   let org;
@@ -134,25 +134,22 @@ const groupResponseBuilder = async (message, { Config }) => {
   const externalGroupId = getDestinationExternalID(message, "pipedriveGroupId");
   const externalUserId = getDestinationExternalID(message, "pipedrivePersonId");
 
-  if(!externalGroupId) {
-    if(!get(Config, "groupIdToken")) {
-      throw new CustomError("groupIdToken token required", 400);
-    }
-    groupId = getFieldValueOrThrowError(
-      message,
-      "groupId",
-      new CustomError("groupId is required for group call", 400)
-    );
-  }
+  // if(!externalGroupId) {
+  //   groupId = getFieldValueOrThrowError(
+  //     message,
+  //     "groupId",
+  //     new CustomError("groupId or pipedriveGroupId is required for group call", 400)
+  //   );
+  // }
 
   if(!externalUserId) {
     if(!get(Config, "userIdToken")) {
-      throw new CustomError("userIdToken token required", 400);
+      throw new CustomError("userIdToken is required", 400);
     }
     userId = await getFieldValueOrThrowError(
       message,
       "userIdOnly",
-      new CustomError("userId is required for group call", 400)
+      new CustomError("userId or pipedrivePersonId is required for group call", 400)
     );
   }
 
@@ -184,9 +181,13 @@ const groupResponseBuilder = async (message, { Config }) => {
     if (get(groupPayload, "add_time")) {
       delete groupPayload.add_time;
     }
+
+    set(groupPayload, Config.groupIdToken, groupId);
+
     org = await updateOrganisationTraits(externalGroupId, groupPayload, Config);
     destGroupId = externalGroupId;
-  } else {
+  } 
+  else {
     // search group with custom Id
     org = await searchOrganisationByCustomId(groupId, Config);
 
@@ -264,13 +265,6 @@ const groupResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-/**
- * Merges two Persons
- * @param {*} message
- * @param {*} category
- * @param {*} destination
- * @returns
- */
 const aliasResponseBuilder = async (message, { Config }) => {
   /**
    * merge previous Id to userId
@@ -363,15 +357,7 @@ const aliasResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-/**
- * Creates a lead and links it to user for track call.
- * @param {*} message
- * @param {*} category
- * @param {*} destination
- * @returns
- */
 const trackResponseBuilder = async (message, { Config }) => {
-  // TODO: maybe drop this check
   if (!get(message, "event")) {
     throw new CustomError("event type not specified", 400);
   }
@@ -385,13 +371,13 @@ const trackResponseBuilder = async (message, { Config }) => {
 
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
-      throw new CustomError("userId or person_id required", 400);
+      throw new CustomError("userId or pipedrivePersonId required", 400);
     }
 
     const person = await searchPersonByCustomId(userId, Config);
     if(!person) {
       if(!Config.enableUserCreation) {
-        throw new CustomError("person not found", 400);
+        throw new CustomError("person not found, and userCreation is turned off on dashboard", 400);
       }
 
       // create new person if flag enabled

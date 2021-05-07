@@ -37,7 +37,8 @@ const {
   renameCustomFields,
   createPerson,
   extractPersonData,
-  CustomError
+  CustomError,
+  selectAndFlatten
 } = require("./util");
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
@@ -188,6 +189,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     PIPEDRIVE_GROUP_EXCLUSION,
     FLATTEN_KEYS
   );
+
+  groupPayload = selectAndFlatten(groupPayload, ["address", "Address"]);
 
   groupPayload = renameCustomFields(
     groupPayload,

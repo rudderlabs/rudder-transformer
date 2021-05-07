@@ -1,3 +1,4 @@
+/* eslint-disable prefer-object-spread */
 /* eslint-disable array-callback-return */
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
@@ -9,7 +10,8 @@ const {
   getFieldValueFromMessage,
   constructPayload,
   extractCustomFields,
-  getValueFromMessage
+  getValueFromMessage,
+  flattenJson
 } = require("../../util");
 const {
   ORGANISATION_ENDPOINT,
@@ -462,6 +464,28 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
 //   // return null;
 // };
 
+function selectAndFlatten(obj, keys) {
+  if(!keys || keys.length === 0) {
+    return flattenJson(obj);
+  }
+
+  const keySet = new Set(keys);
+  const copy = Object.assign({}, obj);
+  const toFlatten = {};
+  const keepFixed = {};
+
+  Object.keys(copy).forEach(key => {
+    if(!keySet.has(key)) {
+      keepFixed[key] = copy[key];
+    } else {
+      toFlatten[key] = copy[key];
+    }
+  })
+
+  const flattened = flattenJson(toFlatten);
+  return Object.assign({}, keepFixed, flattened);
+}
+
 
 module.exports = {
   createNewOrganisation,
@@ -474,5 +498,6 @@ module.exports = {
   createPriceMapping,
   createPerson,
   extractPersonData,
+  selectAndFlatten,
   CustomError
 };

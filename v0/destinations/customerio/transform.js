@@ -107,7 +107,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       "created_at",
       Math.floor(
         new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
-          1000
+        1000
       )
     );
 

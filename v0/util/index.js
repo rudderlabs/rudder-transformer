@@ -788,7 +788,9 @@ function extractCustomFields(
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).map(k => {
-          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+          if (!exclusionFields.includes(k)) {
+            mappingKeys.push(k);
+          }
         });
         mappingKeys.map(mappingKey => {
           if (!(typeof messageContext[mappingKey] === "undefined")) {
@@ -803,7 +805,9 @@ function extractCustomFields(
     });
   } else if (keys === "root") {
     Object.keys(message).map(k => {
-      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+      if (!exclusionFields.includes(k)) {
+        mappingKeys.push(k);
+      }
     });
     mappingKeys.map(mappingKey => {
       if (!(typeof message[mappingKey] === "undefined")) {

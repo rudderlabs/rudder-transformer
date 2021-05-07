@@ -50,6 +50,7 @@ const PIPEDRIVE_TRACK_EXCLUSION = [
 
 module.exports = {
   getMergeEndpoint,
+  groupFieldMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name],
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,

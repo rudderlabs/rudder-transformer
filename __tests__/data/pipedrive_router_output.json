@@ -1,0 +1,125 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.pipedrive.com/v1/leads",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "params": {
+        "api_token": "03f3251d27e1d44438889"
+      },
+      "body": {
+        "JSON": {
+          "title": "Track Event",
+          "person_id": 1,
+          "value": {
+            "amount": 1000,
+            "currency": "USD"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 7
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "ID": "1rmqwDWUDxq6tZ8uERkYOiQdOwh",
+      "Name": "dev-pipedrive",
+      "DestinationDefinition": {
+        "ID": "1rRLT5VkGGH0OJn7PJa0AkbsLef",
+        "Name": "PIPEDRIVE",
+        "DisplayName": "Pipedrive",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiToken",
+              "userIdToken",
+              "groupIdToken",
+              "enableUserCreation",
+              "personsMap",
+              "leadsMap",
+              "organizationMap"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["apiToken"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ],
+          "transformAt": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiToken": "03f3251d27e1d44438889",
+        "enableUserCreation": true,
+        "groupIdToken": "efa96ca752aca7acc3950d8904c9f13c7cfe8fea",
+        "leadsMap": [
+          {
+            "from": "type",
+            "to": "06f1594c6ade74b7c7a8fb4bfb813eaa030acb24"
+          }
+        ],
+        "organizationMap": [
+          {
+            "from": "address.city",
+            "to": "09752c104f468d0acb8ff0ab204bc1d361b80fa7"
+          },
+          {
+            "from": "address.pin",
+            "to": "59f4b5dc5a0f6faf0484b1fb1950ea79fd9d5730"
+          },
+          {
+            "from": "members.departments",
+            "to": "d4fb429a45eccf20d52eff4f1c82229ecb903eac"
+          },
+          {
+            "from": "members.nestkey.nestval",
+            "to": "a61cc9fa312263195ad4143afdcd8628ce46a1df"
+          }
+        ],
+        "personsMap": [
+          {
+            "from": "address.city",
+            "to": "13d04a9ca9237162b7dac0501308f98f7fe20ffb"
+          },
+          {
+            "from": "address.city.pin",
+            "to": "86267ce791204cb8edf85cd636a4789329dba29c"
+          },
+          {
+            "from": "address.state",
+            "to": "d060868849cb44fc51cb089c73a56f5d14f3664b"
+          },
+          {
+            "from": "address.city.name",
+            "to": "c5a76af3c4311765fff0612c26ae935cbbe56377"
+          }
+        ],
+        "userIdToken": "useridapikey1231212"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  }
+]

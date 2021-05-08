@@ -474,5 +474,58 @@
       },
       "timestamp": "2020-02-02T00:23:09.544Z"
     }
+  },
+  {
+    "message": {
+      "userId": "guthrie123",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "type": "identify",
+      "traits": {
+        "name": "Guthrie Govan",
+        "email": [
+          {
+            "value": "guthrie@govan.com",
+            "primary": true
+          }
+        ],
+        "department": {
+          "name": "Guitar",
+          "id": "guitar101"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiToken": "03f3251d27e1d44438889",
+        "userIdToken": "useridapikey1231212",
+        "groupIdToken": "groupidapikey1241asfasf",
+        "personsMap": [
+          { "from": "district" , "to": "districtapikey2987" },
+          { "from": "someCustomKey", "to": "someCustomKey467" },
+          { "from": "department.name", "to": "deptnametoken" },
+          { "from": "department.id", "to": "deptidtoken" }
+        ]
+      }
+    }
   }
 ]

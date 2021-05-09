@@ -216,7 +216,8 @@ const searchOrganisationByCustomId = async (groupId, Config) => {
     response = await axios.get(`${ORGANISATION_ENDPOINT}/search`, {
       params: {
         term: groupId,
-        field: Config.groupIdToken,
+        fields: "custom_fields",
+        exact_match: true,
         api_token: Config.apiToken
       },
       headers: {

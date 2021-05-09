@@ -36,7 +36,9 @@ const {
   renameCustomFields,
   createPerson,
   extractPersonData,
-  CustomError
+  CustomError,
+  mergeTwoPersons,
+  searchPersonByPipedriveId
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
@@ -53,7 +55,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if(externalId) {
     // if externalId provided, call update endpoint
     payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
-    set(payload, userIdToken, externalId);
+    set(payload, userIdToken, externalId.toString());
 
     const response = defaultRequestConfig();
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -82,6 +84,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       throw new CustomError("person not found, and userCreation is turned off on dashboard", 400);
     }
 
+    // identifyEvent=true, newUser=true(default)
     payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
 
     const createPayload = {
@@ -98,7 +101,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   if(!payloadExtracted) {
-    payload = extractPersonData(message, Config, ["traits", "context.traits"], true);
+    // identifyEvent=true, newUser=false
+    payload = extractPersonData(message, Config, ["traits", "context.traits"], true, false);
   } 
 
   delete payload.add_time;
@@ -187,7 +191,7 @@ const groupResponseBuilder = async (message, { Config }) => {
       delete groupPayload.add_time;
     }
 
-    set(groupPayload, Config.groupIdToken, groupId);
+    set(groupPayload, Config.groupIdToken, externalGroupId.toString());
 
     org = await updateOrganisationTraits(externalGroupId, groupPayload, Config);
     destGroupId = externalGroupId;
@@ -202,13 +206,17 @@ const groupResponseBuilder = async (message, { Config }) => {
      * throws error if create or udpate fails
      */
     if (!org) {
+      if (!get(groupPayload, "name")) {
+        throw new CustomError("name is required for new group creation", 400);
+      }
+
       set(groupPayload, Config.groupIdToken, groupId);
       org = await createNewOrganisation(groupPayload, Config);
     } else {
-      if (get(groupPayload, "add_time")) {
-        delete groupPayload.add_time;
+      delete groupPayload.add_time;
+      if (Object.keys(groupPayload).length !== 0) {
+        org = await updateOrganisationTraits(org.id, groupPayload, Config);
       }
-      org = await updateOrganisationTraits(org.id, groupPayload, Config);
     }
 
     destGroupId = org.id;
@@ -277,9 +285,13 @@ const aliasResponseBuilder = async (message, { Config }) => {
    * destination payload structure: { "merge_with_id": "userId"}
    */
 
+  if(!get(Config, "userIdToken")) {
+    throw new CustomError("userId token not found, required for alias", 400);
+  }
+
   // extracting all for brevity
-  const prevPipedriveId = getDestinationExternalID(message, "prev_person_id");
-  const currPipedriveId = getDestinationExternalID(message, "curr_person_id");
+  const prevPipedriveId = getDestinationExternalID(message, "pipedrivePreviousId");
+  const currPipedriveId = getDestinationExternalID(message, "pipedriveCurrentId");
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const previousId = getValueFromMessage(message, [
     "previousId",
@@ -289,20 +301,23 @@ const aliasResponseBuilder = async (message, { Config }) => {
 
   let prevId;
   let currId;
+  let prevPerson;
+  let currPerson;
 
   if(prevPipedriveId) {
     prevId = prevPipedriveId
+    prevPerson = await searchPersonByPipedriveId(prevId, Config);
+    if (!prevPerson) {
+      throw new CustomError("previous person not found", 400);
+    }
   }
   else if(previousId) {
-    if(!get(Config, "userIdToken")) {
-      throw new CustomError("userId token not found", 400);
-    }
-    const person = await searchPersonByCustomId(previousId, Config);
-    if(!person) {
-      throw new CustomError("previous user not found", 400);
+    prevPerson = await searchPersonByCustomId(previousId, Config);
+    if(!prevPerson) {
+      throw new CustomError("previous user not found", 500);
     }
 
-    prevId = person.id;
+    prevId = prevPerson.id;
   }
   else {
     throw new CustomError("previous id not found", 400);
@@ -311,14 +326,14 @@ const aliasResponseBuilder = async (message, { Config }) => {
 
   if(currPipedriveId) {
     currId = currPipedriveId
+    currPerson = await searchPersonByPipedriveId(currId, Config);
+    if (!currPerson) {
+      throw new CustomError("current person not found", 500);
+    }
   }
   else if (userId) {
-    if(!get(Config, "userIdToken")) {
-      throw new CustomError("userId token not found", 400);
-    }
-
-    const person = await searchPersonByCustomId(userId, Config);
-    if (!person) {
+    currPerson = await searchPersonByCustomId(userId, Config);
+    if (!currPerson) {
       // update the prevPipedriveId user with `userId` as new custom user id
 
       const response = defaultRequestConfig();
@@ -340,10 +355,39 @@ const aliasResponseBuilder = async (message, { Config }) => {
       return response;
     }
 
-    currId = person.id;
+    currId = currPerson.id;
   }
   else {
     throw new CustomError("userId not found", 400);
+  }
+
+  /**
+   * if custom userId (current) value is present, merge two persons first
+   * and update the userId of the new merged person.
+   */
+  if (!get(currPerson, Config.userIdToken) && !get(prevPerson, Config.userIdToken)) {
+    const response = defaultRequestConfig();
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    };
+    response.body.JSON = {
+      "merge_with_id": currId
+    };
+    response.endpoint = getMergeEndpoint(prevId);
+    response.params = {
+      api_token: Config.apiToken
+    };
+    return response;
+  }
+
+  const finalUserId = 
+    get(currPerson, Config.userIdToken) || get(prevPerson, Config.userIdToken);
+
+  const mergeResult = await mergeTwoPersons(prevId, currId, Config);
+  if(!mergeResult) {
+    throw new CustomError("failed to merge persons", 500);
   }
 
   const response = defaultRequestConfig();
@@ -353,9 +397,9 @@ const aliasResponseBuilder = async (message, { Config }) => {
     Accept: "application/json"
   };
   response.body.JSON = {
-    "merge_with_id": currId
+    [Config.userIdToken]: finalUserId
   };
-  response.endpoint = getMergeEndpoint(prevId);
+  response.endpoint = `${PERSONS_ENDPOINT}/${currId}`;
   response.params = {
     api_token: Config.apiToken
   };
@@ -514,7 +558,7 @@ const processRouterDest = async inputs => {
             ? error.response.status
             : error.code
             ? error.code
-            : 500,
+            : 400,
           error.message || "Error occurred while processing event."
         );
       }

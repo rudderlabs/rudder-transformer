@@ -2,7 +2,7 @@
   {
     "destKey": "name",
     "sourceKeys": "traits.name",
-    "required": true
+    "required": false
   },
   {
     "destKey": "add_time",

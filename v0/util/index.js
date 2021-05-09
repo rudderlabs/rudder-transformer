@@ -111,7 +111,10 @@ const setValues = (payload, message, mappingJson) => {
 };
 
 // function to flatten a json
-function flattenJson(data) {
+function flattenJson(data, flattenArray = true) {
+  if (!flattenArray && Array.isArray(data)) {
+    return data;
+  }
   const result = {};
   let l;
 
@@ -121,6 +124,10 @@ function flattenJson(data) {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
+      if (!flattenArray) {
+        result[prop] = cur;
+        return;
+      }
       for (i = 0, l = cur.length; i < l; i += 1) {
         recurse(cur[i], `${prop}[${i}]`);
       }

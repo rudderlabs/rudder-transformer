@@ -18,7 +18,8 @@ const {
   PERSONS_ENDPOINT,
   PIPEDRIVE_IDENTIFY_EXCLUSION,
   userDataMapping,
-  identifyDataMapping
+  identifyDataMapping,
+  getMergeEndpoint
 } = require("./config");
 
 class CustomError extends Error {
@@ -37,18 +38,16 @@ const handleAxiosError = (err, errorMessage) => {
 };
 
 /**
- * Search for person with Custom UserId value
- * @param {*} userIdValue
- * @param {*} destination
+ * Search Person by Pipedrive internal Id
+ * @param {*} pid
+ * @param {*} Config
  * @returns
  */
-const searchPersonByCustomId = async (userIdValue, Config) => {
+const searchPersonByPipedriveId = async (pipedriveId, Config) => {
   let response;
   try {
-    response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
+    response = await axios.get(`${PERSONS_ENDPOINT}/${pipedriveId}`, {
       params: {
-        term: userIdValue,
-        field: Config.userIdToken,
         api_token: Config.apiToken
       },
       headers: {
@@ -61,10 +60,99 @@ const searchPersonByCustomId = async (userIdValue, Config) => {
 
   if (!response.data || !response.data.data) {
     throw new CustomError("response data not found: Retryable", 500);
+  }
+  return response.data.data;
+};
+
+/**
+ * Search for person with Custom UserId value
+ * @param {*} userIdValue
+ * @param {*} destination
+ * @returns
+ */
+const searchPersonByCustomId = async (userIdValue, Config) => {
+  let response;
+  try {
+    response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
+      params: {
+        term: userIdValue,
+        fields: "custom_fields",
+        exact_match: true,
+        api_token: Config.apiToken
+      },
+      headers: {
+        Accept: "application/json"
+      }
+    });
+  } catch (err) {
+    handleAxiosError(err, "failed to search person");
+  }
+
+  if (!response || !response.data || !response.data.data) {
+    throw new CustomError("response data not found: Retryable", 500);
   } else if (response.data.data.items.length === 0) {
     return null;
-  } else return response.data.data.items[0].item;
+  } else {
+    // return response.data.data.items[0].item;
+    let retPerson = null;
+    // workaround for Promise.any()
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const personItem of response.data.data.items) {
+      const pid = personItem.item.id;
+      // eslint-disable-next-line no-await-in-loop
+      const person = await searchPersonByPipedriveId(pid, Config);
+      if (person && get(person, Config.userIdToken) === userIdValue) {
+        retPerson = person;
+        break;
+      }
+    }
+    return retPerson;
+
+    // await Promise.any(
+    //   response.data.data.items.map(async personItem => {
+    //     const pid = personItem.item.id;
+    //     const person = await searchPersonByPipedriveId(pid, Config);
+    //     if(person && get(person, Config.userIdToken) === userIdValue) {
+    //       retPerson = person;
+    //       return Promise.resolve();
+    //     }
+    //     return Promise.reject();
+    //   })
+    // );
+  }
 };
+
+// /**
+//  * Search for person with Custom UserId value
+//  * @param {*} userIdValue
+//  * @param {*} destination
+//  * @returns
+//  */
+// const searchPersonByCustomId = async (userIdValue, Config) => {
+//   let response;
+//   try {
+//     response = await axios.get(`${PERSONS_ENDPOINT}/search`, {
+//       params: {
+//         term: userIdValue,
+//         fields: "custom_fields",
+//         exact_match: true,
+//         api_token: Config.apiToken
+//       },
+//       headers: {
+//         Accept: "application/json"
+//       }
+//     });
+//   } catch (err) {
+//     handleAxiosError(err, "failed to search person");
+//   }
+
+//   if (!response.data || !response.data.data) {
+//     throw new CustomError("response data not found: Retryable", 500);
+//   } else if (response.data.data.items.length === 0) {
+//     return null;
+//   } else return response.data.data.items[0].item;
+// };
 
 const updatePerson = async (userIdvalue, data, Config) => {
   let response;
@@ -90,6 +178,38 @@ const updatePerson = async (userIdvalue, data, Config) => {
   throw new CustomError(`error while updating person: Abortable`, 500);
 };
 
+/**
+ * Search Org by Pipedrive ID
+ * @param {*} pipedriveId
+ * @param {*} Config
+ */
+const searchOrganisationByPipedriveId = async (pipedriveId, Config) => {
+  let response;
+  try {
+    response = await axios.get(`${ORGANISATION_ENDPOINT}/${pipedriveId}`, {
+      params: {
+        api_token: Config.apiToken
+      },
+      headers: {
+        Accept: "application/json"
+      }
+    });
+  } catch (err) {
+    handleAxiosError(err, "failed to search organization");
+  }
+
+  if (!response.data || !response.data.data) {
+    throw new CustomError("response data not found: Retryable", 500);
+  }
+  return response.data.data;
+};
+
+/**
+ * Search Organization by custom id
+ * @param {*} groupId
+ * @param {*} Config
+ * @returns
+ */
 const searchOrganisationByCustomId = async (groupId, Config) => {
   let response;
   try {
@@ -107,11 +227,25 @@ const searchOrganisationByCustomId = async (groupId, Config) => {
     handleAxiosError(err, "failed to search organization");
   }
 
-  if (!response.data || !response.data.data) {
+  if (!response || !response.data || !response.data.data) {
     throw new CustomError("response data not found: Retyrable", 500);
   } else if (response.data.data.items.length === 0) {
     return null;
-  } else return response.data.data.items[0].item;
+  } else {
+    // response.data.data.items[0].item;
+    let res = null;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const orgItem of response.data.data.items) {
+      const orgId = orgItem.item.id;
+      // eslint-disable-next-line no-await-in-loop
+      const org = await searchOrganisationByPipedriveId(orgId, Config);
+      if (org && get(org, Config.groupIdToken) === groupId) {
+        res = org;
+        break;
+      }
+    }
+    return res;
+  }
 };
 
 const createNewOrganisation = async (data, Config) => {
@@ -276,17 +410,14 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
     const keepFixed = {};
 
     Object.keys(copy).forEach(key => {
-      if ((!emptyExclusions && exclusionKeys.includes(key)) ||
-        Array.isArray(obj[key]) ||
-        typeof obj[key] !== "object"
-      ) {
+      if (!emptyExclusions && exclusionKeys.includes(key)) {
         keepFixed[key] = copy[key];
       } else {
         toFlatten[key] = copy[key];
       }
     });
 
-    const flattened = flattenJson(toFlatten);
+    const flattened = flattenJson(toFlatten, false);
     return nestedPriority
       ? Object.assign({}, keepFixed, flattened)
       : Object.assign({}, flattened, keepFixed);
@@ -318,38 +449,23 @@ const renameCustomFields = (message, Config, type, exclusionKeys) => {
 };
 
 /**
- * Util function to create price mapping
- * returns a new Object
- * @param {*} payload
- * @returns
- */
-const createPriceMapping = payload => {
-  // creating the prices mapping only when both price and currency provided
-  // to avoid discrepancy
-  const mappedPayload = { ...payload };
-
-  if (mappedPayload.price && mappedPayload.currency) {
-    const prices = {
-      price: mappedPayload.price,
-      currency: mappedPayload.currency
-    };
-    set(mappedPayload, "prices", [prices]);
-  }
-  delete mappedPayload.price;
-  delete mappedPayload.currency;
-
-  return mappedPayload;
-};
-
-/**
  * Util Function to extract person data from all event payloads
+ * If newUser is true, valid name must be present.
+ * Updating a user does not need name as a required field.
  * @param {*} message
  * @param {*} Config
  * @param {*} keys
  * @param {*} identifyEvent
+ * @param {*} newUser
  * @returns
  */
-const extractPersonData = (message, Config, keys, identifyEvent = false) => {
+const extractPersonData = (
+  message,
+  Config,
+  keys,
+  identifyEvent = false,
+  newUser = true
+) => {
   let payload;
 
   if (!identifyEvent) {
@@ -358,7 +474,7 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
     payload = constructPayload(message, identifyDataMapping);
   }
 
-  if (!get(payload, "name")) {
+  if (newUser && !get(payload, "name")) {
     let fname;
     let lname;
 
@@ -405,27 +521,32 @@ const extractPersonData = (message, Config, keys, identifyEvent = false) => {
   return payload;
 };
 
-// function selectAndFlatten(obj, keys) {
-//   if(!keys || keys.length === 0) {
-//     return flattenJson(obj);
-//   }
-
-//   const keySet = new Set(keys);
-//   const copy = Object.assign({}, obj);
-//   const toFlatten = {};
-//   const keepFixed = {};
-
-//   Object.keys(copy).forEach(key => {
-//     if(!keySet.has(key)) {
-//       keepFixed[key] = copy[key];
-//     } else {
-//       toFlatten[key] = copy[key];
-//     }
-//   })
-
-//   const flattened = flattenJson(toFlatten);
-//   return Object.assign({}, keepFixed, flattened);
-// }
+const mergeTwoPersons = async (prevId, currId, Config) => {
+  let resp;
+  try {
+    resp = await axios.put(
+      getMergeEndpoint(prevId),
+      {
+        merge_with_id: currId
+      },
+      {
+        params: {
+          api_token: Config.apiToken
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        }
+      }
+    );
+  } catch (err) {
+    handleAxiosError(err, "failed to merge persons");
+  }
+  if (resp && resp.status === 200) {
+    return true;
+  }
+  return null;
+};
 
 module.exports = {
   createNewOrganisation,
@@ -435,8 +556,9 @@ module.exports = {
   getFieldValueOrThrowError,
   updatePerson,
   renameCustomFields,
-  createPriceMapping,
   createPerson,
   extractPersonData,
+  mergeTwoPersons,
+  searchPersonByPipedriveId,
   CustomError
 };

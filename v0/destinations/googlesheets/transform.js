@@ -41,6 +41,17 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   const toKey = "to";
   let count = 0;
 
+  // Adding messageId in the first column to maintain order when whenver
+  // we are getting blank-values. We need to append below non-empty Value
+  // expecting messageId never to be empty.
+  // If messageId not present should add UUID?
+
+  responseMessage[count] = {
+    attributeKey: "messageId",
+    attributeValue: message.messageId || ""
+  };
+  count += 1;
+
   if (Array.isArray(attributeKeyMapping)) {
     attributeKeyMapping.forEach(mapping => {
       let value;

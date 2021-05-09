@@ -2,58 +2,62 @@
   {
     "message": {
       "0": {
+        "attributeKey": "messageId",
+        "attributeValue": "84e26acc-56a5-4835-8233-591137fca468"
+      },
+      "1": {
         "attributeKey": "First Name",
         "attributeValue": "James"
       },
-      "1": {
+      "2": {
         "attributeKey": "Last Name",
         "attributeValue": "Doe"
       },
-      "2": {
+      "3": {
         "attributeKey": "Birthday",
         "attributeValue": "1614775793"
       },
-      "3": {
+      "4": {
         "attributeKey": "City",
         "attributeValue": "kolkata"
       },
-      "4": {
+      "5": {
         "attributeKey": "Country",
         "attributeValue": "India"
       },
-      "5": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
       "6": {
-        "attributeKey": "Offer",
+        "attributeKey": "Revenue",
         "attributeValue": ""
       },
       "7": {
-        "attributeKey": "Title Page",
+        "attributeKey": "Offer",
         "attributeValue": ""
       },
       "8": {
-        "attributeKey": "Cart Value",
+        "attributeKey": "Title Page",
         "attributeValue": ""
       },
       "9": {
-        "attributeKey": "Revenue",
+        "attributeKey": "Cart Value",
         "attributeValue": ""
       },
       "10": {
+        "attributeKey": "Revenue",
+        "attributeValue": ""
+      },
+      "11": {
         "attributeKey": "App Build",
         "attributeValue": "1.0.0"
       },
-      "11": {
+      "12": {
         "attributeKey": "App Name",
         "attributeValue": "RudderLabs JavaScript SDK"
       },
-      "12": {
+      "13": {
         "attributeKey": "Library Name",
         "attributeValue": "RudderLabs JavaScript SDK"
       },
-      "13": {
+      "14": {
         "attributeKey": "IP",
         "attributeValue": "0.0.0.0"
       }
@@ -64,58 +68,62 @@
   {
     "message": {
       "0": {
-        "attributeKey": "First Name",
+        "attributeKey": "messageId",
         "attributeValue": ""
       },
       "1": {
-        "attributeKey": "Last Name",
+        "attributeKey": "First Name",
         "attributeValue": ""
       },
       "2": {
-        "attributeKey": "Birthday",
+        "attributeKey": "Last Name",
         "attributeValue": ""
       },
       "3": {
-        "attributeKey": "City",
+        "attributeKey": "Birthday",
         "attributeValue": ""
       },
       "4": {
-        "attributeKey": "Country",
+        "attributeKey": "City",
         "attributeValue": ""
       },
       "5": {
+        "attributeKey": "Country",
+        "attributeValue": ""
+      },
+      "6": {
         "attributeKey": "Revenue",
         "attributeValue": 5.99
       },
-      "6": {
+      "7": {
         "attributeKey": "Offer",
         "attributeValue": "Discount"
       },
-      "7": {
+      "8": {
         "attributeKey": "Title Page",
         "attributeValue": ""
       },
-      "8": {
+      "9": {
         "attributeKey": "Cart Value",
         "attributeValue": ""
       },
-      "9": {
+      "10": {
         "attributeKey": "Revenue",
         "attributeValue": 5.99
       },
-      "10": {
+      "11": {
         "attributeKey": "App Build",
         "attributeValue": "1"
       },
-      "11": {
+      "12": {
         "attributeKey": "App Name",
         "attributeValue": "RudderAndroidClient"
       },
-      "12": {
+      "13": {
         "attributeKey": "Library Name",
         "attributeValue": "com.rudderstack.android.sdk.core"
       },
-      "13": {
+      "14": {
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
@@ -126,58 +134,62 @@
   {
     "message": {
       "0": {
-        "attributeKey": "First Name",
+        "attributeKey": "messageId",
         "attributeValue": ""
       },
       "1": {
-        "attributeKey": "Last Name",
+        "attributeKey": "First Name",
         "attributeValue": ""
       },
       "2": {
-        "attributeKey": "Birthday",
+        "attributeKey": "Last Name",
         "attributeValue": ""
       },
       "3": {
-        "attributeKey": "City",
+        "attributeKey": "Birthday",
         "attributeValue": ""
       },
       "4": {
-        "attributeKey": "Country",
+        "attributeKey": "City",
         "attributeValue": ""
       },
       "5": {
+        "attributeKey": "Country",
+        "attributeValue": ""
+      },
+      "6": {
         "attributeKey": "Revenue",
         "attributeValue": 7500
       },
-      "6": {
+      "7": {
         "attributeKey": "Offer",
         "attributeValue": ""
       },
-      "7": {
+      "8": {
         "attributeKey": "Title Page",
         "attributeValue": "Cart"
       },
-      "8": {
+      "9": {
         "attributeKey": "Cart Value",
         "attributeValue": 7800
       },
-      "9": {
+      "10": {
         "attributeKey": "Revenue",
         "attributeValue": 7500
       },
-      "10": {
+      "11": {
         "attributeKey": "App Build",
         "attributeValue": ""
       },
-      "11": {
+      "12": {
         "attributeKey": "App Name",
         "attributeValue": ""
       },
-      "12": {
+      "13": {
         "attributeKey": "Library Name",
         "attributeValue": "http"
       },
-      "13": {
+      "14": {
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
@@ -188,58 +200,62 @@
   {
     "message": {
       "0": {
-        "attributeKey": "First Name",
+        "attributeKey": "messageId",
         "attributeValue": ""
       },
       "1": {
-        "attributeKey": "Last Name",
+        "attributeKey": "First Name",
         "attributeValue": ""
       },
       "2": {
-        "attributeKey": "Birthday",
+        "attributeKey": "Last Name",
         "attributeValue": ""
       },
       "3": {
-        "attributeKey": "City",
+        "attributeKey": "Birthday",
         "attributeValue": ""
       },
       "4": {
-        "attributeKey": "Country",
+        "attributeKey": "City",
         "attributeValue": ""
       },
       "5": {
-        "attributeKey": "Revenue",
+        "attributeKey": "Country",
         "attributeValue": ""
       },
       "6": {
-        "attributeKey": "Offer",
+        "attributeKey": "Revenue",
         "attributeValue": ""
       },
       "7": {
+        "attributeKey": "Offer",
+        "attributeValue": ""
+      },
+      "8": {
         "attributeKey": "Title Page",
         "attributeValue": "Home"
       },
-      "8": {
+      "9": {
         "attributeKey": "Cart Value",
         "attributeValue": ""
       },
-      "9": {
+      "10": {
         "attributeKey": "Revenue",
         "attributeValue": ""
       },
-      "10": {
+      "11": {
         "attributeKey": "App Build",
         "attributeValue": ""
       },
-      "11": {
+      "12": {
         "attributeKey": "App Name",
         "attributeValue": ""
       },
-      "12": {
+      "13": {
         "attributeKey": "Library Name",
         "attributeValue": "http"
       },
-      "13": {
+      "14": {
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
@@ -250,58 +266,62 @@
   {
     "message": {
       "0": {
-        "attributeKey": "First Name",
+        "attributeKey": "messageId",
         "attributeValue": ""
       },
       "1": {
-        "attributeKey": "Last Name",
+        "attributeKey": "First Name",
         "attributeValue": ""
       },
       "2": {
-        "attributeKey": "Birthday",
+        "attributeKey": "Last Name",
         "attributeValue": ""
       },
       "3": {
-        "attributeKey": "City",
+        "attributeKey": "Birthday",
         "attributeValue": ""
       },
       "4": {
-        "attributeKey": "Country",
+        "attributeKey": "City",
         "attributeValue": ""
       },
       "5": {
-        "attributeKey": "Revenue",
+        "attributeKey": "Country",
         "attributeValue": ""
       },
       "6": {
-        "attributeKey": "Offer",
-        "attributeValue": ""
-      },
-      "7": {
-        "attributeKey": "Title Page",
-        "attributeValue": ""
-      },
-      "8": {
-        "attributeKey": "Cart Value",
-        "attributeValue": ""
-      },
-      "9": {
         "attributeKey": "Revenue",
         "attributeValue": ""
       },
+      "7": {
+        "attributeKey": "Offer",
+        "attributeValue": ""
+      },
+      "8": {
+        "attributeKey": "Title Page",
+        "attributeValue": ""
+      },
+      "9": {
+        "attributeKey": "Cart Value",
+        "attributeValue": ""
+      },
       "10": {
-        "attributeKey": "App Build",
+        "attributeKey": "Revenue",
         "attributeValue": ""
       },
       "11": {
-        "attributeKey": "App Name",
+        "attributeKey": "App Build",
         "attributeValue": ""
       },
       "12": {
+        "attributeKey": "App Name",
+        "attributeValue": ""
+      },
+      "13": {
         "attributeKey": "Library Name",
         "attributeValue": "http"
       },
-      "13": {
+      "14": {
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }

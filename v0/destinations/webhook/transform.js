@@ -22,7 +22,10 @@ function process(event) {
   try {
     const { message, destination } = event;
     // set context.ip from request_ip if it is missing
-    if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
+    if (
+      !get(message, "context.ip") &&
+      isDefinedAndNotNull(message.request_ip)
+    ) {
       set(message, "context.ip", message.request_ip);
     }
     const response = defaultRequestConfig();
@@ -46,6 +49,11 @@ function process(event) {
       Object.assign(response.headers, getHashFromArray(headers));
       response.userId = message.anonymousId;
       response.endpoint = url;
+      // we can put `headers.*` as well
+      // Check getRouterTransformResponse method
+      response.maskRules = Object.keys(response.headers).map(
+        k => `headers.${k}`
+      );
 
       return response;
     }
@@ -62,6 +70,7 @@ const getRouterTransformResponse = (message, metadata, destination) => {
   returnResponse.batched = false;
   returnResponse.statusCode = 200;
   returnResponse.destination = destination;
+  returnResponse.maskRules = ["headers.*"];
   return returnResponse;
 };
 

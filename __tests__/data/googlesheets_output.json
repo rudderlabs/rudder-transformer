@@ -2,1208 +2,334 @@
   {
     "message": {
       "0": {
-        "key": "id",
-        "value": "84e26acc-56a5-4835-8233-591137fca468"
+        "attributeKey": "messageId",
+        "attributeValue": "84e26acc-56a5-4835-8233-591137fca468"
       },
       "1": {
-        "key": "anonymous_id",
-        "value": "anon_id"
+        "attributeKey": "First Name",
+        "attributeValue": "James"
       },
       "2": {
-        "key": "user_id",
-        "value": "sheetuser001"
+        "attributeKey": "Last Name",
+        "attributeValue": "Doe"
       },
       "3": {
-        "key": "event",
-        "value": ""
+        "attributeKey": "Birthday",
+        "attributeValue": "1614775793"
       },
       "4": {
-        "key": "event_name",
-        "value": ""
+        "attributeKey": "City",
+        "attributeValue": "kolkata"
       },
       "5": {
-        "key": "event_text",
-        "value": ""
+        "attributeKey": "Country",
+        "attributeValue": "India"
       },
       "6": {
-        "key": "page",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "7": {
-        "key": "original_timestamp",
-        "value": "2019-10-14T09:03:17.562Z"
+        "attributeKey": "Offer",
+        "attributeValue": ""
       },
       "8": {
-        "key": "received_at",
-        "value": ""
+        "attributeKey": "Title Page",
+        "attributeValue": ""
       },
       "9": {
-        "key": "timestamp",
-        "value": ""
+        "attributeKey": "Cart Value",
+        "attributeValue": ""
       },
       "10": {
-        "key": "sent_at",
-        "value": "2019-10-14T09:03:22.563Z"
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "11": {
-        "key": "context_traits",
-        "value": {
-          "userId": "sheetuser001",
-          "firstName": "James",
-          "lastName": "Doe",
-          "address": {
-            "city": "Kolkata",
-            "country": "India",
-            "postalCode": "789003",
-            "state": "WB"
-          }
-        }
+        "attributeKey": "App Build",
+        "attributeValue": "1.0.0"
       },
       "12": {
-        "key": "properties",
-        "value": ""
+        "attributeKey": "App Name",
+        "attributeValue": "RudderLabs JavaScript SDK"
       },
       "13": {
-        "key": "traits",
-        "value": {
-          "anonymousId": "anon_id",
-          "email": "jamesDoe@gmail.com",
-          "name": "James Doe",
-          "phone": "92374162212",
-          "gender": "M",
-          "employed": true,
-          "birthday": "1614775793",
-          "education": "Science",
-          "graduate": true,
-          "married": true,
-          "customerType": "Prime",
-          "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-          "custom_mappings": {
-            "Office": "Trastkiv",
-            "Country": "Russia"
-          },
-          "address": {
-            "city": "kolkata",
-            "country": "India",
-            "postalCode": 789223,
-            "state": "WB",
-            "street": ""
-          }
-        }
+        "attributeKey": "Library Name",
+        "attributeValue": "RudderLabs JavaScript SDK"
       },
       "14": {
-        "key": "context_app_build",
-        "value": "1.0.0"
-      },
-      "15": {
-        "key": "context_app_name",
-        "value": "RudderLabs JavaScript SDK"
-      },
-      "16": {
-        "key": "context_app_namespace",
-        "value": "com.rudderlabs.javascript"
-      },
-      "17": {
-        "key": "context_app_version",
-        "value": "1.0.0"
-      },
-      "18": {
-        "key": "context_device_id",
-        "value": ""
-      },
-      "19": {
-        "key": "context_device_manufacturer",
-        "value": ""
-      },
-      "20": {
-        "key": "context_device_model",
-        "value": ""
-      },
-      "21": {
-        "key": "context_device_name",
-        "value": ""
-      },
-      "22": {
-        "key": "context_device_type",
-        "value": ""
-      },
-      "23": {
-        "key": "context_device_advertisingId",
-        "value": ""
-      },
-      "24": {
-        "key": "context_device_token",
-        "value": ""
-      },
-      "25": {
-        "key": "context_library_name",
-        "value": "RudderLabs JavaScript SDK"
-      },
-      "26": {
-        "key": "context_library_version",
-        "value": "1.0.0"
-      },
-      "27": {
-        "key": "context_locale",
-        "value": "en-US"
-      },
-      "28": {
-        "key": "context_network_carrier",
-        "value": ""
-      },
-      "29": {
-        "key": "context_network_bluetooth",
-        "value": ""
-      },
-      "30": {
-        "key": "context_network_cellular",
-        "value": ""
-      },
-      "31": {
-        "key": "context_network_wifi",
-        "value": ""
-      },
-      "32": {
-        "key": "context_os_name",
-        "value": "OS-X"
-      },
-      "33": {
-        "key": "context_os_version",
-        "value": "19.02.3"
-      },
-      "34": {
-        "key": "context_screen",
-        "value": {
-          "density": 2
-        }
-      },
-      "35": {
-        "key": "context_timezone",
-        "value": ""
-      },
-      "36": {
-        "key": "context_userAgent",
-        "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-      },
-      "37": {
-        "key": "context_id",
-        "value": ""
-      },
-      "38": {
-        "key": "context_ip",
-        "value": "0.0.0.0"
-      },
-      "39": {
-        "key": "context_page_url",
-        "value": ""
-      },
-      "40": {
-        "key": "context_page_path",
-        "value": ""
-      },
-      "41": {
-        "key": "context_page_title",
-        "value": ""
-      },
-      "42": {
-        "key": "context_page_search",
-        "value": ""
-      },
-      "43": {
-        "key": "context_page_tab_url",
-        "value": ""
-      },
-      "44": {
-        "key": "context_page_referrer",
-        "value": ""
-      },
-      "45": {
-        "key": "context_page_initial_referrer",
-        "value": ""
-      },
-      "46": {
-        "key": "context_page_referring_domain",
-        "value": ""
-      },
-      "47": {
-        "key": "context_page_initial_referring_domain",
-        "value": ""
-      },
-      "48": {
-        "key": "context_event",
-        "value": ""
-      },
-      "49": {
-        "key": "context_sent_at",
-        "value": ""
-      },
-      "50": {
-        "key": "context_campaign",
-        "value": ""
-      },
-      "51": {
-        "key": "context_timestamp",
-        "value": ""
-      },
-      "52": {
-        "key": "context_event_text",
-        "value": ""
-      },
-      "53": {
-        "key": "context_externalId",
-        "value": ""
-      },
-      "54": {
-        "key": "context_received_at",
-        "value": ""
-      },
-      "55": {
-        "key": "context_original_timestamp",
-        "value": ""
+        "attributeKey": "IP",
+        "attributeValue": "0.0.0.0"
       }
     },
     "spreadSheetId": "rudder_sheet_id",
-    "spreadSheetTab": "Identify"
+    "spreadSheet": "rudder_sheet"
   },
   {
     "message": {
       "0": {
-        "key": "id",
-        "value": ""
+        "attributeKey": "messageId",
+        "attributeValue": ""
       },
       "1": {
-        "key": "anonymous_id",
-        "value": ""
+        "attributeKey": "First Name",
+        "attributeValue": ""
       },
       "2": {
-        "key": "user_id",
-        "value": "userTest004"
+        "attributeKey": "Last Name",
+        "attributeValue": ""
       },
       "3": {
-        "key": "event",
-        "value": "Added to Cart"
+        "attributeKey": "Birthday",
+        "attributeValue": ""
       },
       "4": {
-        "key": "event_name",
-        "value": "Added to Cart"
+        "attributeKey": "City",
+        "attributeValue": ""
       },
       "5": {
-        "key": "event_text",
-        "value": "Added to Cart"
+        "attributeKey": "Country",
+        "attributeValue": ""
       },
       "6": {
-        "key": "page",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": 5.99
       },
       "7": {
-        "key": "original_timestamp",
-        "value": ""
+        "attributeKey": "Offer",
+        "attributeValue": "Discount"
       },
       "8": {
-        "key": "received_at",
-        "value": ""
+        "attributeKey": "Title Page",
+        "attributeValue": ""
       },
       "9": {
-        "key": "timestamp",
-        "value": "2020-02-02T00:23:09.544Z"
+        "attributeKey": "Cart Value",
+        "attributeValue": ""
       },
       "10": {
-        "key": "sent_at",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": 5.99
       },
       "11": {
-        "key": "context_traits",
-        "value": ""
+        "attributeKey": "App Build",
+        "attributeValue": "1"
       },
       "12": {
-        "key": "properties",
-        "value": {
-          "name": "HomePage",
-          "revenue": 5.99,
-          "value": 5.5,
-          "offer": "Discount",
-          "Sale": false
-        }
+        "attributeKey": "App Name",
+        "attributeValue": "RudderAndroidClient"
       },
       "13": {
-        "key": "traits",
-        "value": ""
+        "attributeKey": "Library Name",
+        "attributeValue": "com.rudderstack.android.sdk.core"
       },
       "14": {
-        "key": "context_app_build",
-        "value": "1"
-      },
-      "15": {
-        "key": "context_app_name",
-        "value": "RudderAndroidClient"
-      },
-      "16": {
-        "key": "context_app_namespace",
-        "value": "com.rudderstack.demo.android"
-      },
-      "17": {
-        "key": "context_app_version",
-        "value": "1.0"
-      },
-      "18": {
-        "key": "context_device_id",
-        "value": "7e32188a4dab669f"
-      },
-      "19": {
-        "key": "context_device_manufacturer",
-        "value": "Google"
-      },
-      "20": {
-        "key": "context_device_model",
-        "value": "Android SDK built for x86"
-      },
-      "21": {
-        "key": "context_device_name",
-        "value": "generic_x86"
-      },
-      "22": {
-        "key": "context_device_type",
-        "value": "android"
-      },
-      "23": {
-        "key": "context_device_advertisingId",
-        "value": ""
-      },
-      "24": {
-        "key": "context_device_token",
-        "value": ""
-      },
-      "25": {
-        "key": "context_library_name",
-        "value": "com.rudderstack.android.sdk.core"
-      },
-      "26": {
-        "key": "context_library_version",
-        "value": "0.1.4"
-      },
-      "27": {
-        "key": "context_locale",
-        "value": "en-US"
-      },
-      "28": {
-        "key": "context_network_carrier",
-        "value": "Android"
-      },
-      "29": {
-        "key": "context_network_bluetooth",
-        "value": ""
-      },
-      "30": {
-        "key": "context_network_cellular",
-        "value": true
-      },
-      "31": {
-        "key": "context_network_wifi",
-        "value": true
-      },
-      "32": {
-        "key": "context_os_name",
-        "value": "Android"
-      },
-      "33": {
-        "key": "context_os_version",
-        "value": "9"
-      },
-      "34": {
-        "key": "context_screen",
-        "value": {
-          "density": 420,
-          "height": 1794,
-          "width": 1080
-        }
-      },
-      "35": {
-        "key": "context_timezone",
-        "value": "Asia/Kolkata"
-      },
-      "36": {
-        "key": "context_userAgent",
-        "value": ""
-      },
-      "37": {
-        "key": "context_id",
-        "value": ""
-      },
-      "38": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
-      },
-      "39": {
-        "key": "context_page_url",
-        "value": ""
-      },
-      "40": {
-        "key": "context_page_path",
-        "value": ""
-      },
-      "41": {
-        "key": "context_page_title",
-        "value": ""
-      },
-      "42": {
-        "key": "context_page_search",
-        "value": ""
-      },
-      "43": {
-        "key": "context_page_tab_url",
-        "value": ""
-      },
-      "44": {
-        "key": "context_page_referrer",
-        "value": ""
-      },
-      "45": {
-        "key": "context_page_initial_referrer",
-        "value": ""
-      },
-      "46": {
-        "key": "context_page_referring_domain",
-        "value": ""
-      },
-      "47": {
-        "key": "context_page_initial_referring_domain",
-        "value": ""
-      },
-      "48": {
-        "key": "context_event",
-        "value": ""
-      },
-      "49": {
-        "key": "context_sent_at",
-        "value": ""
-      },
-      "50": {
-        "key": "context_campaign",
-        "value": ""
-      },
-      "51": {
-        "key": "context_timestamp",
-        "value": ""
-      },
-      "52": {
-        "key": "context_event_text",
-        "value": ""
-      },
-      "53": {
-        "key": "context_externalId",
-        "value": ""
-      },
-      "54": {
-        "key": "context_received_at",
-        "value": ""
-      },
-      "55": {
-        "key": "context_original_timestamp",
-        "value": ""
+        "attributeKey": "IP",
+        "attributeValue": "14.5.67.21"
       }
     },
     "spreadSheetId": "rudder_sheet_id",
-    "spreadSheetTab": "Added To Cart"
+    "spreadSheet": "rudder_sheet"
   },
   {
     "message": {
       "0": {
-        "key": "id",
-        "value": ""
+        "attributeKey": "messageId",
+        "attributeValue": ""
       },
       "1": {
-        "key": "anonymous_id",
-        "value": "anon-id-new"
+        "attributeKey": "First Name",
+        "attributeValue": ""
       },
       "2": {
-        "key": "user_id",
-        "value": "userTest004"
+        "attributeKey": "Last Name",
+        "attributeValue": ""
       },
       "3": {
-        "key": "event",
-        "value": ""
+        "attributeKey": "Birthday",
+        "attributeValue": ""
       },
       "4": {
-        "key": "event_name",
-        "value": "1mg Cart"
+        "attributeKey": "City",
+        "attributeValue": ""
       },
       "5": {
-        "key": "event_text",
-        "value": "1mg Cart"
+        "attributeKey": "Country",
+        "attributeValue": ""
       },
       "6": {
-        "key": "page",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": 7500
       },
       "7": {
-        "key": "original_timestamp",
-        "value": ""
+        "attributeKey": "Offer",
+        "attributeValue": ""
       },
       "8": {
-        "key": "received_at",
-        "value": ""
+        "attributeKey": "Title Page",
+        "attributeValue": "Cart"
       },
       "9": {
-        "key": "timestamp",
-        "value": "2020-02-02T00:23:09.544Z"
+        "attributeKey": "Cart Value",
+        "attributeValue": 7800
       },
       "10": {
-        "key": "sent_at",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": 7500
       },
       "11": {
-        "key": "context_traits",
-        "value": ""
+        "attributeKey": "App Build",
+        "attributeValue": ""
       },
       "12": {
-        "key": "properties",
-        "value": {
-          "title": "Cart",
-          "path": "/",
-          "Cart Value": 7800,
-          "revenue": 7500
-        }
+        "attributeKey": "App Name",
+        "attributeValue": ""
       },
       "13": {
-        "key": "traits",
-        "value": ""
+        "attributeKey": "Library Name",
+        "attributeValue": "http"
       },
       "14": {
-        "key": "context_app_build",
-        "value": ""
-      },
-      "15": {
-        "key": "context_app_name",
-        "value": ""
-      },
-      "16": {
-        "key": "context_app_namespace",
-        "value": ""
-      },
-      "17": {
-        "key": "context_app_version",
-        "value": ""
-      },
-      "18": {
-        "key": "context_device_id",
-        "value": ""
-      },
-      "19": {
-        "key": "context_device_manufacturer",
-        "value": ""
-      },
-      "20": {
-        "key": "context_device_model",
-        "value": ""
-      },
-      "21": {
-        "key": "context_device_name",
-        "value": ""
-      },
-      "22": {
-        "key": "context_device_type",
-        "value": ""
-      },
-      "23": {
-        "key": "context_device_advertisingId",
-        "value": ""
-      },
-      "24": {
-        "key": "context_device_token",
-        "value": ""
-      },
-      "25": {
-        "key": "context_library_name",
-        "value": "http"
-      },
-      "26": {
-        "key": "context_library_version",
-        "value": ""
-      },
-      "27": {
-        "key": "context_locale",
-        "value": ""
-      },
-      "28": {
-        "key": "context_network_carrier",
-        "value": ""
-      },
-      "29": {
-        "key": "context_network_bluetooth",
-        "value": ""
-      },
-      "30": {
-        "key": "context_network_cellular",
-        "value": ""
-      },
-      "31": {
-        "key": "context_network_wifi",
-        "value": ""
-      },
-      "32": {
-        "key": "context_os_name",
-        "value": ""
-      },
-      "33": {
-        "key": "context_os_version",
-        "value": ""
-      },
-      "34": {
-        "key": "context_screen",
-        "value": ""
-      },
-      "35": {
-        "key": "context_timezone",
-        "value": ""
-      },
-      "36": {
-        "key": "context_userAgent",
-        "value": ""
-      },
-      "37": {
-        "key": "context_id",
-        "value": ""
-      },
-      "38": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
-      },
-      "39": {
-        "key": "context_page_url",
-        "value": ""
-      },
-      "40": {
-        "key": "context_page_path",
-        "value": ""
-      },
-      "41": {
-        "key": "context_page_title",
-        "value": ""
-      },
-      "42": {
-        "key": "context_page_search",
-        "value": ""
-      },
-      "43": {
-        "key": "context_page_tab_url",
-        "value": ""
-      },
-      "44": {
-        "key": "context_page_referrer",
-        "value": ""
-      },
-      "45": {
-        "key": "context_page_initial_referrer",
-        "value": ""
-      },
-      "46": {
-        "key": "context_page_referring_domain",
-        "value": ""
-      },
-      "47": {
-        "key": "context_page_initial_referring_domain",
-        "value": ""
-      },
-      "48": {
-        "key": "context_event",
-        "value": ""
-      },
-      "49": {
-        "key": "context_sent_at",
-        "value": ""
-      },
-      "50": {
-        "key": "context_campaign",
-        "value": ""
-      },
-      "51": {
-        "key": "context_timestamp",
-        "value": ""
-      },
-      "52": {
-        "key": "context_event_text",
-        "value": ""
-      },
-      "53": {
-        "key": "context_externalId",
-        "value": ""
-      },
-      "54": {
-        "key": "context_received_at",
-        "value": ""
-      },
-      "55": {
-        "key": "context_original_timestamp",
-        "value": ""
+        "attributeKey": "IP",
+        "attributeValue": "14.5.67.21"
       }
     },
     "spreadSheetId": "rudder_sheet_id",
-    "spreadSheetTab": "Page"
+    "spreadSheet": "rudder_sheet"
   },
   {
     "message": {
       "0": {
-        "key": "id",
-        "value": ""
+        "attributeKey": "messageId",
+        "attributeValue": ""
       },
       "1": {
-        "key": "anonymous_id",
-        "value": "anon-id-test"
+        "attributeKey": "First Name",
+        "attributeValue": ""
       },
       "2": {
-        "key": "user_id",
-        "value": "userTest005"
+        "attributeKey": "Last Name",
+        "attributeValue": ""
       },
       "3": {
-        "key": "event",
-        "value": ""
+        "attributeKey": "Birthday",
+        "attributeValue": ""
       },
       "4": {
-        "key": "event_name",
-        "value": "Viewed Home Screen"
+        "attributeKey": "City",
+        "attributeValue": ""
       },
       "5": {
-        "key": "event_text",
-        "value": "Viewed Home Screen"
+        "attributeKey": "Country",
+        "attributeValue": ""
       },
       "6": {
-        "key": "page",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "7": {
-        "key": "original_timestamp",
-        "value": ""
+        "attributeKey": "Offer",
+        "attributeValue": ""
       },
       "8": {
-        "key": "received_at",
-        "value": ""
+        "attributeKey": "Title Page",
+        "attributeValue": "Home"
       },
       "9": {
-        "key": "timestamp",
-        "value": "2020-02-02T00:23:09.544Z"
+        "attributeKey": "Cart Value",
+        "attributeValue": ""
       },
       "10": {
-        "key": "sent_at",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "11": {
-        "key": "context_traits",
-        "value": ""
+        "attributeKey": "App Build",
+        "attributeValue": ""
       },
       "12": {
-        "key": "properties",
-        "value": {
-          "title": "Home",
-          "path": "/home"
-        }
+        "attributeKey": "App Name",
+        "attributeValue": ""
       },
       "13": {
-        "key": "traits",
-        "value": ""
+        "attributeKey": "Library Name",
+        "attributeValue": "http"
       },
       "14": {
-        "key": "context_app_build",
-        "value": ""
-      },
-      "15": {
-        "key": "context_app_name",
-        "value": ""
-      },
-      "16": {
-        "key": "context_app_namespace",
-        "value": ""
-      },
-      "17": {
-        "key": "context_app_version",
-        "value": ""
-      },
-      "18": {
-        "key": "context_device_id",
-        "value": ""
-      },
-      "19": {
-        "key": "context_device_manufacturer",
-        "value": ""
-      },
-      "20": {
-        "key": "context_device_model",
-        "value": ""
-      },
-      "21": {
-        "key": "context_device_name",
-        "value": ""
-      },
-      "22": {
-        "key": "context_device_type",
-        "value": ""
-      },
-      "23": {
-        "key": "context_device_advertisingId",
-        "value": ""
-      },
-      "24": {
-        "key": "context_device_token",
-        "value": ""
-      },
-      "25": {
-        "key": "context_library_name",
-        "value": "http"
-      },
-      "26": {
-        "key": "context_library_version",
-        "value": ""
-      },
-      "27": {
-        "key": "context_locale",
-        "value": ""
-      },
-      "28": {
-        "key": "context_network_carrier",
-        "value": ""
-      },
-      "29": {
-        "key": "context_network_bluetooth",
-        "value": ""
-      },
-      "30": {
-        "key": "context_network_cellular",
-        "value": ""
-      },
-      "31": {
-        "key": "context_network_wifi",
-        "value": ""
-      },
-      "32": {
-        "key": "context_os_name",
-        "value": ""
-      },
-      "33": {
-        "key": "context_os_version",
-        "value": ""
-      },
-      "34": {
-        "key": "context_screen",
-        "value": ""
-      },
-      "35": {
-        "key": "context_timezone",
-        "value": ""
-      },
-      "36": {
-        "key": "context_userAgent",
-        "value": ""
-      },
-      "37": {
-        "key": "context_id",
-        "value": ""
-      },
-      "38": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
-      },
-      "39": {
-        "key": "context_page_url",
-        "value": ""
-      },
-      "40": {
-        "key": "context_page_path",
-        "value": ""
-      },
-      "41": {
-        "key": "context_page_title",
-        "value": ""
-      },
-      "42": {
-        "key": "context_page_search",
-        "value": ""
-      },
-      "43": {
-        "key": "context_page_tab_url",
-        "value": ""
-      },
-      "44": {
-        "key": "context_page_referrer",
-        "value": ""
-      },
-      "45": {
-        "key": "context_page_initial_referrer",
-        "value": ""
-      },
-      "46": {
-        "key": "context_page_referring_domain",
-        "value": ""
-      },
-      "47": {
-        "key": "context_page_initial_referring_domain",
-        "value": ""
-      },
-      "48": {
-        "key": "context_event",
-        "value": ""
-      },
-      "49": {
-        "key": "context_sent_at",
-        "value": ""
-      },
-      "50": {
-        "key": "context_campaign",
-        "value": ""
-      },
-      "51": {
-        "key": "context_timestamp",
-        "value": ""
-      },
-      "52": {
-        "key": "context_event_text",
-        "value": ""
-      },
-      "53": {
-        "key": "context_externalId",
-        "value": ""
-      },
-      "54": {
-        "key": "context_received_at",
-        "value": ""
-      },
-      "55": {
-        "key": "context_original_timestamp",
-        "value": ""
+        "attributeKey": "IP",
+        "attributeValue": "14.5.67.21"
       }
     },
     "spreadSheetId": "rudder_sheet_id",
-    "spreadSheetTab": "Home Screen"
+    "spreadSheet": "rudder_sheet"
   },
   {
     "message": {
       "0": {
-        "key": "id",
-        "value": ""
+        "attributeKey": "messageId",
+        "attributeValue": ""
       },
       "1": {
-        "key": "anonymous_id",
-        "value": ""
+        "attributeKey": "First Name",
+        "attributeValue": ""
       },
       "2": {
-        "key": "user_id",
-        "value": ""
+        "attributeKey": "Last Name",
+        "attributeValue": ""
       },
       "3": {
-        "key": "event",
-        "value": ""
+        "attributeKey": "Birthday",
+        "attributeValue": ""
       },
       "4": {
-        "key": "event_name",
-        "value": "Trello home Screen"
+        "attributeKey": "City",
+        "attributeValue": ""
       },
       "5": {
-        "key": "event_text",
-        "value": "Trello home Screen"
+        "attributeKey": "Country",
+        "attributeValue": ""
       },
       "6": {
-        "key": "page",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "7": {
-        "key": "original_timestamp",
-        "value": ""
+        "attributeKey": "Offer",
+        "attributeValue": ""
       },
       "8": {
-        "key": "received_at",
-        "value": ""
+        "attributeKey": "Title Page",
+        "attributeValue": ""
       },
       "9": {
-        "key": "timestamp",
-        "value": "2020-02-02T00:23:09.544Z"
+        "attributeKey": "Cart Value",
+        "attributeValue": ""
       },
       "10": {
-        "key": "sent_at",
-        "value": ""
+        "attributeKey": "Revenue",
+        "attributeValue": ""
       },
       "11": {
-        "key": "context_traits",
-        "value": ""
+        "attributeKey": "App Build",
+        "attributeValue": ""
       },
       "12": {
-        "key": "properties",
-        "value": ""
+        "attributeKey": "App Name",
+        "attributeValue": ""
       },
       "13": {
-        "key": "traits",
-        "value": ""
+        "attributeKey": "Library Name",
+        "attributeValue": "http"
       },
       "14": {
-        "key": "context_app_build",
-        "value": ""
-      },
-      "15": {
-        "key": "context_app_name",
-        "value": ""
-      },
-      "16": {
-        "key": "context_app_namespace",
-        "value": ""
-      },
-      "17": {
-        "key": "context_app_version",
-        "value": ""
-      },
-      "18": {
-        "key": "context_device_id",
-        "value": ""
-      },
-      "19": {
-        "key": "context_device_manufacturer",
-        "value": ""
-      },
-      "20": {
-        "key": "context_device_model",
-        "value": ""
-      },
-      "21": {
-        "key": "context_device_name",
-        "value": ""
-      },
-      "22": {
-        "key": "context_device_type",
-        "value": ""
-      },
-      "23": {
-        "key": "context_device_advertisingId",
-        "value": ""
-      },
-      "24": {
-        "key": "context_device_token",
-        "value": ""
-      },
-      "25": {
-        "key": "context_library_name",
-        "value": "http"
-      },
-      "26": {
-        "key": "context_library_version",
-        "value": ""
-      },
-      "27": {
-        "key": "context_locale",
-        "value": ""
-      },
-      "28": {
-        "key": "context_network_carrier",
-        "value": ""
-      },
-      "29": {
-        "key": "context_network_bluetooth",
-        "value": ""
-      },
-      "30": {
-        "key": "context_network_cellular",
-        "value": ""
-      },
-      "31": {
-        "key": "context_network_wifi",
-        "value": ""
-      },
-      "32": {
-        "key": "context_os_name",
-        "value": ""
-      },
-      "33": {
-        "key": "context_os_version",
-        "value": ""
-      },
-      "34": {
-        "key": "context_screen",
-        "value": ""
-      },
-      "35": {
-        "key": "context_timezone",
-        "value": ""
-      },
-      "36": {
-        "key": "context_userAgent",
-        "value": ""
-      },
-      "37": {
-        "key": "context_id",
-        "value": ""
-      },
-      "38": {
-        "key": "context_ip",
-        "value": "14.5.67.21"
-      },
-      "39": {
-        "key": "context_page_url",
-        "value": ""
-      },
-      "40": {
-        "key": "context_page_path",
-        "value": ""
-      },
-      "41": {
-        "key": "context_page_title",
-        "value": ""
-      },
-      "42": {
-        "key": "context_page_search",
-        "value": ""
-      },
-      "43": {
-        "key": "context_page_tab_url",
-        "value": ""
-      },
-      "44": {
-        "key": "context_page_referrer",
-        "value": ""
-      },
-      "45": {
-        "key": "context_page_initial_referrer",
-        "value": ""
-      },
-      "46": {
-        "key": "context_page_referring_domain",
-        "value": ""
-      },
-      "47": {
-        "key": "context_page_initial_referring_domain",
-        "value": ""
-      },
-      "48": {
-        "key": "context_event",
-        "value": ""
-      },
-      "49": {
-        "key": "context_sent_at",
-        "value": ""
-      },
-      "50": {
-        "key": "context_campaign",
-        "value": ""
-      },
-      "51": {
-        "key": "context_timestamp",
-        "value": ""
-      },
-      "52": {
-        "key": "context_event_text",
-        "value": ""
-      },
-      "53": {
-        "key": "context_externalId",
-        "value": ""
-      },
-      "54": {
-        "key": "context_received_at",
-        "value": ""
-      },
-      "55": {
-        "key": "context_original_timestamp",
-        "value": ""
+        "attributeKey": "IP",
+        "attributeValue": "14.5.67.21"
       }
     },
     "spreadSheetId": "rudder_sheet_id",
-    "spreadSheetTab": "Main"
+    "spreadSheet": "rudder_sheet"
   },
   {
-    "error": "No Spread Sheet Tab set for this event"
+    "error": "No Spread Sheet set for this event"
   }
 ]

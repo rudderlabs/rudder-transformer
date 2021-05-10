@@ -3,33 +3,66 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "*",
-            "to": "Main"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.country",
+            "to": "Country"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
-        "sheetId": "rudder_sheet_id"
+        "sheetId": "rudder_sheet_id",
+        "sheetName": "rudder_sheet"
       }
     },
     "message": {
@@ -97,33 +130,66 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "*",
-            "to": "Main"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.country",
+            "to": "Country"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
-        "sheetId": "rudder_sheet_id"
+        "sheetId": "rudder_sheet_id",
+        "sheetName": "rudder_sheet"
       }
     },
     "message": {
@@ -174,33 +240,66 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "*",
-            "to": "Main"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.country",
+            "to": "Country"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
-        "sheetId": "rudder_sheet_id"
+        "sheetId": "rudder_sheet_id",
+        "sheetName": "rudder_sheet"
       }
     },
     "message": {
@@ -227,33 +326,66 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "*",
-            "to": "Main"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.country",
+            "to": "Country"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
-        "sheetId": "rudder_sheet_id"
+        "sheetId": "rudder_sheet_id",
+        "sheetName": "rudder_sheet"
       }
     },
     "message": {
@@ -278,33 +410,66 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "*",
-            "to": "Main"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.country",
+            "to": "Country"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
-        "sheetId": "rudder_sheet_id"
+        "sheetId": "rudder_sheet_id",
+        "sheetName": "rudder_sheet"
       }
     },
     "message": {
@@ -323,26 +488,62 @@
     "destination": {
       "Config": {
         "credentials": "{ sheets credentials }",
-        "eventToTabMap": [
+        "eventKeyMap": [
           {
-            "from": "identify",
-            "to": "Identify"
+            "from": "firstName",
+            "to": "First Name"
           },
           {
-            "from": "added to cart",
-            "to": "Added To Cart"
+            "from": "lastName",
+            "to": "Last Name"
           },
           {
-            "from": "viewed home screen",
-            "to": "Home Screen"
+            "from": "birthday",
+            "to": "Birthday"
           },
           {
-            "from": "track",
-            "to": "Track"
+            "from": "address.city",
+            "to": "City"
           },
           {
-            "from": "page",
-            "to": "Page"
+            "from": "address.country",
+            "to": "Country"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "offer",
+            "to": "Offer"
+          },
+          {
+            "from": "title",
+            "to": "Title Page"
+          },
+          {
+            "from": "Cart Value",
+            "to": "Cart Value"
+          },
+          {
+            "from": "revenue",
+            "to": "Revenue"
+          },
+          {
+            "from": "context.app.build",
+            "to": "App Build"
+          },
+          {
+            "from": "context.app.name",
+            "to": "App Name"
+          },
+          {
+            "from": "context.library.name",
+            "to": "Library Name"
+          },
+          {
+            "from": "context.ip",
+            "to": "IP"
           }
         ],
         "sheetId": "rudder_sheet_id"

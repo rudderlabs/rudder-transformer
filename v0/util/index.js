@@ -615,56 +615,6 @@ const constructPayload = (message, mappingJson) => {
   return null;
 };
 
-// pt 1. Here we are following a different style of mapping json where we want to maintain
-// the {dest_key, and , source_key} on a higher key called mappingKey.
-// Example of generated payload:
-// { message:
-// 	 { 	'0': { key: 'anonymous_id', value: '' },
-// 	 	'1': { key: 'user_id', value: 'userTest004' },
-// 	 	'2': { key: 'event', value: 'Page Call' },
-// 	 	..}
-// }
-// pt 2. This is a similar method to construct payload w.r.t where we do-not remove the keys
-// having undefined and null values.
-// Usage - Google Sheets destination where we require all the keys of the message
-// irrespective of values.
-// Future enhancements: Need to validate uniqueness mapping-keys on the mapping-json
-// in order to avoid mapping conflicts
-// ################## Note to devs: Currently we are assuming the mapping-keys are all unique
-const constructPayloadWithKeys = (message, mappingJson) => {
-  if (Array.isArray(mappingJson) && mappingJson.length > 0) {
-    const payload = {};
-    mappingJson.forEach(mapping => {
-      const {
-        sourceKeys,
-        mappingKey,
-        destKey,
-        metadata,
-        sourceFromGenericMap
-      } = mapping;
-      const value = handleMetadataForValue(
-        sourceFromGenericMap
-          ? getFieldValueFromMessage(message, sourceKeys)
-          : getValueFromMessage(message, sourceKeys),
-        metadata
-      );
-
-      if (value) {
-        // set the value only if correct
-        set(payload, mappingKey, { key: destKey, value });
-      } else {
-        // set empty string as value if the value is not defined
-        set(payload, mappingKey, { key: destKey, value: "" });
-      }
-    });
-
-    return payload;
-  }
-
-  // invalid mappingJson
-  return null;
-};
-
 // External ID format
 // {
 //   "context": {
@@ -917,7 +867,6 @@ function checkEmptyStringInarray(array) {
 module.exports = {
   ErrorMessage,
   constructPayload,
-  constructPayloadWithKeys,
   checkEmptyStringInarray,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,

@@ -20,7 +20,8 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  isDefinedAndNotNull
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
@@ -217,6 +218,13 @@ const processIdentify = async (
   });
   attribute = removeUndefinedValues(attribute);
 
+  const inputObj = {
+    ...attribute,
+    id: leadId
+  };
+  if (isDefinedAndNotNull(userId)) {
+    inputObj.userId = userId;
+  }
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
     headers: {
@@ -224,13 +232,7 @@ const processIdentify = async (
     },
     payload: {
       action: "createOrUpdate",
-      input: [
-        {
-          ...attribute,
-          id: leadId,
-          userId
-        }
-      ],
+      input: [inputObj],
       lookupField: "id"
     }
   };

@@ -109,7 +109,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   // add prop1 to merge rule
   const mergeRule = {
     [mergePropColumns.prop1Type]: mergeProp1.name,
-    [mergePropColumns.prop1Value]: mergeProp1.value
+    [mergePropColumns.prop1Value]: mergeProp1.value.toString()
   };
   const mergeColumnTypes = {
     [mergePropColumns.prop1Type]: "string",
@@ -119,7 +119,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   // add prop2 to merge rule
   if (!_.isEmpty(_.toString(mergeProp2.value))) {
     mergeRule[mergePropColumns.prop2Type] = mergeProp2.name;
-    mergeRule[mergePropColumns.prop2Value] = mergeProp2.value;
+    mergeRule[mergePropColumns.prop2Value] = mergeProp2.value.toString();
     mergeColumnTypes[mergePropColumns.prop2Type] = "string";
     mergeColumnTypes[mergePropColumns.prop2Value] = "string";
   }
@@ -129,8 +129,8 @@ function getMergeRuleEvent(message = {}, eventType, options) {
     columns: mergeColumnTypes,
     isMergeRule: true,
     receivedAt: message.receivedAt,
-    mergePropOne: mergeProp1.value,
-    mergePropTwo: mergeProp2.value
+    mergePropOne: mergeProp1.value.toString(),
+    mergePropTwo: mergeProp2.value.toString()
   };
   return { metadata: mergeRulesMetadata, data: mergeRule };
 }

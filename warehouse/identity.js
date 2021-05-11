@@ -130,7 +130,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
     isMergeRule: true,
     receivedAt: message.receivedAt,
     mergePropOne: mergeProp1.value.toString(),
-    mergePropTwo: mergeProp2.value.toString()
+    mergePropTwo: mergeProp2.value && mergeProp2.value.toString()
   };
   return { metadata: mergeRulesMetadata, data: mergeRule };
 }

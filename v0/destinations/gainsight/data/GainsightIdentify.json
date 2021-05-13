@@ -1,0 +1,57 @@
+[
+  {
+    "destKey": "Email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": true
+  },
+  {
+    "destKey": "LinkedinUrl",
+    "sourceKeys": ["traits.linkedInUrl", "context.traits.linkedInUrl"],
+    "required": true
+  },
+  {
+    "destKey": "Location",
+    "sourceKeys": ["traits.location", "context.traits.location"],
+    "required": true
+  },
+  {
+    "destKey": "ExternalRecordID__gc",
+    "sourceKeys": ["traits.externalId", "context.traits.externalId"],
+    "required": true
+  },
+  {
+    "destKey": "EmailOptOut",
+    "sourceKeys": ["traits.emailOptOut", "context.traits.emailOptOut"],
+    "required": true
+  },
+  {
+    "destKey": "DynamicResolutionKey",
+    "sourceKeys": ["traits.dynamicResolutionKey", "context.traits.dynamicResolutionKey"],
+    "required": true
+  },
+  {
+    "destKey": "Timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": true
+  },
+  {
+    "destKey": "Comments",
+    "sourceKeys": ["traits.comments", "context.traits.comments"],
+    "required": true
+  },
+  {
+    "destKey": "MasterRecordID",
+    "sourceKeys": ["traits.masterRecordID", "context.traits.masterRecordID"],
+    "required": true
+  },
+  {
+    "destKey": "MasterAvatarTypeCode",
+    "sourceKeys": ["traits.masterAvatarTypeCode", "context.traits.masterAvatarTypeCode"],
+    "required": true
+  }
+]

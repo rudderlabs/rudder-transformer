@@ -236,7 +236,9 @@ async function getUserMembershipPayload(
       zendeskUserID = zendeskUserId;
     }
   }
-
+  if (!zendeskUserID) {
+    throw new Error("User not found");
+  }
   const payload = {
     organization_membership: {
       user_id: zendeskUserID,

@@ -1,0 +1,107 @@
+[
+  {
+    "destKey": "Name",
+    "sourceKeys": "traits.name",
+    "required": true
+  },
+  {
+    "destKey": "Employees",
+    "sourceKeys": "traits.employees",
+    "required": false
+  },
+  {
+    "destKey": "Arr",
+    "sourceKeys": "traits.arr",
+    "required": false
+  },
+  {
+    "destKey": "BillingAddress",
+    "sourceKeys": "traits.billingAddress",
+    "required": false
+  },
+  {
+    "destKey": "CompanyType",
+    "sourceKeys": "traits.companyType",
+    "required": false
+  },
+  {
+    "destKey": "Csm",
+    "sourceKeys": "traits.csm",
+    "required": false
+  },
+  {
+    "destKey": "CustomerlifetimeInMonths",
+    "sourceKeys": "traits.customerLifetimeInMonths",
+    "required": false
+  },
+  {
+    "destKey": "Industry",
+    "sourceKeys": "traits.industry",
+    "required": false
+  },
+  {
+    "destKey": "LifecycleInWeeks",
+    "sourceKeys": "traits.lifecycleInWeeks",
+    "required": false
+  },
+  {
+    "destKey": "ManagedAs",
+    "sourceKeys": "traits.managedAs",
+    "required": false
+  },
+  {
+    "destKey": "Mrr",
+    "sourceKeys": "traits.mrr",
+    "required": false
+  },
+  {
+    "destKey": "OriginalContractDate",
+    "sourceKeys": "traits.originalContractDate",
+    "required": false
+  },
+  {
+    "destKey": "ParentCompany",
+    "sourceKeys": "traits.parentCompany",
+    "required": false
+  },
+  {
+    "destKey": "CompanyType",
+    "sourceKeys": "traits.companyType",
+    "required": false
+  },
+  {
+    "destKey": "RenewalDate",
+    "sourceKeys": "traits.renewalDate",
+    "required": false
+  },
+  {
+    "destKey": "Stage",
+    "sourceKeys": "traits.stage",
+    "required": false
+  },
+  {
+    "destKey": "Status",
+    "sourceKeys": "traits.status",
+    "required": false
+  },
+  {
+    "destKey": "Tags",
+    "sourceKeys": "traits.tags",
+    "required": false
+  },
+  {
+    "destKey": "TickerSymbol",
+    "sourceKeys": "traits.tickerSymbol",
+    "required": false
+  },
+  {
+    "destKey": "Users",
+    "sourceKeys": "traits.users",
+    "required": false
+  },
+  {
+    "destKey": "SfdcAccountId",
+    "sourceKeys": "traits.sfdcAccountId",
+    "required": false
+  }
+]

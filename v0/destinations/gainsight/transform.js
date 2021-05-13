@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 const get = require("get-value");
-const { set } = require("set-value");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
-  getIdentifyEndpoint,
   identifyMapping,
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
+  ENDPOINTS,
   groupMapping
 } = require("./config");
 const {
@@ -28,11 +28,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   let payload = constructPayload(message, identifyMapping);
 
   if (!payload.name) {
-    const fname = getFieldValueFromMessage(message, "firstName").trim();
-    const lname = getFieldValueFromMessage(message, "lastName").trim();
-    set(payload, "name", `${fname || ""} ${lname || ""}`.trim());
+    const fname = getFieldValueFromMessage(message, "firstName");
+    const lname = getFieldValueFromMessage(message, "lastName");
+    set(payload, "name", `${fname || ""} ${lname || ""}`);
     set(payload, "FirstName", fname);
     set(payload, "LastName", lname);
+    delete payload.name;
   }
 
   payload = extractCustomFields(
@@ -43,13 +44,13 @@ const identifyResponseBuilder = (message, { Config }) => {
   );
 
   const response = defaultRequestConfig();
-  response.method = defaultPutRequestConfig();
-  response.body.json = removeUndefinedAndNullValues(payload);
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
     Accesskey: Config.accessKey,
     "Content-Type": "application/json"
   };
-  response.endpoint = getIdentifyEndpoint(Config.domain);
+  response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   return response;
 };
 
@@ -85,7 +86,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   // update person with the group (company)
   const response = defaultRequestConfig();
-  response.method = defaultPutRequestConfig();
+  response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     Accesskey: Config.accessKey,
     "Content-Type": "application/json"

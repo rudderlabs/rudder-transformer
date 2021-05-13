@@ -11,7 +11,7 @@
   },
   {
     "destKey": "LinkedinUrl",
-    "sourceKeys": ["traits.linkedInUrl", "context.traits.linkedInUrl"],
+    "sourceKeys": ["traits.linkedinUrl", "context.traits.linkedinUrl"],
     "required": false
   },
   {
@@ -21,7 +21,7 @@
   },
   {
     "destKey": "ExternalRecordID__gc",
-    "sourceKeys": ["traits.externalId", "context.traits.externalId"],
+    "sourceKeys": ["traits.externalRecordId", "context.traits.externalRecordId"],
     "required": false
   },
   {

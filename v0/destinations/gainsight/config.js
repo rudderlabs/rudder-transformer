@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const getBaseEndpoint = domain => `https://${domain}/v1.0/`;
+const getBaseEndpoint = domain => `https://${domain}/v1.0`;
 
 const ENDPOINTS = {
   identifyEndpoint: domain => `${getBaseEndpoint(domain)}/api/people`,
@@ -39,28 +39,28 @@ const getLookupPayload = name => {
   };
 };
 
-const MAPPING_CONFIG = getMappingConfig(__dirname, CONFIG_CATEGORIES);
+const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const IDENTIFY_EXCLUSION_KEYS = [
-  "ModifiedDate",
-  "CreatedDate",
-  "CreatedBy",
-  "ModifiedBy",
+  "modifiedDate",
+  "createdDate",
+  "createdBy",
+  "modifiedBy",
   "Gsid",
   "companies",
-  "Name",
-  "FirstName",
-  "LastName",
-  "Email",
-  "LinkedinUrl",
-  "Location",
-  "ExternalRecordID__gc",
-  "EmailOptOut",
-  "DynamicResolutionKey",
-  "Timezone",
-  "Comments",
-  "MasterRecordID",
-  "MasterAvatarTypeCode"
+  "name",
+  "firstName",
+  "lastName",
+  "email",
+  "linkedinUrl",
+  "location",
+  "externalRecordId",
+  "emailOptOut",
+  "dynamicResolutionKey",
+  "timezone",
+  "comments",
+  "masterRecordID",
+  "masterAvatarTypeCode"
 ];
 
 const GROUP_EXCLUSION_KEYS = [];

@@ -1,0 +1,26 @@
+[
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Email": "cosmo@krammer.com",
+        "Name": "Cosmo Krammer",
+        "LinkedinUrl": "https://linkedin.com/cosmo-krammer",
+        "Location": "New York",
+        "EmailOptOut": true,
+        "MasterAvatarTypeCode": 10
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  }
+]

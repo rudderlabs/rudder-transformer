@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "topicName",
+    "sourceKeys": "properties.eventConfig.topicName",
+    "required": true
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "properties.eventConfig.eventName",
+    "required": true
+  },
+  {
+    "destKey": "eventVersion",
+    "sourceKeys": "properties.eventConfig.eventVersion",
+    "required": true
+  },
+  {
+    "destKey": "contractId",
+    "sourceKeys": "properties.eventConfig.contractId",
+    "required": false
+  }
+]

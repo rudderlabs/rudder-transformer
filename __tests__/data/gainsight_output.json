@@ -22,5 +22,34 @@
     },
     "version": "1",
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  },
+  {
+    "error": "email is required for identify"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "ticketId": "sample-ticket-id",
+        "actionEmail": "sample@email.com",
+        "status": "resovled"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "tenantId": "sample-tenant-id",
+      "sharedSecret": "sample-shared-secret",
+      "Content-Type": "application/json",
+      "topicName": "Ticket Actions",
+      "eventName": "Ticket Resolved",
+      "eventVersion": "v01"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
   }
 ]

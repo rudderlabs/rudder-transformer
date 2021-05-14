@@ -1,7 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
 const getBaseEndpoint = domain => `https://${domain}/v1.0`;
-
 const ENDPOINTS = {
   identifyEndpoint: domain => `${getBaseEndpoint(domain)}/api/people`,
 
@@ -19,7 +18,8 @@ const ENDPOINTS = {
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { type: "identify", name: "GainsightIdentify" },
-  GROUP: { type: "group", name: "GainsightGroup" }
+  GROUP: { type: "group", name: "GainsightGroup" },
+  TRACK: { type: "track", name: "GainsightEventConfig" }
 };
 
 const getLookupPayload = name => {
@@ -63,7 +63,29 @@ const IDENTIFY_EXCLUSION_KEYS = [
   "masterAvatarTypeCode"
 ];
 
-const GROUP_EXCLUSION_KEYS = [];
+const GROUP_EXCLUSION_KEYS = [
+  "name",
+  "billingAddress",
+  "employees",
+  "arr",
+  "companyType",
+  "csm",
+  "customerLifetimeInMonths",
+  "industry",
+  "lifecycleInWeeks",
+  "managedAs",
+  "mrr",
+  "originalContractDate",
+  "parentCompany",
+  "companyType",
+  "renewalDate",
+  "stage",
+  "status",
+  "tags",
+  "tickerSymbol",
+  "users",
+  "sfdcAccountId"
+];
 
 module.exports = {
   getLookupPayload,
@@ -71,5 +93,6 @@ module.exports = {
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-  groupMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
+  groupMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name],
+  eventConfigMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
 };

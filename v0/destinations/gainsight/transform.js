@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   identifyMapping,
+  groupMapping,
+  eventConfigMapping,
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
-  ENDPOINTS,
-  groupMapping
+  ENDPOINTS
 } = require("./config");
 const {
   constructPayload,
@@ -16,7 +16,8 @@ const {
   getValueFromMessage,
   extractCustomFields,
   defaultPutRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  defaultPostRequestConfig
 } = require("../../util/index");
 const { searchGroup, createGroup, updateGroup } = require("./util");
 
@@ -55,12 +56,12 @@ const identifyResponseBuilder = (message, { Config }) => {
 };
 
 const groupResponseBuilder = (message, { Config }) => {
-  const groupName = get(message, "traits.name");
+  const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
     throw new Error("group name is required");
   }
 
-  const email = get(message, "context.traits.email");
+  const email = getValueFromMessage(message, "context.traits.email");
   if (!email) {
     throw new Error("email is required for group");
   }
@@ -95,9 +96,30 @@ const groupResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+const trackResponseBuilder = (message, { Config }) => {
+  const eventConfig = constructPayload(message, eventConfigMapping);
+  const eventPayload = getValueFromMessage(message, "properties.eventPayload");
+
+  const response = defaultRequestConfig();
+  response.body.JSON = eventPayload;
+  response.method= defaultPostRequestConfig.requestMethod;
+  response.endpoint = ENDPOINTS.trackEndpoint(Config.domain);
+  response.headers = {
+    tenantId: Config.tenantId,
+    sharedSecret: Config.sharedSecret,
+    Accesskey: Config.accessKey,
+    "Content-Type": "application/json",
+    ...eventConfig
+  };
+  if (Config.contractId) {
+    response.headers.contractId = Config.contractId;
+  }
+  return response;
+};
+
 const process = event => {
   const { message, destination } = event;
-  const messageType = get(message, "type")
+  const messageType = getValueFromMessage(message, "type")
     .toLowerCase()
     .trim();
 
@@ -108,6 +130,9 @@ const process = event => {
       break;
     case EventType.GROUP:
       response = groupResponseBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new Error(`message type ${messageType} not supported`);

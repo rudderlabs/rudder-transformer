@@ -75,5 +75,32 @@
     },
     "version": "1",
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  },
+  {
+    "error": "Missing required value from \"properties.eventConfig.topicName\""
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Email": "krammer@seinfeld.com",
+        "companies": [
+          {
+            "Company_ID": "1P0203VCESP7AUQMV9E953G"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
   }
 ]

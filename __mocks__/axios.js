@@ -87,7 +87,7 @@ function put(url, payload, options) {
   const mockData = getData(url);
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
-      resolve(gainsightRequestHandler(getParamEncodedUrl(url), payload));
+      resolve(gainsightRequestHandler(getParamEncodedUrl(url, options), payload));
     })
   }
   return new Promise((resolve, reject) => {

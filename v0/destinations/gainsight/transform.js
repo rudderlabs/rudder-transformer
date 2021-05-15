@@ -21,7 +21,10 @@ const {
 } = require("../../util/index");
 const { searchGroup, createGroup, updateGroup } = require("./util");
 
-
+/**
+ * Person Object is created or updated. Upsert API makes PUT request for both cases
+ * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
+ */
 const identifyResponseBuilder = (message, { Config }) => {
   if (!getValueFromMessage(message, ["traits.email", "context.traits.name"])) {
     throw new Error("email is required for identify");
@@ -55,6 +58,11 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+/**
+ * Company object is created or updated and added to a
+ * Person Object.
+ * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Company_API/Company_API_Documentation
+ */
 const groupResponseBuilder = async (message, { Config }) => {
   const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
@@ -97,6 +105,12 @@ const groupResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
+/**
+ * Events with eventName and versions are created in Gainsight Dashboard
+ * under a particular Topic. The track call will send a payload to the
+ * mentioned eventName, eventVersion for the particular topicName.
+ * https://support.gainsight.com/Gainsight_NXT/Journey_Orchestrator_and_Email_Templates/Programs/Events_Framework#Event_API_Contract
+ */
 const trackResponseBuilder = (message, { Config }) => {
   const eventConfig = constructPayload(message, eventConfigMapping);
   const eventPayload = getValueFromMessage(message, "properties.eventPayload");
@@ -117,6 +131,9 @@ const trackResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+/**
+ * Processing Single event
+ */
 const process = async event => {
   const { message, destination } = event;
   const messageType = getValueFromMessage(message, "type")

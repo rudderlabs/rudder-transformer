@@ -1,10 +1,10 @@
 const axios = require("axios");
 const { ENDPOINTS, getLookupPayload } = require("./config");
 
-const searchGroup = (groupName, Config) => {
+const searchGroup = async (groupName, Config) => {
   let resp;
   try {
-    resp = axios.get(
+    resp = await axios.post(
       `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
       getLookupPayload(groupName),
       {
@@ -23,10 +23,10 @@ const searchGroup = (groupName, Config) => {
   return resp;
 };
 
-const createGroup = (payload, Config) => {
+const createGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = axios.get(
+    resp = await axios.post(
       `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
       {
         records: [payload]
@@ -47,10 +47,10 @@ const createGroup = (payload, Config) => {
   return resp.data.data.records[0].Gsid;
 };
 
-const updateGroup = (payload, Config) => {
+const updateGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = axios.get(
+    resp = await axios.put(
       `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
       {
         records: [payload]

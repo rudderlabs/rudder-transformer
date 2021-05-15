@@ -15,6 +15,11 @@
     "required": true
   },
   {
+    "destKey": "tenantId",
+    "sourceKeys": "properties.eventConfig.tenantId",
+    "required": true
+  },
+  {
     "destKey": "contractId",
     "sourceKeys": "properties.eventConfig.contractId",
     "required": false

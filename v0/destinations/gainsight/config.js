@@ -1,19 +1,19 @@
 const { getMappingConfig } = require("../../util");
 
-const getBaseEndpoint = domain => `https://${domain}/v1.0`;
-const ENDPOINTS = {
-  identifyEndpoint: domain => `${getBaseEndpoint(domain)}/api/people`,
+const getBaseEndpoint = domain => `https://${domain}/v1.0/api`;
+const getCompanyBaseEndpoint = domain => `https://${domain}/v1/data/objects`;
 
-  trackEndpoint: domain => `${getBaseEndpoint(domain)}/api/eventManager/event`,
+const ENDPOINTS = {
+  identifyEndpoint: domain => `${getBaseEndpoint(domain)}/people`,
+
+  trackEndpoint: domain => `${getBaseEndpoint(domain)}/eventManager/event`,
 
   groupSearchEndpoint: domain =>
-    `${getBaseEndpoint(domain)}/data/objects/query/Company`,
+    `${getCompanyBaseEndpoint(domain)}/query/Company`,
 
-  groupCreateEndpoint: domain =>
-    `${getBaseEndpoint(domain)}/data/objects/Company`,
+  groupCreateEndpoint: domain => `${getCompanyBaseEndpoint(domain)}/Company`,
 
-  groupUpdateEndpoint: domain =>
-    `${getBaseEndpoint(domain)}/data/objects/Company`
+  groupUpdateEndpoint: domain => `${getCompanyBaseEndpoint(domain)}/Company`
 };
 
 const CONFIG_CATEGORIES = {

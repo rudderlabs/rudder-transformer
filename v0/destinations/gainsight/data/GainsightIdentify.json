@@ -10,6 +10,24 @@
     "required": false
   },
   {
+    "destKey": "FirstName",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "LastName",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "MiddleName",
+    "sourceKeys": "middleName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "LinkedinUrl",
     "sourceKeys": ["traits.linkedinUrl", "context.traits.linkedinUrl"],
     "required": false

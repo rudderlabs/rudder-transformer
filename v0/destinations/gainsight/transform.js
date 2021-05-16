@@ -12,7 +12,6 @@ const {
 const {
   constructPayload,
   defaultRequestConfig,
-  getFieldValueFromMessage,
   getValueFromMessage,
   extractCustomFields,
   defaultPutRequestConfig,
@@ -31,13 +30,15 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   let payload = constructPayload(message, identifyMapping);
 
-  if (!payload.name) {
-    const fname = getFieldValueFromMessage(message, "firstName");
-    const lname = getFieldValueFromMessage(message, "lastName");
-    set(payload, "name", `${fname || ""} ${lname || ""}`.trim());
-    set(payload, "FirstName", fname);
-    set(payload, "LastName", lname);
-    delete payload.name;
+  if (!payload.Name) {
+    const fName = payload.FirstName;
+    const mName = payload.MiddleName;
+    const lName = payload.LastName;
+    set(
+      payload, 
+      "Name",
+      `${fName || ""} ${mName || ""} ${lName || ""}`.trim()
+    );
   }
 
   payload = extractCustomFields(

@@ -26,7 +26,7 @@ const { searchGroup, createGroup, updateGroup } = require("./util");
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  if (!getValueFromMessage(message, ["traits.email", "context.traits.name"])) {
+  if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
     throw new Error("email is required for identify");
   }
   let payload = constructPayload(message, identifyMapping);
@@ -77,7 +77,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   const resp = await searchGroup(groupName, Config);
 
   let payload = constructPayload(message, groupMapping);
-  payload = extractCustomFields(message, payload, GROUP_EXCLUSION_KEYS);
+  payload = extractCustomFields(message, payload, ["traits"], GROUP_EXCLUSION_KEYS);
   payload = removeUndefinedAndNullValues(payload);
 
   let groupGsid;

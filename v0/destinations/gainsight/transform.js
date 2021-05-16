@@ -32,13 +32,13 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (!payload.Name) {
     const fName = payload.FirstName;
-    const mName = payload.MiddleName;
     const lName = payload.LastName;
-    set(
-      payload, 
-      "Name",
-      `${fName || ""} ${mName || ""} ${lName || ""}`.trim()
-    );
+    const mName = payload.MiddleName;
+    const name = mName ? 
+      `${fName || ""} ${mName} ${lName || ""}`:
+      `${fName || ""} ${lName || ""}`;
+
+    set(payload, "Name", name.trim());
   }
 
   payload = extractCustomFields(

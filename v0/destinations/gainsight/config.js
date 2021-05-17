@@ -18,8 +18,7 @@ const ENDPOINTS = {
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { type: "identify", name: "GainsightIdentify" },
-  GROUP: { type: "group", name: "GainsightGroup" },
-  TRACK: { type: "track", name: "GainsightEventConfig" }
+  GROUP: { type: "group", name: "GainsightGroup" }
 };
 
 const getLookupPayload = name => {
@@ -111,6 +110,5 @@ module.exports = {
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-  groupMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name],
-  eventConfigMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
+  groupMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
 };

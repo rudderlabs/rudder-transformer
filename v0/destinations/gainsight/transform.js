@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 const set = require("set-value");
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   identifyMapping,
   groupMapping,
-  eventConfigMapping,
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
   ENDPOINTS
@@ -16,30 +16,31 @@ const {
   extractCustomFields,
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getHashFromArray
 } = require("../../util/index");
-const { searchGroup, createGroup, updateGroup } = require("./util");
+const {
+  searchGroup,
+  createGroup,
+  updateGroup,
+  renameCustomFieldsFromMap,
+  getConfigOrThrowError
+} = require("./util");
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
  */
 const identifyResponseBuilder = (message, { Config }) => {
+  if (!Config.accessKey) {
+    throw new Error("Accesskey is required for identify");
+  }
   if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
     throw new Error("email is required for identify");
   }
+
   let payload = constructPayload(message, identifyMapping);
-
-  if (!payload.Name) {
-    const fName = payload.FirstName;
-    const lName = payload.LastName;
-    const mName = payload.MiddleName;
-    const name = mName ? 
-      `${fName || ""} ${mName} ${lName || ""}`:
-      `${fName || ""} ${lName || ""}`;
-
-    set(payload, "Name", name.trim());
-  }
+  const defaultKeys = Object.keys(payload);
 
   payload = extractCustomFields(
     message,
@@ -47,6 +48,24 @@ const identifyResponseBuilder = (message, { Config }) => {
     ["traits", "context.traits"],
     IDENTIFY_EXCLUSION_KEYS
   );
+
+  const personMap = getHashFromArray(Config.personMap, "from", "to", false);
+  payload = renameCustomFieldsFromMap(
+    payload,
+    personMap,
+    defaultKeys
+  );
+
+  if (!payload.Name) {
+    const fName = payload.FirstName;
+    const lName = payload.LastName;
+    const mName = payload.MiddleName;
+    const name = mName
+      ? `${fName || ""} ${mName} ${lName || ""}`
+      : `${fName || ""} ${lName || ""}`;
+
+    set(payload, "Name", name.trim());
+  }
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
@@ -65,6 +84,10 @@ const identifyResponseBuilder = (message, { Config }) => {
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Company_API/Company_API_Documentation
  */
 const groupResponseBuilder = async (message, { Config }) => {
+  if (!Config.accessKey) {
+    throw new Error("Accesskey is required for group");
+  }
+
   const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
     throw new Error("company name is required for group");
@@ -78,14 +101,27 @@ const groupResponseBuilder = async (message, { Config }) => {
   const resp = await searchGroup(groupName, Config);
 
   let payload = constructPayload(message, groupMapping);
-  payload = extractCustomFields(message, payload, ["traits"], GROUP_EXCLUSION_KEYS);
+  const defaultKeys = Object.keys(payload);
+  
+  payload = extractCustomFields(
+    message,
+    payload,
+    ["traits"],
+    GROUP_EXCLUSION_KEYS
+  );
+
+  const companyMap = getHashFromArray(Config.personMap, "from", "to", false);
+  payload = renameCustomFieldsFromMap(
+    payload,
+    companyMap,
+    defaultKeys
+  );
   payload = removeUndefinedAndNullValues(payload);
 
   let groupGsid;
   if (resp.data.data.records.length === 0) {
     groupGsid = await createGroup(payload, Config);
-  } 
-  else {
+  } else {
     groupGsid = await updateGroup(payload, Config);
   }
 
@@ -113,26 +149,41 @@ const groupResponseBuilder = async (message, { Config }) => {
  * https://support.gainsight.com/Gainsight_NXT/Journey_Orchestrator_and_Email_Templates/Programs/Events_Framework#Event_API_Contract
  */
 const trackResponseBuilder = (message, { Config }) => {
-  if (!Config.sharedSecret) {
-    throw new Error("shared secret is required for track");
+  // TODO: extract contractId (optional field)
+
+  const event = getValueFromMessage(message, "event");
+  if (!event) {
+    throw new Error("event name is required for track");
   }
-  
-  const eventConfig = constructPayload(message, eventConfigMapping);
-  const eventPayload = getValueFromMessage(message, "properties.eventPayload");
+
+  const config = getConfigOrThrowError(
+    Config,
+    ["sharedSecret", "topicName", "tenantId"],
+    "track"
+  );
+
+  const eventNameMap = getHashFromArray(Config.eventNameMap, "from", "to", false);
+  if (!eventNameMap || !get(eventNameMap, event)) {
+    throw new Error(`Event name mapping not provided for ${event}`);
+  }
+  const eventVersionMap = getHashFromArray(Config.eventVersionMap, "from", "to", false);
+  if (!eventVersionMap || !get(eventVersionMap, event)) {
+    throw new Error(`event version mapping not provided for ${event}`);
+  }
+
+  let payload = {};
+  payload = extractCustomFields(message, payload, ["properties"], []);
 
   const response = defaultRequestConfig();
-  response.body.JSON = eventPayload;
-  response.method= defaultPostRequestConfig.requestMethod;
+  response.body.JSON = payload;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINTS.trackEndpoint(Config.domain);
   response.headers = {
-    sharedSecret: Config.sharedSecret,
-    Accesskey: Config.accessKey,
+    ...config,
     "Content-Type": "application/json",
-    ...eventConfig
+    eventName: get(eventNameMap, event),
+    eventVersion: get(eventVersionMap, event)
   };
-  if (Config.contractId) {
-    response.headers.contractId = Config.contractId;
-  }
   return response;
 };
 

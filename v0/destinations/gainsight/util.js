@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const axios = require("axios");
 const { ENDPOINTS, getLookupPayload } = require("./config");
 
@@ -74,8 +75,56 @@ const updateGroup = async (payload, Config) => {
   return resp.data.data.records[0].Gsid;
 };
 
+/**
+ * Provides Custom Field name mappping. If map is empty, only keeps
+ * the default keys and removes all other keys from payload.
+ * @param {*} payload 
+ * @param {*} fieldsMap 
+ * @param {*} exlusionKeys 
+ * @returns 
+ */
+const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
+  const mappedPayload = {};
+
+  if (!fieldsMap || Object.keys(fieldsMap).length === 0) {
+    Object.keys(payload).forEach(key => {
+      if (exlusionKeys.includes(key)) {
+        mappedPayload[key] = payload[key];
+      }
+    });
+    return mappedPayload;
+  }
+
+  const fieldMapKeys = Object.keys(fieldsMap);
+  Object.keys(payload).forEach(key => {
+    if (exlusionKeys.includes(key)) {
+      mappedPayload[key] = payload[key];
+    }
+    else if (fieldMapKeys.includes(key)) {
+      mappedPayload[fieldsMap[key]] = payload[key];
+    } 
+    else {
+      // drop the key in this case
+    }
+  });
+  return mappedPayload;
+};
+
+const getConfigOrThrowError = (Config, requiredKeys, methodName) => {
+  const retObj = {};
+  requiredKeys.forEach(key => {
+    if (!Config[key]) {
+      throw new Error(`${key} is required for ${methodName}`);
+    }
+    retObj[key] = Config[key];
+  });
+  return retObj;
+};
+
 module.exports = {
   searchGroup,
   createGroup,
-  updateGroup
+  updateGroup,
+  renameCustomFieldsFromMap,
+  getConfigOrThrowError
 };

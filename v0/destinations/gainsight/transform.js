@@ -184,6 +184,10 @@ const trackResponseBuilder = (message, { Config }) => {
     eventName: get(eventNameMap, event),
     eventVersion: get(eventVersionMap, event)
   };
+  // can work without setting this as well
+  if (Config.accessKey) {
+    set(response.headers, "Accesskey", Config.accessKey);
+  }
   return response;
 };
 

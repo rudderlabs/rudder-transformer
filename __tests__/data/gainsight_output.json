@@ -24,6 +24,31 @@
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
   },
   {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Email": "cosmo@krammer.com",
+        "Name": "Cosmo Krammer",
+        "LinkedinUrl": "https://linkedin.com/cosmo-krammer",
+        "Location": "New York",
+        "EmailOptOut": true,
+        "MasterAvatarTypeCode": 10,
+        "age__gc": 35
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  },
+  {
     "error": "email is required for identify"
   },
   {
@@ -46,8 +71,8 @@
       "sharedSecret": "sample-shared-secret",
       "Content-Type": "application/json",
       "topicName": "Ticket Actions",
-      "eventName": "Ticket Resolved",
-      "eventVersion": "v01"
+      "eventName": "Ticket Resolved Event",
+      "eventVersion": "1.0.0"
     },
     "version": "1",
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
@@ -75,9 +100,6 @@
     },
     "version": "1",
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
-  },
-  {
-    "error": "Missing required value from \"properties.eventConfig.topicName\""
   },
   {
     "body": {

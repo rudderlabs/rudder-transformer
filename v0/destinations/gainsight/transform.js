@@ -113,6 +113,10 @@ const groupResponseBuilder = async (message, { Config }) => {
  * https://support.gainsight.com/Gainsight_NXT/Journey_Orchestrator_and_Email_Templates/Programs/Events_Framework#Event_API_Contract
  */
 const trackResponseBuilder = (message, { Config }) => {
+  if (!Config.sharedSecret) {
+    throw new Error("shared secret is required for track");
+  }
+  
   const eventConfig = constructPayload(message, eventConfigMapping);
   const eventPayload = getValueFromMessage(message, "properties.eventPayload");
 

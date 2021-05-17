@@ -234,10 +234,7 @@ async function getUserMembershipPayload(
         "group"
       );
       zendeskUserID = zendeskUserId;
-    }
-  }
-  if (!zendeskUserID) {
-    throw new Error("User not found");
+    } else throw new Error("User not found");
   }
   const payload = {
     organization_membership: {
@@ -262,7 +259,6 @@ async function createOrganization(
     headers
   );
   const mappingJson = mappingConfig[category.name];
-
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
 

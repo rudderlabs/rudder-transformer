@@ -42,10 +42,10 @@ const getLookupPayload = name => {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const IDENTIFY_EXCLUSION_KEYS = [
-  "modifiedDate",
-  "createdDate",
-  "createdBy",
-  "modifiedBy",
+  "ModifiedDate",
+  "CreatedDate",
+  "CreatedBy",
+  "ModifiedBy",
   "Gsid",
   "companies",
   "name",
@@ -71,6 +71,17 @@ const IDENTIFY_EXCLUSION_KEYS = [
 ];
 
 const GROUP_EXCLUSION_KEYS = [
+  "CreatedDate",
+  "CreatedBy",
+  "Csat",
+  "CurrentScore",
+  "Gsid",
+  "ModifiedBy",
+  "ModifiedDate",
+  "Nps",
+  "ScorecardId",
+  "CurrentScore",
+  "Trend",
   "name",
   "billingAddress",
   "employees",

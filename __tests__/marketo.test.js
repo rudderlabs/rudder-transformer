@@ -3,6 +3,7 @@ const integration = "marketo";
 const name = "Marketo";
 const version = "v0";
 
+const util = require("util");
 const fs = require("fs");
 const path = require("path");
 

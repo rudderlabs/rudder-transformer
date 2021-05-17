@@ -141,7 +141,7 @@
             "XML": {},
             "FORM": {
                 "data": [
-                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Viewed Page ApplicationLoaded\",\"event_time\":1571051718,\"custom_data\":{\"path\":\"/abc\",\"referrer\":\"xyz\",\"search\":\"def\",\"title\":\"ghi\",\"url\":\"jkl\"}}"
+                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Viewed Page ApplicationLoaded\",\"event_time\":1571051718,\"event_source_url\":\"jkl\",\"custom_data\":{\"path\":\"/abc\",\"referrer\":\"xyz\",\"search\":\"def\",\"title\":\"ghi\",\"url\":\"jkl\"}}"
                 ]
             }
         },
@@ -159,7 +159,7 @@
             "XML": {},
             "FORM": {
                 "data": [
-                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Viewed a Page\",\"event_time\":1571051718,\"custom_data\":{\"path\":\"/abc\",\"referrer\":\"xyz\",\"search\":\"def\",\"title\":\"ghi\",\"url\":\"jkl\"}}"
+                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Viewed a Page\",\"event_time\":1571051718,\"event_source_url\":\"jkl\",\"custom_data\":{\"path\":\"/abc\",\"referrer\":\"xyz\",\"search\":\"def\",\"title\":\"ghi\",\"url\":\"jkl\"}}"
                 ]
             }
         },

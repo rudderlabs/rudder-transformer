@@ -1,16 +1,48 @@
 [
   {
     "destKey": "event_name",
-    "sourceKeys": ["event", "type"],
+    "sourceKeys": [
+      "event",
+      "type"
+    ],
     "required": true
   },
   {
     "destKey": "event_time",
-    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": true,
     "metadata": {
       "type": "secondTimestamp"
     }
+  },
+  {
+    "destKey": "event_source_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "opt_out",
+    "sourceKeys": [
+      "traits.opt_out",
+      "context.traits.opt_out",
+      "properties.opt_out"
+    ]
+  },
+  {
+    "destKey": "event_id",
+    "sourceKeys": [
+      "traits.event_id",
+      "context.traits.event_id",
+      "properties.event_id"
+    ]
+  },
+  {
+    "destKey": "action_source",
+    "sourceKeys": [
+      "traits.action_source",
+      "context.traits.action_source",
+      "properties.action_source"
+    ]
   }
 ]
-

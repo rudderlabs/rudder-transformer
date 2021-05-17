@@ -81,8 +81,7 @@ const constructKustomerPayload = (message, category, email) => {
     }
   }
 
-  removeUndefinedAndNullValues(kustomerPayload);
-  return kustomerPayload;
+  return removeUndefinedAndNullValues(kustomerPayload);
 };
 
 // Main process function responsible for building payload for all
@@ -159,10 +158,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Ref: https://apidocs.kustomer.com/#0b0da19f-fca2-401d-af78-5d054c75a9b2
   else {
     targetUrl = `${BASE_ENDPOINT}/v1/tracking/identityEvent`;
-    const eventPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
+    let eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     // eslint-disable-next-line default-case
     switch (message.type.toLowerCase()) {
       case EventType.PAGE:
@@ -176,7 +172,7 @@ const responseBuilderSimple = async (message, category, destination) => {
         }
         break;
     }
-    removeUndefinedAndNullValues(eventPayload);
+    eventPayload = removeUndefinedAndNullValues(eventPayload);
     validateEvent(eventPayload);
     payload = {
       identity: {

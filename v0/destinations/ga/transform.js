@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const md5 = require("md5");
 const { EventType } = require("../../../constants");
@@ -15,7 +16,9 @@ const {
   getParsedIP,
   formatValue,
   getFieldValueFromMessage,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -306,7 +309,7 @@ function responseBuilderSimple(
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
       message.anonymousId ||
-      message.userId;
+      undefined;
   } else {
     finalPayload.cid =
       integrationsClientId ||
@@ -314,8 +317,12 @@ function responseBuilderSimple(
       message.anonymousId ||
       md5(message.userId);
   }
-
   finalPayload.uip = getParsedIP(message);
+
+  const timestamp = message.originalTimestamp
+    ? new Date(message.originalTimestamp)
+    : new Date(message.timestamp);
+  finalPayload.qt = Date.now() - timestamp.getTime();
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
@@ -874,5 +881,37 @@ function process(event) {
 
   return response;
 }
+const processRouterDest = inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
 
-exports.process = process;
+  const respList = inputs.map(input => {
+    try {
+      if (input.message.statusCode) {
+        // already transformed event
+        return getSuccessRespEvents(
+          input.message,
+          [input.metadata],
+          input.destination
+        );
+      }
+      // if not transformed
+      return getSuccessRespEvents(
+        process(input),
+        [input.metadata],
+        input.destination
+      );
+    } catch (error) {
+      return getErrorRespEvents(
+        [input.metadata],
+        error.response ? error.response.status : error.code ? error.code : 400,
+        error.message || "Error occurred while processing payload."
+      );
+    }
+  });
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

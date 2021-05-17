@@ -234,7 +234,9 @@ async function getUserMembershipPayload(
         "group"
       );
       zendeskUserID = zendeskUserId;
-    } else throw new Error("User not found");
+    } else {
+      throw new Error("User not found");
+    }
   }
   const payload = {
     organization_membership: {
@@ -399,6 +401,9 @@ async function processTrack(message, destinationConfig, headers) {
     );
     if (!zendeskUserId) {
       throw new Error("user not found");
+    }
+    if (!email) {
+      throw new Error("user email not found");
     }
     zendeskUserID = zendeskUserId;
     userEmail = email;

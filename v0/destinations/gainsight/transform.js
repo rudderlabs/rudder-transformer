@@ -17,7 +17,8 @@ const {
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  getHashFromArray
+  getHashFromArray,
+  getDestinationExternalID
 } = require("../../util/index");
 const {
   searchGroup,
@@ -171,6 +172,11 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new Error(`event version mapping not provided for ${event}`);
   }
 
+  let contractId = getDestinationExternalID(message, "gainsightEventContractId");
+  if (!contractId) {
+    contractId = Config.contractId;
+  }
+
   let payload = {};
   payload = extractCustomFields(message, payload, ["properties"], []);
 
@@ -184,6 +190,10 @@ const trackResponseBuilder = (message, { Config }) => {
     eventName: get(eventNameMap, event),
     eventVersion: get(eventVersionMap, event)
   };
+
+  if (contractId) {
+    set(response.headers, "contractId", contractId);
+  }
   // can work without setting this as well
   if (Config.accessKey) {
     set(response.headers, "Accesskey", Config.accessKey);

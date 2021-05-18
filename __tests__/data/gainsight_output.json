@@ -150,5 +150,32 @@
     },
     "version": "1",
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "ticketId": "sample-ticket-id",
+        "actionEmail": "sample@email.com",
+        "status": "resovled"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "tenantId": "sample-tenant-id",
+      "sharedSecret": "sample-shared-secret",
+      "Content-Type": "application/json",
+      "topicName": "Ticket Actions",
+      "eventName": "Ticket Resolved Event",
+      "eventVersion": "1.0.0",
+      "contractId": "sample-contract-id"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
   }
 ]

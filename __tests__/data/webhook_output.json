@@ -98,7 +98,8 @@
     "endpoint": "http://6b0e6a60.ngrok.io",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "content-type": "application/json"
+      "content-type": "application/json",
+      "test2": "value2"
     },
     "version": "1",
     "params": {},

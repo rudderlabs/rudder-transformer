@@ -93,10 +93,10 @@
     "destination": {
       "Config": {
         "webhookUrl": "http://6b0e6a60.ngrok.io",
-        "header": [
+        "headers": [
           {
-            "from": "test1",
-            "to": "value1"
+            "from": "",
+            "to": ""
           },
           {
             "from": "test2",

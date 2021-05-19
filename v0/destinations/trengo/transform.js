@@ -42,13 +42,19 @@ const lookupContact = async (term, destination) => {
   } catch (err) {
     throw new Error("[Trengo] :: Inside lookupContact, failed to make request");
   }
-  if (res.status === 200 && res.data && Array.isArray(res.data)) {
-    if (res.data.length > 1) {
+
+  if (
+    res.status === 200 &&
+    res.data &&
+    res.data.data &&
+    Array.isArray(res.data.data)
+  ) {
+    const { data } = res.data;
+    if (data.length > 1) {
       throw new Error(
         `[Trengo] :: Inside lookupContact, unable to update contact, duplicates present for identifer : ${term}`
       );
-    } else if (res.data.length === 1) {
-      const { data } = res;
+    } else if (data.length === 1) {
       return data[0].id;
     }
     return -1;

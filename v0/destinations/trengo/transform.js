@@ -45,7 +45,7 @@ const lookupContact = async (term, destination) => {
   if (res.status === 200 && res.data && Array.isArray(res.data)) {
     if (res.data.length > 1) {
       throw new Error(
-        `[Trengo] :: Inside lookupContact, unaable to update contact duplicates present for identifer : ${term}`
+        `[Trengo] :: Inside lookupContact, unable to update contact, duplicates present for identifer : ${term}`
       );
     } else if (res.data.length === 1) {
       const { data } = res;
@@ -89,6 +89,7 @@ const contactBuilderTrengo = async (
   } else {
     const contactId = await lookupContact(userID, destination);
     if (!contactId) {
+      // TODO: Should we throw error  or should we create new (Creating new might cause duplication)
       throw new Error(
         `[Trengo] :: LookupContact failed for term:${userID} update failed, aborting as dedup option is enabled`
       );
@@ -115,6 +116,17 @@ const ticketBuilderTrengo = async (message, destination) => {
     );
   }
   const contactId = await lookupContact(userID, destination);
+  if (!contactId) {
+    throw new Error(
+      `[Trengo] :: LookupContact failed for term:${userID} track event failed`
+    );
+  }
+
+  if (contactId === -1) {
+    throw new Error(
+      `[Trengo] :: No contact found for term:${userID} track event failed`
+    );
+  }
   const externalId = getDestinationExternalID(message, "trengo");
   if (destination.Config.channelIdentifier === "email") {
     const template = getTemplate(message, destination);
@@ -135,7 +147,7 @@ const ticketBuilderTrengo = async (message, destination) => {
     payload: {
       contact_id: contactId,
       channel_id: externalId || destination.Config.channelId,
-      subject: subjectLine || message.event
+      subject: subjectLine
     },
     endpoint: EndPoints.createTicket
   };

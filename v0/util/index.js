@@ -302,7 +302,9 @@ const ErrorMessage = {
   TypeNotFound: "Invalid payload. Property Type is not present",
   TypeNotSupported: "Message type not supported",
   FailedToConstructPayload: "Payload could not be constructed",
-  ObjectNotFound: "Error while fetching object"
+  ObjectNotFound: "Error while fetching object",
+  InvalidRequest: "Invalid Request.",
+  FailedToCreateAccount: "Failed to create parent account for group call."
 };
 
 // ========================================================================

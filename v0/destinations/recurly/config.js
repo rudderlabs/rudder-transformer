@@ -13,6 +13,10 @@ const CONFIG_CATEGORIES = {
   ADDRESS: {
     name: "RCAddressConfig",
     type: "address"
+  },
+  GROUP: {
+    name: "RCGroupConfig",
+    type: "group"
   }
 };
 

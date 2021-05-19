@@ -41,5 +41,10 @@
   {
     "destKey": "custom_fields",
     "sourceKeys": ""
+  },
+  {
+    "destKey": "parent_account_code",
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true
   }
 ]

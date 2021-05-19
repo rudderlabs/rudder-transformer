@@ -27,5 +27,10 @@
   {
     "destKey": "company",
     "sourceKeys": ["traits.company.name", "context.traits.company.name"]
+  },
+  {
+    "destKey": "parent_account_code",
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true
   }
 ]

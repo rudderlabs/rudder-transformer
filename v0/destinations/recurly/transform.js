@@ -9,10 +9,11 @@ const {
 const {
   defaultRequestConfig,
   ErrorMessage,
-  constructPayload
+  constructPayload,
+  getValueFromMessage
 } = require("../../util");
 
-const { fetchAccount, createCustomFields } = require("./util");
+const { fetchAccount, createCustomFields, createAccount } = require("./util");
 
 const processIdentify = async (message, category, config) => {
   const { address } = constructPayload(
@@ -44,6 +45,36 @@ const processIdentify = async (message, category, config) => {
   };
 };
 
+const processGroup = async (message, category, config) => {
+  // First check if both account of this message exists or not.
+  // Only code is required to create account.
+  // If both groupId and userId are associated as an account in recurly then go ahead and add parent relationship to groupId.
+  // Else If not then create account for groupId first with all traits
+  // then create account for userId with all traits and accociate him as child.
+
+  const responseData = [];
+  const childData = message;
+  const parentData = message;
+  const parentAccount = await fetchAccount(childData.code, config);
+
+  if (!parentAccount.isExist) {
+    const id = await createAccount(parentData, config);
+    if (!id) {
+      throw Error(ErrorMessage.FailedToCreateAccount);
+    }
+  }
+
+  const parentAccountObj = await processIdentify(parentData, category, config);
+  const accountObj = await processIdentify(message, category, config);
+  accountObj.payload = {
+    ...getValueFromMessage(
+      { groupId: message.groupId },
+      MAPPING_CONFIG[category.name]
+    )
+  };
+  return accountObj;
+};
+
 const responseBuilderSimple = (payload, requestMethod, endPoint, apiKey) => {
   const response = defaultRequestConfig();
   response.endpoint = endPoint;
@@ -70,9 +101,9 @@ const processEvent = async (message, destination) => {
     case EventType.IDENTIFY:
       response = await processIdentify(message, category, destination.Config);
       break;
-    // case EventType.GROUP:
-    //   payload = processGroup(message, category);
-    //   break;
+    case EventType.GROUP:
+      response = await processGroup(message, category, destination.Config);
+      break;
     // case EventType.TRACK:
     //   payload = processTrack(message, category);
     //   break;

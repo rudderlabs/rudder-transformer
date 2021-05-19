@@ -43,6 +43,25 @@ const fetchAccount = async (code, config) => {
   };
 };
 
+const createAccount = async (data, config) => {
+  let response = null;
+  const accountUrl = `${stripTrailingSlash(config.siteId) ||
+    DEFAULT_BASE_ENDPOINT}/accounts`;
+
+  try {
+    response = await axios.post(`${accountUrl}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: ACCEPT_HEADERS,
+        Authorization: `Basic ${btoa(`${config.apiKey}:`)}`
+      }
+    });
+  } catch (err) {
+    logger.debug(ErrorMessage.InvalidRequest);
+  }
+  return (response && response.id) || null;
+};
+
 const createCustomFields = payloadCustomFields => {
   const customFields = [];
   Object.keys(payloadCustomFields).forEach(key => {
@@ -54,5 +73,6 @@ const createCustomFields = payloadCustomFields => {
 
 module.exports = {
   fetchAccount,
+  createAccount,
   createCustomFields
 };

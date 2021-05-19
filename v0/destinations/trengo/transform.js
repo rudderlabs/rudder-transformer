@@ -62,8 +62,13 @@ const contactBuilderTrengo = async (
   cretaeScope = true
 ) => {
   let result;
-  const externalId = getDestinationExternalID(message, "trengo");
   const userID = getFieldValueFromMessage(message, "userId");
+  if (!userID) {
+    throw new Error(
+      "[Trengo] :: Cound not process track events, userID not present"
+    );
+  }
+  const externalId = getDestinationExternalID(message, "trengo");
   const contactName = getValueFromMessage(message, "name")
     ? getValueFromMessage(message, "name")
     : `${getFieldValueFromMessage(
@@ -101,8 +106,15 @@ const contactBuilderTrengo = async (
   return result;
 };
 
-const ticketBuilderTrengo = (message, destination) => {
+const ticketBuilderTrengo = async (message, destination) => {
   let subjectLine;
+  const userID = getFieldValueFromMessage(message, "userId");
+  if (!userID) {
+    throw new Error(
+      "[Trengo] :: Cound not process track events, userID not present"
+    );
+  }
+  const contactId = await lookupContact(userID, destination);
   const externalId = getDestinationExternalID(message, "trengo");
   if (destination.Config.channelIdentifier === "email") {
     const template = getTemplate(message, destination);
@@ -121,7 +133,7 @@ const ticketBuilderTrengo = (message, destination) => {
   }
   const result = {
     payload: {
-      contact_id: getFieldValueFromMessage(message, "userId"),
+      contact_id: contactId,
       channel_id: externalId || destination.Config.channelId,
       subject: subjectLine || message.event
     },
@@ -153,7 +165,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     }
   } else {
     // create ticket --> need to search using email then use contact id to create ticket
-    trengoPayload = ticketBuilderTrengo(message, destination);
+    trengoPayload = await ticketBuilderTrengo(message, destination);
   }
   if (trengoPayload) {
     const response = defaultRequestConfig();

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 const axios = require("axios");
+const logger = require("../../../logger");
 const { ENDPOINTS, getLookupPayload } = require("./config");
 
 const searchGroup = async (groupName, Config) => {
@@ -19,7 +20,11 @@ const searchGroup = async (groupName, Config) => {
       throw new Error();
     }
   } catch (error) {
-    throw new Error("failed to search group");
+    let errMessage = "";
+    if (error.response && error.response.data) {
+      errMessage = error.response.data.errorDesc;
+    }
+    throw new Error(`failed to search group ${errMessage}`);
   }
   return resp;
 };
@@ -43,7 +48,11 @@ const createGroup = async (payload, Config) => {
       throw new Error();
     }
   } catch (error) {
-    throw new Error("failed to search group");
+    let errMessage = "";
+    if (error.response && error.response.data) {
+      errMessage = error.response.data.errorDesc;
+    }
+    throw new Error(`failed to create group ${errMessage}`);
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -70,7 +79,11 @@ const updateGroup = async (payload, Config) => {
       throw new Error();
     }
   } catch (error) {
-    throw new Error("failed to search group");
+    let errMessage = "";
+    if (error.response && error.response.data) {
+      errMessage = error.response.data.errorDesc;
+    }
+    throw new Error(`failed to update group ${errMessage}`);
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -78,10 +91,10 @@ const updateGroup = async (payload, Config) => {
 /**
  * Provides Custom Field name mappping. If map is empty, only keeps
  * the default keys and removes all other keys from payload.
- * @param {*} payload 
- * @param {*} fieldsMap 
- * @param {*} exlusionKeys 
- * @returns 
+ * @param {*} payload
+ * @param {*} fieldsMap
+ * @param {*} exlusionKeys
+ * @returns
  */
 const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
   const mappedPayload = {};
@@ -99,12 +112,10 @@ const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
   Object.keys(payload).forEach(key => {
     if (exlusionKeys.includes(key)) {
       mappedPayload[key] = payload[key];
-    }
-    else if (fieldMapKeys.includes(key)) {
+    } else if (fieldMapKeys.includes(key)) {
       mappedPayload[fieldsMap[key]] = payload[key];
-    } 
-    else {
-      // drop the key in this case
+    } else {
+      logger.info(`dropping key ${key}`);
     }
   });
   return mappedPayload;

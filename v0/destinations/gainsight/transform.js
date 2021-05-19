@@ -33,9 +33,7 @@ const {
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  if (!Config.accessKey) {
-    throw new Error("Accesskey is required for identify");
-  }
+  const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "identify");
   if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
     throw new Error("email is required for identify");
   }
@@ -72,7 +70,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
-    Accesskey: Config.accessKey,
+    Accesskey: accessKey,
     "Content-Type": "application/json"
   };
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
@@ -85,10 +83,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Company_API/Company_API_Documentation
  */
 const groupResponseBuilder = async (message, { Config }) => {
-  if (!Config.accessKey) {
-    throw new Error("Accesskey is required for group");
-  }
-
+  const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "group");
   const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
     throw new Error("company name is required for group");
@@ -136,7 +131,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   response.headers = {
-    Accesskey: Config.accessKey,
+    Accesskey: accessKey,
     "Content-Type": "application/json"
   };
   response.body.JSON = responsePayload;

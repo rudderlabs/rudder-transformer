@@ -35,12 +35,18 @@
   {
     "destKey": "Location",
     "sourceKeys": ["traits.location", "context.traits.location"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "ExternalRecordID__gc",
     "sourceKeys": ["traits.externalRecordId", "context.traits.externalRecordId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "EmailOptOut",
@@ -50,7 +56,10 @@
   {
     "destKey": "DynamicResolutionKey",
     "sourceKeys": ["traits.dynamicResolutionKey", "context.traits.dynamicResolutionKey"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "Timezone",
@@ -60,7 +69,10 @@
   {
     "destKey": "Comments",
     "sourceKeys": ["traits.comments", "context.traits.comments"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "MasterRecordID",
@@ -70,6 +82,9 @@
   {
     "destKey": "MasterAvatarTypeCode",
     "sourceKeys": ["traits.masterAvatarTypeCode", "context.traits.masterAvatarTypeCode"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   }
 ]

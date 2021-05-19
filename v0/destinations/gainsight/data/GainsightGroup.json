@@ -7,7 +7,10 @@
   {
     "destKey": "Employees",
     "sourceKeys": "traits.employees",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "Arr",
@@ -17,7 +20,18 @@
   {
     "destKey": "BillingAddress",
     "sourceKeys": "traits.billingAddress",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
+  },
+  {
+    "destKey": "Summary",
+    "sourceKeys": "traits.summary",
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "CompanyType",
@@ -32,17 +46,26 @@
   {
     "destKey": "CustomerlifetimeInMonths",
     "sourceKeys": "traits.customerLifetimeInMonths",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "Industry",
     "sourceKeys": "traits.industry",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "LifecycleInWeeks",
     "sourceKeys": "traits.lifecycleInWeeks",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "ManagedAs",
@@ -92,16 +115,27 @@
   {
     "destKey": "TickerSymbol",
     "sourceKeys": "traits.tickerSymbol",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
   },
   {
     "destKey": "Users",
     "sourceKeys": "traits.users",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "SfdcAccountId",
     "sourceKeys": "traits.sfdcAccountId",
+    "required": false
+  },
+  {
+    "destKey": "IndustryNew",
+    "sourceKeys": "traits.industryNew",
     "required": false
   }
 ]

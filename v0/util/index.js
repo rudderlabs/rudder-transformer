@@ -438,6 +438,13 @@ const handleMetadataForValue = (value, metadata) => {
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
         break;
+      case "jsonStringifyOnObject":
+        // if already a string, will not stringify
+        // calling stringify on string will add escape characters
+        if (typeof formattedVal !== "string") {
+          formattedVal = JSON.stringify(formattedVal);
+        }
+        break;
       case "numberForRevenue":
         if (
           (typeof formattedVal === "string" ||

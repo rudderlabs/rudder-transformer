@@ -7,5 +7,6 @@ const EndPoints = {
 };
 
 module.exports = {
-  EndPoints
+  EndPoints,
+  BASE_URL
 };

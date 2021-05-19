@@ -224,7 +224,8 @@ const responseBuilderSimple = async (message, category, destination) => {
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
-      "Message Type is not present. Aborting message., 400"
+      "Message Type is not present. Aborting message.",
+      400
     );
   }
 

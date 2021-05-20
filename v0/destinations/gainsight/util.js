@@ -3,6 +3,13 @@ const axios = require("axios");
 const logger = require("../../../logger");
 const { ENDPOINTS, getLookupPayload } = require("./config");
 
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
+
 const searchGroup = async (groupName, Config) => {
   let resp;
   try {
@@ -16,15 +23,18 @@ const searchGroup = async (groupName, Config) => {
         }
       }
     );
-    if (!resp || !resp.data || resp.status !== 200) {
-      throw new Error();
-    }
   } catch (error) {
     let errMessage = "";
+    let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
+      errorStatus = error.response.status;
     }
-    throw new Error(`failed to search group ${errMessage}`);
+    throw new CustomError(`failed to search group ${errMessage}`, errorStatus);
+  }
+  
+  if (!resp || !resp.data || resp.status !== 200) {
+    throw new CustomError("failed to search group", 500);
   }
   return resp;
 };
@@ -44,15 +54,18 @@ const createGroup = async (payload, Config) => {
         }
       }
     );
-    if (!resp || !resp.data || resp.status !== 200) {
-      throw new Error();
-    }
   } catch (error) {
     let errMessage = "";
+    let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
+      errorStatus = error.response.status;
     }
-    throw new Error(`failed to create group ${errMessage}`);
+    throw new CustomError(`failed to create group ${errMessage}`, errorStatus);
+  }
+  
+  if (!resp || !resp.data || resp.status !== 200) {
+    throw new CustomError("failed to create group", 500);
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -75,15 +88,18 @@ const updateGroup = async (payload, Config) => {
         }
       }
     );
-    if (!resp || !resp.data || resp.status !== 200) {
-      throw new Error();
-    }
   } catch (error) {
     let errMessage = "";
+    let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
+      errorStatus = error.response.status;
     }
-    throw new Error(`failed to update group ${errMessage}`);
+    throw new CustomError(`failed to update group ${errMessage}`, errorStatus);
+  }
+  
+  if (!resp || !resp.data || resp.status !== 200) {
+    throw new CustomError("failed to update group", 500);
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -125,7 +141,7 @@ const getConfigOrThrowError = (Config, requiredKeys, methodName) => {
   const retObj = {};
   requiredKeys.forEach(key => {
     if (!Config[key]) {
-      throw new Error(`${key} is required for ${methodName}`);
+      throw new CustomError(`${key} is required for ${methodName}`, 500);
     }
     retObj[key] = Config[key];
   });
@@ -137,5 +153,6 @@ module.exports = {
   createGroup,
   updateGroup,
   renameCustomFieldsFromMap,
-  getConfigOrThrowError
+  getConfigOrThrowError,
+  CustomError
 };

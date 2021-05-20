@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable prettier/prettier */
 const set = require("set-value");
 const get = require("get-value");
@@ -18,14 +19,17 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   getHashFromArray,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util/index");
 const {
   searchGroup,
   createGroup,
   updateGroup,
   renameCustomFieldsFromMap,
-  getConfigOrThrowError
+  getConfigOrThrowError,
+  CustomError
 } = require("./util");
 
 /**
@@ -35,7 +39,7 @@ const {
 const identifyResponseBuilder = (message, { Config }) => {
   const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "identify");
   if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
-    throw new Error("email is required for identify");
+    throw new CustomError("email is required for identify", 400);
   }
 
   let payload = constructPayload(message, identifyMapping);
@@ -86,12 +90,12 @@ const groupResponseBuilder = async (message, { Config }) => {
   const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "group");
   const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
-    throw new Error("company name is required for group");
+    throw new CustomError("company name is required for group", 400);
   }
 
   const email = getValueFromMessage(message, "context.traits.email");
   if (!email) {
-    throw new Error("user email is required for group");
+    throw new CustomError("user email is required for group", 400);
   }
 
   const resp = await searchGroup(groupName, Config);
@@ -149,7 +153,7 @@ const trackResponseBuilder = (message, { Config }) => {
 
   const event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new Error("event name is required for track");
+    throw new CustomError("event name is required for track", 400);
   }
 
   const config = getConfigOrThrowError(
@@ -160,11 +164,11 @@ const trackResponseBuilder = (message, { Config }) => {
 
   const eventNameMap = getHashFromArray(Config.eventNameMap, "from", "to", false);
   if (!eventNameMap || !get(eventNameMap, event)) {
-    throw new Error(`Event name mapping not provided for ${event}`);
+    throw new CustomError(`Event name mapping not provided for ${event}`, 400);
   }
   const eventVersionMap = getHashFromArray(Config.eventVersionMap, "from", "to", false);
   if (!eventVersionMap || !get(eventVersionMap, event)) {
-    throw new Error(`event version mapping not provided for ${event}`);
+    throw new CustomError(`event version mapping not provided for ${event}`, 400);
   }
 
   let contractId = getDestinationExternalID(message, "gainsightEventContractId");
@@ -217,9 +221,48 @@ const process = async event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new Error(`message type ${messageType} not supported`);
+      throw new CustomError(`message type ${messageType} not supported`, 400);
   }
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = {process, processRouterDest};

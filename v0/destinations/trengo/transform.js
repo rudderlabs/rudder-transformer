@@ -3,18 +3,37 @@ const Handlebars = require("handlebars");
 const Axios = require("axios");
 const { EventType } = require("../../../constants");
 const { EndPoints, BASE_URL } = require("./config");
-const { getHashFromArray } = require("../../util");
+const {
+  getHashFromArray,
+  removeUndefinedAndNullValues
+} = require("../../util");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
+  defaultPutRequestConfig,
   getFieldValueFromMessage,
   getValueFromMessage,
   getDestinationExternalID
 } = require("../../util");
-
+/**
+ *
+ * @param {*} message
+ * @param {*} destination
+ *
+ * This func returns specific template based on event that is
+ * sent (Track calls). If the event is not listed in the keys of the mapping
+ * we will not process the event. In order to process specific events
+ * it needs to be present in the mapping keys.
+ */
 const getTemplate = (message, destination) => {
+  const { event } = message;
   const { eventTemplateMap } = destination.Config;
   const hashMap = getHashFromArray(eventTemplateMap, "from", "to", false);
+  if (!Object.keys(hashMap).includes(event)) {
+    throw new Error(
+      `[Trengo] :: ${event} is not present in Event-Map template keys`
+    );
+  }
 
   return (
     (message.event ? hashMap[message.event] : null) || hashMap["*"] || null
@@ -31,6 +50,18 @@ const stringifyJSON = json => {
   return output;
 };
 
+/**
+ *
+ * @param {*} term
+ * @param {*} destination
+ *
+ * This function looks up contact details and returns the contactId if found.
+ * For duplicate contact found for a specific identifier it will return error
+ * (as this func is used for updating and lodging tickets for a contact) hence
+ * it will not work for duplicates.
+ *
+ * In case no contact is founf for a particular identifer it returns -1
+ */
 const lookupContact = async (term, destination) => {
   let res;
   try {
@@ -52,7 +83,7 @@ const lookupContact = async (term, destination) => {
     const { data } = res.data;
     if (data.length > 1) {
       throw new Error(
-        `[Trengo] :: Inside lookupContact, unable to update contact, duplicates present for identifer : ${term}`
+        `[Trengo] :: Inside lookupContact, duplicates present for identifer : ${term}`
       );
     } else if (data.length === 1) {
       return data[0].id;
@@ -61,19 +92,27 @@ const lookupContact = async (term, destination) => {
   }
   return null;
 };
-
+/**
+ *
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} identifier
+ * @param {*} cretaeScope
+ *
+ * This function cretaes contact payload
+ * Based on create-scope flag it will either create payload
+ * for cretaing contact or for updating contact.
+ *
+ */
 const contactBuilderTrengo = async (
   message,
   destination,
+  identifier,
   cretaeScope = true
 ) => {
   let result;
-  const userID = getFieldValueFromMessage(message, "userId");
-  if (!userID) {
-    throw new Error(
-      "[Trengo] :: Cound not process track events, userID not present"
-    );
-  }
+
+  // External id will override the channelId
   const externalId = getDestinationExternalID(message, "trengo");
   const contactName = getValueFromMessage(message, "name")
     ? getValueFromMessage(message, "name")
@@ -83,112 +122,189 @@ const contactBuilderTrengo = async (
       )} ${getFieldValueFromMessage(message, "lastName")}`;
 
   if (cretaeScope) {
+    // In create scope we directly create the payload for creating new contact
+    // based on the info we have.
+    let payload = {
+      name: contactName,
+      identifier,
+      channel_id: externalId || destination.Config.channelId
+    };
+    payload = removeUndefinedAndNullValues(payload);
     result = {
-      payload: {
-        name: contactName,
-        identifier: userID,
-        channel_id: externalId || destination.Config.channelId
-      },
+      payload,
       endpoint: `${BASE_URL}/channels/${externalId ||
-        destination.Config.channelId}/contacts`
+        destination.Config.channelId}/contacts`,
+      method: "POST"
     };
   } else {
-    const contactId = await lookupContact(userID, destination);
+    // If we are in update scope we need to search the contact and get the contactId
+    // using the identifier (email/phone) we have.
+    const contactId = await lookupContact(identifier, destination);
     if (!contactId) {
-      // TODO: Should we throw error  or should we create new (Creating new might cause duplication)
+      // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
       throw new Error(
-        `[Trengo] :: LookupContact failed for term:${userID} update failed, aborting as dedup option is enabled`
+        `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`
       );
     }
+    // In case we did not find the contact for this identifier we return -1
     if (contactId === -1) {
       return -1;
     }
+    // If we get contactId we update that contact with below payload
+    let payload = {
+      name: contactName
+    };
+    payload = removeUndefinedAndNullValues(payload);
     result = {
-      payload: {
-        name: contactName
-      },
-      endpoint: `${BASE_URL}/contacts/${contactId}`
+      payload,
+      endpoint: `${BASE_URL}/contacts/${contactId}`,
+      method: "PUT"
     };
   }
   return result;
 };
 
-const ticketBuilderTrengo = async (message, destination) => {
+const ticketBuilderTrengo = async (message, destination, identifer) => {
   let subjectLine;
-  const userID = getFieldValueFromMessage(message, "userId");
-  if (!userID) {
-    throw new Error(
-      "[Trengo] :: Cound not process track events, userID not present"
-    );
-  }
-  const contactId = await lookupContact(userID, destination);
+  const template = getTemplate(message, destination);
+  const contactId = await lookupContact(identifer, destination);
   if (!contactId) {
     throw new Error(
-      `[Trengo] :: LookupContact failed for term:${userID} track event failed`
+      `[Trengo] :: LookupContact failed for term:${identifer} track event failed`
     );
   }
 
   if (contactId === -1) {
     throw new Error(
-      `[Trengo] :: No contact found for term:${userID} track event failed`
+      `[Trengo] :: No contact found for term:${identifer} track event failed`
     );
   }
   const externalId = getDestinationExternalID(message, "trengo");
   if (destination.Config.channelIdentifier === "email") {
-    const template = getTemplate(message, destination);
-    if (!(template && template.length > 0)) {
-      throw new Error(
-        `[Trengo] :: Cound not process track events, template value not present - Template ${template}`
-      );
+    // check with keys
+    if (template && template.length > 0) {
+      try {
+        const hTemplate = Handlebars.compile(template.trim());
+        const templateInput = {
+          event: message.event,
+          properties: stringifyJSON(message.properties),
+          ...message.properties
+        };
+        subjectLine = hTemplate(templateInput).trim();
+      } catch (err) {
+        throw new Error(
+          `[Trengo] :: Error occured in parsing event template for ${message.event}`
+        );
+      }
     }
-    const hTemplate = Handlebars.compile(template.trim());
-    const templateInput = {
-      event: message.event,
-      properties: stringifyJSON(message.properties),
-      ...message.properties
-    };
-    subjectLine = hTemplate(templateInput).trim();
   }
+  let ticketPayload = {
+    contact_id: contactId,
+    channel_id: externalId || destination.Config.channelId,
+    subject: subjectLine
+  };
+  ticketPayload = removeUndefinedAndNullValues(ticketPayload);
   const result = {
-    payload: {
-      contact_id: contactId,
-      channel_id: externalId || destination.Config.channelId,
-      subject: subjectLine
-    },
-    endpoint: EndPoints.createTicket
+    payload: ticketPayload,
+    endpoint: EndPoints.createTicket,
+    method: "POST"
   };
   return result;
 };
 
+/**
+ *
+ * @param {*} message
+ * @param {*} messageType
+ * @param {*} destination
+ *
+ * The core function responsible for building the payload for trengo,
+ * based on type of event and the destination configurations the
+ * payloads are generated.
+ */
 const responseBuilderSimple = async (message, messageType, destination) => {
   let trengoPayload;
+  // ChannelId is a mandatory field if it is not present in destination config
+  // we will abort events.
   if (!destination.Config.channelId) {
     throw new Error(
       "[Trengo] :: Cound not process event, missing mandatory field channelId"
     );
   }
-  // channel id
+
+  const email = getFieldValueFromMessage(message, "email");
+  const phone = getFieldValueFromMessage(message, "phone");
+  const { channelIdentifier, enableDedup } = destination.Config;
+  // Based on type of channelIdentifier selected from destination dashboard
+  // we check the presence of required property which is email or phone either
+  // has to be present based on destination settings.
+  if (
+    (channelIdentifier === "phone" && !phone) ||
+    (channelIdentifier === "email" && !email)
+  ) {
+    throw new Error(
+      `[Trengo] :: Mandatory field for Chaneel-Identifier :${channelIdentifier} not present`
+    );
+  }
+  // In case of Identify type of events we create contacts or update
   if (messageType === EventType.IDENTIFY) {
-    // create contact
-    if (
-      destination.Config.channelIdentifier === "phone" &&
-      destination.Config.enableDedup
-    ) {
-      trengoPayload = await contactBuilderTrengo(message, destination, false);
+    // If deduplication is enabled and channelIdentifier is phone
+    // we will first search the contact if unique contact is found
+    // we will update it else if not found we will create new.
+    if (channelIdentifier === "phone" && enableDedup) {
+      // Here we are searching the contact first then if present creating the update
+      // payload. If not found we return  -1.
+      trengoPayload = await contactBuilderTrengo(
+        message,
+        destination,
+        phone,
+        false
+      );
       if (trengoPayload === -1) {
-        trengoPayload = await contactBuilderTrengo(message, destination, true);
+        // If not found create new
+        trengoPayload = await contactBuilderTrengo(
+          message,
+          destination,
+          phone,
+          true
+        );
       }
     } else {
-      trengoPayload = await contactBuilderTrengo(message, destination, true);
+      // If deduplicaton is disabled we will always create new contacts.
+      // For email-identifier based contacts we always create new as destination
+      // takes care of deduplication of email-type contacts. (not phone type)
+      trengoPayload = await contactBuilderTrengo(
+        message,
+        destination,
+        email,
+        true
+      );
     }
   } else {
-    // create ticket --> need to search using email then use contact id to create ticket
-    trengoPayload = await ticketBuilderTrengo(message, destination);
+    // Here we create ticket payload, we take the identifier email/phone based on channel
+    // identifier. For track calls also we expect email/phone to be present in message
+    trengoPayload = await ticketBuilderTrengo(
+      message,
+      destination,
+      channelIdentifier === "email" ? email : phone
+    );
   }
+  // Wrapped payload with structure
+  // {
+  //  payload: { the paylaod.. },
+  //  endpoint: "endpoint.."
+  //  method: "POST"/"PUT"
+  // }
   if (trengoPayload) {
     const response = defaultRequestConfig();
     response.endpoint = trengoPayload.endpoint;
-    response.method = defaultPostRequestConfig.requestMethod;
+
+    if (trengoPayload.method === "PUT") {
+      response.method = defaultPutRequestConfig.requestMethod;
+    } else {
+      response.method = defaultPostRequestConfig.requestMethod;
+    }
+
     response.headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -201,6 +317,15 @@ const responseBuilderSimple = async (message, messageType, destination) => {
   throw new Error("Payload could not be constructed");
 };
 
+/**
+ *
+ * @param {*} message
+ * @param {*} destination
+ *
+ * Main process function responsible for processing events.
+ * If event type is not identify or track it will discard
+ * the event
+ */
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");

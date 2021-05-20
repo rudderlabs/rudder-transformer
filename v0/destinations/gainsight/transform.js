@@ -106,7 +106,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     GROUP_EXCLUSION_KEYS
   );
 
-  const companyMap = getHashFromArray(Config.personMap, "from", "to", false);
+  const companyMap = getHashFromArray(Config.companyMap, "from", "to", false);
   payload = renameCustomFieldsFromMap(
     payload,
     companyMap,

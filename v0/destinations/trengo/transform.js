@@ -113,8 +113,8 @@ const contactBuilderTrengo = async (
   let result;
 
   // External id will override the channelId
-  const contactName = getValueFromMessage(message, "name")
-    ? getValueFromMessage(message, "name")
+  const contactName = getFieldValueFromMessage(message, "name")
+    ? getFieldValueFromMessage(message, "name")
     : `${getFieldValueFromMessage(
         message,
         "firstName"

@@ -35,9 +35,7 @@ const getTemplate = (message, destination) => {
     );
   }
 
-  return (
-    (message.event ? hashMap[message.event] : null) || hashMap["*"] || null
-  );
+  return message.event ? hashMap[message.event] : null;
 };
 
 const stringifyJSON = json => {

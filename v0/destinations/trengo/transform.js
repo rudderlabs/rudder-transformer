@@ -73,6 +73,7 @@ const lookupContact = async (term, destination) => {
   }
 
   if (
+    res &&
     res.status === 200 &&
     res.data &&
     res.data.data &&
@@ -106,12 +107,12 @@ const contactBuilderTrengo = async (
   message,
   destination,
   identifier,
+  externalId,
   cretaeScope = true
 ) => {
   let result;
 
   // External id will override the channelId
-  const externalId = getDestinationExternalID(message, "trengo");
   const contactName = getValueFromMessage(message, "name")
     ? getValueFromMessage(message, "name")
     : `${getFieldValueFromMessage(
@@ -162,7 +163,12 @@ const contactBuilderTrengo = async (
   return result;
 };
 
-const ticketBuilderTrengo = async (message, destination, identifer) => {
+const ticketBuilderTrengo = async (
+  message,
+  destination,
+  identifer,
+  externalId
+) => {
   let subjectLine;
   const template = getTemplate(message, destination);
   const contactId = await lookupContact(identifer, destination);
@@ -177,7 +183,6 @@ const ticketBuilderTrengo = async (message, destination, identifer) => {
       `[Trengo] :: No contact found for term:${identifer} track event failed`
     );
   }
-  const externalId = getDestinationExternalID(message, "trengo");
   if (destination.Config.channelIdentifier === "email") {
     // check with keys
     if (template && template.length > 0) {
@@ -224,7 +229,10 @@ const responseBuilderSimple = async (message, messageType, destination) => {
   let trengoPayload;
   // ChannelId is a mandatory field if it is not present in destination config
   // we will abort events.
-  if (!destination.Config.channelId) {
+  if (
+    !destination.Config.channelId ||
+    destination.Config.channelId.length === 0
+  ) {
     throw new Error(
       "[Trengo] :: Cound not process event, missing mandatory field channelId"
     );
@@ -232,6 +240,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
 
   const email = getFieldValueFromMessage(message, "email");
   const phone = getFieldValueFromMessage(message, "phone");
+  // If externalId is present It will take preference over ChannelId
+  const externalId = getDestinationExternalID(message, "trengo");
   const { channelIdentifier, enableDedup } = destination.Config;
   // Based on type of channelIdentifier selected from destination dashboard
   // we check the presence of required property which is email or phone either
@@ -256,6 +266,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         message,
         destination,
         phone,
+        externalId,
         false
       );
       if (trengoPayload === -1) {
@@ -264,6 +275,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
           message,
           destination,
           phone,
+          externalId,
           true
         );
       }
@@ -274,7 +286,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,
-        email,
+        channelIdentifier === "email" ? email : phone,
+        externalId,
         true
       );
     }
@@ -284,7 +297,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     trengoPayload = await ticketBuilderTrengo(
       message,
       destination,
-      channelIdentifier === "email" ? email : phone
+      channelIdentifier === "email" ? email : phone,
+      externalId
     );
   }
   // Wrapped payload with structure

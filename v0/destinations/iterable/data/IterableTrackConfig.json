@@ -2,7 +2,7 @@
   {
     "destKey": "email",
     "sourceKeys": [
-      "trait.email",
+      "properties.email",
       "context.traits.email"
     ],
     "required": false

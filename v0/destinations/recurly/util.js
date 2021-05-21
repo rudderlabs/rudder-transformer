@@ -6,8 +6,9 @@ const { ErrorMessage, stripTrailingSlash } = require("../../util");
 
 const createItem = async (data, config, relativePath) => {
   let response = null;
-  const itemUrl = `${stripTrailingSlash(config.siteId) ||
-    DEFAULT_BASE_ENDPOINT}${relativePath}`;
+  const itemUrl =
+    `${stripTrailingSlash(config.siteId) || DEFAULT_BASE_ENDPOINT}` +
+    `${relativePath}`;
   try {
     response = await axios.post(itemUrl, data, {
       headers: {
@@ -27,8 +28,9 @@ const createItem = async (data, config, relativePath) => {
 
 const fetchData = async (code, config, relativePath) => {
   let response = null;
-  const accountUrl = `${stripTrailingSlash(config.siteId) ||
-    DEFAULT_BASE_ENDPOINT}${relativePath}`;
+  const accountUrl =
+    `${stripTrailingSlash(config.siteId) || DEFAULT_BASE_ENDPOINT}` +
+    `${relativePath}`;
   try {
     response = await axios.get(`${accountUrl}/code-${code}`, {
       headers: {

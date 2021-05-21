@@ -8,13 +8,5 @@
     "destKey": "unit_amount",
     "sourceKeys": "total",
     "required": true
-  },
-  {
-      "destKey": "item_code",
-      "sourceKeys": ""
-  },
-  {
-    "destKey": "description",
-    "sourceKeys": "event"
   }
 ]

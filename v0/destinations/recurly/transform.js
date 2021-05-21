@@ -46,6 +46,7 @@ const processIdentify = async (message, category, config) => {
     ...constructPayload(message, MAPPING_CONFIG[category.name]),
     address
   };
+  data.code = data.code.toLowerCase();
   data.bill_to = BILL_TO_SELF;
   if (data.acquisition) {
     data.acquisition.channel = "events";
@@ -97,6 +98,7 @@ const processTrack = async (message, config) => {
       p,
       MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]
     );
+    itemPayload.code = itemPayload.code.toLowerCase();
     const itemObj = await fetchItem(itemPayload.code, config);
     const lineItemPayload = constructPayload(
       message,

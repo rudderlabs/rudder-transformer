@@ -20,7 +20,13 @@
     "destKey": "address.postal_code",
     "sourceKeys": [
       "traits.address.postalCode",
-      "context.traits.address.postalCode"
+      "context.traits.address.postalCode",
+      "traits.address.postalCode",
+      "context.traits.address.postalCode",
+      "traits.address.postalcode",
+      "context.traits.address.postalcode",
+      "traits.address.postal_code",
+      "context.traits.address.postal_code"
     ]
   },
   {

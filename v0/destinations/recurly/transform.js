@@ -129,7 +129,6 @@ const processTrack = async (message, config) => {
   const response = [];
 
   for (let i = 0; i < products.length; i += 1) {
-    // eslint-disable-next-line no-param-reassign
     const p = products[i];
     p.currency = currency;
     const itemPayload = constructPayload(

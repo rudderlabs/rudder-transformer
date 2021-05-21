@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const axios = require("axios");
 const logger = require("../../../logger");
 const { ENDPOINTS, getLookupPayload } = require("./config");
@@ -26,7 +25,7 @@ const searchGroup = async (groupName, Config) => {
     }
     throw new CustomError(`failed to search group ${errMessage}`, errorStatus);
   }
-  
+
   if (!resp || !resp.data || resp.status !== 200) {
     throw new CustomError("failed to search group", 500);
   }
@@ -57,7 +56,7 @@ const createGroup = async (payload, Config) => {
     }
     throw new CustomError(`failed to create group ${errMessage}`, errorStatus);
   }
-  
+
   if (!resp || !resp.data || resp.status !== 200) {
     throw new CustomError("failed to create group", 500);
   }
@@ -91,7 +90,7 @@ const updateGroup = async (payload, Config) => {
     }
     throw new CustomError(`failed to update group ${errMessage}`, errorStatus);
   }
-  
+
   if (!resp || !resp.data || resp.status !== 200) {
     throw new CustomError("failed to update group", 500);
   }

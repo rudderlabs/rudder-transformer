@@ -12,7 +12,6 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   getFieldValueFromMessage,
-  getValueFromMessage,
   getDestinationExternalID
 } = require("../../util");
 /**

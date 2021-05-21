@@ -47,6 +47,14 @@
     "context.traits.lastname",
     "context.traits.last_name"
   ],
+  "middleName": [
+    "traits.middleName",
+    "traits.middleName",
+    "traits.middle_name",
+    "context.traits.middleName",
+    "context.traits.middleName",
+    "context.traits.middle_name"
+  ],
   "phone": [
     "traits.phone",
     "context.traits.phone",

@@ -356,7 +356,9 @@ const responseBuilderSimple = (message, category, destination) => {
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
-    limitedDataUSage
+    limitedDataUSage,
+    testDestination,
+    testEventCode
   } = Config;
 
   const endpoint = `https://graph.facebook.com/v10.0/${pixelId}/events?access_token=${accessToken}`;
@@ -496,6 +498,12 @@ const responseBuilderSimple = (message, category, destination) => {
     const payload = {
       data: [jsonStringify]
     };
+
+    // Ref: https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/
+    // Section: Test Events Tool
+    if (testDestination) {
+      payload.test_event_code = testEventCode;
+    }
     response.body.FORM = payload;
     return response;
   }

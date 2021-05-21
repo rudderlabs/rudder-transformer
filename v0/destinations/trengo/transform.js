@@ -17,6 +17,7 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
+const get = require("get-value");
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -57,6 +58,27 @@ const stringifyJSON = json => {
     }
   });
   return output;
+};
+
+/**
+ *
+ * @param {*} email
+ * @param {*} phone
+ * @param {*} channelIdentifier
+ * Based on type of channelIdentifier selected from destination dashboard
+ * we check the presence of required property which is email or phone either
+ * has to be present based on destination settings.
+ */
+const validate = (email, phone, channelIdentifier) => {
+  if (
+    (channelIdentifier === "phone" && !phone) ||
+    (channelIdentifier === "email" && !email)
+  ) {
+    throw new CustomError(
+      `[Trengo] :: Mandatory field for Channel-Identifier :${channelIdentifier} not present`,
+      400
+    );
+  }
 };
 
 /**
@@ -125,12 +147,13 @@ const contactBuilderTrengo = async (
   message,
   destination,
   identifier,
-  externalId,
+  extIds,
   createScope = true
 ) => {
   let result;
 
   // External id will override the channelId
+  const externalId = get(extIds, "externalId");
   const contactName = getFieldValueFromMessage(message, "name")
     ? getFieldValueFromMessage(message, "name")
     : `${getFieldValueFromMessage(
@@ -141,6 +164,7 @@ const contactBuilderTrengo = async (
   if (createScope) {
     // In create scope we directly create the payload for creating new contact
     // based on the info we have.
+
     let payload = {
       name: contactName,
       identifier,
@@ -156,18 +180,23 @@ const contactBuilderTrengo = async (
   } else {
     // If we are in update scope we need to search the contact and get the contactId
     // using the identifier (email/phone) we have.
-    const contactId = await lookupContact(identifier, destination);
+    let contactId = get(extIds, "contactId");
     if (!contactId) {
-      // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
-      throw new CustomError(
-        `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
-        400
-      );
+      // If we alrady dont have contactId in our message we do lookup
+      contactId = await lookupContact(identifier, destination);
+      if (!contactId) {
+        // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
+        throw new CustomError(
+          `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
+          400
+        );
+      }
+      // In case we did not find the contact for this identifier we return -1
+      if (contactId === -1) {
+        return -1;
+      }
     }
-    // In case we did not find the contact for this identifier we return -1
-    if (contactId === -1) {
-      return -1;
-    }
+
     // If we get contactId we update that contact with below payload
     let payload = {
       name: contactName
@@ -182,28 +211,28 @@ const contactBuilderTrengo = async (
   return result;
 };
 
-const ticketBuilderTrengo = async (
-  message,
-  destination,
-  identifer,
-  externalId
-) => {
+const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
   let subjectLine;
   const template = getTemplate(message, destination);
-  const contactId = await lookupContact(identifer, destination);
+  const externalId = get(extIds, "externalId");
+  let contactId = get(extIds, "contactId");
   if (!contactId) {
-    throw new CustomError(
-      `[Trengo] :: LookupContact failed for term:${identifer} track event failed`,
-      400
-    );
+    contactId = await lookupContact(identifer, destination);
+    if (!contactId) {
+      throw new CustomError(
+        `[Trengo] :: LookupContact failed for term:${identifer} track event failed`,
+        400
+      );
+    }
+
+    if (contactId === -1) {
+      throw new CustomError(
+        `[Trengo] :: No contact found for term:${identifer} track event failed`,
+        400
+      );
+    }
   }
 
-  if (contactId === -1) {
-    throw new CustomError(
-      `[Trengo] :: No contact found for term:${identifer} track event failed`,
-      400
-    );
-  }
   if (destination.Config.channelIdentifier === "email") {
     // check with keys
     if (template && template.length > 0) {
@@ -264,20 +293,12 @@ const responseBuilderSimple = async (message, messageType, destination) => {
   const email = getFieldValueFromMessage(message, "email");
   const phone = getFieldValueFromMessage(message, "phone");
   // If externalId is present It will take preference over ChannelId
-  const externalId = getDestinationExternalID(message, "trengo");
+  // If contactId is present we will not lookup for contactId
+  const extIds = {
+    externalId: getDestinationExternalID(message, "trengoChannelId"),
+    contactId: getDestinationExternalID(message, "trengoContactId")
+  };
   const { channelIdentifier, enableDedup } = destination.Config;
-  // Based on type of channelIdentifier selected from destination dashboard
-  // we check the presence of required property which is email or phone either
-  // has to be present based on destination settings.
-  if (
-    (channelIdentifier === "phone" && !phone) ||
-    (channelIdentifier === "email" && !email)
-  ) {
-    throw new CustomError(
-      `[Trengo] :: Mandatory field for Chaneel-Identifier :${channelIdentifier} not present`,
-      400
-    );
-  }
   // In case of Identify type of events we create contacts or update
   if (messageType === EventType.IDENTIFY) {
     // If deduplication is enabled
@@ -290,7 +311,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         message,
         destination,
         channelIdentifier === "email" ? email : phone,
-        externalId,
+        extIds,
         false
       );
       if (trengoPayload === -1) {
@@ -298,11 +319,12 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         // Destination behaviour
         // -- For phone type contacts duplicates will be created
         // -- For email type no duplicates will be created
+        validate(email, phone, channelIdentifier);
         trengoPayload = await contactBuilderTrengo(
           message,
           destination,
           channelIdentifier === "email" ? email : phone,
-          externalId,
+          extIds,
           true
         );
       }
@@ -311,11 +333,12 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       // Destination behaviour
       // -- For phone type contacts duplicates will be created
       // -- For email type no duplicates will be created
+      validate(email, phone, channelIdentifier);
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,
         channelIdentifier === "email" ? email : phone,
-        externalId,
+        extIds,
         true
       );
     }
@@ -326,7 +349,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       message,
       destination,
       channelIdentifier === "email" ? email : phone,
-      externalId
+      extIds
     );
   }
   // Wrapped payload with structure

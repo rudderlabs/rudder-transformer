@@ -22,7 +22,7 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: Mandatory field for Chaneel-Identifier :phone not present"
+    "error": "[Trengo] :: LookupContact failed for term:null update failed, aborting as dedup option is enabled"
   },
   {
     "version": "1",
@@ -224,6 +224,27 @@
     "body": {
       "JSON": {
         "name": "Thalmor Bretz 2"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel"
       },
       "XML": {},
       "FORM": {}

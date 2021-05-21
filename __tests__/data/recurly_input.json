@@ -33,7 +33,7 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "anon_id",
-      "userId": "123456",
+      "userId": "testing-1",
       "type": "identify",
       "traits": {
         "anonymousId": "anon_id",
@@ -96,13 +96,76 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "anon_id",
-      "userId": "123456",
+      "userId": "Testing-2",
       "type": "identify",
       "traits": {
         "anonymousId": "anon_id",
         "email": "email--704@gmail.com",
         "firstName": "Shivam",
         "lastName": "Gupta",
+        "phone": "90071967788",
+        "address": {
+          "city": "Hooghly",
+          "country": "India",
+          "postalCode": "712310",
+          "state": "West Bengal",
+          "street": "Himnagar"
+        },
+        "company": {
+          "id": 900001329943,
+          "name": "Rudder",
+          "remove": true
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "userId": "Testing-2",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email--704@gmail.com",
+        "firstName": "Shivam",
+        "lastName": "Uptated To Testing-3",
         "phone": "90071967788",
         "address": {
           "city": "Hooghly",
@@ -159,7 +222,87 @@
         "isSubscribed": "true"
       }
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "event": "Order Completed",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "total": 191919,
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "currency": "USD",
+      "products": [
+        {
+          "product_id": "pid-coc",
+          "sku": "G-32",
+          "name": "Testing-5-Clash Of Clan",
+          "price": 1999,
+          "quantity": 1699,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg"
+        },
+        {
+          "product_id": "pid-pubg",
+          "sku": "193",
+          "name": "Testing-5-PubG",
+          "price": 200,
+          "quantity": 1000,
+          "category": "Free Games"
+        }
+      ]
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
+    },
+    "message": {
+      "event": "Order Completed",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "total": 191919,
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "currency": "USD",
+      "products": [
+        {
+          "product_id": "pid-coc",
+          "sku": "G-32",
+          "name": "Testing-5-Clash Of Clan",
+          "price": 1999,
+          "quantity": 1699,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg"
+        },
+        {
+          "product_id": "pid-ff",
+          "sku": "193",
+          "name": "Testing-5-updated-free fire",
+          "price": 20,
+          "quantity": 1020,
+          "category": "EA Games"
+        }
+      ]
+    }
   }
-
-  
 ]

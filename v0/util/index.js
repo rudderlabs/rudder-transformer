@@ -360,7 +360,7 @@ const getValueFromMessage = (message, sourceKey) => {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);
-      if (val || val === false || val === 0) {
+      if (isDefinedAndNotNull(val)) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
@@ -612,7 +612,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (value || value === false || value === 0) {
+      if (isDefinedAndNotNull(value)) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {

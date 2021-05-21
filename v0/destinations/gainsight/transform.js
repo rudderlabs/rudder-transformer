@@ -29,8 +29,8 @@ const {
   updateGroup,
   renameCustomFieldsFromMap,
   getConfigOrThrowError,
-  CustomError
 } = require("./util");
+const {CustomError} = require("../../util/error");
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases

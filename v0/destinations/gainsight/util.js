@@ -2,13 +2,7 @@
 const axios = require("axios");
 const logger = require("../../../logger");
 const { ENDPOINTS, getLookupPayload } = require("./config");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
+const {CustomError} = require("../../util/error");
 
 const searchGroup = async (groupName, Config) => {
   let resp;

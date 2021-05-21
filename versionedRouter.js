@@ -102,6 +102,60 @@ async function handleDest(ctx, version, destination) {
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }
+async function handleValidation(ctx) {
+  const destHandler = getDestHandler(version, destination);
+  const events = ctx.request.body;
+  const reqParams = ctx.request.query;
+  logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+  stats.increment("trackingplan_input_events", events.length, {
+    destination,
+    version
+  });
+  const respList = [];
+  await Promise.all(
+    events.map(async event => {
+      try {
+        const parsedEvent = event;
+        parsedEvent.request = { query: reqParams };
+        let respEvents = await destHandler.process(parsedEvent);
+        if (respEvents) {
+          if (!Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
+          respList.push(
+            ...respEvents.map(ev => {
+              let { userId } = ev;
+              if (ev.statusCode !== 400 && userId) {
+                userId = `${userId}`;
+              }
+              return {
+                output: { ...ev, userId },
+                metadata: event.metadata,
+                statusCode: 200
+              };
+            })
+          );
+        }
+      } catch (error) {
+        logger.error(error);
+
+        respList.push({
+          metadata: event.metadata,
+          statusCode: 400,
+          error: error.message || "Error occurred while processing payload."
+        });
+        stats.increment("dest_transform_errors", 1, { destination, version });
+      }
+    })
+  );
+  logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
+  stats.increment("dest_transform_output_events", respList.length, {
+    destination,
+    version
+  });
+  ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
+}
 
 async function routerHandleDest(ctx) {
   const { destType, input } = ctx.request.body;
@@ -304,6 +358,7 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -391,4 +446,14 @@ router.post("/batch", ctx => {
   ctx.body = response.batchedRequests;
 });
 
+// eg. v0/validate. will validate events as per respective tracking plans
+router.post(`/v0/validate`, async ctx => {
+  const startTime = new Date();
+  await handleDest(ctx);
+  stats.timing("dest_transform_request_latency", startTime, {
+    destination,
+    version
+  });
+  stats.increment("dest_transform_requests", 1, { destination, version });
+});
 module.exports = router;

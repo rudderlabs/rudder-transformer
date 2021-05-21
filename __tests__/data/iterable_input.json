@@ -994,6 +994,7 @@
       "userId": "12345",
       "event": "test track event GA3",
       "properties": {
+        "email":"ruchira@rudderlabs.com",
         "campaignId": "1",
         "templateId": "0",
         "category": "test-category",

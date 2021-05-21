@@ -64,6 +64,10 @@ const formatValue = value => {
   return Math.round(value);
 };
 
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (
   arrays,
@@ -74,6 +78,7 @@ const getHashFromArray = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
       hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
         array[toKey];
     });
@@ -651,10 +656,6 @@ function getDestinationExternalID(message, type) {
     });
   }
   return destinationExternalId;
-}
-
-function isEmpty(input) {
-  return _.isEmpty(_.toString(input).trim());
 }
 
 const isObject = value => {

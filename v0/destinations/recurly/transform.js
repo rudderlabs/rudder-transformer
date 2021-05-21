@@ -18,9 +18,19 @@ const {
   fetchAccount,
   createCustomFields,
   fetchItem,
-  createItem
+  createItem,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("./util");
 
+/**
+ * Build the response from given parameters
+ * @param {*} payload
+ * @param {*} requestMethod
+ * @param {*} endPoint
+ * @param {*} apiKey
+ * @returns
+ */
 const responseBuilderSimple = (payload, requestMethod, endPoint, apiKey) => {
   const response = defaultRequestConfig();
   response.endpoint = endPoint;
@@ -34,6 +44,20 @@ const responseBuilderSimple = (payload, requestMethod, endPoint, apiKey) => {
   return response;
 };
 
+/**
+ * Create an Account Object from identify call.
+ * Steps ::
+ *      1. First generate address Payload
+ *      2. If postal_code is present, convert that to string.
+ *      3. Now construct complete message data to recurly json format.
+ *      4. Recurly accepts code in lower case format. Make sure to do that otherwise the calls will fail.
+ *      5. Next update bill_to, custom_fields and data.acquisition.
+ *      6. Now check if account already exist. If exist then make PUT call to update else POST call to create resource.
+ * @param {*} message
+ * @param {*} category
+ * @param {*} config
+ * @returns
+ */
 const processIdentify = async (message, category, config) => {
   const { address } = constructPayload(
     message,
@@ -70,6 +94,20 @@ const processIdentify = async (message, category, config) => {
   );
 };
 
+/**
+ * Track call is only supported for two of our ecom events as mention in Config Object.
+ * Track call is mapped to line_items in recurly.
+ * PTN:: RS products array maps to items in recurly.
+ *
+ * Steps::
+ *      1. Check if item exist for line_items to be created.
+ *      2. If the item exist make axios call to get its id and then create a line item.
+ *      3. If the item does not exist on recurly then first create item on recurly and gets its id.
+ *      4. Next create line_items payload with item_id and payload.
+ * @param {*} message
+ * @param {*} config
+ * @returns
+ */
 const processTrack = async (message, config) => {
   if (!ECOM_EVENTS.includes(message.event)) {
     throw Error(ErrorMessage.EcomEventNotSupported);
@@ -145,4 +183,40 @@ const process = async event => {
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+
+        // event is not transformed
+        return getSuccessRespEvents(
+          await processEvent(input.message, input.destination),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response.status : 500, // default to retryable
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

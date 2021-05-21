@@ -69,7 +69,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -147,7 +148,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -222,7 +224,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -297,7 +300,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -352,7 +356,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -426,7 +431,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -500,7 +506,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -574,7 +581,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -647,7 +655,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -721,7 +730,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },

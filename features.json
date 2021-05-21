@@ -4,7 +4,7 @@
     "GA": true,
     "MARKETO": true,
     "HS":true,
-    "GAINSIGHT": true,
-    "SFMC":true
+    "SFMC":true,
+    "GAINSIGHT":true
   }
 }

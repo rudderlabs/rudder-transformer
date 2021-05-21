@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable prettier/prettier */
 const set = require("set-value");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
@@ -37,7 +36,11 @@ const {
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "identify");
+  const { accessKey } = getConfigOrThrowError(
+    Config,
+    ["accessKey"],
+    "identify"
+  );
   if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
     throw new CustomError("email is required for identify", 400);
   }
@@ -53,11 +56,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   );
 
   const personMap = getHashFromArray(Config.personMap, "from", "to", false);
-  payload = renameCustomFieldsFromMap(
-    payload,
-    personMap,
-    defaultKeys
-  );
+  payload = renameCustomFieldsFromMap(payload, personMap, defaultKeys);
 
   if (!payload.Name) {
     const fName = payload.FirstName;
@@ -102,7 +101,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   let payload = constructPayload(message, groupMapping);
   const defaultKeys = Object.keys(payload);
-  
+
   payload = extractCustomFields(
     message,
     payload,
@@ -111,11 +110,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   );
 
   const companyMap = getHashFromArray(Config.companyMap, "from", "to", false);
-  payload = renameCustomFieldsFromMap(
-    payload,
-    companyMap,
-    defaultKeys
-  );
+  payload = renameCustomFieldsFromMap(payload, companyMap, defaultKeys);
   payload = removeUndefinedAndNullValues(payload);
 
   let groupGsid;
@@ -162,16 +157,32 @@ const trackResponseBuilder = (message, { Config }) => {
     "track"
   );
 
-  const eventNameMap = getHashFromArray(Config.eventNameMap, "from", "to", false);
+  const eventNameMap = getHashFromArray(
+    Config.eventNameMap,
+    "from",
+    "to",
+    false
+  );
   if (!eventNameMap || !get(eventNameMap, event)) {
     throw new CustomError(`Event name mapping not provided for ${event}`, 400);
   }
-  const eventVersionMap = getHashFromArray(Config.eventVersionMap, "from", "to", false);
+  const eventVersionMap = getHashFromArray(
+    Config.eventVersionMap,
+    "from",
+    "to",
+    false
+  );
   if (!eventVersionMap || !get(eventVersionMap, event)) {
-    throw new CustomError(`event version mapping not provided for ${event}`, 400);
+    throw new CustomError(
+      `event version mapping not provided for ${event}`,
+      400
+    );
   }
 
-  let contractId = getDestinationExternalID(message, "gainsightEventContractId");
+  let contractId = getDestinationExternalID(
+    message,
+    "gainsightEventContractId"
+  );
   if (!contractId) {
     contractId = Config.contractId;
   }
@@ -256,4 +267,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = {process, processRouterDest};
+module.exports = { process, processRouterDest };

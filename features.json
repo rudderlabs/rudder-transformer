@@ -3,6 +3,7 @@
     "SALESFORCE": true,
     "GA": true,
     "MARKETO": true,
-    "HS":true
+    "HS":true,
+    "TRENGO": true
   }
 }

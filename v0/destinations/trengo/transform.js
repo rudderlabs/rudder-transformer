@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require("handlebars");
 const Axios = require("axios");
@@ -12,8 +13,18 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   getFieldValueFromMessage,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
+
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
+
 /**
  *
  * @param {*} message
@@ -29,8 +40,9 @@ const getTemplate = (message, destination) => {
   const { eventTemplateMap } = destination.Config;
   const hashMap = getHashFromArray(eventTemplateMap, "from", "to", false);
   if (!Object.keys(hashMap).includes(event)) {
-    throw new Error(
-      `[Trengo] :: ${event} is not present in Event-Map template keys`
+    throw new CustomError(
+      `[Trengo] :: ${event} is not present in Event-Map template keys, aborting event`,
+      400
     );
   }
 
@@ -68,9 +80,15 @@ const lookupContact = async (term, destination) => {
       }
     });
   } catch (err) {
-    throw new Error("[Trengo] :: Inside lookupContact, failed to make request");
+    // check if exists err.response && err.response.status else 500
+    if (err.response && err.response.status) {
+      throw new CustomError(err.response.statusText, err.response.status);
+    }
+    throw new CustomError(
+      "[Trengo] :: Inside lookupContact, failed to make request",
+      500
+    );
   }
-
   if (
     res &&
     res.status === 200 &&
@@ -80,8 +98,9 @@ const lookupContact = async (term, destination) => {
   ) {
     const { data } = res.data;
     if (data.length > 1) {
-      throw new Error(
-        `[Trengo] :: Inside lookupContact, duplicates present for identifer : ${term}`
+      throw new CustomError(
+        `[Trengo] :: Inside lookupContact, duplicates present for identifer : ${term}`,
+        400
       );
     } else if (data.length === 1) {
       return data[0].id;
@@ -140,8 +159,9 @@ const contactBuilderTrengo = async (
     const contactId = await lookupContact(identifier, destination);
     if (!contactId) {
       // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
-      throw new Error(
-        `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`
+      throw new CustomError(
+        `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
+        400
       );
     }
     // In case we did not find the contact for this identifier we return -1
@@ -172,14 +192,16 @@ const ticketBuilderTrengo = async (
   const template = getTemplate(message, destination);
   const contactId = await lookupContact(identifer, destination);
   if (!contactId) {
-    throw new Error(
-      `[Trengo] :: LookupContact failed for term:${identifer} track event failed`
+    throw new CustomError(
+      `[Trengo] :: LookupContact failed for term:${identifer} track event failed`,
+      400
     );
   }
 
   if (contactId === -1) {
-    throw new Error(
-      `[Trengo] :: No contact found for term:${identifer} track event failed`
+    throw new CustomError(
+      `[Trengo] :: No contact found for term:${identifer} track event failed`,
+      400
     );
   }
   if (destination.Config.channelIdentifier === "email") {
@@ -194,8 +216,9 @@ const ticketBuilderTrengo = async (
         };
         subjectLine = hTemplate(templateInput).trim();
       } catch (err) {
-        throw new Error(
-          `[Trengo] :: Error occured in parsing event template for ${message.event}`
+        throw new CustomError(
+          `[Trengo] :: Error occured in parsing event template for ${message.event}`,
+          400
         );
       }
     }
@@ -232,8 +255,9 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     !destination.Config.channelId ||
     destination.Config.channelId.length === 0
   ) {
-    throw new Error(
-      "[Trengo] :: Cound not process event, missing mandatory field channelId"
+    throw new CustomError(
+      "[Trengo] :: Cound not process event, missing mandatory field channelId",
+      400
     );
   }
 
@@ -249,8 +273,9 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     (channelIdentifier === "phone" && !phone) ||
     (channelIdentifier === "email" && !email)
   ) {
-    throw new Error(
-      `[Trengo] :: Mandatory field for Chaneel-Identifier :${channelIdentifier} not present`
+    throw new CustomError(
+      `[Trengo] :: Mandatory field for Chaneel-Identifier :${channelIdentifier} not present`,
+      400
     );
   }
   // In case of Identify type of events we create contacts or update
@@ -325,7 +350,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("Payload could not be constructed", 400);
 };
 
 /**
@@ -339,11 +364,11 @@ const responseBuilderSimple = async (message, messageType, destination) => {
  */
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw CustomError("Message Type is not present. Aborting message.", 400);
   }
   const messageType = message.type.toLowerCase();
   if (messageType !== EventType.IDENTIFY && messageType !== EventType.TRACK) {
-    throw new Error("Message type not supported");
+    throw new CustomError("Message type not supported", 400);
   }
   const resp = await responseBuilderSimple(message, messageType, destination);
   return resp;
@@ -354,4 +379,43 @@ const process = async event => {
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

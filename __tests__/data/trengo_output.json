@@ -208,7 +208,7 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys"
+    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys, aborting event"
   },
   {
     "version": "1",

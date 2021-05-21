@@ -126,7 +126,7 @@ const contactBuilderTrengo = async (
   destination,
   identifier,
   externalId,
-  cretaeScope = true
+  createScope = true
 ) => {
   let result;
 
@@ -138,7 +138,7 @@ const contactBuilderTrengo = async (
         "firstName"
       )} ${getFieldValueFromMessage(message, "lastName")}`;
 
-  if (cretaeScope) {
+  if (createScope) {
     // In create scope we directly create the payload for creating new contact
     // based on the info we have.
     let payload = {
@@ -280,33 +280,37 @@ const responseBuilderSimple = async (message, messageType, destination) => {
   }
   // In case of Identify type of events we create contacts or update
   if (messageType === EventType.IDENTIFY) {
-    // If deduplication is enabled and channelIdentifier is phone
+    // If deduplication is enabled
     // we will first search the contact if unique contact is found
-    // we will update it else if not found we will create new.
-    if (channelIdentifier === "phone" && enableDedup) {
+    // we will update its name else if not found we will create new.
+    if (enableDedup) {
       // Here we are searching the contact first then if present creating the update
       // payload. If not found we return  -1.
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,
-        phone,
+        channelIdentifier === "email" ? email : phone,
         externalId,
         false
       );
       if (trengoPayload === -1) {
         // If not found create new
+        // Destination behaviour
+        // -- For phone type contacts duplicates will be created
+        // -- For email type no duplicates will be created
         trengoPayload = await contactBuilderTrengo(
           message,
           destination,
-          phone,
+          channelIdentifier === "email" ? email : phone,
           externalId,
           true
         );
       }
     } else {
       // If deduplicaton is disabled we will always create new contacts.
-      // For email-identifier based contacts we always create new as destination
-      // takes care of deduplication of email-type contacts. (not phone type)
+      // Destination behaviour
+      // -- For phone type contacts duplicates will be created
+      // -- For email type no duplicates will be created
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,

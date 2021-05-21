@@ -1,4 +1,20 @@
 {
+  "https://app.trengo.com/api/v2/contacts?page=1&term=jimbo@dunmiff.com": {
+    "data": [],
+    "links": {
+      "first": "https://app.trengo.com/api/v2/contacts?page=1",
+      "last": null,
+      "prev": null,
+      "next": null
+    },
+    "meta": {
+      "current_page": 1,
+      "from": 1,
+      "path": "https://app.trengo.com/api/v2/contacts",
+      "per_page": 25,
+      "to": 1
+    }
+  },
   "https://app.trengo.com/api/v2/contacts?page=1&term=9830311521": {
     "data": [
       {

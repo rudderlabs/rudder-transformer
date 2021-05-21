@@ -606,13 +606,14 @@
     "params": {},
     "body": {
       "JSON": {
-        "email": "sayan@gmail.com",
+        "email":"ruchira@rudderlabs.com",
         "dataFields": {
           "campaignId": "1",
           "templateId": "0",
           "category": "test-category",
           "user_actual_role": "system_admin, system_user",
-          "user_actual_id": 12345
+          "user_actual_id": 12345,
+          "email":"ruchira@rudderlabs.com"
         },
         "userId": "12345",
         "eventName": "test track event GA3",

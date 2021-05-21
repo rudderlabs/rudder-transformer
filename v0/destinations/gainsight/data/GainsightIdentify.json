@@ -1,0 +1,90 @@
+[
+  {
+    "destKey": "Email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "FirstName",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "LastName",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "MiddleName",
+    "sourceKeys": "middleName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "LinkedinUrl",
+    "sourceKeys": ["traits.linkedinUrl", "context.traits.linkedinUrl"],
+    "required": false
+  },
+  {
+    "destKey": "Location",
+    "sourceKeys": ["traits.location", "context.traits.location"],
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
+  },
+  {
+    "destKey": "ExternalRecordID__gc",
+    "sourceKeys": ["traits.externalRecordId", "context.traits.externalRecordId"],
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
+  },
+  {
+    "destKey": "EmailOptOut",
+    "sourceKeys": ["traits.emailOptOut", "context.traits.emailOptOut"],
+    "required": false
+  },
+  {
+    "destKey": "DynamicResolutionKey",
+    "sourceKeys": ["traits.dynamicResolutionKey", "context.traits.dynamicResolutionKey"],
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
+  },
+  {
+    "destKey": "Timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": false
+  },
+  {
+    "destKey": "Comments",
+    "sourceKeys": ["traits.comments", "context.traits.comments"],
+    "required": false,
+    "metadata": {
+      "type": "jsonStringifyOnObject"
+    }
+  },
+  {
+    "destKey": "MasterRecordID",
+    "sourceKeys": ["traits.masterRecordID", "context.traits.masterRecordID"],
+    "required": false
+  },
+  {
+    "destKey": "MasterAvatarTypeCode",
+    "sourceKeys": ["traits.masterAvatarTypeCode", "context.traits.masterAvatarTypeCode"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  }
+]

@@ -273,6 +273,7 @@ const processIdentify = async (message, formattedDestination, token) => {
   });
   attribute = removeUndefinedValues(attribute);
 
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
   const inputObj = {
     ...attribute,
     id: leadId

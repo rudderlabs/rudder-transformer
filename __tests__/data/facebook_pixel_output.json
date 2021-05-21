@@ -362,5 +362,25 @@
             }
         },
         "files": {}
+    },
+
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+        "headers": {},
+        "params": {},
+        "body": {
+            "JSON": {},
+            "XML": {},
+            "FORM": {
+                "data": [
+                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1571051718,\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+                ],
+                "test_event_code": "TEST1001"
+            }
+        },
+        "files": {}
     }
 ]

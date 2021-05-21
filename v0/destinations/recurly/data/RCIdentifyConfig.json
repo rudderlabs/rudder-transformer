@@ -29,8 +29,7 @@
     "sourceKeys": ["traits.company.name", "context.traits.company.name"]
   },
   {
-    "destKey": "parent_account_code",
-    "sourceKeys": "groupId",
-    "sourceFromGenericMap": true
+    "destKey": "acquisition.campaign",
+    "sourceKeys": "context.campaign.name"
   }
 ]

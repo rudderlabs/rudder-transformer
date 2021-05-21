@@ -309,7 +309,9 @@ const ErrorMessage = {
   FailedToConstructPayload: "Payload could not be constructed",
   ObjectNotFound: "Error while fetching object",
   InvalidRequest: "Invalid Request.",
-  FailedToCreateAccount: "Failed to create parent account for group call."
+  FailedToTrackWithoutAccount:
+    "Account not found. Failed to associate track call without user.",
+  EcomEventNotSupported: "We don't support this ecommerce event."
 };
 
 // ========================================================================

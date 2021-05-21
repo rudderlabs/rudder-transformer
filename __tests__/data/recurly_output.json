@@ -1,107 +1,118 @@
 [
   {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://v3.recurly.com/accounts",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.recurly.v2021-02-25",
+      "Authorization": "Basic S19IbEJ5TzNJRTczLVR6NGNoMUxORHMwSkdkd2Jrbk5Hb2xGYzRIZG9BRTo="
+    },
+    "params": {},
     "body": {
-      "XML": {},
-      "FORM": {},
       "JSON": {
         "code": "123456",
         "email": "jamesDoe@gmail.com",
-        "address": {
-          "city": "kolkata",
-          "phone": "92374162212",
-          "region": "WB",
-          "country": "India",
-          "postal_code": "789223"
-        },
-        "bill_to": "self",
-        "company": "test",
-        "last_name": "Doe",
         "first_name": "James",
-        "preferred_locale": "en-US"
-      }
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "headers": {
-      "Accept": "application/vnd.recurly.v2021-02-25",
-      "Content-Type": "application/json",
-      "Authorization": "Basic NmY1OThkOWIwNTEwNDM0MTk0OTAyY2QxY2EyYTc4ZTk6"
-    },
-    "version": "1",
-    "endpoint": "https://v3.recurly.com/accounts"
-  },
-  {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "email": "email--704@gmail.com",
-        "address": {
-          "city": "Hooghly",
-          "phone": "90071967788",
-          "region": "West Bengal",
-          "country": "India",
-          "street1": "Himnagar",
-          "postal_code": "712310"
+        "last_name": "Doe",
+        "preferred_locale": "en-US",
+        "company": "test",
+        "acquisition": {
+          "channel": "web"
         },
-        "bill_to": "self",
-        "company": "Rudder",
-        "last_name": "Gupta",
-        "first_name": "Shivam",
-        "preferred_locale": "en-US"
-      }
+        "address": {
+          "phone": "92374162212",
+          "city": "kolkata",
+          "region": "WB",
+          "postal_code": "789223",
+          "country": "India"
+        },
+        "bill_to": "self"
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "type": "REST",
-    "files": {},
-    "method": "PUT",
-    "params": {},
-    "headers": {
-      "Accept": "application/vnd.recurly.v2021-02-25",
-      "Content-Type": "application/json",
-      "Authorization": "Basic NmY1OThkOWIwNTEwNDM0MTk0OTAyY2QxY2EyYTc4ZTk6"
-    },
-    "version": "1",
-    "endpoint": "https://v3.recurly.com/accounts/code-123456"
+    "files": {}
   },
   {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://v3.recurly.com/accounts/{accountId}",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.recurly.v2021-02-25",
+      "Authorization": "Basic S19IbEJ5TzNJRTczLVR6NGNoMUxORHMwSkdkd2Jrbk5Hb2xGYzRIZG9BRTo="
+    },
+    "params": {},
     "body": {
+      "JSON": {
+        "code": "123456",
+        "email": "email--704@gmail.com",
+        "first_name": "Shivam",
+        "last_name": "Gupta",
+        "preferred_locale": "en-US",
+        "company": "Rudder",
+        "acquisition": {
+          "channel": "web",
+          "campaign": "some campaign"
+        },
+        "address": {
+          "phone": "90071967788",
+          "street1": "Himnagar",
+          "city": "Hooghly",
+          "region": "West Bengal",
+          "postal_code": "712310",
+          "country": "India"
+        },
+        "bill_to": "self"
+      },
       "XML": {},
-      "FORM": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://v3.recurly.com/accounts",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.recurly.v2021-02-25",
+      "Authorization": "Basic S19IbEJ5TzNJRTczLVR6NGNoMUxORHMwSkdkd2Jrbk5Hb2xGYzRIZG9BRTo="
+    },
+    "params": {},
+    "body": {
       "JSON": {
         "code": "anon_id-718",
         "email": "email@gmail.com",
+        "first_name": "Manashi",
+        "last_name": "Mukherjee",
+        "preferred_locale": "en-US",
+        "company": "Map",
+        "acquisition": {
+          "channel": "web"
+        },
         "address": {
           "phone": "1234567890"
         },
         "bill_to": "self",
-        "company": "Map",
-        "last_name": "Mukherjee",
-        "first_name": "Manashi",
         "custom_fields": [
-          {
-            "name": "isSubscribed",
-            "value": "true"
-          },
           {
             "name": "planName",
             "value": "free"
+          },
+          {
+            "name": "isSubscribed",
+            "value": "true"
           }
-        ],
-        "preferred_locale": "en-US"
-      }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
     },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "headers": {
-      "Accept": "application/vnd.recurly.v2021-02-25",
-      "Content-Type": "application/json",
-      "Authorization": "Basic NmY1OThkOWIwNTEwNDM0MTk0OTAyY2QxY2EyYTc4ZTk6"
-    },
-    "version": "1",
-    "endpoint": "https://v3.recurly.com/accounts"
+    "files": {}
   }
 ]

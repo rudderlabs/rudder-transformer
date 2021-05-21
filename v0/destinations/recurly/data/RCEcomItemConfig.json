@@ -1,0 +1,30 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": true
+  },
+  {
+    "destKey": "code",
+    "sourceKeys": "product_id",
+    "required": true
+  },
+  {
+    "destKey": "currencies.currency",
+    "sourceKeys": "currency",
+    "required": true
+  },
+  {
+    "destKey": "currencies.unit_amount",
+    "sourceKeys": "price",
+    "required": true
+  },
+  {
+    "destKey": "external_sku",
+    "sourceKeys": "sku"
+  },
+  {
+    "destKey": "description",
+    "sourceKeys": "category"
+  }
+]

@@ -4,20 +4,31 @@ const logger = require("../../../logger");
 const { ACCEPT_HEADERS, DEFAULT_BASE_ENDPOINT } = require("./config");
 const { ErrorMessage, stripTrailingSlash } = require("../../util");
 
-/**
- * Backup Code If required
- * @param {*} isSubDomain
- * @param {*} name
- * @returns
- */
-const appendSubDomain = (isSubDomain, name) => {
-  return isSubDomain ? `subdomain-${name}` : "";
+const createItem = async (data, config, relativePath) => {
+  let response = null;
+  const itemUrl = `${stripTrailingSlash(config.siteId) ||
+    DEFAULT_BASE_ENDPOINT}${relativePath}`;
+  try {
+    response = await axios.post(itemUrl, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: ACCEPT_HEADERS,
+        Authorization: `Basic ${btoa(`${config.apiKey}:`)}`
+      }
+    });
+  } catch (err) {
+    logger.debug(ErrorMessage.ObjectNotFound);
+  }
+  if (response && response.status === 201 && response.data.id) {
+    return response.data.id;
+  }
+  return null;
 };
 
-const fetchAccount = async (code, config) => {
+const fetchData = async (code, config, relativePath) => {
   let response = null;
   const accountUrl = `${stripTrailingSlash(config.siteId) ||
-    DEFAULT_BASE_ENDPOINT}/accounts`;
+    DEFAULT_BASE_ENDPOINT}${relativePath}`;
   try {
     response = await axios.get(`${accountUrl}/code-${code}`, {
       headers: {
@@ -32,6 +43,7 @@ const fetchAccount = async (code, config) => {
   if (response && response.status === 200 && response.data.id) {
     return {
       isExist: true,
+      id: response.data.id,
       httpMethod: "PUT",
       endPoint: `${accountUrl}/code-${code}`
     };
@@ -43,23 +55,14 @@ const fetchAccount = async (code, config) => {
   };
 };
 
-const createAccount = async (data, config) => {
-  let response = null;
-  const accountUrl = `${stripTrailingSlash(config.siteId) ||
-    DEFAULT_BASE_ENDPOINT}/accounts`;
+const fetchAccount = async (code, config) => {
+  const accountObj = await fetchData(code, config, "/accounts");
+  return accountObj;
+};
 
-  try {
-    response = await axios.post(`${accountUrl}`, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: ACCEPT_HEADERS,
-        Authorization: `Basic ${btoa(`${config.apiKey}:`)}`
-      }
-    });
-  } catch (err) {
-    logger.debug(ErrorMessage.InvalidRequest);
-  }
-  return (response && response.id) || null;
+const fetchItem = async (name, config) => {
+  const itemObj = await fetchData(name, config, "/items");
+  return itemObj;
 };
 
 const createCustomFields = payloadCustomFields => {
@@ -73,6 +76,7 @@ const createCustomFields = payloadCustomFields => {
 
 module.exports = {
   fetchAccount,
-  createAccount,
-  createCustomFields
+  createCustomFields,
+  fetchItem,
+  createItem
 };

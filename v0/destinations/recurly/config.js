@@ -3,7 +3,7 @@ const { getMappingConfig } = require("../../util");
 const DEFAULT_BASE_ENDPOINT = "https://v3.recurly.com";
 const ACCEPT_HEADERS = "application/vnd.recurly.v2021-02-25";
 const BILL_TO_SELF = "self";
-const BILL_TO_PARENT = "parent";
+const ECOM_EVENTS = ["Checkout Started", "Order Completed"];
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
@@ -14,9 +14,13 @@ const CONFIG_CATEGORIES = {
     name: "RCAddressConfig",
     type: "address"
   },
-  GROUP: {
-    name: "RCGroupConfig",
-    type: "group"
+  ECOMITEM: {
+    name: "RCEcomItemConfig",
+    type: "item"
+  },
+  ECOMLINEITEM: {
+    name: "RCEcomLineItemConfig",
+    type: "item"
   }
 };
 
@@ -28,5 +32,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   BILL_TO_SELF,
-  BILL_TO_PARENT
+  ECOM_EVENTS
 };

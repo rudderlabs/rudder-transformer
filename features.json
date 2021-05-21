@@ -3,6 +3,8 @@
     "SALESFORCE": true,
     "GA": true,
     "MARKETO": true,
-    "HS":true
+    "HS":true,
+    "SFMC":true,
+    "GAINSIGHT":true
   }
 }

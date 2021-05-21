@@ -102,7 +102,7 @@ const processIdentify = async (message, category, config) => {
  * Steps::
  *      1. Check if item exist for line_items to be created.
  *      2. If the item exist make axios call to get its id and then create a line item.
- *      3. If the item does not exist on recurly then first create item on recurly and gets its id.
+ *      3. If the item does not exist on recurly then make axios call to create item on recurly and gets its id.
  *      4. Next create line_items payload with item_id and payload.
  * @param {*} message
  * @param {*} config

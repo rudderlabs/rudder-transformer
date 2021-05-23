@@ -34,7 +34,7 @@
     "flat": "^5.0.2",
     "generic-pool": "^3.7.1",
     "get-value": "^3.0.1",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "http-graceful-shutdown": "^3.0.2",
     "https-proxy-agent": "^5.0.0",
     "is": "^3.1.0",
@@ -44,7 +44,7 @@
     "koa": "^2.12.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^7.4.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "minimist": ">=0.2.1",
     "moment": "^2.27.0",
@@ -55,7 +55,7 @@
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
     "truncate-utf8-bytes": "^1.0.2",
-    "ua-parser-js": "^0.7.22",
+    "ua-parser-js": "^0.7.24",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

@@ -4,6 +4,8 @@
     "GA": true,
     "MARKETO": true,
     "HS":true,
-    "TRENGO": true
+    "TRENGO": true,
+    "SFMC":true,
+    "GAINSIGHT":true
   }
 }

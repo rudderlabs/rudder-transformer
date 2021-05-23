@@ -2,6 +2,7 @@
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require("handlebars");
 const Axios = require("axios");
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { EndPoints, BASE_URL } = require("./config");
 const {
@@ -17,7 +18,6 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
-const get = require("get-value");
 
 class CustomError extends Error {
   constructor(message, statusCode) {

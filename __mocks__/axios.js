@@ -5,6 +5,7 @@ const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
+const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 
 const urlDirectoryMap = {
@@ -46,6 +47,11 @@ function get(url) {
   if (url.includes("https://api.kustomerapp.com")) {
     return new Promise((resolve, reject) => {
       resolve(kustomerGetRequestHandler(url));
+    });
+  }
+  if (url.includes("https://app.trengo.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(trengoGetRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

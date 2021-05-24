@@ -1,10 +1,11 @@
 {
   "routerTransform": {
-    "SALESFORCE": true,
     "GA": true,
+    "GAINSIGHT": true,
+    "HS": true,
     "MARKETO": true,
-    "HS":true,
-    "SFMC":true,
-    "GAINSIGHT":true
+    "SALESFORCE": true,
+    "SFMC": true,
+    "TRENGO": true
   }
 }

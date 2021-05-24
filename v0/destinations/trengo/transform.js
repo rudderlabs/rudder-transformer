@@ -16,6 +16,7 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getSuccessRespEvents,
+  getStringValueOfJSON,
   getErrorRespEvents
 } = require("../../util");
 
@@ -48,16 +49,6 @@ const getTemplate = (message, destination) => {
   }
 
   return message.event ? hashMap[message.event] : null;
-};
-
-const stringifyJSON = json => {
-  let output = "";
-  Object.keys(json).forEach(key => {
-    if (json.hasOwnProperty(key)) {
-      output += `${key}: ${json[key]} `;
-    }
-  });
-  return output;
 };
 
 /**
@@ -240,7 +231,7 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
         const hTemplate = Handlebars.compile(template.trim());
         const templateInput = {
           event: message.event,
-          properties: stringifyJSON(message.properties),
+          properties: getStringValueOfJSON(message.properties),
           ...message.properties
         };
         subjectLine = hTemplate(templateInput).trim();

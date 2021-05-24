@@ -82,21 +82,21 @@
       "to": 1
     }
   },
-  "https://app.trengo.com/api/v2/contacts?page=1&term=12345678910":{
+  "https://app.trengo.com/api/v2/contacts?page=1&term=12345678910": {
     "data": [],
-      "links": {
-        "first": "https://app.trengo.com/api/v2/contacts?page=1",
-        "last": null,
-        "prev": null,
-        "next": null
-      },
-      "meta": {
-        "current_page": 1,
-        "from": 1,
-        "path": "https://app.trengo.com/api/v2/contacts",
-        "per_page": 25,
-        "to": 1
-      }
+    "links": {
+      "first": "https://app.trengo.com/api/v2/contacts?page=1",
+      "last": null,
+      "prev": null,
+      "next": null
+    },
+    "meta": {
+      "current_page": 1,
+      "from": 1,
+      "path": "https://app.trengo.com/api/v2/contacts",
+      "per_page": 25,
+      "to": 1
+    }
   },
   "https://app.trengo.com/api/v2/contacts?page=1&term=98765432100": {
     "data": [
@@ -217,110 +217,110 @@
   },
   "https://app.trengo.com/api/v2/contacts?page=1&term=utsab@outlook.com": {
     "data": [
-        {
-            "id": 97694755,
-            "name": "Utsab Email",
-            "full_name": "Utsab Email",
-            "email": "utsab@outlook.com",
-            "abbr": "U",
-            "color": "#00bcd4",
-            "profile_image": null,
-            "is_phone": true,
-            "phone": "98303115423",
-            "formatted_phone": "+98 303115423",
-            "avatar": "https://app.trengo.com/img/defaultpic.png",
-            "identifier": "utsab@outlook.com",
-            "custom_field_data": null,
-            "profile": [],
-            "channels": [
-                {
-                    "id": 406005,
-                    "name": "Sms",
-                    "title": "sms",
-                    "phone": "",
-                    "type": "SMS",
-                    "auto_reply": "ENABLED",
-                    "color": null,
-                    "notification_email": null,
-                    "business_hour_id": 125020,
-                    "notification_sound": "chat.mp3",
-                    "status": "ACTIVE",
-                    "display_name": "sms • SMS",
-                    "text": "sms • SMS",
-                    "show_ticket_fields": 1,
-                    "show_contact_fields": 1,
-                    "emailChannel": null,
-                    "users": [],
-                    "username": null,
-                    "password_is_null": false,
-                    "reopen_closed_ticket": 1,
-                    "is_private": false,
-                    "reassign_reopened_ticket": false,
-                    "reopen_closed_ticket_time_window_days": "30"
-                },
-                {
-                    "id": 405980,
-                    "name": "Email",
-                    "title": "email",
-                    "phone": "",
-                    "type": "EMAIL",
-                    "auto_reply": "ENABLED",
-                    "color": null,
-                    "notification_email": null,
-                    "business_hour_id": 125020,
-                    "notification_sound": "chat.mp3",
-                    "status": "ACTIVE",
-                    "display_name": "email • 5xcyI53Nf7@trengomail.com",
-                    "text": "email • 5xcyI53Nf7@trengomail.com",
-                    "show_ticket_fields": 1,
-                    "show_contact_fields": 1,
-                    "emailChannel": {
-                        "channel_id": 405980,
-                        "email_theme_id": null,
-                        "sender_email_id": null,
-                        "sender_email": null,
-                        "add_conversation_to_reply": 1,
-                        "auto_reply_body": "<p>Dear [name],<br /><br />This is a confirmation that we received your email and registered it as ticket #[ticket_number]. You can always reply to this email if you want to add additional information.<br /><br />Kinds regards,<br /><br />Team Rudder</p>",
-                        "auto_reply_enabled": 1,
-                        "auto_reply_subject": null,
-                        "branding": 1,
-                        "branding_service_name": "Rudder",
-                        "embed_attachments": 1,
-                        "font_family": null,
-                        "prepend_ticket_number_to_subject": 0,
-                        "sender_name": "Rudder",
-                        "sender_name_personal": "[agent.first_name] | Rudder",
-                        "signature": "<p>Kind regards,<br /><br />[agent.first_name] [agent.last_name]<br />Rudder</p>",
-                        "spam_setting": 1,
-                        "split_by_sender": 0,
-                        "split_by_subject": 1,
-                        "type": "TRENGO",
-                        "meta": {
-                            "selectedFolders": [],
-                            "syncStatus": null,
-                            "syncFolders": [],
-                            "zapier_consent": null
-                        },
-                        "created_at": "2021-05-13 08:47:56",
-                        "updated_at": "2021-05-13 08:47:56"
-                    },
-                    "users": [],
-                    "username": "5xcyI53Nf7",
-                    "password_is_null": false,
-                    "reopen_closed_ticket": 1,
-                    "is_private": false,
-                    "reassign_reopened_ticket": false,
-                    "reopen_closed_ticket_time_window_days": "30"
-                }
-            ],
-            "pivot": null,
-            "formatted_custom_field_data": {
-                "Customer number": null,
-                "Policy": null
+      {
+        "id": 97694755,
+        "name": "Utsab Email",
+        "full_name": "Utsab Email",
+        "email": "utsab@outlook.com",
+        "abbr": "U",
+        "color": "#00bcd4",
+        "profile_image": null,
+        "is_phone": true,
+        "phone": "98303115423",
+        "formatted_phone": "+98 303115423",
+        "avatar": "https://app.trengo.com/img/defaultpic.png",
+        "identifier": "utsab@outlook.com",
+        "custom_field_data": null,
+        "profile": [],
+        "channels": [
+          {
+            "id": 406005,
+            "name": "Sms",
+            "title": "sms",
+            "phone": "",
+            "type": "SMS",
+            "auto_reply": "ENABLED",
+            "color": null,
+            "notification_email": null,
+            "business_hour_id": 125020,
+            "notification_sound": "chat.mp3",
+            "status": "ACTIVE",
+            "display_name": "sms • SMS",
+            "text": "sms • SMS",
+            "show_ticket_fields": 1,
+            "show_contact_fields": 1,
+            "emailChannel": null,
+            "users": [],
+            "username": null,
+            "password_is_null": false,
+            "reopen_closed_ticket": 1,
+            "is_private": false,
+            "reassign_reopened_ticket": false,
+            "reopen_closed_ticket_time_window_days": "30"
+          },
+          {
+            "id": 405980,
+            "name": "Email",
+            "title": "email",
+            "phone": "",
+            "type": "EMAIL",
+            "auto_reply": "ENABLED",
+            "color": null,
+            "notification_email": null,
+            "business_hour_id": 125020,
+            "notification_sound": "chat.mp3",
+            "status": "ACTIVE",
+            "display_name": "email • 5xcyI53Nf7@trengomail.com",
+            "text": "email • 5xcyI53Nf7@trengomail.com",
+            "show_ticket_fields": 1,
+            "show_contact_fields": 1,
+            "emailChannel": {
+              "channel_id": 405980,
+              "email_theme_id": null,
+              "sender_email_id": null,
+              "sender_email": null,
+              "add_conversation_to_reply": 1,
+              "auto_reply_body": "<p>Dear [name],<br /><br />This is a confirmation that we received your email and registered it as ticket #[ticket_number]. You can always reply to this email if you want to add additional information.<br /><br />Kinds regards,<br /><br />Team Rudder</p>",
+              "auto_reply_enabled": 1,
+              "auto_reply_subject": null,
+              "branding": 1,
+              "branding_service_name": "Rudder",
+              "embed_attachments": 1,
+              "font_family": null,
+              "prepend_ticket_number_to_subject": 0,
+              "sender_name": "Rudder",
+              "sender_name_personal": "[agent.first_name] | Rudder",
+              "signature": "<p>Kind regards,<br /><br />[agent.first_name] [agent.last_name]<br />Rudder</p>",
+              "spam_setting": 1,
+              "split_by_sender": 0,
+              "split_by_subject": 1,
+              "type": "TRENGO",
+              "meta": {
+                "selectedFolders": [],
+                "syncStatus": null,
+                "syncFolders": [],
+                "zapier_consent": null
+              },
+              "created_at": "2021-05-13 08:47:56",
+              "updated_at": "2021-05-13 08:47:56"
             },
-            "display_name": "Utsab Phone tct (utsab@outlook.com)",
-            "is_private": false
-        }
+            "users": [],
+            "username": "5xcyI53Nf7",
+            "password_is_null": false,
+            "reopen_closed_ticket": 1,
+            "is_private": false,
+            "reassign_reopened_ticket": false,
+            "reopen_closed_ticket_time_window_days": "30"
+          }
+        ],
+        "pivot": null,
+        "formatted_custom_field_data": {
+          "Customer number": null,
+          "Policy": null
+        },
+        "display_name": "Utsab Phone tct (utsab@outlook.com)",
+        "is_private": false
+      }
     ],
     "links": {
       "first": "https://app.trengo.com/api/v2/contacts?page=1",

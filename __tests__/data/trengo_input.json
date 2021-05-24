@@ -523,7 +523,7 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Product Purchased",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "cart_value": 5000,
         "email": "utsab@outlook.com"
@@ -606,7 +606,7 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "checkedOut",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "email": "utsab@outlook.com"
@@ -689,7 +689,7 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Order Completed",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "98765432100"
@@ -704,7 +704,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "value": "trengo_phoneext_channel"
           }
         ],
@@ -778,11 +778,11 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Order Completed",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "9830311521",
-        "email": "utsab@outlook.com" 
+        "email": "utsab@outlook.com"
       },
       "context": {
         "ip": "14.5.67.21",
@@ -794,7 +794,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           }
         ],
@@ -868,11 +868,11 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Stress Test",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "9830311521",
-        "email": "utsab@outlook.com" 
+        "email": "utsab@outlook.com"
       },
       "context": {
         "ip": "14.5.67.21",
@@ -884,7 +884,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           }
         ],
@@ -958,11 +958,11 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Stress test2",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "9830311521",
-        "email": "utsab@outlook.com" 
+        "email": "utsab@outlook.com"
       },
       "context": {
         "ip": "14.5.67.21",
@@ -974,7 +974,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           }
         ],
@@ -1048,11 +1048,11 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Stress test3",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "9830311521",
-        "email": "utsab@outlook.com" 
+        "email": "utsab@outlook.com"
       },
       "context": {
         "ip": "14.5.67.21",
@@ -1064,7 +1064,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           }
         ],
@@ -1138,11 +1138,11 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Stress test4",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000,
         "phone": "9830311521",
-        "email": "utsab@outlook.com" 
+        "email": "utsab@outlook.com"
       },
       "context": {
         "ip": "14.5.67.21",
@@ -1154,7 +1154,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           }
         ],
@@ -1309,7 +1309,7 @@
       "userId": "randomUserId",
       "type": "track",
       "event": "Stress test2",
-      "properties":{
+      "properties": {
         "name": "Random_Track_call",
         "value": 5000
       },
@@ -1323,7 +1323,7 @@
         },
         "externalId": [
           {
-            "type":"trengoChannelId",
+            "type": "trengoChannelId",
             "id": "trengo_emailext_channel"
           },
           {

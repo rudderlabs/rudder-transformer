@@ -5,6 +5,10 @@ const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
+const {
+  recurlyGetRequestHandler,
+  recurlyPostRequestHandler
+} = require("./recurly.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 
 const urlDirectoryMap = {
@@ -20,7 +24,9 @@ const path = require("path");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;
-  const paramString = Object.keys(params).map(key => `${key}=${params[key]}`).join("&");
+  const paramString = Object.keys(params)
+    .map(key => `${key}=${params[key]}`)
+    .join("&");
   return `${url}?${paramString}`;
 };
 
@@ -48,6 +54,11 @@ function get(url) {
       resolve(kustomerGetRequestHandler(url));
     });
   }
+  if (url.includes("https://v3.recurly.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(recurlyGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -64,15 +75,20 @@ function post(url, payload) {
       resolve(acPostRequestHandler(url, payload));
     });
   }
-  if(url.includes("https://a.klaviyo.com")) {
+  if (url.includes("https://a.klaviyo.com")) {
     return new Promise((resolve, reject) => {
       resolve(klaviyoPostRequestHandler(url, payload));
     });
   }
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
-      resolve(gainsightRequestHandler(url, payload))
-    })
+      resolve(gainsightRequestHandler(url, payload));
+    });
+  }
+  if (url.includes("https://v3.recurly.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(recurlyPostRequestHandler(url, payload));
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
@@ -87,8 +103,10 @@ function put(url, payload, options) {
   const mockData = getData(url);
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
-      resolve(gainsightRequestHandler(getParamEncodedUrl(url, options), payload));
-    })
+      resolve(
+        gainsightRequestHandler(getParamEncodedUrl(url, options), payload)
+      );
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

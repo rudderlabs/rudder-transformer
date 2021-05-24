@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
@@ -63,7 +63,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
@@ -126,7 +126,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
@@ -159,7 +159,7 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "anon_id",
-      "userId": "Testing-2",
+      "userId": "Testing-2-PUT-CALL",
       "type": "identify",
       "traits": {
         "anonymousId": "anon_id",
@@ -189,7 +189,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
@@ -226,10 +226,11 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
+      "type": "track",
       "event": "Order Completed",
       "checkout_id": "testing 5",
       "userId": "testing-destination",
@@ -267,10 +268,11 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
       }
     },
     "message": {
+      "type": "track",
       "event": "Order Completed",
       "checkout_id": "testing 5",
       "userId": "testing-destination",
@@ -295,9 +297,9 @@
           "image_url": "https://www.website.com/product/path.jpg"
         },
         {
-          "product_id": "pid-ff",
+          "product_id": "pid-hod",
           "sku": "193",
-          "name": "Testing-5-updated-free fire",
+          "name": "Testing-5-HouseOfTheDead",
           "price": 20,
           "quantity": 1020,
           "category": "EA Games"

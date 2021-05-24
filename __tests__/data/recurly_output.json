@@ -74,7 +74,7 @@
     "version": "1",
     "type": "REST",
     "method": "PUT",
-    "endpoint": "https://v3.recurly.com/accounts/code-testing-2",
+    "endpoint": "https://v3.recurly.com/accounts/code-testing-2-put-call",
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/vnd.recurly.v2021-02-25",
@@ -128,12 +128,12 @@
         "bill_to": "self",
         "custom_fields": [
           {
-            "name": "isSubscribed",
-            "value": "true"
-          },
-          {
             "name": "planName",
             "value": "free"
+          },
+          {
+            "name": "isSubscribed",
+            "value": "true"
           }
         ]
       },
@@ -226,7 +226,7 @@
         "JSON": {
           "currency": "USD",
           "unit_amount": 191919,
-          "item_id": "ownsekegbxco"
+          "item_id": "oxaklq580l7o"
         },
         "XML": {},
         "FORM": {}

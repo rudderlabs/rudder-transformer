@@ -49,10 +49,15 @@ function getVersionedUtils(schemaVersion) {
   }
 }
 
+function isRudderSourcesEvent(event) {
+  return event.channel === "sources" || event.CHANNEL === "sources";
+}
+
 module.exports = {
   isObject,
   isBlank,
   timestampRegex,
   validTimestamp,
-  getVersionedUtils
+  getVersionedUtils,
+  isRudderSourcesEvent
 };

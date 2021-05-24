@@ -176,7 +176,6 @@ const responseBuilderSimple = async (message, category, destination) => {
         break;
     }
     eventPayload = removeUndefinedAndNullValues(eventPayload);
-    // validateEvent(eventPayload); //disabling validation from transformer
     payload = {
       identity: {
         externalId: getFieldValueFromMessage(message, "userId")

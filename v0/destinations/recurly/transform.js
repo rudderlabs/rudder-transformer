@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-await-in-loop */
 const btoa = require("btoa");
 const { EventType } = require("../../../constants");
@@ -11,6 +12,8 @@ const {
 const {
   defaultRequestConfig,
   ErrorMessage,
+  getErrorRespEvents,
+  getSuccessRespEvents,
   constructPayload
 } = require("../../util");
 
@@ -18,9 +21,7 @@ const {
   fetchAccount,
   createCustomFields,
   fetchItem,
-  createItem,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  createItem
 } = require("./util");
 
 /**
@@ -109,11 +110,16 @@ const processIdentify = async (message, category, config) => {
  * @returns
  */
 const processTrack = async (message, config) => {
-  if (!ECOM_EVENTS.includes(message.event)) {
+  if (!ECOM_EVENTS.includes(message.event.toLowerCase())) {
     throw Error(ErrorMessage.EcomEventNotSupported);
   }
   const { currency } = message;
-  const { products } = message;
+  if (!currency) {
+    throw Error(
+      Object.keys({ currency })[0].toUpperCase() + ErrorMessage.RequiredField
+    );
+  }
+  const { products } = message.properties;
   const accountObj = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
@@ -130,7 +136,9 @@ const processTrack = async (message, config) => {
 
   for (let i = 0; i < products.length; i += 1) {
     const p = products[i];
-    p.currency = currency;
+    if (!p.currency) {
+      continue;
+    }
     const itemPayload = constructPayload(
       p,
       MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]

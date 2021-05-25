@@ -309,6 +309,7 @@ const ErrorMessage = {
   FailedToConstructPayload: "Payload could not be constructed",
   ObjectNotFound: "Error while fetching object",
   InvalidRequest: "Invalid Request.",
+  RequiredField: " is required field",
   FailedToTrackWithoutAccount:
     "Account not found. Failed to associate track call without user.",
   EcomEventNotSupported: "We don't support this ecommerce event."

@@ -3,7 +3,7 @@ const { getMappingConfig } = require("../../util");
 const DEFAULT_BASE_ENDPOINT = "https://v3.recurly.com";
 const ACCEPT_HEADERS = "application/vnd.recurly.v2021-02-25";
 const BILL_TO_SELF = "self";
-const ECOM_EVENTS = ["Checkout Started", "Order Completed"];
+const ECOM_EVENTS = ["checkout started", "order completed"];
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {

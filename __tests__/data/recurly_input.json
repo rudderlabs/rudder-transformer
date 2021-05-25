@@ -243,26 +243,30 @@
       "discount": 1.5,
       "coupon": "ImagePro",
       "currency": "USD",
-      "products": [
-        {
-          "product_id": "pid-coc",
-          "sku": "G-32",
-          "name": "Testing-5-Clash Of Clan",
-          "price": 1999,
-          "quantity": 1699,
-          "category": "Games",
-          "url": "https://www.website.com/product/path",
-          "image_url": "https://www.website.com/product/path.jpg"
-        },
-        {
-          "product_id": "pid-pubg",
-          "sku": "193",
-          "name": "Testing-5-PubG",
-          "price": 200,
-          "quantity": 1000,
-          "category": "Free Games"
-        }
-      ]
+      "properties": {
+        "products": [
+          {
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "currency": "USD",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "product_id": "pid-pubg",
+            "sku": "193",
+            "name": "Testing-5-PubG",
+            "price": 200,
+            "currency": "USD",
+            "quantity": 1000,
+            "category": "Free Games"
+          }
+        ]
+      }
     }
   },
   {
@@ -273,7 +277,7 @@
     },
     "message": {
       "type": "track",
-      "event": "Order Completed",
+      "event": "order Completed",
       "checkout_id": "testing 5",
       "userId": "testing-destination",
       "order_id": "1234",
@@ -285,26 +289,187 @@
       "discount": 1.5,
       "coupon": "ImagePro",
       "currency": "USD",
-      "products": [
-        {
-          "product_id": "pid-coc",
-          "sku": "G-32",
-          "name": "Testing-5-Clash Of Clan",
-          "price": 1999,
-          "quantity": 1699,
-          "category": "Games",
-          "url": "https://www.website.com/product/path",
-          "image_url": "https://www.website.com/product/path.jpg"
+      "properties": {
+        "products": [
+          {
+            "currency": "USD",
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "currency": "USD",
+            "product_id": "pid-hod",
+            "sku": "193",
+            "name": "Testing-5-HouseOfTheDead",
+            "price": 20,
+            "quantity": 1020,
+            "category": "EA Games"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+      }
+    },
+    "message": {
+      "sentAt": "2021-05-25T09:59:16.173Z",
+      "messageId": "c6b061b8-bcad-4aec-abc0-009c5e5690ba",
+      "originalTimestamp": "2021-05-25T09:59:16.172Z",
+      "channel": "web",
+      "rudderId": "80d52488-c3e8-4c98-a30c-9cd9ab1c93dd",
+      "event": "Checkout started",
+      "context": {
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
         },
-        {
-          "product_id": "pid-hod",
-          "sku": "193",
-          "name": "Testing-5-HouseOfTheDead",
-          "price": 20,
-          "quantity": 1020,
-          "category": "EA Games"
+        "screen": {
+          "density": 2
+        },
+        "app": {
+          "version": "1.1.15",
+          "namespace": "com.rudderlabs.javascript",
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0"
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.15"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "page": {
+          "path": "/script-test.html",
+          "referring_domain": "",
+          "title": "",
+          "search": "",
+          "url": "http://localhost/script-test.html",
+          "referrer": "$direct"
         }
-      ]
+      },
+      "type": "track",
+      "userId": "testing-destination",
+      "integrations": {
+        "All": true
+      },
+      "properties": {
+        "coupon": "APPARELSALE",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "quantity": 2,
+            "category": "Merch",
+            "typeOfProduct": "Food",
+            "position": 1,
+            "brand": "",
+            "url": "https://www.example.com/product/bacon-jam",
+            "sku": "sku-1",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "value": 6,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "variant": "Extra topped",
+            "currency": "GBP",
+            "name": "Food/Drink"
+          },
+          {
+            "quantity": 1,
+            "category": "Merch",
+            "typeOfProduct": "Shirt",
+            "position": 2,
+            "brand": "Levis",
+            "url": "https://www.example.com/product/t-shirt",
+            "sku": "sku-2",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "value": 12.99,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "variant": "White",
+            "currency": "GBP",
+            "name": "T-Shirt"
+          },
+          {
+            "quantity": 1,
+            "category": "Merch",
+            "typeOfProduct": "Shirt",
+            "position": 1,
+            "brand": "Levis",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "sku": "sku-3",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "value": 12.99,
+            "price": 12.99,
+            "coupon": "APPARELSALE",
+            "product_id": "offer-t-shirt",
+            "variant": "Black",
+            "currency": "GBP",
+            "name": "T-Shirt-on-offer"
+          }
+        ],
+        "checkout_id": "what is checkout id here??",
+        "revenue": 31.98,
+        "value": 31.98,
+        "currency": "GBP",
+        "shipping": 4
+      },
+      "anonymousId": "bfd500c7-9db0-437d-9b78-9e7a2a684ad4"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "CHECKOUT STARTED",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "total": 191919,
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "currency": "USD",
+      "properties": {
+        "products": [
+          {
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "currency": "USD",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "product_id": "pid-pubg",
+            "sku": "193",
+            "name": "Testing-5-PubG",
+            "price": 200,
+            "quantity": 1000,
+            "category": "Free Games"
+          }
+        ]
+      }
     }
   }
 ]

@@ -233,5 +233,32 @@
       },
       "files": {}
     }
+  ],
+  {
+    "error": "CURRENCY is required field"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "currency": "USD",
+          "unit_amount": 191919,
+          "item_id": "ownrigpqfs69"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]

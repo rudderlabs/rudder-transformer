@@ -17,6 +17,15 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+// test(`4 Tests : Payload 4`, async () => {
+//   try {
+//     const output = await transformer.process(inputData[4]);
+//     expect(output).toEqual(expectedData[4]);
+//   } catch (error) {
+//     expect(error.message).toEqual(expectedData[4].error);
+//   }
+// });
+
 inputData.forEach((input, index) => {
   test(`${name} Tests : Payload ${index}`, async () => {
     try {

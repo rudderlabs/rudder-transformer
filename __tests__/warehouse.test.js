@@ -3,6 +3,7 @@ const _ = require("lodash");
 const util = require("util");
 const { input, output } = require(`./data/warehouse/events.js`);
 const { names } = require(`./data/warehouse/names.js`);
+const { largeNoOfColumnsevent } = require(`./data/warehouse/event_columns_length`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
@@ -730,3 +731,27 @@ describe("handle recordId from cloud sources", () => {
     });
   });
 });
+
+
+describe("Handle no of columns in an event", () => {
+
+  it("should throw an error if no of columns are more than 200",() => {
+    const i = input("track");
+    transformers.forEach((transformer, index) => {
+      i.message.properties = largeNoOfColumnsevent
+      expect(() => transformer.process(i)).toThrow(
+          "transfomer: Too many columns outputted from the event"
+      )
+    });
+
+  })
+
+  it("should not throw an error if no of columns are more than 200 and the event is from rudder-sources",() => {
+    const i = input("track");
+    transformers.forEach((transformer, index) => {
+      i.message.channel = "sources"
+      i.message.properties = largeNoOfColumnsevent
+      expect(() => transformer.process(i)).not.toThrow()
+    });
+  })
+})

@@ -76,8 +76,11 @@ const processIdentify = async (message, category, config) => {
   if (data.acquisition) {
     data.acquisition.channel = "events";
   }
-  if (message.customFields) {
-    data.custom_fields = createCustomFields(message.customFields);
+  if (config.customFieldMappings.length) {
+    data.custom_fields = createCustomFields(
+      message,
+      config.customFieldMappings
+    );
   }
   if (!data) {
     throw Error(ErrorMessage.FailedToConstructPayload);

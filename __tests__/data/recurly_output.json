@@ -18,6 +18,7 @@
         "last_name": "Doe",
         "preferred_locale": "en-US",
         "company": "test",
+        "custom_fields": [],
         "address": {
           "phone": "92374162212",
           "city": "kolkata",
@@ -51,6 +52,7 @@
         "last_name": "Gupta",
         "preferred_locale": "en-US",
         "company": "Rudder",
+        "custom_fields": [],
         "acquisition": {
           "campaign": "some campaign",
           "channel": "events"
@@ -88,6 +90,7 @@
         "last_name": "Uptated To Testing-3",
         "preferred_locale": "en-US",
         "company": "Rudder",
+        "custom_fields": [],
         "address": {
           "phone": "90071967788",
           "street1": "Himnagar",

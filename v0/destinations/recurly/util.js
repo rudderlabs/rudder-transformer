@@ -2,7 +2,12 @@ const btoa = require("btoa");
 const axios = require("axios");
 const logger = require("../../../logger");
 const { ACCEPT_HEADERS, DEFAULT_BASE_ENDPOINT } = require("./config");
-const { ErrorMessage, stripTrailingSlash } = require("../../util");
+const {
+  ErrorMessage,
+  stripTrailingSlash,
+  isDefinedAndNotNullAndNotEmpty,
+  getValueFromMessage
+} = require("../../util");
 
 const createItem = async (data, config, relativePath) => {
   let response = null;
@@ -67,11 +72,19 @@ const fetchItem = async (name, config) => {
   return itemObj;
 };
 
-const createCustomFields = payloadCustomFields => {
+const createCustomFields = (payload, mappingConfig) => {
   const customFields = [];
-  Object.keys(payloadCustomFields).forEach(key => {
-    const customFieldObject = { name: key, value: payloadCustomFields[key] };
-    customFields.push(customFieldObject);
+  mappingConfig.forEach(m => {
+    if (
+      isDefinedAndNotNullAndNotEmpty(m.to) &&
+      isDefinedAndNotNullAndNotEmpty(m.from)
+    ) {
+      const customFieldObject = {
+        name: m.to,
+        value: getValueFromMessage(payload, m.from)
+      };
+      customFields.push(customFieldObject);
+    }
   });
   return customFields;
 };

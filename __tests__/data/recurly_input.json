@@ -2,7 +2,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
       }
     },
     "message": {
@@ -63,7 +64,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
       }
     },
     "message": {
@@ -126,7 +128,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
       }
     },
     "message": {
@@ -189,7 +192,11 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [
+          { "from": "plan", "to": "planName" },
+          { "from": "properties.subscribed", "to": "isSubscribed" }
+        ]
       }
     },
     "message": {
@@ -204,6 +211,10 @@
       },
       "anonymousId": "anon_id-718",
       "type": "identify",
+      "plan": "free",
+      "properties": {
+        "subscribed": "true"
+      },
       "traits": {
         "anonymousId": "anon_id",
         "email": "email@gmail.com",
@@ -216,17 +227,14 @@
       },
       "integrations": {
         "All": true
-      },
-      "customFields": {
-        "planName": "free",
-        "isSubscribed": "true"
       }
     }
   },
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
       }
     },
     "message": {
@@ -272,7 +280,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
       }
     },
     "message": {
@@ -318,7 +327,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": []
       }
     },
     "message": {

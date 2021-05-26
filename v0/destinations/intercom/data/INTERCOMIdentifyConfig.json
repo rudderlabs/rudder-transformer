@@ -5,6 +5,17 @@
     "required": false
   },
   {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userIdOnly",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "phone",
     "sourceKeys": ["traits.phone", "context.traits.phone"],
     "required": false
@@ -16,7 +27,11 @@
   },
   {
     "destKey": "signed_up_at",
-    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
+    "sourceKeys": [
+      "traits.signedUpAt", 
+      "context.traits.signedUpAt", 
+      "originalTimestamp"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -40,7 +55,10 @@
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits.customAttributes", "context.traits.customAttributes"],
+    "sourceKeys": [
+      "traits.customAttributes", 
+      "context.traits.customAttributes"
+    ],
     "required": false
   }
 ]

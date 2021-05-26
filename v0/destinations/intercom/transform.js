@@ -5,30 +5,18 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
+  defaultPutRequestConfig,
   getFieldValueFromMessage,
-  getDestinationExternalID
 } = require("../../util");
-const { ENDPOINTS, identifyDataMapping } = require("./config");
-const { searchUser, CustomError } = require("./util");
+const { ENDPOINTS, identifyDataMapping, groupDataMapping, trackDataMapping } = require("./config");
+const {
+  createOrUpdateCompany,
+  getdestUserIdOrError,
+  CustomError
+} = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const externalUserId = getDestinationExternalID(message, "intercomUserId");
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
-
-  let destUserId;
-  if (externalUserId) {
-    destUserId = externalUserId;
-  } else if (userId) {
-    destUserId = await searchUser("external_id", userId);
-  } else if (email) {
-    destUserId = await searchUser("email", email);
-  } else {
-    throw new CustomError(
-      "externalId, userId or email is required for identify",
-      400
-    );
-  }
+  const { destUserId } = await getdestUserIdOrError(message, "identify");
 
   const payload = constructPayload(message, identifyDataMapping);
   if (!payload.name) {
@@ -45,6 +33,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   // update existing User
   if (destUserId) {
+    /**
+     * not allowing update for email and userId
+     */
+    delete payload.email;
+    delete payload.external_id;
     delete payload.signed_up_at;
 
     response.method = defaultPutRequestConfig.requestMethod;
@@ -53,11 +46,51 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   // create new User
-  set(payload, "email", email);
-  set(payload, "external_id", userId);
-
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+};
+
+const groupResponseBuilder = async ( message, { Config } ) => {
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
+    throw new CustomError("groupId is required for group call", 400);
+  }
+
+  const { destUserId } = await getdestUserIdOrError(message, "group");
+
+  const payload = constructPayload(message, groupDataMapping);
+  payload = removeUndefinedAndNullValues(payload);
+  set(payload, "company_id", groupId);
+
+  const companyId = await createOrUpdateCompany(payload, Config);
+
+  const response = defaultRequestConfig();
+  response.body.JSON = {
+    "id": companyId
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = ENDPOINTS.getAttachEndpoint(destUserId);
+  response.headers = {
+    Authorization: `Bearer ${Config.apiToken}`
+  };
+  return response;
+};
+
+const trackResponseBuilder = (message, { Config }) => {
+  const { idsObject } = getdestUserIdOrError(message, "track");
+
+  const payload = {
+    ...constructPayload(message, trackDataMapping),
+    ...idsObject
+  }
+
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.headers = {
+    Authorization: `Bearer ${Config.apiToken}`
+  };
   return response;
 };
 
@@ -79,6 +112,12 @@ const process = async event => {
   switch (messageType) {
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, destination);
+      break;
+    case EventType.GROUP:
+      response = await groupResponseBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      response = await trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`message type ${messageType} not supported`, 400);

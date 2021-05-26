@@ -1,37 +1,23 @@
 [
   {
-    "destKey": "user_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
-    "required": false
-  },
-  {
     "destKey": "event_name",
     "sourceKeys": "event",
     "required": true
   },
   {
-    "destKey": "created",
+    "destKey": "metadata",
+    "sourceKeys": "properties.metadata",
+    "required": false
+  },
+  {
+    "destKey": "created_at",
     "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
+      "properties.createdAt",
+      "originalTimestamp"
     ],
     "required": true,
     "metadata": {
-      "type": "secondTimestamp"
+      "type": "timestamp"
     }
   }
 ]

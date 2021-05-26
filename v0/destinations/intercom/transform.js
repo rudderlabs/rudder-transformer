@@ -6,9 +6,14 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getFieldValueFromMessage,
+  getFieldValueFromMessage
 } = require("../../util");
-const { ENDPOINTS, identifyDataMapping, groupDataMapping, trackDataMapping } = require("./config");
+const {
+  ENDPOINTS,
+  identifyDataMapping,
+  groupDataMapping,
+  trackDataMapping
+} = require("./config");
 const {
   createOrUpdateCompany,
   getdestUserIdOrError,
@@ -28,7 +33,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINTS.IDENTIFY_ENDPOINT;
   response.headers = {
-    Authorization: `Bearer ${Config.apiToken}`
+    Authorization: `Bearer ${Config.apiToken}`,
+    "Content-Type": "application/json"
   };
 
   // update existing User
@@ -51,7 +57,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-const groupResponseBuilder = async ( message, { Config } ) => {
+const groupResponseBuilder = async (message, { Config }) => {
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
     throw new CustomError("groupId is required for group call", 400);
@@ -67,46 +73,43 @@ const groupResponseBuilder = async ( message, { Config } ) => {
 
   const response = defaultRequestConfig();
   response.body.JSON = {
-    "id": companyId
+    id: companyId
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINTS.getAttachEndpoint(destUserId);
   response.headers = {
-    Authorization: `Bearer ${Config.apiToken}`
+    Authorization: `Bearer ${Config.apiToken}`,
+    "Content-Type": "application/json"
   };
   return response;
 };
 
-const trackResponseBuilder = (message, { Config }) => {
-  const { idsObject } = getdestUserIdOrError(message, "track");
+const trackResponseBuilder = async (message, { Config }) => {
+  const { idsObject } = await getdestUserIdOrError(message, "track");
 
   const payload = {
     ...constructPayload(message, trackDataMapping),
     ...idsObject
-  }
+  };
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.endpoint = ENDPOINTS.TRACK_ENDPOINT;
   response.headers = {
-    Authorization: `Bearer ${Config.apiToken}`
+    Authorization: `Bearer ${Config.apiToken}`,
+    "Content-Type": "application/json"
   };
   return response;
 };
 
 // process single message
 const process = async event => {
-  if (!message || !message.type) {
+  const { message, destination } = event;
+  if (!message.type) {
     throw CustomError("Message Type is not present. Aborting message.", 400);
   }
-  if (!Config.apiToken) {
-    throw new CustomError("API Token is missing.", 400);
-  }
-
-  const { message, destination } = event;
-  const messageType = getValueFromMessage(message, "type")
-    .toLowerCase()
-    .trim();
+  const messageType = message.type.toLowerCase();
 
   let response;
   switch (messageType) {

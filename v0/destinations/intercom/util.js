@@ -1,5 +1,8 @@
 const axios = require("axios");
-const { getFieldValueFromMessage } = require("../../util");
+const {
+  getFieldValueFromMessage,
+  getDestinationExternalID
+} = require("../../util");
 const { ENDPOINTS } = require("./config");
 
 class CustomError extends Error {
@@ -94,16 +97,13 @@ const getdestUserIdOrError = async (message, method) => {
   if (externalUserId) {
     destUserId = externalUserId;
     idsObject.id = destUserId;
-  } 
-  else if (userId) {
+  } else if (userId) {
     destUserId = await searchUser("external_id", userId);
     idsObject.user_id = destUserId;
-  } 
-  else if (email) {
+  } else if (email) {
     destUserId = await searchUser("email", email);
     idsObject.email = destUserId;
-  } 
-  else {
+  } else {
     throw new CustomError(
       `externalId, userId or email is required for ${method}`,
       400

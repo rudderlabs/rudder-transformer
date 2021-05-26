@@ -13,7 +13,13 @@
   },
   "clevertap": {
     "config": {
-      "processor": {},
+      "processor": {
+        "Config": {
+          "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+          "accountId": "476550467",
+          "trackAnonymous": true
+        }
+      },
       "router": {}
     }
   },
@@ -102,6 +108,958 @@
         "transformations": [],
         "isConnectionEnabled": true,
         "isProcessorEnabled": true
+      },
+      "processor": {
+        "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+        "Config": {
+          "accountId": "marketo_acct_id_success",
+          "clientId": "marketo_client_id_success",
+          "clientSecret": "marketo_client_secret_success",
+          "trackAnonymousEvents": true,
+          "customActivityEventMap": [
+            { "from": "Product Clicked", "to": "100001" }
+          ],
+          "customActivityPropertyMap": [
+            { "from": "name", "to": "productName" }
+          ],
+          "customActivityPrimaryKeyMap": [
+            { "from": "Product Clicked", "to": "name" }
+          ],
+          "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        }
+      }
+    }
+  },
+  "iterable": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "mapToSingleEvent": false,
+          "trackAllPages": false,
+          "trackCategorisedPages": true,
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "confluent_cloud": {
+    "config": {
+      "processor": {
+        "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+        "Name": "Azure Event Hub",
+        "DestinationDefinition": {
+          "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+          "Name": "AZURE_EVENT_HUB",
+          "DisplayName": "Azure Event Hub",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": null,
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "leanplum": {
+    "config": {
+      "processor": {
+        "Config": {
+          "applicationId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "isDevelop": true,
+          "useNativeSDK": false,
+          "sendEvents": false
+        }
+      }
+    }
+  },
+  "braze": {
+    "config": {
+      "processor": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "eu-01"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      }
+    }
+  },
+  "kinesis": {
+    "config": {
+      "processor": {
+        "ID": "1aAAvbZ2FMoxM0LuxXdqimZ9HEp",
+        "Name": "Kinesis",
+        "DestinationDefinition": {
+          "ID": "1aA9lTsbB5ZZs4Lj2uIqCSYxYn4",
+          "Name": "KINESIS",
+          "DisplayName": "Amazon Kinesis",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": null,
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "salesforce": {
+    "config": {
+      "processor": {
+        "Config": {
+          "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
+          "password": "hJCR557#uzFfD",
+          "userName": "sampathvinayak1453@gmail.com"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Salesforce",
+          "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+          "Name": "SALESFORCE"
+        },
+        "Enabled": true,
+        "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+        "Name": "tst",
+        "Transformations": []
+      },
+      "router": {
+        "Config": {
+          "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
+          "password": "hJCR557#uzFfD",
+          "userName": "sampathvinayak1453@gmail.com"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Salesforce",
+          "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+          "Name": "SALESFORCE"
+        },
+        "Enabled": true,
+        "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
+        "Name": "tst",
+        "Transformations": []
+      }
+    }
+  },
+  "mp": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "MIXPANEL"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Kiss Metrics",
+        "Transformations": []
+      }
+    }
+  },
+  "keen": {
+    "config": {
+      "processor": {
+        "Config": {
+          "projectID": "abcde",
+          "writeKey": "xyz",
+          "ipAddon": true,
+          "uaAddon": true,
+          "urlAddon": true,
+          "referrerAddon": true
+        }
+      }
+    }
+  },
+  "s3": { "config": { "processor": { "Config": { "trackingID": "abcde" } } } },
+  "splitio": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "abcde",
+          "environment": "staging",
+          "trafficType": "user"
+        }
+      }
+    }
+  },
+  "slack": {
+    "config": {
+      "processor": {
+        "ID": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+        "Name": "test-slack",
+        "DestinationDefinition": {
+          "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
+          "Name": "SLACK",
+          "DisplayName": "Slack",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": {
+          "eventChannelSettings": [
+            {
+              "eventChannel": "#slack_integration",
+              "eventName": "is",
+              "eventRegex": true
+            },
+            { "eventChannel": "", "eventName": "", "eventRegex": false },
+            { "eventChannel": "", "eventName": "", "eventRegex": false }
+          ],
+          "eventTemplateSettings": [
+            {
+              "eventName": "is",
+              "eventRegex": true,
+              "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
+            },
+            { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          ],
+          "identifyTemplate": "identified {{name}} with {{traits}}",
+          "webhookUrl": "https://hooks.slack.com/services/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",
+          "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "segment": {
+    "config": {
+      "processor": {
+        "ID": "1afmecIpsJm7D72aRTksxyODrwR",
+        "Name": "Segment",
+        "DestinationDefinition": {
+          "ID": "1afjjahf0X5lSyNze7Xh7aqJs11",
+          "Name": "SEGMENT",
+          "DisplayName": "Segment",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": { "writeKey": "abcdefghijklmnopqrstuvwxyz" },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "kochava": {
+    "config": {
+      "processor": {
+        "Config": { "apiKey": "<kochava guid goes here>" },
+        "DestinationDefinition": {
+          "DisplayName": "Kochava",
+          "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+          "Name": "KOCHAVA"
+        },
+        "Enabled": true,
+        "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+        "Name": "kochava test",
+        "Transformations": []
+      }
+    }
+  },
+  "adj": {
+    "config": {
+      "processor": {
+        "ID": "1i3Em7GMU9xVEiDlZUN8c88BMS9",
+        "Name": "ADJ",
+        "DestinationDefinition": {
+          "ID": "1i3DeZo6eSUKrS3KzDUqjbBPCDJ",
+          "Name": "ADJ",
+          "DisplayName": "Adjust",
+          "Config": {
+            "destConfig": {
+              "android": ["useNativeSDK"],
+              "defaultConfig": [
+                "appToken",
+                "customMappings",
+                "delay",
+                "environment"
+              ],
+              "ios": ["useNativeSDK"],
+              "reactnative": ["useNativeSDK"]
+            },
+            "excludeKeys": [],
+            "includeKeys": ["appToken", "customMappings", "delay"],
+            "supportedSourceTypes": ["android", "ios", "reactnative", "cloud"]
+          }
+        },
+        "Config": {
+          "appToken": "t1yurrb968zk",
+          "customMappings": [
+            { "from": "Application Installed", "to": "3fdmll" },
+            { "from": "First Investment", "to": "tf4gm5" }
+          ],
+          "environment": true
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "personalize": {
+    "config": {
+      "processor": {
+        "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+        "Name": "personalize Dev Testing",
+        "DestinationDefinition": {
+          "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+          "Name": "PERSONALIZE",
+          "DisplayName": "AWS Personalize",
+          "Config": {
+            "destConfig": {
+              "defaultConfig": [
+                "accessKeyId",
+                "secretAccessKey",
+                "region",
+                "trackingId",
+                "eventName",
+                "customMappings"
+              ]
+            },
+            "excludeKeys": [],
+            "includeKeys": [],
+            "saveDestinationResponse": true,
+            "secretKeys": ["accessKeyId", "secretAccessKey"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative"
+            ],
+            "transformAt": "processor"
+          }
+        },
+        "Config": {
+          "accessKeyId": "ABC",
+          "customMappings": [
+            { "from": "TYPE_OF_MOVIE", "to": "typeOfMovie" },
+            { "from": "NUMBER_OF_RATINGS", "to": "numberOfRatings" }
+          ],
+          "region": "us-east-1",
+          "secretAccessKey": "DEF",
+          "trackingId": "c60"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "eventbridge": {
+    "config": {
+      "processor": {
+        "Config": {
+          "region": "*****",
+          "accessKeyID": "*****",
+          "accessKey": "*****",
+          "eventBusName": "rudder-test1",
+          "detailType": "newDetailType",
+          "resourceID": [
+            { "arn": "arn:aws:events:*****:*****:event-bus/rudder-test1" },
+            { "arn": "arn:aws:events:*****:*****:event-bus/rudder-test2" }
+          ]
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "klaviyo": {
+    "config": {
+      "processor": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      }
+    }
+  },
+  "customerio": {
+    "config": {
+      "processor": {
+        "Config": {
+          "datacenterEU": false,
+          "siteID": "46be54768e7d49ab2628",
+          "apiKey": "19f0f734e3bb87a44596"
+        }
+      }
+    }
+  },
+  "posthog": {
+    "config": {
+      "processor": {
+        "Config": {
+          "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
+          "yourInstance": "https://app.posthog.com/"
+        }
+      }
+    }
+  },
+  "appcues": {
+    "config": {
+      "processor": { "Config": { "accountId": "86086", "useNativeSDK": false } }
+    }
+  },
+  "sf": {
+    "config": {
+      "processor": { "Config": { "trackingID": "abcd" }, "Enabled": true }
+    }
+  },
+  "af": {
+    "config": {
+      "processor": {
+        "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" },
+        "Enabled": true
+      }
+    }
+  },
+  "googlepubsub": {
+    "config": {
+      "processor": {
+        "Config": {
+          "credentials": "abc",
+          "eventToTopicMap": [{ "from": "track", "to": "test" }]
+        }
+      }
+    }
+  },
+  "autopilot": {
+    "config": {
+      "processor": {
+        "ID": "1afjtc6chkhdeKsXYrNFOzR5D9v",
+        "Name": "Autopilot",
+        "DestinationDefinition": {
+          "ID": "1afjX4MlAucK57Q0ctTVlD27Tvo",
+          "Name": "AUTOPILOT",
+          "DisplayName": "Autopilot",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": {
+          "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+          "customMappings": [{ "from": "0001", "to": "Signup" }],
+          "triggerId": "00XX"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "branch": {
+    "config": {
+      "processor": {
+        "Config": {
+          "branchKey": "<branch key goes here>",
+          "useNativeSDK": false
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Branch Metrics",
+          "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+          "Name": "BRANCH"
+        },
+        "Enabled": true,
+        "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+        "Name": "branch test",
+        "Transformations": []
+      }
+    }
+  },
+  "kissmetrics": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Kiss Metrics",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "KISSMETRICS"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Kiss Metrics",
+        "Transformations": []
+      }
+    }
+  },
+  "redis": {
+    "config": {
+      "processor": {
+        "Config": {
+          "address": "localhost:6379",
+          "database": "test",
+          "prefix": " "
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Redis",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "REDIS"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Redis",
+        "Transformations": []
+      }
+    }
+  },
+  "sfmc": {
+    "config": {
+      "processor": {
+        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+        "Name": "SFMC",
+        "DestinationDefinition": {
+          "ID": "1pYpYSeQd8OeN6xPdw6VGDzqUd1",
+          "Name": "SFMC",
+          "DisplayName": "Salesforce Marketing Cloud",
+          "Config": {
+            "destConfig": [],
+            "excludeKeys": [],
+            "includeKeys": [],
+            "saveDestinationResponse": true,
+            "supportedSourceTypes": [],
+            "transformAt": "processor"
+          },
+          "ResponseRules": {}
+        },
+        "Config": {
+          "clientId": "vcn7AQ2W9GGIAZSsN6Mfq",
+          "clientSecret": "vcn7AQ2W9GGIAZSsN6Mfq",
+          "createOrUpdateContacts": true,
+          "eventDelivery": true,
+          "eventDeliveryTS": 1615371070621,
+          "eventToUUID": [],
+          "externalKey": "f3ffa19b-e0b3-4967-829f-549b781080e6",
+          "subDomain": "vcn7AQ2W9GGIAZSsN6Mfq"
+        },
+        "Enabled": true,
+        "Transformations": []
+      }
+    }
+  },
+  "facebook_pixel": {
+    "config": {
+      "processor": {
+        "Config": {
+          "limitedDataUsage": true,
+          "blacklistPiiProperties": [
+            { "blacklistPiiProperties": "", "blacklistPiiHash": false }
+          ],
+          "accessToken": "09876",
+          "pixelId": "dfgdfgdgd",
+          "eventsToEvents": [{ "from": "", "to": "" }],
+          "eventCustomProperties": [{ "eventCustomProperties": "" }],
+          "valueFieldIdentifier": "",
+          "advancedMapping": false,
+          "whitelistPiiProperties": [{ "whitelistPiiProperties": "" }]
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "heap": {
+    "config": {
+      "processor": {
+        "Config": { "appId": "<app id>" },
+        "DestinationDefinition": {
+          "DisplayName": "Heap.io",
+          "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+          "Name": "HEAP"
+        },
+        "Enabled": true,
+        "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+        "Name": "heap test",
+        "Transformations": []
+      }
+    }
+  },
+  "kustomer": {
+    "config": { "processor": { "Config": { "apiKey": "WJqij952gdy251" } } }
+  },
+  "userlist": {
+    "config": { "processor": { "Config": { "pushKey": "userlist-push-key" } } }
+  },
+  "mailchimp": {
+    "config": {
+      "processor": {
+        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+        "Name": "test-mc",
+        "DestinationDefinition": {
+          "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+          "Name": "MC",
+          "DisplayName": "MailChimp"
+        },
+        "Config": {
+          "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+          "audienceId": "df42a82d07",
+          "datacenterId": "us20"
+        },
+        "Enabled": true,
+        "Transformations": []
+      }
+    }
+  },
+  "lytics": {
+    "config": {
+      "processor": {
+        "Config": { "apiKey": "11111122702j2a2U2K2C7H", "stream": "default" },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "ga": {
+    "config": {
+      "processor": {
+        "Config": {
+          "trackingID": "UA-165994240-1",
+          "doubleClick": true,
+          "enhancedLinkAttribution": true,
+          "classic": true,
+          "ignoredReferrers": "",
+          "serverClassic": false,
+          "includeSearch": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "sampleRate": "100",
+          "siteSpeedSampleRate": "1",
+          "setAllMappedProps": true,
+          "enableServerSideIdentify": true,
+          "serverSideIdentifyEventCategory": "name",
+          "serverSideIdentifyEventAction": "action1",
+          "anonymizeIp": true,
+          "domain": "domain",
+          "enhancedEcommerce": true,
+          "nonInteraction": true,
+          "optimize": "abc123",
+          "sendUserId": true,
+          "useGoogleAmpClientId": true,
+          "web-useNativeSDK": true,
+          "dimensions": [
+            { "from": "name", "to": "dimension1" },
+            { "from": "custom2", "to": "dimension2" }
+          ],
+          "metrics": [
+            { "from": "email", "to": "metric1" },
+            { "from": "trait2", "to": "metric2" }
+          ],
+          "resetCustomDimensionsOnPage": [
+            { "resetCustomDimensionsOnPage": "abc" },
+            { "resetCustomDimensionsOnPage": "xyz" }
+          ],
+          "contentGroupings": [
+            { "from": "plan", "to": "contentGroup1" },
+            { "from": "name", "to": "contentGroup2" }
+          ]
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "fb": { "config": { "processor": { "Config": { "appID": "RudderFbApp" } } } },
+  "am": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "abcde",
+          "groupTypeTrait": "email",
+          "groupValueTrait": "age"
+        }
+      }
+    }
+  },
+  "intercom": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+          "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
+          "collectContext": false
+        }
+      }
+    }
+  },
+  "firehose": {
+    "config": {
+      "processor": {
+        "Config": {
+          "region": "us-east-1",
+          "accessKeyID": "abc",
+          "accessKey": "xyz",
+          "mapEvents": [{ "from": "track", "to": "ruchira-test-firehose" }]
+        }
+      }
+    }
+  },
+  "webhook": {
+    "config": {
+      "processor": {
+        "Config": {
+          "webhookUrl": "http://6b0e6a60.ngrok.io",
+          "header": [
+            { "from": "test1", "to": "value1" },
+            { "from": "test2", "to": "value2" }
+          ]
+        }
+      }
+    }
+  },
+  "googlesheets": {
+    "config": {
+      "processor": {
+        "Config": {
+          "credentials": "{ sheets credentials }",
+          "eventKeyMap": [
+            { "from": "firstName", "to": "First Name" },
+            { "from": "lastName", "to": "Last Name" },
+            { "from": "birthday", "to": "Birthday" },
+            { "from": "address.city", "to": "City" },
+            { "from": "address.country", "to": "Country" },
+            { "from": "revenue", "to": "Revenue" },
+            { "from": "offer", "to": "Offer" },
+            { "from": "title", "to": "Title Page" },
+            { "from": "Cart Value", "to": "Cart Value" },
+            { "from": "revenue", "to": "Revenue" },
+            { "from": "context.app.build", "to": "App Build" },
+            { "from": "context.app.name", "to": "App Name" },
+            { "from": "context.library.name", "to": "Library Name" },
+            { "from": "context.ip", "to": "IP" }
+          ],
+          "sheetId": "rudder_sheet_id",
+          "sheetName": "rudder_sheet"
+        }
+      }
+    }
+  },
+  "monetate": {
+    "config": {
+      "processor": {
+        "Config": {
+          "monetateChannel": "channel",
+          "retailerShortName": "retailer",
+          "apiKey": "api-key"
+        }
+      }
+    }
+  },
+  "indicative": {
+    "config": { "processor": { "Config": { "apiKey": "abcde" } } }
+  },
+  "user_transformation": {
+    "config": {
+      "processor": {
+        "ID": 2,
+        "Config": { "trackingID": "abcd" },
+        "Enabled": true,
+        "Transformations": [{ "VersionID": "23" }]
+      }
+    }
+  },
+  "hs": {
+    "config": {
+      "router": {
+        "Config": {
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+          "hubID": "6405167"
+        },
+        "secretConfig": {},
+        "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+        "name": "Hubspot",
+        "enabled": true,
+        "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+        "deleted": false,
+        "createdAt": "2020-12-30T08:39:32.005Z",
+        "updatedAt": "2021-02-03T16:22:31.374Z",
+        "destinationDefinition": {
+          "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+          "name": "HS",
+          "displayName": "Hubspot",
+          "createdAt": "2020-04-09T09:24:31.794Z",
+          "updatedAt": "2021-01-11T11:03:28.103Z"
+        },
+        "transformations": [],
+        "isConnectionEnabled": true,
+        "isProcessorEnabled": true
+      },
+      "processor": {
+        "Config": {
+          "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+          "hubID": "6405167"
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "ga360": {
+    "config": {
+      "processor": {
+        "Config": {
+          "trackingID": "UA-165994240-1",
+          "doubleClick": true,
+          "enhancedLinkAttribution": true,
+          "classic": true,
+          "ignoredReferrers": "",
+          "serverClassic": false,
+          "includeSearch": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "sampleRate": "100",
+          "siteSpeedSampleRate": "1",
+          "setAllMappedProps": true,
+          "enableServerSideIdentify": true,
+          "serverSideIdentifyEventCategory": "name",
+          "serverSideIdentifyEventAction": "action1",
+          "anonymizeIp": true,
+          "domain": "domain",
+          "enhancedEcommerce": true,
+          "nonInteraction": true,
+          "optimize": "abc123",
+          "sendUserId": true,
+          "useGoogleAmpClientId": true,
+          "web-useNativeSDK": true,
+          "dimensions": [
+            { "from": "name", "to": "dimension1" },
+            { "from": "custom2", "to": "dimension2" }
+          ],
+          "metrics": [
+            { "from": "email", "to": "metric1" },
+            { "from": "trait2", "to": "metric2" }
+          ],
+          "resetCustomDimensionsOnPage": [
+            { "resetCustomDimensionsOnPage": "abc" },
+            { "resetCustomDimensionsOnPage": "xyz" }
+          ],
+          "contentGroupings": [
+            { "from": "plan", "to": "contentGroup1" },
+            { "from": "name", "to": "contentGroup2" }
+          ]
+        },
+        "Enabled": true
+      }
+    }
+  },
+  "moengage": {
+    "config": {
+      "processor": {
+        "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
+        "Name": "MoEngage Testing",
+        "DestinationDefinition": {
+          "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
+          "Name": "MOENGAGE",
+          "DisplayName": "MoEngage",
+          "Config": {
+            "destConfig": { "defaultConfig": ["apiId", "apiKey", "region"] },
+            "excludeKeys": [],
+            "includeKeys": [],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative"
+            ]
+          }
+        },
+        "Config": {
+          "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
+          "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+          "eventDelivery": false,
+          "eventDeliveryTS": 1602757086384,
+          "region": "US"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "zendesk": {
+    "config": {
+      "processor": {
+        "Config": {
+          "apiToken": "kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60",
+          "createUsersAsVerified": true,
+          "domain": "rudderlabshelp",
+          "email": "prabrisha@rudderlabs.com",
+          "password": "Ey!i@2tn6YhSDpx",
+          "removeUsersFromOrganization": true,
+          "sendGroupCallsWithoutUserId": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Zendesk",
+          "ID": "1YknZ1ENqB8UurJQJE2VrEA61tr",
+          "Name": "ZENDESK"
+        },
+        "Enabled": true,
+        "ID": "1Z3zFXE6zwvNJBVOUzCuJxeO51P",
+        "Name": "zendesk",
+        "Transformations": []
+      }
+    }
+  },
+  "kafka": {
+    "config": {
+      "processor": {
+        "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+        "Name": "Kafka",
+        "DestinationDefinition": {
+          "ID": "1Zr6b5wdDwC6bCrN5YWDZr7KyNt",
+          "Name": "KAFKA",
+          "DisplayName": "Kafka",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": null,
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  },
+  "user_transformation_filter": {
+    "config": {
+      "processor": {
+        "ID": 2,
+        "Config": { "trackingID": "abcd" },
+        "Enabled": true,
+        "Transformations": [{ "VersionID": "24" }]
+      }
+    }
+  },
+  "azure_event_hub": {
+    "config": {
+      "processor": {
+        "ID": "1cCz8hts5rp3YWglzhU1GPmVdjE",
+        "Name": "Azure Event Hub",
+        "DestinationDefinition": {
+          "ID": "1cCs4qQ72QY8vovP7BlJ47mkjBh",
+          "Name": "AZURE_EVENT_HUB",
+          "DisplayName": "Azure Event Hub",
+          "Config": { "excludeKeys": [], "includeKeys": [] }
+        },
+        "Config": null,
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
       }
     }
   }

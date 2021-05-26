@@ -1,152 +1,89 @@
-const md5 = require("md5");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
-const {
-  ConfigCategory,
-  MappingConfig,
-  ReservedTraitsProperties,
-  ReservedCompanyProperties
-} = require("./config");
 const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getDestinationExternalID
 } = require("../../util");
+const { ENDPOINTS, identifyDataMapping } = require("./config");
+const { searchUser, CustomError } = require("./util");
 
-function getCompanyAttribute(company) {
-  const companiesList = [];
-  if (company.name || company.id) {
-    const customAttributes = {};
-    Object.keys(company).forEach(key => {
-      // the key is not in ReservedCompanyProperties
-      if (!ReservedCompanyProperties.includes(key)) {
-        const val = company[key];
-        if (val) {
-          customAttributes[key] = val;
-        }
-      }
-    });
+const identifyResponseBuilder = async (message, { Config }) => {
+  const externalUserId = getDestinationExternalID(message, "intercomUserId");
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const email = getFieldValueFromMessage(message, "email");
 
-    companiesList.push({
-      company_id: company.id || md5(company.name),
-      custom_attributes: customAttributes,
-      name: company.name,
-      industry: company.industry
-    });
+  let destUserId;
+  if (externalUserId) {
+    destUserId = externalUserId;
+  } else if (userId) {
+    destUserId = await searchUser("external_id", userId);
+  } else if (email) {
+    destUserId = await searchUser("email", email);
+  } else {
+    throw new CustomError(
+      "externalId, userId or email is required for identify",
+      400
+    );
   }
-  return companiesList;
-}
 
-function validateIdentify(message, payload) {
-  const finalPayload = payload;
-
-  finalPayload.update_last_request_at = true;
-  if (payload.user_id || payload.email) {
-    if (payload.name === undefined || payload.name === "") {
-      const firstName = getFieldValueFromMessage(message, "firstName");
-      const lastName = getFieldValueFromMessage(message, "lastName");
-      if (firstName && lastName) {
-        finalPayload.name = `${firstName} ${lastName}`;
-      } else {
-        finalPayload.name = firstName ? `${firstName}` : `${lastName}`;
-      }
-    }
-
-    if (finalPayload.custom_attributes.company) {
-      finalPayload.companies = getCompanyAttribute(
-        finalPayload.custom_attributes.company
-      );
-    }
-    ReservedTraitsProperties.forEach(trait => {
-      delete finalPayload.custom_attributes[trait];
-    });
-
-    return finalPayload;
+  const payload = constructPayload(message, identifyDataMapping);
+  if (!payload.name) {
+    const fName = getFieldValueFromMessage(message, "firstName");
+    const lName = getFieldValueFromMessage(message, "lastName");
+    set(payload, "name", `${fName} ${lName}`.trim());
   }
-  throw new Error("Email or userId is mandatory");
-}
 
-function validateTrack(message, payload) {
-  // pass only string, number, boolean properties
-  if (payload.user_id || payload.email) {
-    const metadata = {};
-    if (message.properties) {
-      Object.keys(message.properties).forEach(key => {
-        const val = message.properties[key];
-        if (val && typeof val !== "object" && !Array.isArray(val)) {
-          metadata[key] = val;
-        }
-      });
-    }
-    return { ...payload, metadata };
-  }
-  throw new Error("Email or userId is mandatory");
-}
-
-function validateAndBuildResponse(message, payload, category, destination) {
-  const messageType = message.type.toLowerCase();
   const response = defaultRequestConfig();
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(
-        validateIdentify(message, payload)
-      );
-      break;
-    case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(
-        validateTrack(message, payload)
-      );
-      break;
-    default:
-      throw new Error("Message type not supported");
+  response.endpoint = ENDPOINTS.IDENTIFY_ENDPOINT;
+  response.headers = {
+    Authorization: `Bearer ${Config.apiToken}`
+  };
+
+  // update existing User
+  if (destUserId) {
+    delete payload.signed_up_at;
+
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    return response;
   }
+
+  // create new User
+  set(payload, "email", email);
+  set(payload, "external_id", userId);
 
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = category.endpoint;
-  response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json"
-  };
-  response.userId = message.anonymousId;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
-}
+};
 
-function processSingleMessage(message, destination) {
-  if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+// process single message
+const process = async event => {
+  if (!message || !message.type) {
+    throw CustomError("Message Type is not present. Aborting message.", 400);
   }
-  const messageType = message.type.toLowerCase();
-  let category;
+  if (!Config.apiToken) {
+    throw new CustomError("API Token is missing.", 400);
+  }
 
+  const { message, destination } = event;
+  const messageType = getValueFromMessage(message, "type")
+    .toLowerCase()
+    .trim();
+
+  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = ConfigCategory.IDENTIFY;
+      response = await identifyResponseBuilder(message, destination);
       break;
-    case EventType.TRACK:
-      category = ConfigCategory.TRACK;
-      break;
-    // case EventType.GROUP:
-    //   category = ConfigCategory.GROUP;
-    //   break;
     default:
-      throw new Error("Message type not supported");
-  }
-
-  // build the response and return
-  const payload = constructPayload(message, MappingConfig[category.name]);
-  return validateAndBuildResponse(message, payload, category, destination);
-}
-
-function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new Error(error.message || "Unknown error");
+      throw new CustomError(`message type ${messageType} not supported`, 400);
   }
   return response;
-}
+};
 
 exports.process = process;

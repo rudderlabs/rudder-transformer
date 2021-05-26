@@ -1,61 +1,46 @@
 [
   {
-    "destKey": "user_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
     "required": false
   },
   {
     "destKey": "phone",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
     "required": false
   },
   {
-    "destKey": "name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
+    "destKey": "avatar",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
   },
   {
     "destKey": "signed_up_at",
-    "sourceKeys": [
-      "traits.createdAt",
-      "context.traits.createdAt"
-    ],
+    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
     "required": false,
     "metadata": {
       "type": "timestamp"
     }
   },
   {
-    "destKey": "last_seen_user_agent",
-    "sourceKeys": "context.userAgent",
+    "destKey": "last_seen_at",
+    "sourceKeys": ["traits.lastSeenAt", "context.traits.lastSeenAt"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "unsubscribed_from_emails",
+    "sourceKeys": [
+      "traits.unsubscribedFromEmails", 
+      "context.traits.unsubscribedFromEmails"
+    ],
     "required": false
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits.customAttributes", "context.traits.customAttributes"],
     "required": false
   }
 ]

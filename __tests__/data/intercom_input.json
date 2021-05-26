@@ -6,6 +6,90 @@
       }
     },
     "message": {
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "sample-user-id",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "name": "John Doe",
+          "email": "john@doe.com",
+          "unsubscribedFromEmails": true,
+          "avatar": "avatar-sample",
+          "phone": "123-456-789"
+        },
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "sample-access-key"
+      }
+    },
+    "message": {
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "sample-user-id",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "name": "John Doe",
+          "email": "john@doe.com",
+          "unsubscribedFromEmails": false,
+          "avatar": "avatar-sample",
+          "phone": "123-456-789"
+        },
+        "externalId": [
+          {
+            "type": "intercomUserId",
+            "id": "60ae4d02f032106b6316702f"
+          }
+        ],
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "sample-access-key"
+      }
+    },
+    "message": {
       "channel": "web",
       "context": {
         "app": {
@@ -38,6 +122,45 @@
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "sample-access-key"
+      }
+    },
+    "message": {
+      "type": "group",
+      "groupId": "sample-group-id",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "userId": "sample-user-id",
+      "channel": "web",
+      "context": {
+        "os": { "name": "", "version": "" },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "traits": {
+          "name": "RudderStack",
+          "plan": "Enterprise",
+          "industry": "Software",
+          "website": "https://app.rudderstack.com"
+        },
+        "locale": "en-US",
+        "screen": { "density": 2 },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "integrations": { "All": true },
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
     }
   }
 ]

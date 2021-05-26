@@ -21,7 +21,7 @@ const {
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const { destUserId } = await getdestUserIdOrError(message, "identify");
+  const { destUserId } = await getdestUserIdOrError(message, Config, "identify");
 
   const payload = constructPayload(message, identifyDataMapping);
   if (!payload.name) {
@@ -31,7 +31,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   const response = defaultRequestConfig();
-  response.endpoint = ENDPOINTS.IDENTIFY_ENDPOINT;
+  response.endpoint = `${ENDPOINTS.IDENTIFY_ENDPOINT}/${destUserId}`;
   response.headers = {
     Authorization: `Bearer ${Config.apiToken}`,
     "Content-Type": "application/json"
@@ -63,9 +63,9 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError("groupId is required for group call", 400);
   }
 
-  const { destUserId } = await getdestUserIdOrError(message, "group");
+  const { destUserId } = await getdestUserIdOrError(message, Config, "group");
 
-  const payload = constructPayload(message, groupDataMapping);
+  let payload = constructPayload(message, groupDataMapping);
   payload = removeUndefinedAndNullValues(payload);
   set(payload, "company_id", groupId);
 
@@ -85,7 +85,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const { idsObject } = await getdestUserIdOrError(message, "track");
+  const { idsObject } = await getdestUserIdOrError(message, Config, "track");
 
   const payload = {
     ...constructPayload(message, trackDataMapping),

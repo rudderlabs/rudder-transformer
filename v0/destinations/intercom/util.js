@@ -37,7 +37,7 @@ const searchUser = async (field, value, Config) => {
         }
       }
     );
-  } catch (err) {
+  } catch (error) {
     let errorMessage = "user search failed";
     let errorStatus;
     if (error.response) {
@@ -62,7 +62,7 @@ const createOrUpdateCompany = async (payload, Config) => {
         Authorization: Config.apiToken
       }
     });
-  } catch (err) {
+  } catch (error) {
     let errorMessage = "failed to create/update company";
     let errorStatus;
     if (error.response) {
@@ -87,7 +87,7 @@ const createOrUpdateCompany = async (payload, Config) => {
  * @returns
  */
 
-const getdestUserIdOrError = async (message, method) => {
+const getdestUserIdOrError = async (message, Config, method) => {
   const externalUserId = getDestinationExternalID(message, "intercomUserId");
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
@@ -98,10 +98,10 @@ const getdestUserIdOrError = async (message, method) => {
     destUserId = externalUserId;
     idsObject.id = destUserId;
   } else if (userId) {
-    destUserId = await searchUser("external_id", userId);
+    destUserId = await searchUser("external_id", userId, Config);
     idsObject.user_id = destUserId;
   } else if (email) {
-    destUserId = await searchUser("email", email);
+    destUserId = await searchUser("email", email, Config);
     idsObject.email = destUserId;
   } else {
     throw new CustomError(

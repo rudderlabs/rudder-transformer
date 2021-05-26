@@ -13,7 +13,8 @@ const urlDirectoryMap = {
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
-  "active.campaigns.rudder.com": "active_campaigns"
+  "active.campaigns.rudder.com": "active_campaigns",
+  "api.intercom.io": "intercom"
 };
 
 const fs = require("fs");
@@ -78,6 +79,11 @@ function post(url, payload) {
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
       resolve(gainsightRequestHandler(url, payload))
+    })
+  }
+  if (url.includes("https://api.intercom.io")) {
+    return new Promise(resolve => {
+      resolve({ data: mockData, status: 200 });
     })
   }
   return new Promise((resolve, reject) => {

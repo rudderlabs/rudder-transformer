@@ -4,6 +4,50 @@
       "XML": {},
       "FORM": {},
       "JSON": {
+        "name": "John Doe",
+        "unsubscribed_from_emails": true,
+        "avatar": "avatar-sample",
+        "phone": "123-456-789"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/contacts/60ae4419cd6d2fc62f4e49ab"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "John Doe",
+        "unsubscribed_from_emails": false,
+        "avatar": "avatar-sample",
+        "phone": "123-456-789"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/contacts/60ae4d02f032106b6316702f"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
         "event_name": "updated-plan",
         "created_at": 1389913941,
         "id": "60ae4d02f032106b6316702f"
@@ -19,5 +63,24 @@
     },
     "version": "1",
     "endpoint": "https://api.intercom.io/events"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "id": "60ae26c81facb2d213b06d57"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/contacts/60ae4419cd6d2fc62f4e49ab/companies"
   }
 ]

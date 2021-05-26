@@ -1,0 +1,112 @@
+{
+  "https://api.intercom.io/contacts/search": {
+    "type": "list",
+    "data": [
+      {
+        "type": "contact",
+        "id": "60ae4419cd6d2fc62f4e49ab",
+        "workspace_id": "faithgks",
+        "external_id": "sample-user-id",
+        "role": "user",
+        "email": "user@mail.com",
+        "phone": null,
+        "name": "Existing User",
+        "avatar": null,
+        "owner_id": null,
+        "social_profiles": {
+          "type": "list",
+          "data": []
+        },
+        "has_hard_bounced": false,
+        "marked_email_as_spam": false,
+        "unsubscribed_from_emails": false,
+        "created_at": 1622033433,
+        "updated_at": 1622033495,
+        "signed_up_at": null,
+        "last_seen_at": null,
+        "last_replied_at": null,
+        "last_contacted_at": null,
+        "last_email_opened_at": null,
+        "last_email_clicked_at": null,
+        "language_override": null,
+        "browser": null,
+        "browser_version": null,
+        "browser_language": null,
+        "os": null,
+        "location": {
+          "type": "location",
+          "country": null,
+          "region": null,
+          "city": null
+        },
+        "android_app_name": null,
+        "android_app_version": null,
+        "android_device": null,
+        "android_os_version": null,
+        "android_sdk_version": null,
+        "android_last_seen_at": null,
+        "ios_app_name": null,
+        "ios_app_version": null,
+        "ios_device": null,
+        "ios_os_version": null,
+        "ios_sdk_version": null,
+        "ios_last_seen_at": null,
+        "custom_attributes": {},
+        "tags": {
+          "type": "list",
+          "data": [],
+          "url": "/contacts/60ae4419cd6d2fc62f4e4925/tags",
+          "total_count": 0,
+          "has_more": false
+        },
+        "notes": {
+          "type": "list",
+          "data": [],
+          "url": "/contacts/60ae4419cd6d2fc62f4e4925/notes",
+          "total_count": 0,
+          "has_more": false
+        },
+        "companies": {
+          "type": "list",
+          "data": [],
+          "url": "/contacts/60ae4419cd6d2fc62f4e4925/companies",
+          "total_count": 0,
+          "has_more": false
+        }
+      }
+    ],
+    "total_count": 1,
+    "pages": {
+      "type": "pages",
+      "page": 1,
+      "per_page": 50,
+      "total_pages": 1
+    }
+  },
+  "https://api.intercom.io/companies": {
+    "type": "company",
+    "company_id": "timestamp-test3",
+    "id": "60ae26c81facb2d213b06d57",
+    "app_id": "faithgks",
+    "name": "RudderStack",
+    "plan": "Enterprise",
+    "industry": "Software",
+    "website": "https://app.rudderstack.com",
+    "created_at": 1622025928,
+    "updated_at": 1622025928,
+    "monthly_spend": 0,
+    "session_count": 0,
+    "user_count": 0,
+    "tags": {
+      "type": "tag.list",
+      "tags": []
+    },
+    "segments": {
+      "type": "segment.list",
+      "segments": []
+    },
+    "custom_attributes": {
+      "creation_source": "api"
+    }
+  }
+}

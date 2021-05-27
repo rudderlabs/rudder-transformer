@@ -1749,6 +1749,238 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "products searched",
+      "properties": {
+        "query": "HDMI cable"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "testDestination": true,
+        "testEventCode": "TEST1001",
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/abc",
+        "referrer": "xyz",
+        "search": "def",
+        "title": "ghi",
+        "url": "jkl"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "standardPageCall": true,
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "phone",
+            "blacklistPiiHash": true
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": "url"
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": "email"
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "destination_props": {
+        "Fb": {
+          "app_id": "RudderFbApp"
+        }
+      },
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "height": "100",
+          "density": 50
+        },
+        "traits": {
+          "email": "abc@gmail.com",
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "track page",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "revenue": 400,
+        "additional_bet_index": 0
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track"
+    },
+    "destination": {
+      "Config": {
+        "limitedDataUsage": true,
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "track page",
+            "to": "PageView"
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": "additional_bet_index"
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]
-

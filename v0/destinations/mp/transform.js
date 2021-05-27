@@ -52,9 +52,9 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
           : "https://api.mixpanel.com/import/";
       if (destConfig.apiSecret) {
         headers = {
-          Authorization: `Basic ${Buffer.from(destConfig.apiSecret).toString(
-            "base64"
-          )}`
+          Authorization: `Basic ${Buffer.from(
+            `${destConfig.apiSecret}:`
+          ).toString("base64")}`
         };
       } else {
         throw new Error(
@@ -160,12 +160,12 @@ function getTransformedJSON(message, mappingJson) {
 
   set(
     rawPayload,
-    '$initial_referrer',
+    "$initial_referrer",
     get(message, "context.page.initial_referrer")
   );
   set(
     rawPayload,
-    '$initial_referring_domain',
+    "$initial_referring_domain",
     get(message, "context.page.initial_referring_domain")
   );
 
@@ -249,7 +249,7 @@ function processIdentifyEvents(message, type, destination) {
 
     identifyTrackResponse.headers = {
       Authorization: `Basic ${Buffer.from(
-        destination.Config.apiSecret
+        `${destination.Config.apiSecret}:`
       ).toString("base64")}`
     };
     returnValue.push(identifyTrackResponse);

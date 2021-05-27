@@ -21,7 +21,11 @@ const {
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const { destUserId } = await getdestUserIdOrError(message, Config, "identify");
+  const { destUserId } = await getdestUserIdOrError(
+    message,
+    Config,
+    "identify"
+  );
 
   const payload = constructPayload(message, identifyDataMapping);
   if (!payload.name) {
@@ -31,7 +35,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   const response = defaultRequestConfig();
-  response.endpoint = `${ENDPOINTS.IDENTIFY_ENDPOINT}/${destUserId}`;
   response.headers = {
     Authorization: `Bearer ${Config.apiToken}`,
     "Content-Type": "application/json"
@@ -47,12 +50,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
     delete payload.signed_up_at;
 
     response.method = defaultPutRequestConfig.requestMethod;
+    response.endpoint = `${ENDPOINTS.IDENTIFY_ENDPOINT}/${destUserId}`;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
 
   // create new User
   response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = ENDPOINTS.IDENTIFY_ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };
@@ -128,4 +133,43 @@ const process = async event => {
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

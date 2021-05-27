@@ -82,5 +82,38 @@
     },
     "version": "1",
     "endpoint": "https://api.intercom.io/contacts/60ae4419cd6d2fc62f4e49ab/companies"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "event_name": "updated-plan",
+        "created_at": 1389913941,
+        "id": "60ae4d02f032106b6316702f",
+        "metadata": {
+          "order_date": 1392036272,
+          "stripe_invoice": "inv_3434343434",
+          "order_number": {
+            "value":"3434-3434",
+            "url": "https://example.org/orders/3434-3434"
+          },
+          "price": {
+            "currency":"usd",
+            "amount": 2999
+          }
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/events"
   }
 ]

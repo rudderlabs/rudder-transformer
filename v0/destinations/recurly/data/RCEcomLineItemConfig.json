@@ -6,7 +6,7 @@
   },
   {
     "destKey": "unit_amount",
-    "sourceKeys": "total",
+    "sourceKeys": "properties.total",
     "required": true
   }
 ]

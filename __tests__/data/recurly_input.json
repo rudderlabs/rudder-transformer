@@ -244,7 +244,6 @@
       "userId": "testing-destination",
       "order_id": "1234",
       "affiliation": "Apple Store",
-      "total": 191919,
       "revenue": 99999,
       "shipping": 22.5,
       "tax": 1,
@@ -252,6 +251,7 @@
       "coupon": "ImagePro",
       "properties": {
         "currency": "USD",
+        "total": 6996,
         "products": [
           {
             "product_id": "pid-coc",
@@ -291,7 +291,6 @@
       "userId": "testing-destination",
       "order_id": "1234",
       "affiliation": "Apple Store",
-      "total": 191919,
       "revenue": 99999,
       "shipping": 22.5,
       "tax": 1,
@@ -299,6 +298,7 @@
       "coupon": "ImagePro",
       "properties": {
         "currency": "USD",
+        "total": 1597,
         "products": [
           {
             "currency": "USD",
@@ -449,13 +449,13 @@
       "userId": "testing-destination",
       "order_id": "1234",
       "affiliation": "Apple Store",
-      "total": 191919,
       "revenue": 99999,
       "shipping": 22.5,
       "tax": 1,
       "discount": 1.5,
       "coupon": "ImagePro",
       "properties": {
+        "total": 191919,
         "currency": "USD",
         "products": [
           {

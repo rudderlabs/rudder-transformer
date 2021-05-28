@@ -1,0 +1,331 @@
+[
+  {
+    "batchedRequest": {
+      "statusCode": 200,
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://v3.recurly.com/accounts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "code": "testing-1",
+          "email": "jamesDoe@gmail.com",
+          "first_name": "James",
+          "last_name": "Doe",
+          "preferred_locale": "en-US",
+          "company": "test",
+          "address": {
+            "phone": "92374162212",
+            "city": "kolkata",
+            "region": "WB",
+            "postal_code": "789223",
+            "country": "India"
+          },
+          "bill_to": "self",
+          "custom_fields": []
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://v3.recurly.com/accounts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "code": "testing-2",
+          "email": "email--704@gmail.com",
+          "first_name": "Shivam",
+          "last_name": "Gupta",
+          "preferred_locale": "en-US",
+          "company": "Rudder",
+          "acquisition": { "campaign": "some campaign", "channel": "events" },
+          "address": {
+            "phone": "90071967788",
+            "street1": "Himnagar",
+            "city": "Hooghly",
+            "region": "West Bengal",
+            "postal_code": "712310",
+            "country": "India"
+          },
+          "bill_to": "self",
+          "custom_fields": []
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://v3.recurly.com/accounts/code-testing-2-put-call",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "email--704@gmail.com",
+          "first_name": "Shivam",
+          "last_name": "Uptated To Testing-3",
+          "preferred_locale": "en-US",
+          "company": "Rudder",
+          "address": {
+            "phone": "90071967788",
+            "street1": "Himnagar",
+            "city": "Hooghly",
+            "region": "West Bengal",
+            "postal_code": "712310",
+            "country": "India"
+          },
+          "bill_to": "self",
+          "custom_fields": []
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://v3.recurly.com/accounts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "code": "anon_id-718",
+          "email": "email@gmail.com",
+          "first_name": "Manashi",
+          "last_name": "Mukherjee",
+          "preferred_locale": "en-US",
+          "company": "Map",
+          "address": { "phone": "1234567890" },
+          "bill_to": "self",
+          "custom_fields": [
+            { "name": "planName", "value": "free" },
+            { "name": "isSubscribed", "value": "true" }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [
+          { "from": "plan", "to": "planName" },
+          { "from": "properties.subscribed", "to": "isSubscribed" }
+        ]
+      }
+    }
+  },
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.recurly.v2021-02-25",
+          "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currency": "USD",
+            "unit_amount": 6996,
+            "item_id": "ownrigpqfs69"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.recurly.v2021-02-25",
+          "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currency": "USD",
+            "unit_amount": 6996,
+            "item_id": "ownrilsh7q26"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.recurly.v2021-02-25",
+          "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currency": "USD",
+            "unit_amount": 1597,
+            "item_id": "ownrigpqfs69"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.recurly.v2021-02-25",
+          "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currency": "USD",
+            "unit_amount": 1597,
+            "item_id": "oxaklq580l7o"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://v3.recurly.com/accounts/code-testing-destination/line_items",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.recurly.v2021-02-25",
+          "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currency": "USD",
+            "unit_amount": 191919,
+            "item_id": "ownrigpqfs69"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [{ "jobId": 2 }],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": { "apiKey": "93c508f2e44b4605bd0d5417918aa26b" }
+    }
+  }
+]

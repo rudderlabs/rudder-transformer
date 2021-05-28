@@ -1,0 +1,374 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    },
+    "message": {
+      "statusCode": 200,
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://v3.recurly.com/accounts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.recurly.v2021-02-25",
+        "Authorization": "Basic OTNjNTA4ZjJlNDRiNDYwNWJkMGQ1NDE3OTE4YWEyNmI6"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "code": "testing-1",
+          "email": "jamesDoe@gmail.com",
+          "first_name": "James",
+          "last_name": "Doe",
+          "preferred_locale": "en-US",
+          "company": "test",
+          "address": {
+            "phone": "92374162212",
+            "city": "kolkata",
+            "region": "WB",
+            "postal_code": "789223",
+            "country": "India"
+          },
+          "bill_to": "self",
+          "custom_fields": []
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "userId": "Testing-2",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email--704@gmail.com",
+        "firstName": "Shivam",
+        "lastName": "Gupta",
+        "phone": "90071967788",
+        "address": {
+          "city": "Hooghly",
+          "country": "India",
+          "postalCode": "712310",
+          "state": "West Bengal",
+          "street": "Himnagar"
+        },
+        "company": {
+          "id": 900001329943,
+          "name": "Rudder",
+          "remove": true
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "userId": "Testing-2-PUT-CALL",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email--704@gmail.com",
+        "firstName": "Shivam",
+        "lastName": "Uptated To Testing-3",
+        "phone": "90071967788",
+        "address": {
+          "city": "Hooghly",
+          "country": "India",
+          "postalCode": "712310",
+          "state": "West Bengal",
+          "street": "Himnagar"
+        },
+        "company": {
+          "id": 900001329943,
+          "name": "Rudder",
+          "remove": true
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [
+          { "from": "plan", "to": "planName" },
+          { "from": "properties.subscribed", "to": "isSubscribed" }
+        ]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "locale": "en-US",
+        "ip": "127.0.0.1",
+        "os": {
+          "name": "",
+          "version": ""
+        }
+      },
+      "anonymousId": "anon_id-718",
+      "type": "identify",
+      "plan": "free",
+      "properties": {
+        "subscribed": "true"
+      },
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "email@gmail.com",
+        "firstName": "Manashi",
+        "lastName": "Mukherjee",
+        "phone": "1234567890",
+        "company": {
+          "name": "Map"
+        }
+      },
+      "integrations": {
+        "All": true
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "properties": {
+        "currency": "USD",
+        "total": 6996,
+        "products": [
+          {
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "currency": "USD",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "product_id": "pid-pubg",
+            "sku": "193",
+            "name": "Testing-5-PubG",
+            "price": 200,
+            "currency": "USD",
+            "quantity": 1000,
+            "category": "Free Games"
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b",
+        "customFieldMappings": [{ "from": "", "to": "" }]
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "order Completed",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "properties": {
+        "currency": "USD",
+        "total": 1597,
+        "products": [
+          {
+            "currency": "USD",
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "currency": "USD",
+            "product_id": "pid-hod",
+            "sku": "193",
+            "name": "Testing-5-HouseOfTheDead",
+            "price": 20,
+            "quantity": 1020,
+            "category": "EA Games"
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "93c508f2e44b4605bd0d5417918aa26b"
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "CHECKOUT STARTED",
+      "checkout_id": "testing 5",
+      "userId": "testing-destination",
+      "order_id": "1234",
+      "affiliation": "Apple Store",
+      "revenue": 99999,
+      "shipping": 22.5,
+      "tax": 1,
+      "discount": 1.5,
+      "coupon": "ImagePro",
+      "properties": {
+        "total": 191919,
+        "currency": "USD",
+        "products": [
+          {
+            "product_id": "pid-coc",
+            "sku": "G-32",
+            "currency": "USD",
+            "name": "Testing-5-Clash Of Clan",
+            "price": 1999,
+            "quantity": 1699,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg"
+          },
+          {
+            "product_id": "pid-pubg",
+            "sku": "193",
+            "name": "Testing-5-PubG",
+            "price": 200,
+            "quantity": 1000,
+            "category": "Free Games"
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  }
+]

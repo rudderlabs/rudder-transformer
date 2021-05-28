@@ -438,7 +438,7 @@
       "method": "POST",
       "endpoint": "https://api-eu.mixpanel.com/import/",
       "headers": {
-        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0"
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
       },
       "params": {
         "data": "eyJldmVudCI6IiRtZXJnZSIsInByb3BlcnRpZXMiOnsiJGRpc3RpbmN0X2lkcyI6WyJ0ZXN0X3VzZXJfaWQiLCI1MDk0ZjU3MDRiOWNmMmIzIl0sInRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiJ9fQ=="

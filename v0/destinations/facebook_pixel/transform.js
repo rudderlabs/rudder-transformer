@@ -478,15 +478,6 @@ const responseBuilderSimple = (message, category, destination) => {
     } else {
       const { type } = category;
       if (type === "page" || type === "screen") {
-        // let eventName;
-        // if (category.standard) {
-        //   eventName = "PageView";
-        // } else {
-        //   eventName = message.name
-        //     ? `Viewed Page ${message.name}`
-        //     : "Viewed a Page";
-        // }
-
         commonData.event_name = message.name
           ? `Viewed ${type} ${message.name}`
           : `Viewed a ${type}`;

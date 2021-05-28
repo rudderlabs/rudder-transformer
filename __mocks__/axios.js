@@ -5,6 +5,8 @@ const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
 const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
+const trengoGetRequestHandler = require("./trengo.mock");
+const gainsightRequestHandler = require("./gainsight.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -16,6 +18,12 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
+
+const getParamEncodedUrl = (url, options) => {
+  const { params } = options;
+  const paramString = Object.keys(params).map(key => `${key}=${params[key]}`).join("&");
+  return `${url}?${paramString}`;
+};
 
 function getData(url) {
   let directory = "";
@@ -41,6 +49,11 @@ function get(url) {
       resolve(kustomerGetRequestHandler(url));
     });
   }
+  if (url.includes("https://app.trengo.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(trengoGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -62,6 +75,27 @@ function post(url, payload) {
       resolve(klaviyoPostRequestHandler(url, payload));
     });
   }
+  if (url.includes("https://demo-domain.gainsightcloud.com")) {
+    return new Promise(resolve => {
+      resolve(gainsightRequestHandler(url, payload))
+    })
+  }
+  return new Promise((resolve, reject) => {
+    if (mockData) {
+      resolve({ data: mockData });
+    } else {
+      resolve({ error: "Request failed" });
+    }
+  });
+}
+
+function put(url, payload, options) {
+  const mockData = getData(url);
+  if (url.includes("https://demo-domain.gainsightcloud.com")) {
+    return new Promise(resolve => {
+      resolve(gainsightRequestHandler(getParamEncodedUrl(url, options), payload));
+    })
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData });
@@ -73,4 +107,5 @@ function post(url, payload) {
 
 axios.get = get;
 axios.post = post;
+axios.put = put;
 module.exports = axios;

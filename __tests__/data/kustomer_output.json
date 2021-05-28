@@ -232,7 +232,34 @@
     "files": {}
   },
   {
-    "error": "Property: reg_8-821x, event property not supported, ref:https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer WJqij952gdy251"
+    },
+    "params": {},
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "event": {
+          "meta": {
+            "YearServicedNum": 211,
+            "reg_8-821x": false
+          },
+          "name": "Tracking-Weekender2",
+          "sessionId": "63nsa22",
+          "trackingId": "sahetwiac"
+        },
+        "identity": {
+          "externalId": "user@doe"
+        }
+      },
+      "XML": {}
+    },
+    "files": {}
   },
   {
     "version": "1",

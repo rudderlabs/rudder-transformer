@@ -360,7 +360,7 @@ const getValueFromMessage = (message, sourceKey) => {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);
-      if (val) {
+      if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
@@ -442,6 +442,13 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "jsonStringifyOnObject":
+        // if already a string, will not stringify
+        // calling stringify on string will add escape characters
+        if (typeof formattedVal !== "string") {
+          formattedVal = JSON.stringify(formattedVal);
+        }
         break;
       case "numberForRevenue":
         if (
@@ -605,7 +612,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (value) {
+      if (value || value === 0 || value === false) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {
@@ -863,6 +870,17 @@ function checkEmptyStringInarray(array) {
   const result = array.filter(item => item === "").length === 0;
   return result;
 }
+// Returns raw string value of JSON
+function getStringValueOfJSON(json) {
+  let output = "";
+  Object.keys(json).forEach(key => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (json.hasOwnProperty(key)) {
+      output += `${key}: ${json[key]} `;
+    }
+  });
+  return output;
+}
 
 // ========================================================================
 // EXPORTS
@@ -892,6 +910,7 @@ module.exports = {
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
   getValueFromMessage,

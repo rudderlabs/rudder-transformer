@@ -335,6 +335,7 @@
     "SYMMETRIC": true,
     "TABLE": true,
     "THEN": true,
+    "TO": true,
     "TRAILING": true,
     "TRUE": true,
     "UNION": true,

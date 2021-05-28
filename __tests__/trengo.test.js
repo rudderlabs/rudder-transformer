@@ -1,11 +1,12 @@
-const integration = "kustomer";
-const name = "Kustomer";
-
 const fs = require("fs");
 const path = require("path");
+
+const integration = "trengo";
+const name = "Trengo";
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
 );
@@ -46,4 +47,3 @@ describe(`${name} Tests`, () => {
     });
   });
 });
-

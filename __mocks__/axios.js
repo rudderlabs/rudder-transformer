@@ -9,6 +9,7 @@ const {
   recurlyGetRequestHandler,
   recurlyPostRequestHandler
 } = require("./recurly.mock");
+const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 
 const urlDirectoryMap = {
@@ -57,6 +58,11 @@ function get(url) {
   if (url.includes("https://v3.recurly.com")) {
     return new Promise((resolve, reject) => {
       resolve(recurlyGetRequestHandler(url));
+    });
+  }
+  if (url.includes("https://app.trengo.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(trengoGetRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

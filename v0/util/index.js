@@ -885,6 +885,17 @@ function checkEmptyStringInarray(array) {
   const result = array.filter(item => item === "").length === 0;
   return result;
 }
+// Returns raw string value of JSON
+function getStringValueOfJSON(json) {
+  let output = "";
+  Object.keys(json).forEach(key => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (json.hasOwnProperty(key)) {
+      output += `${key}: ${json[key]} `;
+    }
+  });
+  return output;
+}
 
 // ========================================================================
 // EXPORTS
@@ -915,6 +926,7 @@ module.exports = {
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
   getValueFromMessage,

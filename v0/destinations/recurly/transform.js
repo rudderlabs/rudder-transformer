@@ -14,7 +14,8 @@ const {
   ErrorMessage,
   getErrorRespEvents,
   getSuccessRespEvents,
-  constructPayload
+  constructPayload,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const {
@@ -116,7 +117,7 @@ const processTrack = async (message, config) => {
   if (!ECOM_EVENTS.includes(message.event.toLowerCase())) {
     throw Error(ErrorMessage.EcomEventNotSupported);
   }
-  const { currency } = message;
+  const { currency } = message.properties;
   if (!currency) {
     throw Error(
       Object.keys({ currency })[0].toUpperCase() + ErrorMessage.RequiredField
@@ -137,35 +138,65 @@ const processTrack = async (message, config) => {
 
   const response = [];
 
-  for (let i = 0; i < products.length; i += 1) {
-    const p = products[i];
-    if (!p.currency) {
-      continue;
-    }
-    const itemPayload = constructPayload(
-      p,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]
-    );
-    itemPayload.code = itemPayload.code.toLowerCase();
-    const itemObj = await fetchItem(itemPayload.code, config);
-    const lineItemPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMLINEITEM.name]
-    );
-    if (!itemObj.isExist) {
-      const itemId = await createItem(itemPayload, config, "/items");
-      lineItemPayload.item_id = itemId;
-    } else {
-      lineItemPayload.item_id = itemObj.id;
-    }
-    const responseObj = responseBuilderSimple(
-      lineItemPayload,
-      "POST",
-      `${accountresp.endPoint}/line_items`,
-      config.apiKey
-    );
-    response.push(responseObj);
-  }
+  await Promise.all(
+    products.map(async p => {
+      if (isDefinedAndNotNullAndNotEmpty(p.currency)) {
+        const itemPayload = constructPayload(
+          p,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]
+        );
+        itemPayload.code = itemPayload.code.toLowerCase();
+        const itemObj = await fetchItem(itemPayload.code, config);
+        const lineItemPayload = constructPayload(
+          message,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMLINEITEM.name]
+        );
+        if (!itemObj.isExist) {
+          const itemId = await createItem(itemPayload, config, "/items");
+          lineItemPayload.item_id = itemId;
+        } else {
+          lineItemPayload.item_id = itemObj.id;
+        }
+        const responseObj = responseBuilderSimple(
+          lineItemPayload,
+          "POST",
+          `${accountresp.endPoint}/line_items`,
+          config.apiKey
+        );
+        response.push(responseObj);
+      }
+    })
+  );
+
+  // for (let i = 0; i < products.length; i += 1) {
+  //   const p = products[i];
+  //   if (!p.currency) {
+  //     continue;
+  //   }
+  //   const itemPayload = constructPayload(
+  //     p,
+  //     MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]
+  //   );
+  //   itemPayload.code = itemPayload.code.toLowerCase();
+  //   const itemObj = await fetchItem(itemPayload.code, config);
+  //   const lineItemPayload = constructPayload(
+  //     message,
+  //     MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMLINEITEM.name]
+  //   );
+  //   if (!itemObj.isExist) {
+  //     const itemId = await createItem(itemPayload, config, "/items");
+  //     lineItemPayload.item_id = itemId;
+  //   } else {
+  //     lineItemPayload.item_id = itemObj.id;
+  //   }
+  //   const responseObj = responseBuilderSimple(
+  //     lineItemPayload,
+  //     "POST",
+  //     `${accountresp.endPoint}/line_items`,
+  //     config.apiKey
+  //   );
+  //   response.push(responseObj);
+  // }
   return response;
 };
 

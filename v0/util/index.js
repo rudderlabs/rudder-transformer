@@ -315,6 +315,15 @@ const ErrorMessage = {
   EcomEventNotSupported: "We don't support this ecommerce event."
 };
 
+const HttpStatusCode = {
+  Ok: 200,
+  Created: 201,
+  NotFound: 404,
+  BadRequest: 400,
+  InternalServerError: 500,
+  Unauthorized: 401
+};
+
 // ========================================================================
 // TRANSFORMER UTILITIES
 // ========================================================================
@@ -883,6 +892,7 @@ function checkEmptyStringInarray(array) {
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
+  HttpStatusCode,
   constructPayload,
   checkEmptyStringInarray,
   defaultBatchRequestConfig,

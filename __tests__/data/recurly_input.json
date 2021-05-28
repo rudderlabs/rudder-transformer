@@ -250,8 +250,8 @@
       "tax": 1,
       "discount": 1.5,
       "coupon": "ImagePro",
-      "currency": "USD",
       "properties": {
+        "currency": "USD",
         "products": [
           {
             "product_id": "pid-coc",
@@ -297,8 +297,8 @@
       "tax": 1,
       "discount": 1.5,
       "coupon": "ImagePro",
-      "currency": "USD",
       "properties": {
+        "currency": "USD",
         "products": [
           {
             "currency": "USD",
@@ -431,7 +431,6 @@
         "checkout_id": "what is checkout id here??",
         "revenue": 31.98,
         "value": 31.98,
-        "currency": "GBP",
         "shipping": 4
       },
       "anonymousId": "bfd500c7-9db0-437d-9b78-9e7a2a684ad4"
@@ -456,8 +455,8 @@
       "tax": 1,
       "discount": 1.5,
       "coupon": "ImagePro",
-      "currency": "USD",
       "properties": {
+        "currency": "USD",
         "products": [
           {
             "product_id": "pid-coc",

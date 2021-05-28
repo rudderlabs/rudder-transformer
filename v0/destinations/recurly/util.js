@@ -4,6 +4,7 @@ const logger = require("../../../logger");
 const { ACCEPT_HEADERS, DEFAULT_BASE_ENDPOINT } = require("./config");
 const {
   ErrorMessage,
+  HttpStatusCode,
   isDefinedAndNotNullAndNotEmpty,
   getValueFromMessage
 } = require("../../util");
@@ -22,7 +23,11 @@ const createItem = async (data, config, relativePath) => {
   } catch (err) {
     logger.debug(ErrorMessage.ObjectNotFound);
   }
-  if (response && response.status === 201 && response.data.id) {
+  if (
+    response &&
+    response.status === HttpStatusCode.Created &&
+    response.data.id
+  ) {
     return response.data.id;
   }
   return null;
@@ -42,7 +47,7 @@ const fetchData = async (code, config, relativePath) => {
   } catch (err) {
     logger.debug(ErrorMessage.ObjectNotFound);
   }
-  if (response && response.status === 200 && response.data.id) {
+  if (response && response.status === HttpStatusCode.Ok && response.data.id) {
     return {
       isExist: true,
       id: response.data.id,

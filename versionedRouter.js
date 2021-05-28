@@ -9,8 +9,8 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
+const { collectStats } = require("./v0/util/stats/statsConfig");
 require("dotenv").config();
-
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -92,7 +92,7 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-
+        collectStats(error, event);
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
@@ -382,7 +382,7 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.get("/features", ctx =>{
+router.get("/features", ctx => {
   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
   ctx.body = JSON.stringify(obj);
 });

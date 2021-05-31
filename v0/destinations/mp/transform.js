@@ -382,7 +382,7 @@ function processSingleMessage(message, destination) {
       return processGroupEvents(message, message.type, destination);
 
     default:
-      throw new Error("message type not supported");
+      throw new Error("Message type not supported");
   }
 }
 

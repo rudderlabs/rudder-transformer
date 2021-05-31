@@ -1,7 +1,7 @@
 [
   {
     "statusCode": 400,
-    "error": "message type not supported"
+    "error": "Message type not supported"
   },
   {
     "version": "1",

@@ -1,6 +1,7 @@
 {
   "transformerRules": {
     "[webhook] Failed to process request": 400,
-    "Invalid URL in destination config": 603
+    "Invalid URL in destination config": 603,
+    "Message type not supported": 601
   }
 }

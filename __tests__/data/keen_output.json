@@ -1,5 +1,5 @@
 [
-  { "message": "message type not supported", "statusCode": 400 },
+  { "message": "Message type not supported", "statusCode": 400 },
   {
     "body": {
       "XML": {},

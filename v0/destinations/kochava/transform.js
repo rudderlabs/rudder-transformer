@@ -87,7 +87,7 @@ function processMessage(message, destination) {
       customParams = processTrackEvents(message);
       break;
     default:
-      throw new Error("message type not supported");
+      throw new Error("Message type not supported");
   }
 
   return responseBuilder(

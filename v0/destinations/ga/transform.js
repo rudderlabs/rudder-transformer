@@ -858,7 +858,7 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new Error("message type not supported");
+      throw new Error("Message type not supported");
   }
 
   return responseBuilderSimple(

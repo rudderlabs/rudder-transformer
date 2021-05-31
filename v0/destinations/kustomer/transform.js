@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
+const { collectStats } = require("../../util/stats/statsConfig");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -222,7 +223,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("[Kustomer] :: Message type not supported", 400);
+      throw new CustomError("Message type not supported", 400);
   }
   return responseBuilderSimple(message, category, destination);
 };
@@ -255,6 +256,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        collectStats(error, input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

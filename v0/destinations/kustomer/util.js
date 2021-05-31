@@ -28,7 +28,7 @@ const handleResponse = response => {
       return { userExists: false };
     default:
       throw new CustomError(
-        data ? JSON.stringify(data) : "Error while lookingUp Kustomer",
+        `Error while lookingUp Kustomer ${data ? JSON.stringify(data) : ""}`,
         status || 400
       );
   }

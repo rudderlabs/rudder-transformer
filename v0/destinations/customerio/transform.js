@@ -235,8 +235,8 @@ function processSingleMessage(message, destination) {
       evName = message.event;
       break;
     default:
-      logger.error(`could not determine type ${messageType}`);
-      throw new Error(`could not determine type ${messageType}`);
+      logger.error("Message type not supported");
+      throw new Error("Message type not supported");
   }
   const response = responseBuilder(
     message,

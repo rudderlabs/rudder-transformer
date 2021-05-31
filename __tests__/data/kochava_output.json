@@ -31,7 +31,7 @@
     "files": {},
     "userId": "sampath"
   },
-  { "statusCode": 400, "message": "message type not supported" },
+  { "statusCode": 400, "message": "Message type not supported" },
   {
       "version": "1",
       "type": "REST",

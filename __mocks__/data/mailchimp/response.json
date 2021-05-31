@@ -1,0 +1,9 @@
+{
+    "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/2af5f012444b52ed7b1135da406b1ecc": {
+        "type": "https://mailchimp.com/developer/marketing/docs/errors/",
+        "title": "Forbidden",
+        "status": 403,
+        "detail": "The API key provided is linked to datacenter 'us6'",
+        "instance": "ff092056-4d86-aa05-bbe9-9e9466108d81"
+    }
+}

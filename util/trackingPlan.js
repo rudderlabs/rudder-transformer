@@ -32,4 +32,32 @@ async function getTrackingPlan(tpId) {
   }
 }
 
+// TODO: if TP returns all event schemas directly, no api call is needed.
+// else another api call to config-be for schema
+async function getEventSchema(tpId, eventType, eventName) {
+  const trackingPlan = myCache.get(tpId);
+  var tp;
+  var eventSchema;
+  try {
+    if (trackingPlan) tp = trackingPlan;
+    else tp = getTrackingPlan(tpId);
+    eventSchema = tp.rules[eventType][eventName];
+    if (!eventSchema) {
+      logger.info(`no schema for eventName : ${eventName} in trackingPlanID : ${tpId}`);
+      eventSchema = {};
+    }
+    return eventSchema;
+  } catch (error) {
+    logger.error(error);
+    stats.increment("get_trackingplan.error");
+    throw error;
+  }
+}
+
+async function getTrackingPlanBySourceID(sourceId) {
+  return "";
+}
+
 exports.getTrackingPlan = getTrackingPlan;
+exports.getEventSchema = getEventSchema;
+

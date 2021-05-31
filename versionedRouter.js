@@ -29,6 +29,7 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
+const eventValidator = require("./util/eventValidation1");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -103,38 +104,29 @@ async function handleDest(ctx, version, destination) {
   ctx.set("apiVersion", API_VERSION);
 }
 async function handleValidation(ctx) {
-  const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
-  stats.increment("trackingplan_input_events", events.length, {
-    destination,
-    version
-  });
   const respList = [];
   await Promise.all(
     events.map(async event => {
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
-        let respEvents = await destHandler.process(parsedEvent);
-        if (respEvents) {
-          if (!Array.isArray(respEvents)) {
-            respEvents = [respEvents];
-          }
-          respList.push(
-            ...respEvents.map(ev => {
-              let { userId } = ev;
-              if (ev.statusCode !== 400 && userId) {
-                userId = `${userId}`;
-              }
-              return {
-                output: { ...ev, userId },
-                metadata: event.metadata,
-                statusCode: 200
-              };
-            })
-          );
+        const err = await eventValidator.validate(parsedEvent);
+        if (!err[0]) {
+          respList.push({
+            output: event,
+            metadata: event.metadata,
+            statusCode: 400,
+            error: err || "Error occurred while processing payload."
+          });
+        } else {
+          respList.push({
+            output: event,
+            metadata: event.metadata,
+            statusCode: 200
+          });
         }
       } catch (error) {
         logger.error(error);
@@ -144,15 +136,10 @@ async function handleValidation(ctx) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version });
       }
     })
   );
-  logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  stats.increment("dest_transform_output_events", respList.length, {
-    destination,
-    version
-  });
+  logger.info(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }
@@ -448,12 +435,7 @@ router.post("/batch", ctx => {
 
 // eg. v0/validate. will validate events as per respective tracking plans
 router.post(`/v0/validate`, async ctx => {
-  const startTime = new Date();
-  await handleDest(ctx);
-  stats.timing("dest_transform_request_latency", startTime, {
-    destination,
-    version
-  });
-  stats.increment("dest_transform_requests", 1, { destination, version });
+  //const startTime = new Date();
+  await handleValidation(ctx);
 });
 module.exports = router;

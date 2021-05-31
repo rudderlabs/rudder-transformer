@@ -1,0 +1,153 @@
+{
+  "name": "workspaces/myworkspace/tracking-plans/rs_123",
+  "display_name": "Kicks App",
+  "rules": {
+    "identify_traits": [],
+    "group_traits": [],
+    "events": [
+      {
+        "name": "Order Completed",
+        "description": "Who bought what",
+        "version": 1,
+        "rules": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "$id": "http://rudder.com/order-completed",
+          "title": "Order Completed",
+          "description": "Who bought what",
+          "type": "object",
+          "required": [
+            "product",
+            "price",
+            "amount"
+          ],
+          "properties": {
+            "product": {
+              "type": [
+                "string"
+              ]
+            },
+            "amount": {
+              "type": [
+                "number"
+              ]
+            },
+            "price": {
+              "type": [
+                "number"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "name": "Demo Track",
+        "description": "Test tracking",
+        "version": 1,
+        "rules": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "$id": "http://rudder.com/demo-track",
+          "title": "Demo Track",
+          "description": "Who bought what",
+          "type": "object",
+          "required": [
+            "category",
+            "floatVal",
+            "label"
+          ],
+          "properties": {
+            "category": {
+              "type": [
+                "string"
+              ]
+            },
+            "floatVal": {
+              "type": [
+                "number"
+              ]
+            },
+            "label": {
+              "type": [
+                "string"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "global": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "context": {
+          "required": [
+            "library"
+          ],
+          "type": "object",
+          "properties": {
+            "librarry": {
+              "type": [
+                "object"
+              ]
+            }
+          }
+        },
+        "traits": {},
+        "properties": {}
+      }
+    },
+    "identify": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "traits": {
+          "type": "object",
+          "properties": {
+            "occupation": {
+              "type": [
+                "string"
+              ]
+            },
+            "age": {
+              "type": [
+                "number"
+              ]
+            },
+            "name": {
+              "type": [
+                "string"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "properties": {},
+        "context": {}
+      }
+    },
+    "group": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "properties": {},
+        "context": {},
+        "traits": {
+          "properties": {
+            "company": {
+              "type": [
+                "object"
+              ]
+            }
+          },
+          "required": [
+            "company"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "create_time": "2019-02-05T01:21:25Z",
+  "update_time": "2019-02-05T01:21:25Z"
+}

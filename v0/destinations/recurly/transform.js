@@ -1,5 +1,3 @@
-/* eslint-disable no-continue */
-/* eslint-disable no-await-in-loop */
 const btoa = require("btoa");
 const { EventType } = require("../../../constants");
 const {

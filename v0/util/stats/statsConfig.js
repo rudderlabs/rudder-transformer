@@ -40,7 +40,7 @@ const collectStats = (error, event) => {
     statusCode = 400;
   }
   stats.increment(TRANSFORMER_STATS_STORE, 1, {
-    code: "400",
+    code: statusCode,
     destination: DestinationDefinition.Name
   });
 };

@@ -47,8 +47,8 @@
   },
   {
     "error": "User does not have access to the requested operation"
-},
-{
-  "error": "message type page is not supported"
-}
+  },
+  {
+    "error": "message type page is not supported"
+  }
 ]

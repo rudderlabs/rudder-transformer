@@ -1,0 +1,1818 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Viewed Page\",\"fb_content_type\":\"Cart\",\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"initial_referrer\":\"http://localhost:1111/My_first_app/\",\"initial_referring_domain\":\"localhost:1111\",\"fb_description\":\"Cart Viewed\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"referring_domain\":\"localhost:1111\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"tab_url\":\"http://localhost:1111/My_first_app/first.html\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_search\",\"fb_search_string\":\"HDMI cable\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Sample Track Call\",\"KEY_3\":{\"CHILD_KEY_4\":\"value_3\",\"CHILD_KEY_5\":\"value_4\"},\"affiliation\":\"Apple Store\",\"anonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"fb_content_type\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"fb_currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"fb_description\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"fb_content_id\":[\"SKU_12345\",\"SKU_12347\"],\"promotion_id\":\"promo1\",\"fb_search_string\":\"HDMI cable\",\"reason\":\"Coupon expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"_valueToSum\":15,\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":22,\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product List Viewed\",\"fb_content_type\":\"What's New\",\"list_id\":\"list1\",\"fb_content_id\":[\"223344ffdds3ff3\",\"343344ff5567ff3\"],\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Promotion Viewed\",\"creative\":\"banner1\",\"fb_description\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Promotion Clicked\",\"creative\":\"banner1\",\"fb_description\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Clicked\",\"brand\":\"Gamepro\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_content_view\",\"brand\":\"Gamepro\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_to_cart\",\"brand\":\"Gamepro\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Removed\",\"brand\":\"Gamepro\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Cart Viewed\",\"cart_id\":\"12345\",\"fb_content_id\":[\"123\",\"345\"],\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_initiated_checkout\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"345\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Checkout Step Viewed\",\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Checkout Step Completed\",\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_payment_info\",\"checkout_id\":\"12344\",\"order_id\":\"123\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Updated\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"345\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_purchase\",\"affiliation\":\"Apple Store\",\"checkout_id\":\"12345\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"345\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Refunded\",\"fb_currency\":\"USD\",\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"345\"],\"total\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Cancelled\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"345\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":20,\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Entered\",\"cart_id\":\"1222111\",\"coupon_id\":\"disc20\",\"order_id\":\"12345\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Denied\",\"cart_id\":\"1211\",\"coupon\":\"Disc21\",\"order_id\":\"123\",\"reason\":\"Coupon expired\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Applied\",\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Cart Shared\",\"cart_id\":\"1234df2ddss\",\"fb_content_id\":[\"125\",\"297\"],\"recipient\":\"friend@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Wishlist Product Added to Cart\",\"brand\":\"Imagepro\",\"fb_content_type\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"fb_description\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"fb_num_items\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Shared\",\"brand\":\"Maples\",\"fb_content_type\":\"Games\",\"image_url\":\"https://www.myecommercewebsite.com/product/prod.jpg\",\"fb_description\":\"Cards\",\"price\":15.99,\"product_id\":\"12345872254426\",\"recipient\":\"name@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"sku\":\"F-13\",\"url\":\"https://www.myecommercewebsite.com/product/prod\",\"variant\":\"150s\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Removed from Wishlist\",\"brand\":\"Imagepro\",\"fb_content_type\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"fb_description\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"fb_num_items\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_to_wishlist\",\"brand\":\"Imagepro\",\"fb_content_type\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"fb_description\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"fb_num_items\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Removed\",\"cart_id\":\"124\",\"coupon_id\":\"Dis123\",\"coupon_name\":\"Disc20\",\"discount\":20,\"order_id\":\"1211\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Reviewed\",\"product_id\":\"12345\",\"rating\":\"5\",\"review_body\":\"Good product, delivered in excellent condition\",\"review_id\":\"review12\",\"_logTime\":null}]",
+        "app_user_id": "sanity_user1000",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[fn]": "97b1f50c5413741312f32903ad4e0a8afa8700dbeb08246ed89967a8f9cfa38d",
+        "ud[ln]": "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_logTime\":1621409924763,\"_eventName\":\"Viewed Page\",\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\"}]",
+        "app_user_id": "sanityuser1000",
+        "anon_id": "a1b2c3d4e5f6g7h8i9j10",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanityuser1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"\",\"com.rudderlabs.javascript\",1,1,\"\",\"\",\"en-US\",\"\",\"\",0,0,1,0,0,0]",
+        "custom_events": "[{\"_logTime\":1621409924764,\"_eventName\":\"Sample Track Call\",\"KEY_3\":{\"CHILD_KEY_4\":\"value_3\",\"CHILD_KEY_5\":\"value_4\"},\"affiliation\":\"Apple Store\",\"anonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"fb_content_type\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"fb_currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"fb_description\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"fb_content_id\":[\"SKU_12345\",\"SKU_12347\"],\"promotion_id\":\"promo1\",\"fb_search_string\":\"HDMI cable\",\"reason\":\"Coupon expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"_valueToSum\":15,\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":22,\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":20}]",
+        "app_user_id": "sanityuser100",
+        "anon_id": "a1b2c3d4e5f6g7h8i9j10",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Viewed cart Screen\",\"fb_content_type\":\"cart viewed\",\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"fb_description\":\"cart\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Sample Track Call\",\"KEY_3\":{\"CHILD_KEY_4\":\"value_3\",\"CHILD_KEY_5\":\"value_4\"},\"affiliation\":\"Apple Store\",\"annonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"fb_content_type\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"fb_currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"fb_description\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"fb_content_id\":[\"SKU_12345\",\"SKU_12347\"],\"promotion_id\":\"promo1\",\"fb_search_string\":\"HDMI cable\",\"reason\":\"Coupon Expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"_valueToSum\":15,\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":\"22\",\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_search\",\"fb_search_string\":\"HDMI cable\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product List Viewed\",\"fb_content_type\":\"What's new\",\"list_id\":\"list1\",\"fb_content_id\":[\"123\",\"123\"],\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Promotion Viewed\",\"creative\":\"banner1\",\"fb_description\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Promotion Clicked\",\"creative\":\"banner1\",\"fb_description\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Clicked\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_content_view\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_to_cart\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Removed\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Cart Viewed\",\"cart_id\":\"some_cart_id\",\"fb_content_id\":[\"123\",\"123\"],\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_initiated_checkout\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"123\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":0,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Checkout Step Viewed\",\"checkout_id\":\"123\",\"payment_method\":\"MasterCard\",\"shipping_method\":\"DHL\",\"step\":1,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Checkout Step Completed\",\"checkout_id\":\"123\",\"payment_method\":\"MasterCard\",\"shipping_method\":\"DHL\",\"step\":1,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_payment_info\",\"checkout_id\":\"12344\",\"order_id\":\"123\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Updated\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"123\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":0,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_purchase\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"123\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":0,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Refunded\",\"order_id\":\"1234\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Order Cancelled\",\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"fb_currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"fb_content_id\":[\"123\",\"123\"],\"_valueToSum\":15,\"shipping\":22,\"tax\":1,\"total\":0,\"value\":20,\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Entered\",\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"order_id\":\"1223455\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Applied\",\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Denied\",\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"order_id\":\"1223455\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Coupon Removed\",\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"fb_mobile_add_to_wishlist\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Removed from Wishlist\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Wishlist Product Added to Cart\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Shared\",\"fb_content_type\":\"Games\",\"coupon\":\"DISC21\",\"fb_currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"fb_description\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"fb_num_items\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Cart Shared\",\"cart_id\":\"1234df2ddss\",\"fb_content_id\":[\"123\",\"123\"],\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v3.3/RudderFbApp/activities",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "extinfo": "[\"a2\",\"com.example.testapp1mg\",4,1,\"10\",\"Redmi Note 5 Pro\",\"en-IN\",\"\",\"airtel\",1080,2118,420,0,0,0]",
+        "custom_events": "[{\"_eventName\":\"Product Reviewed\",\"product_id\":\"123\",\"rating\":5,\"review_body\":\"Good product, delivered in excellent condition\",\"review_id\":\"review12\",\"_logTime\":null}]",
+        "app_user_id": "ID101",
+        "ud[em]": "22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34",
+        "ud[ph]": "e2c876e069c82ac7f17d2aa4d7808459d315bed3272ee1c9ece4811983e6d7b0",
+        "ud[ct]": "d9d92774c31765bee5ed3de896143fba0281d7c43e5f5408822ab7075c11a5ef",
+        "ud[st]": "396a14ab206e2b44e03c4e00393e948cce36a6b0f0d7489cb46d944b33ad51c8",
+        "advertiser_tracking_enabled": "0",
+        "application_tracking_enabled": "0",
+        "event": "CUSTOM_APP_EVENTS"
+      }
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type not supported"
+  }
+]

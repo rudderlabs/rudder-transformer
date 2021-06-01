@@ -1,0 +1,3792 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Cart",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "initial_referrer": "http://localhost:1111/My_first_app/",
+          "initial_referring_domain": "localhost:1111",
+          "name": "Cart Viewed",
+          "original_timestamp": "1403743443",
+          "path": "clipkart.com",
+          "received_at": "202101091347654",
+          "referrer": "gamazon.con",
+          "referring_domain": "localhost:1111",
+          "search": "home",
+          "sent_at": "20210109134567",
+          "tab_url": "http://localhost:1111/My_first_app/first.html",
+          "timestamp": "1403743443",
+          "title": "e-commerce",
+          "url": "http://shopping.pacaa.com/"
+        },
+        "name": "Cart Viewed",
+        "type": "page",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "city": "east greenwich",
+        "country": "USA",
+        "postalCode": "94115",
+        "state": "RI",
+        "street": "19123 forest lane",
+        "Homephone": 9836543283,
+        "birthDay": "2021/05/19",
+        "category": "SampleIdentify",
+        "company": {
+          "employee_count": 1200,
+          "id": 378763009439,
+          "industry": "IT",
+          "name": "Rudderlabs"
+        },
+        "email": "testkolkata@rudderlabs.com",
+        "event": "Sample Identify call",
+        "event_text": "identify",
+        "fieldInfo": {
+          "Address": "kolkata",
+          "CheckBox": [
+            "Option1",
+            "Option2",
+            "Option3"
+          ],
+          "DateField": "1988-12-05",
+          "DateTimeField": "2020-05-19T02:45:00-05:00",
+          "HiddenField": "Hidden",
+          "RadioButton": "Option1",
+          "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "address": {
+            "city": "east greenwich",
+            "country": "USA",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "zip": "94115"
+          },
+          "listBox": [
+            "Option1",
+            "Option2"
+          ],
+          "multiChoice": "Option 1",
+          "state": "California"
+        },
+        "firstName": "Adhir",
+        "id": "ID101",
+        "industry": "ITES",
+        "isEnabled": true,
+        "lastName": "Das",
+        "leadSource": "WEB",
+        "lists": [
+          {
+            "id": 2,
+            "status": "unsubscribed"
+          },
+          {
+            "id": 3,
+            "status": "unsubscribe"
+          }
+        ],
+        "logins": 5,
+        "mobile": "123456786",
+        "organizationId": 378763009439,
+        "original_timestamp": "1403743443",
+        "phone": "570-690-4150",
+        "plan": "Open source",
+        "rating": "Hot",
+        "received_at": "202101091347654",
+        "sent_at": "20210109134567",
+        "tags": [
+          "x0002x",
+          "y0004y",
+          "t0001t"
+        ],
+        "timestamp": "1403743443",
+        "timezone": "Berlin",
+        "title": "Mr",
+        "created_at": 1621362600,
+        "_timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "query": "HDMI cable"
+        },
+        "name": "Products Searched",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "KEY_3": {
+            "CHILD_KEY_4": "value_3",
+            "CHILD_KEY_5": "value_4"
+          },
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products": [
+            {
+              "affiliation": "Google Store",
+              "anonymous_id": "nskjbjasc623656253bb",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "jeggings",
+              "original_timestamp": "1403743443",
+              "position": "home_top",
+              "price": 9.99,
+              "product_id": "SKU_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "received_at": "202101091347654",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-32",
+              "timestamp": "1403743443",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            {
+              "affiliation": "Google Store",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "leggings",
+              "price": 9.99,
+              "product_id": "SKU_12347",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-33",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          ],
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "name": "Sample Track Call",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "What's New",
+          "list_id": "list1",
+          "products": [
+            {
+              "category": "Games and Entertainment",
+              "image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+              "name": "Just Another Game",
+              "position": 2,
+              "price": 22,
+              "product_id": "223344ffdds3ff3",
+              "sku": "12345",
+              "url": "https://www.myecommercewebsite.com/product"
+            },
+            {
+              "category": "Card Games",
+              "name": "Wrestling Trump Cards",
+              "position": 21,
+              "price": 4,
+              "product_id": "343344ff5567ff3",
+              "sku": "12346"
+            }
+          ]
+        },
+        "name": "Product List Viewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Viewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Clicked",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Clicked",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Viewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Added",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Removed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "12345",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 14.99,
+              "product_id": "123",
+              "sku": "G-14",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "position": 2,
+              "price": 3.99,
+              "product_id": "345",
+              "sku": "G-32"
+            }
+          ]
+        },
+        "name": "Cart Viewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "name": "Checkout Started",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Viewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Completed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "name": "Payment Info Entered",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "name": "Order Updated",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "name": "Order Completed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "currency": "USD",
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 17,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3,
+              "product_id": "345",
+              "quantity": 1,
+              "sku": "F-32"
+            }
+          ],
+          "total": 20
+        },
+        "name": "Order Refunded",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "name": "Order Cancelled",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        },
+        "name": "Coupon Entered",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        },
+        "name": "Coupon Denied",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "name": "Coupon Applied",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1234df2ddss",
+          "products": [
+            {
+              "product_id": "125"
+            },
+            {
+              "product_id": "297"
+            }
+          ],
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        },
+        "name": "Cart Shared",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Wishlist Product Added to Cart",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        },
+        "name": "Product Shared",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Product Removed from Wishlist",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Product Added to Wishlist",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        },
+        "name": "Coupon Removed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "name": "Product Reviewed",
+        "type": "event",
+        "timestamp": 1621401915
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type alias"
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type group"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity1001",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "city": "east greenwich",
+        "country": "USA",
+        "postalCode": "94115",
+        "state": "RI",
+        "street": "19123 forest lane",
+        "Homephone": 9836543283,
+        "birthDay": "2021/05/19",
+        "category": "SampleIdentify",
+        "company": {
+          "employee_count": 1200,
+          "id": 378763009439,
+          "industry": "IT",
+          "name": "Rudderlabs"
+        },
+        "email": "testkolkata@rudderlabs.com",
+        "event": "Sample Identify call",
+        "event_text": "identify",
+        "fieldInfo": {
+          "Address": "kolkata",
+          "CheckBox": [
+            "Option1",
+            "Option2",
+            "Option3"
+          ],
+          "DateField": "1988-12-05",
+          "DateTimeField": "2020-05-19T02:45:00-05:00",
+          "HiddenField": "Hidden",
+          "RadioButton": "Option1",
+          "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "address": {
+            "city": "east greenwich",
+            "country": "USA",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "zip": "94115"
+          },
+          "listBox": [
+            "Option1",
+            "Option2"
+          ],
+          "multiChoice": "Option 1",
+          "state": "California"
+        },
+        "firstName": "Adhir",
+        "id": "ID101",
+        "industry": "ITES",
+        "isEnabled": true,
+        "lastName": "Das",
+        "leadSource": "WEB",
+        "lists": [
+          {
+            "id": 2,
+            "status": "unsubscribed"
+          },
+          {
+            "id": 3,
+            "status": "unsubscribe"
+          }
+        ],
+        "logins": 5,
+        "mobile": "123456786",
+        "organizationId": 378763009439,
+        "original_timestamp": "1403743443",
+        "phone": "570-690-4150",
+        "plan": "Open source",
+        "rating": "Hot",
+        "received_at": "202101091347654",
+        "sent_at": "20210109134567",
+        "tags": [
+          "x0002x",
+          "y0004y",
+          "t0001t"
+        ],
+        "timestamp": "1403743443",
+        "timezone": "Berlin",
+        "title": "Mr",
+        "created_at": 1621362600,
+        "_timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity1001",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser1000/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "original_timestamp": "1403743443",
+          "path": "clipkart.com",
+          "received_at": "202101091347654",
+          "referrer": "gamazon.con",
+          "search": "home",
+          "sent_at": "20210109134567",
+          "timestamp": "1403743443",
+          "title": "e-commerce",
+          "url": "http://shopping.pacaa.com/"
+        },
+        "name": "Cart Viewed",
+        "type": "page",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "KEY_3": {
+            "CHILD_KEY_4": "value_3",
+            "CHILD_KEY_5": "value_4"
+          },
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products": [
+            {
+              "affiliation": "Google Store",
+              "anonymous_id": "nskjbjasc623656253bb",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "jeggings",
+              "original_timestamp": "1403743443",
+              "position": "home_top",
+              "price": 9.99,
+              "product_id": "SKU_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "received_at": "202101091347654",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-32",
+              "timestamp": "1403743443",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            {
+              "affiliation": "Google Store",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "leggings",
+              "price": 9.99,
+              "product_id": "SKU_12347",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-33",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          ],
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "name": "Sample Track Call",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "query": "HDMI cable"
+        },
+        "name": "Products Searched",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "What's New",
+          "list_id": "list1",
+          "products": [
+            {
+              "category": "Games and Entertainment",
+              "image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+              "name": "Just Another Game",
+              "position": 2,
+              "price": 22,
+              "product_id": "223344ffdds3ff3",
+              "sku": "12345",
+              "url": "https://www.myecommercewebsite.com/product"
+            },
+            {
+              "category": "Card Games",
+              "name": "Wrestling Trump Cards",
+              "position": 21,
+              "price": 4,
+              "product_id": "343344ff5567ff3",
+              "sku": "12346"
+            }
+          ]
+        },
+        "name": "Product List Viewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Viewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Clicked",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Clicked",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Viewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Added",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "name": "Product Removed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "12345",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 14.99,
+              "product_id": "123",
+              "sku": "G-14",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "position": 2,
+              "price": 3.99,
+              "product_id": "345",
+              "sku": "G-32"
+            }
+          ]
+        },
+        "name": "Cart Viewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "name": "Checkout Started",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Viewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Completed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "name": "Payment Info Entered",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "name": "Order Updated",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "name": "Order Completed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "currency": "USD",
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 17,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3,
+              "product_id": "345",
+              "quantity": 1,
+              "sku": "F-32"
+            }
+          ],
+          "total": 20
+        },
+        "name": "Order Refunded",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "image_url": "https://www.website.com/product/path.jpg",
+              "name": "Monopoly",
+              "price": 14,
+              "product_id": "123",
+              "quantity": 1,
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "name": "UNO",
+              "price": 3.45,
+              "product_id": "345",
+              "quantity": 2,
+              "sku": "F-32"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "name": "Order Cancelled",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        },
+        "name": "Coupon Entered",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "name": "Coupon Applied",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        },
+        "name": "Coupon Denied",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        },
+        "name": "Coupon Removed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Product Added to Wishlist",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Product Removed from Wishlist",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "name": "Wishlist Product Added to Cart",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        },
+        "name": "Product Shared",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1234df2ddss",
+          "products": [
+            {
+              "product_id": "125"
+            },
+            {
+              "product_id": "297"
+            }
+          ],
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        },
+        "name": "Cart Shared",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanityuser100/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "name": "Product Reviewed",
+        "type": "event",
+        "timestamp": 1621409924
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type alias"
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type group"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/sanity_user1000",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "city": "east greenwich",
+        "country": "USA",
+        "postalCode": "94115",
+        "state": "RI",
+        "street": "19123 forest lane",
+        "Homephone": 9836543283,
+        "birthday": "12/12/12",
+        "category": "SampleIdentify",
+        "company": {
+          "employee_count": 1200,
+          "id": 378763009439,
+          "industry": "IT",
+          "name": "Rudderlabs"
+        },
+        "email": "testkolkata@rudderlabs.com",
+        "event": "Sample Identify call",
+        "event_text": "identify",
+        "fieldInfo": {
+          "Address": "kolkata",
+          "CheckBox": [
+            "Option1",
+            "Option2",
+            "Option3"
+          ],
+          "DateField": "1988-12-05",
+          "DateTimeFiled": "2020-05-19T02:45:00-05:00",
+          "HiddenField": "Hidden",
+          "RadioButton": "Option1",
+          "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "address": {
+            "city": "east greenwich",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "zip": "94115"
+          },
+          "listBox": [
+            "Option1",
+            "Option2"
+          ],
+          "multichoice": "Option 1",
+          "state": "California"
+        },
+        "firstname": "Adhir",
+        "id": "ID101",
+        "industry": "ITES",
+        "isEnabled": true,
+        "lastname": "Das",
+        "leadSource": "WEB",
+        "lists": [
+          {
+            "id": 2,
+            "status": "unsubscribed"
+          },
+          {
+            "id": "3",
+            "status": "unsubscribed"
+          }
+        ],
+        "logins": 5,
+        "mobile": "123456786",
+        "name": "Adhir Das",
+        "organisationId": 378763009439,
+        "original_timestamp": "1403743443",
+        "phone": "570-690-4150",
+        "plan": "Open source",
+        "rating": "Hot",
+        "received_at": "202101091347654",
+        "sent_at": "20210109134567",
+        "tags": [
+          "x0002x",
+          "y0004y",
+          "t0001t"
+        ],
+        "timestamp": "1403743443",
+        "timezone": "Berlin",
+        "title": "Mr",
+        "created_at": null,
+        "_timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanity_user1000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "cart viewed",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "name": "cart",
+          "original_timestamp": "1403743443",
+          "path": "clipkart.com",
+          "received_at": "202101091347654",
+          "referrer": "gamazon.con",
+          "search": "home",
+          "sent_at": "20210109134567",
+          "timestamp": "1403743443",
+          "title": "e-commerce",
+          "url": "http://shopping.pacaa.com/"
+        },
+        "name": "Viewed cart Screen",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "KEY_3": {
+            "CHILD_KEY_4": "value_3",
+            "CHILD_KEY_5": "value_4"
+          },
+          "affiliation": "Apple Store",
+          "annonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products": [
+            {
+              "affiliation": "Google Store",
+              "anonymous_id": "nskjbjasc623656253bb",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "jeggings",
+              "original_timestamp": "1403743443",
+              "position": "home_top",
+              "price": 9.99,
+              "product_id": "SKU_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "received_at": "202101091347654",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-32",
+              "timestamp": "1403743443",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            {
+              "affiliation": "Google Store",
+              "brand": "Gucci",
+              "category": "pants",
+              "coupon": "SUMMER_FUN",
+              "creative": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "currency": "USD",
+              "discount": 2.22,
+              "image_url": "https://www.website.com/product/path.png",
+              "location_id": "L_12345",
+              "name": "leggings",
+              "price": 9.99,
+              "product_id": "SKU_12347",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "quantity": 1,
+              "rating": "5",
+              "recipient": "name@friendsemail.com",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "G-32",
+              "url": "https://www.website.com/product/path",
+              "variant": "Black",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          ],
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon Expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": "22",
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "name": "Sample Track Call",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "query": "HDMI cable"
+        },
+        "name": "Products Searched",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "What's new",
+          "list_id": "list1",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ]
+        },
+        "name": "Product List Viewed",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Viewed",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "name": "Promotion Clicked",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Clicked",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Viewed",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Added",
+        "type": "event",
+        "timestamp": 1622094958
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Removed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "some_cart_id",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ]
+        },
+        "name": "Cart Viewed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "name": "Checkout Started",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Viewed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "name": "Checkout Step Completed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "name": "Payment Info Entered",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "name": "Order Updated",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "name": "Order Completed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "order_id": "1234"
+        },
+        "name": "Order Refunded",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": [
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15"
+            }
+          ],
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "name": "Order Cancelled",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "order_id": "1223455"
+        },
+        "name": "Coupon Entered",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "name": "Coupon Applied",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "order_id": "1223455"
+        },
+        "name": "Coupon Denied",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "name": "Coupon Removed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Added to Wishlist",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Removed from Wishlist",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Wishlist Product Added to Cart",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "name": "Product Shared",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "cart_id": "1234df2ddss",
+          "products": [
+            {
+              "product_id": "123"
+            },
+            {
+              "product_id": "123"
+            }
+          ]
+        },
+        "name": "Cart Shared",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ID101/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "product_id": "123",
+          "rating": 5,
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "name": "Product Reviewed",
+        "type": "event",
+        "timestamp": 1622094959
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ID101",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type alias"
+  },
+  {
+    "statusCode": 400,
+    "error": "could not determine type group"
+  }
+]

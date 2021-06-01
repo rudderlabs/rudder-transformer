@@ -3,20 +3,28 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "5b2573d0-8563-4db4-a1c7-b745c9a28d59",
+        "profile_update": {
+          "userId": "sanity_user1000",
+          "_lastBrowserLanguage": "en-US",
+          "_updatedAt": "2021-05-19T05:25:15.155Z",
+          "_userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+          "_currentPageTitle": "e-commerce",
+          "_currentPageUrl": "http://shopping.pacaa.com/",
+          "_appcuesId": "86086"
+        },
+        "events": [
           {
-            "evtName": "Web Page Viewed: Sample Identify call",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Visited a Page",
+            "timestamp": 1621401915,
+            "attributes": {
               "category": "Cart",
               "event": "Sample Identify call",
               "event_text": "identify",
@@ -34,110 +42,13 @@
               "tab_url": "http://localhost:1111/My_first_app/first.html",
               "timestamp": "1403743443",
               "title": "e-commerce",
-              "url": "http://shopping.pacaa.com/"
+              "url": "http://shopping.pacaa.com/",
+              "_identity": {
+                "userId": "sanity_user1000"
+              }
             },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "identity": "sanity_user1000",
-            "type": "profile",
-            "profileData": {
-              "Email": "testkolkata@rudderlabs.com",
-              "Phone": "570-690-4150",
-              "Name": "Adhir Das",
-              "Homephone": 9836543283,
-              "birthDay": "2021/05/19",
-              "category": "SampleIdentify",
-              "city": "east greenwich",
-              "company": {
-                "employee_count": 1200,
-                "id": 378763009439,
-                "industry": "IT",
-                "name": "Rudderlabs"
-              },
-              "country": "USA",
-              "createdAt": "2021/05/19",
-              "event": "Sample Identify call",
-              "event_text": "identify",
-              "fieldInfo": {
-                "Address": "kolkata",
-                "CheckBox": [
-                  "Option1",
-                  "Option2",
-                  "Option3"
-                ],
-                "DateField": "1988-12-05",
-                "DateTimeField": "2020-05-19T02:45:00-05:00",
-                "HiddenField": "Hidden",
-                "RadioButton": "Option1",
-                "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
-                "address": {
-                  "city": "east greenwich",
-                  "country": "USA",
-                  "state": "RI",
-                  "street": "19123 forest lane",
-                  "zip": "94115"
-                },
-                "listBox": [
-                  "Option1",
-                  "Option2"
-                ],
-                "multiChoice": "Option 1",
-                "state": "California"
-              },
-              "industry": "ITES",
-              "isEnabled": true,
-              "leadSource": "WEB",
-              "lists": [
-                {
-                  "id": 2,
-                  "status": "unsubscribed"
-                },
-                {
-                  "id": 3,
-                  "status": "unsubscribe"
-                }
-              ],
-              "logins": 5,
-              "mobile": "123456786",
-              "organizationId": 378763009439,
-              "original_timestamp": "1403743443",
-              "plan": "Open source",
-              "postalCode": "94115",
-              "rating": "Hot",
-              "received_at": "202101091347654",
-              "sent_at": "20210109134567",
-              "state": "RI",
-              "street": "19123 forest lane",
-              "tags": [
-                "x0002x",
-                "y0004y",
-                "t0001t"
-              ],
-              "timestamp": "1403743443",
-              "timezone": "Berlin",
-              "title": "Mr"
+            "context": {
+              "url": "http://shopping.pacaa.com/"
             }
           }
         ]
@@ -151,23 +62,118 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
-          {
-            "evtName": "Products Searched",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "query": "HDMI cable"
+        "request_id": "60028b58-ac1b-42b9-9434-c14820a59ac2",
+        "profile_update": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company": {
+            "employee_count": 1200,
+            "id": 378763009439,
+            "industry": "IT",
+            "name": "Rudderlabs"
+          },
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeField": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "country": "USA",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
             },
-            "type": "event"
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multiChoice": "Option 1",
+            "state": "California"
+          },
+          "firstName": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastName": "Das",
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": 3,
+              "status": "unsubscribe"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "d7fe3ba9-5aa1-46ff-885e-bfe1c2a365fd",
+        "events": [
+          {
+            "name": "Products Searched",
+            "timestamp": 1621401915,
+            "attributes": {
+              "query": "HDMI cable"
+            }
           }
         ]
       },
@@ -180,20 +186,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "4e22afaf-73ec-48aa-81c4-2f45f9ef71ab",
+        "events": [
           {
-            "evtName": "Sample Track Call",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Sample Track Call",
+            "timestamp": 1621401915,
+            "attributes": {
               "KEY_3": {
                 "CHILD_KEY_4": "value_3",
                 "CHILD_KEY_5": "value_4"
@@ -304,8 +309,7 @@
               "timestamp": "1403743443",
               "total": 17,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -318,20 +322,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "df55763a-cca5-46fc-94a2-755857f39ad7",
+        "events": [
           {
-            "evtName": "Product List Viewed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Product List Viewed",
+            "timestamp": 1621401915,
+            "attributes": {
               "category": "What's New",
               "list_id": "list1",
               "products": [
@@ -354,8 +357,7 @@
                   "sku": "12346"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -368,26 +370,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "84889094-dc53-46e1-aca1-3e90e84889b9",
+        "events": [
           {
-            "evtName": "Promotion Viewed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Promotion Viewed",
+            "timestamp": 1621401915,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -400,26 +400,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "72d682b8-0bc1-4c41-a49d-5ccda77bc8a5",
+        "events": [
           {
-            "evtName": "Promotion Clicked",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Promotion Clicked",
+            "timestamp": 1621401915,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -432,20 +430,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "009b88c9-43fd-40b2-9a88-20f57e5e1c08",
+        "events": [
           {
-            "evtName": "Product Clicked",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Product Clicked",
+            "timestamp": 1621401915,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -458,8 +455,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -472,20 +468,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "0bd0c09f-d083-4db7-b928-523c69839cbc",
+        "events": [
           {
-            "evtName": "Product Viewed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Product Viewed",
+            "timestamp": 1621401915,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -499,8 +494,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -513,20 +507,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "128251d6-48b7-4b69-b398-163039124b8f",
+        "events": [
           {
-            "evtName": "Product Added",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Product Added",
+            "timestamp": 1621401915,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -539,8 +532,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -553,20 +545,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "700a4b79-495e-42b8-ad7b-dce9900939f4",
+        "events": [
           {
-            "evtName": "Product Removed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Product Removed",
+            "timestamp": 1621401915,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -579,8 +570,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -593,20 +583,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "4c31bf22-ca60-4a5d-9899-3c77a38aed1a",
+        "events": [
           {
-            "evtName": "Cart Viewed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Cart Viewed",
+            "timestamp": 1621401915,
+            "attributes": {
               "cart_id": "12345",
               "products": [
                 {
@@ -628,8 +617,7 @@
                   "sku": "G-32"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -642,20 +630,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1ec76cca-06e6-48a8-b62a-2f15a8120c80",
+        "events": [
           {
-            "evtName": "Checkout Started",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Checkout Started",
+            "timestamp": 1621401915,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -685,8 +672,7 @@
               "shipping": 22,
               "tax": 1,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -699,26 +685,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "50e470ef-97bd-439a-a358-b04b979d91db",
+        "events": [
           {
-            "evtName": "Checkout Step Viewed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Checkout Step Viewed",
+            "timestamp": 1621401915,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "Mastercard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -731,26 +715,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "4674a4f7-01d2-4e64-8078-64ed71a742ca",
+        "events": [
           {
-            "evtName": "Checkout Step Completed",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Checkout Step Completed",
+            "timestamp": 1621401915,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "Mastercard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -763,24 +745,22 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "d013a96b-a3ec-41b2-9b55-db6ebfb78827",
+        "events": [
           {
-            "evtName": "Payment Info Entered",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Payment Info Entered",
+            "timestamp": 1621401915,
+            "attributes": {
               "checkout_id": "12344",
               "order_id": "123"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -793,20 +773,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "8fff532f-32b5-4e9a-b6d6-ae8cde820e11",
+        "events": [
           {
-            "evtName": "Order Updated",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Order Updated",
+            "timestamp": 1621401915,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -836,8 +815,7 @@
               "shipping": 22,
               "tax": 1,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -850,22 +828,26 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "30eccec9-1bf8-4941-8539-a8a94de575fe",
+        "events": [
           {
-            "evtName": "Charged",
-            "evtData": {
-              "Charged ID": "12345",
-              "Amount": 15,
-              "Items": [
+            "name": "Order Completed",
+            "timestamp": 1621401915,
+            "attributes": {
+              "affiliation": "Apple Store",
+              "checkout_id": "12345",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products": [
                 {
                   "category": "Games",
                   "image_url": "https://www.website.com/product/path.jpg",
@@ -885,17 +867,11 @@
                   "sku": "F-32"
                 }
               ],
-              "affiliation": "Apple Store",
-              "coupon": "ImagePro",
-              "currency": "USD",
-              "discount": 1.5,
-              "order_id": "1234",
+              "revenue": 15,
               "shipping": 22,
               "tax": 1,
               "total": 20
-            },
-            "identity": "sanity_user1000",
-            "type": "event"
+            }
           }
         ]
       },
@@ -908,20 +884,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "6418ccb0-3429-48c8-ad4e-f42c9d972ae0",
+        "events": [
           {
-            "evtName": "Order Refunded",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Order Refunded",
+            "timestamp": 1621401915,
+            "attributes": {
               "currency": "USD",
               "order_id": "1234",
               "products": [
@@ -945,8 +920,7 @@
                 }
               ],
               "total": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -959,20 +933,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "4867726e-f77a-4002-8361-cd6a1a2e920a",
+        "events": [
           {
-            "evtName": "Order Cancelled",
-            "identity": "sanity_user1000",
-            "evtData": {
+            "name": "Order Cancelled",
+            "timestamp": 1621401915,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -1002,484 +975,6 @@
               "shipping": 22,
               "tax": 1,
               "total": 20
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Entered",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "cart_id": "1222111",
-              "coupon_id": "disc20",
-              "order_id": "12345"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Denied",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "cart_id": "1211",
-              "coupon": "Disc21",
-              "order_id": "123",
-              "reason": "Coupon expired"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Applied",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "cart_id": "123566",
-              "coupon_id": "23321",
-              "coupon_name": "Disc21",
-              "discount": 21,
-              "order_id": "1223455"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Cart Shared",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "cart_id": "1234df2ddss",
-              "products": [
-                {
-                  "product_id": "125"
-                },
-                {
-                  "product_id": "297"
-                }
-              ],
-              "recipient": "friend@friendsemail.com",
-              "share_message": "Check this",
-              "share_via": "SMS"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Wishlist Product Added to Cart",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Shared",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "brand": "Maples",
-              "category": "Games",
-              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
-              "name": "Cards",
-              "price": 15.99,
-              "product_id": "12345872254426",
-              "recipient": "name@friendsemail.com",
-              "share_message": "Check this",
-              "share_via": "SMS",
-              "sku": "F-13",
-              "url": "https://www.myecommercewebsite.com/product/prod",
-              "variant": "150s"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Removed from Wishlist",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Added to Wishlist",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Removed",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "cart_id": "124",
-              "coupon_id": "Dis123",
-              "coupon_name": "Disc20",
-              "discount": 20,
-              "order_id": "1211"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Reviewed",
-            "identity": "sanity_user1000",
-            "evtData": {
-              "product_id": "12345",
-              "rating": "5",
-              "review_body": "Good product, delivered in excellent condition",
-              "review_id": "review12"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "statusCode": 400,
-    "error": "Message type not supported"
-  },
-  {
-    "statusCode": 400,
-    "error": "Message type not supported"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "identity": "sanity1001",
-            "type": "profile",
-            "profileData": {
-              "Email": "testkolkata@rudderlabs.com",
-              "Phone": "570-690-4150",
-              "Name": "Adhir Das",
-              "Homephone": 9836543283,
-              "birthDay": "2021/05/19",
-              "category": "SampleIdentify",
-              "city": "east greenwich",
-              "company": {
-                "employee_count": 1200,
-                "id": 378763009439,
-                "industry": "IT",
-                "name": "Rudderlabs"
-              },
-              "country": "USA",
-              "createdAt": "2021/05/19",
-              "event": "Sample Identify call",
-              "event_text": "identify",
-              "fieldInfo": {
-                "Address": "kolkata",
-                "CheckBox": [
-                  "Option1",
-                  "Option2",
-                  "Option3"
-                ],
-                "DateField": "1988-12-05",
-                "DateTimeField": "2020-05-19T02:45:00-05:00",
-                "HiddenField": "Hidden",
-                "RadioButton": "Option1",
-                "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
-                "address": {
-                  "city": "east greenwich",
-                  "country": "USA",
-                  "state": "RI",
-                  "street": "19123 forest lane",
-                  "zip": "94115"
-                },
-                "listBox": [
-                  "Option1",
-                  "Option2"
-                ],
-                "multiChoice": "Option 1",
-                "state": "California"
-              },
-              "industry": "ITES",
-              "isEnabled": true,
-              "leadSource": "WEB",
-              "lists": [
-                {
-                  "id": 2,
-                  "status": "unsubscribed"
-                },
-                {
-                  "id": 3,
-                  "status": "unsubscribe"
-                }
-              ],
-              "logins": 5,
-              "mobile": "123456786",
-              "organizationId": 378763009439,
-              "original_timestamp": "1403743443",
-              "plan": "Open source",
-              "postalCode": "94115",
-              "rating": "Hot",
-              "received_at": "202101091347654",
-              "sent_at": "20210109134567",
-              "state": "RI",
-              "street": "19123 forest lane",
-              "tags": [
-                "x0002x",
-                "y0004y",
-                "t0001t"
-              ],
-              "timestamp": "1403743443",
-              "timezone": "Berlin",
-              "title": "Mr"
             }
           }
         ]
@@ -1493,20 +988,478 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "b0d705e0-58e1-45b4-a154-525d2084ff05",
+        "events": [
           {
-            "evtName": "Web Page Viewed: Sample Identify call",
-            "identity": "sanityuser1000",
-            "evtData": {
+            "name": "Coupon Entered",
+            "timestamp": 1621401915,
+            "attributes": {
+              "cart_id": "1222111",
+              "coupon_id": "disc20",
+              "order_id": "12345"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "4e223404-04f9-482c-97c3-554411a9c71f",
+        "events": [
+          {
+            "name": "Coupon Denied",
+            "timestamp": 1621401915,
+            "attributes": {
+              "cart_id": "1211",
+              "coupon": "Disc21",
+              "order_id": "123",
+              "reason": "Coupon expired"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "70bd97d7-ea46-463a-ad0d-54764c949cf5",
+        "events": [
+          {
+            "name": "Coupon Applied",
+            "timestamp": 1621401915,
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "0f446e01-6e31-47a1-b600-15680b526dc2",
+        "events": [
+          {
+            "name": "Cart Shared",
+            "timestamp": 1621401915,
+            "attributes": {
+              "cart_id": "1234df2ddss",
+              "products": [
+                {
+                  "product_id": "125"
+                },
+                {
+                  "product_id": "297"
+                }
+              ],
+              "recipient": "friend@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "0883372e-a0bc-4b9e-92f9-d0e473643806",
+        "events": [
+          {
+            "name": "Wishlist Product Added to Cart",
+            "timestamp": 1621401915,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "e45c58f0-c5e2-4dc1-8a5b-024b2f56733d",
+        "events": [
+          {
+            "name": "Product Shared",
+            "timestamp": 1621401915,
+            "attributes": {
+              "brand": "Maples",
+              "category": "Games",
+              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+              "name": "Cards",
+              "price": 15.99,
+              "product_id": "12345872254426",
+              "recipient": "name@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "F-13",
+              "url": "https://www.myecommercewebsite.com/product/prod",
+              "variant": "150s"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "af3d3519-bb10-4712-9753-6e320b334dea",
+        "events": [
+          {
+            "name": "Product Removed from Wishlist",
+            "timestamp": 1621401915,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "4363ee26-6a0c-423b-b87a-24db30ef11ab",
+        "events": [
+          {
+            "name": "Product Added to Wishlist",
+            "timestamp": 1621401915,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "3a9a0086-bb53-46b3-8bed-5b87d682a74d",
+        "events": [
+          {
+            "name": "Coupon Removed",
+            "timestamp": 1621401915,
+            "attributes": {
+              "cart_id": "124",
+              "coupon_id": "Dis123",
+              "coupon_name": "Disc20",
+              "discount": 20,
+              "order_id": "1211"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "cfa8fb8a-ba42-41a4-bd54-8fc5188775a8",
+        "events": [
+          {
+            "name": "Product Reviewed",
+            "timestamp": 1621401915,
+            "attributes": {
+              "product_id": "12345",
+              "rating": "5",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity1001/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-6aef205037203a0d6d04ec10588c0a2c-731a1dc1-6b76-4304-a102-0c040b932747",
+        "profile_update": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company": {
+            "employee_count": 1200,
+            "id": 378763009439,
+            "industry": "IT",
+            "name": "Rudderlabs"
+          },
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeField": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "country": "USA",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
+            },
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multiChoice": "Option 1",
+            "state": "California"
+          },
+          "firstName": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastName": "Das",
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": 3,
+              "status": "unsubscribe"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-e6aee812fe115e625e895dcc85123b99-cfbcf8d4-2839-4111-a5c4-07b149049728",
+        "profile_update": {
+          "userId": "sanityuser1000",
+          "_updatedAt": "2021-05-19T07:38:44.763Z",
+          "_currentPageTitle": "e-commerce",
+          "_currentPageUrl": "http://shopping.pacaa.com/",
+          "_appcuesId": "86086"
+        },
+        "events": [
+          {
+            "name": "Visited a Page",
+            "timestamp": 1621409924,
+            "attributes": {
               "event": "Sample Identify call",
               "event_text": "identify",
               "id": "ID101",
@@ -1518,9 +1471,14 @@
               "sent_at": "20210109134567",
               "timestamp": "1403743443",
               "title": "e-commerce",
-              "url": "http://shopping.pacaa.com/"
+              "url": "http://shopping.pacaa.com/",
+              "_identity": {
+                "userId": "sanityuser1000"
+              }
             },
-            "type": "event"
+            "context": {
+              "url": "http://shopping.pacaa.com/"
+            }
           }
         ]
       },
@@ -1533,20 +1491,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-3727596b93d8a238323c7cdf35987330-e548a21f-31fd-4961-bc2e-679533508536",
+        "events": [
           {
-            "evtName": "Sample Track Call",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Sample Track Call",
+            "timestamp": 1621409924,
+            "attributes": {
               "KEY_3": {
                 "CHILD_KEY_4": "value_3",
                 "CHILD_KEY_5": "value_4"
@@ -1657,8 +1614,7 @@
               "timestamp": "1403743443",
               "total": 17,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1671,23 +1627,21 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-ef9391ab5e954390a56542723d158ebf-39ab3b71-1e16-4b45-950e-5a16f31ed89c",
+        "events": [
           {
-            "evtName": "Products Searched",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Products Searched",
+            "timestamp": 1621409924,
+            "attributes": {
               "query": "HDMI cable"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1700,20 +1654,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-f92f63856ede65a87f1749a55f78dba6-d7349b37-2fe9-4c30-8831-3462069bd2d8",
+        "events": [
           {
-            "evtName": "Product List Viewed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Product List Viewed",
+            "timestamp": 1621409924,
+            "attributes": {
               "category": "What's New",
               "list_id": "list1",
               "products": [
@@ -1736,8 +1689,7 @@
                   "sku": "12346"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1750,26 +1702,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-55bcfad1fce6e7c99d1c6181d6e0d816-09f329f9-537a-474d-8146-bae039a80652",
+        "events": [
           {
-            "evtName": "Promotion Viewed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Promotion Viewed",
+            "timestamp": 1621409924,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1782,26 +1732,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-da46cce6f30b2b6a6dfec087b91a8327-747e8707-6843-4d8e-8d97-ab5c37e65368",
+        "events": [
           {
-            "evtName": "Promotion Clicked",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Promotion Clicked",
+            "timestamp": 1621409924,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1814,20 +1762,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-25b4fe4b58992fe3117ba9dcd16a1fa0-78daa4a0-23ad-4829-ba00-f570d559fbb2",
+        "events": [
           {
-            "evtName": "Product Clicked",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Product Clicked",
+            "timestamp": 1621409924,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -1840,8 +1787,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1854,20 +1800,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-c9a4b826c99eaf5ee7aa28f63e1c6de8-d9625698-b656-4593-8b78-4c044480de3c",
+        "events": [
           {
-            "evtName": "Product Viewed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Product Viewed",
+            "timestamp": 1621409924,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -1881,8 +1826,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1895,20 +1839,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-3868ad92d4938058b4ce17fd8535556f-b2bd13b3-968e-4f42-bfe6-3c77776864cf",
+        "events": [
           {
-            "evtName": "Product Added",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Product Added",
+            "timestamp": 1621409924,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -1921,8 +1864,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1935,20 +1877,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-00b9aa6c26214cf790c7ef7039c02323-c7c00ab2-e9bd-495e-bd82-1f379cf070e2",
+        "events": [
           {
-            "evtName": "Product Removed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Product Removed",
+            "timestamp": 1621409924,
+            "attributes": {
               "brand": "Gamepro",
               "category": "Games",
               "coupon": "DISC21",
@@ -1961,8 +1902,7 @@
               "sku": "F15",
               "url": "https://www.website.com/product/path",
               "variant": "111"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -1975,20 +1915,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-d345340b10e52d3d5006ac22b8207e71-abede659-597c-4ef7-8d5f-ebf6d2d19b08",
+        "events": [
           {
-            "evtName": "Cart Viewed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Cart Viewed",
+            "timestamp": 1621409924,
+            "attributes": {
               "cart_id": "12345",
               "products": [
                 {
@@ -2010,8 +1949,7 @@
                   "sku": "G-32"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2024,20 +1962,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-a4889d9ffb756c50f2210350318a6a5b-005ec58f-9508-4af5-920d-93982987ad70",
+        "events": [
           {
-            "evtName": "Checkout Started",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Checkout Started",
+            "timestamp": 1621409924,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -2067,8 +2004,7 @@
               "shipping": 22,
               "tax": 1,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2081,26 +2017,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-d257bcac7a757a588e0db980225353df-7c192202-553b-426e-9af1-a28ec6abc94c",
+        "events": [
           {
-            "evtName": "Checkout Step Viewed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Checkout Step Viewed",
+            "timestamp": 1621409924,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "Mastercard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2113,26 +2047,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-2f58ca4500ff10f04a4420a5e3dc3ed4-e4fcf744-d955-4bc0-a40e-832bbb06bca6",
+        "events": [
           {
-            "evtName": "Checkout Step Completed",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Checkout Step Completed",
+            "timestamp": 1621409924,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "Mastercard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2145,24 +2077,22 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-f19b6496282788eded1d758bc5f3c7e6-fc6aca13-3147-4f16-a377-f5e5247d3d9f",
+        "events": [
           {
-            "evtName": "Payment Info Entered",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Payment Info Entered",
+            "timestamp": 1621409924,
+            "attributes": {
               "checkout_id": "12344",
               "order_id": "123"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2175,20 +2105,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-cc7de85d52ee1821b1752c44a78fad44-4ebd17d4-268e-4af5-9f6c-76cd089b1aff",
+        "events": [
           {
-            "evtName": "Order Updated",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Order Updated",
+            "timestamp": 1621409924,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -2218,8 +2147,7 @@
               "shipping": 22,
               "tax": 1,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2232,22 +2160,26 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-8efdac65fc110d5ca5b36cf8b982aadb-b0372a7c-98ce-4e41-bae6-9d9a4fd1d2a2",
+        "events": [
           {
-            "evtName": "Charged",
-            "evtData": {
-              "Charged ID": "12345",
-              "Amount": 15,
-              "Items": [
+            "name": "Order Completed",
+            "timestamp": 1621409924,
+            "attributes": {
+              "affiliation": "Apple Store",
+              "checkout_id": "12345",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products": [
                 {
                   "category": "Games",
                   "image_url": "https://www.website.com/product/path.jpg",
@@ -2267,17 +2199,11 @@
                   "sku": "F-32"
                 }
               ],
-              "affiliation": "Apple Store",
-              "coupon": "ImagePro",
-              "currency": "USD",
-              "discount": 1.5,
-              "order_id": "1234",
+              "revenue": 15,
               "shipping": 22,
               "tax": 1,
               "total": 20
-            },
-            "identity": "sanityuser100",
-            "type": "event"
+            }
           }
         ]
       },
@@ -2290,20 +2216,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-031937ad966c10d2afcd41c7a451e15b-5e9ec8a6-24af-4dc7-993b-f3f8387f62d2",
+        "events": [
           {
-            "evtName": "Order Refunded",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Order Refunded",
+            "timestamp": 1621409924,
+            "attributes": {
               "currency": "USD",
               "order_id": "1234",
               "products": [
@@ -2327,8 +2252,7 @@
                 }
               ],
               "total": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2341,20 +2265,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-5eced243fbb4f4ec574b837cc855e7de-1fcf4984-221f-41bb-bea8-2df07f42445d",
+        "events": [
           {
-            "evtName": "Order Cancelled",
-            "identity": "sanityuser100",
-            "evtData": {
+            "name": "Order Cancelled",
+            "timestamp": 1621409924,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -2384,490 +2307,6 @@
               "shipping": 22,
               "tax": 1,
               "total": 20
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Entered",
-            "identity": "sanityuser100",
-            "evtData": {
-              "cart_id": "1222111",
-              "coupon_id": "disc20",
-              "order_id": "12345"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Applied",
-            "identity": "sanityuser100",
-            "evtData": {
-              "cart_id": "123566",
-              "coupon_id": "23321",
-              "coupon_name": "Disc21",
-              "discount": 21,
-              "order_id": "1223455"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Denied",
-            "identity": "sanityuser100",
-            "evtData": {
-              "cart_id": "1211",
-              "coupon": "Disc21",
-              "order_id": "123",
-              "reason": "Coupon expired"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Coupon Removed",
-            "identity": "sanityuser100",
-            "evtData": {
-              "cart_id": "124",
-              "coupon_id": "Dis123",
-              "coupon_name": "Disc20",
-              "discount": 20,
-              "order_id": "1211"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Added to Wishlist",
-            "identity": "sanityuser100",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Removed from Wishlist",
-            "identity": "sanityuser100",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Wishlist Product Added to Cart",
-            "identity": "sanityuser100",
-            "evtData": {
-              "brand": "Imagepro",
-              "category": "Games",
-              "coupon": "COUPON",
-              "image_url": "https://www.site.com/product/path.jpg",
-              "name": "Cards",
-              "position": 1,
-              "price": 8.99,
-              "product_id": "235564423234",
-              "quantity": 1,
-              "sku": "F-17",
-              "url": "https://www.site.com/product/path",
-              "variant": "123",
-              "wishlist_id": "12345",
-              "wishlist_name": "Games"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Shared",
-            "identity": "sanityuser100",
-            "evtData": {
-              "brand": "Maples",
-              "category": "Games",
-              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
-              "name": "Cards",
-              "price": 15.99,
-              "product_id": "12345872254426",
-              "recipient": "name@friendsemail.com",
-              "share_message": "Check this",
-              "share_via": "SMS",
-              "sku": "F-13",
-              "url": "https://www.myecommercewebsite.com/product/prod",
-              "variant": "150s"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Cart Shared",
-            "identity": "sanityuser100",
-            "evtData": {
-              "cart_id": "1234df2ddss",
-              "products": [
-                {
-                  "product_id": "125"
-                },
-                {
-                  "product_id": "297"
-                }
-              ],
-              "recipient": "friend@friendsemail.com",
-              "share_message": "Check this",
-              "share_via": "SMS"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "evtName": "Product Reviewed",
-            "identity": "sanityuser100",
-            "evtData": {
-              "product_id": "12345",
-              "rating": "5",
-              "review_body": "Good product, delivered in excellent condition",
-              "review_id": "review12"
-            },
-            "type": "event"
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "statusCode": 400,
-    "error": "Message type not supported"
-  },
-  {
-    "statusCode": 400,
-    "error": "Message type not supported"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "d": [
-          {
-            "identity": "sanity_user1000",
-            "type": "profile",
-            "profileData": {
-              "Email": "testkolkata@rudderlabs.com",
-              "Name": "Adhir Das",
-              "Phone": "570-690-4150",
-              "DOB": "12/12/12",
-              "Homephone": 9836543283,
-              "category": "SampleIdentify",
-              "city": "east greenwich",
-              "company": {
-                "employee_count": 1200,
-                "id": 378763009439,
-                "industry": "IT",
-                "name": "Rudderlabs"
-              },
-              "country": "USA",
-              "createdAt": {
-                "dayOfMonth": 1,
-                "hourOfDay": 6,
-                "minute": 53,
-                "month": 0,
-                "second": 20,
-                "year": 1970
-              },
-              "event": "Sample Identify call",
-              "event_text": "identify",
-              "fieldInfo": {
-                "Address": "kolkata",
-                "CheckBox": [
-                  "Option1",
-                  "Option2",
-                  "Option3"
-                ],
-                "DateField": "1988-12-05",
-                "DateTimeFiled": "2020-05-19T02:45:00-05:00",
-                "HiddenField": "Hidden",
-                "RadioButton": "Option1",
-                "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
-                "address": {
-                  "city": "east greenwich",
-                  "state": "RI",
-                  "street": "19123 forest lane",
-                  "zip": "94115"
-                },
-                "listBox": [
-                  "Option1",
-                  "Option2"
-                ],
-                "multichoice": "Option 1",
-                "state": "California"
-              },
-              "industry": "ITES",
-              "isEnabled": true,
-              "leadSource": "WEB",
-              "lists": [
-                {
-                  "id": 2,
-                  "status": "unsubscribed"
-                },
-                {
-                  "id": "3",
-                  "status": "unsubscribed"
-                }
-              ],
-              "logins": 5,
-              "mobile": "123456786",
-              "organisationId": 378763009439,
-              "original_timestamp": "1403743443",
-              "plan": "Open source",
-              "postalCode": "94115",
-              "rating": "Hot",
-              "received_at": "202101091347654",
-              "sent_at": "20210109134567",
-              "state": "RI",
-              "street": "19123 forest lane",
-              "tags": [
-                "x0002x",
-                "y0004y",
-                "t0001t"
-              ],
-              "timestamp": "1403743443",
-              "timezone": "Berlin",
-              "title": "Mr"
             }
           }
         ]
@@ -2881,20 +2320,480 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "node-3b06f6c0fec0e2e8697a3056ca3afa4d-21638036-934e-4f5c-968b-d75105bc40ab",
+        "events": [
           {
-            "evtName": "Screen Viewed: cart",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Coupon Entered",
+            "timestamp": 1621409924,
+            "attributes": {
+              "cart_id": "1222111",
+              "coupon_id": "disc20",
+              "order_id": "12345"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-082b056a8531acae0dc227b0819d01d6-1132ca31-50df-4463-87f0-d8fd688de72c",
+        "events": [
+          {
+            "name": "Coupon Applied",
+            "timestamp": 1621409924,
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-d019ff51718bcd233b7a21a85533a3ce-312a26b2-ba37-4382-8a6e-096aabda8b13",
+        "events": [
+          {
+            "name": "Coupon Denied",
+            "timestamp": 1621409924,
+            "attributes": {
+              "cart_id": "1211",
+              "coupon": "Disc21",
+              "order_id": "123",
+              "reason": "Coupon expired"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-84ff586fdfe14b588805d126fc8dcb74-6e36be3e-ae7b-42b3-9e07-ef9252186dda",
+        "events": [
+          {
+            "name": "Coupon Removed",
+            "timestamp": 1621409924,
+            "attributes": {
+              "cart_id": "124",
+              "coupon_id": "Dis123",
+              "coupon_name": "Disc20",
+              "discount": 20,
+              "order_id": "1211"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-490b85e86ee5a831d20699645018d419-c722682d-a22c-460c-a1b8-78ecb4fcb366",
+        "events": [
+          {
+            "name": "Product Added to Wishlist",
+            "timestamp": 1621409924,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-1e3e3d136b705e3bb4866b2e4a918862-f6813431-ce04-46a9-b766-cc8e3d212f8d",
+        "events": [
+          {
+            "name": "Product Removed from Wishlist",
+            "timestamp": 1621409924,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-b01e80fdaba4ae59efa626790decad7f-d1116cdb-40b3-4886-a9e7-dbbf40af37d6",
+        "events": [
+          {
+            "name": "Wishlist Product Added to Cart",
+            "timestamp": 1621409924,
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-0e23d4ca841e352269c03bcd7534ee78-55a36eb9-422a-43b9-8269-0684a3aab5f9",
+        "events": [
+          {
+            "name": "Product Shared",
+            "timestamp": 1621409924,
+            "attributes": {
+              "brand": "Maples",
+              "category": "Games",
+              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+              "name": "Cards",
+              "price": 15.99,
+              "product_id": "12345872254426",
+              "recipient": "name@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "F-13",
+              "url": "https://www.myecommercewebsite.com/product/prod",
+              "variant": "150s"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-f2b01f5adee572c765bc59f34b6845cb-ecfe50cb-7c94-4f34-9112-d7bd05da0ed1",
+        "events": [
+          {
+            "name": "Cart Shared",
+            "timestamp": 1621409924,
+            "attributes": {
+              "cart_id": "1234df2ddss",
+              "products": [
+                {
+                  "product_id": "125"
+                },
+                {
+                  "product_id": "297"
+                }
+              ],
+              "recipient": "friend@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanityuser100/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "node-f72f134d668c3fd19ec784085ab17c66-5599f830-ce7c-44e1-93c8-8626bc87aa1c",
+        "events": [
+          {
+            "name": "Product Reviewed",
+            "timestamp": 1621409924,
+            "attributes": {
+              "product_id": "12345",
+              "rating": "5",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12"
+            }
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type is not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sanity_user1000/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "1622094958287-f297141b-d66d-43db-9496-fd1e3156b8a4",
+        "profile_update": {
+          "Homephone": 9836543283,
+          "anonymousId": "f54bb572361c4fd1",
+          "birthday": "12/12/12",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company": {
+            "employee_count": 1200,
+            "id": 378763009439,
+            "industry": "IT",
+            "name": "Rudderlabs"
+          },
+          "country": "USA",
+          "createdAt": {
+            "dayOfMonth": 1,
+            "hourOfDay": 6,
+            "minute": 53,
+            "month": 0,
+            "second": 20,
+            "year": 1970
+          },
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeFiled": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
+            },
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multichoice": "Option 1",
+            "state": "California"
+          },
+          "firstname": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastname": "Das",
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": "3",
+              "status": "unsubscribed"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "name": "Adhir Das",
+          "organisationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr",
+          "userId": "sanity_user1000"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "request_id": "1622094958354-7a441238-6222-41f2-bb3c-85047e05349a",
+        "events": [
+          {
+            "name": "Viewed a Screen",
+            "timestamp": 1622094958,
+            "attributes": {
               "category": "cart viewed",
               "event": "Sample Identify call",
               "event_text": "identify",
@@ -2909,8 +2808,7 @@
               "timestamp": "1403743443",
               "title": "e-commerce",
               "url": "http://shopping.pacaa.com/"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -2923,20 +2821,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958395-fc37034b-cb28-475f-8c15-f65747f14285",
+        "events": [
           {
-            "evtName": "Sample Track Call",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Sample Track Call",
+            "timestamp": 1622094958,
+            "attributes": {
               "KEY_3": {
                 "CHILD_KEY_4": "value_3",
                 "CHILD_KEY_5": "value_4"
@@ -3047,8 +2944,7 @@
               "timestamp": "1403743443",
               "total": 17,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3061,23 +2957,21 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958474-bb598b10-f7bd-4590-9c5d-7538e204eaeb",
+        "events": [
           {
-            "evtName": "Products Searched",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Products Searched",
+            "timestamp": 1622094958,
+            "attributes": {
               "query": "HDMI cable"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3090,20 +2984,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958553-a566e5a5-a50b-488a-adec-0fa5261e87bf",
+        "events": [
           {
-            "evtName": "Product List Viewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product List Viewed",
+            "timestamp": 1622094958,
+            "attributes": {
               "category": "What's new",
               "list_id": "list1",
               "products": [
@@ -3132,8 +3025,7 @@
                   "sku": "F15"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3146,26 +3038,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958598-4246a0e8-f2c6-4d47-b68a-56c8df9a2250",
+        "events": [
           {
-            "evtName": "Promotion Viewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Promotion Viewed",
+            "timestamp": 1622094958,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3178,26 +3068,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958634-baa74a5b-e029-4f9f-a6c3-ef64d9d33bb9",
+        "events": [
           {
-            "evtName": "Promotion Clicked",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Promotion Clicked",
+            "timestamp": 1622094958,
+            "attributes": {
               "creative": "banner1",
               "name": "sale",
               "position": "home_top",
               "promotion_id": "promo1"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3210,20 +3098,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958887-6ff134dc-3fa7-4029-8f92-45ecafb2ff25",
+        "events": [
           {
-            "evtName": "Product Clicked",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Clicked",
+            "timestamp": 1622094958,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3235,8 +3122,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3249,20 +3135,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958958-0778bd0a-9948-4517-8d9e-bde7aa58c59d",
+        "events": [
           {
-            "evtName": "Product Viewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Viewed",
+            "timestamp": 1622094958,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3274,8 +3159,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3288,20 +3172,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094958994-78bcce12-18d0-4de5-8e3f-0b1b764d3acf",
+        "events": [
           {
-            "evtName": "Product Added",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Added",
+            "timestamp": 1622094958,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3313,8 +3196,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3327,20 +3209,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959063-1ff044e1-3fb2-4379-81a3-c44444431778",
+        "events": [
           {
-            "evtName": "Product Removed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Removed",
+            "timestamp": 1622094959,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3352,8 +3233,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3366,20 +3246,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959099-3b4548c9-c646-4423-90e1-71e9df65e2b2",
+        "events": [
           {
-            "evtName": "Cart Viewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Cart Viewed",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "some_cart_id",
               "products": [
                 {
@@ -3407,8 +3286,7 @@
                   "sku": "F15"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3421,20 +3299,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959138-eedc7b24-1174-4ca8-bc3e-f09446cd4675",
+        "events": [
           {
-            "evtName": "Checkout Started",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Checkout Started",
+            "timestamp": 1622094959,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -3471,8 +3348,7 @@
               "tax": 1,
               "total": 0,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3485,26 +3361,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959205-4b3a17d6-40bc-4926-afcc-3ec1338bf056",
+        "events": [
           {
-            "evtName": "Checkout Step Viewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Checkout Step Viewed",
+            "timestamp": 1622094959,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "MasterCard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3517,26 +3391,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959238-dafa99cd-6054-4796-a8b3-2598f475dd28",
+        "events": [
           {
-            "evtName": "Checkout Step Completed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Checkout Step Completed",
+            "timestamp": 1622094959,
+            "attributes": {
               "checkout_id": "123",
               "payment_method": "MasterCard",
               "shipping_method": "DHL",
               "step": 1
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3549,24 +3421,22 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959290-06b8b696-3b4e-45e8-bdcb-415f476b6824",
+        "events": [
           {
-            "evtName": "Payment Info Entered",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Payment Info Entered",
+            "timestamp": 1622094959,
+            "attributes": {
               "checkout_id": "12344",
               "order_id": "123"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3579,20 +3449,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959354-d299801d-cdb2-433b-82d8-83bf26807f86",
+        "events": [
           {
-            "evtName": "Order Updated",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Order Updated",
+            "timestamp": 1622094959,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -3629,8 +3498,7 @@
               "tax": 1,
               "total": 0,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3643,21 +3511,25 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959389-34d413ae-3a6d-4270-83e4-57cef374c8e9",
+        "events": [
           {
-            "evtName": "Charged",
-            "evtData": {
-              "Amount": 15,
-              "Items": [
+            "name": "Order Completed",
+            "timestamp": 1622094959,
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products": [
                 {
                   "category": "Games",
                   "coupon": "DISC21",
@@ -3683,18 +3555,12 @@
                   "sku": "F15"
                 }
               ],
-              "affiliation": "Apple Store",
-              "coupon": "ImagePro",
-              "currency": "USD",
-              "discount": 1.5,
-              "order_id": "1234",
+              "revenue": 15,
               "shipping": 22,
               "tax": 1,
               "total": 0,
               "value": 20
-            },
-            "identity": "ID101",
-            "type": "event"
+            }
           }
         ]
       },
@@ -3707,23 +3573,21 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959417-a9d567f7-360b-42d6-a668-2f4d17454a44",
+        "events": [
           {
-            "evtName": "Order Refunded",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Order Refunded",
+            "timestamp": 1622094959,
+            "attributes": {
               "order_id": "1234"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3736,20 +3600,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959479-28554bd2-061b-4443-9758-a08e177873ad",
+        "events": [
           {
-            "evtName": "Order Cancelled",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Order Cancelled",
+            "timestamp": 1622094959,
+            "attributes": {
               "affiliation": "Apple Store",
               "coupon": "ImagePro",
               "currency": "USD",
@@ -3786,8 +3649,7 @@
               "tax": 1,
               "total": 0,
               "value": 20
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3800,25 +3662,23 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959507-d3e9be38-3e30-436b-8fdb-b103529b0525",
+        "events": [
           {
-            "evtName": "Coupon Entered",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Coupon Entered",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "123566",
               "coupon_id": "23321",
               "order_id": "1223455"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3831,27 +3691,25 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959532-c143a4b8-14fa-4a94-a358-6257e44672be",
+        "events": [
           {
-            "evtName": "Coupon Applied",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Coupon Applied",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "123566",
               "coupon_id": "23321",
               "coupon_name": "Disc21",
               "discount": 21,
               "order_id": "1223455"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3864,26 +3722,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959591-31d94458-4ade-45d7-a605-2e41846bea6c",
+        "events": [
           {
-            "evtName": "Coupon Denied",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Coupon Denied",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "123566",
               "coupon_id": "23321",
               "coupon_name": "Disc21",
               "order_id": "1223455"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3896,27 +3752,25 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959616-52c45f82-a81a-4415-a271-51f916db1bb0",
+        "events": [
           {
-            "evtName": "Coupon Removed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Coupon Removed",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "123566",
               "coupon_id": "23321",
               "coupon_name": "Disc21",
               "discount": 21,
               "order_id": "1223455"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3929,20 +3783,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959680-8d0f15b7-f0bf-4273-8eae-c3df6f2d2434",
+        "events": [
           {
-            "evtName": "Product Added to Wishlist",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Added to Wishlist",
+            "timestamp": 1622094959,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3954,8 +3807,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -3968,20 +3820,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959712-983399af-36c4-4c2b-b686-c63544efaa06",
+        "events": [
           {
-            "evtName": "Product Removed from Wishlist",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Removed from Wishlist",
+            "timestamp": 1622094959,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -3993,8 +3844,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -4007,20 +3857,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959740-85407459-9c02-4f52-ad54-aed86a6069e9",
+        "events": [
           {
-            "evtName": "Wishlist Product Added to Cart",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Wishlist Product Added to Cart",
+            "timestamp": 1622094959,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -4032,8 +3881,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -4046,20 +3894,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959852-8a5b1eab-887c-4c57-9779-620c653249ca",
+        "events": [
           {
-            "evtName": "Product Shared",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Shared",
+            "timestamp": 1622094959,
+            "attributes": {
               "category": "Games",
               "coupon": "DISC21",
               "currency": "USD",
@@ -4071,8 +3918,7 @@
               "quantity": 11,
               "sku": "F15",
               "url": "https://www.website.com/product/path"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -4085,20 +3931,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959879-e2721b6c-361e-48d7-9aab-ceb7d2808990",
+        "events": [
           {
-            "evtName": "Cart Shared",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Cart Shared",
+            "timestamp": 1622094959,
+            "attributes": {
               "cart_id": "1234df2ddss",
               "products": [
                 {
@@ -4108,8 +3953,7 @@
                   "product_id": "123"
                 }
               ]
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -4122,26 +3966,24 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.clevertap.com/1/upload",
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/ID101/activity",
     "headers": {
-      "X-CleverTap-Account-Id": "476550467",
-      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "d": [
+        "request_id": "1622094959944-12e6a83f-63c6-4d06-baaf-cba7f778dea8",
+        "events": [
           {
-            "evtName": "Product Reviewed",
-            "identity": "ID101",
-            "evtData": {
+            "name": "Product Reviewed",
+            "timestamp": 1622094959,
+            "attributes": {
               "product_id": "123",
               "rating": 5,
               "review_body": "Good product, delivered in excellent condition",
               "review_id": "review12"
-            },
-            "type": "event"
+            }
           }
         ]
       },
@@ -4152,10 +3994,10 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Message type is not supported"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Message type is not supported"
   }
 ]

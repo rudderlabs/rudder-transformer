@@ -1,0 +1,4140 @@
+[
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "customer",
+        "attributes": {
+          "first_name": "Adhir",
+          "last_name": "Das",
+          "email": "testkolkata@rudderlabs.com",
+          "mobile": "123456786",
+          "created_time": "2021/05/19",
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.country": "USA",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multiChoice": "Option 1",
+          "fieldInfo.state": "California",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": 3,
+          "lists[1].status": "unsubscribe",
+          "logins": 5,
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Products Searched",
+            "attributes": {
+              "query": "HDMI cable"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.178Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Sample Track Call",
+            "attributes": {
+              "KEY_3.CHILD_KEY_4": "value_3",
+              "KEY_3.CHILD_KEY_5": "value_4",
+              "affiliation": "Apple Store",
+              "anonymous_id": "nskjbjasc623656253bb",
+              "cart_id": "1234df2ddss",
+              "category": "Apparel",
+              "checkout_id": "LK980456",
+              "coupon": "ImagePro",
+              "coupon_id": "disc20",
+              "coupon_name": "Disc21",
+              "creative": "banner1",
+              "currency": "USD",
+              "discount": 1.5,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "list_id": "list1",
+              "location_id": "L_12345",
+              "name": "sale",
+              "order_id": "1234",
+              "original_timestamp": "1403743443",
+              "payment_method": "Credit card",
+              "position": "home_top",
+              "products[0].affiliation": "Google Store",
+              "products[0].anonymous_id": "nskjbjasc623656253bb",
+              "products[0].brand": "Gucci",
+              "products[0].category": "pants",
+              "products[0].coupon": "SUMMER_FUN",
+              "products[0].creative": "Summer Banner",
+              "products[0].creative_slot": "featured_app_1",
+              "products[0].currency": "USD",
+              "products[0].discount": 2.22,
+              "products[0].event": "Sample Identify call",
+              "products[0].event_text": "identify",
+              "products[0].id": "ID101",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].location_id": "L_12345",
+              "products[0].name": "jeggings",
+              "products[0].original_timestamp": "1403743443",
+              "products[0].position": "home_top",
+              "products[0].price": 9.99,
+              "products[0].product_id": "SKU_12345",
+              "products[0].promotion_id": "P_12345",
+              "products[0].promotion_name": "Summer Sale",
+              "products[0].quantity": 1,
+              "products[0].rating": "5",
+              "products[0].received_at": "202101091347654",
+              "products[0].recipient": "name@friendsemail.com",
+              "products[0].review_body": "Good product, delivered in excellent condition",
+              "products[0].review_id": "review12",
+              "products[0].sent_at": "20210109134567",
+              "products[0].share_message": "Check this",
+              "products[0].share_via": "SMS",
+              "products[0].sku": "G-32",
+              "products[0].timestamp": "1403743443",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[0].variant": "Black",
+              "products[0].wishlist_id": "12345",
+              "products[0].wishlist_name": "Games",
+              "products[1].affiliation": "Google Store",
+              "products[1].brand": "Gucci",
+              "products[1].category": "pants",
+              "products[1].coupon": "SUMMER_FUN",
+              "products[1].creative_name": "Summer Banner",
+              "products[1].creative_slot": "featured_app_1",
+              "products[1].currency": "USD",
+              "products[1].discount": 2.22,
+              "products[1].image_url": "https://www.website.com/product/path.png",
+              "products[1].location_id": "L_12345",
+              "products[1].name": "leggings",
+              "products[1].price": 9.99,
+              "products[1].product_id": "SKU_12347",
+              "products[1].promotion_id": "P_12345",
+              "products[1].promotion_name": "Summer Sale",
+              "products[1].quantity": 1,
+              "products[1].rating": "5",
+              "products[1].recipient": "name@friendsemail.com",
+              "products[1].review_body": "Good product, delivered in excellent condition",
+              "products[1].review_id": "review12",
+              "products[1].share_message": "Check this",
+              "products[1].share_via": "SMS",
+              "products[1].sku": "G-33",
+              "products[1].url": "https://www.website.com/product/path",
+              "products[1].variant": "Black",
+              "products[1].wishlist_id": "12345",
+              "products[1].wishlist_name": "Games",
+              "promotion_id": "promo1",
+              "query": "HDMI cable",
+              "reason": "Coupon expired",
+              "received_at": "202101091347654",
+              "recipient": "friend@friendsemail.com",
+              "revenue": 15,
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "shipping": 22,
+              "shipping_method": "AIR",
+              "step": 2,
+              "tax": 1,
+              "timestamp": "1403743443",
+              "total": 17,
+              "value": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.167Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product List Viewed",
+            "attributes": {
+              "category": "What's New",
+              "list_id": "list1",
+              "products[0].category": "Games and Entertainment",
+              "products[0].image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+              "products[0].name": "Just Another Game",
+              "products[0].position": 2,
+              "products[0].price": 22,
+              "products[0].product_id": "223344ffdds3ff3",
+              "products[0].sku": "12345",
+              "products[0].url": "https://www.myecommercewebsite.com/product",
+              "products[1].category": "Card Games",
+              "products[1].name": "Wrestling Trump Cards",
+              "products[1].position": 21,
+              "products[1].price": 4,
+              "products[1].product_id": "343344ff5567ff3",
+              "products[1].sku": "12346"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.188Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Viewed",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.197Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Clicked",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.207Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Clicked",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.216Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Viewed",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.225Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.233Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.245Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Viewed",
+            "attributes": {
+              "cart_id": "12345",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Cards",
+              "products[0].position": 1,
+              "products[0].price": 14.99,
+              "products[0].product_id": "123",
+              "products[0].sku": "G-14",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].position": 2,
+              "products[1].price": 3.99,
+              "products[1].product_id": "345",
+              "products[1].sku": "G-32"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.254Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Started",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "value": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.266Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Viewed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "Mastercard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.283Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Completed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "Mastercard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.292Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Payment Info Entered",
+            "attributes": {
+              "checkout_id": "12344",
+              "order_id": "123"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.301Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Updated",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "value": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.309Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Completed",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "checkout_id": "12345",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.316Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Refunded",
+            "attributes": {
+              "currency": "USD",
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 17,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3,
+              "products[1].product_id": "345",
+              "products[1].quantity": 1,
+              "products[1].sku": "F-32",
+              "total": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.328Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Cancelled",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 20
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.337Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Entered",
+            "attributes": {
+              "cart_id": "1222111",
+              "coupon_id": "disc20",
+              "order_id": "12345"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.347Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Denied",
+            "attributes": {
+              "cart_id": "1211",
+              "coupon": "Disc21",
+              "order_id": "123",
+              "reason": "Coupon expired"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.367Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Applied",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.357Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Shared",
+            "attributes": {
+              "cart_id": "1234df2ddss",
+              "products[0].product_id": "125",
+              "products[1].product_id": "297",
+              "recipient": "friend@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.420Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Wishlist Product Added to Cart",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.402Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Shared",
+            "attributes": {
+              "brand": "Maples",
+              "category": "Games",
+              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+              "name": "Cards",
+              "price": 15.99,
+              "product_id": "12345872254426",
+              "recipient": "name@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "F-13",
+              "url": "https://www.myecommercewebsite.com/product/prod",
+              "variant": "150s"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.411Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed from Wishlist",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.393Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added to Wishlist",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.385Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Removed",
+            "attributes": {
+              "cart_id": "124",
+              "coupon_id": "Dis123",
+              "coupon_name": "Disc20",
+              "discount": 20,
+              "order_id": "1211"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.376Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Reviewed",
+            "attributes": {
+              "product_id": "12345",
+              "rating": "5",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12"
+            },
+            "app_version": "1.1.18",
+            "current_time": "2021-05-19T05:25:15.428Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity1001",
+        "type": "customer",
+        "attributes": {
+          "first_name": "Adhir",
+          "last_name": "Das",
+          "email": "testkolkata@rudderlabs.com",
+          "mobile": "123456786",
+          "created_time": "2021/05/19",
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.country": "USA",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multiChoice": "Option 1",
+          "fieldInfo.state": "California",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": 3,
+          "lists[1].status": "unsubscribe",
+          "logins": 5,
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Sample Track Call",
+            "attributes": {
+              "KEY_3.CHILD_KEY_4": "value_3",
+              "KEY_3.CHILD_KEY_5": "value_4",
+              "affiliation": "Apple Store",
+              "anonymous_id": "nskjbjasc623656253bb",
+              "cart_id": "1234df2ddss",
+              "category": "Apparel",
+              "checkout_id": "LK980456",
+              "coupon": "ImagePro",
+              "coupon_id": "disc20",
+              "coupon_name": "Disc21",
+              "creative": "banner1",
+              "currency": "USD",
+              "discount": 1.5,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "list_id": "list1",
+              "location_id": "L_12345",
+              "name": "sale",
+              "order_id": "1234",
+              "original_timestamp": "1403743443",
+              "payment_method": "Credit card",
+              "position": "home_top",
+              "products[0].affiliation": "Google Store",
+              "products[0].anonymous_id": "nskjbjasc623656253bb",
+              "products[0].brand": "Gucci",
+              "products[0].category": "pants",
+              "products[0].coupon": "SUMMER_FUN",
+              "products[0].creative": "Summer Banner",
+              "products[0].creative_slot": "featured_app_1",
+              "products[0].currency": "USD",
+              "products[0].discount": 2.22,
+              "products[0].event": "Sample Identify call",
+              "products[0].event_text": "identify",
+              "products[0].id": "ID101",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].location_id": "L_12345",
+              "products[0].name": "jeggings",
+              "products[0].original_timestamp": "1403743443",
+              "products[0].position": "home_top",
+              "products[0].price": 9.99,
+              "products[0].product_id": "SKU_12345",
+              "products[0].promotion_id": "P_12345",
+              "products[0].promotion_name": "Summer Sale",
+              "products[0].quantity": 1,
+              "products[0].rating": "5",
+              "products[0].received_at": "202101091347654",
+              "products[0].recipient": "name@friendsemail.com",
+              "products[0].review_body": "Good product, delivered in excellent condition",
+              "products[0].review_id": "review12",
+              "products[0].sent_at": "20210109134567",
+              "products[0].share_message": "Check this",
+              "products[0].share_via": "SMS",
+              "products[0].sku": "G-32",
+              "products[0].timestamp": "1403743443",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[0].variant": "Black",
+              "products[0].wishlist_id": "12345",
+              "products[0].wishlist_name": "Games",
+              "products[1].affiliation": "Google Store",
+              "products[1].brand": "Gucci",
+              "products[1].category": "pants",
+              "products[1].coupon": "SUMMER_FUN",
+              "products[1].creative_name": "Summer Banner",
+              "products[1].creative_slot": "featured_app_1",
+              "products[1].currency": "USD",
+              "products[1].discount": 2.22,
+              "products[1].image_url": "https://www.website.com/product/path.png",
+              "products[1].location_id": "L_12345",
+              "products[1].name": "leggings",
+              "products[1].price": 9.99,
+              "products[1].product_id": "SKU_12347",
+              "products[1].promotion_id": "P_12345",
+              "products[1].promotion_name": "Summer Sale",
+              "products[1].quantity": 1,
+              "products[1].rating": "5",
+              "products[1].recipient": "name@friendsemail.com",
+              "products[1].review_body": "Good product, delivered in excellent condition",
+              "products[1].review_id": "review12",
+              "products[1].share_message": "Check this",
+              "products[1].share_via": "SMS",
+              "products[1].sku": "G-33",
+              "products[1].url": "https://www.website.com/product/path",
+              "products[1].variant": "Black",
+              "products[1].wishlist_id": "12345",
+              "products[1].wishlist_name": "Games",
+              "promotion_id": "promo1",
+              "query": "HDMI cable",
+              "reason": "Coupon expired",
+              "received_at": "202101091347654",
+              "recipient": "friend@friendsemail.com",
+              "revenue": 15,
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "shipping": 22,
+              "shipping_method": "AIR",
+              "step": 2,
+              "tax": 1,
+              "timestamp": "1403743443",
+              "total": 17,
+              "value": 20
+            },
+            "current_time": "2021-05-19T07:38:44.764Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Products Searched",
+            "attributes": {
+              "query": "HDMI cable"
+            },
+            "current_time": "2021-05-19T07:38:44.767Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product List Viewed",
+            "attributes": {
+              "category": "What's New",
+              "list_id": "list1",
+              "products[0].category": "Games and Entertainment",
+              "products[0].image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+              "products[0].name": "Just Another Game",
+              "products[0].position": 2,
+              "products[0].price": 22,
+              "products[0].product_id": "223344ffdds3ff3",
+              "products[0].sku": "12345",
+              "products[0].url": "https://www.myecommercewebsite.com/product",
+              "products[1].category": "Card Games",
+              "products[1].name": "Wrestling Trump Cards",
+              "products[1].position": 21,
+              "products[1].price": 4,
+              "products[1].product_id": "343344ff5567ff3",
+              "products[1].sku": "12346"
+            },
+            "current_time": "2021-05-19T07:38:44.769Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Viewed",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "current_time": "2021-05-19T07:38:44.769Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Clicked",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "current_time": "2021-05-19T07:38:44.770Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Clicked",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "current_time": "2021-05-19T07:38:44.770Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Viewed",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "current_time": "2021-05-19T07:38:44.770Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "current_time": "2021-05-19T07:38:44.770Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed",
+            "attributes": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "current_time": "2021-05-19T07:38:44.771Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Viewed",
+            "attributes": {
+              "cart_id": "12345",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Cards",
+              "products[0].position": 1,
+              "products[0].price": 14.99,
+              "products[0].product_id": "123",
+              "products[0].sku": "G-14",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].position": 2,
+              "products[1].price": 3.99,
+              "products[1].product_id": "345",
+              "products[1].sku": "G-32"
+            },
+            "current_time": "2021-05-19T07:38:44.771Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Started",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "value": 20
+            },
+            "current_time": "2021-05-19T07:38:44.771Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Viewed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "Mastercard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Completed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "Mastercard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Payment Info Entered",
+            "attributes": {
+              "checkout_id": "12344",
+              "order_id": "123"
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Updated",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "value": 20
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Completed",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "checkout_id": "12345",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 20
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Refunded",
+            "attributes": {
+              "currency": "USD",
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 17,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3,
+              "products[1].product_id": "345",
+              "products[1].quantity": 1,
+              "products[1].sku": "F-32",
+              "total": 20
+            },
+            "current_time": "2021-05-19T07:38:44.772Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Cancelled",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].image_url": "https://www.website.com/product/path.jpg",
+              "products[0].name": "Monopoly",
+              "products[0].price": 14,
+              "products[0].product_id": "123",
+              "products[0].quantity": 1,
+              "products[0].sku": "G-32",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].name": "UNO",
+              "products[1].price": 3.45,
+              "products[1].product_id": "345",
+              "products[1].quantity": 2,
+              "products[1].sku": "F-32",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 20
+            },
+            "current_time": "2021-05-19T07:38:44.773Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Entered",
+            "attributes": {
+              "cart_id": "1222111",
+              "coupon_id": "disc20",
+              "order_id": "12345"
+            },
+            "current_time": "2021-05-19T07:38:44.773Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Applied",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            },
+            "current_time": "2021-05-19T07:38:44.773Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Denied",
+            "attributes": {
+              "cart_id": "1211",
+              "coupon": "Disc21",
+              "order_id": "123",
+              "reason": "Coupon expired"
+            },
+            "current_time": "2021-05-19T07:38:44.773Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Removed",
+            "attributes": {
+              "cart_id": "124",
+              "coupon_id": "Dis123",
+              "coupon_name": "Disc20",
+              "discount": 20,
+              "order_id": "1211"
+            },
+            "current_time": "2021-05-19T07:38:44.773Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added to Wishlist",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "current_time": "2021-05-19T07:38:44.776Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed from Wishlist",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "current_time": "2021-05-19T07:38:44.776Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Wishlist Product Added to Cart",
+            "attributes": {
+              "brand": "Imagepro",
+              "category": "Games",
+              "coupon": "COUPON",
+              "image_url": "https://www.site.com/product/path.jpg",
+              "name": "Cards",
+              "position": 1,
+              "price": 8.99,
+              "product_id": "235564423234",
+              "quantity": 1,
+              "sku": "F-17",
+              "url": "https://www.site.com/product/path",
+              "variant": "123",
+              "wishlist_id": "12345",
+              "wishlist_name": "Games"
+            },
+            "current_time": "2021-05-19T07:38:44.776Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Shared",
+            "attributes": {
+              "brand": "Maples",
+              "category": "Games",
+              "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+              "name": "Cards",
+              "price": 15.99,
+              "product_id": "12345872254426",
+              "recipient": "name@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "sku": "F-13",
+              "url": "https://www.myecommercewebsite.com/product/prod",
+              "variant": "150s"
+            },
+            "current_time": "2021-05-19T07:38:44.777Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Shared",
+            "attributes": {
+              "cart_id": "1234df2ddss",
+              "products[0].product_id": "125",
+              "products[1].product_id": "297",
+              "recipient": "friend@friendsemail.com",
+              "share_message": "Check this",
+              "share_via": "SMS"
+            },
+            "current_time": "2021-05-19T07:38:44.777Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanityuser100",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Reviewed",
+            "attributes": {
+              "product_id": "12345",
+              "rating": "5",
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12"
+            },
+            "current_time": "2021-05-19T07:38:44.777Z"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sanityuser100"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sanity_user1000",
+        "type": "customer",
+        "attributes": {
+          "name": "Adhir Das",
+          "first_name": "Adhir",
+          "last_name": "Das",
+          "email": "testkolkata@rudderlabs.com",
+          "mobile": "123456786",
+          "created_time.dayOfMonth": 1,
+          "created_time.hourOfDay": 6,
+          "created_time.minute": 53,
+          "created_time.month": 0,
+          "created_time.second": 20,
+          "created_time.year": 1970,
+          "Homephone": 9836543283,
+          "anonymousId": "f54bb572361c4fd1",
+          "birthday": "12/12/12",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt.dayOfMonth": 1,
+          "createdAt.hourOfDay": 6,
+          "createdAt.minute": 53,
+          "createdAt.month": 0,
+          "createdAt.second": 20,
+          "createdAt.year": 1970,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeFiled": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multichoice": "Option 1",
+          "fieldInfo.state": "California",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": "3",
+          "lists[1].status": "unsubscribed",
+          "logins": 5,
+          "organisationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr",
+          "userId": "sanity_user1000"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Sample Track Call",
+            "attributes": {
+              "KEY_3.CHILD_KEY_4": "value_3",
+              "KEY_3.CHILD_KEY_5": "value_4",
+              "affiliation": "Apple Store",
+              "annonymous_id": "nskjbjasc623656253bb",
+              "cart_id": "1234df2ddss",
+              "category": "Apparel",
+              "checkout_id": "LK980456",
+              "coupon": "ImagePro",
+              "coupon_id": "disc20",
+              "coupon_name": "Disc21",
+              "creative": "banner1",
+              "currency": "USD",
+              "discount": 1.5,
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "id": "ID101",
+              "list_id": "list1",
+              "location_id": "L_12345",
+              "name": "sale",
+              "order_id": "1234",
+              "original_timestamp": "1403743443",
+              "payment_method": "Credit card",
+              "position": "home_top",
+              "products[0].affiliation": "Google Store",
+              "products[0].anonymous_id": "nskjbjasc623656253bb",
+              "products[0].brand": "Gucci",
+              "products[0].category": "pants",
+              "products[0].coupon": "SUMMER_FUN",
+              "products[0].creative": "Summer Banner",
+              "products[0].creative_slot": "featured_app_1",
+              "products[0].currency": "USD",
+              "products[0].discount": 2.22,
+              "products[0].event": "Sample Identify call",
+              "products[0].event_text": "identify",
+              "products[0].id": "ID101",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].location_id": "L_12345",
+              "products[0].name": "jeggings",
+              "products[0].original_timestamp": "1403743443",
+              "products[0].position": "home_top",
+              "products[0].price": 9.99,
+              "products[0].product_id": "SKU_12345",
+              "products[0].promotion_id": "P_12345",
+              "products[0].promotion_name": "Summer Sale",
+              "products[0].quantity": 1,
+              "products[0].rating": "5",
+              "products[0].received_at": "202101091347654",
+              "products[0].recipient": "name@friendsemail.com",
+              "products[0].review_body": "Good product, delivered in excellent condition",
+              "products[0].review_id": "review12",
+              "products[0].sent_at": "20210109134567",
+              "products[0].share_message": "Check this",
+              "products[0].share_via": "SMS",
+              "products[0].sku": "G-32",
+              "products[0].timestamp": "1403743443",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[0].variant": "Black",
+              "products[0].wishlist_id": "12345",
+              "products[0].wishlist_name": "Games",
+              "products[1].affiliation": "Google Store",
+              "products[1].brand": "Gucci",
+              "products[1].category": "pants",
+              "products[1].coupon": "SUMMER_FUN",
+              "products[1].creative": "Summer Banner",
+              "products[1].creative_slot": "featured_app_1",
+              "products[1].currency": "USD",
+              "products[1].discount": 2.22,
+              "products[1].image_url": "https://www.website.com/product/path.png",
+              "products[1].location_id": "L_12345",
+              "products[1].name": "leggings",
+              "products[1].price": 9.99,
+              "products[1].product_id": "SKU_12347",
+              "products[1].promotion_id": "P_12345",
+              "products[1].promotion_name": "Summer Sale",
+              "products[1].quantity": 1,
+              "products[1].rating": "5",
+              "products[1].recipient": "name@friendsemail.com",
+              "products[1].review_body": "Good product, delivered in excellent condition",
+              "products[1].review_id": "review12",
+              "products[1].share_message": "Check this",
+              "products[1].share_via": "SMS",
+              "products[1].sku": "G-32",
+              "products[1].url": "https://www.website.com/product/path",
+              "products[1].variant": "Black",
+              "products[1].wishlist_id": "12345",
+              "products[1].wishlist_name": "Games",
+              "promotion_id": "promo1",
+              "query": "HDMI cable",
+              "reason": "Coupon Expired",
+              "received_at": "202101091347654",
+              "recipient": "friend@friendsemail.com",
+              "revenue": 15,
+              "sent_at": "20210109134567",
+              "share_message": "Check this",
+              "share_via": "SMS",
+              "shipping": "22",
+              "shipping_method": "AIR",
+              "step": 2,
+              "tax": 1,
+              "timestamp": "1403743443",
+              "total": 17,
+              "value": 20
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.396Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Products Searched",
+            "attributes": {
+              "query": "HDMI cable"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.475Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product List Viewed",
+            "attributes": {
+              "category": "What's new",
+              "list_id": "list1",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.554Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Viewed",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.599Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Promotion Clicked",
+            "attributes": {
+              "creative": "banner1",
+              "name": "sale",
+              "position": "home_top",
+              "promotion_id": "promo1"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.635Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Clicked",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.888Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Viewed",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.959Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:58.994Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.063Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Viewed",
+            "attributes": {
+              "cart_id": "some_cart_id",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.100Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Started",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 0,
+              "value": 20
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.139Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Viewed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "MasterCard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.206Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Checkout Step Completed",
+            "attributes": {
+              "checkout_id": "123",
+              "payment_method": "MasterCard",
+              "shipping_method": "DHL",
+              "step": 1
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.239Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Payment Info Entered",
+            "attributes": {
+              "checkout_id": "12344",
+              "order_id": "123"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.290Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Updated",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 0,
+              "value": 20
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.355Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Completed",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 0,
+              "value": 20
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.390Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Refunded",
+            "attributes": {
+              "order_id": "1234"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.417Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Cancelled",
+            "attributes": {
+              "affiliation": "Apple Store",
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "discount": 1.5,
+              "order_id": "1234",
+              "products[0].category": "Games",
+              "products[0].coupon": "DISC21",
+              "products[0].currency": "USD",
+              "products[0].image_url": "https://www.website.com/product/path.png",
+              "products[0].name": "Game",
+              "products[0].position": 0,
+              "products[0].price": 13.49,
+              "products[0].product_id": "123",
+              "products[0].quantity": 11,
+              "products[0].sku": "F15",
+              "products[0].url": "https://www.website.com/product/path",
+              "products[1].category": "Games",
+              "products[1].coupon": "DISC21",
+              "products[1].currency": "USD",
+              "products[1].name": "Game",
+              "products[1].position": 0,
+              "products[1].price": 13.49,
+              "products[1].product_id": "123",
+              "products[1].quantity": 11,
+              "products[1].sku": "F15",
+              "revenue": 15,
+              "shipping": 22,
+              "tax": 1,
+              "total": 0,
+              "value": 20
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.480Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Entered",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "order_id": "1223455"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.507Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Applied",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.533Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Denied",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "order_id": "1223455"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.591Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Coupon Removed",
+            "attributes": {
+              "cart_id": "123566",
+              "coupon_id": "23321",
+              "coupon_name": "Disc21",
+              "discount": 21,
+              "order_id": "1223455"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.616Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Added to Wishlist",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.681Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Removed from Wishlist",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.712Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Wishlist Product Added to Cart",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.741Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Shared",
+            "attributes": {
+              "category": "Games",
+              "coupon": "DISC21",
+              "currency": "USD",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 0,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.853Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Cart Shared",
+            "attributes": {
+              "cart_id": "1234df2ddss",
+              "products[0].product_id": "123",
+              "products[1].product_id": "123"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.879Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ID101",
+        "device_id": "f54bb572361c4fd1",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Product Reviewed",
+            "attributes": {
+              "product_id": "123",
+              "rating": 5,
+              "review_body": "Good product, delivered in excellent condition",
+              "review_id": "review12"
+            },
+            "platform": "Android",
+            "app_version": "1.0",
+            "current_time": "2021-05-27T05:55:59.945Z",
+            "user_timezone_offset": 19800
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

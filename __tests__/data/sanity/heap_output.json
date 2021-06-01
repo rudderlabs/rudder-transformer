@@ -1,0 +1,3461 @@
+[
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/add_user_properties",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "properties": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.country": "USA",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multiChoice": "Option 1",
+          "fieldInfo.state": "California",
+          "firstName": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastName": "Das",
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": 3,
+          "lists[1].status": "unsubscribe",
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Products Searched",
+        "properties": {
+          "query": "HDMI cable"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Sample Track Call",
+        "properties": {
+          "KEY_3.CHILD_KEY_4": "value_3",
+          "KEY_3.CHILD_KEY_5": "value_4",
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products[0].affiliation": "Google Store",
+          "products[0].anonymous_id": "nskjbjasc623656253bb",
+          "products[0].brand": "Gucci",
+          "products[0].category": "pants",
+          "products[0].coupon": "SUMMER_FUN",
+          "products[0].creative": "Summer Banner",
+          "products[0].creative_slot": "featured_app_1",
+          "products[0].currency": "USD",
+          "products[0].discount": 2.22,
+          "products[0].event": "Sample Identify call",
+          "products[0].event_text": "identify",
+          "products[0].id": "ID101",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].location_id": "L_12345",
+          "products[0].name": "jeggings",
+          "products[0].original_timestamp": "1403743443",
+          "products[0].position": "home_top",
+          "products[0].price": 9.99,
+          "products[0].product_id": "SKU_12345",
+          "products[0].promotion_id": "P_12345",
+          "products[0].promotion_name": "Summer Sale",
+          "products[0].quantity": 1,
+          "products[0].rating": "5",
+          "products[0].received_at": "202101091347654",
+          "products[0].recipient": "name@friendsemail.com",
+          "products[0].review_body": "Good product, delivered in excellent condition",
+          "products[0].review_id": "review12",
+          "products[0].sent_at": "20210109134567",
+          "products[0].share_message": "Check this",
+          "products[0].share_via": "SMS",
+          "products[0].sku": "G-32",
+          "products[0].timestamp": "1403743443",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[0].variant": "Black",
+          "products[0].wishlist_id": "12345",
+          "products[0].wishlist_name": "Games",
+          "products[1].affiliation": "Google Store",
+          "products[1].brand": "Gucci",
+          "products[1].category": "pants",
+          "products[1].coupon": "SUMMER_FUN",
+          "products[1].creative_name": "Summer Banner",
+          "products[1].creative_slot": "featured_app_1",
+          "products[1].currency": "USD",
+          "products[1].discount": 2.22,
+          "products[1].image_url": "https://www.website.com/product/path.png",
+          "products[1].location_id": "L_12345",
+          "products[1].name": "leggings",
+          "products[1].price": 9.99,
+          "products[1].product_id": "SKU_12347",
+          "products[1].promotion_id": "P_12345",
+          "products[1].promotion_name": "Summer Sale",
+          "products[1].quantity": 1,
+          "products[1].rating": "5",
+          "products[1].recipient": "name@friendsemail.com",
+          "products[1].review_body": "Good product, delivered in excellent condition",
+          "products[1].review_id": "review12",
+          "products[1].share_message": "Check this",
+          "products[1].share_via": "SMS",
+          "products[1].sku": "G-33",
+          "products[1].url": "https://www.website.com/product/path",
+          "products[1].variant": "Black",
+          "products[1].wishlist_id": "12345",
+          "products[1].wishlist_name": "Games",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product List Viewed",
+        "properties": {
+          "category": "What's New",
+          "list_id": "list1",
+          "products[0].category": "Games and Entertainment",
+          "products[0].image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+          "products[0].name": "Just Another Game",
+          "products[0].position": 2,
+          "products[0].price": 22,
+          "products[0].product_id": "223344ffdds3ff3",
+          "products[0].sku": "12345",
+          "products[0].url": "https://www.myecommercewebsite.com/product",
+          "products[1].category": "Card Games",
+          "products[1].name": "Wrestling Trump Cards",
+          "products[1].position": 21,
+          "products[1].price": 4,
+          "products[1].product_id": "343344ff5567ff3",
+          "products[1].sku": "12346"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Promotion Viewed",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Promotion Clicked",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Clicked",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Viewed",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Added",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Removed",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Cart Viewed",
+        "properties": {
+          "cart_id": "12345",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Cards",
+          "products[0].position": 1,
+          "products[0].price": 14.99,
+          "products[0].product_id": "123",
+          "products[0].sku": "G-14",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].position": 2,
+          "products[1].price": 3.99,
+          "products[1].product_id": "345",
+          "products[1].sku": "G-32"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Checkout Started",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Checkout Step Viewed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Checkout Step Completed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Payment Info Entered",
+        "properties": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Order Updated",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Order Completed",
+        "properties": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Order Refunded",
+        "properties": {
+          "currency": "USD",
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 17,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3,
+          "products[1].product_id": "345",
+          "products[1].quantity": 1,
+          "products[1].sku": "F-32",
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Order Cancelled",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Coupon Entered",
+        "properties": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Coupon Denied",
+        "properties": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Coupon Applied",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Cart Shared",
+        "properties": {
+          "cart_id": "1234df2ddss",
+          "products[0].product_id": "125",
+          "products[1].product_id": "297",
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Wishlist Product Added to Cart",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Shared",
+        "properties": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Removed from Wishlist",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Added to Wishlist",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Coupon Removed",
+        "properties": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "event": "Product Reviewed",
+        "properties": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/add_user_properties",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity1001",
+        "properties": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt": "2021/05/19",
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.country": "USA",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multiChoice": "Option 1",
+          "fieldInfo.state": "California",
+          "firstName": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastName": "Das",
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": 3,
+          "lists[1].status": "unsubscribe",
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Sample Track Call",
+        "properties": {
+          "KEY_3.CHILD_KEY_4": "value_3",
+          "KEY_3.CHILD_KEY_5": "value_4",
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products[0].affiliation": "Google Store",
+          "products[0].anonymous_id": "nskjbjasc623656253bb",
+          "products[0].brand": "Gucci",
+          "products[0].category": "pants",
+          "products[0].coupon": "SUMMER_FUN",
+          "products[0].creative": "Summer Banner",
+          "products[0].creative_slot": "featured_app_1",
+          "products[0].currency": "USD",
+          "products[0].discount": 2.22,
+          "products[0].event": "Sample Identify call",
+          "products[0].event_text": "identify",
+          "products[0].id": "ID101",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].location_id": "L_12345",
+          "products[0].name": "jeggings",
+          "products[0].original_timestamp": "1403743443",
+          "products[0].position": "home_top",
+          "products[0].price": 9.99,
+          "products[0].product_id": "SKU_12345",
+          "products[0].promotion_id": "P_12345",
+          "products[0].promotion_name": "Summer Sale",
+          "products[0].quantity": 1,
+          "products[0].rating": "5",
+          "products[0].received_at": "202101091347654",
+          "products[0].recipient": "name@friendsemail.com",
+          "products[0].review_body": "Good product, delivered in excellent condition",
+          "products[0].review_id": "review12",
+          "products[0].sent_at": "20210109134567",
+          "products[0].share_message": "Check this",
+          "products[0].share_via": "SMS",
+          "products[0].sku": "G-32",
+          "products[0].timestamp": "1403743443",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[0].variant": "Black",
+          "products[0].wishlist_id": "12345",
+          "products[0].wishlist_name": "Games",
+          "products[1].affiliation": "Google Store",
+          "products[1].brand": "Gucci",
+          "products[1].category": "pants",
+          "products[1].coupon": "SUMMER_FUN",
+          "products[1].creative_name": "Summer Banner",
+          "products[1].creative_slot": "featured_app_1",
+          "products[1].currency": "USD",
+          "products[1].discount": 2.22,
+          "products[1].image_url": "https://www.website.com/product/path.png",
+          "products[1].location_id": "L_12345",
+          "products[1].name": "leggings",
+          "products[1].price": 9.99,
+          "products[1].product_id": "SKU_12347",
+          "products[1].promotion_id": "P_12345",
+          "products[1].promotion_name": "Summer Sale",
+          "products[1].quantity": 1,
+          "products[1].rating": "5",
+          "products[1].recipient": "name@friendsemail.com",
+          "products[1].review_body": "Good product, delivered in excellent condition",
+          "products[1].review_id": "review12",
+          "products[1].share_message": "Check this",
+          "products[1].share_via": "SMS",
+          "products[1].sku": "G-33",
+          "products[1].url": "https://www.website.com/product/path",
+          "products[1].variant": "Black",
+          "products[1].wishlist_id": "12345",
+          "products[1].wishlist_name": "Games",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Products Searched",
+        "properties": {
+          "query": "HDMI cable"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product List Viewed",
+        "properties": {
+          "category": "What's New",
+          "list_id": "list1",
+          "products[0].category": "Games and Entertainment",
+          "products[0].image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+          "products[0].name": "Just Another Game",
+          "products[0].position": 2,
+          "products[0].price": 22,
+          "products[0].product_id": "223344ffdds3ff3",
+          "products[0].sku": "12345",
+          "products[0].url": "https://www.myecommercewebsite.com/product",
+          "products[1].category": "Card Games",
+          "products[1].name": "Wrestling Trump Cards",
+          "products[1].position": 21,
+          "products[1].price": 4,
+          "products[1].product_id": "343344ff5567ff3",
+          "products[1].sku": "12346"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Promotion Viewed",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Promotion Clicked",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Clicked",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Viewed",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Added",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Removed",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Cart Viewed",
+        "properties": {
+          "cart_id": "12345",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Cards",
+          "products[0].position": 1,
+          "products[0].price": 14.99,
+          "products[0].product_id": "123",
+          "products[0].sku": "G-14",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].position": 2,
+          "products[1].price": 3.99,
+          "products[1].product_id": "345",
+          "products[1].sku": "G-32"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Checkout Started",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Checkout Step Viewed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Checkout Step Completed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Payment Info Entered",
+        "properties": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Order Updated",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Order Completed",
+        "properties": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Order Refunded",
+        "properties": {
+          "currency": "USD",
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 17,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3,
+          "products[1].product_id": "345",
+          "products[1].quantity": 1,
+          "products[1].sku": "F-32",
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Order Cancelled",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].image_url": "https://www.website.com/product/path.jpg",
+          "products[0].name": "Monopoly",
+          "products[0].price": 14,
+          "products[0].product_id": "123",
+          "products[0].quantity": 1,
+          "products[0].sku": "G-32",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].name": "UNO",
+          "products[1].price": 3.45,
+          "products[1].product_id": "345",
+          "products[1].quantity": 2,
+          "products[1].sku": "F-32",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Coupon Entered",
+        "properties": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Coupon Applied",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Coupon Denied",
+        "properties": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Coupon Removed",
+        "properties": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Added to Wishlist",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Removed from Wishlist",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Wishlist Product Added to Cart",
+        "properties": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Shared",
+        "properties": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Cart Shared",
+        "properties": {
+          "cart_id": "1234df2ddss",
+          "products[0].product_id": "125",
+          "products[1].product_id": "297",
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanityuser100",
+        "event": "Product Reviewed",
+        "properties": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/add_user_properties",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sanity_user1000",
+        "properties": {
+          "Homephone": 9836543283,
+          "anonymousId": "f54bb572361c4fd1",
+          "birthday": "12/12/12",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "company.employee_count": 1200,
+          "company.id": 378763009439,
+          "company.industry": "IT",
+          "company.name": "Rudderlabs",
+          "country": "USA",
+          "createdAt.dayOfMonth": 1,
+          "createdAt.hourOfDay": 6,
+          "createdAt.minute": 53,
+          "createdAt.month": 0,
+          "createdAt.second": 20,
+          "createdAt.year": 1970,
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo.Address": "kolkata",
+          "fieldInfo.CheckBox[0]": "Option1",
+          "fieldInfo.CheckBox[1]": "Option2",
+          "fieldInfo.CheckBox[2]": "Option3",
+          "fieldInfo.DateField": "1988-12-05",
+          "fieldInfo.DateTimeFiled": "2020-05-19T02:45:00-05:00",
+          "fieldInfo.HiddenField": "Hidden",
+          "fieldInfo.RadioButton": "Option1",
+          "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+          "fieldInfo.address.city": "east greenwich",
+          "fieldInfo.address.state": "RI",
+          "fieldInfo.address.street": "19123 forest lane",
+          "fieldInfo.address.zip": "94115",
+          "fieldInfo.listBox[0]": "Option1",
+          "fieldInfo.listBox[1]": "Option2",
+          "fieldInfo.multichoice": "Option 1",
+          "fieldInfo.state": "California",
+          "firstname": "Adhir",
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "lastname": "Das",
+          "leadSource": "WEB",
+          "lists[0].id": 2,
+          "lists[0].status": "unsubscribed",
+          "lists[1].id": "3",
+          "lists[1].status": "unsubscribed",
+          "logins": 5,
+          "mobile": "123456786",
+          "name": "Adhir Das",
+          "organisationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "phone": "570-690-4150",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags[0]": "x0002x",
+          "tags[1]": "y0004y",
+          "tags[2]": "t0001t",
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr",
+          "userId": "sanity_user1000"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Sample Track Call",
+        "properties": {
+          "KEY_3.CHILD_KEY_4": "value_3",
+          "KEY_3.CHILD_KEY_5": "value_4",
+          "affiliation": "Apple Store",
+          "annonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "products[0].affiliation": "Google Store",
+          "products[0].anonymous_id": "nskjbjasc623656253bb",
+          "products[0].brand": "Gucci",
+          "products[0].category": "pants",
+          "products[0].coupon": "SUMMER_FUN",
+          "products[0].creative": "Summer Banner",
+          "products[0].creative_slot": "featured_app_1",
+          "products[0].currency": "USD",
+          "products[0].discount": 2.22,
+          "products[0].event": "Sample Identify call",
+          "products[0].event_text": "identify",
+          "products[0].id": "ID101",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].location_id": "L_12345",
+          "products[0].name": "jeggings",
+          "products[0].original_timestamp": "1403743443",
+          "products[0].position": "home_top",
+          "products[0].price": 9.99,
+          "products[0].product_id": "SKU_12345",
+          "products[0].promotion_id": "P_12345",
+          "products[0].promotion_name": "Summer Sale",
+          "products[0].quantity": 1,
+          "products[0].rating": "5",
+          "products[0].received_at": "202101091347654",
+          "products[0].recipient": "name@friendsemail.com",
+          "products[0].review_body": "Good product, delivered in excellent condition",
+          "products[0].review_id": "review12",
+          "products[0].sent_at": "20210109134567",
+          "products[0].share_message": "Check this",
+          "products[0].share_via": "SMS",
+          "products[0].sku": "G-32",
+          "products[0].timestamp": "1403743443",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[0].variant": "Black",
+          "products[0].wishlist_id": "12345",
+          "products[0].wishlist_name": "Games",
+          "products[1].affiliation": "Google Store",
+          "products[1].brand": "Gucci",
+          "products[1].category": "pants",
+          "products[1].coupon": "SUMMER_FUN",
+          "products[1].creative": "Summer Banner",
+          "products[1].creative_slot": "featured_app_1",
+          "products[1].currency": "USD",
+          "products[1].discount": 2.22,
+          "products[1].image_url": "https://www.website.com/product/path.png",
+          "products[1].location_id": "L_12345",
+          "products[1].name": "leggings",
+          "products[1].price": 9.99,
+          "products[1].product_id": "SKU_12347",
+          "products[1].promotion_id": "P_12345",
+          "products[1].promotion_name": "Summer Sale",
+          "products[1].quantity": 1,
+          "products[1].rating": "5",
+          "products[1].recipient": "name@friendsemail.com",
+          "products[1].review_body": "Good product, delivered in excellent condition",
+          "products[1].review_id": "review12",
+          "products[1].share_message": "Check this",
+          "products[1].share_via": "SMS",
+          "products[1].sku": "G-32",
+          "products[1].url": "https://www.website.com/product/path",
+          "products[1].variant": "Black",
+          "products[1].wishlist_id": "12345",
+          "products[1].wishlist_name": "Games",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon Expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": "22",
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Products Searched",
+        "properties": {
+          "query": "HDMI cable"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product List Viewed",
+        "properties": {
+          "category": "What's new",
+          "list_id": "list1",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Promotion Viewed",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Promotion Clicked",
+        "properties": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Clicked",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Viewed",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Added",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Removed",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Cart Viewed",
+        "properties": {
+          "cart_id": "some_cart_id",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Checkout Started",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Checkout Step Viewed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Checkout Step Completed",
+        "properties": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Payment Info Entered",
+        "properties": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Order Updated",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Order Completed",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Order Refunded",
+        "properties": {
+          "order_id": "1234"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Order Cancelled",
+        "properties": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products[0].category": "Games",
+          "products[0].coupon": "DISC21",
+          "products[0].currency": "USD",
+          "products[0].image_url": "https://www.website.com/product/path.png",
+          "products[0].name": "Game",
+          "products[0].position": 0,
+          "products[0].price": 13.49,
+          "products[0].product_id": "123",
+          "products[0].quantity": 11,
+          "products[0].sku": "F15",
+          "products[0].url": "https://www.website.com/product/path",
+          "products[1].category": "Games",
+          "products[1].coupon": "DISC21",
+          "products[1].currency": "USD",
+          "products[1].name": "Game",
+          "products[1].position": 0,
+          "products[1].price": 13.49,
+          "products[1].product_id": "123",
+          "products[1].quantity": 11,
+          "products[1].sku": "F15",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 0,
+          "value": 20
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Coupon Entered",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Coupon Applied",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Coupon Denied",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Coupon Removed",
+        "properties": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Added to Wishlist",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Removed from Wishlist",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Wishlist Product Added to Cart",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Shared",
+        "properties": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 0,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Cart Shared",
+        "properties": {
+          "cart_id": "1234df2ddss",
+          "products[0].product_id": "123",
+          "products[1].product_id": "123"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "ID101",
+        "event": "Product Reviewed",
+        "properties": {
+          "product_id": "123",
+          "rating": 5,
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        },
+        "app_id": "<app id>"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

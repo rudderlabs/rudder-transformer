@@ -1,0 +1,3132 @@
+[
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "phone": "570-690-4150",
+        "signed_up_at": 1621362600000,
+        "last_seen_user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "custom_attributes": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "country": "USA",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeField": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "country": "USA",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
+            },
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multiChoice": "Option 1",
+            "state": "California"
+          },
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": 3,
+              "status": "unsubscribe"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        },
+        "update_last_request_at": true,
+        "name": "Adhir Das",
+        "companies": [
+          {
+            "company_id": 378763009439,
+            "custom_attributes": {
+              "employee_count": 1200
+            },
+            "name": "Rudderlabs",
+            "industry": "IT"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Products Searched",
+        "created": 1621401915,
+        "metadata": {
+          "query": "HDMI cable"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Sample Track Call",
+        "created": 1621401915,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product List Viewed",
+        "created": 1621401915,
+        "metadata": {
+          "category": "What's New",
+          "list_id": "list1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Promotion Viewed",
+        "created": 1621401915,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Promotion Clicked",
+        "created": 1621401915,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Clicked",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Viewed",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Added",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Removed",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Cart Viewed",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "12345"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Started",
+        "created": 1621401915,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Step Viewed",
+        "created": 1621401915,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Step Completed",
+        "created": 1621401915,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Payment Info Entered",
+        "created": 1621401915,
+        "metadata": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Updated",
+        "created": 1621401915,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Completed",
+        "created": 1621401915,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Refunded",
+        "created": 1621401915,
+        "metadata": {
+          "currency": "USD",
+          "order_id": "1234",
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Cancelled",
+        "created": 1621401915,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Entered",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Denied",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Applied",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Cart Shared",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "1234df2ddss",
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Wishlist Product Added to Cart",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Shared",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Removed from Wishlist",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Added to Wishlist",
+        "created": 1621401915,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Removed",
+        "created": 1621401915,
+        "metadata": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Reviewed",
+        "created": 1621401915,
+        "metadata": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity1001",
+        "email": "testkolkata@rudderlabs.com",
+        "phone": "570-690-4150",
+        "signed_up_at": 1621362600000,
+        "custom_attributes": {
+          "Homephone": 9836543283,
+          "birthDay": "2021/05/19",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "country": "USA",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeField": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "country": "USA",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
+            },
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multiChoice": "Option 1",
+            "state": "California"
+          },
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": 3,
+              "status": "unsubscribe"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        },
+        "update_last_request_at": true,
+        "name": "Adhir Das",
+        "companies": [
+          {
+            "company_id": 378763009439,
+            "custom_attributes": {
+              "employee_count": 1200
+            },
+            "name": "Rudderlabs",
+            "industry": "IT"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Sample Track Call",
+        "created": 1621409924,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "anonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": 22,
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Products Searched",
+        "created": 1621409924,
+        "metadata": {
+          "query": "HDMI cable"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product List Viewed",
+        "created": 1621409924,
+        "metadata": {
+          "category": "What's New",
+          "list_id": "list1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Promotion Viewed",
+        "created": 1621409924,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Promotion Clicked",
+        "created": 1621409924,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Clicked",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Viewed",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Added",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Removed",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Cart Viewed",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "12345"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Checkout Started",
+        "created": 1621409924,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Checkout Step Viewed",
+        "created": 1621409924,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Checkout Step Completed",
+        "created": 1621409924,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "Mastercard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Payment Info Entered",
+        "created": 1621409924,
+        "metadata": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Order Updated",
+        "created": 1621409924,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Order Completed",
+        "created": 1621409924,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Order Refunded",
+        "created": 1621409924,
+        "metadata": {
+          "currency": "USD",
+          "order_id": "1234",
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Order Cancelled",
+        "created": 1621409924,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "total": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Coupon Entered",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "1222111",
+          "coupon_id": "disc20",
+          "order_id": "12345"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Coupon Applied",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Coupon Denied",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "1211",
+          "coupon": "Disc21",
+          "order_id": "123",
+          "reason": "Coupon expired"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Coupon Removed",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "124",
+          "coupon_id": "Dis123",
+          "coupon_name": "Disc20",
+          "discount": 20,
+          "order_id": "1211"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Added to Wishlist",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Removed from Wishlist",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Wishlist Product Added to Cart",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Imagepro",
+          "category": "Games",
+          "coupon": "COUPON",
+          "image_url": "https://www.site.com/product/path.jpg",
+          "name": "Cards",
+          "position": 1,
+          "price": 8.99,
+          "product_id": "235564423234",
+          "quantity": 1,
+          "sku": "F-17",
+          "url": "https://www.site.com/product/path",
+          "variant": "123",
+          "wishlist_id": "12345",
+          "wishlist_name": "Games"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Shared",
+        "created": 1621409924,
+        "metadata": {
+          "brand": "Maples",
+          "category": "Games",
+          "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+          "name": "Cards",
+          "price": 15.99,
+          "product_id": "12345872254426",
+          "recipient": "name@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "sku": "F-13",
+          "url": "https://www.myecommercewebsite.com/product/prod",
+          "variant": "150s"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Cart Shared",
+        "created": 1621409924,
+        "metadata": {
+          "cart_id": "1234df2ddss",
+          "recipient": "friend@friendsemail.com",
+          "share_message": "Check this",
+          "share_via": "SMS"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanityuser100",
+        "event_name": "Product Reviewed",
+        "created": 1621409924,
+        "metadata": {
+          "product_id": "12345",
+          "rating": "5",
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "sanity_user1000",
+        "email": "testkolkata@rudderlabs.com",
+        "phone": "570-690-4150",
+        "name": "Adhir Das",
+        "last_seen_user_agent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)",
+        "custom_attributes": {
+          "Homephone": 9836543283,
+          "anonymousId": "f54bb572361c4fd1",
+          "birthday": "12/12/12",
+          "category": "SampleIdentify",
+          "city": "east greenwich",
+          "country": "USA",
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "fieldInfo": {
+            "Address": "kolkata",
+            "CheckBox": [
+              "Option1",
+              "Option2",
+              "Option3"
+            ],
+            "DateField": "1988-12-05",
+            "DateTimeFiled": "2020-05-19T02:45:00-05:00",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "address": {
+              "city": "east greenwich",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "zip": "94115"
+            },
+            "listBox": [
+              "Option1",
+              "Option2"
+            ],
+            "multichoice": "Option 1",
+            "state": "California"
+          },
+          "id": "ID101",
+          "industry": "ITES",
+          "isEnabled": true,
+          "leadSource": "WEB",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": "3",
+              "status": "unsubscribed"
+            }
+          ],
+          "logins": 5,
+          "mobile": "123456786",
+          "organisationId": 378763009439,
+          "original_timestamp": "1403743443",
+          "plan": "Open source",
+          "postalCode": "94115",
+          "rating": "Hot",
+          "received_at": "202101091347654",
+          "sent_at": "20210109134567",
+          "state": "RI",
+          "street": "19123 forest lane",
+          "tags": [
+            "x0002x",
+            "y0004y",
+            "t0001t"
+          ],
+          "timestamp": "1403743443",
+          "timezone": "Berlin",
+          "title": "Mr"
+        },
+        "update_last_request_at": true,
+        "companies": [
+          {
+            "company_id": 378763009439,
+            "custom_attributes": {
+              "employee_count": 1200
+            },
+            "name": "Rudderlabs",
+            "industry": "IT"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Sample Track Call",
+        "created": 1622094958,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "annonymous_id": "nskjbjasc623656253bb",
+          "cart_id": "1234df2ddss",
+          "category": "Apparel",
+          "checkout_id": "LK980456",
+          "coupon": "ImagePro",
+          "coupon_id": "disc20",
+          "coupon_name": "Disc21",
+          "creative": "banner1",
+          "currency": "USD",
+          "discount": 1.5,
+          "event": "Sample Identify call",
+          "event_text": "identify",
+          "id": "ID101",
+          "list_id": "list1",
+          "location_id": "L_12345",
+          "name": "sale",
+          "order_id": "1234",
+          "original_timestamp": "1403743443",
+          "payment_method": "Credit card",
+          "position": "home_top",
+          "promotion_id": "promo1",
+          "query": "HDMI cable",
+          "reason": "Coupon Expired",
+          "received_at": "202101091347654",
+          "recipient": "friend@friendsemail.com",
+          "revenue": 15,
+          "sent_at": "20210109134567",
+          "share_message": "Check this",
+          "share_via": "SMS",
+          "shipping": "22",
+          "shipping_method": "AIR",
+          "step": 2,
+          "tax": 1,
+          "timestamp": "1403743443",
+          "total": 17,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Products Searched",
+        "created": 1622094958,
+        "metadata": {
+          "query": "HDMI cable"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product List Viewed",
+        "created": 1622094958,
+        "metadata": {
+          "category": "What's new",
+          "list_id": "list1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Promotion Viewed",
+        "created": 1622094958,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Promotion Clicked",
+        "created": 1622094958,
+        "metadata": {
+          "creative": "banner1",
+          "name": "sale",
+          "position": "home_top",
+          "promotion_id": "promo1"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Clicked",
+        "created": 1622094958,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Viewed",
+        "created": 1622094958,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Added",
+        "created": 1622094958,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Removed",
+        "created": 1622094959,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Cart Viewed",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "some_cart_id"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Started",
+        "created": 1622094959,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Step Viewed",
+        "created": 1622094959,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Checkout Step Completed",
+        "created": 1622094959,
+        "metadata": {
+          "checkout_id": "123",
+          "payment_method": "MasterCard",
+          "shipping_method": "DHL",
+          "step": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Payment Info Entered",
+        "created": 1622094959,
+        "metadata": {
+          "checkout_id": "12344",
+          "order_id": "123"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Updated",
+        "created": 1622094959,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Completed",
+        "created": 1622094959,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Refunded",
+        "created": 1622094959,
+        "metadata": {
+          "order_id": "1234"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Order Cancelled",
+        "created": 1622094959,
+        "metadata": {
+          "affiliation": "Apple Store",
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "value": 20
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Entered",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Applied",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Denied",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Coupon Removed",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "123566",
+          "coupon_id": "23321",
+          "coupon_name": "Disc21",
+          "discount": 21,
+          "order_id": "1223455"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Added to Wishlist",
+        "created": 1622094959,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Removed from Wishlist",
+        "created": 1622094959,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Wishlist Product Added to Cart",
+        "created": 1622094959,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Shared",
+        "created": 1622094959,
+        "metadata": {
+          "category": "Games",
+          "coupon": "DISC21",
+          "currency": "USD",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Cart Shared",
+        "created": 1622094959,
+        "metadata": {
+          "cart_id": "1234df2ddss"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user_id": "ID101",
+        "email": "testkolkata@rudderlabs.com",
+        "event_name": "Product Reviewed",
+        "created": 1622094959,
+        "metadata": {
+          "product_id": "123",
+          "rating": 5,
+          "review_body": "Good product, delivered in excellent condition",
+          "review_id": "review12"
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

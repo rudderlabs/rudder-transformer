@@ -83,11 +83,14 @@ const createCustomFields = (payload, mappingConfig) => {
       isDefinedAndNotNullAndNotEmpty(m.to) &&
       isDefinedAndNotNullAndNotEmpty(m.from)
     ) {
-      const customFieldObject = {
-        name: m.to,
-        value: getValueFromMessage(payload, m.from)
-      };
-      customFields.push(customFieldObject);
+      const val = getValueFromMessage(payload, m.from);
+      if (isDefinedAndNotNullAndNotEmpty(val)) {
+        const customFieldObject = {
+          name: m.to,
+          value: val
+        };
+        customFields.push(customFieldObject);
+      }
     }
   });
   return customFields;

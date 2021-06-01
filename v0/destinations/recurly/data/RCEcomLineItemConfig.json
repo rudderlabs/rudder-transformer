@@ -3,10 +3,5 @@
     "destKey": "currency",
     "sourceKeys": "properties.currency",
     "required": true
-  },
-  {
-    "destKey": "unit_amount",
-    "sourceKeys": "properties.total",
-    "required": true
   }
 ]

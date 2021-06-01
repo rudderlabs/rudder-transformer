@@ -152,8 +152,12 @@ const processTrack = async (message, config) => {
           MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMLINEITEM.name]
         );
         if (!itemObj.isExist) {
-          const itemId = await createItem(itemPayload, config, "/items");
-          lineItemPayload.item_id = itemId;
+          try {
+            const itemId = await createItem(itemPayload, config, "/items");
+            lineItemPayload.item_id = itemId;
+          } catch (err) {
+            throw Error(err);
+          }
         } else {
           lineItemPayload.item_id = itemObj.id;
         }
@@ -167,36 +171,6 @@ const processTrack = async (message, config) => {
       }
     })
   );
-
-  // for (let i = 0; i < products.length; i += 1) {
-  //   const p = products[i];
-  //   if (!p.currency) {
-  //     continue;
-  //   }
-  //   const itemPayload = constructPayload(
-  //     p,
-  //     MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMITEM.name]
-  //   );
-  //   itemPayload.code = itemPayload.code.toLowerCase();
-  //   const itemObj = await fetchItem(itemPayload.code, config);
-  //   const lineItemPayload = constructPayload(
-  //     message,
-  //     MAPPING_CONFIG[CONFIG_CATEGORIES.ECOMLINEITEM.name]
-  //   );
-  //   if (!itemObj.isExist) {
-  //     const itemId = await createItem(itemPayload, config, "/items");
-  //     lineItemPayload.item_id = itemId;
-  //   } else {
-  //     lineItemPayload.item_id = itemObj.id;
-  //   }
-  //   const responseObj = responseBuilderSimple(
-  //     lineItemPayload,
-  //     "POST",
-  //     `${accountresp.endPoint}/line_items`,
-  //     config.apiKey
-  //   );
-  //   response.push(responseObj);
-  // }
   return response;
 };
 

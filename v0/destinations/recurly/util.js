@@ -1,12 +1,11 @@
 const btoa = require("btoa");
 const axios = require("axios");
-const logger = require("../../../logger");
 const { ACCEPT_HEADERS, DEFAULT_BASE_ENDPOINT } = require("./config");
 const {
-  ErrorMessage,
   HttpStatusCode,
   isDefinedAndNotNullAndNotEmpty,
-  getValueFromMessage
+  getValueFromMessage,
+  ErrorMessage
 } = require("../../util");
 
 const createItem = async (data, config, relativePath) => {
@@ -21,7 +20,12 @@ const createItem = async (data, config, relativePath) => {
       }
     });
   } catch (err) {
-    logger.debug(ErrorMessage.ObjectNotFound);
+    throw Error(
+      (err.response &&
+        err.response.data &&
+        JSON.stringify(err.response.data.error)) ||
+        ErrorMessage.InternalServerError
+    );
   }
   if (
     response &&
@@ -45,7 +49,7 @@ const fetchData = async (code, config, relativePath) => {
       }
     });
   } catch (err) {
-    logger.debug(ErrorMessage.ObjectNotFound);
+    response = null;
   }
   if (response && response.status === HttpStatusCode.Ok && response.data.id) {
     return {

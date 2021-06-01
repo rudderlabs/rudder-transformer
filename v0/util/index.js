@@ -312,7 +312,8 @@ const ErrorMessage = {
   RequiredField: " is required field",
   FailedToTrackWithoutAccount:
     "Account not found. Failed to associate track call without user.",
-  EcomEventNotSupported: "We don't support this ecommerce event."
+  EcomEventNotSupported: "We don't support this ecommerce event.",
+  InternalServerError: "INTERNAL SERVER ERROR."
 };
 
 const HttpStatusCode = {

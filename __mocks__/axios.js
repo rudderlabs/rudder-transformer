@@ -55,7 +55,7 @@ function get(url) {
       resolve(trengoGetRequestHandler(url));
     });
   }
-if (url.includes("api.mailchimp.com/3.0/lists")) {
+if (url.includes("api.mailchimp.com")) {
   return new Promise((resolve, reject) => {
     resolve(mailchimpGetRequestHandler(url));
   });

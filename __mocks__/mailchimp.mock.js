@@ -23,15 +23,18 @@ const getData = url => {
 };
 
 const mailchimpGetRequestHandler = url => {
-    console.log("inside mailchimpget request handler");
   const mockData = getData(url);
-  console.log(mockData)
-  if (!mockData) {
-    //resolve with status 200
-    return { data: {}, status: 200 };
+  if (mockData) {
+      if (url === 'https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab') {
+        return { data: mockData, status: mockData.status };
+      } else {
+        return new Promise((resolve, reject) => {
+            reject({ error: "Request failed", status: mockData.status });
+          });
+      }    
   } else {
     return new Promise((resolve, reject) => {
-      resolve({ error: "Request failed", status: 403 });
+      reject({ error: "Request failed", status: 404 });
     });
   }
 };

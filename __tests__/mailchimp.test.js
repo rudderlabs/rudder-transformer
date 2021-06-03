@@ -22,11 +22,10 @@ inputData.forEach((input, index) => {
     let output, expected;
     try {
       output = await transformer.process(input);
-      expected = expectedData[index]
+      expected = expectedData[index];
+      expect(output).toEqual(expected);
     } catch (error) {
-      output = error.message;
-      expected = expectedData[index].message;
-    }
-    expect(output).toEqual(expected);
+      expect(error.message).toEqual(expectedData[index].error);
+    }   
   });
 });

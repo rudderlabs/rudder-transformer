@@ -52,16 +52,20 @@ async function checkIfMailExists(mailChimpConfig, email) {
 }
 
 async function checkIfDoubleOptIn(mailChimpConfig) {
+  let response;
   const url = `${getMailChimpEndpoint(mailChimpConfig)}`;
-  const response = await axios.get(url, {
-    auth: {
-      username: "apiKey",
-      password: `${mailChimpConfig.apiKey}`
-    }
-  });
+  try {
+    response = await axios.get(url, {
+      auth: {
+        username: "apiKey",
+        password: `${mailChimpConfig.apiKey}`
+      }
+    });
+  } catch (error) {
+    throw new Error("User does not have access to the requested operation");
+  }
   return !!response.data.double_optin;
 }
-
 // New User - make a post request to create the user with the userObj and api key
 function getSubscribeUserUrl(mailChimpConfig) {
   return `${getMailChimpEndpoint(mailChimpConfig)}/members`;

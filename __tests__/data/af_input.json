@@ -543,7 +543,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
+        "devKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
         "trackProductsOnce": false,
@@ -595,7 +595,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
+        "devKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
         "trackProductsOnce": false,
@@ -632,7 +632,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
+        "devKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
         "trackProductsOnce": false,
@@ -704,7 +704,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
+        "devKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
         "trackProductsOnce": false,
@@ -741,7 +741,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abcde",
+        "devKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
         "trackProductsOnce": false,

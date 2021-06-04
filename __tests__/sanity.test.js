@@ -1,6 +1,8 @@
 const name = "Sanity";
 const fs = require("fs");
+const { includes } = require("lodash");
 const path = require("path");
+const { exit } = require("process");
 const version = "v0";
 const { getDirectories } = require("./util");
 
@@ -104,7 +106,16 @@ const { getDirectories } = require("./util");
 // );
 // For Testing Current:
 // Uncomment this Line and comment the above 3 lines
-const integrations = ["marketo"];
+var integrations = [];
+
+var files = fs.readdirSync(`./__tests__/data/sanity`);
+for (i = 0; i < files.length - 20; i++)
+  if (files[i].includes("_router_output.json"))
+    integrations.push(files[i].substring(0, files[i].length - 19));
+  else if (files[i].includes("_output.json"))
+    integrations.push(files[i].substring(0, files[i].length - 12));
+
+console.log(integrations);
 
 // Parsing the sanity input JSON which will be used for testing each destination
 const processorSanityInput = JSON.parse(

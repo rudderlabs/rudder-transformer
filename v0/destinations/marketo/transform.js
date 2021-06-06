@@ -194,6 +194,7 @@ const getLeadId = async (message, formattedDestination, token) => {
   //  -> -> if provided ---- create the lead and use that ID
   //  -> -> if not ---- throw with error
 
+  const { accountId } = formattedDestination;
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
   let leadId = getDestinationExternalID(message, "marketoLeadId");
@@ -220,6 +221,7 @@ const getLeadId = async (message, formattedDestination, token) => {
     if (formattedDestination.createIfNotExist) {
       leadId = await createOrUpdateLead(
         formattedDestination,
+        accountId,
         token,
         userId,
         message.anonymousId

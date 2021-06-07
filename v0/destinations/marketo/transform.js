@@ -84,7 +84,6 @@ const getAuthToken = async formattedDestination => {
 // Thus we'll always be using createOrUpdate
 const createOrUpdateLead = async (
   formattedDestination,
-  accountId,
   token,
   userId,
   anonymousId
@@ -95,6 +94,7 @@ const createOrUpdateLead = async (
       type: "userid",
       action: "create"
     });
+    const { accountId } = formattedDestination;
     const resp = await postAxiosResponse(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,

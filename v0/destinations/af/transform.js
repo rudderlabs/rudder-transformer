@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 
@@ -11,6 +10,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 
 const {
@@ -45,9 +46,10 @@ function responseBuilderSimple(payload, message, destination) {
   }
   const updatedPayload = {
     ...payload,
-    af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
+    ip: get(message, "context.ip") || message.request_ip,
+    os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
   };
 
@@ -58,8 +60,7 @@ function responseBuilderSimple(payload, message, destination) {
     authentication: destination.Config.devKey
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  response.userId = message.anonymousId;
-  response.body.JSON = removeUndefinedValues(updatedPayload);
+  response.body.JSON = removeUndefinedAndNullValues(updatedPayload);
   return response;
 }
 
@@ -112,7 +113,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
   return { eventValue };
 }
 
-function processNonTrackEvents(message, destination, eventName) {
+function processNonTrackEvents(message, eventName) {
+  if (!isDefinedAndNotNull(message.event)) {
+    message.event =
+      message.name || (message.properties && message.properties.name);
+  }
   const payload = getEventValueForUnIdentifiedTrackEvent(message);
   payload.eventName = eventName;
   return payload;
@@ -167,12 +172,12 @@ function processSingleMessage(message, destination) {
     }
     case EventType.SCREEN: {
       const eventName = EventType.SCREEN;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
       const eventName = EventType.PAGE;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     default:
@@ -182,7 +187,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const response = processSingleMessage(event.message, event.destination); 
+  const response = processSingleMessage(event.message, event.destination);
   return response;
 }
 

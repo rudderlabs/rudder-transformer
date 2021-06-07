@@ -65,7 +65,7 @@ async function checkIfDoubleOptIn(mailChimpConfig) {
       }
     });
   } catch (error) {
-    throw new Error(
+    throw new CustomError(
       "User does not have access to the requested operation",
       error.status || 400
     );

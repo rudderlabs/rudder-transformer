@@ -7,6 +7,7 @@ const klaviyoPostRequestHandler = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
+const mailchimpGetRequestHandler = require("./mailchimp.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -52,6 +53,11 @@ function get(url) {
   if (url.includes("https://app.trengo.com")) {
     return new Promise((resolve, reject) => {
       resolve(trengoGetRequestHandler(url));
+    });
+  }
+  if (url.includes("api.mailchimp.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(mailchimpGetRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

@@ -1,7 +1,13 @@
 const _ = require("lodash");
 const flatten = require("flat");
 
-const { isEmpty, isObject } = require("../../util");
+const {
+  isEmpty,
+  isObject,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  CustomError
+} = require("../../util");
 const { EventType } = require("../../../constants");
 
 // processValues:
@@ -29,7 +35,7 @@ const process = event => {
   }
 
   if (isEmpty(event.message.userId)) {
-    throw new Error("Blank userId passed in identify event");
+    throw new CustomError("Blank userId passed in identify event", 400);
   }
 
   const { prefix } = destination.Config;
@@ -60,7 +66,7 @@ const process = event => {
   processValues(hmap.fields);
 
   if (Object.keys(hmap.fields).length === 0) {
-    throw new Error("context or context.traits or traits is empty");
+    throw new CustomError("context or context.traits or traits is empty", 400);
   }
 
   const result = {
@@ -69,5 +75,43 @@ const process = event => {
   };
   return result;
 };
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
 
-exports.process = process;
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

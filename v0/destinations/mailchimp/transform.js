@@ -11,7 +11,10 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -52,16 +55,23 @@ async function checkIfMailExists(mailChimpConfig, email) {
 }
 
 async function checkIfDoubleOptIn(mailChimpConfig) {
+  let response;
   const url = `${getMailChimpEndpoint(mailChimpConfig)}`;
-  const response = await axios.get(url, {
-    auth: {
-      username: "apiKey",
-      password: `${mailChimpConfig.apiKey}`
-    }
-  });
+  try {
+    response = await axios.get(url, {
+      auth: {
+        username: "apiKey",
+        password: `${mailChimpConfig.apiKey}`
+      }
+    });
+  } catch (error) {
+    throw new Error(
+      "User does not have access to the requested operation",
+      error.status || 400
+    );
+  }
   return !!response.data.double_optin;
 }
-
 // New User - make a post request to create the user with the userObj and api key
 function getSubscribeUserUrl(mailChimpConfig) {
   return `${getMailChimpEndpoint(mailChimpConfig)}/members`;
@@ -205,7 +215,7 @@ async function processIdentify(message, destination) {
 
 async function processSingleMessage(message, destination) {
   if (message.type !== EventType.IDENTIFY) {
-    throw new Error(`message type ${message.type} is not supported`);
+    throw new CustomError(`message type ${message.type} is not supported`, 400);
   }
 
   return processIdentify(message, destination);
@@ -215,4 +225,43 @@ async function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

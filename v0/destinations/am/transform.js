@@ -13,7 +13,10 @@ const {
   getParsedIP,
   getFieldValueFromMessage,
   getValueFromMessage,
-  deleteObjectProperty
+  deleteObjectProperty,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const {
   ENDPOINT,
@@ -439,7 +442,7 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new Error("Group call parameters are not valid");
+          throw new CustomError("Group call parameters are not valid", 400);
         }
       }
       break;
@@ -467,7 +470,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new Error("message type not supported");
+      throw new CustomError("message type not supported", 400);
   }
   return responseBuilderSimple(
     groupInfo,
@@ -729,5 +732,43 @@ function batch(destEvents) {
   return respList;
 }
 
-exports.process = process;
-exports.batch = batch;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest, batch };

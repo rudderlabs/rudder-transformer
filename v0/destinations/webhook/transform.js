@@ -7,7 +7,10 @@ const {
   getHashFromArray,
   getFieldValueFromMessage,
   flattenJson,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  CustomError,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -22,7 +25,10 @@ function process(event) {
   try {
     const { message, destination } = event;
     // set context.ip from request_ip if it is missing
-    if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
+    if (
+      !get(message, "context.ip") &&
+      isDefinedAndNotNull(message.request_ip)
+    ) {
       set(message, "context.ip", message.request_ip);
     }
     const response = defaultRequestConfig();
@@ -49,27 +55,52 @@ function process(event) {
 
       return response;
     }
-    throw new Error("Invalid URL in destination config");
+    throw new CustomError("Invalid URL in destination config", 400);
   } catch (err) {
-    throw new Error(err.message || "[webhook] Failed to process request");
+    throw new CustomError(
+      err.message || "[webhook] Failed to process request",
+      err.status || 400
+    );
   }
 }
 
-const getRouterTransformResponse = (message, metadata, destination) => {
-  const returnResponse = {};
-  returnResponse.batchedRequest = message;
-  returnResponse.metadata = metadata;
-  returnResponse.batched = false;
-  returnResponse.statusCode = 200;
-  returnResponse.destination = destination;
-  return returnResponse;
-};
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
 
-function processRouterDest(events) {
-  return events.map(ev => {
-    const resp = process(ev);
-    return getRouterTransformResponse(resp, [ev.metadata], ev.destination);
-  });
-}
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
 
 module.exports = { process, processRouterDest };

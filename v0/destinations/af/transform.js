@@ -22,11 +22,21 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
-  if (androidAppId) {
+  const os = get(message, "context.os.name");
+  if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (appleAppId) {
+  } else if (os && os.toLowerCase() === "ios" && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
+  } else {
+    throw new Error(
+      "Invalid platform or required androidAppId or appleAppId missing"
+    );
   }
+  // if (androidAppId) {
+  //   endpoint = `${ENDPOINT}${androidAppId}`;
+  // } else if (appleAppId) {
+  //   endpoint = `${ENDPOINT}id${appleAppId}`;
+  // }
   // else if (message.context.app.namespace) {
   //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   // } else {
@@ -51,8 +61,7 @@ function responseBuilderSimple(payload, message, destination) {
     appsflyer_id: appsflyerId
   };
 
-  const os = get(message, "context.os.name");
-  if (os && os.toLowerCase() === "ios") {
+  if (os.toLowerCase() === "ios") {
     updatedPayload.idfa = get(message, "context.device.advertisingId");
     updatedPayload.idfv = get(message, "context.device.id");
   } else if (os.toLowerCase() === "android") {

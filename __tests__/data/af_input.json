@@ -3,6 +3,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -25,15 +31,15 @@
           "name": "",
           "version": ""
         },
-        "screen": {
-          "density": 2
-        },
         "page": {
           "path": "",
           "referrer": "",
           "search": "",
           "title": "",
           "url": ""
+        },
+        "screen": {
+          "density": 2
         }
       },
       "type": "identify",
@@ -62,6 +68,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -119,6 +131,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -367,6 +385,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -425,6 +449,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -485,8 +515,14 @@
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "source": "test",
-        "app":{
+        "app": {
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
@@ -537,8 +573,8 @@
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
         "AF": {
-        "af_uid": "afUid"
-      }
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
@@ -557,8 +593,14 @@
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "source": "test",
-        "app":{
+        "app": {
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
@@ -589,8 +631,8 @@
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
         "AF": {
-        "af_uid": "afUid"
-      }
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
@@ -609,8 +651,14 @@
       "event": "Order Completed",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "source": "test",
-        "app":{
+        "app": {
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
@@ -626,8 +674,8 @@
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
         "AF": {
-        "af_uid": "afUid"
-      }
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
@@ -646,8 +694,14 @@
       "event": "normal track event",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "source": "test",
-        "app":{
+        "app": {
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
@@ -698,8 +752,8 @@
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
         "AF": {
-        "af_uid": "afUid"
-      }
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
@@ -718,8 +772,14 @@
       "event": "normal track event",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "source": "test",
-        "app":{
+        "app": {
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
@@ -735,8 +795,8 @@
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
         "AF": {
-        "af_uid": "afUid"
-      }
+          "af_uid": "afUid"
+        }
       }
     },
     "destination": {
@@ -753,6 +813,12 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",

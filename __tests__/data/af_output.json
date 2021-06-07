@@ -71,7 +71,9 @@
         "eventName": "page",
         "appsflyer_id": "some_other2345_sample_external_id",
         "os": "",
-        "ip": "0.0.0.0"
+        "ip": "0.0.0.0",
+        "app_version_name": "1.0.0",
+        "sharing_filter": "all"
       },
       "XML": {},
       "FORM": {}

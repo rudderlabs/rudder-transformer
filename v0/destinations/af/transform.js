@@ -9,7 +9,7 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull
 } = require("../../util");

@@ -1,0 +1,3034 @@
+[
+  { "error": "Message type not supported" },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "testkolkata@rudderlabs.com",
+            "organization_id": 378763009439,
+            "time_zone": "Berlin",
+            "phone": "570-690-4150",
+            "external_id": "ID101",
+            "user_fields": {
+              "id": "ID101",
+              "Homephone": 9836543283,
+              "birthDay": "2021/05/19",
+              "category": "SampleIdentify",
+              "city": "east greenwich",
+              "country": "USA",
+              "createdAt": "2021/05/19",
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "firstName": "Adhir",
+              "industry": "ITES",
+              "isEnabled": true,
+              "lastName": "Das",
+              "leadSource": "WEB",
+              "logins": 5,
+              "mobile": "123456786",
+              "original_timestamp": "1403743443",
+              "plan": "Open source",
+              "postalCode": "94115",
+              "rating": "Hot",
+              "received_at": "202101091347654",
+              "sent_at": "20210109134567",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "timestamp": "1403743443",
+              "title": "Mr"
+            },
+            "verified": true
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Products Searched",
+          "type": "Products Searched",
+          "source": "Rudder",
+          "properties": { "query": "HDMI cable" }
+        },
+        "profile": {
+          "type": "Products Searched",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Sample Track Call",
+          "type": "Sample Track Call",
+          "source": "Rudder",
+          "properties": {
+            "KEY_3": { "CHILD_KEY_4": "value_3", "CHILD_KEY_5": "value_4" },
+            "affiliation": "Apple Store",
+            "anonymous_id": "nskjbjasc623656253bb",
+            "cart_id": "1234df2ddss",
+            "category": "Apparel",
+            "checkout_id": "LK980456",
+            "coupon": "ImagePro",
+            "coupon_id": "disc20",
+            "coupon_name": "Disc21",
+            "creative": "banner1",
+            "currency": "USD",
+            "discount": 1.5,
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "list_id": "list1",
+            "location_id": "L_12345",
+            "name": "sale",
+            "order_id": "1234",
+            "original_timestamp": "1403743443",
+            "payment_method": "Credit card",
+            "position": "home_top",
+            "products": [
+              {
+                "affiliation": "Google Store",
+                "anonymous_id": "nskjbjasc623656253bb",
+                "brand": "Gucci",
+                "category": "pants",
+                "coupon": "SUMMER_FUN",
+                "creative": "Summer Banner",
+                "creative_slot": "featured_app_1",
+                "currency": "USD",
+                "discount": 2.22,
+                "event": "Sample Identify call",
+                "event_text": "identify",
+                "id": "ID101",
+                "image_url": "https://www.website.com/product/path.png",
+                "location_id": "L_12345",
+                "name": "jeggings",
+                "original_timestamp": "1403743443",
+                "position": "home_top",
+                "price": 9.99,
+                "product_id": "SKU_12345",
+                "promotion_id": "P_12345",
+                "promotion_name": "Summer Sale",
+                "quantity": 1,
+                "rating": "5",
+                "received_at": "202101091347654",
+                "recipient": "name@friendsemail.com",
+                "review_body": "Good product, delivered in excellent condition",
+                "review_id": "review12",
+                "sent_at": "20210109134567",
+                "share_message": "Check this",
+                "share_via": "SMS",
+                "sku": "G-32",
+                "timestamp": "1403743443",
+                "url": "https://www.website.com/product/path",
+                "variant": "Black",
+                "wishlist_id": "12345",
+                "wishlist_name": "Games"
+              },
+              {
+                "affiliation": "Google Store",
+                "brand": "Gucci",
+                "category": "pants",
+                "coupon": "SUMMER_FUN",
+                "creative_name": "Summer Banner",
+                "creative_slot": "featured_app_1",
+                "currency": "USD",
+                "discount": 2.22,
+                "image_url": "https://www.website.com/product/path.png",
+                "location_id": "L_12345",
+                "name": "leggings",
+                "price": 9.99,
+                "product_id": "SKU_12347",
+                "promotion_id": "P_12345",
+                "promotion_name": "Summer Sale",
+                "quantity": 1,
+                "rating": "5",
+                "recipient": "name@friendsemail.com",
+                "review_body": "Good product, delivered in excellent condition",
+                "review_id": "review12",
+                "share_message": "Check this",
+                "share_via": "SMS",
+                "sku": "G-33",
+                "url": "https://www.website.com/product/path",
+                "variant": "Black",
+                "wishlist_id": "12345",
+                "wishlist_name": "Games"
+              }
+            ],
+            "promotion_id": "promo1",
+            "query": "HDMI cable",
+            "reason": "Coupon expired",
+            "received_at": "202101091347654",
+            "recipient": "friend@friendsemail.com",
+            "revenue": 15,
+            "sent_at": "20210109134567",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "shipping": 22,
+            "shipping_method": "AIR",
+            "step": 2,
+            "tax": 1,
+            "timestamp": "1403743443",
+            "total": 17,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Sample Track Call",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product List Viewed",
+          "type": "Product List Viewed",
+          "source": "Rudder",
+          "properties": {
+            "category": "What's New",
+            "list_id": "list1",
+            "products": [
+              {
+                "category": "Games and Entertainment",
+                "image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+                "name": "Just Another Game",
+                "position": 2,
+                "price": 22,
+                "product_id": "223344ffdds3ff3",
+                "sku": "12345",
+                "url": "https://www.myecommercewebsite.com/product"
+              },
+              {
+                "category": "Card Games",
+                "name": "Wrestling Trump Cards",
+                "position": 21,
+                "price": 4,
+                "product_id": "343344ff5567ff3",
+                "sku": "12346"
+              }
+            ]
+          }
+        },
+        "profile": {
+          "type": "Product List Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Promotion Viewed",
+          "type": "Promotion Viewed",
+          "source": "Rudder",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          }
+        },
+        "profile": {
+          "type": "Promotion Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Promotion Clicked",
+          "type": "Promotion Clicked",
+          "source": "Rudder",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          }
+        },
+        "profile": {
+          "type": "Promotion Clicked",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Clicked",
+          "type": "Product Clicked",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          }
+        },
+        "profile": {
+          "type": "Product Clicked",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Viewed",
+          "type": "Product Viewed",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          }
+        },
+        "profile": {
+          "type": "Product Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Added",
+          "type": "Product Added",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          }
+        },
+        "profile": {
+          "type": "Product Added",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Removed",
+          "type": "Product Removed",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          }
+        },
+        "profile": {
+          "type": "Product Removed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Cart Viewed",
+          "type": "Cart Viewed",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "12345",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Cards",
+                "position": 1,
+                "price": 14.99,
+                "product_id": "123",
+                "sku": "G-14",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "position": 2,
+                "price": 3.99,
+                "product_id": "345",
+                "sku": "G-32"
+              }
+            ]
+          }
+        },
+        "profile": {
+          "type": "Cart Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Started",
+          "type": "Checkout Started",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Monopoly",
+                "price": 14,
+                "product_id": "123",
+                "quantity": 1,
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "price": 3.45,
+                "product_id": "345",
+                "quantity": 2,
+                "sku": "F-32"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Checkout Started",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Step Viewed",
+          "type": "Checkout Step Viewed",
+          "source": "Rudder",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          }
+        },
+        "profile": {
+          "type": "Checkout Step Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Step Completed",
+          "type": "Checkout Step Completed",
+          "source": "Rudder",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          }
+        },
+        "profile": {
+          "type": "Checkout Step Completed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Payment Info Entered",
+          "type": "Payment Info Entered",
+          "source": "Rudder",
+          "properties": { "checkout_id": "12344", "order_id": "123" }
+        },
+        "profile": {
+          "type": "Payment Info Entered",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Updated",
+          "type": "Order Updated",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Monopoly",
+                "price": 14,
+                "product_id": "123",
+                "quantity": 1,
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "price": 3.45,
+                "product_id": "345",
+                "quantity": 2,
+                "sku": "F-32"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Order Updated",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Completed",
+          "type": "Order Completed",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "checkout_id": "12345",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Monopoly",
+                "price": 14,
+                "product_id": "123",
+                "quantity": 1,
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "price": 3.45,
+                "product_id": "345",
+                "quantity": 2,
+                "sku": "F-32"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          }
+        },
+        "profile": {
+          "type": "Order Completed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Refunded",
+          "type": "Order Refunded",
+          "source": "Rudder",
+          "properties": {
+            "currency": "USD",
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Monopoly",
+                "price": 17,
+                "product_id": "123",
+                "quantity": 1,
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "price": 3,
+                "product_id": "345",
+                "quantity": 1,
+                "sku": "F-32"
+              }
+            ],
+            "total": 20
+          }
+        },
+        "profile": {
+          "type": "Order Refunded",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Cancelled",
+          "type": "Order Cancelled",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https://www.website.com/product/path.jpg",
+                "name": "Monopoly",
+                "price": 14,
+                "product_id": "123",
+                "quantity": 1,
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "UNO",
+                "price": 3.45,
+                "product_id": "345",
+                "quantity": 2,
+                "sku": "F-32"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          }
+        },
+        "profile": {
+          "type": "Order Cancelled",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Entered",
+          "type": "Coupon Entered",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "1222111",
+            "coupon_id": "disc20",
+            "order_id": "12345"
+          }
+        },
+        "profile": {
+          "type": "Coupon Entered",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Denied",
+          "type": "Coupon Denied",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "1211",
+            "coupon": "Disc21",
+            "order_id": "123",
+            "reason": "Coupon expired"
+          }
+        },
+        "profile": {
+          "type": "Coupon Denied",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Applied",
+          "type": "Coupon Applied",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          }
+        },
+        "profile": {
+          "type": "Coupon Applied",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Cart Shared",
+          "type": "Cart Shared",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "1234df2ddss",
+            "products": [{ "product_id": "125" }, { "product_id": "297" }],
+            "recipient": "friend@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS"
+          }
+        },
+        "profile": {
+          "type": "Cart Shared",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Wishlist Product Added to Cart",
+          "type": "Wishlist Product Added to Cart",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          }
+        },
+        "profile": {
+          "type": "Wishlist Product Added to Cart",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Shared",
+          "type": "Product Shared",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Maples",
+            "category": "Games",
+            "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+            "name": "Cards",
+            "price": 15.99,
+            "product_id": "12345872254426",
+            "recipient": "name@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "sku": "F-13",
+            "url": "https://www.myecommercewebsite.com/product/prod",
+            "variant": "150s"
+          }
+        },
+        "profile": {
+          "type": "Product Shared",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Removed from Wishlist",
+          "type": "Product Removed from Wishlist",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          }
+        },
+        "profile": {
+          "type": "Product Removed from Wishlist",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Added to Wishlist",
+          "type": "Product Added to Wishlist",
+          "source": "Rudder",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          }
+        },
+        "profile": {
+          "type": "Product Added to Wishlist",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Removed",
+          "type": "Coupon Removed",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "124",
+            "coupon_id": "Dis123",
+            "coupon_name": "Disc20",
+            "discount": 20,
+            "order_id": "1211"
+          }
+        },
+        "profile": {
+          "type": "Coupon Removed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Reviewed",
+          "type": "Product Reviewed",
+          "source": "Rudder",
+          "properties": {
+            "product_id": "12345",
+            "rating": "5",
+            "review_body": "Good product, delivered in excellent condition",
+            "review_id": "review12"
+          }
+        },
+        "profile": {
+          "type": "Product Reviewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612"
+  },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "organization_membership": { "organization_id": 900001329943 }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "a1b2c3d4e5f6g7h8i9j10"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "testkolkata@rudderlabs.com",
+            "organization_id": 378763009439,
+            "time_zone": "Berlin",
+            "phone": "570-690-4150",
+            "external_id": "ID101",
+            "user_fields": {
+              "id": "ID101",
+              "Homephone": 9836543283,
+              "birthDay": "2021/05/19",
+              "category": "SampleIdentify",
+              "city": "east greenwich",
+              "country": "USA",
+              "createdAt": "2021/05/19",
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "firstName": "Adhir",
+              "industry": "ITES",
+              "isEnabled": true,
+              "lastName": "Das",
+              "leadSource": "WEB",
+              "logins": 5,
+              "mobile": "123456786",
+              "original_timestamp": "1403743443",
+              "plan": "Open source",
+              "postalCode": "94115",
+              "rating": "Hot",
+              "received_at": "202101091347654",
+              "sent_at": "20210109134567",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "timestamp": "1403743443",
+              "title": "Mr"
+            },
+            "verified": true
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "a1b2c3d4e5f6g7h8i9j10"
+    }
+  ],
+  { "error": "Message type not supported" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Cannot read property 'email' of null" },
+  { "error": "Message type not supported" },
+  { "error": "Cannot read property 'email' of undefined" },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "testkolkata@rudderlabs.com",
+            "name": "Adhir Das",
+            "time_zone": "Berlin",
+            "phone": "570-690-4150",
+            "external_id": "sanity_user1000",
+            "user_fields": {
+              "id": "sanity_user1000",
+              "Homephone": 9836543283,
+              "anonymousId": "f54bb572361c4fd1",
+              "birthday": "12/12/12",
+              "category": "SampleIdentify",
+              "city": "east greenwich",
+              "country": "USA",
+              "event": "Sample Identify call",
+              "event_text": "identify",
+              "firstname": "Adhir",
+              "industry": "ITES",
+              "isEnabled": true,
+              "lastname": "Das",
+              "leadSource": "WEB",
+              "logins": 5,
+              "mobile": "123456786",
+              "organisationId": 378763009439,
+              "original_timestamp": "1403743443",
+              "plan": "Open source",
+              "postalCode": "94115",
+              "rating": "Hot",
+              "received_at": "202101091347654",
+              "sent_at": "20210109134567",
+              "state": "RI",
+              "street": "19123 forest lane",
+              "timestamp": "1403743443",
+              "title": "Mr"
+            },
+            "verified": true
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "f54bb572361c4fd1"
+    }
+  ],
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Sample Track Call",
+          "type": "Sample Track Call",
+          "source": "Rudder",
+          "properties": {
+            "KEY_3": { "CHILD_KEY_4": "value_3", "CHILD_KEY_5": "value_4" },
+            "affiliation": "Apple Store",
+            "annonymous_id": "nskjbjasc623656253bb",
+            "cart_id": "1234df2ddss",
+            "category": "Apparel",
+            "checkout_id": "LK980456",
+            "coupon": "ImagePro",
+            "coupon_id": "disc20",
+            "coupon_name": "Disc21",
+            "creative": "banner1",
+            "currency": "USD",
+            "discount": 1.5,
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "list_id": "list1",
+            "location_id": "L_12345",
+            "name": "sale",
+            "order_id": "1234",
+            "original_timestamp": "1403743443",
+            "payment_method": "Credit card",
+            "position": "home_top",
+            "products": [
+              {
+                "affiliation": "Google Store",
+                "anonymous_id": "nskjbjasc623656253bb",
+                "brand": "Gucci",
+                "category": "pants",
+                "coupon": "SUMMER_FUN",
+                "creative": "Summer Banner",
+                "creative_slot": "featured_app_1",
+                "currency": "USD",
+                "discount": 2.22,
+                "event": "Sample Identify call",
+                "event_text": "identify",
+                "id": "ID101",
+                "image_url": "https://www.website.com/product/path.png",
+                "location_id": "L_12345",
+                "name": "jeggings",
+                "original_timestamp": "1403743443",
+                "position": "home_top",
+                "price": 9.99,
+                "product_id": "SKU_12345",
+                "promotion_id": "P_12345",
+                "promotion_name": "Summer Sale",
+                "quantity": 1,
+                "rating": "5",
+                "received_at": "202101091347654",
+                "recipient": "name@friendsemail.com",
+                "review_body": "Good product, delivered in excellent condition",
+                "review_id": "review12",
+                "sent_at": "20210109134567",
+                "share_message": "Check this",
+                "share_via": "SMS",
+                "sku": "G-32",
+                "timestamp": "1403743443",
+                "url": "https://www.website.com/product/path",
+                "variant": "Black",
+                "wishlist_id": "12345",
+                "wishlist_name": "Games"
+              },
+              {
+                "affiliation": "Google Store",
+                "brand": "Gucci",
+                "category": "pants",
+                "coupon": "SUMMER_FUN",
+                "creative": "Summer Banner",
+                "creative_slot": "featured_app_1",
+                "currency": "USD",
+                "discount": 2.22,
+                "image_url": "https://www.website.com/product/path.png",
+                "location_id": "L_12345",
+                "name": "leggings",
+                "price": 9.99,
+                "product_id": "SKU_12347",
+                "promotion_id": "P_12345",
+                "promotion_name": "Summer Sale",
+                "quantity": 1,
+                "rating": "5",
+                "recipient": "name@friendsemail.com",
+                "review_body": "Good product, delivered in excellent condition",
+                "review_id": "review12",
+                "share_message": "Check this",
+                "share_via": "SMS",
+                "sku": "G-32",
+                "url": "https://www.website.com/product/path",
+                "variant": "Black",
+                "wishlist_id": "12345",
+                "wishlist_name": "Games"
+              }
+            ],
+            "promotion_id": "promo1",
+            "query": "HDMI cable",
+            "reason": "Coupon Expired",
+            "received_at": "202101091347654",
+            "recipient": "friend@friendsemail.com",
+            "revenue": 15,
+            "sent_at": "20210109134567",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "shipping": "22",
+            "shipping_method": "AIR",
+            "step": 2,
+            "tax": 1,
+            "timestamp": "1403743443",
+            "total": 17,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Sample Track Call",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Products Searched",
+          "type": "Products Searched",
+          "source": "Rudder",
+          "properties": { "query": "HDMI cable" }
+        },
+        "profile": {
+          "type": "Products Searched",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product List Viewed",
+          "type": "Product List Viewed",
+          "source": "Rudder",
+          "properties": {
+            "category": "What's new",
+            "list_id": "list1",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ]
+          }
+        },
+        "profile": {
+          "type": "Product List Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Promotion Viewed",
+          "type": "Promotion Viewed",
+          "source": "Rudder",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          }
+        },
+        "profile": {
+          "type": "Promotion Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Promotion Clicked",
+          "type": "Promotion Clicked",
+          "source": "Rudder",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          }
+        },
+        "profile": {
+          "type": "Promotion Clicked",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Clicked",
+          "type": "Product Clicked",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Clicked",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Viewed",
+          "type": "Product Viewed",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Added",
+          "type": "Product Added",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Added",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Removed",
+          "type": "Product Removed",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Removed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Cart Viewed",
+          "type": "Cart Viewed",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "some_cart_id",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ]
+          }
+        },
+        "profile": {
+          "type": "Cart Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Started",
+          "type": "Checkout Started",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Checkout Started",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Step Viewed",
+          "type": "Checkout Step Viewed",
+          "source": "Rudder",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "MasterCard",
+            "shipping_method": "DHL",
+            "step": 1
+          }
+        },
+        "profile": {
+          "type": "Checkout Step Viewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Checkout Step Completed",
+          "type": "Checkout Step Completed",
+          "source": "Rudder",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "MasterCard",
+            "shipping_method": "DHL",
+            "step": 1
+          }
+        },
+        "profile": {
+          "type": "Checkout Step Completed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Payment Info Entered",
+          "type": "Payment Info Entered",
+          "source": "Rudder",
+          "properties": { "checkout_id": "12344", "order_id": "123" }
+        },
+        "profile": {
+          "type": "Payment Info Entered",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Updated",
+          "type": "Order Updated",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Order Updated",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Completed",
+          "type": "Order Completed",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Order Completed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Refunded",
+          "type": "Order Refunded",
+          "source": "Rudder",
+          "properties": { "order_id": "1234" }
+        },
+        "profile": {
+          "type": "Order Refunded",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Order Cancelled",
+          "type": "Order Cancelled",
+          "source": "Rudder",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products": [
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "image_url": "https://www.website.com/product/path.png",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15",
+                "url": "https://www.website.com/product/path"
+              },
+              {
+                "category": "Games",
+                "coupon": "DISC21",
+                "currency": "USD",
+                "name": "Game",
+                "position": 0,
+                "price": 13.49,
+                "product_id": "123",
+                "quantity": 11,
+                "sku": "F15"
+              }
+            ],
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          }
+        },
+        "profile": {
+          "type": "Order Cancelled",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Entered",
+          "type": "Coupon Entered",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "order_id": "1223455"
+          }
+        },
+        "profile": {
+          "type": "Coupon Entered",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Applied",
+          "type": "Coupon Applied",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          }
+        },
+        "profile": {
+          "type": "Coupon Applied",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Denied",
+          "type": "Coupon Denied",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "order_id": "1223455"
+          }
+        },
+        "profile": {
+          "type": "Coupon Denied",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Coupon Removed",
+          "type": "Coupon Removed",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          }
+        },
+        "profile": {
+          "type": "Coupon Removed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Added to Wishlist",
+          "type": "Product Added to Wishlist",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Added to Wishlist",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Removed from Wishlist",
+          "type": "Product Removed from Wishlist",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Removed from Wishlist",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Wishlist Product Added to Cart",
+          "type": "Wishlist Product Added to Cart",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Wishlist Product Added to Cart",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Shared",
+          "type": "Product Shared",
+          "source": "Rudder",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          }
+        },
+        "profile": {
+          "type": "Product Shared",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Cart Shared",
+          "type": "Cart Shared",
+          "source": "Rudder",
+          "properties": {
+            "cart_id": "1234df2ddss",
+            "products": [{ "product_id": "123" }, { "product_id": "123" }]
+          }
+        },
+        "profile": {
+          "type": "Cart Shared",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": {
+          "description": "Product Reviewed",
+          "type": "Product Reviewed",
+          "source": "Rudder",
+          "properties": {
+            "product_id": "123",
+            "rating": 5,
+            "review_body": "Good product, delivered in excellent condition",
+            "review_id": "review12"
+          }
+        },
+        "profile": {
+          "type": "Product Reviewed",
+          "source": "Rudder",
+          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "organization_membership": {
+          "user_id": 900113780483,
+          "organization_id": 900001329943
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "f54bb572361c4fd1"
+  }
+]

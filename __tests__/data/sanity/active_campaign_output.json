@@ -1,0 +1,1485 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "siteTrackingDomain": { "name": "shopping.pacaa.com/" },
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact": {
+          "email": "testkolkata@rudderlabs.com",
+          "phone": "570-690-4150",
+          "firstName": "Adhir",
+          "lastName": "Das"
+        },
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Products Searched",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Sample Track Call",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product List Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Promotion Viewed",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Promotion Clicked",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Clicked",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Viewed",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Added",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Removed",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Cart Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Started",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Step Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Step Completed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Payment Info Entered",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Updated",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Completed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Refunded",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Cancelled",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Entered",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Denied",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Applied",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Cart Shared",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Wishlist Product Added to Cart",
+        "eventdata": "Cards",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Shared",
+        "eventdata": "Cards",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Removed from Wishlist",
+        "eventdata": "Cards",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Added to Wishlist",
+        "eventdata": "Cards",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Removed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Reviewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact": {
+          "email": "testkolkata@rudderlabs.com",
+          "phone": "570-690-4150",
+          "firstName": "Adhir",
+          "lastName": "Das"
+        },
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "siteTrackingDomain": { "name": "shopping.pacaa.com/" },
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Cannot read property 'email' of undefined" },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact": {
+          "email": "testkolkata@rudderlabs.com",
+          "phone": "570-690-4150",
+          "firstName": "Adhir",
+          "lastName": "Das"
+        },
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "cart",
+        "eventdata": "cart",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Sample Track Call",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Products Searched",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product List Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Promotion Viewed",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Promotion Clicked",
+        "eventdata": "sale",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Clicked",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Viewed",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Added",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Removed",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Cart Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Started",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Step Viewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Checkout Step Completed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Payment Info Entered",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Updated",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Completed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Refunded",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Order Cancelled",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Entered",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Applied",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Denied",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Coupon Removed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Added to Wishlist",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Removed from Wishlist",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Wishlist Product Added to Cart",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Shared",
+        "eventdata": "Game",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Cart Shared",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://trackcmp.net/event",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "event": "Product Reviewed",
+        "actid": "476550467",
+        "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
+        "visit": "%7Bemail%20%3A%20testkolkata%40rudderlabs.com%7D",
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      }
+    },
+    "files": {}
+  },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" }
+]

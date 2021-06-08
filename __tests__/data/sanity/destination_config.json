@@ -19,8 +19,7 @@
           "accountId": "476550467",
           "trackAnonymous": true
         }
-      },
-      "router": {}
+      }
     }
   },
   "marketo": {
@@ -257,7 +256,8 @@
           "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "prefixProperties": true,
-          "useNativeSDK": false
+          "useNativeSDK": false,
+          "apiSecret": "apisecret"
         },
         "DestinationDefinition": {
           "DisplayName": "Kiss Metrics",
@@ -400,7 +400,7 @@
           "appToken": "t1yurrb968zk",
           "customMappings": [
             { "from": "Application Installed", "to": "3fdmll" },
-            { "from": "First Investment", "to": "tf4gm5" }
+            { "from": "Products Searched", "to": "tf4gm5" }
           ],
           "environment": true
         },
@@ -448,10 +448,7 @@
         },
         "Config": {
           "accessKeyId": "ABC",
-          "customMappings": [
-            { "from": "TYPE_OF_MOVIE", "to": "typeOfMovie" },
-            { "from": "NUMBER_OF_RATINGS", "to": "numberOfRatings" }
-          ],
+          "customMappings": [{ "from": "Products", "to": "products" }],
           "region": "us-east-1",
           "secretAccessKey": "DEF",
           "trackingId": "c60"
@@ -633,7 +630,7 @@
             "destConfig": [],
             "excludeKeys": [],
             "includeKeys": [],
-            "saveDestinationResponse": true,
+            "saveDestinationResponse": false,
             "supportedSourceTypes": [],
             "transformAt": "processor"
           },
@@ -642,10 +639,21 @@
         "Config": {
           "clientId": "vcn7AQ2W9GGIAZSsN6Mfq",
           "clientSecret": "vcn7AQ2W9GGIAZSsN6Mfq",
-          "createOrUpdateContacts": true,
+          "createOrUpdateContacts": false,
           "eventDelivery": true,
           "eventDeliveryTS": 1615371070621,
-          "eventToUUID": [],
+          "eventToExternalKey": [
+            {
+              "from": "Sample Track Call",
+              "to": "C500FD37-155C-49BD-A21B-AFCEF3D1A9CB"
+            },
+            { "from": "Watch", "to": "C500FD37-155C-49BD-A21B-AFCEF3D1A9CB" }
+          ],
+          "eventToPrimaryKey": [
+            { "from": "userId", "to": "User Key" },
+            { "from": "watch", "to": "Guest Key, Contact Key" }
+          ],
+          "eventToUUID": [{ "event": "Event Name", "uuid": true }],
           "externalKey": "f3ffa19b-e0b3-4967-829f-549b781080e6",
           "subDomain": "vcn7AQ2W9GGIAZSsN6Mfq"
         },
@@ -667,7 +675,7 @@
           "eventsToEvents": [{ "from": "", "to": "" }],
           "eventCustomProperties": [{ "eventCustomProperties": "" }],
           "valueFieldIdentifier": "",
-          "advancedMapping": false,
+          "advancedMapping": true,
           "whitelistPiiProperties": [{ "whitelistPiiProperties": "" }]
         },
         "Enabled": true
@@ -804,7 +812,14 @@
           "region": "us-east-1",
           "accessKeyID": "abc",
           "accessKey": "xyz",
-          "mapEvents": [{ "from": "track", "to": "ruchira-test-firehose" }]
+          "mapEvents": [
+            { "from": "track", "to": "ruchira-test-firehose" },
+            { "from": "identify", "to": "identify" },
+            { "from": "alias", "to": "alias" },
+            { "from": "group", "to": "group" },
+            { "from": "screen", "to": "screen" },
+            { "from": "page", "to": "page" }
+          ]
         }
       }
     }

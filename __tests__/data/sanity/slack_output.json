@@ -1,0 +1,1952 @@
+[
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"identified AdhirDas with \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Products Searched\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Sample Identify call\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"AdhirDas performed Product List Viewed with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Added\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Cart Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Checkout Started\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Checkout Step Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Checkout Step Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Payment Info Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Order Updated\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Order Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Order Refunded\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Order Cancelled\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Coupon Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Coupon Denied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Coupon Applied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Cart Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Wishlist Product Added to Cart with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Cards did Product Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Product Removed from Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Product Added to Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Coupon Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"AdhirDas did Product Reviewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"identified AdhirDas with \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity1001",
+      "statusCode": 200
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Sample Identify call\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Products Searched\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"User sanityuser100 performed Product List Viewed with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Added\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Cart Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Checkout Started\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Checkout Step Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Checkout Step Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Payment Info Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Order Updated\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Order Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Order Refunded\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Order Cancelled\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Coupon Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Coupon Applied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Coupon Denied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Coupon Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Product Added to Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Product Removed from Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Cards performed Wishlist Product Added to Cart with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Cards did Product Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Cart Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"User sanityuser100 did Product Reviewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanityuser100",
+      "statusCode": 200
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"identified Adhir Das with \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "sanity_user1000",
+      "statusCode": 200
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Sample Identify call\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Products Searched\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Adhir Das performed Product List Viewed with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"sale did Promotion Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Clicked\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Added\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Cart Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Checkout Started\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Checkout Step Viewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Checkout Step Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Payment Info Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Order Updated\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Order Completed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Order Refunded\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Order Cancelled\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Coupon Entered\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Coupon Applied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Coupon Denied\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Coupon Removed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Game performed Product Added to Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Game performed Product Removed from Wishlist with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"channel\":\"#slack_integration\",\"text\":\"Game performed Wishlist Product Added to Cart with  \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Game did Product Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Cart Shared\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://hooks.slack.com/services/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",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {
+          "payload": "{\"text\":\"Adhir Das did Product Reviewed\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        }
+      },
+      "files": {},
+      "userId": "ID101",
+      "statusCode": 200
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

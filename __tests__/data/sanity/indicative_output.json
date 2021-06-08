@@ -1,0 +1,4010 @@
+[
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Page View Cart Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "clipkart.com",
+            "referrer": "gamazon.con",
+            "referring_domain": "localhost:1111",
+            "search": "home",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "e-commerce",
+            "url": "http://shopping.pacaa.com/",
+            "campaign": {},
+            "category": "Cart",
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "name": "Cart Viewed",
+            "original_timestamp": "1403743443",
+            "received_at": "202101091347654",
+            "sent_at": "20210109134567",
+            "timestamp": "1403743443"
+          },
+          "eventTime": 1621401915155,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/identify",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "uniqueId": "sanity_user1000",
+          "properties": {
+            "Homephone": 9836543283,
+            "birthDay": "2021/05/19",
+            "category": "SampleIdentify",
+            "city": "east greenwich",
+            "company.employee_count": 1200,
+            "company.id": 378763009439,
+            "company.industry": "IT",
+            "company.name": "Rudderlabs",
+            "country": "USA",
+            "createdAt": "2021/05/19",
+            "email": "testkolkata@rudderlabs.com",
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "fieldInfo.Address": "kolkata",
+            "fieldInfo.CheckBox": "Option1,Option2,Option3",
+            "fieldInfo.DateField": "1988-12-05",
+            "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+            "fieldInfo.HiddenField": "Hidden",
+            "fieldInfo.RadioButton": "Option1",
+            "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "fieldInfo.address.city": "east greenwich",
+            "fieldInfo.address.country": "USA",
+            "fieldInfo.address.state": "RI",
+            "fieldInfo.address.street": "19123 forest lane",
+            "fieldInfo.address.zip": "94115",
+            "fieldInfo.listBox": "Option1,Option2",
+            "fieldInfo.multiChoice": "Option 1",
+            "fieldInfo.state": "California",
+            "firstName": "Adhir",
+            "industry": "ITES",
+            "isEnabled": true,
+            "lastName": "Das",
+            "leadSource": "WEB",
+            "lists.id": "2,3",
+            "lists.status": "unsubscribed,unsubscribe",
+            "logins": 5,
+            "mobile": "123456786",
+            "organizationId": 378763009439,
+            "original_timestamp": "1403743443",
+            "phone": "570-690-4150",
+            "plan": "Open source",
+            "postalCode": "94115",
+            "rating": "Hot",
+            "received_at": "202101091347654",
+            "sent_at": "20210109134567",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "tags": "x0002x,y0004y,t0001t",
+            "timestamp": "1403743443",
+            "timezone": "Berlin",
+            "title": "Mr"
+          },
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+          "newId": "sanity_user1000",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Products Searched",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "query": "HDMI cable"
+          },
+          "eventTime": 1621401915178,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Sample Track Call",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "KEY_3.CHILD_KEY_4": "value_3",
+            "KEY_3.CHILD_KEY_5": "value_4",
+            "affiliation": "Apple Store",
+            "anonymous_id": "nskjbjasc623656253bb",
+            "cart_id": "1234df2ddss",
+            "category": "Apparel",
+            "checkout_id": "LK980456",
+            "coupon": "ImagePro",
+            "coupon_id": "disc20",
+            "coupon_name": "Disc21",
+            "creative": "banner1",
+            "currency": "USD",
+            "discount": 1.5,
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "list_id": "list1",
+            "location_id": "L_12345",
+            "name": "sale",
+            "order_id": "1234",
+            "original_timestamp": "1403743443",
+            "payment_method": "Credit card",
+            "position": "home_top",
+            "products.affiliation": "Google Store,Google Store",
+            "products.anonymous_id": "nskjbjasc623656253bb",
+            "products.brand": "Gucci,Gucci",
+            "products.category": "pants,pants",
+            "products.coupon": "SUMMER_FUN,SUMMER_FUN",
+            "products.creative": "Summer Banner",
+            "products.creative_slot": "featured_app_1,featured_app_1",
+            "products.currency": "USD,USD",
+            "products.discount": "2.22,2.22",
+            "products.event": "Sample Identify call",
+            "products.event_text": "identify",
+            "products.id": "ID101",
+            "products.image_url": "https://www.website.com/product/path.png,https://www.website.com/product/path.png",
+            "products.location_id": "L_12345,L_12345",
+            "products.name": "jeggings,leggings",
+            "products.original_timestamp": "1403743443",
+            "products.position": "home_top",
+            "products.price": "9.99,9.99",
+            "products.product_id": "SKU_12345,SKU_12347",
+            "products.promotion_id": "P_12345,P_12345",
+            "products.promotion_name": "Summer Sale,Summer Sale",
+            "products.quantity": "1,1",
+            "products.rating": "5,5",
+            "products.received_at": "202101091347654",
+            "products.recipient": "name@friendsemail.com,name@friendsemail.com",
+            "products.review_body": "Good product, delivered in excellent condition,Good product, delivered in excellent condition",
+            "products.review_id": "review12,review12",
+            "products.sent_at": "20210109134567",
+            "products.share_message": "Check this,Check this",
+            "products.share_via": "SMS,SMS",
+            "products.sku": "G-32,G-33",
+            "products.timestamp": "1403743443",
+            "products.url": "https://www.website.com/product/path,https://www.website.com/product/path",
+            "products.variant": "Black,Black",
+            "products.wishlist_id": "12345,12345",
+            "products.wishlist_name": "Games,Games",
+            "promotion_id": "promo1",
+            "query": "HDMI cable",
+            "reason": "Coupon expired",
+            "received_at": "202101091347654",
+            "recipient": "friend@friendsemail.com",
+            "revenue": 15,
+            "sent_at": "20210109134567",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "shipping": 22,
+            "shipping_method": "AIR",
+            "step": 2,
+            "tax": 1,
+            "timestamp": "1403743443",
+            "total": 17,
+            "value": 20
+          },
+          "eventTime": 1621401915167,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product List Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "category": "What's New",
+            "list_id": "list1",
+            "products.category": "Games and Entertainment,Card Games",
+            "products.image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+            "products.name": "Just Another Game,Wrestling Trump Cards",
+            "products.position": "2,21",
+            "products.price": "22,4",
+            "products.product_id": "223344ffdds3ff3,343344ff5567ff3",
+            "products.sku": "12345,12346",
+            "products.url": "https://www.myecommercewebsite.com/product"
+          },
+          "eventTime": 1621401915188,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Promotion Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1621401915197,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Promotion Clicked",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1621401915207,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Clicked",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.website.com/product/path",
+            "campaign": {},
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "variant": "111"
+          },
+          "eventTime": 1621401915216,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.website.com/product/path",
+            "campaign": {},
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "variant": "111"
+          },
+          "eventTime": 1621401915225,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Added",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.website.com/product/path",
+            "campaign": {},
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "variant": "111"
+          },
+          "eventTime": 1621401915233,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Removed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.website.com/product/path",
+            "campaign": {},
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "variant": "111"
+          },
+          "eventTime": 1621401915245,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Cart Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "12345",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Cards,UNO",
+            "products.position": "1,2",
+            "products.price": "14.99,3.99",
+            "products.product_id": "123,345",
+            "products.sku": "G-14,G-32",
+            "products.url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1621401915254,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Checkout Started",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          },
+          "eventTime": 1621401915266,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Checkout Step Viewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1621401915283,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Checkout Step Completed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1621401915292,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Payment Info Entered",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "checkout_id": "12344",
+            "order_id": "123"
+          },
+          "eventTime": 1621401915301,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Order Updated",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          },
+          "eventTime": 1621401915309,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Order Completed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "affiliation": "Apple Store",
+            "checkout_id": "12345",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          },
+          "eventTime": 1621401915316,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Order Refunded",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "currency": "USD",
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "17,3",
+            "products.product_id": "123,345",
+            "products.quantity": "1,1",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "total": 20
+          },
+          "eventTime": 1621401915328,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Order Cancelled",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          },
+          "eventTime": 1621401915337,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Coupon Entered",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "1222111",
+            "coupon_id": "disc20",
+            "order_id": "12345"
+          },
+          "eventTime": 1621401915347,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Coupon Denied",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "1211",
+            "coupon": "Disc21",
+            "order_id": "123",
+            "reason": "Coupon expired"
+          },
+          "eventTime": 1621401915367,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Coupon Applied",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          },
+          "eventTime": 1621401915357,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Cart Shared",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "1234df2ddss",
+            "products.product_id": "125,297",
+            "recipient": "friend@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS"
+          },
+          "eventTime": 1621401915420,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Wishlist Product Added to Cart",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.site.com/product/path",
+            "campaign": {},
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621401915402,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Shared",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.myecommercewebsite.com/product/prod",
+            "campaign": {},
+            "brand": "Maples",
+            "category": "Games",
+            "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+            "name": "Cards",
+            "price": 15.99,
+            "product_id": "12345872254426",
+            "recipient": "name@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "sku": "F-13",
+            "variant": "150s"
+          },
+          "eventTime": 1621401915411,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Removed from Wishlist",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.site.com/product/path",
+            "campaign": {},
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621401915393,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Added to Wishlist",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "https://www.site.com/product/path",
+            "campaign": {},
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621401915385,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Coupon Removed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "cart_id": "124",
+            "coupon_id": "Dis123",
+            "coupon_name": "Disc20",
+            "discount": 20,
+            "order_id": "1211"
+          },
+          "eventTime": 1621401915376,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanity_user1000",
+          "eventName": "Product Reviewed",
+          "properties": {
+            "initial_referrer": "http://localhost:1111/My_first_app/",
+            "initial_referring_domain": "localhost:1111",
+            "path": "/My_first_app/first.html",
+            "referrer": "http://localhost:1111/My_first_app/",
+            "referring_domain": "localhost:1111",
+            "search": "",
+            "tab_url": "http://localhost:1111/My_first_app/first.html",
+            "title": "myfirstapp",
+            "url": "http://localhost:1111/My_first_app/first.html",
+            "campaign": {},
+            "product_id": "12345",
+            "rating": "5",
+            "review_body": "Good product, delivered in excellent condition",
+            "review_id": "review12"
+          },
+          "eventTime": 1621401915428,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "newsanityuser1000",
+          "newId": "sanityuser1000",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser1000"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/identify",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "uniqueId": "sanity1001",
+          "properties": {
+            "Homephone": 9836543283,
+            "birthDay": "2021/05/19",
+            "category": "SampleIdentify",
+            "city": "east greenwich",
+            "company.employee_count": 1200,
+            "company.id": 378763009439,
+            "company.industry": "IT",
+            "company.name": "Rudderlabs",
+            "country": "USA",
+            "createdAt": "2021/05/19",
+            "email": "testkolkata@rudderlabs.com",
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "fieldInfo.Address": "kolkata",
+            "fieldInfo.CheckBox": "Option1,Option2,Option3",
+            "fieldInfo.DateField": "1988-12-05",
+            "fieldInfo.DateTimeField": "2020-05-19T02:45:00-05:00",
+            "fieldInfo.HiddenField": "Hidden",
+            "fieldInfo.RadioButton": "Option1",
+            "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "fieldInfo.address.city": "east greenwich",
+            "fieldInfo.address.country": "USA",
+            "fieldInfo.address.state": "RI",
+            "fieldInfo.address.street": "19123 forest lane",
+            "fieldInfo.address.zip": "94115",
+            "fieldInfo.listBox": "Option1,Option2",
+            "fieldInfo.multiChoice": "Option 1",
+            "fieldInfo.state": "California",
+            "firstName": "Adhir",
+            "industry": "ITES",
+            "isEnabled": true,
+            "lastName": "Das",
+            "leadSource": "WEB",
+            "lists.id": "2,3",
+            "lists.status": "unsubscribed,unsubscribe",
+            "logins": 5,
+            "mobile": "123456786",
+            "organizationId": 378763009439,
+            "original_timestamp": "1403743443",
+            "phone": "570-690-4150",
+            "plan": "Open source",
+            "postalCode": "94115",
+            "rating": "Hot",
+            "received_at": "202101091347654",
+            "sent_at": "20210109134567",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "tags": "x0002x,y0004y,t0001t",
+            "timestamp": "1403743443",
+            "timezone": "Berlin",
+            "title": "Mr"
+          },
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity1001"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "a1b2c3d4e5f6g7h8i9j10",
+          "newId": "sanity1001",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity1001"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser1000",
+          "eventName": "Page View Cart Viewed",
+          "properties": {
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "original_timestamp": "1403743443",
+            "path": "clipkart.com",
+            "received_at": "202101091347654",
+            "referrer": "gamazon.con",
+            "search": "home",
+            "sent_at": "20210109134567",
+            "timestamp": "1403743443",
+            "title": "e-commerce",
+            "url": "http://shopping.pacaa.com/"
+          },
+          "eventTime": 1621409924763,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Sample Track Call",
+          "properties": {
+            "KEY_3.CHILD_KEY_4": "value_3",
+            "KEY_3.CHILD_KEY_5": "value_4",
+            "affiliation": "Apple Store",
+            "anonymous_id": "nskjbjasc623656253bb",
+            "cart_id": "1234df2ddss",
+            "category": "Apparel",
+            "checkout_id": "LK980456",
+            "coupon": "ImagePro",
+            "coupon_id": "disc20",
+            "coupon_name": "Disc21",
+            "creative": "banner1",
+            "currency": "USD",
+            "discount": 1.5,
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "list_id": "list1",
+            "location_id": "L_12345",
+            "name": "sale",
+            "order_id": "1234",
+            "original_timestamp": "1403743443",
+            "payment_method": "Credit card",
+            "position": "home_top",
+            "products.affiliation": "Google Store,Google Store",
+            "products.anonymous_id": "nskjbjasc623656253bb",
+            "products.brand": "Gucci,Gucci",
+            "products.category": "pants,pants",
+            "products.coupon": "SUMMER_FUN,SUMMER_FUN",
+            "products.creative": "Summer Banner",
+            "products.creative_slot": "featured_app_1,featured_app_1",
+            "products.currency": "USD,USD",
+            "products.discount": "2.22,2.22",
+            "products.event": "Sample Identify call",
+            "products.event_text": "identify",
+            "products.id": "ID101",
+            "products.image_url": "https://www.website.com/product/path.png,https://www.website.com/product/path.png",
+            "products.location_id": "L_12345,L_12345",
+            "products.name": "jeggings,leggings",
+            "products.original_timestamp": "1403743443",
+            "products.position": "home_top",
+            "products.price": "9.99,9.99",
+            "products.product_id": "SKU_12345,SKU_12347",
+            "products.promotion_id": "P_12345,P_12345",
+            "products.promotion_name": "Summer Sale,Summer Sale",
+            "products.quantity": "1,1",
+            "products.rating": "5,5",
+            "products.received_at": "202101091347654",
+            "products.recipient": "name@friendsemail.com,name@friendsemail.com",
+            "products.review_body": "Good product, delivered in excellent condition,Good product, delivered in excellent condition",
+            "products.review_id": "review12,review12",
+            "products.sent_at": "20210109134567",
+            "products.share_message": "Check this,Check this",
+            "products.share_via": "SMS,SMS",
+            "products.sku": "G-32,G-33",
+            "products.timestamp": "1403743443",
+            "products.url": "https://www.website.com/product/path,https://www.website.com/product/path",
+            "products.variant": "Black,Black",
+            "products.wishlist_id": "12345,12345",
+            "products.wishlist_name": "Games,Games",
+            "promotion_id": "promo1",
+            "query": "HDMI cable",
+            "reason": "Coupon expired",
+            "received_at": "202101091347654",
+            "recipient": "friend@friendsemail.com",
+            "revenue": 15,
+            "sent_at": "20210109134567",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "shipping": 22,
+            "shipping_method": "AIR",
+            "step": 2,
+            "tax": 1,
+            "timestamp": "1403743443",
+            "total": 17,
+            "value": 20
+          },
+          "eventTime": 1621409924765,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Products Searched",
+          "properties": {
+            "query": "HDMI cable"
+          },
+          "eventTime": 1621409924767,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product List Viewed",
+          "properties": {
+            "category": "What's New",
+            "list_id": "list1",
+            "products.category": "Games and Entertainment,Card Games",
+            "products.image_url": "https://www.myecommercewebsite.com/product/path.jpg",
+            "products.name": "Just Another Game,Wrestling Trump Cards",
+            "products.position": "2,21",
+            "products.price": "22,4",
+            "products.product_id": "223344ffdds3ff3,343344ff5567ff3",
+            "products.sku": "12345,12346",
+            "products.url": "https://www.myecommercewebsite.com/product"
+          },
+          "eventTime": 1621409924769,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Promotion Viewed",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1621409924769,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Promotion Clicked",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1621409924770,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Clicked",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          },
+          "eventTime": 1621409924770,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Viewed",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          },
+          "eventTime": 1621409924770,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Added",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          },
+          "eventTime": 1621409924770,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Removed",
+          "properties": {
+            "brand": "Gamepro",
+            "category": "Games",
+            "coupon": "DISC21",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 1,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path",
+            "variant": "111"
+          },
+          "eventTime": 1621409924771,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Cart Viewed",
+          "properties": {
+            "cart_id": "12345",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Cards,UNO",
+            "products.position": "1,2",
+            "products.price": "14.99,3.99",
+            "products.product_id": "123,345",
+            "products.sku": "G-14,G-32",
+            "products.url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1621409924771,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Checkout Started",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          },
+          "eventTime": 1621409924771,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Checkout Step Viewed",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Checkout Step Completed",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "Mastercard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Payment Info Entered",
+          "properties": {
+            "checkout_id": "12344",
+            "order_id": "123"
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Order Updated",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "value": 20
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Order Completed",
+          "properties": {
+            "affiliation": "Apple Store",
+            "checkout_id": "12345",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Order Refunded",
+          "properties": {
+            "currency": "USD",
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "17,3",
+            "products.product_id": "123,345",
+            "products.quantity": "1,1",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "total": 20
+          },
+          "eventTime": 1621409924772,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Order Cancelled",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.image_url": "https://www.website.com/product/path.jpg",
+            "products.name": "Monopoly,UNO",
+            "products.price": "14,3.45",
+            "products.product_id": "123,345",
+            "products.quantity": "1,2",
+            "products.sku": "G-32,F-32",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 20
+          },
+          "eventTime": 1621409924773,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Coupon Entered",
+          "properties": {
+            "cart_id": "1222111",
+            "coupon_id": "disc20",
+            "order_id": "12345"
+          },
+          "eventTime": 1621409924773,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Coupon Applied",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          },
+          "eventTime": 1621409924773,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Coupon Denied",
+          "properties": {
+            "cart_id": "1211",
+            "coupon": "Disc21",
+            "order_id": "123",
+            "reason": "Coupon expired"
+          },
+          "eventTime": 1621409924773,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Coupon Removed",
+          "properties": {
+            "cart_id": "124",
+            "coupon_id": "Dis123",
+            "coupon_name": "Disc20",
+            "discount": 20,
+            "order_id": "1211"
+          },
+          "eventTime": 1621409924773,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Added to Wishlist",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621409924776,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Removed from Wishlist",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621409924776,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Wishlist Product Added to Cart",
+          "properties": {
+            "brand": "Imagepro",
+            "category": "Games",
+            "coupon": "COUPON",
+            "image_url": "https://www.site.com/product/path.jpg",
+            "name": "Cards",
+            "position": 1,
+            "price": 8.99,
+            "product_id": "235564423234",
+            "quantity": 1,
+            "sku": "F-17",
+            "url": "https://www.site.com/product/path",
+            "variant": "123",
+            "wishlist_id": "12345",
+            "wishlist_name": "Games"
+          },
+          "eventTime": 1621409924776,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Shared",
+          "properties": {
+            "brand": "Maples",
+            "category": "Games",
+            "image_url": "https://www.myecommercewebsite.com/product/prod.jpg",
+            "name": "Cards",
+            "price": 15.99,
+            "product_id": "12345872254426",
+            "recipient": "name@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "sku": "F-13",
+            "url": "https://www.myecommercewebsite.com/product/prod",
+            "variant": "150s"
+          },
+          "eventTime": 1621409924777,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Cart Shared",
+          "properties": {
+            "cart_id": "1234df2ddss",
+            "products.product_id": "125,297",
+            "recipient": "friend@friendsemail.com",
+            "share_message": "Check this",
+            "share_via": "SMS"
+          },
+          "eventTime": 1621409924777,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sanityuser100",
+          "eventName": "Product Reviewed",
+          "properties": {
+            "product_id": "12345",
+            "rating": "5",
+            "review_body": "Good product, delivered in excellent condition",
+            "review_id": "review12"
+          },
+          "eventTime": 1621409924777,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanityuser100"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "sanityuser1000",
+          "newId": "newsanityuser1000",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "newsanityuser1000"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/identify",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "uniqueId": "sanity_user1000",
+          "properties": {
+            "Homephone": 9836543283,
+            "birthday": "12/12/12",
+            "category": "SampleIdentify",
+            "city": "east greenwich",
+            "company.employee_count": 1200,
+            "company.id": 378763009439,
+            "company.industry": "IT",
+            "company.name": "Rudderlabs",
+            "country": "USA",
+            "createdAt.dayOfMonth": 1,
+            "createdAt.hourOfDay": 6,
+            "createdAt.minute": 53,
+            "createdAt.month": 0,
+            "createdAt.second": 20,
+            "createdAt.year": 1970,
+            "email": "testkolkata@rudderlabs.com",
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "fieldInfo.Address": "kolkata",
+            "fieldInfo.CheckBox": "Option1,Option2,Option3",
+            "fieldInfo.DateField": "1988-12-05",
+            "fieldInfo.DateTimeFiled": "2020-05-19T02:45:00-05:00",
+            "fieldInfo.HiddenField": "Hidden",
+            "fieldInfo.RadioButton": "Option1",
+            "fieldInfo.TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "fieldInfo.address.city": "east greenwich",
+            "fieldInfo.address.state": "RI",
+            "fieldInfo.address.street": "19123 forest lane",
+            "fieldInfo.address.zip": "94115",
+            "fieldInfo.listBox": "Option1,Option2",
+            "fieldInfo.multichoice": "Option 1",
+            "fieldInfo.state": "California",
+            "firstname": "Adhir",
+            "industry": "ITES",
+            "isEnabled": true,
+            "lastname": "Das",
+            "leadSource": "WEB",
+            "lists.id": "2,3",
+            "lists.status": "unsubscribed,unsubscribed",
+            "logins": 5,
+            "mobile": "123456786",
+            "name": "Adhir Das",
+            "organisationId": 378763009439,
+            "original_timestamp": "1403743443",
+            "phone": "570-690-4150",
+            "plan": "Open source",
+            "postalCode": "94115",
+            "rating": "Hot",
+            "received_at": "202101091347654",
+            "sent_at": "20210109134567",
+            "state": "RI",
+            "street": "19123 forest lane",
+            "tags": "x0002x,y0004y,t0001t",
+            "timestamp": "1403743443",
+            "timezone": "Berlin",
+            "title": "Mr"
+          },
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "f54bb572361c4fd1",
+          "newId": "sanity_user1000",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sanity_user1000"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Screen View cart",
+          "properties": {
+            "category": "cart viewed",
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "name": "cart",
+            "original_timestamp": "1403743443",
+            "path": "clipkart.com",
+            "received_at": "202101091347654",
+            "referrer": "gamazon.con",
+            "search": "home",
+            "sent_at": "20210109134567",
+            "timestamp": "1403743443",
+            "title": "e-commerce",
+            "url": "http://shopping.pacaa.com/"
+          },
+          "eventTime": 1622094958355,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Sample Track Call",
+          "properties": {
+            "KEY_3.CHILD_KEY_4": "value_3",
+            "KEY_3.CHILD_KEY_5": "value_4",
+            "affiliation": "Apple Store",
+            "annonymous_id": "nskjbjasc623656253bb",
+            "cart_id": "1234df2ddss",
+            "category": "Apparel",
+            "checkout_id": "LK980456",
+            "coupon": "ImagePro",
+            "coupon_id": "disc20",
+            "coupon_name": "Disc21",
+            "creative": "banner1",
+            "currency": "USD",
+            "discount": 1.5,
+            "event": "Sample Identify call",
+            "event_text": "identify",
+            "id": "ID101",
+            "list_id": "list1",
+            "location_id": "L_12345",
+            "name": "sale",
+            "order_id": "1234",
+            "original_timestamp": "1403743443",
+            "payment_method": "Credit card",
+            "position": "home_top",
+            "products.affiliation": "Google Store,Google Store",
+            "products.anonymous_id": "nskjbjasc623656253bb",
+            "products.brand": "Gucci,Gucci",
+            "products.category": "pants,pants",
+            "products.coupon": "SUMMER_FUN,SUMMER_FUN",
+            "products.creative": "Summer Banner,Summer Banner",
+            "products.creative_slot": "featured_app_1,featured_app_1",
+            "products.currency": "USD,USD",
+            "products.discount": "2.22,2.22",
+            "products.event": "Sample Identify call",
+            "products.event_text": "identify",
+            "products.id": "ID101",
+            "products.image_url": "https://www.website.com/product/path.png,https://www.website.com/product/path.png",
+            "products.location_id": "L_12345,L_12345",
+            "products.name": "jeggings,leggings",
+            "products.original_timestamp": "1403743443",
+            "products.position": "home_top",
+            "products.price": "9.99,9.99",
+            "products.product_id": "SKU_12345,SKU_12347",
+            "products.promotion_id": "P_12345,P_12345",
+            "products.promotion_name": "Summer Sale,Summer Sale",
+            "products.quantity": "1,1",
+            "products.rating": "5,5",
+            "products.received_at": "202101091347654",
+            "products.recipient": "name@friendsemail.com,name@friendsemail.com",
+            "products.review_body": "Good product, delivered in excellent condition,Good product, delivered in excellent condition",
+            "products.review_id": "review12,review12",
+            "products.sent_at": "20210109134567",
+            "products.share_message": "Check this,Check this",
+            "products.share_via": "SMS,SMS",
+            "products.sku": "G-32,G-32",
+            "products.timestamp": "1403743443",
+            "products.url": "https://www.website.com/product/path,https://www.website.com/product/path",
+            "products.variant": "Black,Black",
+            "products.wishlist_id": "12345,12345",
+            "products.wishlist_name": "Games,Games",
+            "promotion_id": "promo1",
+            "query": "HDMI cable",
+            "reason": "Coupon Expired",
+            "received_at": "202101091347654",
+            "recipient": "friend@friendsemail.com",
+            "revenue": 15,
+            "sent_at": "20210109134567",
+            "share_message": "Check this",
+            "share_via": "SMS",
+            "shipping": "22",
+            "shipping_method": "AIR",
+            "step": 2,
+            "tax": 1,
+            "timestamp": "1403743443",
+            "total": 17,
+            "value": 20
+          },
+          "eventTime": 1622094958396,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Products Searched",
+          "properties": {
+            "query": "HDMI cable"
+          },
+          "eventTime": 1622094958475,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product List Viewed",
+          "properties": {
+            "category": "What's new",
+            "list_id": "list1",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094958554,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Promotion Viewed",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1622094958599,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Promotion Clicked",
+          "properties": {
+            "creative": "banner1",
+            "name": "sale",
+            "position": "home_top",
+            "promotion_id": "promo1"
+          },
+          "eventTime": 1622094958635,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Clicked",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094958888,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Viewed",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094958959,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Added",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094958994,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Removed",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959063,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Cart Viewed",
+          "properties": {
+            "cart_id": "some_cart_id",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959100,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Checkout Started",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          },
+          "eventTime": 1622094959139,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Checkout Step Viewed",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "MasterCard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1622094959206,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Checkout Step Completed",
+          "properties": {
+            "checkout_id": "123",
+            "payment_method": "MasterCard",
+            "shipping_method": "DHL",
+            "step": 1
+          },
+          "eventTime": 1622094959239,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Payment Info Entered",
+          "properties": {
+            "checkout_id": "12344",
+            "order_id": "123"
+          },
+          "eventTime": 1622094959290,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Order Updated",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          },
+          "eventTime": 1622094959355,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Order Completed",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          },
+          "eventTime": 1622094959390,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Order Refunded",
+          "properties": {
+            "order_id": "1234"
+          },
+          "eventTime": 1622094959417,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Order Cancelled",
+          "properties": {
+            "affiliation": "Apple Store",
+            "coupon": "ImagePro",
+            "currency": "USD",
+            "discount": 1.5,
+            "order_id": "1234",
+            "products.category": "Games,Games",
+            "products.coupon": "DISC21,DISC21",
+            "products.currency": "USD,USD",
+            "products.image_url": "https://www.website.com/product/path.png",
+            "products.name": "Game,Game",
+            "products.position": "0,0",
+            "products.price": "13.49,13.49",
+            "products.product_id": "123,123",
+            "products.quantity": "11,11",
+            "products.sku": "F15,F15",
+            "products.url": "https://www.website.com/product/path",
+            "revenue": 15,
+            "shipping": 22,
+            "tax": 1,
+            "total": 0,
+            "value": 20
+          },
+          "eventTime": 1622094959480,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Coupon Entered",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "order_id": "1223455"
+          },
+          "eventTime": 1622094959507,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Coupon Applied",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          },
+          "eventTime": 1622094959533,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Coupon Denied",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "order_id": "1223455"
+          },
+          "eventTime": 1622094959591,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Coupon Removed",
+          "properties": {
+            "cart_id": "123566",
+            "coupon_id": "23321",
+            "coupon_name": "Disc21",
+            "discount": 21,
+            "order_id": "1223455"
+          },
+          "eventTime": 1622094959616,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Added to Wishlist",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959681,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Removed from Wishlist",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959712,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Wishlist Product Added to Cart",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959741,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Shared",
+          "properties": {
+            "category": "Games",
+            "coupon": "DISC21",
+            "currency": "USD",
+            "image_url": "https://www.website.com/product/path.png",
+            "name": "Game",
+            "position": 0,
+            "price": 13.49,
+            "product_id": "123",
+            "quantity": 11,
+            "sku": "F15",
+            "url": "https://www.website.com/product/path"
+          },
+          "eventTime": 1622094959853,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Cart Shared",
+          "properties": {
+            "cart_id": "1234df2ddss",
+            "products.product_id": "123,123"
+          },
+          "eventTime": 1622094959879,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "ID101",
+          "eventName": "Product Reviewed",
+          "properties": {
+            "product_id": "123",
+            "rating": 5,
+            "review_body": "Good product, delivered in excellent condition",
+            "review_id": "review12"
+          },
+          "eventTime": 1622094959945,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ID101"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/alias",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "previousId": "sanity_user1000",
+          "newId": "newsanityuser1000",
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "newsanityuser1000"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

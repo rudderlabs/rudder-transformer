@@ -1,0 +1,1646 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Viewed Page Cart Viewed\",\"event_time\":1621401915,\"event_source_url\":\"http://shopping.pacaa.com/\",\"custom_data\":{\"category\":\"Cart\",\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"initial_referrer\":\"http://localhost:1111/My_first_app/\",\"initial_referring_domain\":\"localhost:1111\",\"name\":\"Cart Viewed\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"referring_domain\":\"localhost:1111\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"tab_url\":\"http://localhost:1111/My_first_app/first.html\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"identify\",\"event_time\":1621401915,\"event_source_url\":\"www.rudderstack.com\"}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Sample Track Call\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"KEY_3.CHILD_KEY_4\":\"value_3\",\"KEY_3.CHILD_KEY_5\":\"value_4\",\"affiliation\":\"Apple Store\",\"anonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"category\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"name\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"products[0].affiliation\":\"Google Store\",\"products[0].anonymous_id\":\"nskjbjasc623656253bb\",\"products[0].brand\":\"Gucci\",\"products[0].category\":\"pants\",\"products[0].coupon\":\"SUMMER_FUN\",\"products[0].creative\":\"Summer Banner\",\"products[0].creative_slot\":\"featured_app_1\",\"products[0].currency\":\"USD\",\"products[0].discount\":2.22,\"products[0].event\":\"Sample Identify call\",\"products[0].event_text\":\"identify\",\"products[0].id\":\"ID101\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].location_id\":\"L_12345\",\"products[0].name\":\"jeggings\",\"products[0].original_timestamp\":\"1403743443\",\"products[0].position\":\"home_top\",\"products[0].price\":9.99,\"products[0].product_id\":\"SKU_12345\",\"products[0].promotion_id\":\"P_12345\",\"products[0].promotion_name\":\"Summer Sale\",\"products[0].quantity\":1,\"products[0].rating\":\"5\",\"products[0].received_at\":\"202101091347654\",\"products[0].recipient\":\"name@friendsemail.com\",\"products[0].review_body\":\"Good product, delivered in excellent condition\",\"products[0].review_id\":\"review12\",\"products[0].sent_at\":\"20210109134567\",\"products[0].share_message\":\"Check this\",\"products[0].share_via\":\"SMS\",\"products[0].sku\":\"G-32\",\"products[0].timestamp\":\"1403743443\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[0].variant\":\"Black\",\"products[0].wishlist_id\":\"12345\",\"products[0].wishlist_name\":\"Games\",\"products[1].affiliation\":\"Google Store\",\"products[1].brand\":\"Gucci\",\"products[1].category\":\"pants\",\"products[1].coupon\":\"SUMMER_FUN\",\"products[1].creative_name\":\"Summer Banner\",\"products[1].creative_slot\":\"featured_app_1\",\"products[1].currency\":\"USD\",\"products[1].discount\":2.22,\"products[1].image_url\":\"https://www.website.com/product/path.png\",\"products[1].location_id\":\"L_12345\",\"products[1].name\":\"leggings\",\"products[1].price\":9.99,\"products[1].product_id\":\"SKU_12347\",\"products[1].promotion_id\":\"P_12345\",\"products[1].promotion_name\":\"Summer Sale\",\"products[1].quantity\":1,\"products[1].rating\":\"5\",\"products[1].recipient\":\"name@friendsemail.com\",\"products[1].review_body\":\"Good product, delivered in excellent condition\",\"products[1].review_id\":\"review12\",\"products[1].share_message\":\"Check this\",\"products[1].share_via\":\"SMS\",\"products[1].sku\":\"G-33\",\"products[1].url\":\"https://www.website.com/product/path\",\"products[1].variant\":\"Black\",\"products[1].wishlist_id\":\"12345\",\"products[1].wishlist_name\":\"Games\",\"promotion_id\":\"promo1\",\"query\":\"HDMI cable\",\"reason\":\"Coupon expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":22,\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"content_ids\":[\"223344ffdds3ff3\",\"343344ff5567ff3\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"223344ffdds3ff3\"},{\"id\":\"343344ff5567ff3\"}],\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Promotion Viewed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Promotion Clicked\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Clicked\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Gamepro\",\"category\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"AddToCart\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Removed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Gamepro\",\"category\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Cart Viewed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"12345\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Cards\",\"products[0].position\":1,\"products[0].price\":14.99,\"products[0].product_id\":\"123\",\"products[0].sku\":\"G-14\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].position\":2,\"products[1].price\":3.99,\"products[1].product_id\":\"345\",\"products[1].sku\":\"G-32\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"content_ids\":[\"123\",\"345\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":1,\"item_price\":14},{\"id\":\"345\",\"quantity\":2,\"item_price\":3.45}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Checkout Step Viewed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Checkout Step Completed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Payment Info Entered\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"checkout_id\":\"12344\",\"order_id\":\"123\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Order Updated\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":14,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3.45,\"products[1].product_id\":\"345\",\"products[1].quantity\":2,\"products[1].sku\":\"F-32\",\"shipping\":22,\"tax\":1,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"content_ids\":[\"123\",\"345\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":1,\"item_price\":14},{\"id\":\"345\",\"quantity\":2,\"item_price\":3.45}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Order Refunded\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"currency\":\"USD\",\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":17,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3,\"products[1].product_id\":\"345\",\"products[1].quantity\":1,\"products[1].sku\":\"F-32\",\"total\":20}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Order Cancelled\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":14,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3.45,\"products[1].product_id\":\"345\",\"products[1].quantity\":2,\"products[1].sku\":\"F-32\",\"shipping\":22,\"tax\":1,\"total\":20,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Coupon Entered\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"1222111\",\"coupon_id\":\"disc20\",\"order_id\":\"12345\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Coupon Denied\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"1211\",\"coupon\":\"Disc21\",\"order_id\":\"123\",\"reason\":\"Coupon expired\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Coupon Applied\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Cart Shared\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"1234df2ddss\",\"products[0].product_id\":\"125\",\"products[1].product_id\":\"297\",\"recipient\":\"friend@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Wishlist Product Added to Cart\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Shared\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Maples\",\"category\":\"Games\",\"image_url\":\"https://www.myecommercewebsite.com/product/prod.jpg\",\"name\":\"Cards\",\"price\":15.99,\"product_id\":\"12345872254426\",\"recipient\":\"name@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"sku\":\"F-13\",\"url\":\"https://www.myecommercewebsite.com/product/prod\",\"variant\":\"150s\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Removed from Wishlist\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Added to Wishlist\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Coupon Removed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"cart_id\":\"124\",\"coupon_id\":\"Dis123\",\"coupon_name\":\"Disc20\",\"discount\":20,\"order_id\":\"1211\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36\"},\"event_name\":\"Product Reviewed\",\"event_time\":1621401915,\"event_source_url\":\"http://localhost:1111/My_first_app/first.html\",\"custom_data\":{\"product_id\":\"12345\",\"rating\":\"5\",\"review_body\":\"Good product, delivered in excellent condition\",\"review_id\":\"review12\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"e03a2a38a932d67c6c9747c0d818a3da481269f05a8a080f960e4725ed4480d5\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_ip_address\":\"0.0.0.0\"},\"event_name\":\"identify\",\"event_time\":1621409924}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"f3b73d056265663bb6b306b0b21eeffbd78c0c3ddab8ce9541179d05988f3a8b\"},\"event_name\":\"Viewed Page Cart Viewed\",\"event_time\":1621409924,\"event_source_url\":\"http://shopping.pacaa.com/\",\"custom_data\":{\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\",\"client_ip_address\":\"0.0.0.0\"},\"event_name\":\"Sample Track Call\",\"event_time\":1621409924,\"custom_data\":{\"KEY_3.CHILD_KEY_4\":\"value_3\",\"KEY_3.CHILD_KEY_5\":\"value_4\",\"affiliation\":\"Apple Store\",\"anonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"category\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"name\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"products[0].affiliation\":\"Google Store\",\"products[0].anonymous_id\":\"nskjbjasc623656253bb\",\"products[0].brand\":\"Gucci\",\"products[0].category\":\"pants\",\"products[0].coupon\":\"SUMMER_FUN\",\"products[0].creative\":\"Summer Banner\",\"products[0].creative_slot\":\"featured_app_1\",\"products[0].currency\":\"USD\",\"products[0].discount\":2.22,\"products[0].event\":\"Sample Identify call\",\"products[0].event_text\":\"identify\",\"products[0].id\":\"ID101\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].location_id\":\"L_12345\",\"products[0].name\":\"jeggings\",\"products[0].original_timestamp\":\"1403743443\",\"products[0].position\":\"home_top\",\"products[0].price\":9.99,\"products[0].product_id\":\"SKU_12345\",\"products[0].promotion_id\":\"P_12345\",\"products[0].promotion_name\":\"Summer Sale\",\"products[0].quantity\":1,\"products[0].rating\":\"5\",\"products[0].received_at\":\"202101091347654\",\"products[0].recipient\":\"name@friendsemail.com\",\"products[0].review_body\":\"Good product, delivered in excellent condition\",\"products[0].review_id\":\"review12\",\"products[0].sent_at\":\"20210109134567\",\"products[0].share_message\":\"Check this\",\"products[0].share_via\":\"SMS\",\"products[0].sku\":\"G-32\",\"products[0].timestamp\":\"1403743443\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[0].variant\":\"Black\",\"products[0].wishlist_id\":\"12345\",\"products[0].wishlist_name\":\"Games\",\"products[1].affiliation\":\"Google Store\",\"products[1].brand\":\"Gucci\",\"products[1].category\":\"pants\",\"products[1].coupon\":\"SUMMER_FUN\",\"products[1].creative_name\":\"Summer Banner\",\"products[1].creative_slot\":\"featured_app_1\",\"products[1].currency\":\"USD\",\"products[1].discount\":2.22,\"products[1].image_url\":\"https://www.website.com/product/path.png\",\"products[1].location_id\":\"L_12345\",\"products[1].name\":\"leggings\",\"products[1].price\":9.99,\"products[1].product_id\":\"SKU_12347\",\"products[1].promotion_id\":\"P_12345\",\"products[1].promotion_name\":\"Summer Sale\",\"products[1].quantity\":1,\"products[1].rating\":\"5\",\"products[1].recipient\":\"name@friendsemail.com\",\"products[1].review_body\":\"Good product, delivered in excellent condition\",\"products[1].review_id\":\"review12\",\"products[1].share_message\":\"Check this\",\"products[1].share_via\":\"SMS\",\"products[1].sku\":\"G-33\",\"products[1].url\":\"https://www.website.com/product/path\",\"products[1].variant\":\"Black\",\"products[1].wishlist_id\":\"12345\",\"products[1].wishlist_name\":\"Games\",\"promotion_id\":\"promo1\",\"query\":\"HDMI cable\",\"reason\":\"Coupon expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":22,\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Search\",\"event_time\":1621409924,\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"ViewContent\",\"event_time\":1621409924,\"custom_data\":{\"content_ids\":[\"223344ffdds3ff3\",\"343344ff5567ff3\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"223344ffdds3ff3\"},{\"id\":\"343344ff5567ff3\"}],\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Promotion Viewed\",\"event_time\":1621409924,\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Promotion Clicked\",\"event_time\":1621409924,\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Clicked\",\"event_time\":1621409924,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"brand\":\"Gamepro\",\"category\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"ViewContent\",\"event_time\":1621409924,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"AddToCart\",\"event_time\":1621409924,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Removed\",\"event_time\":1621409924,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"brand\":\"Gamepro\",\"category\":\"Games\",\"coupon\":\"DISC21\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":1,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\",\"variant\":\"111\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Cart Viewed\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"12345\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Cards\",\"products[0].position\":1,\"products[0].price\":14.99,\"products[0].product_id\":\"123\",\"products[0].sku\":\"G-14\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].position\":2,\"products[1].price\":3.99,\"products[1].product_id\":\"345\",\"products[1].sku\":\"G-32\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1621409924,\"custom_data\":{\"content_ids\":[\"123\",\"345\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":1,\"item_price\":14},{\"id\":\"345\",\"quantity\":2,\"item_price\":3.45}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Checkout Step Viewed\",\"event_time\":1621409924,\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Checkout Step Completed\",\"event_time\":1621409924,\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"Mastercard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Payment Info Entered\",\"event_time\":1621409924,\"custom_data\":{\"checkout_id\":\"12344\",\"order_id\":\"123\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Order Updated\",\"event_time\":1621409924,\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":14,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3.45,\"products[1].product_id\":\"345\",\"products[1].quantity\":2,\"products[1].sku\":\"F-32\",\"shipping\":22,\"tax\":1,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Purchase\",\"event_time\":1621409924,\"custom_data\":{\"content_ids\":[\"123\",\"345\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":1,\"item_price\":14},{\"id\":\"345\",\"quantity\":2,\"item_price\":3.45}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Order Refunded\",\"event_time\":1621409924,\"custom_data\":{\"currency\":\"USD\",\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":17,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3,\"products[1].product_id\":\"345\",\"products[1].quantity\":1,\"products[1].sku\":\"F-32\",\"total\":20}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Order Cancelled\",\"event_time\":1621409924,\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].image_url\":\"https://www.website.com/product/path.jpg\",\"products[0].name\":\"Monopoly\",\"products[0].price\":14,\"products[0].product_id\":\"123\",\"products[0].quantity\":1,\"products[0].sku\":\"G-32\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].name\":\"UNO\",\"products[1].price\":3.45,\"products[1].product_id\":\"345\",\"products[1].quantity\":2,\"products[1].sku\":\"F-32\",\"shipping\":22,\"tax\":1,\"total\":20,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Coupon Entered\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"1222111\",\"coupon_id\":\"disc20\",\"order_id\":\"12345\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Coupon Applied\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Coupon Denied\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"1211\",\"coupon\":\"Disc21\",\"order_id\":\"123\",\"reason\":\"Coupon expired\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Coupon Removed\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"124\",\"coupon_id\":\"Dis123\",\"coupon_name\":\"Disc20\",\"discount\":20,\"order_id\":\"1211\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Added to Wishlist\",\"event_time\":1621409924,\"event_source_url\":\"https://www.site.com/product/path\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Removed from Wishlist\",\"event_time\":1621409924,\"event_source_url\":\"https://www.site.com/product/path\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Wishlist Product Added to Cart\",\"event_time\":1621409924,\"event_source_url\":\"https://www.site.com/product/path\",\"custom_data\":{\"brand\":\"Imagepro\",\"category\":\"Games\",\"coupon\":\"COUPON\",\"image_url\":\"https://www.site.com/product/path.jpg\",\"name\":\"Cards\",\"position\":1,\"price\":8.99,\"product_id\":\"235564423234\",\"quantity\":1,\"sku\":\"F-17\",\"url\":\"https://www.site.com/product/path\",\"variant\":\"123\",\"wishlist_id\":\"12345\",\"wishlist_name\":\"Games\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Shared\",\"event_time\":1621409924,\"event_source_url\":\"https://www.myecommercewebsite.com/product/prod\",\"custom_data\":{\"brand\":\"Maples\",\"category\":\"Games\",\"image_url\":\"https://www.myecommercewebsite.com/product/prod.jpg\",\"name\":\"Cards\",\"price\":15.99,\"product_id\":\"12345872254426\",\"recipient\":\"name@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"sku\":\"F-13\",\"url\":\"https://www.myecommercewebsite.com/product/prod\",\"variant\":\"150s\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Cart Shared\",\"event_time\":1621409924,\"custom_data\":{\"cart_id\":\"1234df2ddss\",\"products[0].product_id\":\"125\",\"products[1].product_id\":\"297\",\"recipient\":\"friend@friendsemail.com\",\"share_message\":\"Check this\",\"share_via\":\"SMS\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"7cdc5c8c4959f0792663e850ec69077bb9e6f9f48ed2a81eb26c2e26f8ef4c48\"},\"event_name\":\"Product Reviewed\",\"event_time\":1621409924,\"custom_data\":{\"product_id\":\"12345\",\"rating\":\"5\",\"review_body\":\"Good product, delivered in excellent condition\",\"review_id\":\"review12\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"01193b99d9d741d792ad1df41fa4c0f540cfdb9f6d12d7635cfca0d561d69f82\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"identify\",\"event_time\":1622094958}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Viewed a Page\",\"event_time\":1622094958,\"event_source_url\":\"http://shopping.pacaa.com/\",\"custom_data\":{\"category\":\"cart viewed\",\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"name\":\"cart\",\"original_timestamp\":\"1403743443\",\"path\":\"clipkart.com\",\"received_at\":\"202101091347654\",\"referrer\":\"gamazon.con\",\"search\":\"home\",\"sent_at\":\"20210109134567\",\"timestamp\":\"1403743443\",\"title\":\"e-commerce\",\"url\":\"http://shopping.pacaa.com/\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Sample Track Call\",\"event_time\":1622094958,\"custom_data\":{\"KEY_3.CHILD_KEY_4\":\"value_3\",\"KEY_3.CHILD_KEY_5\":\"value_4\",\"affiliation\":\"Apple Store\",\"annonymous_id\":\"nskjbjasc623656253bb\",\"cart_id\":\"1234df2ddss\",\"category\":\"Apparel\",\"checkout_id\":\"LK980456\",\"coupon\":\"ImagePro\",\"coupon_id\":\"disc20\",\"coupon_name\":\"Disc21\",\"creative\":\"banner1\",\"currency\":\"USD\",\"discount\":1.5,\"event\":\"Sample Identify call\",\"event_text\":\"identify\",\"id\":\"ID101\",\"list_id\":\"list1\",\"location_id\":\"L_12345\",\"name\":\"sale\",\"order_id\":\"1234\",\"original_timestamp\":\"1403743443\",\"payment_method\":\"Credit card\",\"position\":\"home_top\",\"products[0].affiliation\":\"Google Store\",\"products[0].anonymous_id\":\"nskjbjasc623656253bb\",\"products[0].brand\":\"Gucci\",\"products[0].category\":\"pants\",\"products[0].coupon\":\"SUMMER_FUN\",\"products[0].creative\":\"Summer Banner\",\"products[0].creative_slot\":\"featured_app_1\",\"products[0].currency\":\"USD\",\"products[0].discount\":2.22,\"products[0].event\":\"Sample Identify call\",\"products[0].event_text\":\"identify\",\"products[0].id\":\"ID101\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].location_id\":\"L_12345\",\"products[0].name\":\"jeggings\",\"products[0].original_timestamp\":\"1403743443\",\"products[0].position\":\"home_top\",\"products[0].price\":9.99,\"products[0].product_id\":\"SKU_12345\",\"products[0].promotion_id\":\"P_12345\",\"products[0].promotion_name\":\"Summer Sale\",\"products[0].quantity\":1,\"products[0].rating\":\"5\",\"products[0].received_at\":\"202101091347654\",\"products[0].recipient\":\"name@friendsemail.com\",\"products[0].review_body\":\"Good product, delivered in excellent condition\",\"products[0].review_id\":\"review12\",\"products[0].sent_at\":\"20210109134567\",\"products[0].share_message\":\"Check this\",\"products[0].share_via\":\"SMS\",\"products[0].sku\":\"G-32\",\"products[0].timestamp\":\"1403743443\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[0].variant\":\"Black\",\"products[0].wishlist_id\":\"12345\",\"products[0].wishlist_name\":\"Games\",\"products[1].affiliation\":\"Google Store\",\"products[1].brand\":\"Gucci\",\"products[1].category\":\"pants\",\"products[1].coupon\":\"SUMMER_FUN\",\"products[1].creative\":\"Summer Banner\",\"products[1].creative_slot\":\"featured_app_1\",\"products[1].currency\":\"USD\",\"products[1].discount\":2.22,\"products[1].image_url\":\"https://www.website.com/product/path.png\",\"products[1].location_id\":\"L_12345\",\"products[1].name\":\"leggings\",\"products[1].price\":9.99,\"products[1].product_id\":\"SKU_12347\",\"products[1].promotion_id\":\"P_12345\",\"products[1].promotion_name\":\"Summer Sale\",\"products[1].quantity\":1,\"products[1].rating\":\"5\",\"products[1].recipient\":\"name@friendsemail.com\",\"products[1].review_body\":\"Good product, delivered in excellent condition\",\"products[1].review_id\":\"review12\",\"products[1].share_message\":\"Check this\",\"products[1].share_via\":\"SMS\",\"products[1].sku\":\"G-32\",\"products[1].url\":\"https://www.website.com/product/path\",\"products[1].variant\":\"Black\",\"products[1].wishlist_id\":\"12345\",\"products[1].wishlist_name\":\"Games\",\"promotion_id\":\"promo1\",\"query\":\"HDMI cable\",\"reason\":\"Coupon Expired\",\"received_at\":\"202101091347654\",\"recipient\":\"friend@friendsemail.com\",\"sent_at\":\"20210109134567\",\"share_message\":\"Check this\",\"share_via\":\"SMS\",\"shipping\":\"22\",\"shipping_method\":\"AIR\",\"step\":2,\"tax\":1,\"timestamp\":\"1403743443\",\"total\":17,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Search\",\"event_time\":1622094958,\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"ViewContent\",\"event_time\":1622094958,\"custom_data\":{\"content_ids\":[\"123\",\"123\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"123\"},{\"id\":\"123\"}],\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Promotion Viewed\",\"event_time\":1622094958,\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Promotion Clicked\",\"event_time\":1622094958,\"custom_data\":{\"creative\":\"banner1\",\"name\":\"sale\",\"position\":\"home_top\",\"promotion_id\":\"promo1\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Clicked\",\"event_time\":1622094958,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"ViewContent\",\"event_time\":1622094958,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"AddToCart\",\"event_time\":1622094958,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"content_ids\":[\"123\"],\"content_type\":\"product\",\"content_name\":\"Game\",\"content_category\":\"Games\",\"currency\":\"USD\",\"value\":13.49,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Removed\",\"event_time\":1622094959,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Cart Viewed\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"some_cart_id\",\"products[0].category\":\"Games\",\"products[0].coupon\":\"DISC21\",\"products[0].currency\":\"USD\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].name\":\"Game\",\"products[0].position\":0,\"products[0].price\":13.49,\"products[0].product_id\":\"123\",\"products[0].quantity\":11,\"products[0].sku\":\"F15\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].coupon\":\"DISC21\",\"products[1].currency\":\"USD\",\"products[1].name\":\"Game\",\"products[1].position\":0,\"products[1].price\":13.49,\"products[1].product_id\":\"123\",\"products[1].quantity\":11,\"products[1].sku\":\"F15\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1622094959,\"custom_data\":{\"content_ids\":[\"123\",\"123\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49},{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Checkout Step Viewed\",\"event_time\":1622094959,\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"MasterCard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Checkout Step Completed\",\"event_time\":1622094959,\"custom_data\":{\"checkout_id\":\"123\",\"payment_method\":\"MasterCard\",\"shipping_method\":\"DHL\",\"step\":1}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Payment Info Entered\",\"event_time\":1622094959,\"custom_data\":{\"checkout_id\":\"12344\",\"order_id\":\"123\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Order Updated\",\"event_time\":1622094959,\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].coupon\":\"DISC21\",\"products[0].currency\":\"USD\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].name\":\"Game\",\"products[0].position\":0,\"products[0].price\":13.49,\"products[0].product_id\":\"123\",\"products[0].quantity\":11,\"products[0].sku\":\"F15\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].coupon\":\"DISC21\",\"products[1].currency\":\"USD\",\"products[1].name\":\"Game\",\"products[1].position\":0,\"products[1].price\":13.49,\"products[1].product_id\":\"123\",\"products[1].quantity\":11,\"products[1].sku\":\"F15\",\"shipping\":22,\"tax\":1,\"total\":0,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Purchase\",\"event_time\":1622094959,\"custom_data\":{\"content_ids\":[\"123\",\"123\"],\"content_type\":\"product\",\"currency\":\"USD\",\"value\":15,\"contents\":[{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49},{\"id\":\"123\",\"quantity\":11,\"item_price\":13.49}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Order Refunded\",\"event_time\":1622094959,\"custom_data\":{\"order_id\":\"1234\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Order Cancelled\",\"event_time\":1622094959,\"custom_data\":{\"affiliation\":\"Apple Store\",\"coupon\":\"ImagePro\",\"currency\":\"USD\",\"discount\":1.5,\"order_id\":\"1234\",\"products[0].category\":\"Games\",\"products[0].coupon\":\"DISC21\",\"products[0].currency\":\"USD\",\"products[0].image_url\":\"https://www.website.com/product/path.png\",\"products[0].name\":\"Game\",\"products[0].position\":0,\"products[0].price\":13.49,\"products[0].product_id\":\"123\",\"products[0].quantity\":11,\"products[0].sku\":\"F15\",\"products[0].url\":\"https://www.website.com/product/path\",\"products[1].category\":\"Games\",\"products[1].coupon\":\"DISC21\",\"products[1].currency\":\"USD\",\"products[1].name\":\"Game\",\"products[1].position\":0,\"products[1].price\":13.49,\"products[1].product_id\":\"123\",\"products[1].quantity\":11,\"products[1].sku\":\"F15\",\"shipping\":22,\"tax\":1,\"total\":0,\"value\":15}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Coupon Entered\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Coupon Applied\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Coupon Denied\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Coupon Removed\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"123566\",\"coupon_id\":\"23321\",\"coupon_name\":\"Disc21\",\"discount\":21,\"order_id\":\"1223455\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Added to Wishlist\",\"event_time\":1622094959,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Removed from Wishlist\",\"event_time\":1622094959,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Wishlist Product Added to Cart\",\"event_time\":1622094959,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Shared\",\"event_time\":1622094959,\"event_source_url\":\"https://www.website.com/product/path\",\"custom_data\":{\"category\":\"Games\",\"coupon\":\"DISC21\",\"currency\":\"USD\",\"image_url\":\"https://www.website.com/product/path.png\",\"name\":\"Game\",\"position\":0,\"price\":13.49,\"product_id\":\"123\",\"quantity\":11,\"sku\":\"F15\",\"url\":\"https://www.website.com/product/path\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Cart Shared\",\"event_time\":1622094959,\"custom_data\":{\"cart_id\":\"1234df2ddss\",\"products[0].product_id\":\"123\",\"products[1].product_id\":\"123\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v10.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"391214a7f0c93b5d8a51c4e2ddded7297e71f91dee6e59ca84a6193483b0f4b8\",\"em\":\"22b7c3c7afae38e83654784c1112daafecca8f65a9ec4c1357187cc76f324f34\",\"ph\":\"5cdee8fe73db1737efffacd54ef5d13b23dccecc40080f02e759d74184527baa\",\"db\":\"b0c564d3c5f89b0e6e93076738c868bfc447c0adba3975adc252ccc4feef47f2\",\"ln\":\"a9d354a78348bc0f8d28e19ab9e0721ddc59a99a1581c58a4205dc0d5ec03138\",\"fn\":\"e1754495a593ab827b7ef1870f61fbd2dc426a571ccb1916ee2b69fa7c85fee9\",\"client_user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)\"},\"event_name\":\"Product Reviewed\",\"event_time\":1622094959,\"custom_data\":{\"product_id\":\"123\",\"rating\":5,\"review_body\":\"Good product, delivered in excellent condition\",\"review_id\":\"review12\"}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported"
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "metadata": [{ "jobId": 1 }],
+    "batched": false,
+    "statusCode": 500,
+    "error": "message type track is not supported"
+  }
+]

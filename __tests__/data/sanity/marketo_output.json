@@ -1,0 +1,295 @@
+[
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "City": "east greenwich",
+            "Company": "Rudderlabs",
+            "Country": "USA",
+            "Email": "testkolkata@rudderlabs.com",
+            "FirstName": "Adhir",
+            "Industry": "IT",
+            "LastName": "Das",
+            "OriginalSourceInfo": "WEB",
+            "NumberOfEmployees": 1200,
+            "Phone": "570-690-4150",
+            "PostalCode": "94115",
+            "Rating": "Hot",
+            "State": "RI",
+            "Address": "19123 forest lane",
+            "Title": "Mr",
+            "id": 4,
+            "userId": "sanity_user1000"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2021-05-19T05:25:15.216Z",
+            "activityTypeId": 100001,
+            "attributes": [],
+            "leadId": 4,
+            "primaryAttributeValue": "Game"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "City": "east greenwich",
+            "Company": "Rudderlabs",
+            "Country": "USA",
+            "Email": "testkolkata@rudderlabs.com",
+            "FirstName": "Adhir",
+            "Industry": "IT",
+            "LastName": "Das",
+            "OriginalSourceInfo": "WEB",
+            "NumberOfEmployees": 1200,
+            "Phone": "570-690-4150",
+            "PostalCode": "94115",
+            "Rating": "Hot",
+            "State": "RI",
+            "Address": "19123 forest lane",
+            "Title": "Mr",
+            "id": 4,
+            "userId": "sanity1001"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Message type not supported" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2021-05-19T07:38:44.770Z",
+            "activityTypeId": 100001,
+            "attributes": [],
+            "leadId": 4,
+            "primaryAttributeValue": "Game"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "City": "east greenwich",
+            "Company": "Rudderlabs",
+            "Country": "USA",
+            "Email": "testkolkata@rudderlabs.com",
+            "Industry": "IT",
+            "OriginalSourceInfo": "WEB",
+            "NumberOfEmployees": 1200,
+            "Phone": "570-690-4150",
+            "PostalCode": "94115",
+            "Rating": "Hot",
+            "State": "RI",
+            "Address": "19123 forest lane",
+            "Title": "Mr",
+            "DateofBirth": "12/12/12",
+            "id": 4,
+            "userId": "sanity_user1000"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Message type not supported" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "input": [
+          {
+            "activityDate": "2021-05-27T05:55:58.888Z",
+            "activityTypeId": 100001,
+            "attributes": [],
+            "leadId": 4,
+            "primaryAttributeValue": "Game"
+          }
+        ]
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Event is not mapped to Custom Activity" },
+  { "error": "Message type not supported" },
+  { "error": "Message type not supported" }
+]

@@ -1,0 +1,672 @@
+[
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "a1b2c3d4e5f6g7h8i9j10",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Sample Track Call",
+        "sentAt": "2021-05-19T05:25:15.167Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "4e22afaf-73ec-48aa-81c4-2f45f9ef71ab"
+      }
+    ]
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Product List Viewed",
+        "sentAt": "2021-05-19T05:25:15.188Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "df55763a-cca5-46fc-94a2-755857f39ad7"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Viewed",
+        "sentAt": "2021-05-19T05:25:15.254Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "4c31bf22-ca60-4a5d-9899-3c77a38aed1a"
+      }
+    ]
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Checkout Started",
+        "sentAt": "2021-05-19T05:25:15.266Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1ec76cca-06e6-48a8-b62a-2f15a8120c80"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Updated",
+        "sentAt": "2021-05-19T05:25:15.309Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "8fff532f-32b5-4e9a-b6d6-ae8cde820e11"
+      }
+    ]
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Completed",
+        "sentAt": "2021-05-19T05:25:15.316Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "30eccec9-1bf8-4941-8539-a8a94de575fe"
+      }
+    ]
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Refunded",
+        "sentAt": "2021-05-19T05:25:15.328Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "6418ccb0-3429-48c8-ad4e-f42c9d972ae0"
+      }
+    ]
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Cancelled",
+        "sentAt": "2021-05-19T05:25:15.337Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "4867726e-f77a-4002-8361-cd6a1a2e920a"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanity_user1000",
+    "sessionId": "75e07af0-d3a8-4f1e-8246-5cd5f8156612",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Shared",
+        "sentAt": "2021-05-19T05:25:15.420Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "0f446e01-6e31-47a1-b600-15680b526dc2"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "a1b2c3d4e5f6g7h8i9j10",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Sample Track Call",
+        "sentAt": "2021-05-19T07:38:44.764Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-3727596b93d8a238323c7cdf35987330-e548a21f-31fd-4961-bc2e-679533508536"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Product List Viewed",
+        "sentAt": "2021-05-19T07:38:44.769Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-f92f63856ede65a87f1749a55f78dba6-d7349b37-2fe9-4c30-8831-3462069bd2d8"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Viewed",
+        "sentAt": "2021-05-19T07:38:44.771Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-d345340b10e52d3d5006ac22b8207e71-abede659-597c-4ef7-8d5f-ebf6d2d19b08"
+      }
+    ]
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Checkout Started",
+        "sentAt": "2021-05-19T07:38:44.771Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-a4889d9ffb756c50f2210350318a6a5b-005ec58f-9508-4af5-920d-93982987ad70"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Updated",
+        "sentAt": "2021-05-19T07:38:44.772Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-cc7de85d52ee1821b1752c44a78fad44-4ebd17d4-268e-4af5-9f6c-76cd089b1aff"
+      }
+    ]
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Completed",
+        "sentAt": "2021-05-19T07:38:44.772Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-8efdac65fc110d5ca5b36cf8b982aadb-b0372a7c-98ce-4e41-bae6-9d9a4fd1d2a2"
+      }
+    ]
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Refunded",
+        "sentAt": "2021-05-19T07:38:44.772Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-031937ad966c10d2afcd41c7a451e15b-5e9ec8a6-24af-4dc7-993b-f3f8387f62d2"
+      }
+    ]
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Cancelled",
+        "sentAt": "2021-05-19T07:38:44.773Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-5eced243fbb4f4ec574b837cc855e7de-1fcf4984-221f-41bb-bea8-2df07f42445d"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "sanityuser100",
+    "sessionId": "sanityuser100",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Shared",
+        "sentAt": "2021-05-19T07:38:44.777Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "node-f2b01f5adee572c765bc59f34b6845cb-ecfe50cb-7c94-4f34-9112-d7bd05da0ed1"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Sample Track Call",
+        "sentAt": "2021-05-27T05:55:58.396Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094958395-fc37034b-cb28-475f-8c15-f65747f14285"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Product List Viewed",
+        "sentAt": "2021-05-27T05:55:58.554Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094958553-a566e5a5-a50b-488a-adec-0fa5261e87bf"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Viewed",
+        "sentAt": "2021-05-27T05:55:59.100Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959099-3b4548c9-c646-4423-90e1-71e9df65e2b2"
+      }
+    ]
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Checkout Started",
+        "sentAt": "2021-05-27T05:55:59.139Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959138-eedc7b24-1174-4ca8-bc3e-f09446cd4675"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Updated",
+        "sentAt": "2021-05-27T05:55:59.355Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959354-d299801d-cdb2-433b-82d8-83bf26807f86"
+      }
+    ]
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Completed",
+        "sentAt": "2021-05-27T05:55:59.390Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959389-34d413ae-3a6d-4270-83e4-57cef374c8e9"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Order Cancelled",
+        "sentAt": "2021-05-27T05:55:59.480Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959479-28554bd2-061b-4443-9758-a08e177873ad"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "userId": "ID101",
+    "sessionId": "f54bb572361c4fd1",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "Cart Shared",
+        "sentAt": "2021-05-27T05:55:59.879Z",
+        "properties": {
+          "products": "[object Object],[object Object]"
+        },
+        "itemId": "1622094959879-e2721b6c-361e-48d7-9aab-ceb7d2808990"
+      }
+    ]
+  },
+  {
+    "statusCode": 400,
+    "error": "Mapped property products not found"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "statusCode": 400,
+    "error": " Cannot process if no event name specified"
+  }
+]

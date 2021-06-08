@@ -92,7 +92,7 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        collectStats(error, event);
+        collectStats(error, event, "processor");
         respList.push({
           metadata: event.metadata,
           statusCode: 400,

@@ -1,12 +1,14 @@
+/* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 const _ = require("lodash");
 const { isDefined } = require("..");
 const stats = require("../../../util/stats");
 const GenericResponseRules = require("./data/GenericResponseRules.json");
 
-const TRANSFORMER_STATS_STORE = "transformer_errors";
+const TRANSFORMER_STATS_STORE = "destination_error_pool";
+const STAGE = "transformer";
 
-const collectStats = (error, event) => {
+const collectStats = (error, event, transformedAt) => {
   let statusCode;
   let destConfig;
   const errKey = error.message;
@@ -41,7 +43,9 @@ const collectStats = (error, event) => {
   }
   stats.increment(TRANSFORMER_STATS_STORE, 1, {
     code: statusCode,
-    destination: DestinationDefinition.Name
+    destination: DestinationDefinition.Name,
+    transformedAt,
+    stage: STAGE
   });
 };
 

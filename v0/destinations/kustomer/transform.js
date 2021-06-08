@@ -256,7 +256,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        collectStats(error, input);
+        collectStats(error, input, "router");
         return getErrorRespEvents(
           [input.metadata],
           error.response

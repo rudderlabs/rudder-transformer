@@ -17,12 +17,18 @@ class CustomError extends Error {
 const transformNumberField = fieldName => {
   const typeDelim = "";
   const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
+  if (_.endsWith(transformedFieldName, "Num")) {
+    return transformedFieldName;
+  }
   return `${transformedFieldName}${typeDelim}Num`;
 };
 // handles for Date type fields
 const transformDateField = fieldName => {
   const typeDelim = "";
   const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
+  if (_.endsWith(transformedFieldName, "At")) {
+    return transformedFieldName;
+  }
   return `${transformedFieldName}${typeDelim}At`;
 };
 // handles other type fields

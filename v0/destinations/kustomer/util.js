@@ -6,6 +6,19 @@ const get = require("get-value");
 const { BASE_ENDPOINT } = require("./config");
 const { getType, isDefinedAndNotNull, isObject } = require("../../util");
 
+/**
+ * RegExp to test a string for a ISO 8601 Date spec
+ *  YYYY
+ *  YYYY-MM
+ *  YYYY-MM-DD
+ *  YYYY-MM-DDThh:mmTZD
+ *  YYYY-MM-DDThh:mm:ssTZD
+ *  YYYY-MM-DDThh:mm:ss.sTZD
+ * @see: https://www.w3.org/TR/NOTE-datetime
+ * @type {RegExp}
+ */
+const ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
+
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -54,7 +67,7 @@ const handleAdvancedtransformations = event => {
     Object.keys(meta).forEach(propKey => {
       if (getType(meta[propKey]) == "number") {
         transformedMeta[transformNumberField(propKey)] = meta[propKey];
-      } else if (new Date(meta[propKey]) != "Invalid Date") {
+      } else if (ISO_8601.test(meta[propKey])) {
         transformedMeta[transformDateField(propKey)] = meta[propKey];
       } else {
         transformedMeta[transformField(propKey)] = meta[propKey];

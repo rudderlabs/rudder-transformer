@@ -1,24 +1,16 @@
-const { getHashFromArray } = require("../../util");
-
-function getTopic(event) {
-  const { message } = event;
-  const { eventToTopicMap } = event.destination.Config;
-  const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
-
-  return (
-    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
-    hashMap[message.type.toLowerCase()] ||
-    hashMap["*"]
-  );
-}
+const { getTopic, createAttributesMetadata } = require("./util");
 
 function process(event) {
+  const { message, destination } = event;
   const topicId = getTopic(event);
   if (topicId) {
+    const attributes = createAttributesMetadata(message, destination);
+
     return {
-      message: event.message,
-      userId: event.message.anonymousId,
-      topicId
+      userId: message.anonymousId,
+      message,
+      topicId,
+      attributes
     };
   }
   throw new Error("No topic set for this event");

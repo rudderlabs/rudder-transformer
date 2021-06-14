@@ -67,10 +67,12 @@ const createAttributesMetadata = (message, { Config }) => {
     let found = false;
     SOURCE_KEYS.some(sourceKey => {
       const nestedObj = getValueFromMessage(message, sourceKey);
-      val = nestedObj[key] || getValueFromMessage(nestedObj, key);
-      if (isDefinedAndNotNull(val)) {
-        found = true;
-        return true;
+      if (nestedObj) {
+        val = nestedObj[key] || getValueFromMessage(nestedObj, key);
+        if (isDefinedAndNotNull(val)) {
+          found = true;
+          return true;
+        }
       }
       return false;
     });

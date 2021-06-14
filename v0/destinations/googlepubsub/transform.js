@@ -7,7 +7,7 @@ function process(event) {
     const attributes = createAttributesMetadata(message, destination);
 
     return {
-      userId: message.anonymousId,
+      userId: message.userId || message.anonymousId,
       message,
       topicId,
       attributes

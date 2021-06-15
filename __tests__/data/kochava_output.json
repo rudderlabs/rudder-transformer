@@ -11,8 +11,19 @@
         "action": "event",
         "kochava_app_id": "<kochava guid goes here>",
         "kochava_device_id": "sampath",
-        "send_date": "2020-01-17T04:53:51.185Z",
         "data": {
+          "app_tracking_transparency": {
+            "att": false
+          },
+          "currency": "USD",
+          "device_ids": {
+            "idfa": "",
+            "idvf": "",
+            "adid": "",
+            "android_id": ""
+          },
+          "device_ver": "",
+          "usertime": 1579236831185,
           "origination_ip": "1.1.1.1",
           "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
           "app_name": "RudderLabs JavaScript SDK",
@@ -33,65 +44,169 @@
   },
   { "statusCode": 400, "message": "message type not supported" },
   {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://control.kochava.com/track/json",
-      "headers": {},
-      "params": {},
-      "body": {
-        "JSON": {
-          "action": "event",
-          "kochava_app_id": "<kochava guid goes here>",
-          "kochava_device_id": "00000000000000000000000000",
-          "send_date": "2019-10-14T09:03:17.562Z",
-          "data": {
-            "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-            "app_name": "RudderLabs JavaScript SDK",
-            "app_version": "1.0.0",
-            "app_short_string": "1.0.0",
-            "screen_dpi": 2,
-            "locale": "en-US",
-            "event_name": "screen view",
-            "event_data": {},
-            "origination_ip": "1.1.1.1"
-          }
-        },
-        "XML": {},
-        "FORM": {}
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "00000000000000000000000000",
+        "data": {
+          "app_tracking_transparency": {
+            "att": false
+          },
+          "currency": "USD",
+          "device_ids": {
+            "idfa": "",
+            "idvf": "",
+            "adid": "",
+            "android_id": ""
+          },
+          "device_ver": "",
+          "os_version": "",
+          "usertime": 1571043797562,
+          "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "app_short_string": "1.0.0",
+          "screen_dpi": 2,
+          "locale": "en-US",
+          "event_name": "screen view",
+          "event_data": {},
+          "origination_ip": "1.1.1.1"
+        }
       },
-      "files": {},
-      "userId": "00000000000000000000000000"
+      "XML": {},
+      "FORM": {}
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://control.kochava.com/track/json",
-      "headers": {},
-      "params": {},
-      "body": {
-        "JSON": {
-          "action": "event",
-          "kochava_app_id": "<kochava guid goes here>",
-          "kochava_device_id": "00000000000000000000000000",
-          "send_date": "2019-10-14T09:03:17.562Z",
-          "data": {
-            "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-            "app_name": "RudderLabs JavaScript SDK",
-            "app_version": "1.0.0",
-            "app_short_string": "1.0.0",
-            "screen_dpi": 2,
-            "locale": "en-US",
-            "event_name": "screen view Home Screen",
-            "event_data": { "name": "Home Screen" },
-            "origination_ip": "1.1.1.1"
-          }
-        },
-        "XML": {},
-        "FORM": {}
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "00000000000000000000000000",
+        "data": {
+          "app_tracking_transparency": {
+            "att": false
+          },
+          "currency": "USD",
+          "device_ids": {
+            "idfa": "",
+            "idvf": "",
+            "adid": "",
+            "android_id": ""
+          },
+          "device_ver": "",
+          "os_version": "",
+          "usertime": 1571043797562,
+          "device_ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "app_name": "RudderLabs JavaScript SDK",
+          "app_version": "1.0.0",
+          "app_short_string": "1.0.0",
+          "screen_dpi": 2,
+          "locale": "en-US",
+          "event_name": "screen view Home Screen",
+          "event_data": { "name": "Home Screen" },
+          "origination_ip": "1.1.1.1"
+        }
       },
-      "files": {},
-      "userId": "00000000000000000000000000"
-    }
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "5094f5704b9cf2b3",
+        "data": {
+          "app_tracking_transparency": { "att": false },
+          "usertime": 1584003903421,
+          "app_version": "1",
+          "device_ver": "Android SDK built for x86-Android-8.1.0",
+          "device_ids": {
+            "idfa": "",
+            "idvf": "",
+            "adid": "some_adid",
+            "android_id": "5094f5704b9cf2b3"
+          },
+          "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "event_name": "screen view MainActivity",
+          "currency": "USD",
+          "event_data": { "name": "MainActivity", "automatic": true },
+          "app_name": "LeanPlumIntegrationAndroid",
+          "app_short_string": "1.0",
+          "locale": "en-US",
+          "os_version": "8.1.0",
+          "screen_dpi": 420
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5094f5704b9cf2b3"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "5094f5704b9cf2b3",
+        "data": {
+          "app_tracking_transparency": { "att": true },
+          "usertime": 1584003903421,
+          "app_version": "1",
+          "device_ver": "Android SDK built for x86-iOS-14.5",
+          "device_ids": {
+            "idfa": "some_adid",
+            "idvf": "5094f5704b9cf2b3",
+            "adid": "",
+            "android_id": ""
+          },
+          "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "event_name": "screen view MainActivity",
+          "currency": "USD",
+          "event_data": { "name": "MainActivity", "automatic": true },
+          "app_name": "LeanPlumIntegrationAndroid",
+          "app_short_string": "1.0",
+          "locale": "en-US",
+          "os_version": "14.5",
+          "screen_dpi": 420
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5094f5704b9cf2b3"
+  }
 ]

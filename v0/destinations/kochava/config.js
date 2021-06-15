@@ -1,4 +1,4 @@
-const { getMappingConfig } = require("../../util");
+// const { getMappingConfig } = require("../../util");
 
 const eventNameMapping = {
   "product added": "Add to Cart",
@@ -11,17 +11,17 @@ const eventNameMapping = {
 
 const KOCHAVA_ENDPOINT = "https://control.kochava.com/track/json";
 
-const mappingConfig = getMappingConfig(
-  {
-    KochavaGeneric: {
-      name: "KochavaGenericEvent"
-    }
-  },
-  __dirname
-);
+// const mappingConfig = getMappingConfig(
+//   {
+//     KochavaGeneric: {
+//       name: "KochavaGenericEvent"
+//     }
+//   },
+//   __dirname
+// );
 
 module.exports = {
   KOCHAVA_ENDPOINT,
-  mappingConfig,
+  //  mappingConfig,
   eventNameMapping
 };

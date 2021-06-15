@@ -59,6 +59,23 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+/**
+ *
+ * @param {*} arg
+ * @returns {type}
+ *
+ * Returns type of passed arg 
+ * for null argss returns "NULL" insted of "object"
+ *
+ */
+const getType = arg => {
+  const type = typeof arg;
+  if (arg == null) {
+    return "NULL";
+  }
+  return type;
+};
+
 const formatValue = value => {
   if (!value || value < 0) return null;
   return Math.round(value);
@@ -913,6 +930,7 @@ module.exports = {
   getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
+  getType,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,

@@ -128,5 +128,85 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "5094f5704b9cf2b3",
+        "data": {
+          "app_tracking_transparency": { "att": false },
+          "usertime": 1584003903421,
+          "app_version": "1",
+          "device_ver": "Android SDK built for x86-Android-8.1.0",
+          "device_ids": {
+            "idfa": "",
+            "idvf": "",
+            "adid": "some_adid",
+            "android_id": "5094f5704b9cf2b3"
+          },
+          "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "event_name": "screen view MainActivity",
+          "currency": "USD",
+          "event_data": { "name": "MainActivity", "automatic": true },
+          "app_name": "LeanPlumIntegrationAndroid",
+          "app_short_string": "1.0",
+          "locale": "en-US",
+          "os_version": "8.1.0",
+          "screen_dpi": 420
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5094f5704b9cf2b3"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://control.kochava.com/track/json",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "event",
+        "kochava_app_id": "<kochava guid goes here>",
+        "kochava_device_id": "5094f5704b9cf2b3",
+        "data": {
+          "app_tracking_transparency": { "att": true },
+          "usertime": 1584003903421,
+          "app_version": "1",
+          "device_ver": "Android SDK built for x86-iOS-14.5",
+          "device_ids": {
+            "idfa": "some_adid",
+            "idvf": "5094f5704b9cf2b3",
+            "adid": "",
+            "android_id": ""
+          },
+          "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+          "event_name": "screen view MainActivity",
+          "currency": "USD",
+          "event_data": { "name": "MainActivity", "automatic": true },
+          "app_name": "LeanPlumIntegrationAndroid",
+          "app_short_string": "1.0",
+          "locale": "en-US",
+          "os_version": "14.5",
+          "screen_dpi": 420
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5094f5704b9cf2b3"
   }
 ]

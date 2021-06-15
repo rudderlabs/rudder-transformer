@@ -888,8 +888,8 @@ function getStringValueOfJSON(json) {
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
-  constructPayload,
   checkEmptyStringInarray,
+  constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -899,6 +899,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  formatTimeStamp,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
@@ -920,8 +921,8 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
-  isObject,
   isNonFuncObject,
+  isObject,
   isPrimitive,
   isValidUrl,
   removeNullValues,

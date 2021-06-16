@@ -52,6 +52,16 @@ function process(event) {
       // Final goal is to support updating destinaiton config using user transformation
       //
       // We'll deprecate this feature as soon as we release the final feature
+      // Sample user transformation for this:
+      //
+      // export function transformEvent(event, metadata) {
+      //   event.header = {
+      //     dynamic_header_1: "dynamic_header_value"
+      //   };
+      //
+      //   return event;
+      // }
+      //
       // ------------------------------------------------
       const { header } = message;
       if (header) {

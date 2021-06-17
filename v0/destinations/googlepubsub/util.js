@@ -59,8 +59,9 @@ const createAttributesMetadata = (message, { Config }) => {
   // Returns value for Attribute key if present, else returns null
   function getAttributeValueOrNull(key) {
     // Check first if present in message Root
-    if (isDefinedAndNotNull(message[key])) {
-      return message[key];
+    const requiredVal = getValueFromMessage(message, key);
+    if (isDefinedAndNotNull(requiredVal)) {
+      return requiredVal;
     }
 
     let val;
@@ -103,7 +104,9 @@ const createAttributesMetadata = (message, { Config }) => {
   attributeKeys.forEach(key => {
     const val = getAttributeValueOrNull(key);
     if (val) {
-      attrMetadata[key] = val;
+      const splitKeysArray = key.split(".")
+      const refinedKey = splitKeysArray[splitKeysArray.length - 1]
+      attrMetadata[refinedKey] = val;
     }
   });
   return attrMetadata;

@@ -304,18 +304,25 @@ function responseBuilderSimple(
       : undefined
     : undefined;
 
-  function checkmd5(){
-    if(message.userId && message.userId.length >0){
-      return md5(message.userId);
-    }else
-    throw new Error("request neither has anoymousid nor userid");
+  if (destination.Config.disableMd5) {
+    finalPayload.cid =
+      integrationsClientId ||
+      getDestinationExternalID(message, "gaExternalId") ||
+      message.anonymousId ||
+      undefined;
+  } else {
+    finalPayload.cid =
+      integrationsClientId ||
+      getDestinationExternalID(message, "gaExternalId") ||
+      message.anonymousId ||
+      checkmd5();
   }
-  finalPayload.cid =
-    integrationsClientId ||
-    getDestinationExternalID(message, "gaExternalId");
-    message.anonymousId ||
-    checkmd5();
-    
+  function checkmd5(){
+      if(message.userId && message.userId.length >0){
+      return md5(message.userId);
+    }
+    return undefined;
+  }
   finalPayload.uip = getParsedIP(message);
 
   const timestamp = message.originalTimestamp

@@ -7,6 +7,9 @@ const {
 } = require("../../util");
 
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
+const stringifyValue = val => {
+  return typeof val === "string" ? val : JSON.stringify(val);
+}
 
 /**
  * Returns Topic ID
@@ -61,7 +64,7 @@ const createAttributesMetadata = (message, { Config }) => {
     // Check first if present in message Root
     const requiredVal = getValueFromMessage(message, key);
     if (isDefinedAndNotNull(requiredVal)) {
-      return requiredVal;
+      return stringifyValue(requiredVal);
     }
 
     let val;
@@ -79,7 +82,7 @@ const createAttributesMetadata = (message, { Config }) => {
     });
 
     if (found) {
-      return typeof val === "string" ? val : JSON.stringify(val);
+      return stringifyValue(val);
     }
     return null;
   }

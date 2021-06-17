@@ -110,6 +110,13 @@ function getCustomParamsFromOldConfig(config) {
   return [dimensions, metrics];
 }
 
+function checkmd5(message) {
+  if (message.userId && message.userId.length > 0) {
+    return md5(message.userId);
+  }
+  return undefined;
+}
+
 // Function for processing pageviews
 function processPageViews(message, destination) {
   let documentPath;
@@ -315,13 +322,7 @@ function responseBuilderSimple(
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
       message.anonymousId ||
-      checkmd5();
-  }
-  function checkmd5(){
-      if(message.userId && message.userId.length >0){
-      return md5(message.userId);
-    }
-    return undefined;
+      checkmd5(message);
   }
   finalPayload.uip = getParsedIP(message);
 

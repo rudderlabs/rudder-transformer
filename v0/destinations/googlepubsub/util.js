@@ -103,7 +103,7 @@ const createAttributesMetadata = (message, { Config }) => {
 
   attributeKeys.forEach(key => {
     const val = getAttributeValueOrNull(key);
-    if (val) {
+    if (isDefinedAndNotNull(val)) {
       const splitKeysArray = key.split(".")
       const refinedKey = splitKeysArray[splitKeysArray.length - 1]
       attrMetadata[refinedKey] = val;

@@ -6,48 +6,5 @@
             "properties.isRaw"
         ],
         "required": false
-    },
-    {
-        "destKey": "session_id",
-        "sourceKeys": ["properties.session_id", "properties.sessionId","properties.sessionid"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "batch_seq",
-        "sourceKeys": ["properties.batch_seq","properties.batchSeq",
-            "properties.batchSequence"],
-        "metadata": {
-            "type": "toInt"
-        },
-        "required": false
-    },
-    {
-        "destKey": "last_batch_flag",
-        "sourceKeys": [
-            "properties.last_batch_flag","properties.lastBatchFlag"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "estimated_num_total",
-        "sourceKeys": [
-            "properties.estimated_num_total","properties.lestimatedNumTotal"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "type",
-        "sourceKeys": [
-            "properties.type"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "sub_type",
-        "sourceKeys": [
-            "properties.sub_type","properties.subType"
-        ],
-        "required": false
     }
 ]

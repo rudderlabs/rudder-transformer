@@ -4,9 +4,9 @@ const BASE_URL = "https://graph.facebook.com/v11.0";
 
 function getAudienceId(messageEvent, destination) {
   const { eventAudienceMapping } = destination.Config;
-  const hashMap = getHashFromArray(eventAudienceMapping, "from", "to");
+  const hashMap = getHashFromArray(eventAudienceMapping, "from", "to", "false");
 
-  return hashMap[messageEvent.toLowerCase()];
+  return hashMap[messageEvent] || hashMap["*"];
 }
 
 function getEndPoint(audienceId) {
@@ -15,7 +15,9 @@ function getEndPoint(audienceId) {
 }
 
 const CONFIG_CATEGORIES = {
-  EVENT: { name: "eventConfig" }
+  EVENT: { name: "eventConfig" },
+  SESSION: { name: "sessionField" },
+  DATA_SOURCE: { name: "data_sourceConfig" }
 };
 
 const schemaFiels = [
@@ -41,7 +43,8 @@ const schemaFiels = [
 
 const MAX_USER_COUNT = 10000;
 const sessionBlockField = ["session_id", "batch_seq", "last_batch_flag"];
-const userUpdateOptions = ["userListAdd", "userListDelete"];
+const USER_ADD = "userListAdd";
+const USER_DELETE = "userListDelete";
 const typeFields = [
   "UNKNOWN",
   "FILE_IMPORTED",
@@ -126,7 +129,8 @@ module.exports = {
   schemaFiels,
   CustomError,
   sessionBlockField,
-  userUpdateOptions,
+  USER_ADD,
+  USER_DELETE,
   MAX_USER_COUNT,
   typeFields,
   subTypeFields,

@@ -18,51 +18,39 @@ const {
   schemaFiels,
   CustomError,
   sessionBlockField,
-  userUpdateOptions,
   MAX_USER_COUNT,
   typeFields,
   subTypeFields,
-  getAudienceId
+  getAudienceId,
+  USER_ADD,
+  USER_DELETE
 } = require("./config");
 
 const logger = require("../../../logger");
 
-function responseBuilderSimple(payload, userOperation, audienceId) {
+function responseBuilderSimple(payload, audienceId) {
   if (payload) {
-    const responseBody = payload;
+    const responseParams = payload.responseField;
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
 
-    userOperation.forEach(operation => {
-      if (operation === "userListAdd") {
-        response.method = defaultPostRequestConfig.requestMethod;
-      }
-      if (operation === "userListDelete") {
-        response.method = defaultDeleteRequestConfig.requestMethod;
-      }
-    });
-    response.params = responseBody;
+    if (payload.operationCategory === "userListAdd") {
+      response.method = defaultPostRequestConfig.requestMethod;
+    }
+    if (payload.operationCategory === "userListDelete") {
+      response.method = defaultDeleteRequestConfig.requestMethod;
+    }
+
+    response.params = responseParams;
     return response;
   }
   // fail-safety for developer error
   throw new CustomError(`Payload could not be constructed`, 400);
 }
 
-function setupSessionBlock(preparedBufferPayload) {
-  const sessionBlock = {};
-  sessionBlockField.forEach(key => {
-    sessionBlock[key] = preparedBufferPayload[key];
-  });
-
-  if (preparedBufferPayload.estimated_num_total) {
-    sessionBlock.estimated_num_total =
-      preparedBufferPayload.estimated_num_total;
-  }
-  return sessionBlock;
-}
-
 function ensureApplicableFormat(userProperty, userInformation) {
   let updatedProperty;
+  let userInformationTrimmed;
   switch (userProperty) {
     case "EMAIL":
     case "EMAIL_SHA256":
@@ -85,36 +73,38 @@ function ensureApplicableFormat(userProperty, userInformation) {
     case "DOBY":
       if (
         userInformation
+          .toString()
           .trim()
-          .replace(/\./g, "")
-          .length() === 4
+          .replace(/\./g, "").length === 4
       ) {
-        updatedProperty = parseInt(userInformation, 10);
+        updatedProperty = userInformation;
       } else {
         throw new CustomError(" The year of birth should be in YYYY", 400);
       }
       break;
     case "DOBM":
       // need to send as function in util index.js
+      userInformationTrimmed = userInformation.replace(/\./g, "");
       if (
-        userInformation.replace(/\./g, "").length() === 2 &&
-        parseInt(userInformation, 10) > 0 &&
-        parseInt(userInformation, 10) <= 12
+        userInformationTrimmed.toString().length === 2 &&
+        parseInt(userInformationTrimmed, 10) > 0 &&
+        parseInt(userInformationTrimmed, 10) <= 12
       ) {
-        updatedProperty = parseInt(userInformation, 10);
+        updatedProperty = userInformationTrimmed;
       } else {
-        throw new CustomError("Please follow the ideal MM month format");
+        throw new CustomError("Please follow the ideal MM month format", 400);
       }
       break;
     case "DOBD":
+      userInformationTrimmed = userInformation.replace(/\./g, "");
       if (
-        userInformation.replace(/\./g, "").length() === 2 &&
+        userInformationTrimmed.toString().length === 2 &&
         parseInt(userInformation, 10) > 0 &&
         parseInt(userInformation, 10) <= 31
       ) {
-        updatedProperty = parseInt(userInformation, 10);
+        updatedProperty = userInformationTrimmed;
       } else {
-        throw new CustomError("Please follow the ideal MM month format");
+        throw new CustomError("Please follow the ideal DD date format", 400);
       }
       break;
     case "LN":
@@ -135,7 +125,7 @@ function ensureApplicableFormat(userProperty, userInformation) {
       updatedProperty = userInformation.toLowerCase();
       break;
     case "COUNTRY":
-      if (userInformation.toLowerCase().length() === 2) {
+      if (userInformation.toLowerCase().length === 2) {
         updatedProperty = userInformation.toLowerCase();
       } else
         throw new CustomError(
@@ -144,7 +134,8 @@ function ensureApplicableFormat(userProperty, userInformation) {
         );
       break;
     case "ZIP":
-      updatedProperty = userInformation.replace(/\s/g, "").toLowerCase();
+      userInformationTrimmed = userInformation.replace(/\s/g, "");
+      updatedProperty = userInformationTrimmed.toLowerCase();
       break;
     case "ST":
       updatedProperty = userInformation
@@ -161,24 +152,32 @@ function ensureApplicableFormat(userProperty, userInformation) {
   return updatedProperty;
 }
 
-function prepareDataField(userSchema, userUpdateList) {
+function prepareDataField(userSchema, userUpdateList, isHashRequired) {
   const data = [];
   let dataElement;
   if (countNumberOfObjects(userUpdateList) < MAX_USER_COUNT) {
     userUpdateList.forEach(eachUser => {
       dataElement = [];
       userSchema.forEach(eachProperty => {
-        const updatedProperty = ensureApplicableFormat(
-          eachProperty,
-          eachUser[eachProperty]
-        );
-        if (
-          eachProperty !== "MADID" ||
-          eachProperty !== "MOBILE_ADVERTISER_ID"
-        ) {
-          dataElement.push(sha256(updatedProperty));
+        if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
+          const updatedProperty = ensureApplicableFormat(
+            eachProperty,
+            eachUser[eachProperty]
+          );
+          if (
+            isHashRequired &&
+            (eachProperty !== "MADID" ||
+              eachProperty !== "MOBILE_ADVERTISER_ID")
+          ) {
+            dataElement.push(sha256(updatedProperty));
+          } else {
+            dataElement.push(updatedProperty);
+          }
         } else {
-          dataElement.push(updatedProperty);
+          throw new CustomError(
+            `Configured Schema field ${eachProperty} is missing in one or more user records`,
+            400
+          );
         }
       });
       data.push(dataElement);
@@ -187,114 +186,149 @@ function prepareDataField(userSchema, userUpdateList) {
   return data;
 }
 
-function preparePayload(userUpdateList, userSchema, bufferPayload) {
-  const payload = {};
-  Array.isArray(userSchema)
-    ? (payload.schema = userSchema)
-    : (payload.schema = [userSchema]);
-  payload.data = prepareDataField(userSchema, userUpdateList);
-  if (isDefinedAndNotNull(bufferPayload.is_raw)) {
-    if (typeof bufferPayload.is_raw === "boolean") {
-      payload.is_raw = bufferPayload.is_raw;
-    } else {
+function preparePayload(
+  userUpdateList,
+  userSchema,
+  paramsPayload,
+  isHashRequired
+) {
+  const prepareFinalPayload = paramsPayload;
+  const { data_source } = paramsPayload;
+  if (Array.isArray(userSchema)) {
+    prepareFinalPayload.schema = userSchema;
+  } else {
+    prepareFinalPayload.schema = [userSchema];
+  }
+
+  prepareFinalPayload.data = prepareDataField(
+    userSchema,
+    userUpdateList,
+    isHashRequired
+  );
+  if (isDefinedAndNotNull(prepareFinalPayload.is_raw)) {
+    if (typeof prepareFinalPayload.is_raw !== "boolean") {
       logger.debug("is_raw field is not boolean, so dropping it");
+      delete prepareFinalPayload.is_raw;
     }
   }
   if (
-    isDefinedAndNotNull(bufferPayload.type) &&
-    isDefinedAndNotNull(bufferPayload.sub_type) &&
-    typeFields.includes(bufferPayload.type) &&
-    subTypeFields.includes(bufferPayload.sub_type)
+    !(
+      isDefinedAndNotNull(data_source.type) &&
+      isDefinedAndNotNull(data_source.sub_type) &&
+      typeFields.includes(data_source.type) &&
+      subTypeFields.includes(data_source.sub_type)
+    )
   ) {
-    payload.data_source = {
-      type: bufferPayload.type,
-      sub_type: bufferPayload.sub_type
-    };
+    delete prepareFinalPayload.data_source;
   }
-  return payload;
+  return prepareFinalPayload;
 }
 
-function prepareResponse(message, destination, category, userUpdateCategory) {
+function prepareResponse(
+  message,
+  destination,
+  category,
+  userUpdateCategory,
+  isHashRequired
+) {
   const { accessToken, userSchema } = destination.Config;
   const prepareParams = {};
-  let bufferPayload = {};
-  bufferPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let sessionPayload = {};
+  let paramsPayload = {};
+  let dataSsource = {};
+  sessionPayload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name]
+  );
   if (
     checkSubsetOfArray(
-      Object.getOwnPropertyNames(bufferPayload),
+      Object.getOwnPropertyNames(sessionPayload),
       sessionBlockField
     )
   ) {
-    prepareParams.session = setupSessionBlock(bufferPayload);
+    prepareParams.session = sessionPayload;
   }
   prepareParams.access_token = accessToken;
-  if (checkSubsetOfArray(schemaFiels, userSchema)) {
-    prepareParams.payload = preparePayload(
-      message.properties[userUpdateCategory],
-      userSchema,
-      bufferPayload
-    );
-  } else
-    throw new CustomError(
-      "One or more of the schema fields are not supported",
-      400
-    );
+  paramsPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  dataSsource = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
+  );
+  paramsPayload.data_source = dataSsource;
+
+  prepareParams.payload = preparePayload(
+    message.properties[userUpdateCategory],
+    userSchema,
+    paramsPayload,
+    isHashRequired
+  );
 
   return prepareParams;
 }
 
 const processEvent = (message, destination) => {
-  let category;
   let response;
-  let responseOptionIndex = 0;
   const respList = [];
   const toSendEvents = [];
-  const operationList = [];
+  let wrappedResponse = {};
+  const { userSchema, isHashRequired } = destination.Config;
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
       400
     );
   }
+  if (message.type !== "track") {
+    throw new CustomError(` ${message.type} call is not supported `, 400);
+  }
   const operationAudienceId = getAudienceId(message.event, destination);
-  if (
-    message.type === "track" &&
-    isDefinedAndNotNullAndNotEmpty(operationAudienceId)
-  ) {
-    category = CONFIG_CATEGORIES.EVENT;
-    const { properties } = message;
-    while (responseOptionIndex <= 1) {
-      if (
-        isDefinedAndNotNullAndNotEmpty(
-          properties[userUpdateOptions[responseOptionIndex]]
-        )
-      ) {
-        response = prepareResponse(
-          message,
-          destination,
-          category,
-          userUpdateOptions[responseOptionIndex]
-        );
-        toSendEvents.push(response);
-        operationList.push(userUpdateOptions[responseOptionIndex]);
-      }
-      responseOptionIndex += 1;
-    }
-  } else if (message.type !== "track") {
-    throw new CustomError(
-      `The message type ${message.type} is not supported`,
-      400
-    );
-  } else {
+
+  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new CustomError(
       `The event name does not match with configured audience ids'`,
       400
     );
   }
-  toSendEvents.forEach(sendEvent => {
-    respList.push(
-      responseBuilderSimple(sendEvent, operationList, operationAudienceId)
+  if (!checkSubsetOfArray(schemaFiels, userSchema)) {
+    throw new CustomError(
+      "One or more of the schema fields are not supported",
+      400
     );
+  }
+  const category = CONFIG_CATEGORIES.EVENT;
+  const { properties } = message;
+
+  if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
+    response = prepareResponse(
+      message,
+      destination,
+      category,
+      USER_ADD,
+      isHashRequired
+    );
+    wrappedResponse = {
+      responseField: response,
+      operationCategory: USER_ADD
+    };
+    toSendEvents.push(wrappedResponse);
+  }
+
+  if (isDefinedAndNotNullAndNotEmpty(properties[USER_DELETE])) {
+    response = prepareResponse(
+      message,
+      destination,
+      category,
+      USER_DELETE,
+      isHashRequired
+    );
+    wrappedResponse = {
+      responseField: response,
+      operationCategory: USER_DELETE
+    };
+    toSendEvents.push(wrappedResponse);
+  }
+  toSendEvents.forEach(sendEvent => {
+    respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
   });
   return respList;
 };

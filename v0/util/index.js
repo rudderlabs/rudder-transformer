@@ -489,6 +489,11 @@ const handleMetadataForValue = (value, metadata) => {
           .replace("https://", "")
           .replace("http://", "");
         break;
+      case "IsBoolean":
+        if (!(typeof formattedVal === "boolean")) {
+          logger.debug("Boolean value missing, so dropping it");
+        }
+        break;
       default:
         break;
     }

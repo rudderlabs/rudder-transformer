@@ -193,7 +193,6 @@ function preparePayload(
   isHashRequired
 ) {
   const prepareFinalPayload = paramsPayload;
-  const { data_source } = paramsPayload;
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
   } else {
@@ -205,37 +204,20 @@ function preparePayload(
     userUpdateList,
     isHashRequired
   );
-  if (isDefinedAndNotNull(prepareFinalPayload.is_raw)) {
-    if (typeof prepareFinalPayload.is_raw !== "boolean") {
-      logger.debug("is_raw field is not boolean, so dropping it");
-      delete prepareFinalPayload.is_raw;
-    }
-  }
-  if (
-    !(
-      isDefinedAndNotNull(data_source.type) &&
-      isDefinedAndNotNull(data_source.sub_type) &&
-      typeFields.includes(data_source.type) &&
-      subTypeFields.includes(data_source.sub_type)
-    )
-  ) {
-    delete prepareFinalPayload.data_source;
-  }
   return prepareFinalPayload;
 }
 
 function prepareResponse(
   message,
   destination,
-  category,
   userUpdateCategory,
-  isHashRequired
+  isHashRequired = true
 ) {
   const { accessToken, userSchema } = destination.Config;
   const prepareParams = {};
   let sessionPayload = {};
   let paramsPayload = {};
-  let dataSsource = {};
+  let dataSource = {};
   sessionPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name]
@@ -247,14 +229,26 @@ function prepareResponse(
     )
   ) {
     prepareParams.session = sessionPayload;
+  } else {
+    logger.debug("All required fields for session block is not present");
   }
   prepareParams.access_token = accessToken;
-  paramsPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  dataSsource = constructPayload(
+  paramsPayload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name]
+  );
+  dataSource = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
   );
-  paramsPayload.data_source = dataSsource;
+  if (
+    isDefinedAndNotNull(dataSource.type) &&
+    isDefinedAndNotNull(dataSource.sub_type) &&
+    typeFields.includes(dataSource.type) &&
+    subTypeFields.includes(dataSource.sub_type)
+  ) {
+    paramsPayload.data_source = dataSource;
+  }
 
   prepareParams.payload = preparePayload(
     message.properties[userUpdateCategory],
@@ -295,17 +289,10 @@ const processEvent = (message, destination) => {
       400
     );
   }
-  const category = CONFIG_CATEGORIES.EVENT;
   const { properties } = message;
 
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
-    response = prepareResponse(
-      message,
-      destination,
-      category,
-      USER_ADD,
-      isHashRequired
-    );
+    response = prepareResponse(message, destination, USER_ADD, isHashRequired);
     wrappedResponse = {
       responseField: response,
       operationCategory: USER_ADD
@@ -317,7 +304,6 @@ const processEvent = (message, destination) => {
     response = prepareResponse(
       message,
       destination,
-      category,
       USER_DELETE,
       isHashRequired
     );

@@ -1,15 +1,15 @@
 [
     {
         "destKey": "type",
-        "sourceKeys": [
-            "properties.type"
-        ],
+        "sourceKeys": "properties.type",
         "required": false
     },
     {
         "destKey": "sub_type",
         "sourceKeys": [
-            "properties.sub_type","properties.subType"
+            "properties.sub_type",
+            "properties.subType"
         ],
         "required": false
-    }]
+    }
+]

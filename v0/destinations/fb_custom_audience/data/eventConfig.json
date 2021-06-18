@@ -5,6 +5,9 @@
             "properties.is_raw",
             "properties.isRaw"
         ],
+        "metadata": {
+            "type": "IsBoolean"
+        },
         "required": false
     }
 ]

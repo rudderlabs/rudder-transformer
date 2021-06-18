@@ -472,6 +472,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "toFloat":
         formattedVal = parseFloat(formattedVal);
         break;
+      case "toInt":
+        formattedVal = parseInt(formattedVal, 10);
+        break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
         break;
@@ -882,6 +885,26 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+// checks if array 2 is a subset of array 1
+
+function checkSubsetOfArray(array1, array2) {
+  const result = array2.every(val => array1.includes(val));
+  return result;
+}
+
+// count number of objects in array of objects
+function countNumberOfObjects(arrayOfObjects) {
+  let len = 0;
+  arrayOfObjects.forEach(val => {
+    const firstPrototype = Object.getPrototypeOf(val);
+    const SecondPrototype = Object.getPrototypeOf(firstPrototype);
+    if (!SecondPrototype) {
+      len += 1;
+    }
+  });
+  return len;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -932,5 +955,7 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  checkSubsetOfArray,
+  countNumberOfObjects
 };

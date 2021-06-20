@@ -12,8 +12,7 @@ const {
   getErrorRespEvents,
   getHashFromArray,
   getFieldValueFromMessage,
-  getValueFromMessage,
-  getParsedUserAgent
+  getValueFromMessage
 } = require("../../util/index");
 const {
   CustomError,

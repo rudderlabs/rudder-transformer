@@ -122,5 +122,76 @@
     "destKey": "sfdcContactId",
     "sourceKeys": ["traits.sfdcContactId", "context.traits.sfdcContactId"],
     "required": false
+  },
+  {
+    "destKey": "location.countryName",
+    "sourceKeys": ["traits.countryName", "context.traits.countryName"],
+    "required": false
+  },
+  {
+    "destKey": "location.countryCode",
+    "sourceKeys": ["traits.countryCode", "context.traits.countryCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.stateName",
+    "sourceKeys": ["traits.stateName", "context.traits.stateName"],
+    "required": false
+  },
+  {
+    "destKey": "location.stateCode",
+    "sourceKeys": ["traits.stateCode", "context.traits.stateCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.stateCode",
+    "sourceKeys": ["traits.stateCode", "context.traits.stateCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.city",
+    "sourceKeys": ["traits.city", "context.traits.city"],
+    "required": false
+  },
+  {
+    "destKey": "location.street",
+    "sourceKeys": ["traits.street", "context.traits.street"],
+    "required": false
+  },
+  {
+    "destKey": "location.postalCode",
+    "sourceKeys": ["traits.postalCode", "context.traits.postalCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.continent",
+    "sourceKeys": ["traits.continent", "context.traits.continent"],
+    "required": false
+  },
+  {
+    "destKey": "location.regionName",
+    "sourceKeys": ["traits.regionName", "context.traits.regionName"],
+    "required": false
+  },
+  {
+    "destKey": "location.timeZone",
+    "sourceKeys": ["traits.timeZone", "context.traits.timeZone"],
+    "required": false
+  },
+  {
+    "destKey": "location.coordinates.latitude",
+    "sourceKeys": ["traits.latitude", "context.traits.latitude"],
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
+  },
+  {
+    "destKey": "location.coordinates.longitude",
+    "sourceKeys": ["traits.longitude", "context.traits.longitude"],
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
   }
 ]

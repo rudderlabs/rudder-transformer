@@ -1,0 +1,126 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": "gender",
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "FEMALE"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "MALE"
+        },
+        {
+          "sourceVal": [
+            "o",
+            "other",
+            "others",
+            "Others",
+            "Other",
+            "OTHERS",
+            "OTHER"
+          ],
+          "destVal": "OTHER"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "lastSeenDate",
+    "sourceKeys": ["traits.lastSeenDate", "context.traits.lastSeenDate"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "signUpDate",
+    "sourceKeys": ["traits.signUpDate", "context.traits.signUpDate", "originalTimestamp"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "firstVisitDate",
+    "sourceKeys": ["traits.firstVisitDate", "context.traits.firstVisitDate"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": ["traits.title", "context.traits.title"],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "score",
+    "sourceKeys": ["traits.score", "context.traits.score"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "role",
+    "sourceKeys": ["traits.role", "context.traits.role"],
+    "required": false
+  },
+  {
+    "destKey": "subscriptionId",
+    "sourceKeys": ["traits.subscriptionId", "context.traits.subscriptionId"],
+    "required": false
+  },
+  {
+    "destKey": "numberOfVisits",
+    "sourceKeys": ["traits.numberOfVisits", "context.traits.numberOfVisits"],
+    "required": false
+  },
+  {
+    "destKey": "createDate",
+    "sourceKeys": ["traits.createDate", "context.traits.createDate"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "globalUnsubscribe",
+    "sourceKeys": [
+      "traits.globalUnsubscribe",
+      "context.traits.globalUnsubscribe"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "sfdcContactId",
+    "sourceKeys": ["traits.sfdcContactId", "context.traits.sfdcContactId"],
+    "required": false
+  }
+]

@@ -897,19 +897,6 @@ function checkSubsetOfArray(array1, array2) {
   return result;
 }
 
-// count number of objects in array of objects
-function countNumberOfObjects(arrayOfObjects) {
-  let len = 0;
-  arrayOfObjects.forEach(val => {
-    const firstPrototype = Object.getPrototypeOf(val);
-    const SecondPrototype = Object.getPrototypeOf(firstPrototype);
-    if (!SecondPrototype) {
-      len += 1;
-    }
-  });
-  return len;
-}
-
 // splits array into equal parts and returns array of sub arrays
 
 function returnArrayOfSubarrays(arr, len) {
@@ -973,6 +960,5 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   checkSubsetOfArray,
-  countNumberOfObjects,
   returnArrayOfSubarrays
 };

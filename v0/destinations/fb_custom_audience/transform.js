@@ -7,7 +7,6 @@ const {
   constructPayload,
   checkSubsetOfArray,
   isDefinedAndNotNull,
-  countNumberOfObjects,
   isDefinedAndNotNullAndNotEmpty,
   getSuccessRespEvents,
   getErrorRespEvents,

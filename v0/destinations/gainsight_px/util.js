@@ -2,7 +2,7 @@
 const axios = require("axios");
 const { ENDPOINTS } = require("./config");
 const logger = require("../../../logger");
-const { isEmpty } = require("../../util");
+// const { isEmpty } = require("../../util");
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -21,14 +21,14 @@ const removeKeysFromPayload = (payload, keys) => {
   return updatedPayload;
 };
 
-const getProductTagKeys = propertyKeys => {
-  if (!propertyKeys || propertyKeys.length === 0) {
-    return null;
-  }
-  return propertyKeys
-  .filter(item => !isEmpty(item.productTagKey))
-  .map(iten => iten.productTagKey);
-}
+// const getProductTagKeys = propertyKeys => {
+//   if (!propertyKeys || propertyKeys.length === 0) {
+//     return null;
+//   }
+//   return propertyKeys
+//   .filter(item => !isEmpty(item.productTagKey))
+//   .map(iten => iten.productTagKey);
+// }
 
 /**
  * Returns true if user is already identified. Else returns false
@@ -90,6 +90,5 @@ module.exports = {
   CustomError,
   userExists,
   renameCustomFields,
-  getProductTagKeys,
   removeKeysFromPayload
 };

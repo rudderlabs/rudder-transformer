@@ -18,16 +18,16 @@ const {
   CustomError,
   userExists,
   renameCustomFields,
-  getProductTagKeys,
   removeKeysFromPayload
 } = require("./util");
 const {
   identifyMapping,
   ENDPOINTS,
-  USER_EXCLUSION_FIELDS
+  USER_EXCLUSION_FIELDS,
+  trackMapping
 } = require("./config");
 
-const identifyResponseBuilder = async (message, propertyKeys, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
     throw new CustomError("userId is required for identify", 400);
@@ -68,8 +68,8 @@ const identifyResponseBuilder = async (message, propertyKeys, { Config }) => {
   customAttributes = renameCustomFields(customAttributes, userCustomFieldsMap);
   payload = {
     ...payload,
-    propertyKeys,
-    customAttributes
+    customAttributes,
+    propertyKeys: [Config.productTagKey]
   };
 
   if (isPresent) {
@@ -89,6 +89,20 @@ const identifyResponseBuilder = async (message, propertyKeys, { Config }) => {
   return response;
 };
 
+const trackResponseBuilder = (message, { Config }) => {
+  const payload = constructPayload(message, trackMapping);
+  
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.headers = {
+    "X-APTRINSIC-API-KEY": Config.apiKey,
+    "Content-Type": "application/json"
+  };
+  response.endpoint = ENDPOINTS.CUSTOM_EVENTS_ENDPOINT;
+  return response;
+};
+
 /**
  * Processing Single event
  */
@@ -101,13 +115,14 @@ const process = async event => {
     );
   }
 
-  if (!destination.Config.apiKey) {
+  const { apiKey, productTagKey } = destination.Config;
+  if (!apiKey) {
     throw new CustomError("Invalid API Key. Aborting message.", 400);
   }
 
-  const propertyKeys = getProductTagKeys(destination.Config.propertyKeys);
-  if (!propertyKeys || propertyKeys.length === 0) {
-    throw new CustomError("atleast one property key is required", 400);
+  // const propertyKeys = getProductTagKeys(destination.Config.propertyKeys);
+  if (!productTagKey) {
+    throw new CustomError("product tag key is required", 400);
   }
 
   const messageType = message.type.toLowerCase();
@@ -115,11 +130,10 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(
-        message,
-        propertyKeys,
-        destination
-      );
+      response = await identifyResponseBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`message type ${messageType} not supported`, 400);

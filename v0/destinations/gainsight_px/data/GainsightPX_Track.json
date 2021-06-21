@@ -1,0 +1,48 @@
+[
+  {
+    "destKey": "identifyId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "accountId",
+    "sourceKeys": ["traits.groupId", "context.traits.groupId"],
+    "required": false
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "event",
+    "required": false
+  },
+  {
+    "destKey": "date",
+    "sourceKeys": ["properties.date", "originalTimestamp"],
+    "required": false
+  },
+  {
+    "destKey": "sessionId",
+    "sourceKeys": "properties.sessionId",
+    "required": false
+  },
+  {
+    "destKey": "globalContext",
+    "sourceKeys": "properties.globalContext",
+    "required": false
+  },
+  {
+    "destKey": "attributes",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "url",
+    "sourceKeys": "context.page.url",
+    "required": false
+  },
+  {
+    "destKey": "referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  }
+]

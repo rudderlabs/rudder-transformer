@@ -64,7 +64,7 @@ const isPrimitive = arg => {
  * @param {*} arg
  * @returns {type}
  *
- * Returns type of passed arg 
+ * Returns type of passed arg
  * for null argss returns "NULL" insted of "object"
  *
  */
@@ -83,6 +83,19 @@ const formatValue = value => {
 
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
+}
+
+/**
+ * Returns true for empty object {}
+ * @param {*} obj
+ * @returns
+ */
+function isEmptyObject(obj) {
+  if (!obj) {
+    logger.warn("input is undefined or null");
+    return true;
+  }
+  return Object.keys(obj).length === 0;
 }
 
 // Format the destination.Config.dynamicMap arrays to hashMap
@@ -939,6 +952,7 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEmptyObject,
   isNonFuncObject,
   isObject,
   isPrimitive,

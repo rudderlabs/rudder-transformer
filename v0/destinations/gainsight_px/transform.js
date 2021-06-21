@@ -2,6 +2,7 @@
 /* eslint-disable no-nested-ternary */
 const { EventType } = require("../../../constants");
 const {
+  isEmptyObject,
   constructPayload,
   defaultRequestConfig,
   extractCustomFields,
@@ -18,19 +19,26 @@ const {
   CustomError,
   userExists,
   renameCustomFields,
-  removeKeysFromPayload
+  companyExists,
+  createAccount,
+  updateAccount
 } = require("./util");
 const {
-  identifyMapping,
   ENDPOINTS,
   USER_EXCLUSION_FIELDS,
-  trackMapping
+  ACCOUNT_EXCLUSION_FIELDS,
+  trackMapping,
+  groupMapping,
+  identifyMapping
 } = require("./config");
 
+/**
+ * Create/Update a User with user attributes 
+ */
 const identifyResponseBuilder = async (message, { Config }) => {
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
-    throw new CustomError("userId is required for identify", 400);
+    throw new CustomError("userId or anonymousId is required for identify", 400);
   }
 
   const response = defaultRequestConfig();
@@ -74,7 +82,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   if (isPresent) {
     // update user
-    payload = removeKeysFromPayload(payload, ["signUpDate", "createDate"]);
     response.method = defaultPutRequestConfig.requestMethod;
     response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -89,9 +96,99 @@ const identifyResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
+/**
+ * Associates a User with an Account.
+ */
+const groupResponseBuilder = async (message, { Config }) => {
+  const userId = getFieldValueFromMessage(message, "userId");
+  if (!userId) {
+    throw new CustomError("userId or anonymousId is required for group", 400);
+  }
+
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
+    throw new CustomError("groupId is required for group", 400);
+  }
+
+  const companyIsPresent = companyExists(groupId, Config);
+
+  let payload = constructPayload(message, groupMapping);
+  let customAttributes = {};
+  customAttributes = extractCustomFields(
+    message,
+    customAttributes,
+    "traits",
+    ACCOUNT_EXCLUSION_FIELDS
+  );
+
+  const accountFieldsMap = getHashFromArray(
+    Config.accountAttributeMap,
+    "from",
+    "to",
+    false
+  );
+  customAttributes = renameCustomFields(customAttributes, accountFieldsMap);
+  payload = {
+    ...payload,
+    customAttributes,
+    propertyKeys: [Config.productTagKey]
+  };
+
+  if (companyIsPresent) {
+    // update account
+    const updateSuccess = await updateAccount(groupId, payload, Config);
+    if (!updateSuccess) {
+      throw new CustomError("failed to update account for group", 400);
+    }
+  } else {
+    // create account
+    const createSuccess = await createAccount(groupId, payload, Config);
+    if (!createSuccess) {
+      throw new CustomError("failed to create account for group", 400);
+    }
+  }
+
+  // add accountId to user object
+  const response = defaultRequestConfig();
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.headers = {
+    "X-APTRINSIC-API-KEY": Config.apiKey,
+    "Content-Type": "application/json"
+  };
+  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.body.JSON = {
+    accountId: groupId
+  };
+  return response;
+};
+
+/**
+ * Creates Custom Events
+ * API Ref:
+ * https://gainsightpx.docs.apiary.io/#reference/custom-events/v1eventscustom/create-custom-event
+ */
 const trackResponseBuilder = (message, { Config }) => {
-  const payload = constructPayload(message, trackMapping);
-  
+  let payload = constructPayload(message, trackMapping);
+
+  // Global Context in payload overrides the one from Web app
+  let globalContext = getValueFromMessage(message, "properties.globalContext");
+
+  if (!globalContext || isEmptyObject(globalContext)) {
+    globalContext = getHashFromArray(
+      Config.globalContextMap,
+      "from",
+      "to",
+      false
+    );
+  }
+
+  payload = {
+    ...payload,
+    propertyKey: Config.productTagKey,
+    userType: "USER",
+    globalContext: !isEmptyObject(globalContext) ? globalContext : null
+  };
+
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -134,6 +231,9 @@ const process = async event => {
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
+      break;
+    case EventType.GROUP:
+      response = await groupResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`message type ${messageType} not supported`, 400);

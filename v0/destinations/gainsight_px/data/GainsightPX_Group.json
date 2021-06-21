@@ -1,0 +1,163 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "traits.name",
+    "required": true
+  },
+  {
+    "destKey": "trackedSubscriptionId",
+    "sourceKeys": "traits.trackedSubscriptionId",
+    "required": false
+  },
+  {
+    "destKey": "sfdcId",
+    "sourceKeys": "traits.sfdcId",
+    "required": false
+  },
+  {
+    "destKey": "dunsNumber",
+    "sourceKeys": "traits.dunsNumber",
+    "required": false
+  },
+  {
+    "destKey": "industry",
+    "sourceKeys": "traits.industry",
+    "required": false
+  },
+  {
+    "destKey": "numberOfEmployees",
+    "sourceKeys": "traits.numberOfEmployees",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "sicCode",
+    "sourceKeys": "traits.sicCode",
+    "required": false
+  },
+  {
+    "destKey": "website",
+    "sourceKeys": "traits.website",
+    "required": false
+  },
+  {
+    "destKey": "naicsCode",
+    "sourceKeys": "traits.naicsCode",
+    "required": false
+  },
+  {
+    "destKey": "plan",
+    "sourceKeys": "traits.plan",
+    "required": false
+  },
+  {
+    "destKey": "numberOfUsers",
+    "sourceKeys": "traits.numberOfUsers",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "parentGroupId",
+    "sourceKeys": "traits.parentGroupId",
+    "required": false
+  },
+  {
+    "destKey": "createDate",
+    "sourceKeys": ["traits.createDate", "originalTimestamp"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "lastModifiedDate",
+    "sourceKeys": "traits.lastModifiedDate",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "lastSeenDate",
+    "sourceKeys": "traits.lastSeenDate",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "location.countryName",
+    "sourceKeys": "traits.countryName",
+    "required": false
+  },
+  {
+    "destKey": "location.countryCode",
+    "sourceKeys": "traits.countryCode",
+    "required": false
+  },
+  {
+    "destKey": "location.stateName",
+    "sourceKeys": "traits.stateName",
+    "required": false
+  },
+  {
+    "destKey": "location.stateCode",
+    "sourceKeys": "traits.stateCode",
+    "required": false
+  },
+  {
+    "destKey": "location.stateCode",
+    "sourceKeys": "traits.stateCode",
+    "required": false
+  },
+  {
+    "destKey": "location.city",
+    "sourceKeys": "traits.city",
+    "required": false
+  },
+  {
+    "destKey": "location.street",
+    "sourceKeys": "traits.street",
+    "required": false
+  },
+  {
+    "destKey": "location.postalCode",
+    "sourceKeys": "traits.postalCode",
+    "required": false
+  },
+  {
+    "destKey": "location.continent",
+    "sourceKeys": "traits.continent",
+    "required": false
+  },
+  {
+    "destKey": "location.regionName",
+    "sourceKeys": "traits.regionName",
+    "required": false
+  },
+  {
+    "destKey": "location.timeZone",
+    "sourceKeys": "traits.timeZone",
+    "required": false
+  },
+  {
+    "destKey": "location.coordinates.latitude",
+    "sourceKeys": "traits.latitude",
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
+  },
+  {
+    "destKey": "location.coordinates.longitude",
+    "sourceKeys": "traits.longitude",
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
+  }
+]

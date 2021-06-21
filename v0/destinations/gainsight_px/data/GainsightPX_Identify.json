@@ -33,6 +33,7 @@
         {
           "sourceVal": [
             "o",
+            "O",
             "other",
             "others",
             "Others",
@@ -55,7 +56,11 @@
   },
   {
     "destKey": "signUpDate",
-    "sourceKeys": ["traits.signUpDate", "context.traits.signUpDate", "originalTimestamp"],
+    "sourceKeys": [
+      "traits.signUpDate",
+      "context.traits.signUpDate",
+      "originalTimestamp"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -104,7 +109,11 @@
   },
   {
     "destKey": "createDate",
-    "sourceKeys": ["traits.createDate", "context.traits.createDate"],
+    "sourceKeys": [
+      "traits.createDate",
+      "context.traits.createDate",
+      "originalTimestamp"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"

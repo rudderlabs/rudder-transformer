@@ -1,7 +1,7 @@
 [
   {
     "destKey": "identifyId",
-    "sourceKeys": "userIdOnly",
+    "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": true
   },
@@ -18,16 +18,14 @@
   {
     "destKey": "date",
     "sourceKeys": ["properties.date", "originalTimestamp"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
   },
   {
     "destKey": "sessionId",
     "sourceKeys": "properties.sessionId",
-    "required": false
-  },
-  {
-    "destKey": "globalContext",
-    "sourceKeys": "properties.globalContext",
     "required": false
   },
   {

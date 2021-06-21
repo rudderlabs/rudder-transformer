@@ -16,7 +16,8 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   ENDPOINT,
@@ -301,14 +302,15 @@ function responseBuilderSimple(
 
         const deviceId = get(message, "context.device.id");
         const platform = get(message, "context.device.type");
-        const tracking = get(message, "context.device.adTrackingEnabled");
         const advertId = get(message, "context.device.advertisingId");
 
-        if (tracking && platform.toLowerCase() === "ios") {
-          set(payload, "idfa", advertId);
-          set(payload, "idfv", deviceId);
-        } else if (tracking && platform.toLowerCase() === "android") {
-          set(payload, "adid", advertId);
+        if (platform) {
+          if (platform.toLowerCase() === "ios") {
+            set(payload, "idfa", advertId);
+            set(payload, "idfv", deviceId);
+          } else if (platform.toLowerCase() === "android") {
+            set(payload, "adid", advertId);
+          }
         }
       }
 
@@ -333,7 +335,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
-      payload = removeUndefinedValues(payload);
+      payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
       response.headers = {

@@ -910,6 +910,17 @@ function countNumberOfObjects(arrayOfObjects) {
   return len;
 }
 
+// splits array into equal parts and returns array of sub arrays
+
+function returnArrayOfSubarrays(arr, len) {
+  const chunks = [];
+  let i = 0;
+  const n = arr.length;
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+  return chunks;
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -962,5 +973,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   checkSubsetOfArray,
-  countNumberOfObjects
+  countNumberOfObjects,
+  returnArrayOfSubarrays
 };

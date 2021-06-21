@@ -8,7 +8,11 @@ const {
   checkSubsetOfArray,
   isDefinedAndNotNull,
   countNumberOfObjects,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  removeUndefinedAndNullValues,
+  returnArrayOfSubarrays
 } = require("../../util");
 
 const {
@@ -66,7 +70,7 @@ function ensureApplicableFormat(userProperty, userInformation) {
     case "GEN":
       updatedProperty =
         userInformation.lowerCase() === "f" ||
-        userInformation.lowerCase() === "female"
+          userInformation.lowerCase() === "female"
           ? "f"
           : "m";
       break;
@@ -155,34 +159,32 @@ function ensureApplicableFormat(userProperty, userInformation) {
 function prepareDataField(userSchema, userUpdateList, isHashRequired) {
   const data = [];
   let dataElement;
-  if (countNumberOfObjects(userUpdateList) < MAX_USER_COUNT) {
-    userUpdateList.forEach(eachUser => {
-      dataElement = [];
-      userSchema.forEach(eachProperty => {
-        if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
-          const updatedProperty = ensureApplicableFormat(
-            eachProperty,
-            eachUser[eachProperty]
-          );
-          if (
-            isHashRequired &&
-            (eachProperty !== "MADID" ||
-              eachProperty !== "MOBILE_ADVERTISER_ID")
-          ) {
-            dataElement.push(sha256(updatedProperty));
-          } else {
-            dataElement.push(updatedProperty);
-          }
+  userUpdateList.forEach(eachUser => {
+    dataElement = [];
+    userSchema.forEach(eachProperty => {
+      if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
+        const updatedProperty = ensureApplicableFormat(
+          eachProperty,
+          eachUser[eachProperty]
+        );
+        if (
+          isHashRequired &&
+          (eachProperty !== "MADID" || eachProperty !== "MOBILE_ADVERTISER_ID")
+        ) {
+          dataElement.push(sha256(updatedProperty));
         } else {
-          throw new CustomError(
-            `Configured Schema field ${eachProperty} is missing in one or more user records`,
-            400
-          );
+          dataElement.push(updatedProperty);
         }
-      });
-      data.push(dataElement);
+      } else {
+        throw new CustomError(
+          `Configured Schema field ${eachProperty} is missing in one or more user records`,
+          400
+        );
+      }
     });
-  }
+    data.push(dataElement);
+  });
+
   return data;
 }
 
@@ -192,6 +194,7 @@ function preparePayload(
   paramsPayload,
   isHashRequired
 ) {
+  // the schema value in the payload field has to be an array
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
@@ -210,18 +213,21 @@ function preparePayload(
 function prepareResponse(
   message,
   destination,
-  userUpdateCategory,
-  isHashRequired = true
+  isHashRequired = true,
+  allowedAudienceArray
 ) {
   const { accessToken, userSchema } = destination.Config;
   const prepareParams = {};
   let sessionPayload = {};
+  // creating the parameters field
   let paramsPayload = {};
   let dataSource = {};
-  sessionPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name]
+  sessionPayload = removeUndefinedAndNullValues(
+    constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name])
   );
+
+  // without all the mandatory fields present, session blocks can not be formed
+
   if (
     checkSubsetOfArray(
       Object.getOwnPropertyNames(sessionPayload),
@@ -233,25 +239,30 @@ function prepareResponse(
     logger.debug("All required fields for session block is not present");
   }
   prepareParams.access_token = accessToken;
-  paramsPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name]
+
+  // creating the payload field for parameters
+
+  paramsPayload = removeUndefinedAndNullValues(
+    constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name])
   );
-  dataSource = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
+  dataSource = removeUndefinedAndNullValues(
+    constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
+    )
   );
+
   if (
-    isDefinedAndNotNull(dataSource.type) &&
-    isDefinedAndNotNull(dataSource.sub_type) &&
-    typeFields.includes(dataSource.type) &&
-    subTypeFields.includes(dataSource.sub_type)
+    (isDefinedAndNotNull(dataSource.type) &&
+      typeFields.includes(dataSource.type)) ||
+    (isDefinedAndNotNull(dataSource.sub_type) &&
+      subTypeFields.includes(dataSource.sub_type))
   ) {
     paramsPayload.data_source = dataSource;
   }
 
   prepareParams.payload = preparePayload(
-    message.properties[userUpdateCategory],
+    allowedAudienceArray,
     userSchema,
     paramsPayload,
     isHashRequired
@@ -277,12 +288,14 @@ const processEvent = (message, destination) => {
   }
   const operationAudienceId = getAudienceId(message.event, destination);
 
+  // when no event to audience_id mapping is found
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new CustomError(
       `The event name does not match with configured audience ids'`,
       400
     );
   }
+  // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFiels, userSchema)) {
     throw new CustomError(
       "One or more of the schema fields are not supported",
@@ -291,27 +304,48 @@ const processEvent = (message, destination) => {
   }
   const { properties } = message;
 
+  // While user wants to add to audience_id
+
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
-    response = prepareResponse(message, destination, USER_ADD, isHashRequired);
-    wrappedResponse = {
-      responseField: response,
-      operationCategory: USER_ADD
-    };
-    toSendEvents.push(wrappedResponse);
+    const audienceChunksArray = returnArrayOfSubarrays(
+      properties[USER_ADD],
+      MAX_USER_COUNT
+    );
+    audienceChunksArray.forEach(allowedAudienceArray => {
+      response = prepareResponse(
+        message,
+        destination,
+        isHashRequired,
+        allowedAudienceArray
+      );
+      wrappedResponse = {
+        responseField: response,
+        operationCategory: USER_ADD
+      };
+      toSendEvents.push(wrappedResponse);
+    });
   }
 
+  // while user wants to delete from audience_id
+
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_DELETE])) {
-    response = prepareResponse(
-      message,
-      destination,
-      USER_DELETE,
-      isHashRequired
+    const audienceChunksArray = returnArrayOfSubarrays(
+      properties[USER_DELETE],
+      MAX_USER_COUNT
     );
-    wrappedResponse = {
-      responseField: response,
-      operationCategory: USER_DELETE
-    };
-    toSendEvents.push(wrappedResponse);
+    audienceChunksArray.forEach(allowedAudienceArray => {
+      response = prepareResponse(
+        message,
+        destination,
+        isHashRequired,
+        allowedAudienceArray
+      );
+      wrappedResponse = {
+        responseField: response,
+        operationCategory: USER_DELETE
+      };
+      toSendEvents.push(wrappedResponse);
+    });
   }
   toSendEvents.forEach(sendEvent => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
@@ -323,4 +357,34 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+              ? error.code
+              : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

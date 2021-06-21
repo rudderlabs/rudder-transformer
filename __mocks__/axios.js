@@ -55,11 +55,11 @@ function get(url) {
       resolve(trengoGetRequestHandler(url));
     });
   }
-if (url.includes("api.mailchimp.com")) {
-  return new Promise((resolve, reject) => {
-    resolve(mailchimpGetRequestHandler(url));
-  });
-}
+  if (url.includes("api.mailchimp.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(mailchimpGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });

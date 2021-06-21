@@ -7,8 +7,12 @@ const {
   getDateInFormat,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
+
 const {
   baseMapping,
   eventNameMapping,
@@ -107,8 +111,9 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   }
 
   if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
-    throw new Error(
-      "Either context.device.advertisingId or traits or anonymousId must be present for all events"
+    throw new CustomError(
+      "Either context.device.advertisingId or traits or anonymousId must be present for all events",
+      400
     );
   }
 
@@ -131,12 +136,13 @@ function getCorrectedTypedValue(pathToKey, value, originalPath) {
     return value;
   }
 
-  throw new Error(
+  throw new CustomError(
     `${
       typeof originalPath === "object"
         ? JSON.stringify(originalPath)
         : originalPath
-    } is not of valid type`
+    } is not of valid type`,
+    400
   );
 }
 
@@ -164,8 +170,9 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           processedKey = k.substring(0, 40);
         }
         if (processedKey.length === 0) {
-          throw new Error(
-            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`
+          throw new CustomError(
+            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`,
+            400
           );
         }
       }
@@ -331,8 +338,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       fbEventName = eventNameMapping[eventName] || eventName;
       if (!eventAndPropRegex.test(fbEventName)) {
-        throw new Error(
-          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
+        throw new CustomError(
+          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`,
+          400
         );
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
@@ -345,8 +353,9 @@ function processSingleMessage(message, destination) {
       } else {
         fbEventName = `Viewed ${name} Screen`;
         if (!eventAndPropRegex.test(fbEventName)) {
-          throw new Error(
-            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
+          throw new CustomError(
+            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`,
+            400
           );
         }
       }
@@ -359,7 +368,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error("could not determine type");
-      throw new Error("message type not supported");
+      throw new CustomError("message type not supported", 400);
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);
@@ -374,4 +383,43 @@ function process(event) {
   return resp;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

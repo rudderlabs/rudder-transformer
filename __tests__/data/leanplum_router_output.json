@@ -1,0 +1,172 @@
+[
+    {
+        "batchedRequest": [
+            {
+                "version": "1",
+                "type": "REST",
+                "method": "POST",
+                "endpoint": "https://api.leanplum.com/api",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "params": {
+                    "action": "start"
+                },
+                "body": {
+                    "JSON": {
+                        "appId": "leanplum_application_id",
+                        "clientKey": "leanplum_client_key",
+                        "apiVersion": "1.0.6",
+                        "userId": "5094f5704b9cf2b3",
+                        "deviceId": "5094f5704b9cf2b3",
+                        "appVersion": "1.0",
+                        "systemName": "Android",
+                        "systemVersion": "8.1.0",
+                        "deviceName": "generic_x86",
+                        "deviceModel": "Android SDK built for x86",
+                        "userAttributes": {
+                            "anonymousId": "5094f5704b9cf2b3"
+                        },
+                        "locale": "en-US",
+                        "timezone": "Asia/Kolkata",
+                        "time": 1584003903,
+                        "devMode": true
+                    },
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {},
+                "userId": "5094f5704b9cf2b3"
+            },
+            {
+                "version": "1",
+                "type": "REST",
+                "method": "POST",
+                "endpoint": "https://api.leanplum.com/api",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "params": {
+                    "action": "advance"
+                },
+                "body": {
+                    "JSON": {
+                        "appId": "leanplum_application_id",
+                        "clientKey": "leanplum_client_key",
+                        "apiVersion": "1.0.6",
+                        "userId": "5094f5704b9cf2b3",
+                        "state": "MainActivity",
+                        "deviceId": "5094f5704b9cf2b3",
+                        "time": 1584003903,
+                        "devMode": true
+                    },
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {},
+                "userId": "5094f5704b9cf2b3"
+            }
+        ],
+        "metadata": [
+            {
+                "jobId": 2
+            }
+        ],
+        "batched": false,
+        "statusCode": 200,
+        "destination": {
+            "Config": {
+                "applicationId": "leanplum_application_id",
+                "clientKey": "leanplum_client_key",
+                "isDevelop": true,
+                "useNativeSDK": false,
+                "sendEvents": false
+            }
+        }
+    },
+    {
+        "batchedRequest": [
+            {
+                "version": "1",
+                "type": "REST",
+                "method": "POST",
+                "endpoint": "https://api.leanplum.com/api",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "params": {
+                    "action": "start"
+                },
+                "body": {
+                    "JSON": {
+                        "appId": "leanplum_application_id",
+                        "clientKey": "leanplum_client_key__",
+                        "apiVersion": "1.0.6",
+                        "userId": "5094f5704b9cf2b3",
+                        "deviceId": "5094f5704b9cf2b3",
+                        "appVersion": "1.0",
+                        "systemName": "Android",
+                        "systemVersion": "8.1.0",
+                        "deviceName": "generic_x86",
+                        "deviceModel": "Android SDK built for x86",
+                        "userAttributes": {
+                            "anonymousId": "5094f5704b9cf2b3"
+                        },
+                        "locale": "en-US",
+                        "timezone": "Asia/Kolkata",
+                        "time": 1584003903,
+                        "devMode": true
+                    },
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {},
+                "userId": "5094f5704b9cf2b3"
+            },
+            {
+                "version": "1",
+                "type": "REST",
+                "method": "POST",
+                "endpoint": "https://api.leanplum.com/api",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "params": {
+                    "action": "advance"
+                },
+                "body": {
+                    "JSON": {
+                        "appId": "leanplum_application_id",
+                        "clientKey": "leanplum_client_key__",
+                        "apiVersion": "1.0.6",
+                        "userId": "5094f5704b9cf2b3",
+                        "state": "MainActivity",
+                        "deviceId": "5094f5704b9cf2b3",
+                        "time": 1584003903,
+                        "devMode": true
+                    },
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {},
+                "userId": "5094f5704b9cf2b3"
+            }
+        ],
+        "metadata": [
+            {
+                "jobId": 2
+            }
+        ],
+        "batched": false,
+        "statusCode": 200,
+        "destination": {
+            "Config": {
+                "applicationId": "leanplum_application_id",
+                "clientKey": "leanplum_client_key__",
+                "isDevelop": true,
+                "useNativeSDK": false,
+                "sendEvents": false
+            }
+        }
+    }
+]

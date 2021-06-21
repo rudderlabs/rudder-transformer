@@ -40,3 +40,4 @@ const mailchimpGetRequestHandler = url => {
 };
 
 module.exports = mailchimpGetRequestHandler;
+

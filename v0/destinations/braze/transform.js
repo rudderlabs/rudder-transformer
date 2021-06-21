@@ -6,8 +6,12 @@ const {
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
+
 const {
   ConfigCategory,
   mappingConfig,
@@ -279,7 +283,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
       );
     }
 
-    throw new Error("Invalid Order Completed event");
+    throw new CustomError("Invalid Order Completed event", 400);
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -309,7 +313,7 @@ function processGroup(message, destination) {
   const groupAttribute = {};
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new Error("Invalid groupId");
+    throw new CustomError("Invalid groupId", 400);
   }
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
@@ -397,7 +401,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new Error("Message type is not supported");
+      throw new CustomError("Message type is not supported", 400);
   }
 
   return respList;
@@ -618,7 +622,43 @@ function batch(destEvents) {
   return respList;
 }
 
-module.exports = {
-  process,
-  batch
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
 };
+
+module.exports = { process, processRouterDest, batch };

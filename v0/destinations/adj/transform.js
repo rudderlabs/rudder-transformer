@@ -6,7 +6,10 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  flattenJson
+  flattenJson,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 const rejectParams = ["revenue", "currency"];
@@ -19,7 +22,7 @@ function responseBuilderSimple(message, category, destination) {
     !message.context.device.type ||
     !message.context.device.id
   ) {
-    throw new Error("Device type/id  not present");
+    throw new CustomError("Device type/id  not present", 400);
   }
   if (message.context.device.type.toLowerCase() === "android") {
     delete payload.idfv;
@@ -28,7 +31,7 @@ function responseBuilderSimple(message, category, destination) {
     delete payload.android_id;
     delete payload.gps_adid;
   } else {
-    throw new Error("Device type not valid");
+    throw new CustomError("Device type not valid", 400);
   }
   if (payload.revenue) {
     payload.currency = message.properties.currency || "USD";
@@ -62,15 +65,18 @@ function responseBuilderSimple(message, category, destination) {
   }
   // fail-safety for developer error
   if (!message.event || !hashMap[message.event]) {
-    throw new Error("No event token mapped for this event");
+    throw new CustomError("No event token mapped for this event", 400);
   } else {
-    throw new Error("Payload could not be constructed");
+    throw new CustomError("Payload could not be constructed", 400);
   }
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -79,7 +85,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   // build the response
@@ -89,4 +95,43 @@ const processEvent = (message, destination) => {
 const process = event => {
   return processEvent(event.message, event.destination);
 };
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

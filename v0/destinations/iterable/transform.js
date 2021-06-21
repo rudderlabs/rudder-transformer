@@ -4,13 +4,16 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  constructPayload
+  constructPayload,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const logger = require("../../../logger");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
-    throw new Error("userId or email is mandatory for this request");
+    throw new CustomError("userId or email is mandatory for this request", 400);
   }
 }
 
@@ -63,7 +66,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new Error("Invalid page call");
+        throw new CustomError("Invalid page call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -94,7 +97,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new Error("Invalid screen call");
+        throw new CustomError("Invalid screen call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -258,7 +261,7 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   const response = responseBuilderSimple(message, category, destination);
 
@@ -281,4 +284,43 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

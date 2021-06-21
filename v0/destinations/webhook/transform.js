@@ -50,6 +50,38 @@ function process(event) {
       }
 
       Object.assign(response.headers, getHashFromArray(headers));
+      // ------------------------------------------------
+      // This is temporary and just to support dynamic header through user transformation
+      // Final goal is to support updating destinaiton config using user transformation
+      //
+      // We'll deprecate this feature as soon as we release the final feature
+      // Sample user transformation for this:
+      //
+      // export function transformEvent(event, metadata) {
+      //   event.header = {
+      //     dynamic_header_1: "dynamic_header_value"
+      //   };
+      //
+      //   return event;
+      // }
+      //
+      // ------------------------------------------------
+      const { header } = message;
+      if (header) {
+        if (typeof header === "object") {
+          Object.keys(header).forEach(key => {
+            const val = header[key];
+            if (val && typeof val === "string") {
+              response.headers[key] = val;
+            }
+          });
+        }
+
+        if (response.body.JSON) {
+          delete response.body.JSON.header;
+        }
+      }
+
       response.userId = message.anonymousId;
       response.endpoint = url;
 

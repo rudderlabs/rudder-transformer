@@ -1,33 +1,23 @@
-const {
-  getHashFromArray,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
-} = require("../../util");
+const { getSuccessRespEvents, getErrorRespEvents } = require("../../util");
 
-function getTopic(event) {
-  const { message } = event;
-  const { eventToTopicMap } = event.destination.Config;
-  const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
-
-  return (
-    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
-    hashMap[message.type.toLowerCase()] ||
-    hashMap["*"]
-  );
-}
+const { getTopic, createAttributesMetadata } = require("./util");
 
 function process(event) {
+  const { message, destination } = event;
   const topicId = getTopic(event);
   if (topicId) {
+    const attributes = createAttributesMetadata(message, destination);
+
     return {
-      message: event.message,
-      userId: event.message.anonymousId,
-      topicId
+      userId: message.userId || message.anonymousId,
+      message,
+      topicId,
+      attributes
     };
   }
-  throw new CustomError("No topic set for this event", 400);
+  throw new Error("No topic set for this event");
 }
+
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");

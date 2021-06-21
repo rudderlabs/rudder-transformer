@@ -253,6 +253,7 @@ const fullEventColumnTypeByProvider = {
   bq: "string",
   postgres: "json",
   mssql: "json",
+  azure_synapse: "json",
   clickhouse: "string"
 };
 

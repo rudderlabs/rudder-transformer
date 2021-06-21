@@ -59,6 +59,23 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+/**
+ *
+ * @param {*} arg
+ * @returns {type}
+ *
+ * Returns type of passed arg 
+ * for null argss returns "NULL" insted of "object"
+ *
+ */
+const getType = arg => {
+  const type = typeof arg;
+  if (arg == null) {
+    return "NULL";
+  }
+  return type;
+};
+
 const formatValue = value => {
   if (!value || value < 0) return null;
   return Math.round(value);
@@ -895,8 +912,8 @@ class CustomError extends Error {
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
-  constructPayload,
   checkEmptyStringInarray,
+  constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -906,6 +923,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  formatTimeStamp,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
@@ -920,6 +938,7 @@ module.exports = {
   getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
+  getType,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
@@ -927,8 +946,8 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
-  isObject,
   isNonFuncObject,
+  isObject,
   isPrimitive,
   isValidUrl,
   removeNullValues,

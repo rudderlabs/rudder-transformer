@@ -410,7 +410,8 @@ const handleMetadataForValue = (value, metadata) => {
     template,
     defaultValue,
     excludes,
-    multikeyMap
+    multikeyMap,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -554,6 +555,19 @@ const handleMetadataForValue = (value, metadata) => {
       });
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
+    }
+    if (!foundVal) formattedVal = undefined;
+  }
+
+  if (allowedKeyCheck) {
+    let foundVal = false;
+    if (Array.isArray(allowedKeyCheck)) {
+      allowedKeyCheck.some(key => {
+        if (key.sourceVal.includes(formattedVal)) {
+          foundVal = true;
+          return true;
+        }
+      });
     }
     if (!foundVal) formattedVal = undefined;
   }

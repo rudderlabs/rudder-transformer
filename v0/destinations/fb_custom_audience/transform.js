@@ -6,7 +6,6 @@ const {
   defaultDeleteRequestConfig,
   constructPayload,
   checkSubsetOfArray,
-  isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -22,8 +21,6 @@ const {
   CustomError,
   sessionBlockField,
   MAX_USER_COUNT,
-  typeFields,
-  subTypeFields,
   getAudienceId,
   USER_ADD,
   USER_DELETE
@@ -51,13 +48,21 @@ function responseBuilderSimple(payload, audienceId) {
   throw new CustomError(`Payload could not be constructed`, 400);
 }
 
-function ensureApplicableFormat(userProperty, userInformation) {
+// function responsible to ensure the user inputs are passed according to the allowed format
+
+function ensureApplicableFormat(
+  userProperty,
+  userInformation,
+  disableValidation
+) {
   let updatedProperty;
   let userInformationTrimmed;
+  let validationPassed = false;
   switch (userProperty) {
     case "EMAIL":
     case "EMAIL_SHA256":
       updatedProperty = userInformation.trim().toLowerCase();
+      validationPassed = true;
       break;
     case "PHONE":
     case "PHONE_SHA256":
@@ -65,13 +70,15 @@ function ensureApplicableFormat(userProperty, userInformation) {
       updatedProperty = userInformation.replace(/[^0-9]/g, "");
       // remove all leading zeros
       updatedProperty = userInformation.replace(/^0+/g, "");
+      validationPassed = true;
       break;
     case "GEN":
       updatedProperty =
         userInformation.lowerCase() === "f" ||
-          userInformation.lowerCase() === "female"
+        userInformation.lowerCase() === "female"
           ? "f"
           : "m";
+      validationPassed = true;
       break;
     case "DOBY":
       if (
@@ -81,8 +88,7 @@ function ensureApplicableFormat(userProperty, userInformation) {
           .replace(/\./g, "").length === 4
       ) {
         updatedProperty = userInformation;
-      } else {
-        throw new CustomError(" The year of birth should be in YYYY", 400);
+        validationPassed = true;
       }
       break;
     case "DOBM":
@@ -94,8 +100,7 @@ function ensureApplicableFormat(userProperty, userInformation) {
         parseInt(userInformationTrimmed, 10) <= 12
       ) {
         updatedProperty = userInformationTrimmed;
-      } else {
-        throw new CustomError("Please follow the ideal MM month format", 400);
+        validationPassed = true;
       }
       break;
     case "DOBD":
@@ -106,8 +111,7 @@ function ensureApplicableFormat(userProperty, userInformation) {
         parseInt(userInformation, 10) <= 31
       ) {
         updatedProperty = userInformationTrimmed;
-      } else {
-        throw new CustomError("Please follow the ideal DD date format", 400);
+        validationPassed = true;
       }
       break;
     case "LN":
@@ -122,29 +126,30 @@ function ensureApplicableFormat(userProperty, userInformation) {
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!,.?]/g, "");
       }
+      validationPassed = true;
       break;
     case "MADID":
     case "MOBILE_ADVERTISER_ID":
       updatedProperty = userInformation.toLowerCase();
+      validationPassed = true;
       break;
     case "COUNTRY":
       if (userInformation.toLowerCase().length === 2) {
         updatedProperty = userInformation.toLowerCase();
-      } else
-        throw new CustomError(
-          "Country code should be in 2-letters in ISO 3166-1 alpha-2. ",
-          400
-        );
+        validationPassed = true;
+      }
       break;
     case "ZIP":
       userInformationTrimmed = userInformation.replace(/\s/g, "");
       updatedProperty = userInformationTrimmed.toLowerCase();
+      validationPassed = true;
       break;
     case "ST":
       updatedProperty = userInformation
         .replace(/[^a-zA-Z ]/g, "")
         .replace(/\s/g, "")
         .toLowerCase();
+      validationPassed = true;
       break;
     default:
       throw new CustomError(
@@ -152,10 +157,23 @@ function ensureApplicableFormat(userProperty, userInformation) {
         400
       );
   }
+  if (!disableValidation && !validationPassed) {
+    throw new CustomError(
+      `The allowed format for ${userProperty} is not maintained in one or more user records`
+    );
+  }
   return updatedProperty;
 }
 
-function prepareDataField(userSchema, userUpdateList, isHashRequired) {
+// Function responsible for making the data field without payload object
+// Based on the "isHashRequired" value hashing is explicitly enabled or disabled
+
+function prepareDataField(
+  userSchema,
+  userUpdateList,
+  isHashRequired,
+  disableValidation
+) {
   const data = [];
   let dataElement;
   userUpdateList.forEach(eachUser => {
@@ -164,7 +182,8 @@ function prepareDataField(userSchema, userUpdateList, isHashRequired) {
       if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
         const updatedProperty = ensureApplicableFormat(
           eachProperty,
-          eachUser[eachProperty]
+          eachUser[eachProperty],
+          disableValidation
         );
         if (
           isHashRequired &&
@@ -187,13 +206,15 @@ function prepareDataField(userSchema, userUpdateList, isHashRequired) {
   return data;
 }
 
+// Function responsible prepare the payload field of every event parameter
+
 function preparePayload(
   userUpdateList,
   userSchema,
   paramsPayload,
-  isHashRequired
+  isHashRequired,
+  disableValidation
 ) {
-  // the schema value in the payload field has to be an array
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
@@ -204,10 +225,13 @@ function preparePayload(
   prepareFinalPayload.data = prepareDataField(
     userSchema,
     userUpdateList,
-    isHashRequired
+    isHashRequired,
+    disableValidation
   );
   return prepareFinalPayload;
 }
+
+// Function responsible for building the parameters for each event calls
 
 function prepareResponse(
   message,
@@ -215,7 +239,7 @@ function prepareResponse(
   isHashRequired = true,
   allowedAudienceArray
 ) {
-  const { accessToken, userSchema } = destination.Config;
+  const { accessToken, userSchema, disableValidation } = destination.Config;
   const prepareParams = {};
   let sessionPayload = {};
   // creating the parameters field
@@ -250,21 +274,15 @@ function prepareResponse(
       MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
     )
   );
-
-  if (
-    (isDefinedAndNotNull(dataSource.type) &&
-      typeFields.includes(dataSource.type)) ||
-    (isDefinedAndNotNull(dataSource.sub_type) &&
-      subTypeFields.includes(dataSource.sub_type))
-  ) {
+  if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
-
   prepareParams.payload = preparePayload(
     allowedAudienceArray,
     userSchema,
     paramsPayload,
-    isHashRequired
+    isHashRequired,
+    disableValidation
   );
 
   return prepareParams;
@@ -303,8 +321,6 @@ const processEvent = (message, destination) => {
   }
   const { properties } = message;
 
-  // While user wants to add to audience_id
-
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       properties[USER_ADD],
@@ -324,8 +340,6 @@ const processEvent = (message, destination) => {
       toSendEvents.push(wrappedResponse);
     });
   }
-
-  // while user wants to delete from audience_id
 
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(
@@ -365,11 +379,15 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
+        const transformedList = await process(input);
+        const responseList = transformedList.map(transformedPayload => {
+          getSuccessRespEvents(
+            transformedPayload,
+            [input.metadata],
+            input.destination
+          );
+        });
+        return responseList;
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],

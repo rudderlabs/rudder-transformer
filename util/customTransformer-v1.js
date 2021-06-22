@@ -54,11 +54,11 @@ async function userTransformHandlerV1(
     ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
     : false;
   if (userTransformation.versionId) {
-    const commonTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
       version: 1,
-      ...commonTags
+      ...metaTags
     };
 
     // Create isolated VMs in pooled or on demand mode based on env var ON_DEMAND_ISOLATE_VM

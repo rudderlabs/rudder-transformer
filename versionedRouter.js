@@ -56,16 +56,6 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-// const getWarehouseID = ( metadata ) => {
-//   if (! metadata.sourceType || !metadata.destinationType || !metadata.destinationId) {
-//     return '';
-//   }
-//   let destinationId = metadata.destinationId.substring(metadata.destinationId.length-6);
-//   let sourceType = metadata.sourceType.replace(/:/g, '_').substring(0, 15) + '_';
-//   let destinationType = metadata.destinationType.replace(/:/g, '_').substring(0, 15) + '_';
-//   logger.info(sourceType + destinationType + destinationId);
-//   return sourceType + destinationType + destinationId;
-// }
 
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
@@ -73,11 +63,11 @@ async function handleDest(ctx, version, destination) {
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
 
-  const commomTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+  const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
     version,
-    ...commomTags
+    ...metaTags
   });
   const respList = [];
   await Promise.all(
@@ -112,7 +102,7 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version, ...commomTags });
+        stats.increment("dest_transform_errors", 1, { destination, version, ...metaTags });
       }
     })
   );
@@ -120,7 +110,7 @@ async function handleDest(ctx, version, destination) {
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
     version,
-    ...commomTags
+    ...metaTags
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
@@ -153,21 +143,27 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        // Assuming that events are from one single source
+        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        // Assuming that events are from one single source
+        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
       });
       router.post("/routerTransform", async ctx => {
         await routerHandleDest(ctx);
@@ -181,7 +177,6 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      // let commonTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
       stats.counter("user_transform_input_events", events.length, {
         processSessions
       });
@@ -190,10 +185,10 @@ if (startDestTransformer) {
         groupedEvents = _.groupBy(events, event => {
           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
           const rudderId = event.metadata.rudderId || event.message.anonymousId;
-          return `${event.destination.ID}_${rudderId}`;
+          return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(events, event => event.destination.ID);
+        groupedEvents = _.groupBy(events, event => event.metadata.destinationId + '_' + event.metadata.sourceId );
       }
       stats.counter(
         "user_transform_function_group_size",
@@ -229,7 +224,7 @@ if (startDestTransformer) {
             messageIds
           };
 
-          const commonTags = destEvents.length && destEvents[0].metadata ? getMetadata(destEvents[0].metadata) : {};
+          const metaTags = destEvents.length && destEvents[0].metadata ? getMetadata(destEvents[0].metadata) : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -240,7 +235,7 @@ if (startDestTransformer) {
                 {
                   transformationVersionId,
                   processSessions,
-                  ...commonTags
+                  ...metaTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -293,13 +288,13 @@ if (startDestTransformer) {
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions,
-                ...commonTags
+                ...metaTags
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions, ...commonTags }
+                { transformationVersionId, processSessions, ...metaTags }
               );
             }
           } else {
@@ -313,7 +308,7 @@ if (startDestTransformer) {
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
               processSessions,
-              ...commonTags
+              ...metaTags
             });
           }
         })
@@ -335,7 +330,7 @@ if (startDestTransformer) {
 async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
-  logger.info(`[ST] Input source events: ${JSON.stringify(events)}`);
+  logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   stats.increment("source_transform_input_events", events.length, {
     source,
     version
@@ -363,7 +358,7 @@ async function handleSource(ctx, version, source) {
       }
     })
   );
-  logger.info(`[ST] Output source events: ${JSON.stringify(respList)}`);
+  logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   stats.increment("source_transform_output_events", respList.length, {
     source,
     version

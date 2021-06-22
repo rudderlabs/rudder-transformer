@@ -9,7 +9,7 @@ const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.js
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
-const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake", "mssql"];
+const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake", "mssql", "azure_synapse"];
 const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );

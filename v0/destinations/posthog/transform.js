@@ -14,7 +14,10 @@ const {
   isValidUrl,
   stripTrailingSlash,
   isDefinedAndNotNull,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  CustomError
 } = require("../../util");
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
@@ -68,7 +71,7 @@ const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (!payload) {
     // fail-safety for developer error
-    throw Error(ErrorMessage.FailedToConstructPayload);
+    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
   payload.properties = {
@@ -110,12 +113,12 @@ const responseBuilderSimple = (message, category, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error(ErrorMessage.TypeNotFound);
+    throw new CustomError(ErrorMessage.TypeNotFound, 400);
   }
 
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   if (!category) {
-    throw Error(ErrorMessage.TypeNotSupported);
+    throw new CustomError(ErrorMessage.TypeNotSupported, 400);
   }
 
   return responseBuilderSimple(message, category, destination);
@@ -125,4 +128,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

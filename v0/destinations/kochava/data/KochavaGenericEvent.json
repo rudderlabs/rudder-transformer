@@ -1,7 +1,7 @@
 [
   {
     "destKey": "origination_ip",
-    "sourceKeys": "request_ip"
+    "sourceKeys": ["context.ip", "request_ip"]
   },
   {
     "destKey": "carrier_name",
@@ -50,6 +50,19 @@
   {
     "destKey": "product_name",
     "sourceKeys": "context.device.name"
+  },
+  {
+    "destKey": "kochava_device_id",
+    "sourceKeys": ["context.device.id", "anonymousId"]
+  },
+  {
+    "destKey": "device_ids",
+    "sourceKeys": "context.device.advertisingId"
+  },
+  {
+    "destKey": "user_time",
+    "sourceKeys": "originalTimestamp",
+
   },
   {
     "destKey": "locale",

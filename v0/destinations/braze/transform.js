@@ -532,7 +532,6 @@ function batch(destEvents) {
       if (!identifyEndpoint) {
         identifyEndpoint = endPoint;
       }
-
       const aliasObjectArr = get(jsonBody, "aliases_to_identify");
       const aliasMaxCount =
         aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
@@ -546,7 +545,7 @@ function batch(destEvents) {
           partner: BRAZE_PARTNER_NAME
         };
         if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = attributesBatch;
+          responseBodyJson.aliases_to_identify = [...aliasBatch];
         }
         batchResponse.body.JSON = responseBodyJson;
         respList.push(

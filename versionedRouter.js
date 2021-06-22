@@ -7,7 +7,7 @@ const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject } = require("./v0/util");
+const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
 
@@ -56,14 +56,28 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+// const getWarehouseID = ( metadata ) => {
+//   if (! metadata.sourceType || !metadata.destinationType || !metadata.destinationId) {
+//     return '';
+//   }
+//   let destinationId = metadata.destinationId.substring(metadata.destinationId.length-6);
+//   let sourceType = metadata.sourceType.replace(/:/g, '_').substring(0, 15) + '_';
+//   let destinationType = metadata.destinationType.replace(/:/g, '_').substring(0, 15) + '_';
+//   logger.info(sourceType + destinationType + destinationId);
+//   return sourceType + destinationType + destinationId;
+// }
+
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+
+  const commomTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
-    version
+    version,
+    ...commomTags
   });
   const respList = [];
   await Promise.all(
@@ -98,14 +112,15 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version });
+        stats.increment("dest_transform_errors", 1, { destination, version, ...commomTags });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
-    version
+    version,
+    ...commomTags
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
@@ -166,6 +181,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
+      // let commonTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
       stats.counter("user_transform_input_events", events.length, {
         processSessions
       });
@@ -213,6 +229,7 @@ if (startDestTransformer) {
             messageIds
           };
 
+          const commonTags = destEvents.length && destEvents[0].metadata ? getMetadata(destEvents[0].metadata) : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -222,7 +239,8 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   transformationVersionId,
-                  processSessions
+                  processSessions,
+                  ...commonTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -274,13 +292,14 @@ if (startDestTransformer) {
               transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
-                processSessions
+                processSessions,
+                ...commonTags
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions }
+                { transformationVersionId, processSessions, ...commonTags }
               );
             }
           } else {
@@ -293,12 +312,13 @@ if (startDestTransformer) {
             });
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
-              processSessions
+              processSessions,
+              ...commonTags
             });
           }
         })
       );
-      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
@@ -315,7 +335,7 @@ if (startDestTransformer) {
 async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
-  logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
+  logger.info(`[ST] Input source events: ${JSON.stringify(events)}`);
   stats.increment("source_transform_input_events", events.length, {
     source,
     version
@@ -343,7 +363,7 @@ async function handleSource(ctx, version, source) {
       }
     })
   );
-  logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
+  logger.info(`[ST] Output source events: ${JSON.stringify(respList)}`);
   stats.increment("source_transform_output_events", respList.length, {
     source,
     version

@@ -882,6 +882,19 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+// returns metadata
+
+const getMetadata = (metadata) => {
+  return {
+    sourceId: metadata.sourceId,
+    sourceType: metadata.sourceType,
+    destinationId: metadata.destinationId,
+    destinationType: metadata.destinationType,
+    workspaceId: metadata.workspaceId,
+    namespace: metadata.namespace
+  }
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -932,5 +945,6 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  getMetadata,
 };

@@ -89,11 +89,11 @@ const companyExists = async (accountId, Config) => {
   }
 };
 
-const createAccount = async (accountId, payload, Config) => {
+const createAccount = async (payload, Config) => {
   let response;
   try {
     response = await axios.post(
-      `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
+      ENDPOINTS.ACCOUNTS_ENDPOINT,
       payload,
       {
         headers: {

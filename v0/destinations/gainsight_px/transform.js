@@ -110,7 +110,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError("groupId is required for group", 400);
   }
 
-  const companyIsPresent = companyExists(groupId, Config);
+  const companyIsPresent = await companyExists(groupId, Config);
 
   let payload = constructPayload(message, groupMapping);
   let customAttributes = {};
@@ -130,9 +130,10 @@ const groupResponseBuilder = async (message, { Config }) => {
   customAttributes = renameCustomFields(customAttributes, accountFieldsMap);
   payload = {
     ...payload,
-    customAttributes,
+    customAttributes: !isEmptyObject(customAttributes) ? customAttributes : null,
     propertyKeys: [Config.productTagKey]
   };
+  payload = removeUndefinedAndNullValues(payload);
 
   if (companyIsPresent) {
     // update account
@@ -142,7 +143,8 @@ const groupResponseBuilder = async (message, { Config }) => {
     }
   } else {
     // create account
-    const createSuccess = await createAccount(groupId, payload, Config);
+    payload.id = groupId;
+    const createSuccess = await createAccount(payload, Config);
     if (!createSuccess) {
       throw new CustomError("failed to create account for group", 400);
     }

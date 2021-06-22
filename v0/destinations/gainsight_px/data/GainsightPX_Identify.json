@@ -18,7 +18,7 @@
   },
   {
     "destKey": "gender",
-    "sourceKeys": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
     "required": false,
     "metadata": {
       "multikeyMap": [

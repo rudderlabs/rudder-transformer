@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable no-nested-ternary */
 const { EventType } = require("../../../constants");
 const {
@@ -33,12 +32,15 @@ const {
 } = require("./config");
 
 /**
- * Create/Update a User with user attributes 
+ * Create/Update a User with user attributes
  */
 const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
-    throw new CustomError("userId or anonymousId is required for identify", 400);
+    throw new CustomError(
+      "userId or anonymousId is required for identify",
+      400
+    );
   }
 
   const response = defaultRequestConfig();
@@ -130,7 +132,9 @@ const groupResponseBuilder = async (message, { Config }) => {
   customAttributes = renameCustomFields(customAttributes, accountFieldsMap);
   payload = {
     ...payload,
-    customAttributes: !isEmptyObject(customAttributes) ? customAttributes : null,
+    customAttributes: !isEmptyObject(customAttributes)
+      ? customAttributes
+      : null,
     propertyKeys: [Config.productTagKey]
   };
   payload = removeUndefinedAndNullValues(payload);

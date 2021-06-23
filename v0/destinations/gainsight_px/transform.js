@@ -189,6 +189,10 @@ const trackResponseBuilder = (message, { Config }) => {
     );
   }
 
+  if (payload.attributes && payload.attributes.globalContext) {
+    delete payload.attributes.globalContext;
+  }
+
   payload = {
     ...payload,
     propertyKey: Config.productTagKey,

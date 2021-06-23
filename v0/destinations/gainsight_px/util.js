@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 const axios = require("axios");
 const { ENDPOINTS } = require("./config");
-// const { isEmpty } = require("../../util");
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -28,15 +27,15 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
   );
 };
 
-const removeKeysFromPayload = (payload, keys) => {
-  const updatedPayload = {};
-  Object.keys(payload).forEach(key => {
-    if (!keys.includes(key)) {
-      updatedPayload[key] = payload[key];
-    }
-  });
-  return updatedPayload;
-};
+// const removeKeysFromPayload = (payload, keys) => {
+//   const updatedPayload = {};
+//   Object.keys(payload).forEach(key => {
+//     if (!keys.includes(key)) {
+//       updatedPayload[key] = payload[key];
+//     }
+//   });
+//   return updatedPayload;
+// };
 
 // const getProductTagKeys = propertyKeys => {
 //   if (!propertyKeys || propertyKeys.length === 0) {
@@ -155,7 +154,6 @@ module.exports = {
   CustomError,
   userExists,
   renameCustomFields,
-  removeKeysFromPayload,
   companyExists,
   createAccount,
   updateAccount

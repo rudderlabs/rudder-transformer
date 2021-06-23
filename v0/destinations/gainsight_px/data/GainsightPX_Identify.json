@@ -8,13 +8,13 @@
     "destKey": "firstName",
     "sourceKeys": "firstName",
     "required": false,
-    "sourceFromGenericMap": false
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "lastName",
     "sourceKeys": "lastName",
     "required": false,
-    "sourceFromGenericMap": false
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "gender",

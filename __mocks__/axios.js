@@ -8,13 +8,15 @@ const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
+const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
-  "active.campaigns.rudder.com": "active_campaigns"
+  "active.campaigns.rudder.com": "active_campaigns",
+  "api.aptrinsic.com": "gainsight_px"
 };
 
 const fs = require("fs");
@@ -55,11 +57,16 @@ function get(url) {
       resolve(trengoGetRequestHandler(url));
     });
   }
-if (url.includes("api.mailchimp.com")) {
-  return new Promise((resolve, reject) => {
-    resolve(mailchimpGetRequestHandler(url));
-  });
-}
+  if (url.includes("api.mailchimp.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(mailchimpGetRequestHandler(url));
+    });
+  }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(gainsightPXGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -84,7 +91,12 @@ function post(url, payload) {
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
       resolve(gainsightRequestHandler(url, payload))
-    })
+    });
+  }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return new Promise(resolve => {
+      resolve({ status: 201});
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
@@ -100,7 +112,12 @@ function put(url, payload, options) {
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
       resolve(gainsightRequestHandler(getParamEncodedUrl(url, options), payload));
-    })
+    });
+  }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return new Promise(resolve => {
+      resolve({ status: 204 });
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

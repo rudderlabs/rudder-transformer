@@ -899,6 +899,13 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -951,5 +958,6 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  CustomError
 };

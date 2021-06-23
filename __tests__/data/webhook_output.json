@@ -645,7 +645,7 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "http://6b0e6a60.ngrok.io",
+    "endpoint": "http://6b0e6a60.ngrok.io/product/search?string=value",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "content-type": "application/json",

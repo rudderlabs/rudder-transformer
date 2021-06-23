@@ -302,5 +302,71 @@
     "attributes": {
       "referrer": "https://google.com"
     }
+  },
+  {
+    "message": {
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com",
+        "nestedObject": {
+          "this": "will be picked"
+        }
+      },
+      "type": "track",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
+    },
+    "userId": "abcdeeeeeeeexxxx111",
+    "topicId": "Test-Topic",
+    "attributes": {
+      "this": "will be picked"
+    }
+  },
+  {
+    "message": {
+      "sentAt": "2020-08-28T15:11:56.167Z",
+      "category": "Food",
+      "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
+      "anonymousId": "abcdeeeeeeeexxxx111",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "originalTimestamp": "2020-08-28T15:11:56.162Z",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com",
+        "nestedObject": {
+          "this": "will be picked"
+        }
+      },
+      "type": "track",
+      "name": "Pizza",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      }
+    },
+    "userId": "abcdeeeeeeeexxxx111",
+    "topicId": "Test-Topic",
+    "attributes": {
+      "this": "will be picked"
+    }
   }
 ]

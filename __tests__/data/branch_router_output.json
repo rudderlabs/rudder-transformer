@@ -1,0 +1,118 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api2.branch.io/v2/event/standard",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "branch_key": "<branch key goes here>",
+          "name": "ADD_TO_CART",
+          "content_items": [
+            {
+              "$product_name": "sampath"
+            }
+          ],
+          "user_data": {
+            "os": "",
+            "os_version": "",
+            "app_version": "1.0.0",
+            "screen_dpi": 2,
+            "developer_identity": "sampath"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sampath"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "branchKey": "<branch key goes here>",
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Branch Metrics",
+        "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+        "Name": "BRANCH"
+      },
+      "Enabled": true,
+      "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+      "Name": "branch test",
+      "Transformations": []
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api2.branch.io/v2/event/custom",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "branch_key": "<branch key goes here>",
+          "name": "sampath",
+          "custom_data": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com"
+          },
+          "content_items": [
+            {}
+          ],
+          "user_data": {
+            "os": "",
+            "os_version": "",
+            "app_version": "1.0.0",
+            "screen_dpi": 2,
+            "developer_identity": "sampath"
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sampath"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "branchKey": "<branch key goes here>",
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Branch Metrics",
+        "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+        "Name": "BRANCH"
+      },
+      "Enabled": true,
+      "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+      "Name": "branch test",
+      "Transformations": []
+    }
+  }
+]

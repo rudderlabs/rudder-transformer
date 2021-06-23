@@ -689,7 +689,8 @@
         "dynamic_header_key_object": {
           "k1": "v1"
         }
-      }
+      },
+      "appendPath": "/product/search?string=value"
     },
     "destination": {
       "Config": {

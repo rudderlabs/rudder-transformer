@@ -1,4 +1,3 @@
-
 const integration = "customerio";
 const name = "CustomerIO";
 
@@ -17,6 +16,17 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+// Router Test Data
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+
+
 for (let index = 0; index < inputData.length; index++) {
   it(`${name} Tests - payload: ${index}`, () => {
     let output, expected;
@@ -31,3 +41,13 @@ for (let index = 0; index < inputData.length; index++) {
     expect(output).toEqual(expected);
   });
 }
+
+describe(`${name} Tests`, () => {
+describe("Router Tests", () => {
+  it("Payload", async () => {
+    const routerOutput = await transformer.processRouterDest(inputRouterData);
+    expect(routerOutput).toEqual(expectedRouterData);
+  });
+});
+
+});

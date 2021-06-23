@@ -10,8 +10,7 @@ function getAudienceId(messageEvent, destination) {
 }
 
 function getEndPoint(audienceId) {
-  const eventUrl = `${BASE_URL}/${audienceId}/users`;
-  return eventUrl;
+  return `${BASE_URL}/${audienceId}/users`;
 }
 
 const CONFIG_CATEGORIES = {
@@ -20,7 +19,7 @@ const CONFIG_CATEGORIES = {
   DATA_SOURCE: { name: "data_sourceConfig" }
 };
 
-const schemaFiels = [
+const schemaFields = [
   "EMAIL_SHA256",
   "PHONE_SHA256",
   "MOBILE_ADVERTISER_ID",
@@ -40,18 +39,11 @@ const schemaFiels = [
   "MADID",
   "COUNTRY"
 ];
-
+// as per experimentation with public API of Facebook Custom Audience maximum 1100 users can be added at a time
 const MAX_USER_COUNT = 1100;
 const sessionBlockField = ["session_id", "batch_seq", "last_batch_flag"];
 const USER_ADD = "userListAdd";
 const USER_DELETE = "userListDelete";
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
@@ -59,8 +51,7 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   getEndPoint,
-  schemaFiels,
-  CustomError,
+  schemaFields,
   sessionBlockField,
   USER_ADD,
   USER_DELETE,

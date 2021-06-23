@@ -10,15 +10,15 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   removeUndefinedAndNullValues,
-  returnArrayOfSubarrays
+  returnArrayOfSubarrays,
+  CustomError
 } = require("../../util");
 
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   getEndPoint,
-  schemaFiels,
-  CustomError,
+  schemaFields,
   sessionBlockField,
   MAX_USER_COUNT,
   getAudienceId,
@@ -28,7 +28,7 @@ const {
 
 const logger = require("../../../logger");
 
-function responseBuilderSimple(payload, audienceId) {
+const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
     const responseParams = payload.responseField;
     const response = defaultRequestConfig();
@@ -46,15 +46,15 @@ function responseBuilderSimple(payload, audienceId) {
   }
   // fail-safety for developer error
   throw new CustomError(`Payload could not be constructed`, 400);
-}
+};
 
 // function responsible to ensure the user inputs are passed according to the allowed format
 
-function ensureApplicableFormat(
+const ensureApplicableFormat = (
   userProperty,
   userInformation,
   disableValidation
-) {
+) => {
   let updatedProperty;
   let userInformationTrimmed;
   let validationPassed = false;
@@ -69,19 +69,20 @@ function ensureApplicableFormat(
       // remove all non-numerical characters
       updatedProperty = userInformation.replace(/[^0-9]/g, "");
       // remove all leading zeros
-      updatedProperty = userInformation.replace(/^0+/g, "");
+      updatedProperty = updatedProperty.replace(/^0+/g, "");
       validationPassed = true;
       break;
     case "GEN":
       updatedProperty =
-        userInformation.lowerCase() === "f" ||
-        userInformation.lowerCase() === "female"
+        userInformation.toLowerCase() === "f" ||
+        userInformation.toLowerCase() === "female"
           ? "f"
           : "m";
       validationPassed = true;
       break;
     case "DOBY":
       if (
+        !disableValidation &&
         userInformation
           .toString()
           .trim()
@@ -90,11 +91,15 @@ function ensureApplicableFormat(
         updatedProperty = userInformation;
         validationPassed = true;
       }
+      if (disableValidation) {
+        updatedProperty = userInformation;
+      }
       break;
     case "DOBM":
       // need to send as function in util index.js
       userInformationTrimmed = userInformation.replace(/\./g, "");
       if (
+        !disableValidation &&
         userInformationTrimmed.toString().length === 2 &&
         parseInt(userInformationTrimmed, 10) > 0 &&
         parseInt(userInformationTrimmed, 10) <= 12
@@ -102,16 +107,23 @@ function ensureApplicableFormat(
         updatedProperty = userInformationTrimmed;
         validationPassed = true;
       }
+      if (disableValidation) {
+        updatedProperty = userInformation;
+      }
       break;
     case "DOBD":
       userInformationTrimmed = userInformation.replace(/\./g, "");
       if (
+        !disableValidation &&
         userInformationTrimmed.toString().length === 2 &&
         parseInt(userInformation, 10) > 0 &&
         parseInt(userInformation, 10) <= 31
       ) {
         updatedProperty = userInformationTrimmed;
         validationPassed = true;
+      }
+      if (disableValidation) {
+        updatedProperty = userInformation;
       }
       break;
     case "LN":
@@ -134,10 +146,13 @@ function ensureApplicableFormat(
       validationPassed = true;
       break;
     case "COUNTRY":
-      if (userInformation.toLowerCase().length === 2) {
+      if (userInformation.toLowerCase().length === 2 && !disableValidation) {
         updatedProperty = userInformation.toLowerCase();
         validationPassed = true;
+      } else if (disableValidation) {
+        updatedProperty = userInformation;
       }
+
       break;
     case "ZIP":
       userInformationTrimmed = userInformation.replace(/\s/g, "");
@@ -163,17 +178,17 @@ function ensureApplicableFormat(
     );
   }
   return updatedProperty;
-}
+};
 
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
 
-function prepareDataField(
+const prepareDataField = (
   userSchema,
   userUpdateList,
   isHashRequired,
   disableValidation
-) {
+) => {
   const data = [];
   let dataElement;
   userUpdateList.forEach(eachUser => {
@@ -204,17 +219,17 @@ function prepareDataField(
   });
 
   return data;
-}
+};
 
 // Function responsible prepare the payload field of every event parameter
 
-function preparePayload(
+const preparePayload = (
   userUpdateList,
   userSchema,
   paramsPayload,
   isHashRequired,
   disableValidation
-) {
+) => {
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
@@ -229,16 +244,16 @@ function preparePayload(
     disableValidation
   );
   return prepareFinalPayload;
-}
+};
 
 // Function responsible for building the parameters for each event calls
 
-function prepareResponse(
+const prepareResponse = (
   message,
   destination,
   isHashRequired = true,
   allowedAudienceArray
-) {
+) => {
   const { accessToken, userSchema, disableValidation } = destination.Config;
   const prepareParams = {};
   let sessionPayload = {};
@@ -286,7 +301,7 @@ function prepareResponse(
   );
 
   return prepareParams;
-}
+};
 
 const processEvent = (message, destination) => {
   let response;
@@ -313,7 +328,7 @@ const processEvent = (message, destination) => {
     );
   }
   // when configured schema field is different from the allowed fields
-  if (!checkSubsetOfArray(schemaFiels, userSchema)) {
+  if (!checkSubsetOfArray(schemaFields, userSchema)) {
     throw new CustomError(
       "One or more of the schema fields are not supported",
       400
@@ -370,32 +385,38 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const respList = Promise.all(
     inputs.map(async input => {
       try {
-        const transformedList = await process(input);
-        const responseList = transformedList.map(transformedPayload => {
-          getSuccessRespEvents(
-            transformedPayload,
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
             [input.metadata],
             input.destination
           );
-        });
-        return responseList;
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }

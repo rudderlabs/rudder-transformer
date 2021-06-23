@@ -1,0 +1,124 @@
+[
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v11.0/123/users",
+        "headers": {},
+        "params": {
+          "session": {
+            "session_id": "123",
+            "batch_seq": 1,
+            "last_batch_flag": false
+          },
+          "access_token": "ABC",
+          "payload": {
+            "is_raw": false,
+            "data_source": {
+              "type": "UNKNOWN",
+              "sub_type": "ANYTHING"
+            },
+            "schema": ["EMAIL"],
+            "data": [
+              [
+                "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
+              ],
+              [
+                "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
+              ],
+              [
+                "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+              ]
+            ]
+          }
+        },
+        "body": {
+          "JSON": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://graph.facebook.com/v11.0/123/users",
+        "headers": {},
+        "params": {
+          "session": {
+            "session_id": "123",
+            "batch_seq": 1,
+            "last_batch_flag": false
+          },
+          "access_token": "ABC",
+          "payload": {
+            "is_raw": false,
+            "data_source": {
+              "type": "UNKNOWN",
+              "sub_type": "ANYTHING"
+            },
+            "schema": ["EMAIL"],
+            "data": [
+              [
+                "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
+              ],
+              [
+                "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
+              ],
+              [
+                "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+              ]
+            ]
+          }
+        },
+        "body": {
+          "JSON": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "accessToken": "ABC",
+        "userSchema": ["EMAIL"],
+        "isHashRequired": true,
+        "disableValidation": false,
+        "eventAudienceMapping": [
+          {
+            "from": "event1",
+            "to": "123"
+          },
+          {
+            "from": "event2",
+            "to": "456"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": " identify call is not supported "
+  }
+]

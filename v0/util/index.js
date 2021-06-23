@@ -569,7 +569,9 @@ const handleMetadataForValue = (value, metadata) => {
         }
       });
     }
-    if (!foundVal) formattedVal = undefined;
+    if (!foundVal) {
+      formattedVal = undefined;
+    }
   }
 
   return formattedVal;
@@ -922,6 +924,13 @@ function returnArrayOfSubarrays(arr, len) {
   }
   return chunks;
 }
+
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -974,5 +983,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   checkSubsetOfArray,
-  returnArrayOfSubarrays
+  returnArrayOfSubarrays,
+  CustomError
 };

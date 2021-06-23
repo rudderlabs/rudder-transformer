@@ -119,7 +119,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   customAttributes = extractCustomFields(
     message,
     customAttributes,
-    "traits",
+    ["traits"],
     ACCOUNT_EXCLUSION_FIELDS
   );
 

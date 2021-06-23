@@ -2,6 +2,7 @@
   "routerTransform": {
     "GA": true,
     "GAINSIGHT": true,
+    "GAINSIGHT_PX": true,
     "HS": true,
     "MARKETO": true,
     "SALESFORCE": true,

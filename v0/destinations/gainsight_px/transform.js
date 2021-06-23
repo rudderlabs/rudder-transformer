@@ -79,7 +79,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
   payload = {
     ...payload,
     customAttributes,
-    propertyKeys: [Config.productTagKey]
+    propertyKeys: [Config.productTagKey],
+    type: "USER"
   };
 
   if (isPresent) {

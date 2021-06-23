@@ -21,7 +21,8 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  CustomError
 } = require("../../util");
 const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
@@ -225,9 +226,10 @@ const getLeadId = async (message, formattedDestination, token) => {
         message.anonymousId
       );
     } else {
-      const error = new Error("Lead creation is turned off on the dashboard");
-      error.code = 400;
-      throw error;
+      throw new CustomError(
+        "Lead creation is turned off on the dashboard",
+        400
+      );
     }
   }
 
@@ -238,11 +240,11 @@ const getLeadId = async (message, formattedDestination, token) => {
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-    const error = new Error(
-      "lookup failure - either anonymousId or userId or both fields are not created in marketo"
+
+    throw new CustomError(
+      "lookup failure - either anonymousId or userId or both fields are not created in marketo",
+      400
     );
-    error.code = 400;
-    throw error;
   }
 
   return leadId;
@@ -261,7 +263,7 @@ const processIdentify = async (message, formattedDestination, token) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new Error("Invalid traits value for Marketo");
+    throw new CustomError("Invalid traits value for Marketo", 400);
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -317,14 +319,15 @@ const processTrack = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!(trackAnonymousEvents || userId)) {
-    throw new Error(
-      "Anonymous event tracking is turned off and invalid userId"
+    throw new CustomError(
+      "Anonymous event tracking is turned off and invalid userId",
+      400
     );
   }
 
   const activityTypeId = customActivityEventMap[message.event];
   if (!activityTypeId) {
-    throw new Error("Event is not mapped to Custom Activity");
+    throw new CustomError("Event is not mapped to Custom Activity", 400);
   }
 
   const primaryKeyPropName = customActivityPrimaryKeyMap[message.event];
@@ -333,7 +336,7 @@ const processTrack = async (message, formattedDestination, token) => {
     `properties.${primaryKeyPropName}`
   );
   if (!primaryAttributeValue) {
-    throw new Error("Primary Key value is invalid for the event");
+    throw new CustomError("Primary Key value is invalid for the event", 400);
   }
 
   // get leadId
@@ -384,7 +387,10 @@ const responseWrapper = response => {
 
 const processEvent = async (message, destination, token) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatConfig(destination);
@@ -398,7 +404,7 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   // wrap response for router processing
@@ -408,7 +414,7 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw Error("Authorisation failed");
+    throw new CustomError("Authorisation failed", 400);
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;

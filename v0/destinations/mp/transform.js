@@ -10,7 +10,10 @@ const {
   getBrowserInfo,
   getValuesAsArrayFromConfig,
   toUnixTimestamp,
-  getTimeDifference
+  getTimeDifference,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  CustomError
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -44,7 +47,10 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
           ? "https://api-eu.mixpanel.com/track/"
           : "https://api.mixpanel.com/track/";
     } else if (duration.years > 5) {
-      throw new Error("Event timestamp should be within last 5 years");
+      throw new CustomError(
+        "Event timestamp should be within last 5 years",
+        400
+      );
     } else {
       endpoint =
         destConfig.dataResidency === "eu"
@@ -57,8 +63,9 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
           ).toString("base64")}`
         };
       } else {
-        throw new Error(
-          "Event timestamp is older than 5 days and no apisecret is provided in destination config."
+        throw new CustomError(
+          "Event timestamp is older than 5 days and no apisecret is provided in destination config.",
+          400
         );
       }
     }
@@ -295,8 +302,9 @@ function processPageOrScreenEvents(message, type, destination) {
 
 function processAliasEvents(message, type, destination) {
   if (!(message.previousId || message.anonymousId)) {
-    throw new Error(
-      "Either previous id or anonymous id should be present in alias payload"
+    throw new CustomError(
+      "Either previous id or anonymous id should be present in alias payload",
+      400
     );
   }
   const parameters = {
@@ -361,7 +369,7 @@ function processGroupEvents(message, type, destination) {
       }
     });
   } else {
-    throw new Error("config is not supported");
+    throw new CustomError("config is not supported", 400);
   }
   return returnValue;
 }
@@ -382,7 +390,7 @@ function processSingleMessage(message, destination) {
       return processGroupEvents(message, message.type, destination);
 
     default:
-      throw new Error("message type not supported");
+      throw new CustomError("message type not supported", 400);
   }
 }
 
@@ -390,4 +398,43 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

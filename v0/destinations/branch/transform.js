@@ -6,7 +6,10 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
@@ -191,7 +194,7 @@ function processMessage(message, destination) {
       var { evName, category } = getCategoryAndName(message.userId);
       break;
     default:
-      throw new Error("Message type is not supported");
+      throw new CustomError("Message type is not supported", 400);
   }
   const rawPayload = getCommonPayload(message, category, evName);
   return responseBuilder(rawPayload, message, destination, category);
@@ -202,4 +205,44 @@ function process(event) {
   return processMessage(message, destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };
+

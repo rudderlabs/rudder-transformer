@@ -17,15 +17,9 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getStringValueOfJSON,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
 
 /**
  *

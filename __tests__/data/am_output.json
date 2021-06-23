@@ -707,6 +707,7 @@
             "device_model": "iPhone XR",
             "device_manufacturer": "Apple",
             "platform": "iOS",
+            "idfv": "0572f78fa49c648e",
             "device_id": "0572f78fa49c648e",
             "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
             "carrier": "AT&T",

@@ -9,7 +9,8 @@ const {
   removeUndefinedValues,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -138,7 +139,7 @@ async function processTrack(message, destination) {
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !traits.email) {
-    throw new Error("Identify without email is not supported.");
+    throw new CustomError("Identify without email is not supported.", 400);
   }
   const userProperties = await getTransformedJSON(
     message,
@@ -165,10 +166,16 @@ async function processSingleMessage(message, destination) {
         response = await processIdentify(message, destination);
         break;
       default:
-        throw new Error(`message type ${message.type} is not supported`);
+        throw new CustomError(
+          `message type ${message.type} is not supported`,
+          400
+        );
     }
   } catch (e) {
-    throw new Error(e.message || "error occurred while processing payload.");
+    throw new CustomError(
+      e.message || "error occurred while processing payload.",
+      e.status || 400
+    );
   }
   return response;
 }

@@ -59,6 +59,23 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+/**
+ *
+ * @param {*} arg
+ * @returns {type}
+ *
+ * Returns type of passed arg 
+ * for null argss returns "NULL" insted of "object"
+ *
+ */
+const getType = arg => {
+  const type = typeof arg;
+  if (arg == null) {
+    return "NULL";
+  }
+  return type;
+};
+
 const formatValue = value => {
   if (!value || value < 0) return null;
   return Math.round(value);
@@ -907,14 +924,12 @@ function getStringValueOfJSON(json) {
 }
 
 // checks if array 2 is a subset of array 1
-
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every(val => array1.includes(val));
   return result;
 }
 
 // splits array into equal parts and returns array of sub arrays
-
 function returnArrayOfSubarrays(arr, len) {
   const chunks = [];
   let i = 0;
@@ -931,14 +946,15 @@ class CustomError extends Error {
     this.response = { status: statusCode };
   }
 }
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
-  constructPayload,
   checkEmptyStringInarray,
+  constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -948,6 +964,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  formatTimeStamp,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
@@ -962,6 +979,7 @@ module.exports = {
   getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
+  getType,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
@@ -969,8 +987,8 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
-  isObject,
   isNonFuncObject,
+  isObject,
   isPrimitive,
   isValidUrl,
   removeNullValues,

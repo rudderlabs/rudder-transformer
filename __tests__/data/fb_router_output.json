@@ -1,0 +1,22 @@
+[
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "If properties.revenue is present, properties.currency is required."
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "{\"product_id\":123} is not of valid type"
+  }
+]

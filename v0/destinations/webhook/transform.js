@@ -85,6 +85,19 @@ function process(event) {
       response.userId = message.anonymousId;
       response.endpoint = url;
 
+      // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
+      // Sample user transformation for this:
+      //
+      // export function transformEvent(event, metadata) {
+      //   event.appendPath = `/path/${var}/search?param=${var2}`
+      //
+      //   return event;
+      // }
+      if (message.appendPath && typeof message.appendPath === "string" ) {
+        response.endpoint += message.appendPath;
+        delete message.appendPath
+      }
+
       return response;
     }
     throw new CustomError("Invalid URL in destination config", 400);

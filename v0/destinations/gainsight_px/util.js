@@ -16,9 +16,14 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
     if (error.response.status === expectedErrStatus) {
       return false;
     }
-    errMessage = error.response.data.externalapierror
-      ? error.response.data.externalapierror.message
-      : errMessage;
+
+    errMessage = error.response.data.externalapierror ? 
+      error.response.data.externalapierror.message
+      : JSON.stringify(error.response.data);
+    // errMessage = error.response.data.externalapierror
+    //   ? error.response.data.externalapierror.message
+    //   : errMessage;
+    
     errorStatus = error.response.status;
   }
   throw new CustomError(

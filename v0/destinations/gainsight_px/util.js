@@ -61,7 +61,7 @@ const objectExists = async (id, Config, objectType) => {
     }
     throw new Error(err);
   } catch (error) {
-    return handleErrorResponse(error, "error while fetching user", 404);
+    return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
   }
 };
 

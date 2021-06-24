@@ -107,6 +107,15 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError("userId or anonymousId is required for group", 400);
   }
 
+  const { success: isPresent, err: e } = await objectExists(
+    userId,
+    Config,
+    "user"
+  );
+  if (!isPresent) {
+    throw new CustomError(`aborting group call: ${e}`, 400);
+  }
+
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
     throw new CustomError("groupId is required for group", 400);

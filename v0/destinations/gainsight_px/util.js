@@ -9,105 +9,73 @@ class CustomError extends Error {
   }
 }
 
-const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus=500) => {
+const handleErrorResponse = (
+  error,
+  customErrMessage,
+  expectedErrStatus,
+  defaultStatus = 500
+) => {
   let errMessage = "";
   let errorStatus = defaultStatus;
+
   if (error.response && error.response.data) {
-    if (error.response.status === expectedErrStatus) {
-      return false;
-    }
-
-    errMessage = error.response.data.externalapierror ? 
-      error.response.data.externalapierror.message
+    errMessage = error.response.data.externalapierror
+      ? JSON.stringify(error.response.data.externalapierror)
       : JSON.stringify(error.response.data);
-    // errMessage = error.response.data.externalapierror
-    //   ? error.response.data.externalapierror.message
-    //   : errMessage;
-    
+
     errorStatus = error.response.status;
+
+    if (error.response.status === expectedErrStatus) {
+      return { success: false, err: errMessage };
+    }
   }
-  throw new CustomError(
-    `${customErrMessage}: ${errMessage}`,
-    errorStatus
-  );
+  throw new CustomError(`${customErrMessage}: ${errMessage}`, errorStatus);
 };
-
-// const removeKeysFromPayload = (payload, keys) => {
-//   const updatedPayload = {};
-//   Object.keys(payload).forEach(key => {
-//     if (!keys.includes(key)) {
-//       updatedPayload[key] = payload[key];
-//     }
-//   });
-//   return updatedPayload;
-// };
-
-// const getProductTagKeys = propertyKeys => {
-//   if (!propertyKeys || propertyKeys.length === 0) {
-//     return null;
-//   }
-//   return propertyKeys
-//   .filter(item => !isEmpty(item.productTagKey))
-//   .map(iten => iten.productTagKey);
-// }
 
 /**
- * Returns true if user is already identified. Else returns false
- * @param {*} identifyId
+ * Checks if user or account exists
+ * @param {*} id
  * @param {*} Config
+ * @param {*} objectType
  * @returns
  */
-const userExists = async (identifyId, Config) => {
+const objectExists = async (id, Config, objectType) => {
+  let url = `${ENDPOINTS.USERS_ENDPOINT}/${id}`;
+  let err = "invalid response while searching user";
+
+  if (objectType === "account") {
+    url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
+    err = "invalid response while searching account";
+  }
+
   let response;
   try {
-    response = await axios.get(`${ENDPOINTS.USERS_ENDPOINT}/${identifyId}`, {
+    response = await axios.get(url, {
       headers: {
         "X-APTRINSIC-API-KEY": Config.apiKey,
         "Content-Type": "application/json"
       }
     });
     if (response && response.status === 200) {
-      return true;
+      return { success: true, err: null };
     }
-    throw new Error("invalid response while searching user");
+    throw new Error(err);
   } catch (error) {
     return handleErrorResponse(error, "error while fetching user", 404);
-  }
-};
-
-const companyExists = async (accountId, Config) => {
-  let response;
-  try {
-    response = await axios.get(`${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`, {
-      headers: {
-        "X-APTRINSIC-API-KEY": Config.apiKey,
-        "Content-Type": "application/json"
-      }
-    });
-    if (response && response.status === 200) {
-      return true;
-    }
-    throw new Error("invalid response while searching account");
-  } catch (error) {
-    return handleErrorResponse(error, "error while fetching account", 404);
   }
 };
 
 const createAccount = async (payload, Config) => {
   let response;
   try {
-    response = await axios.post(
-      ENDPOINTS.ACCOUNTS_ENDPOINT,
-      payload,
-      {
-        headers: {
-          "X-APTRINSIC-API-KEY": Config.apiKey,
-          "Content-Type": "application/json"
-        }
+    response = await axios.post(ENDPOINTS.ACCOUNTS_ENDPOINT, payload, {
+      headers: {
+        "X-APTRINSIC-API-KEY": Config.apiKey,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (response && response.status === 201) {
-      return true;
+      return { success: true, err: null };
     }
     throw new Error("invalid response while creating account");
   } catch (error) {
@@ -129,7 +97,7 @@ const updateAccount = async (accountId, payload, Config) => {
       }
     );
     if (response && response.status === 204) {
-      return true;
+      return { success: true, err: null };
     }
     throw new Error("invalid response while updating account");
   } catch (error) {
@@ -157,9 +125,8 @@ const renameCustomFields = (payload, userCustomFieldsMap) => {
 
 module.exports = {
   CustomError,
-  userExists,
   renameCustomFields,
-  companyExists,
   createAccount,
-  updateAccount
+  updateAccount,
+  objectExists
 };

@@ -16,9 +16,8 @@ const {
 } = require("../../util/index");
 const {
   CustomError,
-  userExists,
   renameCustomFields,
-  companyExists,
+  objectExists,
   createAccount,
   updateAccount
 } = require("./util");
@@ -49,7 +48,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     "Content-Type": "application/json"
   };
 
-  const isPresent = await userExists(userId, Config);
+  const { success: isPresent } = await objectExists(userId, Config, "user");
 
   let payload = constructPayload(message, identifyMapping);
   const name = getValueFromMessage(message, [
@@ -113,7 +112,11 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError("groupId is required for group", 400);
   }
 
-  const companyIsPresent = await companyExists(groupId, Config);
+  const { success: accountIsPresent } = await objectExists(
+    groupId,
+    Config,
+    "account"
+  );
 
   let payload = constructPayload(message, groupMapping);
   let customAttributes = {};
@@ -140,18 +143,25 @@ const groupResponseBuilder = async (message, { Config }) => {
   };
   payload = removeUndefinedAndNullValues(payload);
 
-  if (companyIsPresent) {
+  if (accountIsPresent) {
     // update account
-    const updateSuccess = await updateAccount(groupId, payload, Config);
+    const { success: updateSuccess, err } = await updateAccount(
+      groupId,
+      payload,
+      Config
+    );
     if (!updateSuccess) {
-      throw new CustomError("failed to update account for group", 400);
+      throw new CustomError(`failed to update account for group: ${err}`, 400);
     }
   } else {
     // create account
     payload.id = groupId;
-    const createSuccess = await createAccount(payload, Config);
+    const { success: createSuccess, err } = await createAccount(
+      payload,
+      Config
+    );
     if (!createSuccess) {
-      throw new CustomError("failed to create account for group", 400);
+      throw new CustomError(`failed to create account for group: ${err}`, 400);
     }
   }
 

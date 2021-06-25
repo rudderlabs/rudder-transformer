@@ -205,7 +205,7 @@
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
         "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [],
+        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }],
         "globalContextMap": []
       }
     },
@@ -223,28 +223,76 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
-        "traits": {
-          "type": "USER",
-          "gender": "MALE",
-          "email": "user@email.com",
-          "firstName": "Sample",
-          "lastName": "User"
-        }
+        "screen": { "density": 2 }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "sample-anon-id",
-      "userId": "sample-user-id",
-      "groupId": "kubrick-corps",
-      "type": "group",
+      "type": "identify",
       "traits": {
-        "name": "Kubrick",
-        "industry": "Film",
-        "numberOfEmployees": 500,
-        "website": "www.stanleykubrick.com",
-        "plan": "free"
+        "type": "USER",
+        "gender": "MALE",
+        "email": "user@email.com",
+        "firstName": "Sample",
+        "lastName": "User",
+        "signUpDate": 1624431528295,
+        "title": "engineer",
+        "countryName": "USA",
+        "countryCode": "US",
+        "city": "New York",
+        "hobbyCustomField": "Sample Hobby"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "sample-api-key",
+        "productTagKey": "AP-XABC-123",
+        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "userAttributeMap": [{ "from": "", "to": "" }],
+        "globalContextMap": [
+          { "from": "projectId", "to": "p-123" },
+          { "from": "tag", "to": "sample-category-tag" }
+        ]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "Product Added",
+      "properties": {
+        "product_id": "123",
+        "sku": "F16",
+        "category": "Games",
+        "name": "Game",
+        "brand": "Gamepro",
+        "variant": "111",
+        "price": 13.49,
+        "quantity": 11,
+        "coupon": "DISC21",
+        "position": 1,
+        "url": "https://www.website.com/product/path",
+        "image_url": "https://www.website.com/product/path.png"
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
@@ -287,14 +335,14 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "sample-anon-id",
-      "groupId": "kubrick-corps",
+      "userId": "sample-user-id",
       "type": "group",
       "traits": {
-        "name": "Kubrick",
-        "industry": "Film",
-        "numberOfEmployees": 500,
-        "website": "www.stanleykubrick.com",
-        "plan": "free"
+        "name": "ECorp",
+        "industry": "software",
+        "numberOfEmployees": 400,
+        "website": "www.ecorp.com",
+        "plan": "premium"
       },
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"

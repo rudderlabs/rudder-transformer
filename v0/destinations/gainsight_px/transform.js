@@ -12,10 +12,10 @@ const {
   getErrorRespEvents,
   getHashFromArray,
   getFieldValueFromMessage,
-  getValueFromMessage
-} = require("../../util/index");
+  getValueFromMessage,
+  CustomError
+} = require("../../util");
 const {
-  CustomError,
   renameCustomFields,
   objectExists,
   createAccount,
@@ -247,7 +247,6 @@ const process = async event => {
     throw new CustomError("Invalid API Key. Aborting message.", 400);
   }
 
-  // const propertyKeys = getProductTagKeys(destination.Config.propertyKeys);
   if (!productTagKey) {
     throw new CustomError("product tag key is required", 400);
   }

@@ -1,19 +1,12 @@
-/* eslint-disable prettier/prettier */
 const axios = require("axios");
 const { ENDPOINTS } = require("./config");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
+const { CustomError } = require("../../util");
 
 const handleErrorResponse = (
   error,
   customErrMessage,
   expectedErrStatus,
-  defaultStatus = 500
+  defaultStatus = 400
 ) => {
   let errMessage = "";
   let errorStatus = defaultStatus;
@@ -61,7 +54,11 @@ const objectExists = async (id, Config, objectType) => {
     }
     throw new Error(err);
   } catch (error) {
-    return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
+    return handleErrorResponse(
+      error,
+      `error while fetching ${objectType}`,
+      404
+    );
   }
 };
 

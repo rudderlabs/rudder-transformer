@@ -1,16 +1,5 @@
-const { isEmptyObject } = require("../v0/util");
-
+// mocks only success
 const gainsightPXGetRequestHandler = mockData => {
-  if (isEmptyObject(mockData)) {
-    return {
-      data: {
-        externalapierror: {
-          message: "not found"
-        },
-        status: 404
-      }
-    };
-  }
   return { data: mockData, status: 200 };
 };
 

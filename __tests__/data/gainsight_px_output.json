@@ -124,41 +124,12 @@
     "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
   },
   {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "accountId": "kubrick-corps"
-      }
-    },
-    "type": "REST",
-    "files": {},
-    "method": "PUT",
-    "params": {},
-    "headers": {
-      "X-APTRINSIC-API-KEY": "sample-api-key",
-      "Content-Type": "application/json"
-    },
-    "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
+    "error": "userId or anonymousId is required for identify"
   },
   {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "accountId": "kubrick-corps"
-      }
-    },
-    "type": "REST",
-    "files": {},
-    "method": "PUT",
-    "params": {},
-    "headers": {
-      "X-APTRINSIC-API-KEY": "sample-api-key",
-      "Content-Type": "application/json"
-    },
-    "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/users/sample-anon-id"
+    "error": "Missing required value from \"userId\""
+  },
+  {
+    "error": "groupId is required for group"
   }
 ]

@@ -64,7 +64,7 @@ function get(url) {
   }
   if (url.includes("https://api.aptrinsic.com")) {
     return new Promise((resolve, reject) => {
-      resolve(gainsightPXGetRequestHandler(url));
+      resolve(gainsightPXGetRequestHandler(mockData));
     });
   }
   return new Promise((resolve, reject) => {

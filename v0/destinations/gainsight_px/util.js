@@ -120,10 +120,29 @@ const renameCustomFields = (payload, userCustomFieldsMap) => {
   return renamedPayload;
 };
 
+/**
+ * Util to stringify object present as value
+ * for any key in event properties
+ * @param {*} props
+ * @returns
+ */
+const formatEventProps = props => {
+  const formattedObj = {};
+  Object.keys(props).forEach(key => {
+    if (typeof props[key] === "object") {
+      formattedObj[key] = JSON.stringify(props[key]);
+    } else {
+      formattedObj[key] = props[key];
+    }
+  });
+  return formattedObj;
+};
+
 module.exports = {
   CustomError,
   renameCustomFields,
   createAccount,
   updateAccount,
-  objectExists
+  objectExists,
+  formatEventProps
 };

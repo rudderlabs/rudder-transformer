@@ -19,7 +19,8 @@ const {
   renameCustomFields,
   objectExists,
   createAccount,
-  updateAccount
+  updateAccount,
+  formatEventProps
 } = require("./util");
 const {
   ENDPOINTS,
@@ -214,6 +215,7 @@ const trackResponseBuilder = (message, { Config }) => {
 
   payload = {
     ...payload,
+    attributes: formatEventProps(payload.attributes),
     propertyKey: Config.productTagKey,
     userType: "USER",
     globalContext: !isEmptyObject(globalContext) ? globalContext : null

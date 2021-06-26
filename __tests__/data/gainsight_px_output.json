@@ -131,5 +131,37 @@
   },
   {
     "error": "groupId is required for group"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "attributes": {
+          "description": "Stringify test for object values",
+          "nested": "{\"a\":[1,2,3],\"b\":{\"c\":1}}",
+          "arr": "[1,2,3]"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Stringify Test",
+        "globalContext": {
+          "projectId": "p-123",
+          "tag": "sample-category-tag"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
   }
 ]

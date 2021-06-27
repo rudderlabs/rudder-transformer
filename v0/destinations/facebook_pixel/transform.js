@@ -370,7 +370,7 @@ const responseBuilderSimple = (message, category, destination) => {
     standardPageCall
   } = Config;
 
-  const endpoint = `https://graph.facebook.com/v10.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,

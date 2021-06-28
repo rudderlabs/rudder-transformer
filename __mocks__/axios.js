@@ -21,7 +21,6 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
-const { resolve } = require("path");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;

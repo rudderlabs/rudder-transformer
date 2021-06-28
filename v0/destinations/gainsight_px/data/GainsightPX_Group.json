@@ -110,11 +110,6 @@
     "required": false
   },
   {
-    "destKey": "location.stateCode",
-    "sourceKeys": "traits.stateCode",
-    "required": false
-  },
-  {
     "destKey": "location.city",
     "sourceKeys": "traits.city",
     "required": false

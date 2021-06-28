@@ -153,11 +153,6 @@
     "required": false
   },
   {
-    "destKey": "location.stateCode",
-    "sourceKeys": ["traits.stateCode", "context.traits.stateCode"],
-    "required": false
-  },
-  {
     "destKey": "location.city",
     "sourceKeys": ["traits.city", "context.traits.city"],
     "required": false

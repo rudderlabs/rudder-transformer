@@ -3,16 +3,13 @@ const { ENDPOINTS } = require("./config");
 const { CustomError } = require("../../util");
 
 const handleErrorResponse = (
-  err,
+  error,
   customErrMessage,
   expectedErrStatus,
   defaultStatus = 400
 ) => {
   let errMessage = "";
   let errorStatus = defaultStatus;
-
-  // const error = JSON.parse(err.message);
-  const error = err;
 
   if (error.response && error.response.data) {
     errMessage = error.response.data.externalapierror

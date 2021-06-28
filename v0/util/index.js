@@ -955,6 +955,7 @@ module.exports = {
   ErrorMessage,
   checkEmptyStringInarray,
   constructPayload,
+  CustomError,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -964,6 +965,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  flattenMap,
   formatTimeStamp,
   formatValue,
   getBrowserInfo,
@@ -1001,7 +1003,5 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   checkSubsetOfArray,
-  returnArrayOfSubarrays,
-  CustomError,
-  flattenMap
+  returnArrayOfSubarrays
 };

@@ -21,6 +21,7 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
+const { resolve } = require("path");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;
@@ -63,9 +64,7 @@ function get(url) {
     });
   }
   if (url.includes("https://api.aptrinsic.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(gainsightPXGetRequestHandler(mockData));
-    });
+    return gainsightPXGetRequestHandler(url, mockData);
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

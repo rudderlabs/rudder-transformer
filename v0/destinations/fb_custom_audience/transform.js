@@ -11,7 +11,9 @@ const {
   getErrorRespEvents,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
-  CustomError
+  CustomError,
+  isDefinedAndNotNull,
+  flattenMap
 } = require("../../util");
 
 const {
@@ -50,19 +52,13 @@ const responseBuilderSimple = (payload, audienceId) => {
 
 // function responsible to ensure the user inputs are passed according to the allowed format
 
-const ensureApplicableFormat = (
-  userProperty,
-  userInformation,
-  disableValidation
-) => {
+const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
-  let validationPassed = false;
   switch (userProperty) {
     case "EMAIL":
     case "EMAIL_SHA256":
       updatedProperty = userInformation.trim().toLowerCase();
-      validationPassed = true;
       break;
     case "PHONE":
     case "PHONE_SHA256":
@@ -70,7 +66,6 @@ const ensureApplicableFormat = (
       updatedProperty = userInformation.replace(/[^0-9]/g, "");
       // remove all leading zeros
       updatedProperty = updatedProperty.replace(/^0+/g, "");
-      validationPassed = true;
       break;
     case "GEN":
       updatedProperty =
@@ -78,52 +73,27 @@ const ensureApplicableFormat = (
         userInformation.toLowerCase() === "female"
           ? "f"
           : "m";
-      validationPassed = true;
       break;
     case "DOBY":
-      if (
-        !disableValidation &&
-        userInformation
-          .toString()
-          .trim()
-          .replace(/\./g, "").length === 4
-      ) {
-        updatedProperty = userInformation;
-        validationPassed = true;
-      }
-      if (disableValidation) {
-        updatedProperty = userInformation;
-      }
+      updatedProperty = userInformation
+        .toString()
+        .trim()
+        .replace(/\./g, "");
       break;
     case "DOBM":
-      // need to send as function in util index.js
       userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (
-        !disableValidation &&
-        userInformationTrimmed.toString().length === 2 &&
-        parseInt(userInformationTrimmed, 10) > 0 &&
-        parseInt(userInformationTrimmed, 10) <= 12
-      ) {
+      if (userInformationTrimmed.toString().length < 2) {
+        updatedProperty = `0${userInformationTrimmed}`;
+      } else {
         updatedProperty = userInformationTrimmed;
-        validationPassed = true;
-      }
-      if (disableValidation) {
-        updatedProperty = userInformation;
       }
       break;
     case "DOBD":
       userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (
-        !disableValidation &&
-        userInformationTrimmed.toString().length === 2 &&
-        parseInt(userInformation, 10) > 0 &&
-        parseInt(userInformation, 10) <= 31
-      ) {
+      if (userInformationTrimmed.toString().length < 2) {
+        updatedProperty = `0${userInformationTrimmed}`;
+      } else {
         updatedProperty = userInformationTrimmed;
-        validationPassed = true;
-      }
-      if (disableValidation) {
-        updatedProperty = userInformation;
       }
       break;
     case "LN":
@@ -138,44 +108,29 @@ const ensureApplicableFormat = (
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!,.?]/g, "");
       }
-      validationPassed = true;
       break;
     case "MADID":
     case "MOBILE_ADVERTISER_ID":
       updatedProperty = userInformation.toLowerCase();
-      validationPassed = true;
       break;
     case "COUNTRY":
-      if (userInformation.toLowerCase().length === 2 && !disableValidation) {
-        updatedProperty = userInformation.toLowerCase();
-        validationPassed = true;
-      } else if (disableValidation) {
-        updatedProperty = userInformation;
-      }
-
+      updatedProperty = userInformation.toLowerCase();
       break;
     case "ZIP":
       userInformationTrimmed = userInformation.replace(/\s/g, "");
       updatedProperty = userInformationTrimmed.toLowerCase();
-      validationPassed = true;
       break;
     case "ST":
       updatedProperty = userInformation
         .replace(/[^a-zA-Z ]/g, "")
         .replace(/\s/g, "")
         .toLowerCase();
-      validationPassed = true;
       break;
     default:
       throw new CustomError(
         `The property ${userProperty} is not supported`,
         400
       );
-  }
-  if (!disableValidation && !validationPassed) {
-    throw new CustomError(
-      `The allowed format for ${userProperty} is not maintained in one or more user records`
-    );
   }
   return updatedProperty;
 };
@@ -187,19 +142,23 @@ const prepareDataField = (
   userSchema,
   userUpdateList,
   isHashRequired,
-  disableValidation
+  disableFormat
 ) => {
   const data = [];
+  let updatedProperty;
   let dataElement;
   userUpdateList.forEach(eachUser => {
     dataElement = [];
     userSchema.forEach(eachProperty => {
       if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
-        const updatedProperty = ensureApplicableFormat(
-          eachProperty,
-          eachUser[eachProperty],
-          disableValidation
-        );
+        if (!disableFormat) {
+          updatedProperty = ensureApplicableFormat(
+            eachProperty,
+            eachUser[eachProperty]
+          );
+        } else {
+          updatedProperty = eachUser[eachProperty];
+        }
         if (
           isHashRequired &&
           (eachProperty !== "MADID" || eachProperty !== "MOBILE_ADVERTISER_ID")
@@ -228,7 +187,7 @@ const preparePayload = (
   userSchema,
   paramsPayload,
   isHashRequired,
-  disableValidation
+  disableFormat
 ) => {
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
@@ -241,7 +200,7 @@ const preparePayload = (
     userSchema,
     userUpdateList,
     isHashRequired,
-    disableValidation
+    disableFormat
   );
   return prepareFinalPayload;
 };
@@ -252,9 +211,11 @@ const prepareResponse = (
   message,
   destination,
   isHashRequired = true,
-  allowedAudienceArray
+  allowedAudienceArray,
+  audienceOperation
 ) => {
-  const { accessToken, userSchema, disableValidation } = destination.Config;
+  const { accessToken, userSchema, disableFormat } = destination.Config;
+  const { properties } = message;
   const prepareParams = {};
   let sessionPayload = {};
   // creating the parameters field
@@ -265,7 +226,14 @@ const prepareResponse = (
   );
 
   // without all the mandatory fields present, session blocks can not be formed
-
+  const sessionId =
+    audienceOperation === "userListAdd"
+      ? parseInt(properties.sessionIdAdd, 10)
+      : parseInt(properties.sessionIdDelete, 10);
+  // eslint-disable-next-line no-restricted-globals
+  if (isDefinedAndNotNull(sessionId) && !isNaN(sessionId)) {
+    sessionPayload.session_id = sessionId;
+  }
   if (
     checkSubsetOfArray(
       Object.getOwnPropertyNames(sessionPayload),
@@ -297,7 +265,7 @@ const prepareResponse = (
     userSchema,
     paramsPayload,
     isHashRequired,
-    disableValidation
+    disableFormat
   );
 
   return prepareParams;
@@ -346,7 +314,8 @@ const processEvent = (message, destination) => {
         message,
         destination,
         isHashRequired,
-        allowedAudienceArray
+        allowedAudienceArray,
+        USER_ADD
       );
       wrappedResponse = {
         responseField: response,
@@ -366,7 +335,8 @@ const processEvent = (message, destination) => {
         message,
         destination,
         isHashRequired,
-        allowedAudienceArray
+        allowedAudienceArray,
+        USER_DELETE
       );
       wrappedResponse = {
         responseField: response,
@@ -390,39 +360,35 @@ const processRouterDest = inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
-  const respList = Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
+  const respList = inputs.map(input => {
+    try {
+      if (input.message.statusCode) {
+        // already transformed event
         return getSuccessRespEvents(
-          await process(input),
+          input.message,
           [input.metadata],
           input.destination
         );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
       }
-    })
-  );
-  return respList;
+      const transformedList = process(input);
+      const responseList = transformedList.map(transformedPayload => {
+        return getSuccessRespEvents(
+          transformedPayload,
+          [input.metadata],
+          input.destination
+        );
+      });
+      return responseList;
+    } catch (error) {
+      return getErrorRespEvents(
+        [input.metadata],
+        // eslint-disable-next-line no-nested-ternary
+        error.response ? error.response.status : error.code ? error.code : 400,
+        error.message || "Error occurred while processing payload."
+      );
+    }
+  });
+  return flattenMap(respList);
 };
 
 module.exports = { process, processRouterDest };

@@ -8,9 +8,9 @@
       "headers": {},
       "params": {
         "session": {
-          "session_id": "123",
           "batch_seq": 1,
-          "last_batch_flag": false
+          "last_batch_flag": false,
+          "session_id": 123
         },
         "access_token": "ABC",
         "payload": {
@@ -19,7 +19,9 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
@@ -27,7 +29,9 @@
             [
               "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
             ],
-            ["3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"]
+            [
+              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+            ]
           ]
         }
       },
@@ -46,9 +50,9 @@
       "headers": {},
       "params": {
         "session": {
-          "session_id": "123",
           "batch_seq": 1,
-          "last_batch_flag": false
+          "last_batch_flag": false,
+          "session_id": 456
         },
         "access_token": "ABC",
         "payload": {
@@ -57,7 +61,9 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
@@ -65,7 +71,9 @@
             [
               "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
             ],
-            ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]
+            [
+              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+            ]
           ]
         }
       },
@@ -101,7 +109,9 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
@@ -109,7 +119,9 @@
             [
               "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
             ],
-            ["3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"]
+            [
+              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+            ]
           ]
         }
       },
@@ -134,7 +146,9 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
@@ -142,7 +156,9 @@
             [
               "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
             ],
-            ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]
+            [
+              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+            ]
           ]
         }
       },
@@ -169,8 +185,20 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
-          "data": [["shrouti@abc.com"], ["utsab@abc.com"], ["manashi@abc.com"]]
+          "schema": [
+            "EMAIL"
+          ],
+          "data": [
+            [
+              "shrouti@abc.com"
+            ],
+            [
+              "utsab@abc.com"
+            ],
+            [
+              "manashi@abc.com"
+            ]
+          ]
         }
       },
       "body": {
@@ -194,8 +222,20 @@
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
-          "schema": ["EMAIL"],
-          "data": [["ruchira@abc.com"], ["arnab@abc.com"], ["sudip@abc.com"]]
+          "schema": [
+            "EMAIL"
+          ],
+          "data": [
+            [
+              "ruchira@abc.com"
+            ],
+            [
+              "arnab@abc.com"
+            ],
+            [
+              "sudip@abc.com"
+            ]
+          ]
         }
       },
       "body": {
@@ -208,183 +248,6 @@
   ],
   {
     "error": "Configured Schema field FN is missing in one or more user records"
-  },
-  {
-    "error": "The allowed format for DOBM is not maintained in one or more user records"
-  },
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
-      "headers": {},
-      "params": {
-        "access_token": "ABC",
-        "payload": {
-          "is_raw": false,
-          "data_source": {
-            "type": "UNKNOWN",
-            "sub_type": "ANYTHING"
-          },
-          "schema": ["EMAIL", "DOBM"],
-          "data": [
-            [
-              "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05",
-              "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918"
-            ],
-            [
-              "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565",
-              "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
-            ],
-            [
-              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0",
-              "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278"
-            ]
-          ]
-        }
-      },
-      "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "DELETE",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
-      "headers": {},
-      "params": {
-        "access_token": "ABC",
-        "payload": {
-          "is_raw": false,
-          "data_source": {
-            "type": "UNKNOWN",
-            "sub_type": "ANYTHING"
-          },
-          "schema": ["EMAIL", "DOBM"],
-          "data": [
-            [
-              "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185",
-              "4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8"
-            ],
-            [
-              "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b",
-              "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5"
-            ],
-            [
-              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
-              "a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116"
-            ]
-          ]
-        }
-      },
-      "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
-      "headers": {},
-      "params": {
-        "access_token": "ABC",
-        "payload": {
-          "is_raw": false,
-          "data_source": {
-            "type": "UNKNOWN",
-            "sub_type": "ANYTHING"
-          },
-          "schema": ["EMAIL", "DOBM", "DOBD", "DOBY"],
-          "data": [
-            [
-              "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05",
-              "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918",
-              "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
-              "7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f"
-            ],
-            [
-              "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565",
-              "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
-              "e29c9c180c6279b0b02abd6a1801c7c04082cf486ec027aa13515e4f3884bb6b",
-              "7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f"
-            ],
-            [
-              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0",
-              "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
-              "938db8c9f82c8cb58d3f3ef4fd250036a48d26a712753d2fde5abd03a85cabf4",
-              "96da37e95d5cc34fe3bef6c89428df859b8a217630d0c664da1daf1539caacf5"
-            ]
-          ]
-        }
-      },
-      "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "DELETE",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
-      "headers": {},
-      "params": {
-        "access_token": "ABC",
-        "payload": {
-          "is_raw": false,
-          "data_source": {
-            "type": "UNKNOWN",
-            "sub_type": "ANYTHING"
-          },
-          "schema": ["EMAIL", "DOBM", "DOBD", "DOBY"],
-          "data": [
-            [
-              "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185",
-              "4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8",
-              "938db8c9f82c8cb58d3f3ef4fd250036a48d26a712753d2fde5abd03a85cabf4",
-              "96da37e95d5cc34fe3bef6c89428df859b8a217630d0c664da1daf1539caacf5"
-            ],
-            [
-              "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b",
-              "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
-              "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
-              "a85e9db4851f7cd3efb8db7bf69a07cfb97bc528b72785a9cff7bdfef7e2279d"
-            ],
-            [
-              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
-              "a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116",
-              "938db8c9f82c8cb58d3f3ef4fd250036a48d26a712753d2fde5abd03a85cabf4",
-              "a85e9db4851f7cd3efb8db7bf69a07cfb97bc528b72785a9cff7bdfef7e2279d"
-            ]
-          ]
-        }
-      },
-      "body": {
-        "JSON": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    }
-  ],
-  {
-    "error": "The allowed format for DOBD is not maintained in one or more user records"
-  },
-  {
-    "error": "The allowed format for DOBY is not maintained in one or more user records"
   },
   [
     {
@@ -417,7 +280,7 @@
           "data": [
             [
               "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05",
-              "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918",
+              "a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116",
               "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
               "7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f",
               "0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686",
@@ -426,7 +289,7 @@
               "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
               "4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2",
               "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-              "fed1d872f6d540f4118582ec694270274e987b12f5dfe2057dddf1e12df2761a"
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
             ]
           ]
         }
@@ -477,7 +340,7 @@
               "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
               "4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2",
               "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-              "c81ed803e323ad7f22e5e1c48f1cf07217457b2982b7ca85aa6f7e84c8758c86"
+              "4691511b6bed23e521dbc641c352329c27f8dfbab1cecb3cce4186e9fee35d4c"
             ]
           ]
         }
@@ -490,7 +353,111 @@
       "files": {}
     }
   ],
-  {
-    "error": "The allowed format for COUNTRY is not maintained in one or more user records"
-  }
+  [
+    {
+       
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://graph.facebook.com/v11.0/123/users",
+            "headers": {},
+            "params": {
+                "access_token": "ABC",
+                "payload": {
+                    "is_raw": false,
+                    "data_source": {
+                        "type": "UNKNOWN",
+                        "sub_type": "ANYTHING"
+                    },
+                    "schema": [
+                        "EMAIL",
+                        "DOBM",
+                        "DOBD",
+                        "DOBY",
+                        "PHONE",
+                        "GEN",
+                        "FI",
+                        "MOBILE_ADVERTISER_ID",
+                        "ZIP",
+                        "ST",
+                        "COUNTRY"
+                    ],
+                    "data": [
+                        [
+                            "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05",
+                            "a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116",
+                            "3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278",
+                            "7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f",
+                            "0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686",
+                            "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111",
+                            "db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc",
+                            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+                            "4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2",
+                            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+                            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+                        ]
+                    ]
+                }
+            },
+            "body": {
+                "JSON": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+    },
+    {
+       
+            "version": "1",
+            "type": "REST",
+            "method": "DELETE",
+            "endpoint": "https://graph.facebook.com/v11.0/123/users",
+            "headers": {},
+            "params": {
+                "access_token": "ABC",
+                "payload": {
+                    "is_raw": false,
+                    "data_source": {
+                        "type": "UNKNOWN",
+                        "sub_type": "ANYTHING"
+                    },
+                    "schema": [
+                        "EMAIL",
+                        "DOBM",
+                        "DOBD",
+                        "DOBY",
+                        "PHONE",
+                        "GEN",
+                        "FI",
+                        "MOBILE_ADVERTISER_ID",
+                        "ZIP",
+                        "ST",
+                        "COUNTRY"
+                    ],
+                    "data": [
+                        [
+                            "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185",
+                            "4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8",
+                            "938db8c9f82c8cb58d3f3ef4fd250036a48d26a712753d2fde5abd03a85cabf4",
+                            "96da37e95d5cc34fe3bef6c89428df859b8a217630d0c664da1daf1539caacf5",
+                            "a2da18e09761a73afd15ca44c545c1b11ab19f5e6a33f1c534723dd88bad43ab",
+                            "252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111",
+                            "db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc",
+                            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+                            "4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2",
+                            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+                            "4691511b6bed23e521dbc641c352329c27f8dfbab1cecb3cce4186e9fee35d4c"
+                        ]
+                    ]
+                }
+            },
+            "body": {
+                "JSON": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+       
+    }
+]
 ]

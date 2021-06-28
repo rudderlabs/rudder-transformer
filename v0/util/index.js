@@ -36,7 +36,7 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
-
+const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -1002,5 +1002,6 @@ module.exports = {
   updatePayload,
   checkSubsetOfArray,
   returnArrayOfSubarrays,
-  CustomError
+  CustomError,
+  flattenMap
 };

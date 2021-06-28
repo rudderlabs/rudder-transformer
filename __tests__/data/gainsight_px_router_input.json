@@ -231,5 +231,270 @@
       "Transformations": [],
       "IsProcessorEnabled": true
     }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "nested test2",
+      "sentAt": "2021-06-26T10:41:22.316Z",
+      "userId": "adifhas9734",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.18",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+          "title": "Test",
+          "search": "",
+          "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "width": 1920,
+          "height": 1080,
+          "density": 1,
+          "innerWidth": 1920,
+          "innerHeight": 585
+        },
+        "traits": {
+          "name": "Update test unique",
+          "phone": "9900990899",
+          "lastname": "user6",
+          "firstname": "test",
+          "previousCompany": "testprevCompany2"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.18"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+      },
+      "rudderId": "a27a8a8a-9e81-4898-beeb-e6041fc1552d",
+      "messageId": "595dae36-5e4f-4feb-a2e4-8a7849615d38",
+      "timestamp": "2021-06-26T16:11:22.335+05:30",
+      "properties": {
+        "array": [1, 2, 3],
+        "nested": {
+          "json": "test"
+        },
+        "status": "testing",
+        "description": "Example track call",
+        "fullyNested": [
+          {
+            "a": 1,
+            "b": 2
+          },
+          {
+            "a": 1,
+            "b": [1, 2, 3]
+          }
+        ]
+      },
+      "receivedAt": "2021-06-26T16:11:22.335+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-06-26T10:41:22.316Z"
+    },
+    "metadata": {
+      "userId": "a27a8a8a-9e81-4898-beeb-e6041fc1552d",
+      "jobId": 1,
+      "sourceId": "1s9eG8UCer6YSKsD8ZlQCyLa3pj",
+      "destinationId": "1uLy1tqsoo9RhL1zLiqLQTKBIKL",
+      "attemptNum": 0,
+      "receivedAt": "2021-06-26T16:11:22.335+05:30",
+      "createdAt": "2021-06-26T10:41:24.126Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "jobsT": {
+        "UUID": "6e111329-f45a-4c9d-9661-4b26970f4851",
+        "JobID": 1,
+        "UserID": "a27a8a8a-9e81-4898-beeb-e6041fc1552d",
+        "CreatedAt": "2021-06-26T10:41:24.126545Z",
+        "ExpireAt": "2021-06-26T10:41:24.126545Z",
+        "CustomVal": "GAINSIGHT_PX",
+        "EventPayload": {
+          "type": "track",
+          "event": "nested test2",
+          "sentAt": "2021-06-26T10:41:22.316Z",
+          "userId": "adifhas9734",
+          "channel": "web",
+          "context": {
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "app": {
+              "name": "RudderLabs JavaScript SDK",
+              "build": "1.0.0",
+              "version": "1.1.18",
+              "namespace": "com.rudderlabs.javascript"
+            },
+            "page": {
+              "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+              "title": "Test",
+              "search": "",
+              "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "referrer": "$direct",
+              "initial_referrer": "$direct",
+              "referring_domain": "",
+              "initial_referring_domain": ""
+            },
+            "locale": "en-GB",
+            "screen": {
+              "width": 1920,
+              "height": 1080,
+              "density": 1,
+              "innerWidth": 1920,
+              "innerHeight": 585
+            },
+            "traits": {
+              "name": "Update test unique",
+              "phone": "9900990899",
+              "lastname": "user6",
+              "firstname": "test",
+              "previousCompany": "testprevCompany2"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.18"
+            },
+            "campaign": {},
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+          },
+          "rudderId": "a27a8a8a-9e81-4898-beeb-e6041fc1552d",
+          "messageId": "595dae36-5e4f-4feb-a2e4-8a7849615d38",
+          "timestamp": "2021-06-26T16:11:22.335+05:30",
+          "properties": {
+            "array": [1, 2, 3],
+            "nested": {
+              "json": "test"
+            },
+            "status": "testing",
+            "description": "Example track call",
+            "fullyNested": [
+              {
+                "a": 1,
+                "b": 2
+              },
+              {
+                "a": 1,
+                "b": [1, 2, 3]
+              }
+            ]
+          },
+          "receivedAt": "2021-06-26T16:11:22.335+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+          "integrations": {
+            "All": true
+          },
+          "originalTimestamp": "2021-06-26T10:41:22.316Z"
+        },
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null
+        },
+        "Parameters": {
+          "source_id": "1s9eG8UCer6YSKsD8ZlQCyLa3pj",
+          "message_id": "595dae36-5e4f-4feb-a2e4-8a7849615d38",
+          "received_at": "2021-06-26T16:11:22.335+05:30",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "1uLy1tqsoo9RhL1zLiqLQTKBIKL",
+          "gateway_job_id": 1,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_job_run_id": "",
+          "source_task_run_id": ""
+        }
+      }
+    },
+    "destination": {
+      "ID": "1uLy1tqsoo9RhL1zLiqLQTKBIKL",
+      "Name": "gainsight-px-dest",
+      "DestinationDefinition": {
+        "ID": "1uLuOdwPCqtei55ZKXewwPhjQPf",
+        "Name": "GAINSIGHT_PX",
+        "DisplayName": "Gainsight PX",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "productTagKey",
+              "userAttributeMap",
+              "accountAttributeMap",
+              "globalContextMap"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["apiKey", "productTagKey"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accountAttributeMap": [
+          {
+            "from": "cultureCustomField",
+            "to": "culture"
+          }
+        ],
+        "apiKey": "sample-api-key",
+        "eventDelivery": false,
+        "eventDeliveryTS": 1624472902670,
+        "globalContextMap": [
+          {
+            "from": "kubrickTest",
+            "to": "value"
+          }
+        ],
+        "productTagKey": "AP-SAMPLE-2",
+        "userAttributeMap": [
+          {
+            "from": "hobbyCustomField",
+            "to": "hobby"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
   }
 ]

@@ -397,5 +397,58 @@
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "sample-api-key",
+        "productTagKey": "AP-XABC-123",
+        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "userAttributeMap": [{ "from": "", "to": "" }],
+        "globalContextMap": [
+          { "from": "projectId", "to": "p-123" },
+          { "from": "tag", "to": "sample-category-tag" }
+        ]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "userId": "sample-user-id",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "sample-anon-id",
+      "type": "track",
+      "event": "Stringify Test",
+      "properties": {
+        "description": "Stringify test for object values",
+        "nested": {
+          "a": [1, 2, 3],
+          "b": {
+            "c": 1
+          }
+        },
+        "arr": [1, 2, 3],
+        "globalContext": {
+          "someKey": "someVal"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
   }
 ]

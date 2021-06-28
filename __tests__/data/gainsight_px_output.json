@@ -1,0 +1,198 @@
+[
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "attributes": {
+          "product_id": "123",
+          "sku": "F16",
+          "category": "Games",
+          "name": "Game",
+          "brand": "Gamepro",
+          "variant": "111",
+          "price": 13.49,
+          "quantity": 11,
+          "coupon": "DISC21",
+          "position": 1,
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.png"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Product Added",
+        "globalContext": {
+          "projectId": "p-123",
+          "tag": "sample-category-tag"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "attributes": {
+          "description": "Sample Track call"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Track Me",
+        "globalContext": {
+          "testOverride": "some-value"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "USER",
+        "gender": "MALE",
+        "email": "user@email.com",
+        "firstName": "Sample",
+        "lastName": "User",
+        "signUpDate": 1624431528295,
+        "createDate": 1571043797562,
+        "title": "engineer",
+        "propertyKeys": ["AP-XABC-123"],
+        "location": {
+          "countryName": "USA",
+          "countryCode": "US",
+          "city": "New York"
+        },
+        "customAttributes": {
+          "hobby": "Sample Hobby"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "accountId": "ecorp-id"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
+  },
+  {
+    "error": "userId or anonymousId is required for identify"
+  },
+  {
+    "error": "Missing required value from \"userId\""
+  },
+  {
+    "error": "groupId is required for group"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "attributes": {
+          "description": "Stringify test for object values",
+          "nested": "{\"a\":[1,2,3],\"b\":{\"c\":1}}",
+          "arr": "[1,2,3]"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Stringify Test",
+        "globalContext": {
+          "projectId": "p-123",
+          "tag": "sample-category-tag"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "attributes": {
+          "description": "Stringify test for object values",
+          "nested": "{\"a\":[1,2,3],\"b\":{\"c\":1}}",
+          "arr": "[1,2,3]"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Stringify Test",
+        "globalContext": {
+          "someKey": "someVal"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+  }
+]

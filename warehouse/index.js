@@ -173,11 +173,12 @@ function setDataFromInputAndComputeColumnTypes(
   input,
   columnTypes,
   options,
-  prefix = ""
+  prefix = "",
+  level = 0
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key])) {
+    if (isObject(input[key]) && level < 3) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -185,7 +186,8 @@ function setDataFromInputAndComputeColumnTypes(
         input[key],
         columnTypes,
         options,
-        `${prefix + key}_`
+        `${prefix + key}_`,
+        level + 1
       );
     } else {
       let val = input[key];
@@ -193,6 +195,10 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
+      if (isObject(input[key]) && level == 3) {
+        val = JSON.stringify(val);
+      }
+      
       const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();

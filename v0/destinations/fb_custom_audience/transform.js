@@ -350,7 +350,7 @@ const processEvent = (message, destination) => {
   });
   if (respList.length === 0) {
     throw new CustomError(
-      "Response could not be created due to missing information",
+      "missing valid parameters, unable to generate transformed payload",
       400
     );
   }

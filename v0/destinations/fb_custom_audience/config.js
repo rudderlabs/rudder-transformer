@@ -39,8 +39,8 @@ const schemaFields = [
   "MADID",
   "COUNTRY"
 ];
-// as per experimentation with public API of Facebook Custom Audience maximum 1100 users can be added at a time
-const MAX_USER_COUNT = 1100;
+// as per real time experimentation maximum 500 users can be added at a time
+const MAX_USER_COUNT = 500;
 const sessionBlockField = ["session_id", "batch_seq", "last_batch_flag"];
 const USER_ADD = "userListAdd";
 const USER_DELETE = "userListDelete";

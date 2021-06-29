@@ -304,6 +304,16 @@ const processEvent = (message, destination) => {
   }
   const { properties } = message;
 
+  if (
+    !isDefinedAndNotNull(properties[USER_ADD]) &&
+    !isDefinedAndNotNull(properties[USER_DELETE])
+  ) {
+    throw new CustomError(
+      "Both USER_ADD and USER_DELETE fields are absent. Hence dropping the event",
+      400
+    );
+  }
+
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       properties[USER_ADD],

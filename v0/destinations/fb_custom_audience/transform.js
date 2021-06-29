@@ -150,7 +150,7 @@ const prepareDataField = (
   userUpdateList.forEach(eachUser => {
     dataElement = [];
     userSchema.forEach(eachProperty => {
-      if (isDefinedAndNotNullAndNotEmpty(eachUser[eachProperty])) {
+      if (isDefinedAndNotNull(eachUser[eachProperty])) {
         if (!disableFormat) {
           updatedProperty = ensureApplicableFormat(
             eachProperty,

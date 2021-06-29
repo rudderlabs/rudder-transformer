@@ -21,6 +21,7 @@ async function transform(isolatevm, events) {
         [
           isolatevm.fnRef,
           new ivm.Reference(resolve),
+          new ivm.Reference(reject),
           sharedTransformationPayload
         ],
         { timeout: 4000 }
@@ -29,13 +30,9 @@ async function transform(isolatevm, events) {
       reject(error.message);
     }
   });
-  let result;
-  try {
-    result = await Promise.race([executionPromise]);
-  } catch (error) {
-    throw new Error(error);
-  }
-  return result;
+  return executionPromise.catch(e => {
+    throw new Error(e);
+  });
 }
 
 function calculateMsFromIvmTime(value) {
@@ -47,14 +44,14 @@ async function userTransformHandlerV1(
   userTransformation,
   libraryVersionIds
 ) {
-/*
+  /*
  Transform VM aquire mode is
  on demand if env variable ON_DEMAND_ISOLATE_VM = true | True | TRUE,
  Pooled otherwise
 */
   const isAcquireTransformerIsolatedVMMode = process.env.ON_DEMAND_ISOLATE_VM
-  ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase()  === "true"
-  : false;
+    ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
+    : false;
   if (userTransformation.versionId) {
     const tags = {
       transformerVersionId: userTransformation.versionId
@@ -64,7 +61,10 @@ async function userTransformHandlerV1(
     let isolatevmPool, isolatevm, isolatevmFactory;
     if (isAcquireTransformerIsolatedVMMode) {
       logger.debug(`Isolate VM being created... `);
-      isolatevmFactory = await getFactory(userTransformation.code, libraryVersionIds);
+      isolatevmFactory = await getFactory(
+        userTransformation.code,
+        libraryVersionIds
+      );
       isolatevm = await isolatevmFactory.create();
       logger.debug(`Isolate VM created... `);
     } else {

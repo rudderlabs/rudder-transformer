@@ -1,0 +1,135 @@
+[
+  {
+    "destKey": "App Name",
+    "sourceKeys": "context.app.name",
+    "required": false
+  },
+  {
+    "destKey": "App Version",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "App Build",
+    "sourceKeys": "context.app.build",
+    "required": false
+  },
+  {
+    "destKey": "UTM Campaign",
+    "sourceKeys": "context.campaign.name",
+    "required": false
+  },
+  {
+    "destKey": "UTM Source",
+    "sourceKeys": "context.campaign.source",
+    "required": false
+  },
+  {
+    "destKey": "UTM Medium",
+    "sourceKeys": "context.campaign.medium",
+    "required": false
+  },
+  {
+    "destKey": "UTM Term",
+    "sourceKeys": "context.campaign.term",
+    "required": false
+  },
+  {
+    "destKey": "UTM Content",
+    "sourceKeys": "context.campaign.content",
+    "required": false
+  },
+  {
+    "destKey": "Locale",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "destKey": "User Agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "IP Address",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "Last Name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "First Name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "Ad Tracking Enabled",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": false
+  },
+  {
+    "destKey": "Device Manufacturer",
+    "sourceKeys": "context.device.manufacturer",
+    "required": false
+  },
+  {
+    "destKey": "Device-model",
+    "sourceKeys": "context.device.model",
+    "required": false
+  },
+  {
+    "destKey": "Device Name",
+    "sourceKeys": "context.device.name",
+    "required": false
+  },
+  {
+    "destKey": "Device Type",
+    "sourceKeys": "context.device.type",
+    "required": false
+  },
+  {
+    "destKey": "Bluetooth Enabled",
+    "sourceKeys": "context.network.bluetooth",
+    "required": false
+  },
+  {
+    "destKey": "Network Carrier",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "Cellular Enabled",
+    "sourceKeys": "context.network.cellular",
+    "required": false
+  },
+  {
+    "destKey": "Wifi Enabled",
+    "sourceKeys": "context.network.wifi",
+    "required": false
+  },
+  {
+    "destKey": "Screen Density",
+    "sourceKeys": "context.screen.density",
+    "required": false
+  },
+  {
+    "destKey": "Screen Height",
+    "sourceKeys": "context.screen.height",
+    "required": false
+  },
+  {
+    "destKey": "Screen Width",
+    "sourceKeys": "context.screen.width",
+    "required": false
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "properties",
+    "required": false
+  }
+]
+

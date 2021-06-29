@@ -1,3 +1,7 @@
+/* eslint-disable  consistent-return */
+/* eslint-disable  no-param-reassign */
+/* eslint-disable  array-callback-return */
+
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -55,10 +59,31 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+/**
+ *
+ * @param {*} arg
+ * @returns {type}
+ *
+ * Returns type of passed arg 
+ * for null argss returns "NULL" insted of "object"
+ *
+ */
+const getType = arg => {
+  const type = typeof arg;
+  if (arg == null) {
+    return "NULL";
+  }
+  return type;
+};
+
 const formatValue = value => {
-  if (!value || value < 0) return 0;
+  if (!value || value < 0) return null;
   return Math.round(value);
 };
+
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
 
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (
@@ -70,6 +95,7 @@ const getHashFromArray = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
       hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
         array[toKey];
     });
@@ -351,7 +377,7 @@ const getValueFromMessage = (message, sourceKey) => {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);
-      if (val) {
+      if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
@@ -395,7 +421,14 @@ const handleMetadataForValue = (value, metadata) => {
   }
 
   // get infor from metadata
-  const { type, typeFormat, template, defaultValue, excludes } = metadata;
+  const {
+    type,
+    typeFormat,
+    template,
+    defaultValue,
+    excludes,
+    multikeyMap
+  } = metadata;
 
   // if value is null and defaultValue is supplied - use that
   if (!value) {
@@ -427,6 +460,13 @@ const handleMetadataForValue = (value, metadata) => {
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
         break;
+      case "jsonStringifyOnObject":
+        // if already a string, will not stringify
+        // calling stringify on string will add escape characters
+        if (typeof formattedVal !== "string") {
+          formattedVal = JSON.stringify(formattedVal);
+        }
+        break;
       case "numberForRevenue":
         if (
           (typeof formattedVal === "string" ||
@@ -445,6 +485,9 @@ const handleMetadataForValue = (value, metadata) => {
         break;
       case "toNumber":
         formattedVal = Number(formattedVal);
+        break;
+      case "toFloat":
+        formattedVal = parseFloat(formattedVal);
         break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
@@ -484,6 +527,46 @@ const handleMetadataForValue = (value, metadata) => {
       );
     }
   }
+
+  // handle multikeyMap
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  if (multikeyMap) {
+    let foundVal = false;
+    if (Array.isArray(multikeyMap)) {
+      multikeyMap.some(map => {
+        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+          logger.warn(
+            "multikeyMap skipped: sourceVal and destVal must be of valid type"
+          );
+          foundVal = true;
+          return true;
+        }
+
+        if (map.sourceVal.includes(formattedVal)) {
+          formattedVal = map.destVal;
+          foundVal = true;
+          return true;
+        }
+      });
+    } else {
+      logger.warn("multikeyMap skipped: multikeyMap must be an array");
+    }
+    if (!foundVal) formattedVal = undefined;
+  }
+
   return formattedVal;
 };
 
@@ -546,7 +629,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (value) {
+      if (value || value === 0 || value === false) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {
@@ -564,6 +647,17 @@ const constructPayload = (message, mappingJson) => {
   return null;
 };
 
+// External ID format
+// {
+//   "context": {
+//     "externalId": [
+//       {
+//         "type": "kustomerId",
+//         "id": "12345678"
+//       }
+//     ]
+//   }
+// }
 // to get destination specific external id passed in context.
 function getDestinationExternalID(message, type) {
   let externalIdArray = null;
@@ -581,10 +675,6 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
-function isEmpty(input) {
-  return _.isEmpty(_.toString(input).trim());
-}
-
 const isObject = value => {
   const type = typeof value;
   return (
@@ -592,6 +682,11 @@ const isObject = value => {
     (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
+};
+
+const isNonFuncObject = value => {
+  const type = typeof value;
+  return value != null && type === "object" && !Array.isArray(value);
 };
 
 function getBrowserInfo(userAgent) {
@@ -683,6 +778,66 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+/**
+ * Extract fileds from message with exclusions
+ * Pass the keys of message for extraction and
+ * exclusion fields to exlude and the payload to map into
+ *
+ * Example:
+ * extractCustomFields(
+ *   message,
+ *   payload,
+ *   ["traits", "context.traits", "properties"],
+ *   [
+ *     "firstName",
+ *     "lastName",
+ *     "phone",
+ *     "title",
+ *     "organization",
+ *     "city",
+ *     "region",
+ *     "country",
+ *     "zip",
+ *     "image",
+ *     "timezone"
+ *   ]
+ * )
+ * -------------------------------------------
+ * The above call will map the fields other than the
+ * exlusion list from the given keys to the destination payload
+ *
+ */
+function extractCustomFields(message, destination, keys, exclusionFields) {
+  const mappingKeys = [];
+  if (Array.isArray(keys)) {
+    keys.map(key => {
+      const messageContext = get(message, key);
+      if (messageContext) {
+        Object.keys(messageContext).map(k => {
+          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+        });
+        mappingKeys.map(mappingKey => {
+          if (!(typeof messageContext[mappingKey] === "undefined")) {
+            set(destination, mappingKey, get(messageContext, mappingKey));
+          }
+        });
+      }
+    });
+  } else if (keys === "root") {
+    Object.keys(message).map(k => {
+      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+    });
+    mappingKeys.map(mappingKey => {
+      if (!(typeof message[mappingKey] === "undefined")) {
+        set(destination, mappingKey, get(message, mappingKey));
+      }
+    });
+  } else {
+    logger.debug("unable to parse keys");
+  }
+
+  return destination;
+}
 
 // Deleting nested properties from objects
 function deleteObjectProperty(object, pathToObject) {
@@ -704,12 +859,53 @@ function deleteObjectProperty(object, pathToObject) {
   delete object[pathToObject.pop()];
 }
 
+// function convert keys in a object to title case
+
+function toTitleCase(payload) {
+  const newPayload = payload;
+  Object.keys(payload).forEach(key => {
+    const value = newPayload[key];
+    delete newPayload[key];
+    const newKey = key
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+      .replace(/([a-z])([0-9])/gi, "$1 $2")
+      .replace(/([0-9])([a-z])/gi, "$1 $2")
+      .trim()
+      .replace(/(_)/g, ` `)
+      .replace(/(^\w{1})|(\s+\w{1})/g, match => {
+        return match.toUpperCase();
+      });
+    newPayload[newKey] = value;
+  });
+  return newPayload;
+}
+
+// returns false if there is any empty string inside an array or true otherwise
+
+function checkEmptyStringInarray(array) {
+  const result = array.filter(item => item === "").length === 0;
+  return result;
+}
+// Returns raw string value of JSON
+function getStringValueOfJSON(json) {
+  let output = "";
+  Object.keys(json).forEach(key => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (json.hasOwnProperty(key)) {
+      output += `${key}: ${json[key]} `;
+    }
+  });
+  return output;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
+  checkEmptyStringInarray,
   constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
@@ -718,7 +914,9 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  extractCustomFields,
   flattenJson,
+  formatTimeStamp,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
@@ -730,12 +928,18 @@ module.exports = {
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
+  getType,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
+  isDefined,
+  isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isNonFuncObject,
   isObject,
   isPrimitive,
   isValidUrl,
@@ -745,6 +949,7 @@ module.exports = {
   removeUndefinedValues,
   setValues,
   stripTrailingSlash,
+  toTitleCase,
   toUnixTimestamp,
   updatePayload
 };

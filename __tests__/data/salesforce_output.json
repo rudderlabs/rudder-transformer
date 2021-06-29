@@ -204,7 +204,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/leadId?_HttpMethod=PATCH",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/sf-contact-id?_HttpMethod=PATCH",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
@@ -212,7 +212,6 @@
       "params": {},
       "body": {
         "JSON": {
-          "Email": "peter.gibbons1@initech.com",
           "Phone": "570-690-4150",
           "Rating": "Hot",
           "Title": "VP of Derp",

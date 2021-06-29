@@ -1,0 +1,12 @@
+{
+  "routerTransform": {
+    "GA": true,
+    "GAINSIGHT": true,
+    "HS": true,
+    "MARKETO": true,
+    "SALESFORCE": true,
+    "SFMC": true,
+    "TRENGO": true,
+    "KUSTOMER": true
+  }
+}

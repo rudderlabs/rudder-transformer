@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
 
@@ -22,7 +22,7 @@ async function getTransformationCodeV1(versionId) {
   };
   try {
     const startTime = new Date();
-    const response = await fetch(
+    const response = await fetchWithProxy(
       `${getTransformationURL}?versionId=${versionId}`
     );
     stats.increment("get_transformation_code.success", tags);
@@ -45,7 +45,7 @@ async function getLibraryCodeV1(versionId) {
   };
   try {
     const startTime = new Date();
-    const response = await fetch(`${getLibrariesUrl}?versionId=${versionId}`);
+    const response = await fetchWithProxy(`${getLibrariesUrl}?versionId=${versionId}`);
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);
     const myJson = await response.json();

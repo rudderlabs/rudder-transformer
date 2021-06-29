@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 
@@ -7,7 +6,9 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getDestinationExternalID
+  getDestinationExternalID,
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 
 const {
@@ -21,32 +22,74 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
-  if (androidAppId) {
+  const os = get(message, "context.os.name");
+  if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (appleAppId) {
+  } else if (os && os.toLowerCase() === "ios" && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
-  } else if (message.context.app.namespace) {
-    endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   } else {
-    throw new Error("Invalid app endpoint");
+    throw new Error(
+      "Invalid platform or required androidAppId or appleAppId missing"
+    );
   }
-  const afId = message.integrations
-    ? message.integrations.AF
-      ? message.integrations.AF.af_uid
-      : undefined
-    : undefined;
-  const appsflyerId =
-    getDestinationExternalID(message, "appsflyerExternalId") || afId;
+  // if (androidAppId) {
+  //   endpoint = `${ENDPOINT}${androidAppId}`;
+  // } else if (appleAppId) {
+  //   endpoint = `${ENDPOINT}id${appleAppId}`;
+  // }
+  // else if (message.context.app.namespace) {
+  //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
+  // } else {
+  //   throw new Error("Invalid app endpoint");
+  // }
+  // const afId = message.integrations
+  //   ? message.integrations.AF
+  //     ? message.integrations.AF.af_uid
+  //     : undefined
+  //   : undefined;
+  const appsflyerId = getDestinationExternalID(message, "appsflyerExternalId");
   if (!appsflyerId) {
     throw new Error("Appsflyer id is not set. Rejecting the event");
   }
+
   const updatedPayload = {
     ...payload,
-    af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
+    ip: get(message, "context.ip") || message.request_ip,
+    os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
   };
+
+  if (os.toLowerCase() === "ios") {
+    updatedPayload.idfa = get(message, "context.device.advertisingId");
+    updatedPayload.idfv = get(message, "context.device.id");
+  } else if (os.toLowerCase() === "android") {
+    updatedPayload.advertising_id = get(
+      message,
+      "context.device.advertisingId"
+    );
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    updatedPayload.att = att;
+  }
+
+  const appVersion = get(message, "context.app.version");
+  if (isDefinedAndNotNull(appVersion)) {
+    updatedPayload.app_version_name = appVersion;
+  }
+
+  const bundleIdentifier = get(message, "context.app.namespace");
+  if (isDefinedAndNotNull(bundleIdentifier)) {
+    updatedPayload.bundleIdentifier = bundleIdentifier;
+  }
+
+  const sharingFilter = destination.Config.sharingFilter || "all";
+  if (isDefinedAndNotNull(sharingFilter)) {
+    updatedPayload.sharing_filter = sharingFilter;
+  }
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
@@ -55,28 +98,30 @@ function responseBuilderSimple(payload, message, destination) {
     authentication: destination.Config.devKey
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  response.userId = message.anonymousId;
-  response.body.JSON = removeUndefinedValues(updatedPayload);
+  response.body.JSON = removeUndefinedAndNullValues(updatedPayload);
   return response;
 }
 
 function getEventValueForUnIdentifiedTrackEvent(message) {
-  return {
-    eventValue: message.properties
-  };
+  let eventValue;
+  if (message.properties) {
+    eventValue = JSON.stringify(message.properties);
+  } else {
+    eventValue = "";
+  }
+  return { eventValue };
 }
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
-  const rawPayload = {};
-  set(rawPayload, "properties", message.properties);
-
+  let eventValue = {};
+  set(eventValue, "properties", message.properties);
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
-    set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
+    set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-
   if (
     isMultiSupport &&
+    message.properties &&
     message.properties.products &&
     message.properties.products.length > 0
   ) {
@@ -88,16 +133,27 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
       quantities.push(product.quantity);
       prices.push(product.price);
     });
-    rawPayload.eventValue = {
+    eventValue = {
+      ...eventValue,
       af_content_id: contentIds,
       af_quantity: quantities,
       af_price: prices
     };
   }
-  return rawPayload;
+  eventValue = removeUndefinedValues(eventValue);
+  if (Object.keys(eventValue).length > 0) {
+    eventValue = JSON.stringify(eventValue);
+  } else {
+    eventValue = "";
+  }
+  return { eventValue };
 }
 
-function processNonTrackEvents(message, destination, eventName) {
+function processNonTrackEvents(message, eventName) {
+  if (!isDefinedAndNotNull(message.event)) {
+    message.event =
+      message.name || (message.properties && message.properties.name);
+  }
   const payload = getEventValueForUnIdentifiedTrackEvent(message);
   payload.eventName = eventName;
   return payload;
@@ -106,7 +162,7 @@ function processNonTrackEvents(message, destination, eventName) {
 function processEventTypeTrack(message) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
-  const evType = message.event.toLowerCase();
+  const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
   const eventName = evType.toLowerCase();
 
@@ -121,7 +177,6 @@ function processEventTypeTrack(message) {
       category = nameToEventMap[evType].category;
       break;
     default: {
-      // eventName = evType.toLowerCase();
       isMultiSupport = false;
       isUnIdentifiedEvent = true;
       break;
@@ -152,12 +207,12 @@ function processSingleMessage(message, destination) {
     }
     case EventType.SCREEN: {
       const eventName = EventType.SCREEN;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
       const eventName = EventType.PAGE;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     default:
@@ -167,7 +222,8 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  return processSingleMessage(event.message, event.destination);
+  const response = processSingleMessage(event.message, event.destination);
+  return response;
 }
 
 exports.process = process;

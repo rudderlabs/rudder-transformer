@@ -147,7 +147,10 @@
   },
   {
     "destKey": "",
-    "sourceKeys": "context.traits",
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
     "required": false,
     "metadata": {
       "excludes": [

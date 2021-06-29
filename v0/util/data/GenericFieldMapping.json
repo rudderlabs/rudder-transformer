@@ -1,39 +1,18 @@
 {
-  "address": [
-    "traits.address",
-    "context.traits.address"
-  ],
+  "address": ["traits.address", "context.traits.address"],
   "createdAt": [
     "traits.createdAt",
     "context.traits.createdAt",
     "timestamp",
     "originalTimestamp"
   ],
-  "email": [
-    "traits.email",
-    "context.traits.email",
-    "properties.email"
-  ],
-  "timestamp": [
-    "originalTimestamp",
-    "timestamp"
-  ],
-  "historicalTimestamp": [
-    "timestamp",
-    "originalTimestamp"
-  ],
-  "traits": [
-    "traits",
-    "context.traits"
-  ],
-  "groupId": [
-    "groupId",
-    "traits.groupId"
-  ],
-  "groupTraits": [
-    "traits",
-    "context.traits"
-  ],
+  "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
+  "email": ["traits.email", "context.traits.email", "properties.email"],
+  "timestamp": ["originalTimestamp", "timestamp"],
+  "historicalTimestamp": ["timestamp", "originalTimestamp"],
+  "traits": ["traits", "context.traits"],
+  "groupId": ["groupId", "traits.groupId"],
+  "groupTraits": ["traits", "context.traits"],
   "userId": [
     "userId",
     "traits.userId",
@@ -49,24 +28,37 @@
     "context.traits.userId",
     "context.traits.id"
   ],
+  "name": ["traits.name", "context.traits.name"],
   "firstName": [
     "traits.firstName",
     "traits.firstname",
+    "traits.first_name",
     "context.traits.firstName",
-    "context.traits.firstname"
+    "context.traits.firstname",
+    "context.traits.first_name"
   ],
   "lastName": [
     "traits.lastName",
     "traits.lastname",
+    "traits.last_name",
     "context.traits.lastName",
-    "context.traits.lastname"
+    "context.traits.lastname",
+    "context.traits.last_name"
   ],
-  "pageTitle": [
-    "context.page.title", 
-    "properties.title"
+  "middleName": [
+    "traits.middleName",
+    "traits.middleName",
+    "traits.middle_name",
+    "context.traits.middleName",
+    "context.traits.middleName",
+    "context.traits.middle_name"
   ],
-  "pageUrl": [
-    "context.page.url", 
-    "properties.url"
-  ]
+  "phone": ["traits.phone", "context.traits.phone", "properties.phone"],
+  "pageTitle": ["context.page.title", "properties.title"],
+  "pageUrl": ["context.page.url", "properties.url"],
+  "website": ["traits.website", "context.traits.website", "properties.website"],
+  "GApageUrl": ["properties.url", "context.page.url"],
+  "GApageRef": ["properties.referrer", "context.page.referrer"],
+  "GApageTitle": ["properties.title", "context.page.title"],
+  "GApageSearch": ["properties.search", "context.page.search"]
 }

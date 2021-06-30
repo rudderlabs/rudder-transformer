@@ -23,7 +23,7 @@
         "destKey": "estimated_num_total",
         "sourceKeys": [
             "properties.estimated_num_total",
-            "properties.lestimatedNumTotal"
+            "properties.estimatedNumTotal"
         ],
         "required": false
     }

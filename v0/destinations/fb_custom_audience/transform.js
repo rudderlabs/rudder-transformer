@@ -126,6 +126,9 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
         .replace(/\s/g, "")
         .toLowerCase();
       break;
+    case "EXTERN_ID":
+      updatedProperty = userInformation;
+      break;
     default:
       throw new CustomError(
         `The property ${userProperty} is not supported`,
@@ -163,6 +166,7 @@ const prepareDataField = (
           isHashRequired &&
           (eachProperty !== "MADID" || eachProperty !== "MOBILE_ADVERTISER_ID")
         ) {
+          updatedProperty = `${updatedProperty}`;
           dataElement.push(sha256(updatedProperty));
         } else {
           dataElement.push(updatedProperty);
@@ -389,7 +393,7 @@ const processRouterDest = inputs => {
       return getErrorRespEvents(
         [input.metadata],
         // eslint-disable-next-line no-nested-ternary
-        error.response ? error.response.status : error.code ? error.code : 400,
+        400,
         error.message || "Error occurred while processing payload."
       );
     }

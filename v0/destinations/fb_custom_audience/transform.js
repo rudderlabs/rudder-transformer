@@ -176,6 +176,7 @@ const prepareDataField = (
           eachProperty !== "MOBILE_ADVERTISER_ID" &&
           eachProperty !== "EXTERN_ID"
         ) {
+          // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
           updatedProperty = `${updatedProperty}`;
           dataElement.push(sha256(updatedProperty));
         } else {
@@ -239,7 +240,6 @@ const prepareResponse = (
     constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name])
   );
 
-  // without all the mandatory fields present, session blocks can not be formed
   const sessionId =
     audienceOperation === "userListAdd"
       ? parseInt(properties.sessionIdAdd, 10)
@@ -248,6 +248,7 @@ const prepareResponse = (
   if (isDefinedAndNotNull(sessionId) && !isNaN(sessionId)) {
     sessionPayload.session_id = sessionId;
   }
+  // without all the mandatory fields present, session blocks can not be formed
   if (
     checkSubsetOfArray(
       Object.getOwnPropertyNames(sessionPayload),
@@ -265,6 +266,7 @@ const prepareResponse = (
   paramsPayload = removeUndefinedAndNullValues(
     constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name])
   );
+  // creating the data_source block
   dataSource = removeUndefinedAndNullValues(
     constructPayload(
       message,
@@ -318,6 +320,7 @@ const processEvent = (message, destination) => {
   }
   const { properties } = message;
 
+  // When "userListAdd" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       properties[USER_ADD],
@@ -338,7 +341,7 @@ const processEvent = (message, destination) => {
       toSendEvents.push(wrappedResponse);
     });
   }
-
+  // when userListDelete is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(properties[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       properties[USER_DELETE],
@@ -362,6 +365,7 @@ const processEvent = (message, destination) => {
   toSendEvents.forEach(sendEvent => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
   });
+  // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
     throw new CustomError(
       "missing valid parameters, unable to generate transformed payload",

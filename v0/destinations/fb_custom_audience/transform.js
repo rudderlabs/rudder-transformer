@@ -154,17 +154,26 @@ const prepareDataField = (
     dataElement = [];
     userSchema.forEach(eachProperty => {
       if (isDefinedAndNotNull(eachUser[eachProperty])) {
-        if (!disableFormat) {
-          updatedProperty = ensureApplicableFormat(
-            eachProperty,
-            eachUser[eachProperty]
-          );
+        if (isHashRequired) {
+          if (!disableFormat) {
+            // when user requires formatting
+            updatedProperty = ensureApplicableFormat(
+              eachProperty,
+              eachUser[eachProperty]
+            );
+          } else {
+            // when user requires hashing but does not require formatting
+            updatedProperty = eachUser[eachProperty];
+          }
         } else {
+          // when hashing is not required
           updatedProperty = eachUser[eachProperty];
         }
         if (
           isHashRequired &&
-          (eachProperty !== "MADID" || eachProperty !== "MOBILE_ADVERTISER_ID")
+          eachProperty !== "MADID" &&
+          eachProperty !== "MOBILE_ADVERTISER_ID" &&
+          eachProperty !== "EXTERN_ID"
         ) {
           updatedProperty = `${updatedProperty}`;
           dataElement.push(sha256(updatedProperty));

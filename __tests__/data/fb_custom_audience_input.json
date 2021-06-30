@@ -51,7 +51,7 @@
                     "EMAIL"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -124,7 +124,7 @@
                     "EMAIL"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -197,7 +197,7 @@
                     "EMAIL"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -270,7 +270,7 @@
                     "ANYTHING"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -342,7 +342,7 @@
                     "EMAIL"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -414,7 +414,7 @@
                     "EMAIL"
                 ],
                 "isHashRequired": false,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -488,7 +488,7 @@
                     "FN"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -579,7 +579,7 @@
                     "COUNTRY"
                 ],
                 "isHashRequired": true,
-                "disableValidation": false,
+                "disableFormat": false,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",
@@ -670,7 +670,7 @@
                     "COUNTRY"
                 ],
                 "isHashRequired": true,
-                "disableValidation": true,
+                "disableFormat": true,
                 "eventAudienceMapping": [
                     {
                         "from": "event1",

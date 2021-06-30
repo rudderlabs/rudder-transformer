@@ -121,6 +121,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       updatedProperty = userInformationTrimmed.toLowerCase();
       break;
     case "ST":
+    case "CT":
       updatedProperty = userInformation
         .replace(/[^a-zA-Z ]/g, "")
         .replace(/\s/g, "")

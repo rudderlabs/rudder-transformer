@@ -9,6 +9,7 @@
   "company",
   "country",
   "createdAt",
+  "createddate",
   "description",
   "email",
   "firstName",

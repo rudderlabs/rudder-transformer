@@ -137,6 +137,10 @@ async function getPayload(
   if (email) {
     const rawPayload = {};
     rawPayload.merge_fields = {};
+    
+    if(message.mappedToDestination) {
+      return message.traits;
+    }
 
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {

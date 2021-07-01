@@ -56,7 +56,8 @@ function responseBuilderSimple(
   traits,
   salesforceMap,
   authorizationData,
-  mapProperty
+  mapProperty,
+  mappedToDestination
 ) {
   const { salesforceType, salesforceId } = salesforceMap;
 
@@ -84,6 +85,11 @@ function responseBuilderSimple(
         rawPayload[`${key}__c`] = traits[key];
       }
     });
+  }
+  
+  // If message is already mapped to destination, Do not map it using config and send traits as-is
+  if(mappedToDestination) {
+    rawPayload = traits;
   }
 
   const response = defaultRequestConfig();
@@ -198,7 +204,8 @@ async function processIdentify(message, authorizationData, mapProperty) {
         traits,
         salesforceMap,
         authorizationData,
-        mapProperty
+        mapProperty,
+        message.mappedToDestination
       )
     );
   });

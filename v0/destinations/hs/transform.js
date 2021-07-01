@@ -41,9 +41,13 @@ async function getProperties(destination) {
 
 async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
-
   const sourceKeys = Object.keys(mappingJson);
   const traits = getFieldValueFromMessage(message, "traits");
+  
+  if(message.mappedToDestination) {
+    return traits;
+  }
+
   if (traits) {
     const traitsKeys = Object.keys(traits);
     const propertyMap = await getProperties(destination);
@@ -54,6 +58,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
     });
     traitsKeys.forEach(traitsKey => {
       const hsSupportedKey = getKey(traitsKey);
+      console.log(hsSupportedKey)
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
         if (propertyMap[hsSupportedKey] === "date") {

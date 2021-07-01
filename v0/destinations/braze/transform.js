@@ -100,6 +100,10 @@ function getUserAttributesObject(message, mappingJson) {
   // get traits from message
   const traits = getFieldValueFromMessage(message, "traits");
 
+  if(message.mappedToDestination) {
+    return traits;
+  }
+
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(traits, mappingJson[destKey]);

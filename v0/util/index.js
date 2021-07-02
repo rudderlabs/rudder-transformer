@@ -36,7 +36,7 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
-
+const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -440,7 +440,8 @@ const handleMetadataForValue = (value, metadata) => {
     template,
     defaultValue,
     excludes,
-    multikeyMap
+    multikeyMap,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -502,6 +503,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "toFloat":
         formattedVal = parseFloat(formattedVal);
         break;
+      case "toInt":
+        formattedVal = parseInt(formattedVal, 10);
+        break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
         break;
@@ -515,6 +519,11 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = formattedVal
           .replace("https://", "")
           .replace("http://", "");
+        break;
+      case "IsBoolean":
+        if (!(typeof formattedVal === "boolean")) {
+          logger.debug("Boolean value missing, so dropping it");
+        }
         break;
       default:
         break;
@@ -578,6 +587,21 @@ const handleMetadataForValue = (value, metadata) => {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
     if (!foundVal) formattedVal = undefined;
+  }
+
+  if (allowedKeyCheck) {
+    let foundVal = false;
+    if (Array.isArray(allowedKeyCheck)) {
+      allowedKeyCheck.some(key => {
+        if (key.sourceVal.includes(formattedVal)) {
+          foundVal = true;
+          return true;
+        }
+      });
+    }
+    if (!foundVal) {
+      formattedVal = undefined;
+    }
   }
 
   return formattedVal;
@@ -912,6 +936,23 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+// checks if array 2 is a subset of array 1
+function checkSubsetOfArray(array1, array2) {
+  const result = array2.every(val => array1.includes(val));
+  return result;
+}
+
+// splits array into equal parts and returns array of sub arrays
+function returnArrayOfSubarrays(arr, len) {
+  const chunks = [];
+  let i = 0;
+  const n = arr.length;
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+  return chunks;
+}
+
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -927,6 +968,7 @@ module.exports = {
   ErrorMessage,
   checkEmptyStringInarray,
   constructPayload,
+  CustomError,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -936,6 +978,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  flattenMap,
   formatTimeStamp,
   formatValue,
   getBrowserInfo,
@@ -973,5 +1016,6 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  CustomError
+  checkSubsetOfArray,
+  returnArrayOfSubarrays
 };

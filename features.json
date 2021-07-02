@@ -8,6 +8,7 @@
     "SALESFORCE": true,
     "SFMC": true,
     "TRENGO": true,
-    "KUSTOMER": true
+    "KUSTOMER": true,
+    "FB_CUSTOM_AUDIENCE":true
   }
 }

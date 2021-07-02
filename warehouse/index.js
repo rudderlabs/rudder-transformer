@@ -178,7 +178,7 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key]) && level < 3) {
+    if (isObject(input[key]) && (options.sourceCategory == 'cloud' && level < 3)) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -195,7 +195,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
-      if (isObject(input[key]) && level == 3) {
+      if (isObject(input[key]) && (options.sourceCategory == 'cloud' && level == 3)) {
         val = JSON.stringify(val);
       }
       

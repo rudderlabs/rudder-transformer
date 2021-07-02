@@ -1,5 +1,11 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINT } = require("./config");
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  ENDPOINT,
+  forFirstName,
+  forLastName
+} = require("./config");
 const {
   constructPayload,
   defaultPostRequestConfig,
@@ -15,10 +21,22 @@ const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const response = defaultRequestConfig();
   const { stream, apiKey } = destination.Config;
-
   response.endpoint = `${ENDPOINT}/${stream}?access_token=${apiKey}`;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(flattenJson(payload));
+  const flattenedPayload = removeUndefinedAndNullValues(flattenJson(payload));
+  forFirstName.forEach(key => {
+    if (flattenedPayload[key]) {
+      flattenedPayload.first_name = flattenedPayload[key];
+      delete flattenedPayload[key];
+    }
+  });
+  forLastName.forEach(key => {
+    if (flattenedPayload[key]) {
+      flattenedPayload.last_name = flattenedPayload[key];
+      delete flattenedPayload[key];
+    }
+  });
+  response.body.JSON = flattenedPayload;
   response.headers = {
     "Content-Type": "application/json"
   };

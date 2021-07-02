@@ -13,10 +13,15 @@ const CONFIG_CATEGORIES = {
   }
 };
 
+const forFirstName = ["firstname", "firstName"];
+const forLastName = ["lastname", "lastName"];
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   ENDPOINT,
   MAPPING_CONFIG,
-  CONFIG_CATEGORIES
+  CONFIG_CATEGORIES,
+  forFirstName,
+  forLastName
 };

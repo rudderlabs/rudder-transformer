@@ -6,6 +6,7 @@
     "metadata": { "defaultValue": "n/a" }
   },
   { "destKey": "Country", "sourceKeys": ["address.country", "country"] },
+  { "destKey": "CreatedDate", "sourceKeys": ["createdAt", "createddate"] },
   { "destKey": "Description", "sourceKeys": "description" },
   { "destKey": "Email", "sourceKeys": "email" },
   { "destKey": "FirstName", "sourceKeys": "firstName" },

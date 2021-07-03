@@ -2,6 +2,7 @@ version: 0.2
 env:
   parameter-store:
     dockerhub_passwd: "/prod/codebuild/dockerhub-password"
+    GITHUB_TOKEN: "build-deploy-pkey"
 
 phases:
   install:

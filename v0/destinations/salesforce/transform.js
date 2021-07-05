@@ -4,6 +4,7 @@ const { EventType } = require("../../../constants");
 const {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
+  SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyMappingJson,
   ignoredTraits
 } = require("./config");
@@ -24,7 +25,13 @@ const logger = require("../../../logger");
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  const authUrl = `${SF_TOKEN_REQUEST_URL}?username=${
+  let SF_TOKEN_URL;
+  if (destination.Config.sandbox) {
+    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
+  } else {
+    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
+  }
+  const authUrl = `${SF_TOKEN_URL}?username=${
     destination.Config.userName
   }&password=${encodeURIComponent(
     destination.Config.password

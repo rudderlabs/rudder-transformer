@@ -12,6 +12,8 @@ const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
 require("dotenv").config();
 
+let successfulVersions = [];
+let failedVersions = [];
 const versionIdsMap = {
   "1kMS1g7jakfkPbyXM46i6m9rdq5": "1uecaaVRNOypgusF2DraeAgIIGp",
   "1fHddAUiVeBwp2SwZ0aG71X454q": "1uecaeOsMHcwnySPZbfjJYXpzpP",
@@ -333,12 +335,20 @@ if (startDestTransformer) {
                 const responseDiff = jsonDiff.diff(destTransformedEventsNew, destTransformedEvents);
                 if (responseDiff) {
                   logger.info("Failed Hit ", transformationVersionId);
+                  if (!failedVersions.includes(transformationVersionId)) {
+                    failedVersions.push(transformationVersionId)
+                    fs.writeFileSync('./failedVersions.txt', failedVersions.length.toString() + '\n' + failedVersions.toString())
+                  }
                   fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()}.txt`,
                     JSON.stringify(destTransformedEvents, null, 2) + '\n #### v1 ### \n' + JSON.stringify(destTransformedEventsNew, null, 2) 
                     + '\n#### Input ### \n' + JSON.stringify(destEvents, null, 2)
                   )
                 } else {
                   logger.info('Successful Hit ', transformationVersionId)
+                  if (! successfulVersions.includes(transformationVersionId)) {
+                    successfulVersions.push(transformationVersionId);
+                    fs.writeFileSync('./successfulVersions.txt', successfulVersions.length.toString() + '\n' + successfulVersions.toString())
+                  }
                 }
               } else {
                 throw new Error('Filtered out');
@@ -376,7 +386,7 @@ if (startDestTransformer) {
                 })
               );
             } catch (error) {
-              logger.error(error);
+              logger.error(error.message);
               const errorString = error.toString();
               destTransformedEvents = destEvents.map(e => {
                 return {

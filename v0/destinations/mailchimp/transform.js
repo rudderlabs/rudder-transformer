@@ -133,14 +133,14 @@ async function getPayload(
     return rawPayload;
   }
 
+  if(message.mappedToDestination) {
+    return message.traits;
+  }
+
   const email = getFieldValueFromMessage(message, "email");
   if (email) {
     const rawPayload = {};
     rawPayload.merge_fields = {};
-    
-    if(message.mappedToDestination) {
-      return message.traits;
-    }
 
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {
@@ -158,7 +158,7 @@ async function getPayload(
     }
     return rawPayload;
   }
-  return null;
+    return null;
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {

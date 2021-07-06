@@ -17,6 +17,7 @@ const {
   CustomError
 } = require("../../util");
 const logger = require("../../../logger");
+const set = require("set-value");
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {
@@ -134,6 +135,9 @@ async function getPayload(
   }
 
   if(message.mappedToDestination) {
+    let identifierType = message.context.externalId[0].identifierType;
+    let identifierValue = message.context.externalId[0].id
+    set(message.traits, identifierType, identifierValue)
     return message.traits;
   }
 

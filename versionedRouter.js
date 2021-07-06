@@ -9,9 +9,99 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
+const jsonDiff = require('json-diff');
+const fs = require("fs");
 require("dotenv").config();
 
-
+const versionIdsMap = {
+  "1kMS1g7jakfkPbyXM46i6m9rdq5": "1uecaaVRNOypgusF2DraeAgIIGp",
+  "1fHddAUiVeBwp2SwZ0aG71X454q": "1uecaeOsMHcwnySPZbfjJYXpzpP",
+  "1htBITAbZb6oMHymeum7UF7xRzd": "1uecaaj2fdUA4VbMuhk7akkRxLd",
+  "1huAXIynPf8kYgEwAddiC0aro46": "1uecaejuXoeDAYaZNlF9cVlahNL",
+  "1o2OT5cYDxm7zGO9pMt40XaX6rM": "1uecair5961vkvcTX3Vy3vJt1dE",
+  "1pDAWi760WAW96LLZTsbqFAuK08": "1uecahgeDgRdzvFrEkW9iRBL92H",
+  "1jZCAI2VrDB9QS6hjkVyhXjhdzS": "1uecanqPNP7lZYVCljxJAnokMDL",
+  "1iF1tH9zAfc3KZ9OJzzBIl1VPia": "1uecajSwFTbwEYSZ2F6mklCbYc3",
+  "1iLHAfJjp8lFBrf3XPdGF5M9l3F": "1uecasvnLWWah8ngRHYXGA9kN5G",
+  "1jZC12PI9XwMO6QdfE67Ah9oiox": "1uecarKehKLWra0lHOShyha2AL9",
+  "1jZC3aruHvIXGBTdwJ6kFA1GJdR": "1uecarKehKLWra0lHOShyha2AL9",
+  "1iUDrOIvGBZwji5SeKtVgNmG6UR": "1uecahgeDgRdzvFrEkW9iRBL92H",
+  "1hvMxM8v2BzhlXQWj1bLUxvulIP": "1uecaejuXoeDAYaZNlF9cVlahNL",
+  "1o2mvdEPpuDYu3z6UeW0iHBMffG": "1uecayY1yudoMOlIx8SCcASyMbQ",
+  "1nfoA7DejDNssSrs4bppo6lOmOP": "1uecazLuJFMmc6EpFJRcJM3rY9k",
+  "1nfq4Xwi3w3nAzDtwZq3JTLOj3Z": "1uecb21QsxkZ2QSYTfVSPNxYYW8",
+  "1qoFjAV3SKvqkgrEYvGGS0ykRSr": "1uecb1KoHxeab28BcDExwypi8uU",
+  "1pUJhDv9xc8BrmKYdbZJNAzAvyA": "1uecb0b8ZIMtgJKoezDLh8GdBRG",
+  "1s7r5WMRe8R1BqZPkHcorUL0s7N": "1uecb0b8ZIMtgJKoezDLh8GdBRG",
+  "1qMYBT4LLFcmi0cU59MIE61MwoV": "1uecb0tARn3USCpwBR9JMXgWFUR",
+  "1eJWIeO4w8l57bQwNTCWPsy1X72": "1uecbAwS9y1e8Fjw0EUACqoioCw",
+  "1klz2PRe75x3pc1IuQGE1JbGS1y": "1uecb9h6fqQMFAZA2bDj7ythR9C",
+  "1pQl9PCBrVLTFQF6xoAFBb48cl2": "1uecbBx0lRS4mPJGllJAGmBFYqB",
+  "1pTcxxBdNT1Le5kO5GPSlN0xH2v": "1uecbBx0lRS4mPJGllJAGmBFYqB",
+  "1pQo6OLrT0aVdOfXKory5DTI3au": "1uecb7G1bBobaRYXGofM2ULgasl",
+  "1pTciQIOaayiU4XitvY0H8x4zV0": "1uecb7G1bBobaRYXGofM2ULgasl",
+  "1nh7zU7LJljO6QNzmwz5sa1y472": "1uecbAVuW6ATiVG0b9aznHUwIBs",
+  "1oKPaANYGM9w5rXV9DT9ait4VST": "1uecb8CKoQpR0mfnkQw2u1M6lei",
+  "1pZcNrCoj9yXX8dDKDALw9kQyz6": "1uecbBDu7btLK4A4gjyRxKUutq8",
+  "1pZSdQUaHqCl2IFcawFEsEsWf5r": "1uecb83C7wj00unBVi6NrfHyRoH",
+  "1rTOdCvUsuwJbiE3KwXqRz2wRI9": "1uecbC6QXngLHWMGAwX9jezVyvN",
+  "1rTaNtEYGABSI7UXgsWAWQeivqi": "1uecbC6QXngLHWMGAwX9jezVyvN",
+  "1rTaVm5FYGyYuE2Ii7IZa4wrZBc": "1uecbEvB5lcu6wGQBBgp5ZAvirY",
+  "1odNK2YlQsrErE9B10LPtSL65XY": "1uecbHpImCutZ2hXd55ifB3bhxc",
+  "1rZihudH1HurUghaKWoG1ivyRfh": "1uecbCFnURw9JqR6I8EpRDnV8da",
+  "1rgo1OAHGcbOJmeZUut7RSlDMW1": "1uecbIsfuVJ4kW4qCIFwnQyN4Du",
+  "1rgoBmZVc1mNsqhqRCdsQ9PZgAb": "1uecbIsfuVJ4kW4qCIFwnQyN4Du",
+  "1rh0srM5fH9yWr7WHWqpPPzeEXO": "1uecbOCwiy1stMJdWjtWSaVLXA8",
+  "1rlRJKR1rOybQJCiKQFQeQU5yls": "1uecbKmTItisDGNKSHOYLNpsrxM",
+  "1oDeiLKVW8oyt7BbFUHZk5rPVYP": "1uecbOKhIUim7jjkj8is5Y1BOfg",
+  "1ozIswpvM4JH8lPE5yAI5Yz99j2": "1uecbNiYQJ5ViiQPJq5K2lpQUKY",
+  "1q9Q0kCJsKolHsYnYqkXJwJu89n": "1uecbKHCIlhhgLD0BOkYQDzWb2o",
+  "1lboP54BPHWgBzUDvL86nm2xfRU": "1uecbMtn24JpG4GrwrH3TCrAe4c",
+  "1hSapjIqPxW3S05UJHiLaq5NV1e": "1uecbQHeYO7DpUmdnD4WjZUOUqW",
+  "1iS45271Gr8koRSzQ1qFvUkJN4u": "1uecbQw0aUTCnUf56JNRFYhKsSl",
+  "1pGtjiNy8jFgR2qFWHvCgtewIIV": "1uecbVi3gh16KKJ3tbvIkAa6NiE",
+  "1hM7ON82R1xkc6IpKVDJKOAFNWr": "1uecbWr5tQhMak68boTGMJuowWm",
+  "1kp5NcAOv9jLcgbFSAo6RtFTIT8": "1uecbWlhCNFYobmMaL49xZ7rp1w",
+  "1rQMCqv8gJAdZMz6o2KcwW0uBZd": "1uecbZMkP0l1CWA7u9MrfJ86IEv",
+  "1rhuaCrSB8aH9YbtEYOJ15mvOE6": "1uecbYK92iGBJRQYK9SoAwSJWoz",
+  "1ri28OgYDVtkjcSfOaR2DUiVovN": "1uecbYK92iGBJRQYK9SoAwSJWoz",
+  "1ri2nJkx0mGa8Sl3wKVQMKy785c": "1uecbYK92iGBJRQYK9SoAwSJWoz",
+  "1myKbhF92cYsU1K4OmuXVbtMeIm": "1uecbTMPtwbFso9UNuh4wWBbByu",
+  "1q7CxGoktW8LOinUOQ1QrqM1NpF": "1uecbZrVA3qi20fgonxoG3Bacp6",
+  "1rniAGANyePjs1eJskKgzbu4s2O": "1uecbcHzoA4EFnY8hxENFq1dWC3",
+  "1rnjsQz08jABpD1BhcjkmaXVYVi": "1uecbcHzoA4EFnY8hxENFq1dWC3",
+  "1qKHF9493kAjn3vFS6sd5UiU4So": "1uecbgWFGi7rzVlPbuFQHAZXs1t",
+  "1r6yexiIubbFVlYtYsHBilJwBNO": "1uecbaJeoeix4RQEKEHeaImicYU",
+  "1oezI5OihLXxZwinVn4CjvPK1Cj": "1uecbblonXhAsoKEQJ0OwpuxDlt",
+  "1n7KkGQYVHLzGxoUEq44sZNhIZw": "1uecbc4GcEvIRqOmfnaOZwnpE3g",
+  "1n7LHJSk2AHwiBEVpZpnS4PPUwO": "1uecbcxFXyGC3lTS8Y0agozxDzk",
+  "1oaQqhINSLmgaZkVxV4AkOAv6cK": "1uecbll1Kgb4T4QyiqkgMEAtfrd",
+  "1nZncfnCMAziBBttCHdmcqO5VnA": "1uecbnZ1auyAq9qa702fgvYiWIG",
+  "1r7UKcx6mgRV4ThNvQkww9gIgLE": "1uecboGJ7BkXPpEn4sY3aLEFVL6",
+  "1roRmBgJXRcJ4q4Av8naYVBGVGO": "1uecboezgldUKqEhpvf56rTmSO4",
+  "1bW8Q7t7w1HvCnGXYDysA8RE23I": "1uecblvLrP79bWqQOe5ff0am5dK",
+  "1bALcjH3m0eO9jfX4F71QyuStmx": "1uecbmxhoXlLQGolAzATLTnrxvW",
+  "1bALgeqVdrYOpbV35q8OMW9SsyE": "1uecbmxhoXlLQGolAzATLTnrxvW",
+  "1lyCCCmIaVAHfCSWuvJZ9HWcdrZ": "1uecblSMnRLkpAneQfiyceHF8pp",
+  "1bLaSZgS4UhGnggH4ZLdhmbgUlX": "1uecbpkMToY5dfsvcUUj3l5KBfo",
+  "1obCmE2A2Zkh9dDDaP4LWxxKilp": "1uecbtQJxAxntPzXWpQhiND3Jcb",
+  "1jT6yDPBBhvtEroYQ0ey9HHD9pZ": "1uecbwKyNvLqpfPMpQkrqathDuS",
+  "1kWT2juf5YG7t80LEBJmGmyEaT1": "1uecbsfaUbSQzehXXUXob0tGhzj",
+  "1mwrGK3zAEVrfWJW0qepPuEVhDI": "1uecbufejhpEvM2kw5rhazIve3j",
+  "1r79scSmqwANQrek1r3Z4XIhphD": "1uecbt0sDkGMMI9Pv5zyJg94hnN",
+  "1oFNxZpLJswwfL2X4mhD6Zcv1iT": "1uecc2Vs8dd415hK8E0MhihFrfH",
+  "1ilNgx7qoMlClUESjCdTnE7LYdA": "1uecc22mkn3qn8qtQJnUfy25MCf",
+  "1ppnSpbvT9C52DqLaq8lbzpJikD": "1uecc29nxM17SCZczT72atWxbhs",
+  "1rWgHgwXFMGnIQuPyinIHbdhlC6": "1uecbyeOXDuw8tktNxpO7WSdzjV",
+  "1rWgUbQqVIQKSkMYdmPZ8fPAid7": "1uecbyeOXDuw8tktNxpO7WSdzjV",
+  "1rWgUoms63eT2DafTg4uP975H7p": "1uecbyeOXDuw8tktNxpO7WSdzjV",
+  "1oF0WqwieSZvnfRc5gFuCcLtMcb": "1uecc0U012AVN5W1O4Wr3iMuUW4",
+  "1oF16WTqmROva7xiiHSFdt0lAjM": "1uecbwrEbIoE3k6SOQ4lNFHSaND",
+  "1oF1EYZq44ILJewcPuNWcfZVkkv": "1uecbz4twjTU95Cw9QlF6CfrSh0",
+  "1oF0VBga7kaflRVKrn2RxXANoZM": "1uecc2yTIXOTP1aYDA63r28YoVh",
+  "1YiEU0JDDBOl2vtx3hhb31ErcLK": "1uecc7SaHD8TID68e2FqWc6QphC",
+  "1axJesPakkAmZQYeJNV1YaA6OSB": "1uecc8dlr9jDnXUGuApMliD8CWo"
+};
 const versions = ["v0"];
 const API_VERSION = "1";
 
@@ -230,6 +320,21 @@ if (startDestTransformer) {
                 transformationVersionId,
                 librariesVersionIDs
               );
+              let destTransformedEventsNew;
+              if (transformationVersionId in versionIdsMap) {
+                destTransformedEventsNew = await userTransformHandler()(
+                  destEvents,
+                  versionIdsMap[transformationVersionId],
+                  librariesVersionIDs
+                );
+                logger.info('version Hit ', transformationVersionId);
+                const responseDiff = jsonDiff.diff(destTransformedEventsNew, destTransformedEvents);
+                if (responseDiff) {
+                  logger.info("failed map");
+                  fs.writeFileSync(path.resolve(__dirname, `./${transformationVersionId}_${Date.now()}_out.json`))
+                }
+              }
+              
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   if (ev.error) {

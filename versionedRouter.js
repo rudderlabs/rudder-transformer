@@ -10,7 +10,6 @@ const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
-const fs = require("fs");
 require("dotenv").config();
 
 const versionIdsMap = {
@@ -315,24 +314,32 @@ if (startDestTransformer) {
                   processSessions
                 }
               );
-              destTransformedEvents = await userTransformHandler()(
-                destEvents,
-                transformationVersionId,
-                librariesVersionIDs
-              );
+              
               let destTransformedEventsNew;
               if (transformationVersionId in versionIdsMap) {
+                destTransformedEvents = await userTransformHandler()(
+                  destEvents,
+                  transformationVersionId,
+                  librariesVersionIDs
+                );
                 destTransformedEventsNew = await userTransformHandler()(
                   destEvents,
                   versionIdsMap[transformationVersionId],
                   librariesVersionIDs
                 );
+
                 logger.info('version Hit ', transformationVersionId);
                 const responseDiff = jsonDiff.diff(destTransformedEventsNew, destTransformedEvents);
                 if (responseDiff) {
                   logger.info("failed map");
-                  fs.writeFileSync(path.resolve(__dirname, `./${transformationVersionId}_${Date.now()}_out.json`))
+                  fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()}.txt`,
+                    JSON.stringify(destTransformedEvents, null, 2) + '\n ####### \n' + JSON.stringify(destTransformedEventsNew, null, 2)
+                  )
+                } else {
+                  logger.info('Successful Hit ', transformationVersionId)
                 }
+              } else {
+                throw new Error('Filtered out');
               }
               
               transformedEvents.push(

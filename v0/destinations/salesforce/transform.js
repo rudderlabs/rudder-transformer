@@ -156,9 +156,17 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
     // request configuration will be conditional
-    const leadQueryResponse = await axios.get(leadQueryUrl, {
-      headers: { Authorization: authorizationData.token }
-    });
+    let leadQueryResponse;
+    try {
+      leadQueryResponse = await axios.get(leadQueryUrl, {
+        headers: { Authorization: authorizationData.token }
+      });
+    } catch (err) {
+      throw new CustomError(
+        JSON.stringify(err.response.data[0]) || err.message,
+        err.response.status || 500
+      ); // default 500
+    }
 
     let leadObjectId;
     if (

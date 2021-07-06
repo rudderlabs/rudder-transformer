@@ -42,12 +42,43 @@ const CONFIG_CATEGORIES = {
     type: "checkout started",
     name: "FBPIXELPSimpleCustomConfig"
   },
+  OTHER_STANDARD: {
+    standard: true,
+    name: "FBPIXELPSimpleCustomConfig"
+  },
+  PAGE_VIEW: {
+    standard: true,
+    type: "page_view",
+    name: "FBPIXELPSimpleCustomConfig"
+  },
   PAGE: { standard: false, type: "page", name: "FBPIXELPSimpleCustomConfig" }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const ACTION_SOURCES_VALUES = [
+  "email",
+  "website",
+  "phone_call",
+  "chat",
+  "physical_store",
+  "system_generated",
+  "other"
+];
+
+const FB_PIXEL_DEFAULT_EXCLUSION = ["opt_out", "event_id", "action_source"];
+const STANDARD_ECOMM_EVENTS_TYPE = [
+  CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type,
+  CONFIG_CATEGORIES.PRODUCT_VIEWED.type,
+  CONFIG_CATEGORIES.PRODUCT_ADDED.type,
+  CONFIG_CATEGORIES.ORDER_COMPLETED.type,
+  CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type,
+  CONFIG_CATEGORIES.CHECKOUT_STARTED.type
+];
 
 module.exports = {
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
+  ACTION_SOURCES_VALUES,
+  FB_PIXEL_DEFAULT_EXCLUSION,
+  STANDARD_ECOMM_EVENTS_TYPE
 };

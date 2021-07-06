@@ -1,42 +1,111 @@
+/* eslint-disable eqeqeq */
 const axios = require("axios");
-const { EVENT_REGEX, BASE_ENDPOINT } = require("./config");
-const logger = require("../../../logger");
+const _ = require("lodash");
+const set = require("set-value");
+const get = require("get-value");
+const { BASE_ENDPOINT } = require("./config");
+const { getType, isDefinedAndNotNull, isObject } = require("../../util");
 
-const UNSUPPORTED_ERROR_MESSAGE =
-  "event property not supported, ref:https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8";
+/**
+ * RegExp to test a string for a ISO 8601 Date spec
+ *  YYYY
+ *  YYYY-MM
+ *  YYYY-MM-DD
+ *  YYYY-MM-DDThh:mmTZD
+ *  YYYY-MM-DDThh:mm:ssTZD
+ *  YYYY-MM-DDThh:mm:ss.sTZD
+ * @see: https://www.w3.org/TR/NOTE-datetime
+ * @type {RegExp}
+ */
+const ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
 
-const eventNameValidate = RegExp(EVENT_REGEX.EVENT);
-const numVadiate = RegExp(EVENT_REGEX.NUMBER);
-const stringValidate = RegExp(EVENT_REGEX.STRING);
-const dateTimeValidate = RegExp(EVENT_REGEX.DATE_TIME);
-
-// A validation function responsible for validating
-// various parameters of an event payload based on
-// which type of data they are storing.
-// -------------------------------------------------
-// Ref: https://apidocs.kustomer.com/#fe1b29a6-7f3c-40a7-8f54-973ecd0335e8
-const validateEvent = event => {
-  const { name, meta } = event;
-  if (!eventNameValidate.test(name)) {
-    throw new Error("Invalid Event name provided");
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
   }
-  Object.keys(meta).map(key => {
-    switch (typeof meta[key]) {
-      case "string":
-        if (!dateTimeValidate.test(key) && !stringValidate.test(key)) {
-          throw new Error(`Property: ${key}, ${UNSUPPORTED_ERROR_MESSAGE}`);
-        }
-        break;
-      case "number":
-        if (!numVadiate.test(key)) {
-          throw new Error(`Property: ${key}, ${UNSUPPORTED_ERROR_MESSAGE}`);
-        }
-        break;
-      default:
-        throw new Error(`Property: ${key}, ${UNSUPPORTED_ERROR_MESSAGE}`);
-    }
-  });
+}
+
+// Handles for Number type fields
+const transformNumberField = fieldName => {
+  const typeDelim = "";
+  const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
+  if (_.endsWith(transformedFieldName, "Num")) {
+    return transformedFieldName;
+  }
+  return `${transformedFieldName}${typeDelim}Num`;
 };
+// handles for Date type fields
+const transformDateField = fieldName => {
+  const typeDelim = "";
+  const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
+  if (_.endsWith(transformedFieldName, "At")) {
+    return transformedFieldName;
+  }
+  return `${transformedFieldName}${typeDelim}At`;
+};
+// handles other type fields
+const transformField = fieldName => {
+  const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
+  return transformedFieldName;
+};
+
+const handleAdvancedtransformations = event => {
+  let cloneEvent = _.cloneDeep(event);
+  const transformedMeta = {};
+  let eventName = get(cloneEvent, "name");
+  const { meta } = cloneEvent;
+
+  // Handles event name
+  // This will handle for event names = "Order Completed", "  Order Completed ", "Order   Completed" etc
+  if (isDefinedAndNotNull(eventName)) {
+    eventName = eventName.trim().replace(/\s+/g, "-");
+    cloneEvent = set(cloneEvent, "name", eventName);
+  }
+
+  if (isDefinedAndNotNull(meta) && isObject(meta)) {
+    Object.keys(meta).forEach(propKey => {
+      if (getType(meta[propKey]) == "number") {
+        transformedMeta[transformNumberField(propKey)] = meta[propKey];
+      } else if (ISO_8601.test(meta[propKey])) {
+        transformedMeta[transformDateField(propKey)] = meta[propKey];
+      } else {
+        transformedMeta[transformField(propKey)] = meta[propKey];
+      }
+    });
+  }
+
+  cloneEvent = set(cloneEvent, "meta", transformedMeta);
+
+  return cloneEvent;
+};
+
+const handleResponse = response => {
+  const { status, data } = response;
+  switch (status) {
+    case 200:
+      if (data && data.data && data.data.id) {
+        return {
+          userExists: true,
+          targetUrl: `${BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`
+        };
+      }
+      throw new CustomError(
+        `Error while lookingUp Kustomer ${
+          data.data ? JSON.stringify(data.data) : ""
+        }`,
+        400
+      );
+    case 404:
+      return { userExists: false };
+    default:
+      throw new CustomError(
+        data ? JSON.stringify(data) : "Error while lookingUp Kustomer",
+        status || 400
+      );
+  }
+};
+
 const fetchKustomer = async (url, destination) => {
   let response;
   try {
@@ -46,18 +115,16 @@ const fetchKustomer = async (url, destination) => {
       }
     });
   } catch (err) {
-    logger.debug("Error while fetching customer info");
+    if (err.response) {
+      return handleResponse(err.response);
+    }
+    throw new CustomError(err.message, 400);
   }
-  if (response && response.status === 200 && response.data.data.id) {
-    return {
-      userExists: true,
-      targetUrl: `${BASE_ENDPOINT}/v1/customers/${response.data.data.id}?replace=false`
-    };
-  }
-  return { userExists: false };
+  return handleResponse(response);
 };
 
 module.exports = {
   fetchKustomer,
-  validateEvent
+  handleAdvancedtransformations,
+  CustomError
 };

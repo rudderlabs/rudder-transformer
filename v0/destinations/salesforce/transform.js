@@ -15,7 +15,8 @@ const {
   constructPayload,
   getFirstAndLastName,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -35,7 +36,10 @@ async function getSFDCHeader(destination) {
     response = await axios.post(authUrl, {});
   } catch (error) {
     logger.error(error);
-    throw new Error(`SALESFORCE AUTH FAILED: ${error.message}`);
+    throw new CustomError(
+      `SALESFORCE AUTH FAILED: ${error.message}`,
+      error.status || 400
+    );
   }
 
   return {
@@ -139,7 +143,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     const email = getFieldValueFromMessage(message, "email");
 
     if (!email) {
-      throw new Error("Invalid Email address for Lead Objet");
+      throw new CustomError("Invalid Email address for Lead Objet", 400);
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
@@ -174,7 +178,7 @@ async function processIdentify(message, authorizationData, mapProperty) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new Error("Invalid traits for Salesforce request");
+    throw new CustomError("Invalid traits for Salesforce request", 400);
   }
 
   // if traits is correct, start processing
@@ -209,7 +213,7 @@ async function processSingleMessage(message, authorizationData, mapProperty) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, mapProperty);
   } else {
-    throw new Error(`message type ${message.type} is not supported`);
+    throw new CustomError(`message type ${message.type} is not supported`, 400);
   }
   return response;
 }
@@ -233,7 +237,18 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const authorizationData = await getSFDCHeader(inputs[0].destination);
+  let authorizationData;
+  try {
+    authorizationData = await getSFDCHeader(inputs[0].destination);
+  } catch (error) {
+    const respEvents = getErrorRespEvents(
+      inputs.map(input => input.metadata),
+      400,
+      "Authorisation failed"
+    );
+    return [respEvents];
+  }
+
   if (!authorizationData) {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),

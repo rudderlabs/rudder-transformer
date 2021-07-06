@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 
@@ -7,7 +6,12 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError,
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 
 const {
@@ -21,32 +25,72 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
-  if (androidAppId) {
+  const os = get(message, "context.os.name");
+  if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (appleAppId) {
+  } else if (os && os.toLowerCase() === "ios" && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
-  } else if (message.context.app.namespace) {
-    endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   } else {
-    throw new Error("Invalid app endpoint");
+    throw new CustomError("Invalid app endpoint", 400);
   }
-  const afId = message.integrations
-    ? message.integrations.AF
-      ? message.integrations.AF.af_uid
-      : undefined
-    : undefined;
-  const appsflyerId =
-    getDestinationExternalID(message, "appsflyerExternalId") || afId;
+  // if (androidAppId) {
+  //   endpoint = `${ENDPOINT}${androidAppId}`;
+  // } else if (appleAppId) {
+  //   endpoint = `${ENDPOINT}id${appleAppId}`;
+  // }
+  // else if (message.context.app.namespace) {
+  //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
+  // } else {
+  //   throw new Error("Invalid app endpoint");
+  // }
+  // const afId = message.integrations
+  //   ? message.integrations.AF
+  //     ? message.integrations.AF.af_uid
+  //     : undefined
+  //   : undefined;
+  const appsflyerId = getDestinationExternalID(message, "appsflyerExternalId");
   if (!appsflyerId) {
-    throw new Error("Appsflyer id is not set. Rejecting the event");
+    throw new CustomError("Appsflyer id is not set. Rejecting the event", 400);
   }
+
   const updatedPayload = {
     ...payload,
-    af_events_api: "true",
     eventTime: message.timestamp,
     customer_user_id: message.user_id,
+    ip: get(message, "context.ip") || message.request_ip,
+    os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
   };
+
+  if (os.toLowerCase() === "ios") {
+    updatedPayload.idfa = get(message, "context.device.advertisingId");
+    updatedPayload.idfv = get(message, "context.device.id");
+  } else if (os.toLowerCase() === "android") {
+    updatedPayload.advertising_id = get(
+      message,
+      "context.device.advertisingId"
+    );
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    updatedPayload.att = att;
+  }
+
+  const appVersion = get(message, "context.app.version");
+  if (isDefinedAndNotNull(appVersion)) {
+    updatedPayload.app_version_name = appVersion;
+  }
+
+  const bundleIdentifier = get(message, "context.app.namespace");
+  if (isDefinedAndNotNull(bundleIdentifier)) {
+    updatedPayload.bundleIdentifier = bundleIdentifier;
+  }
+
+  const sharingFilter = destination.Config.sharingFilter || "all";
+  if (isDefinedAndNotNull(sharingFilter)) {
+    updatedPayload.sharing_filter = sharingFilter;
+  }
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
@@ -55,8 +99,7 @@ function responseBuilderSimple(payload, message, destination) {
     authentication: destination.Config.devKey
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  response.userId = message.anonymousId;
-  response.body.JSON = removeUndefinedValues(updatedPayload);
+  response.body.JSON = removeUndefinedAndNullValues(updatedPayload);
   return response;
 }
 
@@ -67,9 +110,7 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
   } else {
     eventValue = "";
   }
-  return {
-    eventValue
-  };
+  return { eventValue };
 }
 
 function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
@@ -109,7 +150,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
   return { eventValue };
 }
 
-function processNonTrackEvents(message, destination, eventName) {
+function processNonTrackEvents(message, eventName) {
+  if (!isDefinedAndNotNull(message.event)) {
+    message.event =
+      message.name || (message.properties && message.properties.name);
+  }
   const payload = getEventValueForUnIdentifiedTrackEvent(message);
   payload.eventName = eventName;
   return payload;
@@ -118,7 +163,7 @@ function processNonTrackEvents(message, destination, eventName) {
 function processEventTypeTrack(message) {
   let isMultiSupport = true;
   let isUnIdentifiedEvent = false;
-  const evType = message.event.toLowerCase();
+  const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
   const eventName = evType.toLowerCase();
 
@@ -133,7 +178,6 @@ function processEventTypeTrack(message) {
       category = nameToEventMap[evType].category;
       break;
     default: {
-      // eventName = evType.toLowerCase();
       isMultiSupport = false;
       isUnIdentifiedEvent = true;
       break;
@@ -164,23 +208,62 @@ function processSingleMessage(message, destination) {
     }
     case EventType.SCREEN: {
       const eventName = EventType.SCREEN;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
       const eventName = EventType.PAGE;
-      payload = processNonTrackEvents(message, destination, eventName);
+      payload = processNonTrackEvents(message, eventName);
       break;
     }
     default:
-      throw new Error("message type not supported");
+      throw new CustomError("message type not supported", 400);
   }
   return responseBuilderSimple(payload, message, destination);
 }
 
 function process(event) {
-  const response = processSingleMessage(event.message, event.destination); 
+  const response = processSingleMessage(event.message, event.destination);
   return response;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

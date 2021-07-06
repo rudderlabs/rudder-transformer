@@ -1,6 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const btoa = require("btoa");
+const truncate = require("truncate-utf8-bytes");
 const {
   EventType,
   SpecedTraits,
@@ -11,8 +12,12 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
+
 const {
   IDENTITY_ENDPOINT,
   USER_EVENT_ENDPOINT,
@@ -42,9 +47,10 @@ const populateSpecedTraits = (payload, message) => {
   });
 };
 
-function responseBuilder(message, evType, evName, destination) {
+function responseBuilder(message, evType, evName, destination, messageType) {
   const rawPayload = {};
   let endpoint;
+  let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
   const userId =
     message.userId && message.userId !== "" ? message.userId : undefined;
@@ -60,7 +66,7 @@ function responseBuilder(message, evType, evName, destination) {
   if (evType === EventType.IDENTIFY) {
     // if userId is not there simply drop the payload
     if (!userId) {
-      throw new Error("userId not present");
+      throw new CustomError("userId not present", 400);
     }
 
     // populate speced traits
@@ -100,14 +106,15 @@ function responseBuilder(message, evType, evName, destination) {
     }
 
     // make user creation time
-    set(
-      rawPayload,
-      "created_at",
-      Math.floor(
-        new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
-          1000
-      )
-    );
+    const createAt = getFieldValueFromMessage(message, "createdAtOnly");
+    // set the created_at field if traits.createAt or context.traits.createAt is passed
+    if (createAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(createAt).getTime() / 1000)
+      );
+    }
 
     // Impportant for historical import
     if (getFieldValueFromMessage(message, "historicalTimestamp")) {
@@ -142,7 +149,7 @@ function responseBuilder(message, evType, evName, destination) {
 
           return response;
         }
-        throw new Error("userId or device_token not present");
+        throw new CustomError("userId or device_token not present", 400);
       }
 
       // DEVICE registration
@@ -190,6 +197,17 @@ function responseBuilder(message, evType, evName, destination) {
       }
     } else {
       endpoint = ANON_EVENT_ENDPOINT;
+      // CustomerIO supports 100byte of event name for anonymous users
+      if (messageType === EventType.SCREEN) {
+        // 100 - len(`Viewed  Screen`) = 86
+        trimmedEvName = `Viewed ${truncate(
+          message.event || message.properties.name,
+          86
+        )} Screen`;
+      } else {
+        trimmedEvName = truncate(evName, 100);
+      }
+      set(rawPayload, "name", trimmedEvName);
     }
   }
   const payload = removeUndefinedValues(rawPayload);
@@ -222,9 +240,15 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error(`could not determine type ${messageType}`);
-      throw new Error(`could not determine type ${messageType}`);
+      throw new CustomError(`could not determine type ${messageType}`, 400);
   }
-  const response = responseBuilder(message, evType, evName, destination);
+  const response = responseBuilder(
+    message,
+    evType,
+    evName,
+    destination,
+    messageType
+  );
 
   // replace default domain with EU data center domainc for EU based account
   if (destination.Config.datacenterEU) {
@@ -249,4 +273,43 @@ function process(event) {
   return respList;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const axios = require("axios");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require("./config");
@@ -10,7 +11,10 @@ const {
   constructPayload,
   flattenJson,
   toTitleCase,
-  getHashFromArray
+  getHashFromArray,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
@@ -31,9 +35,9 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     if (resp && resp.data) {
       return resp.data.access_token;
     }
-    throw new Error("Could not retrieve authorisation token");
+    throw new CustomError("Could not retrieve authorisation token", 400);
   } catch (error) {
-    throw new Error("Could not retrieve authorisation token");
+    throw new CustomError(error.response.statusText, error.response.status);
   }
 };
 
@@ -48,7 +52,7 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either userId or email is required");
+    throw new CustomError("Either userId or email is required", 400);
   }
   response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
@@ -75,7 +79,7 @@ const responseBuilderForInsertData = (
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new Error("Either userId or email is required");
+    throw new CustomError("Either userId or email is required", 400);
   }
 
   const response = defaultRequestConfig();
@@ -189,7 +193,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   }
 
   if (category.type === "identify" && createOrUpdateContacts) {
-    throw new Error("Creating or updating contacts is disabled");
+    throw new CustomError("Creating or updating contacts is disabled", 400);
   }
 
   if (
@@ -208,12 +212,15 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new Error("Event not mapped for this track call");
+  throw new CustomError("Event not mapped for this track call", 400);
 };
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
 
   const messageType = message.type.toLowerCase();
@@ -227,7 +234,7 @@ const processEvent = async (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   // build the response
@@ -240,4 +247,43 @@ const process = async event => {
   return response;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

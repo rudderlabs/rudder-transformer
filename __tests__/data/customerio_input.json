@@ -262,14 +262,25 @@
           "cellular": true,
           "wifi": true
         },
-        "os": { "name": "Android", "version": "9" },
-        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
         "timezone": "Asia/Kolkata",
-        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "event": "Application Installed",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
       "properties": {
         "review_id": "some_review_id",
@@ -320,14 +331,25 @@
           "cellular": true,
           "wifi": true
         },
-        "os": { "name": "Android", "version": "9" },
-        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
         "timezone": "Asia/Kolkata",
-        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "event": "Application Uninstalled",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
       "properties": {
         "review_id": "some_review_id",
@@ -1086,14 +1108,25 @@
           "cellular": true,
           "wifi": true
         },
-        "os": { "name": "Android", "version": "9" },
-        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
         "timezone": "Asia/Kolkata",
-        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "event": "Application Installed",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
       "properties": {
         "review_id": "some_review_id",
@@ -1144,14 +1177,25 @@
           "cellular": true,
           "wifi": true
         },
-        "os": { "name": "Android", "version": "9" },
-        "screen": { "density": 420, "height": 1794, "width": 1080 },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
         "timezone": "Asia/Kolkata",
-        "traits": { "anonymousId": "7e32188a4dab669f" },
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "event": "Application Uninstalled",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
       "properties": {
         "review_id": "some_review_id",
@@ -1643,6 +1687,110 @@
     "destination": {
       "Config": {
         "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "screen",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "event": "https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "19f0f734e3bb87a44596"
       }

@@ -1,0 +1,420 @@
+[
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2021-05-28T11:22:01.842Z",
+      "userId": "live-test",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.18",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+          "title": "Test",
+          "search": "",
+          "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "name": "Cosmo Krammer",
+          "email": "cosmo@krammer.com",
+          "location": "New York",
+          "emailOptOut": true,
+          "linkedinUrl": "https://linkedin.com/cosmo-krammer",
+          "masterAvatarTypeCode": 10
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.18"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+      },
+      "rudderId": "94d40f2f-5787-4798-8a03-34f3b02f5ede",
+      "messageId": "8274e525-d99c-4f55-b67a-bbc890d1444c",
+      "timestamp": "2021-05-28T16:52:01.859+05:30",
+      "receivedAt": "2021-05-28T16:52:01.859+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-05-28T11:22:01.842Z"
+    },
+    "metadata": {
+      "userId": "94d40f2f-5787-4798-8a03-34f3b02f5ede",
+      "jobId": 1,
+      "sourceId": "1syvMwC0K62eIb4yAV9kFJtbDEA",
+      "destinationId": "1syvZAuiGo4l1SIsil0TxDEx34G",
+      "attemptNum": 0,
+      "receivedAt": "2021-05-28T16:52:01.859+05:30",
+      "createdAt": "2021-05-28T11:22:02.463Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "jobsT": {
+        "UUID": "62ae61f3-83d2-471e-a19f-10dfec0e759f",
+        "JobID": 1,
+        "UserID": "94d40f2f-5787-4798-8a03-34f3b02f5ede",
+        "CreatedAt": "2021-05-28T11:22:02.463082Z",
+        "ExpireAt": "2021-05-28T11:22:02.463082Z",
+        "CustomVal": "GAINSIGHT",
+        "EventPayload": {
+          "type": "identify",
+          "sentAt": "2021-05-28T11:22:01.842Z",
+          "userId": "live-test",
+          "channel": "web",
+          "context": {
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "app": {
+              "name": "RudderLabs JavaScript SDK",
+              "build": "1.0.0",
+              "version": "1.1.18",
+              "namespace": "com.rudderlabs.javascript"
+            },
+            "page": {
+              "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+              "title": "Test",
+              "search": "",
+              "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "referrer": "$direct",
+              "initial_referrer": "$direct",
+              "referring_domain": "",
+              "initial_referring_domain": ""
+            },
+            "locale": "en-GB",
+            "screen": {
+              "density": 2
+            },
+            "traits": {
+              "name": "Cosmo Krammer",
+              "email": "cosmo@krammer.com",
+              "location": "New York",
+              "emailOptOut": true,
+              "linkedinUrl": "https://linkedin.com/cosmo-krammer",
+              "masterAvatarTypeCode": 10
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.18"
+            },
+            "campaign": {},
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+          },
+          "rudderId": "94d40f2f-5787-4798-8a03-34f3b02f5ede",
+          "messageId": "8274e525-d99c-4f55-b67a-bbc890d1444c",
+          "timestamp": "2021-05-28T16:52:01.859+05:30",
+          "receivedAt": "2021-05-28T16:52:01.859+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+          "integrations": {
+            "All": true
+          },
+          "originalTimestamp": "2021-05-28T11:22:01.842Z"
+        },
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null
+        },
+        "Parameters": {
+          "source_id": "1syvMwC0K62eIb4yAV9kFJtbDEA",
+          "job_run_id": "",
+          "message_id": "8274e525-d99c-4f55-b67a-bbc890d1444c",
+          "received_at": "2021-05-28T16:52:01.859+05:30",
+          "transform_at": "router",
+          "destination_id": "1syvZAuiGo4l1SIsil0TxDEx34G",
+          "gateway_job_id": 1
+        }
+      }
+    },
+    "destination": {
+      "ID": "1syvZAuiGo4l1SIsil0TxDEx34G",
+      "Name": "gainsight-dev-dest",
+      "DestinationDefinition": {
+        "ID": "1syuhEt4I8jpvlwJc4lr1IiLjPu",
+        "Name": "GAINSIGHT",
+        "DisplayName": "Gainsight",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accessKey",
+              "sharedSecret",
+              "tenantId",
+              "domain",
+              "personMap",
+              "companyMap",
+              "topicName",
+              "eventNameMap",
+              "eventVersionMap",
+              "contractId"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["accessKey", "sharedSecret"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKey": "sample-access-key",
+        "contractId": "",
+        "domain": "demo-account.gainsightcloud.com",
+        "sharedSecret": "",
+        "tenantId": "",
+        "topicName": ""
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Demo Request",
+      "sentAt": "2021-05-28T11:52:12.893Z",
+      "userId": "",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.18",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+          "title": "Test",
+          "search": "",
+          "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.18"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+      },
+      "rudderId": "1a30a93f-916b-4c39-ad20-1ce7bbbd7754",
+      "messageId": "f5619b1a-8704-42a8-bab9-92bbeaa44896",
+      "timestamp": "2021-05-28T17:22:12.905+05:30",
+      "properties": {
+        "email": "sample@user.com",
+        "status": "active"
+      },
+      "receivedAt": "2021-05-28T17:22:12.905+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-05-28T11:52:12.893Z"
+    },
+    "metadata": {
+      "userId": "1a30a93f-916b-4c39-ad20-1ce7bbbd7754",
+      "jobId": 1,
+      "sourceId": "1syvMwC0K62eIb4yAV9kFJtbDEA",
+      "destinationId": "1syvZAuiGo4l1SIsil0TxDEx34G",
+      "attemptNum": 0,
+      "receivedAt": "2021-05-28T17:22:12.905+05:30",
+      "createdAt": "2021-05-28T11:52:15.283Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "jobsT": {
+        "UUID": "5474de9c-7653-4c36-99a6-59c345fa7a2c",
+        "JobID": 1,
+        "UserID": "1a30a93f-916b-4c39-ad20-1ce7bbbd7754",
+        "CreatedAt": "2021-05-28T11:52:15.283244Z",
+        "ExpireAt": "2021-05-28T11:52:15.283244Z",
+        "CustomVal": "GAINSIGHT",
+        "EventPayload": {
+          "type": "track",
+          "event": "Demo Request",
+          "sentAt": "2021-05-28T11:52:12.893Z",
+          "userId": "",
+          "channel": "web",
+          "context": {
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "app": {
+              "name": "RudderLabs JavaScript SDK",
+              "build": "1.0.0",
+              "version": "1.1.18",
+              "namespace": "com.rudderlabs.javascript"
+            },
+            "page": {
+              "url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "path": "/Users/anurajguha/workspace/simple-html-test/index.html",
+              "title": "Test",
+              "search": "",
+              "tab_url": "file:///Users/anurajguha/workspace/simple-html-test/index.html",
+              "referrer": "$direct",
+              "initial_referrer": "$direct",
+              "referring_domain": "",
+              "initial_referring_domain": ""
+            },
+            "locale": "en-GB",
+            "screen": {
+              "density": 2
+            },
+            "traits": {},
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.18"
+            },
+            "campaign": {},
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+          },
+          "rudderId": "1a30a93f-916b-4c39-ad20-1ce7bbbd7754",
+          "messageId": "f5619b1a-8704-42a8-bab9-92bbeaa44896",
+          "timestamp": "2021-05-28T17:22:12.905+05:30",
+          "properties": {
+            "email": "sample@user.com",
+            "status": "active"
+          },
+          "receivedAt": "2021-05-28T17:22:12.905+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
+          "integrations": {
+            "All": true
+          },
+          "originalTimestamp": "2021-05-28T11:52:12.893Z"
+        },
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null
+        },
+        "Parameters": {
+          "source_id": "1syvMwC0K62eIb4yAV9kFJtbDEA",
+          "job_run_id": "",
+          "message_id": "f5619b1a-8704-42a8-bab9-92bbeaa44896",
+          "received_at": "2021-05-28T17:22:12.905+05:30",
+          "transform_at": "router",
+          "destination_id": "1syvZAuiGo4l1SIsil0TxDEx34G",
+          "gateway_job_id": 1
+        }
+      }
+    },
+    "destination": {
+      "ID": "1syvZAuiGo4l1SIsil0TxDEx34G",
+      "Name": "gainsight-dev-dest",
+      "DestinationDefinition": {
+        "ID": "1syuhEt4I8jpvlwJc4lr1IiLjPu",
+        "Name": "GAINSIGHT",
+        "DisplayName": "Gainsight",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accessKey",
+              "sharedSecret",
+              "tenantId",
+              "domain",
+              "personMap",
+              "companyMap",
+              "topicName",
+              "eventNameMap",
+              "eventVersionMap",
+              "contractId"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["accessKey", "sharedSecret"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKey": "sample-access-key",
+        "contractId": "sample-contract-id",
+        "domain": "demo-account.gainsightcloud.com",
+        "eventNameMap": [
+          {
+            "from": "Demo Request",
+            "to": "Product Demo"
+          }
+        ],
+        "eventVersionMap": [
+          {
+            "from": "Demo Request",
+            "to": "1.0.0"
+          }
+        ],
+        "sharedSecret": "sample-shared-secret",
+        "tenantId": "sample-tenant-id",
+        "topicName": "Support Tickets"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  }
+]

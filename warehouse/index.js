@@ -2,12 +2,12 @@
 const get = require("get-value");
 const _ = require("lodash");
 
-const util = require("util");
 const {
   isObject,
   isBlank,
   validTimestamp,
-  getVersionedUtils
+  getVersionedUtils,
+  isRudderSourcesEvent
 } = require("./util");
 const { getMergeRuleEvent } = require("./identity");
 
@@ -232,9 +232,14 @@ function getColumns(options, event, columnTypes) {
   Object.keys(event).forEach(key => {
     columns[key] = columnTypes[key] || getDataType(event[key], options);
   });
-  // throw error if too many columns in an event just in case
-  // to avoid creating too many columns in warehouse due to a spurious event
-  if (Object.keys(columns).length > maxColumnsInEvent) {
+  /*
+   1) throw error if too many columns in an event just in case to avoid creating too many columns in warehouse due to a spurious event
+   2) if the events are coming from rudder-sources, ignore the column limit as the event columns are controlled by user
+  */
+  if (
+    Object.keys(columns).length > maxColumnsInEvent &&
+    !isRudderSourcesEvent(event)
+  ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
     );
@@ -248,6 +253,7 @@ const fullEventColumnTypeByProvider = {
   bq: "string",
   postgres: "json",
   mssql: "json",
+  azure_synapse: "json",
   clickhouse: "string"
 };
 
@@ -911,5 +917,6 @@ function processWarehouseMessage(message, options) {
 
 module.exports = {
   processWarehouseMessage,
-  fullEventColumnTypeByProvider
+  fullEventColumnTypeByProvider,
+  getDataType
 };

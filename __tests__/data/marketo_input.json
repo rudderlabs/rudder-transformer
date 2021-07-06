@@ -69,7 +69,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -147,7 +148,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -222,7 +224,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -297,7 +300,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -352,7 +356,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -426,7 +431,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -500,7 +506,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -574,7 +581,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -647,7 +655,8 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
       }
     }
   },
@@ -721,7 +730,66 @@
         "customActivityPrimaryKeyMap": [
           { "from": "Product Clicked", "to": "name" }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }],
+        "createIfNotExist": true
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "00000000000000000000000000",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "score": "0.5"
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "Config": {
+        "accountId": "marketo_acct_id_success",
+        "clientId": "marketo_client_id_success",
+        "clientSecret": "marketo_client_secret_success",
+        "trackAnonymousEvents": true,
+        "customActivityEventMap": [
+          { "from": "Product Clicked", "to": "100001" }
+        ],
+        "customActivityPropertyMap": [
+          { "from": "name", "to": "productName" },
+          { "from": "product_id", "to": "productId" }
+        ],
+        "customActivityPrimaryKeyMap": [
+          { "from": "Product Clicked", "to": "name" }
+        ],
+        "leadTraitMapping": [{ "from": "score", "to": "customLeadScore" }]
       }
     }
   }

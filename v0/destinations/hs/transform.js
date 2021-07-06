@@ -9,7 +9,8 @@ const {
   removeUndefinedValues,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -26,9 +27,28 @@ function getKey(key) {
 
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
+    let response;
     const { apiKey } = destination.Config;
     const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
-    const response = await axios.get(url);
+    try {
+      response = await axios.get(url);
+    } catch (err) {
+      // check if exists err.response && err.response.status else 500
+
+      if (err.response) {
+        throw new CustomError(
+          JSON.stringify(err.response.data) ||
+            JSON.stringify(err.response.statusText) ||
+            "Failed to get hubspot properties",
+          err.response.status || 500
+        );
+      }
+      throw new CustomError(
+        "Failed to get hubspot properties : indvalid response",
+        500
+      );
+    }
+
     const propertyMap = {};
     response.data.forEach(element => {
       propertyMap[element.name] = element.type;
@@ -138,7 +158,7 @@ async function processTrack(message, destination) {
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !traits.email) {
-    throw new Error("Identify without email is not supported.");
+    throw new CustomError("Identify without email is not supported.", 400);
   }
   const userProperties = await getTransformedJSON(
     message,
@@ -156,20 +176,25 @@ async function processIdentify(message, destination) {
 
 async function processSingleMessage(message, destination) {
   let response;
-  try {
-    switch (message.type) {
-      case EventType.TRACK:
-        response = await processTrack(message, destination);
-        break;
-      case EventType.IDENTIFY:
-        response = await processIdentify(message, destination);
-        break;
-      default:
-        throw new Error(`message type ${message.type} is not supported`);
-    }
-  } catch (e) {
-    throw new Error(e.message || "error occurred while processing payload.");
+
+  if (!message.type) {
+    throw new CustomError("message type not present", 400);
   }
+
+  switch (message.type) {
+    case EventType.TRACK:
+      response = await processTrack(message, destination);
+      break;
+    case EventType.IDENTIFY:
+      response = await processIdentify(message, destination);
+      break;
+    default:
+      throw new CustomError(
+        `message type ${message.type} is not supported`,
+        400
+      );
+  }
+
   return response;
 }
 

@@ -1,0 +1,254 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/channels/trengo_email_channel/contacts",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Jimothy Halpert",
+        "identifier": "jimbo@dunmiff.com",
+        "channel_id": "trengo_email_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "error": "[Trengo] :: LookupContact failed for term:null update failed, aborting as dedup option is enabled"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/channels/trengo_phone_channel/contacts",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Dwight Schrute",
+        "identifier": "12345678910",
+        "channel_id": "trengo_phone_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "error": "[Trengo] :: LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled"
+  },
+  {
+    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/channels/trengo_phone_channel/contacts",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Dr Manhatten",
+        "identifier": "5678943215",
+        "channel_id": "trengo_phone_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_email_channel",
+        "subject": "Product Purchased from Rudderstack"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_email_channel",
+        "subject": "Total cart value 5000 shipped"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel",
+        "subject": "Completed Order"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel",
+        "subject": "{event} Stress test"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys, aborting event"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://app.trengo.com/api/v2/contacts/90002431001",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "Thalmor Bretz 2"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.trengo.com/api/v2/tickets",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer trengo_integration_test_api_token"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "contact_id": 97694755,
+        "channel_id": "trengo_emailext_channel"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

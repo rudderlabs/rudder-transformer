@@ -36,7 +36,7 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
-
+const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -59,10 +59,44 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+/**
+ *
+ * @param {*} arg
+ * @returns {type}
+ *
+ * Returns type of passed arg
+ * for null argss returns "NULL" insted of "object"
+ *
+ */
+const getType = arg => {
+  const type = typeof arg;
+  if (arg == null) {
+    return "NULL";
+  }
+  return type;
+};
+
 const formatValue = value => {
   if (!value || value < 0) return null;
   return Math.round(value);
 };
+
+function isEmpty(input) {
+  return _.isEmpty(_.toString(input).trim());
+}
+
+/**
+ * Returns true for empty object {}
+ * @param {*} obj
+ * @returns
+ */
+function isEmptyObject(obj) {
+  if (!obj) {
+    logger.warn("input is undefined or null");
+    return true;
+  }
+  return Object.keys(obj).length === 0;
+}
 
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (
@@ -74,6 +108,7 @@ const getHashFromArray = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
       hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
         array[toKey];
     });
@@ -355,7 +390,7 @@ const getValueFromMessage = (message, sourceKey) => {
     // got the possible sourceKeys
     for (let index = 0; index < sourceKey.length; index += 1) {
       const val = get(message, sourceKey[index]);
-      if (val) {
+      if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
@@ -405,7 +440,8 @@ const handleMetadataForValue = (value, metadata) => {
     template,
     defaultValue,
     excludes,
-    multikeyMap
+    multikeyMap,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -438,6 +474,13 @@ const handleMetadataForValue = (value, metadata) => {
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
         break;
+      case "jsonStringifyOnObject":
+        // if already a string, will not stringify
+        // calling stringify on string will add escape characters
+        if (typeof formattedVal !== "string") {
+          formattedVal = JSON.stringify(formattedVal);
+        }
+        break;
       case "numberForRevenue":
         if (
           (typeof formattedVal === "string" ||
@@ -457,6 +500,12 @@ const handleMetadataForValue = (value, metadata) => {
       case "toNumber":
         formattedVal = Number(formattedVal);
         break;
+      case "toFloat":
+        formattedVal = parseFloat(formattedVal);
+        break;
+      case "toInt":
+        formattedVal = parseInt(formattedVal, 10);
+        break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
         break;
@@ -470,6 +519,11 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = formattedVal
           .replace("https://", "")
           .replace("http://", "");
+        break;
+      case "IsBoolean":
+        if (!(typeof formattedVal === "boolean")) {
+          logger.debug("Boolean value missing, so dropping it");
+        }
         break;
       default:
         break;
@@ -532,8 +586,22 @@ const handleMetadataForValue = (value, metadata) => {
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
-    if (!foundVal)
-      formattedVal = undefined
+    if (!foundVal) formattedVal = undefined;
+  }
+
+  if (allowedKeyCheck) {
+    let foundVal = false;
+    if (Array.isArray(allowedKeyCheck)) {
+      allowedKeyCheck.some(key => {
+        if (key.sourceVal.includes(formattedVal)) {
+          foundVal = true;
+          return true;
+        }
+      });
+    }
+    if (!foundVal) {
+      formattedVal = undefined;
+    }
   }
 
   return formattedVal;
@@ -598,7 +666,7 @@ const constructPayload = (message, mappingJson) => {
         metadata
       );
 
-      if (value) {
+      if (value || value === 0 || value === false) {
         // set the value only if correct
         set(payload, destKey, value);
       } else if (required) {
@@ -606,56 +674,6 @@ const constructPayload = (message, mappingJson) => {
         throw new Error(
           `Missing required value from ${JSON.stringify(sourceKeys)}`
         );
-      }
-    });
-
-    return payload;
-  }
-
-  // invalid mappingJson
-  return null;
-};
-
-// pt 1. Here we are following a different style of mapping json where we want to maintain
-// the {dest_key, and , source_key} on a higher key called mappingKey.
-// Example of generated payload:
-// { message:
-// 	 { 	'0': { key: 'anonymous_id', value: '' },
-// 	 	'1': { key: 'user_id', value: 'userTest004' },
-// 	 	'2': { key: 'event', value: 'Page Call' },
-// 	 	..}
-// }
-// pt 2. This is a similar method to construct payload w.r.t where we do-not remove the keys
-// having undefined and null values.
-// Usage - Google Sheets destination where we require all the keys of the message
-// irrespective of values.
-// Future enhancements: Need to validate uniqueness mapping-keys on the mapping-json
-// in order to avoid mapping conflicts
-// ################## Note to devs: Currently we are assuming the mapping-keys are all unique
-const constructPayloadWithKeys = (message, mappingJson) => {
-  if (Array.isArray(mappingJson) && mappingJson.length > 0) {
-    const payload = {};
-    mappingJson.forEach(mapping => {
-      const {
-        sourceKeys,
-        mappingKey,
-        destKey,
-        metadata,
-        sourceFromGenericMap
-      } = mapping;
-      const value = handleMetadataForValue(
-        sourceFromGenericMap
-          ? getFieldValueFromMessage(message, sourceKeys)
-          : getValueFromMessage(message, sourceKeys),
-        metadata
-      );
-
-      if (value) {
-        // set the value only if correct
-        set(payload, mappingKey, { key: destKey, value });
-      } else {
-        // set empty string as value if the value is not defined
-        set(payload, mappingKey, { key: destKey, value: "" });
       }
     });
 
@@ -694,10 +712,6 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
-function isEmpty(input) {
-  return _.isEmpty(_.toString(input).trim());
-}
-
 const isObject = value => {
   const type = typeof value;
   return (
@@ -705,6 +719,11 @@ const isObject = value => {
     (type === "object" || type === "function") &&
     !Array.isArray(value)
   );
+};
+
+const isNonFuncObject = value => {
+  const type = typeof value;
+  return value != null && type === "object" && !Array.isArray(value);
 };
 
 function getBrowserInfo(userAgent) {
@@ -905,6 +924,41 @@ function checkEmptyStringInarray(array) {
   const result = array.filter(item => item === "").length === 0;
   return result;
 }
+// Returns raw string value of JSON
+function getStringValueOfJSON(json) {
+  let output = "";
+  Object.keys(json).forEach(key => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (json.hasOwnProperty(key)) {
+      output += `${key}: ${json[key]} `;
+    }
+  });
+  return output;
+}
+
+// checks if array 2 is a subset of array 1
+function checkSubsetOfArray(array1, array2) {
+  const result = array2.every(val => array1.includes(val));
+  return result;
+}
+
+// splits array into equal parts and returns array of sub arrays
+function returnArrayOfSubarrays(arr, len) {
+  const chunks = [];
+  let i = 0;
+  const n = arr.length;
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+  return chunks;
+}
+
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.response = { status: statusCode };
+  }
+}
 
 // ========================================================================
 // EXPORTS
@@ -912,9 +966,9 @@ function checkEmptyStringInarray(array) {
 // keep it sorted to find easily
 module.exports = {
   ErrorMessage,
-  constructPayload,
-  constructPayloadWithKeys,
   checkEmptyStringInarray,
+  constructPayload,
+  CustomError,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -924,6 +978,8 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  flattenMap,
+  formatTimeStamp,
   formatValue,
   getBrowserInfo,
   getDateInFormat,
@@ -935,14 +991,19 @@ module.exports = {
   getHashFromArray,
   getMappingConfig,
   getParsedIP,
+  getStringValueOfJSON,
   getSuccessRespEvents,
   getTimeDifference,
+  getType,
   getValueFromMessage,
   getValuesAsArrayFromConfig,
   isBlank,
   isDefined,
   isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEmptyObject,
+  isNonFuncObject,
   isObject,
   isPrimitive,
   isValidUrl,
@@ -954,5 +1015,7 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  checkSubsetOfArray,
+  returnArrayOfSubarrays
 };

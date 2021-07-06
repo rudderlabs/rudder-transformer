@@ -17,7 +17,10 @@ const {
   defaultRequestConfig,
   defaultDeleteRequestConfig,
   getFieldValueFromMessage,
-  constructPayload
+  constructPayload,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -203,7 +206,10 @@ async function createUser(message, headers, destinationConfig, type) {
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`Couldn't create User: ${name}`);
-      throw new Error("user not found");
+      throw new CustomError(
+        "user not found",
+        resp.status || resp.data.status || 400
+      );
     }
 
     const userID = resp.data.user.id;
@@ -212,7 +218,7 @@ async function createUser(message, headers, destinationConfig, type) {
   } catch (error) {
     logger.debug(error);
     logger.debug(`Couldn't find user: ${name}`);
-    throw new Error(`Couldn't find user: ${name}`);
+    throw new CustomError(`Couldn't find user: ${name}`, error.status || 400);
   }
 }
 
@@ -234,9 +240,10 @@ async function getUserMembershipPayload(
         "group"
       );
       zendeskUserID = zendeskUserId;
+    } else {
+      throw new CustomError("User not found", 400);
     }
   }
-
   const payload = {
     organization_membership: {
       user_id: zendeskUserID,
@@ -260,7 +267,6 @@ async function createOrganization(
     headers
   );
   const mappingJson = mappingConfig[category.name];
-
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
 
@@ -311,8 +317,9 @@ async function createOrganization(
 
 function validateUserId(message) {
   if (!message.userId) {
-    throw new Error(
-      `Zendesk : UserId is a mandatory field for ${message.type}`
+    throw new CustomError(
+      `Zendesk : UserId is a mandatory field for ${message.type}`,
+      400
     );
   }
 }
@@ -400,7 +407,10 @@ async function processTrack(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!zendeskUserId) {
-      throw new Error("user not found");
+      throw new CustomError("user not found", 400);
+    }
+    if (!email) {
+      throw new CustomError("user email not found", 400);
     }
     zendeskUserID = zendeskUserId;
     userEmail = email;
@@ -448,8 +458,9 @@ async function processGroup(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!orgId) {
-      throw new Error(
-        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
+      throw new CustomError(
+        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`,
+        400
       );
     }
     // adds an organization against a user and can add multiple organisation. the last one does not override but adds to the previously added organizations.
@@ -464,7 +475,10 @@ async function processGroup(message, destinationConfig, headers) {
 
     const userId = payload.organization_membership.user_id;
     if (await isUserAlreadyAssociated(userId, orgId, headers)) {
-      throw new Error("user is already associated with organization");
+      throw new CustomError(
+        "user is already associated with organization",
+        400
+      );
     }
   }
 
@@ -500,7 +514,7 @@ async function processSingleMessage(event) {
     case EventType.TRACK:
       return processTrack(message, destinationConfig, headers);
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 }
 
@@ -510,4 +524,43 @@ async function process(event) {
   return resp;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

@@ -1,3 +1,5 @@
+const { readdirSync } = require("fs");
+
 const compareJSON = (obj1, obj2) => {
   const ret = {};
   for (const i in obj2) {
@@ -8,6 +10,12 @@ const compareJSON = (obj1, obj2) => {
   return ret;
 };
 
+const getDirectories = source =>
+  readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
 module.exports = {
-  compareJSON
+  compareJSON,
+  getDirectories
 };

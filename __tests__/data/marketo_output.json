@@ -15,7 +15,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attributes": [],
+            "attribute": [],
             "leadId": 4,
             "primaryAttributeValue": "Test Product"
           }
@@ -42,7 +42,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attributes": [
+            "attribute": [
               {
                 "apiName": "productId",
                 "value": "prod_1"
@@ -74,7 +74,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attributes": [],
+            "attribute": [],
             "leadId": 4,
             "primaryAttributeValue": "Test Product"
           }
@@ -112,5 +112,26 @@
   {
     "statusCode": 400,
     "error": "Message type not supported"
-  }
+  },
+  {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+      "headers": {
+        "Authorization": "Bearer access_token_success",
+        "Content-Type":"application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "action": "createOrUpdate",
+          "input": [ { "customLeadScore": "0.5", "id": 4 } ],
+          "lookupField": "id"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
 ]

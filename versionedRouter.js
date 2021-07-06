@@ -1,11 +1,16 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
+const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const { isNonFuncObject } = require("./v0/util");
+const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
+
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -26,6 +31,9 @@ const getIntegrations = type =>
   readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
@@ -269,7 +277,20 @@ if (startDestTransformer) {
                     return {
                       statusCode: 400,
                       error: ev.error,
-                      metadata: ev.metadata
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
+                    };
+                  }
+                  if (!isNonFuncObject(ev.transformedEvent)) {
+                    return {
+                      statusCode: 400,
+                      error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                        ev.transformedEvent
+                      )}`,
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
                     };
                   }
                   return {
@@ -401,6 +422,11 @@ router.get("/transformerBuildVersion", ctx => {
 
 router.get("/health", ctx => {
   ctx.body = "OK";
+});
+
+router.get("/features", ctx =>{
+  const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
+  ctx.body = JSON.stringify(obj);
 });
 
 router.post("/batch", ctx => {

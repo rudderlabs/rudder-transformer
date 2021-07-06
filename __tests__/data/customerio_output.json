@@ -11,7 +11,6 @@
         "prop2": "val2",
         "country": "USA",
         "postalCode": 712136,
-        "created_at": 1571043797,
         "email": "test@gmail.com",
         "dot.name": "Arnab Pal"
       },
@@ -141,7 +140,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
@@ -155,7 +158,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
@@ -168,7 +175,10 @@
     "method": "DELETE",
     "statusCode": 200
   },
-  { "message": "userId or device_token not present", "statusCode": 400 },
+  {
+    "message": "userId or device_token not present",
+    "statusCode": 400
+  },
   {
     "body": {
       "XML": {},
@@ -305,7 +315,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
@@ -330,7 +344,6 @@
         "prop2": "val2",
         "country": "USA",
         "postalCode": 712136,
-        "created_at": 1571043797,
         "email": "test@gmail.com"
       },
       "FORM": {}
@@ -459,7 +472,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
@@ -473,7 +490,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
@@ -486,7 +507,10 @@
     "method": "DELETE",
     "statusCode": 200
   },
-  { "message": "userId or device_token not present", "statusCode": 400 },
+  {
+    "message": "userId or device_token not present",
+    "statusCode": 400
+  },
   {
     "body": {
       "XML": {},
@@ -623,7 +647,11 @@
     "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
@@ -634,6 +662,60 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50
+        },
+        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-s",
+        "type": "event",
+        "timestamp": 1571051718
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50000
+        },
+        "name": "Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-q Screen",
+        "type": "event",
+        "timestamp": 1571051718
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000",
     "statusCode": 200
   }
 ]

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -12,9 +13,15 @@ const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
-const { fetchKustomer, validateEvent } = require("./util");
+const {
+  fetchKustomer,
+  handleAdvancedtransformations,
+  CustomError
+} = require("./util");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
@@ -173,7 +180,9 @@ const responseBuilderSimple = async (message, category, destination) => {
         break;
     }
     eventPayload = removeUndefinedAndNullValues(eventPayload);
-    validateEvent(eventPayload);
+    if (destination.Config.advancedTransform) {
+      eventPayload = handleAdvancedtransformations(eventPayload);
+    }
     payload = {
       identity: {
         externalId: getFieldValueFromMessage(message, "userId")
@@ -195,12 +204,15 @@ const responseBuilderSimple = async (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("[Kustomer] :: Payload could not be constructed", 400);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw CustomError(
+      "[Kustomer] :: Message Type is not present. Aborting message.",
+      400
+    );
   }
   let category;
   switch (message.type.toLowerCase()) {
@@ -217,7 +229,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("[Kustomer] :: Message type not supported", 400);
   }
   return responseBuilderSimple(message, category, destination);
 };
@@ -226,4 +238,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

@@ -34,10 +34,8 @@ describe(`${name} Tests`, () => {
       it(`Payload - ${index}`, async () => {
         try {
           const output = await transformer.process(input);
-          //console.log(output);
           expect(output).toEqual(expectedData[index]);
         } catch (error) {
-          console.log(error);
           expect(error.message).toEqual(expectedData[index].error);
         }
       });

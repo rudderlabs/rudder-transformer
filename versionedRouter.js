@@ -317,7 +317,7 @@ if (startDestTransformer) {
               
               let destTransformedEventsNew;
               logger.info('Executing difference check');
-              if (! transformationVersionId in versionIdsMap) {
+              if (! (transformationVersionId in versionIdsMap)) {
                 destTransformedEvents = await userTransformHandler()(
                   destEvents,
                   transformationVersionId,

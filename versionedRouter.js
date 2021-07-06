@@ -29,7 +29,7 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
-const eventValidator = require("./util/eventValidation1");
+const eventValidator = require("./util/eventValidation");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -119,7 +119,7 @@ async function handleValidation(ctx) {
             output: event,
             metadata: event.metadata,
             statusCode: 400,
-            error: err || "Error occurred while processing payload."
+            error: err[1] || "Error occurred while processing payload."
           });
         } else {
           respList.push({
@@ -139,7 +139,7 @@ async function handleValidation(ctx) {
       }
     })
   );
-  logger.info(`[DT] Output events: ${JSON.stringify(respList)}`);
+  // logger.info(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }
@@ -435,7 +435,6 @@ router.post("/batch", ctx => {
 
 // eg. v0/validate. will validate events as per respective tracking plans
 router.post(`/v0/validate`, async ctx => {
-  //const startTime = new Date();
   await handleValidation(ctx);
 });
 module.exports = router;

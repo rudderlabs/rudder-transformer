@@ -5,51 +5,67 @@ const stats = require("./stats");
 
 const myCache = new NodeCache();
 
-const CONFIG_BACKEND_URL =
-  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
-const getTransformationURL = `${CONFIG_BACKEND_URL}/trackingplan/getByTpId`;
+const CONFIG_BACKEND_URL = "http://localhost:5000";
+  // todo : uncomment
+  // process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+const getTrackingPlanURL = `${CONFIG_BACKEND_URL}/workspaces`;
+// /trackingplan/getByTpId;
+
+// workspaceID from token? any other way?
+// pass it from metadata
+const workspaceId = "1usxkCLnYPUn66quZqcx6FIy0Rw";
 
 // Gets the trackingplan from config backend.
 // Stores the trackingplan object in memory with time to live after which it expires.
 // tpId is updated any time user changes the code in transformation, so there wont be any stale code issues.
-async function getTrackingPlan(tpId) {
-  const trackingPlan = myCache.get(tpId);
+async function getTrackingPlan(tpId, version) {
+  const trackingPlan = myCache.get(`${tpId}::${version}`);
   if (trackingPlan) return trackingPlan;
   try {
     const startTime = new Date();
     const response = await fetchWithProxy(
-      `${getTransformationURL}?tpId=${tpId}`
+      `${getTrackingPlanURL}/${workspaceId}/tracking-plans/${tpId}`
+      // ?tpId=${tpId}
     );
-    stats.increment("get_trackingplan.success");
     stats.timing("get_trackingplan", startTime);
     const myJson = await response.json();
-    myCache.set(tpId, myJson);
+    myCache.set(tpId+"::"+version, myJson);
     return myJson;
   } catch (error) {
-    logger.error(error);
+    logger.error("Failed during trackingPlan fetch" + error);
     stats.increment("get_trackingplan.error");
     throw error;
   }
 }
 
-// TODO: if TP returns all event schemas directly, no api call is needed.
-// else another api call to config-be for schema
-async function getEventSchema(tpId, eventType, eventName) {
-  const trackingPlan = myCache.get(tpId);
-  var tp;
+async function getEventSchema(tpId, tpVersion, eventType, eventName) {
   var eventSchema;
   try {
-    if (trackingPlan) tp = trackingPlan;
-    else tp = getTrackingPlan(tpId);
-    eventSchema = tp.rules[eventType][eventName];
+    const tp = await getTrackingPlan(tpId, tpVersion);
+
+    if (eventType !== "track") {
+      if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
+        eventSchema = tp.rules[eventType];
+      }
+    } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
+      const { events } = tp.rules;
+      for (var i = 0; i < events.length; i++) {
+        // TODO: is name unique in track rules? Is it checked any where? - Will be
+        if (events[i].name === eventName) {
+          eventSchema = events[i].rules;
+        }
+      }
+    }
     if (!eventSchema) {
-      logger.info(`no schema for eventName : ${eventName} in trackingPlanID : ${tpId}`);
+      logger.info(
+        `no schema for eventName : ${eventName}, eventType : ${eventType} in trackingPlanID : ${tpId}`
+      );
       eventSchema = {};
     }
     return eventSchema;
   } catch (error) {
-    logger.error(error);
-    stats.increment("get_trackingplan.error");
+    logger.error("Failed during eventSchema fetch" + error);
+    stats.increment("get_eventSchema.error");
     throw error;
   }
 }
@@ -60,4 +76,3 @@ async function getTrackingPlanBySourceID(sourceId) {
 
 exports.getTrackingPlan = getTrackingPlan;
 exports.getEventSchema = getEventSchema;
-

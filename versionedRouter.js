@@ -339,7 +339,7 @@ if (startDestTransformer) {
                     failedVersions.push(transformationVersionId)
                     fs.writeFileSync('./failedVersions.txt', failedVersions.length.toString() + '\n' + failedVersions.toString())
                   }
-                  fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()}.txt`,
+                  fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()%20}.txt`,
                     JSON.stringify(destTransformedEvents, null, 2) + '\n #### v1 ### \n' + JSON.stringify(destTransformedEventsNew, null, 2) 
                     + '\n#### Input ### \n' + JSON.stringify(destEvents, null, 2)
                   )

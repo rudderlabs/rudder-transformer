@@ -317,7 +317,7 @@ if (startDestTransformer) {
               
               let destTransformedEventsNew;
               logger.info('Executing difference check');
-              if (! (transformationVersionId in versionIdsMap)) {
+              if (transformationVersionId in versionIdsMap) {
                 destTransformedEvents = await userTransformHandler()(
                   destEvents,
                   transformationVersionId,
@@ -325,17 +325,17 @@ if (startDestTransformer) {
                 );
                 destTransformedEventsNew = await userTransformHandler()(
                   destEvents,
-                  '1uecanqPNP7lZYVCljxJAnokMDL',
+                  versionIdsMap[transformationVersionId],
                   librariesVersionIDs
                 );
 
-                logger.info('version Hit ', transformationVersionId, JSON.stringify(destTransformedEventsNew));
-                logger.info(JSON.stringify(destTransformedEvents))
+                logger.info('version Hit ', transformationVersionId);
                 const responseDiff = jsonDiff.diff(destTransformedEventsNew, destTransformedEvents);
                 if (responseDiff) {
                   logger.info("Failed Hit ", transformationVersionId);
                   fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()}.txt`,
-                    JSON.stringify(destTransformedEvents, null, 2) + '\n ####### \n' + JSON.stringify(destTransformedEventsNew, null, 2)
+                    JSON.stringify(destTransformedEvents, null, 2) + '\n #### v1 ### \n' + JSON.stringify(destTransformedEventsNew, null, 2) 
+                    + '\n#### Input ### \n' + JSON.stringify(destEvents, null, 2)
                   )
                 } else {
                   logger.info('Successful Hit ', transformationVersionId)

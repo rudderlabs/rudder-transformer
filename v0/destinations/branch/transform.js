@@ -17,14 +17,16 @@ function responseBuilder(payload, message, destination, category) {
 
   const os = get(message, "context.os.name");
 
-  if (os.toLowerCase() === "ios") {
-    payload.idfa = get(message, "context.device.advertisingId");
-    payload.idfv = get(message, "context.device.id");
-  } else if (os.toLowerCase() === "android") {
-    payload.advertising_id = get(
-      message,
-      "context.device.advertisingId"
-    );
+  if (isDefinedAndNotNull(os)) {
+    if (os.toLowerCase() === "ios") {
+      payload.idfa = get(message, "context.device.advertisingId");
+      payload.idfv = get(message, "context.device.id");
+    } else if (os.toLowerCase() === "android") {
+      payload.advertising_id = get(
+        message,
+        "context.device.advertisingId"
+      );
+    }
   }
 
   const att = get(message, "context.device.attTrackingStatus");

@@ -62,10 +62,6 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
   const sourceKeys = Object.keys(mappingJson);
   const traits = getFieldValueFromMessage(message, "traits");
-  
-  if(message.mappedToDestination) {
-    return traits;
-  }
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
@@ -75,6 +71,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
       }
     });
+    console.log(propertyMap);
     traitsKeys.forEach(traitsKey => {
       const hsSupportedKey = getKey(traitsKey);
       console.log(hsSupportedKey)
@@ -162,6 +159,12 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
+  
+  //If mapped to destination, check for email in the context.externalId using the Generic Mapping
+  if(!traits.email && message.mappedToDestination) {
+    traits.email = getFieldValueFromMessage(message, "email");
+  }
+
   if (!traits || !traits.email) {
     throw new CustomError("Identify without email is not supported.", 400);
   }

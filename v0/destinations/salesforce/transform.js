@@ -72,7 +72,8 @@ function responseBuilderSimple(
   // get traits from the message
   let rawPayload = traits;
   // map using the config only if the type is Lead
-  if (salesforceType === "Lead" && mapProperty) {
+  // If message is already mapped to destination, Do not map it using config and send traits as-is
+  if (salesforceType === "Lead" && mapProperty && !mappedToDestination) {
     // adjust the payload only for new Leads. For update do incremental update
     // adjust for firstName and lastName
     // construct the payload using the mappingJson and add extra params
@@ -87,11 +88,6 @@ function responseBuilderSimple(
     });
   }
   
-  // If message is already mapped to destination, Do not map it using config and send traits as-is
-  if(mappedToDestination) {
-    rawPayload = traits;
-  }
-
   const response = defaultRequestConfig();
   const header = {
     "Content-Type": "application/json",

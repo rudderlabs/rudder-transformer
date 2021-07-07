@@ -21,7 +21,7 @@ const versionIdsMap = {
   "1huAXIynPf8kYgEwAddiC0aro46": "1uecaejuXoeDAYaZNlF9cVlahNL",
   "1o2OT5cYDxm7zGO9pMt40XaX6rM": "1uecair5961vkvcTX3Vy3vJt1dE",
   "1pDAWi760WAW96LLZTsbqFAuK08": "1uecahgeDgRdzvFrEkW9iRBL92H",
-  "1jZCAI2VrDB9QS6hjkVyhXjhdzS": "1uecanqPNP7lZYVCljxJAnokMDL",
+  "1jZCAI2VrDB9QS6hjkVyhXjhdzS": "1uyuxPdpjz0jS7LeQAYxWmymsvO",
   "1iF1tH9zAfc3KZ9OJzzBIl1VPia": "1uecajSwFTbwEYSZ2F6mklCbYc3",
   "1iLHAfJjp8lFBrf3XPdGF5M9l3F": "1uecasvnLWWah8ngRHYXGA9kN5G",
   "1jZC12PI9XwMO6QdfE67Ah9oiox": "1uecarKehKLWra0lHOShyha2AL9",
@@ -78,7 +78,7 @@ const versionIdsMap = {
   "1n7LHJSk2AHwiBEVpZpnS4PPUwO": "1uecbcxFXyGC3lTS8Y0agozxDzk",
   "1oaQqhINSLmgaZkVxV4AkOAv6cK": "1uecbll1Kgb4T4QyiqkgMEAtfrd",
   "1nZncfnCMAziBBttCHdmcqO5VnA": "1uecbnZ1auyAq9qa702fgvYiWIG",
-  "1r7UKcx6mgRV4ThNvQkww9gIgLE": "1uecboGJ7BkXPpEn4sY3aLEFVL6",
+  "1r7UKcx6mgRV4ThNvQkww9gIgLE": "1uyuxRSzWoUHbbWdaPaZ8iiRUZj",
   "1roRmBgJXRcJ4q4Av8naYVBGVGO": "1uecboezgldUKqEhpvf56rTmSO4",
   "1bW8Q7t7w1HvCnGXYDysA8RE23I": "1uecblvLrP79bWqQOe5ff0am5dK",
   "1bALcjH3m0eO9jfX4F71QyuStmx": "1uecbmxhoXlLQGolAzATLTnrxvW",
@@ -332,20 +332,28 @@ if (startDestTransformer) {
                 );
 
                 logger.info('version Hit ', transformationVersionId);
-                const responseDiff = jsonDiff.diff(destTransformedEventsNew, destTransformedEvents);
-                if (responseDiff) {
+                let responseMatched = true;
+                for (let i = 0; i < destTransformedEvents.length; i++) {
+                  let responseDiff = jsonDiff.diff(destTransformedEventsNew[i].transformedEvent, destTransformedEvents[i].transformedEvent);
+                  if (responseDiff) {
+                    responseMatched = false;
+                    break;
+                  }
+                }
+                if (!responseMatched) {
                   logger.info("Failed Hit ", transformationVersionId);
                   if (!failedVersions.includes(transformationVersionId)) {
                     failedVersions.push(transformationVersionId)
                     fs.writeFileSync('./failedVersions.txt', failedVersions.length.toString() + '\n' + failedVersions.toString())
                   }
+
                   fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()%20}.txt`,
                     JSON.stringify(destTransformedEvents, null, 2) + '\n #### v1 ### \n' + JSON.stringify(destTransformedEventsNew, null, 2) 
                     + '\n#### Input ### \n' + JSON.stringify(destEvents, null, 2)
                   )
                 } else {
                   logger.info('Successful Hit ', transformationVersionId)
-                  if (! successfulVersions.includes(transformationVersionId)) {
+                  if (!successfulVersions.includes(transformationVersionId)) {
                     successfulVersions.push(transformationVersionId);
                     fs.writeFileSync('./successfulVersions.txt', successfulVersions.length.toString() + '\n' + successfulVersions.toString())
                   }

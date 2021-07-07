@@ -953,6 +953,13 @@ function returnArrayOfSubarrays(arr, len) {
   return chunks;
 }
 
+// Helper method to add external Id to traits
+function addExternalIdToTraits(message) {
+    const identifierType = message.context.externalId[0].identifierType;
+    const identifierValue = message.context.externalId[0].id
+    set(message.traits, identifierType, identifierValue)
+} 
+
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -965,6 +972,7 @@ class CustomError extends Error {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  addExternalIdToTraits,
   ErrorMessage,
   checkEmptyStringInarray,
   constructPayload,

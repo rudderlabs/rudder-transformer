@@ -145,6 +145,13 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
+  
+  // override userId with externalId in context(if present) and event is mapped to destination
+  const externalId = message.context.externalId[0].id;
+  if(message.mappedToDestination && externalId) {
+      message.userId = externalId; 
+  }
+
   return buildResponse(
     message,
     destination,

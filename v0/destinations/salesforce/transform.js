@@ -16,9 +16,11 @@ const {
   getFirstAndLastName,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
+const set = require("set-value");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -87,7 +89,7 @@ function responseBuilderSimple(
       }
     });
   }
-  
+
   const response = defaultRequestConfig();
   const header = {
     "Content-Type": "application/json",
@@ -181,6 +183,11 @@ async function processIdentify(message, authorizationData, mapProperty) {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
     throw new CustomError("Invalid traits for Salesforce request", 400);
+  }
+
+  //append external ID to traits if event is mapped to destination
+  if(message.mappedToDestination) {
+    addExternalIdToTraits(message)
   }
 
   // if traits is correct, start processing

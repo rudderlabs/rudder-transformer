@@ -10,7 +10,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -158,9 +159,9 @@ async function processTrack(message, destination) {
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   
-  //If mapped to destination, check for email in the context.externalId using the Generic Mapping
-  if(!traits.email && message.mappedToDestination) {
-    traits.email = getFieldValueFromMessage(message, "email");
+  //If mapped to destination, Add externalId to traits
+  if(message.mappedToDestination) {
+    addExternalIdToTraits(message);
   }
 
   if (!traits || !traits.email) {

@@ -2,6 +2,7 @@ version: 0.2
 env:
   parameter-store:
     dockerhub_passwd: "/prod/codebuild/dockerhub-password"
+    GITHUB_TOKEN: "build-deploy-pkey"
 
 phases:
   install:
@@ -22,6 +23,22 @@ phases:
     commands:
       - docker push rudderlabs/rudder-transformer:$VERSION
       - docker push rudderlabs/rudder-transformer:latest
+  change_version:
+    commands:
+      - wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 -O /usr/bin/yq
+      - chmod +x /usr/bin/yq
+      - apt update
+      - apt install -y git 
+      - apt update
+      - apt install -y hub
+      - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
+      - cd rudder-devops/helm-charts/shared-services/per-az
+      - git checkout -b version-change-\"$VERSION\"
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
+      - git add .
+      - git commit -m "changing version"
+      - git push -u origin version-change-\"$VERSION\"
+      - hub pull-request -m "PR for rudder-transformer version change-\"$VERSION\" " -a "Thrinadh-Kumpatla"
 artifacts:
   files:
     - "**/*"

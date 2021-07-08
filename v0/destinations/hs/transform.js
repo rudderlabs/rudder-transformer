@@ -71,10 +71,8 @@ async function getTransformedJSON(message, mappingJson, destination) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
       }
     });
-    console.log(propertyMap);
     traitsKeys.forEach(traitsKey => {
       const hsSupportedKey = getKey(traitsKey);
-      console.log(hsSupportedKey)
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
         if (propertyMap[hsSupportedKey] === "date") {

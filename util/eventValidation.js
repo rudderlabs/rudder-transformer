@@ -4,8 +4,11 @@ const Ajv = require("ajv");
 const NodeCache = require("node-cache");
 const _ = require("lodash");
 const trackingPlan = require("./trackingPlan");
+var hash = require("object-hash");
 
 const eventSchemaCache = new NodeCache();
+const ajvCache = new NodeCache();
+
 const logger = require("../logger");
 
 const defaultOptions = {
@@ -28,7 +31,7 @@ const violationTypes = {
 };
 
 // TODO : merge defaultOptions with options from sourceConfig
-const ajv = new Ajv(defaultOptions);
+let ajv = new Ajv(defaultOptions);
 
 // Ajv meta load to support draft-04/06/07/2019
 //const Ajv2019 = require("ajv/dist/2019");
@@ -122,7 +125,7 @@ async function validate(event) {
     checkForPropertyMissing(event.metadata.trackingPlanId);
     checkForPropertyMissing(event.metadata.trackingPlanVersion);
     checkForPropertyMissing(event.metadata.workspaceId);
-    // const sourceTpConfig = event.metadata.sourceTpConfig;
+    const sourceTpConfig = event.metadata.sourceTpConfig;
 
     const eventSchema = await trackingPlan.getEventSchema(
       event.metadata.trackingPlanId,
@@ -151,12 +154,30 @@ async function validate(event) {
       event.message.type,
       event.message.event
     );
+    let eventTypeAjvOptions = sourceTpConfig[event.message.type].ajvOptions;
+    let globalAjvOptions = sourceTpConfig.global.ajvOptions;
+    let merged = {
+      ...defaultOptions,
+      ...globalAjvOptions,
+      ...eventTypeAjvOptions
+    };
+    logger.info(merged);
+    if (merged !== {}) {
+      let configHash = hash(merged);
+      ajv = ajvCache.get(configHash);
+      if(!ajv) {
+        ajv = new Ajv(merged);
+        ajvCache.set(configHash, ajv);
+      }
+    }
+    logger.info(JSON.stringify(ajvCache.getStats()));
+
     let validateEvent = eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
     }
-    logger.debug(JSON.stringify(eventSchemaCache.getStats()));
+    logger.info(JSON.stringify(eventSchemaCache.getStats()));
 
     const valid = validateEvent(event.message.properties);
     if (valid) {

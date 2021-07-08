@@ -53,6 +53,7 @@
     "moment-timezone": "^0.5.32",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
+    "object-hash": "^2.2.0",
     "set-value": "^3.0.2",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",

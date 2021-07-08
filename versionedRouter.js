@@ -114,35 +114,27 @@ async function handleDest(ctx, version, destination) {
 async function handleValidation(ctx) {
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
-  logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
   const respList = [];
   await Promise.all(
     events.map(async event => {
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
-        const err = await eventValidator.validate(parsedEvent);
-        if (!err[0]) {
-          respList.push({
-            output: event,
-            metadata: event.metadata,
-            statusCode: 400,
-            error: err[1] || "Error occurred while processing payload."
-          });
-        } else {
-          respList.push({
-            output: event,
-            metadata: event.metadata,
-            statusCode: 200
-          });
-        }
-      } catch (error) {
-        logger.error(error);
-
+        const validationErrors = await eventValidator.validate(parsedEvent);
         respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 200,
+          validationErrors: validationErrors
+        });
+      } catch (error) {
+        logger.error(`Error : ${error}`);
+        respList.push({
+          output: event.message,
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
+          validationErrors: [],
+          error: error || "Error occurred while validating payload."
         });
       }
     })

@@ -135,11 +135,6 @@ async function getPayload(
     return rawPayload;
   }
 
-  if(message.mappedToDestination) {
-    addExternalIdToTraits(message);
-    return getFieldValueFromMessage(message, "traits");
-  }
-
   const email = getFieldValueFromMessage(message, "email");
   if (email) {
     const rawPayload = {};
@@ -165,6 +160,12 @@ async function getPayload(
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
+  
+  if(message.mappedToDestination) {
+    addExternalIdToTraits(message);
+    return getFieldValueFromMessage(message, "traits");
+  }
+
   const traits = getFieldValueFromMessage(message, "traits");
 
   const updateSubscription = get(message, "integrations.MailChimp")

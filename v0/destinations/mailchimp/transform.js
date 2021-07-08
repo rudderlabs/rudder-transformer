@@ -137,7 +137,7 @@ async function getPayload(
 
   if(message.mappedToDestination) {
     addExternalIdToTraits(message);
-    return message.traits;
+    return getFieldValueFromMessage(message, "traits");
   }
 
   const email = getFieldValueFromMessage(message, "email");

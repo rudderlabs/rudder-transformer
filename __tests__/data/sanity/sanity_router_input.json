@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "anonymousId": "anon_id_success",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "TestAppName",
+          "namespace": "com.android.sample",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "anon_id_success",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.1-beta.1"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "anon_id_success"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "Product Clicked",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "id1",
+      "properties": {
+        "name": "Test Product"
+      },
+      "originalTimestamp": "2020-12-17T21:00:59.176Z",
+      "type": "track",
+      "sentAt": "2020-03-12T09:05:03.421Z"
+    }
+  ]
+}

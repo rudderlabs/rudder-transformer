@@ -1,12 +1,17 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
+const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const {oncehubTransformer} = require("./util/oncehub-custom-transformer");
+const { isNonFuncObject } = require("./v0/util");
+const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
+
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -27,6 +32,9 @@ const getIntegrations = type =>
   readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
@@ -65,22 +73,24 @@ async function handleDest(ctx, version, destination) {
         const parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        if (!Array.isArray(respEvents)) {
-          respEvents = [respEvents];
+        if (respEvents) {
+          if (!Array.isArray(respEvents)) {
+            respEvents = [respEvents];
+          }
+          respList.push(
+            ...respEvents.map(ev => {
+              let { userId } = ev;
+              if (ev.statusCode !== 400 && userId) {
+                userId = `${userId}`;
+              }
+              return {
+                output: { ...ev, userId },
+                metadata: event.metadata,
+                statusCode: 200
+              };
+            })
+          );
         }
-        respList.push(
-          ...respEvents.map(ev => {
-            let { userId } = ev;
-            if (ev.statusCode !== 400 && userId) {
-              userId = `${userId}`;
-            }
-            return {
-              output: { ...ev, userId },
-              metadata: event.metadata,
-              statusCode: 200
-            };
-          })
-        );
       } catch (error) {
         logger.error(error);
 
@@ -223,20 +233,46 @@ if (startDestTransformer) {
               );
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
+                  if (ev.error) {
+                    return {
+                      statusCode: 400,
+                      error: ev.error,
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
+                    };
+                  }
+                  if (!isNonFuncObject(ev.transformedEvent)) {
+                    return {
+                      statusCode: 400,
+                      error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                        ev.transformedEvent
+                      )}`,
+                      metadata: _.isEmpty(ev.metadata)
+                        ? commonMetadata
+                        : ev.metadata
+                    };
+                  }
                   return {
                     output: ev.transformedEvent,
-                    metadata: ev.metadata === {} ? commonMetadata : ev.metadata,
+                    metadata: _.isEmpty(ev.metadata)
+                      ? commonMetadata
+                      : ev.metadata,
                     statusCode: 200
                   };
                 })
               );
             } catch (error) {
               logger.error(error);
-              transformedEvents.push({
-                statusCode: 400,
-                error: error.toString(),
-                metadata: commonMetadata
+              const errorString = error.toString();
+              destTransformedEvents = destEvents.map(e => {
+                return {
+                  statusCode: 400,
+                  metadata: e.metadata,
+                  error: errorString
+                };
               });
+              transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions
@@ -345,6 +381,11 @@ router.get("/transformerBuildVersion", ctx => {
 
 router.get("/health", ctx => {
   ctx.body = "OK";
+});
+
+router.get("/features", ctx =>{
+  const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
+  ctx.body = JSON.stringify(obj);
 });
 
 router.post("/batch", ctx => {

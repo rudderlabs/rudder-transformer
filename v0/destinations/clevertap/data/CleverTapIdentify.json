@@ -1,0 +1,66 @@
+[
+  {
+    "destKey": "Email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "Phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "Gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "F"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "M"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "Employed",
+    "sourceKeys": ["traits.employed", "context.traits.employed"],
+    "required": false
+  },
+  {
+    "destKey": "DOB",
+    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+    "required": false
+  },
+  {
+    "destKey": "Education",
+    "sourceKeys": ["traits.education", "context.traits.education"],
+    "required": false
+  },
+  {
+    "destKey": "Married",
+    "sourceKeys": ["traits.married", "context.traits.married"],
+    "required": false
+  },
+  {
+    "destKey": "Customer Type",
+    "sourceKeys": ["traits.customerType", "context.traits.customerType"],
+    "required": false
+  },
+  {
+    "destKey": "Photo",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "required": false
+  }
+]
+

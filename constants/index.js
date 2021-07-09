@@ -23,8 +23,37 @@ const TraitsMapping = {
 
 const SpecedTraits = ["address"];
 
+const WhiteListedTraits = [
+  "email",
+  "firstName",
+  "firstname",
+  "first_name",
+  "lastName",
+  "lastname",
+  "last_name",
+  "phone",
+  "title",
+  "organization",
+  "city",
+  "region",
+  "country",
+  "zip",
+  "image",
+  "timezone",
+  "id",
+  "anonymousId",
+  "userId",
+  "properties"
+];
+
+const DestHandlerMap = {
+  ga360: "ga"
+};
+
 module.exports = {
+  DestHandlerMap,
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  WhiteListedTraits
 };

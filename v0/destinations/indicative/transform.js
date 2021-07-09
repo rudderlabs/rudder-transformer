@@ -19,7 +19,9 @@ const handleProperties = properties => {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       if (cur.length > 0) {
+        // array for primitive type
         const pArr = [];
+        // array for storing the objects of the array
         const cArr = [];
         cur.forEach(item => {
           if (Object(item) !== item) {
@@ -40,43 +42,54 @@ const handleProperties = properties => {
 
         // handle object array
         if (cArr.length > 0) {
+          // take the first element
           const fel = cArr[0];
           const objectMap = {};
 
+          // take the keys from the first element and store
+          // we're expecting all the objects of the array are same
+          // we'll discard if a new item is found later on
           Object.keys(fel).forEach(key => {
             // discarding nested objects and arrays for array of objects
             // only allowing primitive times for array of objects
             if (Object(fel[key]) !== fel[key]) {
+              // initiate empty arrays for each of the
+              // properties from the object
               objectMap[key] = [];
             }
           });
 
+          // now iterate over the cArr
           for (i = 0, l = cArr.length; i < l; i += 1) {
             const el = cArr[i];
             Object.keys(el).forEach(k => {
               if (Object.keys(objectMap).indexOf(k) !== -1) {
+                // if the key is in the objectMap -
+                // in other words, the key was present in the first element of the array
                 objectMap[k].push(el[k]);
               }
             });
           }
 
+          // fonally add the stringified arrays to the final result
           Object.keys(objectMap).forEach(key => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
-      } else {
-        result[prop] = [];
       }
+      // else {
+      // result[prop] = [];
+      // }
     } else {
-      let isEmpty = true;
+      // let isEmpty = true;
       Object.keys(cur).forEach(key => {
-        isEmpty = false;
+        // isEmpty = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
 
-      if (isEmpty && prop) {
-        result[prop] = {};
-      }
+      // if (isEmpty && prop) {
+      //   result[prop] = {};
+      // }
     }
   };
 

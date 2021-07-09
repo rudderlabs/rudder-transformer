@@ -1,6 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const btoa = require("btoa");
+const truncate = require("truncate-utf8-bytes");
 const {
   EventType,
   SpecedTraits,
@@ -42,9 +43,10 @@ const populateSpecedTraits = (payload, message) => {
   });
 };
 
-function responseBuilder(message, evType, evName, destination) {
+function responseBuilder(message, evType, evName, destination, messageType) {
   const rawPayload = {};
   let endpoint;
+  let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
   const userId =
     message.userId && message.userId !== "" ? message.userId : undefined;
@@ -80,7 +82,12 @@ function responseBuilder(message, evType, evName, destination) {
           trait !== "userId" &&
           trait !== "anonymousId"
         ) {
-          set(rawPayload, trait, get(message, `${pathToTraits}.${trait}`));
+          const dotEscapedTrait = trait.replace(".", "\\.");
+          set(
+            rawPayload,
+            dotEscapedTrait,
+            get(message, `${pathToTraits}.${trait}`)
+          );
         }
       });
     }
@@ -95,14 +102,15 @@ function responseBuilder(message, evType, evName, destination) {
     }
 
     // make user creation time
-    set(
-      rawPayload,
-      "created_at",
-      Math.floor(
-        new Date(getFieldValueFromMessage(message, "createdAt")).getTime() /
-          1000
-      )
-    );
+    const createAt = getFieldValueFromMessage(message, "createdAtOnly");
+    // set the created_at field if traits.createAt or context.traits.createAt is passed
+    if (createAt) {
+      set(
+        rawPayload,
+        "created_at",
+        Math.floor(new Date(createAt).getTime() / 1000)
+      );
+    }
 
     // Impportant for historical import
     if (getFieldValueFromMessage(message, "historicalTimestamp")) {
@@ -185,6 +193,17 @@ function responseBuilder(message, evType, evName, destination) {
       }
     } else {
       endpoint = ANON_EVENT_ENDPOINT;
+      // CustomerIO supports 100byte of event name for anonymous users
+      if (messageType === EventType.SCREEN) {
+        // 100 - len(`Viewed  Screen`) = 86
+        trimmedEvName = `Viewed ${truncate(
+          message.event || message.properties.name,
+          86
+        )} Screen`;
+      } else {
+        trimmedEvName = truncate(evName, 100);
+      }
+      set(rawPayload, "name", trimmedEvName);
     }
   }
   const payload = removeUndefinedValues(rawPayload);
@@ -219,7 +238,22 @@ function processSingleMessage(message, destination) {
       logger.error(`could not determine type ${messageType}`);
       throw new Error(`could not determine type ${messageType}`);
   }
-  const response = responseBuilder(message, evType, evName, destination);
+  const response = responseBuilder(
+    message,
+    evType,
+    evName,
+    destination,
+    messageType
+  );
+
+  // replace default domain with EU data center domainc for EU based account
+  if (destination.Config.datacenterEU) {
+    response.endpoint = response.endpoint.replace(
+      "track.customer.io",
+      "track-eu.customer.io"
+    );
+  }
+
   return response;
 }
 

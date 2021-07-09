@@ -1,0 +1,185 @@
+{
+  "messages": [
+    {
+      "type": "identify",
+      "event": "identify",
+      "sentAt": "2021-02-08T12:45:42.760Z",
+      "userId": "User_111",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "iOS",
+          "version": "13.0"
+        },
+        "app": {
+          "name": "MyApp",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderlabs.MyApp"
+        },
+        "device": {
+          "id": "e2b94e2d-8327-429c-9d91-792a80d189c8",
+          "name": "iPhone 11 Pro Max",
+          "type": "iOS",
+          "model": "iPhone",
+          "manufacturer": "Apple"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 896,
+          "height": 414,
+          "density": 3
+        },
+        "traits": {
+          "age": 24,
+          "city": "Bangalore",
+          "name": "Manashi Mazumder",
+          "email": "manashi@gmail.com",
+          "phone": 9090909000,
+          "userId": "User_111",
+          "anonymousId": "e2b94e2d-8327-429c-9d91-792a80d189c8"
+        },
+        "library": {
+          "name": "rudder-ios-library",
+          "version": "1.0.11"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "unavailable",
+          "cellular": false,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "unknown"
+      },
+      "rudderId": "139d65bb-8a40-48c7-854c-06bbf44f686e",
+      "messageId": "1612788330-7e1e60a8-fb7e-437d-81c1-5b000318d0cb",
+      "anonymousId": "e2b94e2d-8327-429c-9d91-792a80d189c8",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-02-08T12:45:30.717Z"
+    },
+    {
+      "type": "identify",
+      "sentAt": "2021-04-15T19:43:53.393Z",
+      "userId": "sajal1234",
+      "channel": "web",
+      "context": {
+        "id": "ID101",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.17",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "www.rudderstack.com",
+          "path": "/path5",
+          "title": "JS Test",
+          "search": "My Page",
+          "tab_url": "https://odd-rat-19.loca.lt/Rectified.html",
+          "referrer": "www.google.com",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "event": "Sample Identify call",
+        "locale": "en-US",
+        "screen": {
+          "density": 2.75
+        },
+        "traits": {
+          "id": "ID101",
+          "city": "east greenwich",
+          "plan": "Open source",
+          "tags": ["x0002x", "y0004y", "t0001t"],
+          "email": "testkolkata@rudderlabs.com",
+          "event": "Sample Identify call",
+          "lists": [
+            {
+              "id": 2,
+              "status": "unsubscribed"
+            },
+            {
+              "id": 3,
+              "status": "unsubscribe"
+            }
+          ],
+          "phone": "570-690-4150",
+          "state": "RI",
+          "title": "Mr",
+          "logins": 5,
+          "mobile": "123456786",
+          "rating": "Hot",
+          "street": "19123 forest lane",
+          "company": {
+            "id": 378763009439,
+            "name": "Rudderlabs",
+            "industry": "IT",
+            "employee_count": 1200
+          },
+          "country": "USA",
+          "sent_at": "20210109134567",
+          "birthDay": "2021/04/15",
+          "category": "SampleIdentify",
+          "industry": "ITES",
+          "lastName": "Mohanta",
+          "timezone": "Berlin",
+          "Homephone": 9836543283,
+          "createdAt": "2021/04/15",
+          "fieldInfo": {
+            "state": "California",
+            "Address": "kolkata",
+            "listBox": ["Option1", "Option2"],
+            "CheckBox": ["Option1", "Option2", "Option3"],
+            "TextArea": "This is a sample text area field value . it is tested for Active Campaign. It should have more than 100 words. Lorem ipsum is a dummy sentence to fill up any area. And also , it is used to fill up dummy website. So, it is wriiten by simply wasting time. ",
+            "DateField": "1988-12-05",
+            "HiddenField": "Hidden",
+            "RadioButton": "Option1",
+            "multiChoice": "Option 1",
+            "DateTimeField": "2020-05-19T02:45:00-05:00"
+          },
+          "firstName": "Sajal",
+          "isEnabled": true,
+          "timestamp": "1403743443",
+          "event_text": "identify",
+          "leadSource": "WEB",
+          "postalCode": "94115",
+          "received_at": "202101091347654",
+          "organizationId": 378763009439,
+          "original_timestamp": "1403743443"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.17"
+        },
+        "sent_at": "20210109134567",
+        "campaign": {},
+        "timestamp": "1403743443",
+        "userAgent": "Mozilla/5.0 (Linux; Android 11; sdk_gphone_x86_arm Build/RSR1.201013.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36",
+        "event_text": "identify",
+        "externalId": [
+          {
+            "id": "0035g000002XN5MAAW",
+            "type": "Salesforce-Contact"
+          }
+        ],
+        "received_at": "202101091347654",
+        "original_timestamp": "1403743443"
+      },
+      "rudderId": "bc2402b7-6796-4fa5-9beb-bad3761fc961",
+      "messageId": "9d0df235-d354-4a81-8056-07dcb58081d7",
+      "anonymousId": "anonIDfromAndroid",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-04-15T19:43:53.392Z"
+    }
+  ]
+}

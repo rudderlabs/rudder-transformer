@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "Charged ID",
+    "sourceKeys": "properties.checkout_id",
+    "required": false
+  },
+  {
+    "destKey": "Amount",
+    "sourceKeys": "properties.revenue",
+    "required": false
+  },
+  {
+    "destKey": "Items",
+    "sourceKeys": "properties.products",
+    "required": false
+  }
+]

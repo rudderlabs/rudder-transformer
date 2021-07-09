@@ -7,7 +7,7 @@ const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject } = require("./v0/util");
+const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
 
@@ -56,14 +56,18 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+
+  const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   const respList = [];
   await Promise.all(
@@ -98,14 +102,15 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version });
+        stats.increment("dest_transform_errors", 1, { destination, version, ...metaTags });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
@@ -138,21 +143,27 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        // Assuming that events are from one single source
+        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        // Assuming that events are from one single source
+        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
       });
       router.post("/routerTransform", async ctx => {
         await routerHandleDest(ctx);
@@ -174,10 +185,10 @@ if (startDestTransformer) {
         groupedEvents = _.groupBy(events, event => {
           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
           const rudderId = event.metadata.rudderId || event.message.anonymousId;
-          return `${event.destination.ID}_${rudderId}`;
+          return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(events, event => event.destination.ID);
+        groupedEvents = _.groupBy(events, event => event.metadata.destinationId + '_' + event.metadata.sourceId );
       }
       stats.counter(
         "user_transform_function_group_size",
@@ -213,6 +224,7 @@ if (startDestTransformer) {
             messageIds
           };
 
+          const metaTags = destEvents.length && destEvents[0].metadata ? getMetadata(destEvents[0].metadata) : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -222,7 +234,8 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   transformationVersionId,
-                  processSessions
+                  processSessions,
+                  ...metaTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -274,13 +287,14 @@ if (startDestTransformer) {
               transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
-                processSessions
+                processSessions,
+                ...metaTags
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions }
+                { transformationVersionId, processSessions, ...metaTags }
               );
             }
           } else {
@@ -293,12 +307,13 @@ if (startDestTransformer) {
             });
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
-              processSessions
+              processSessions,
+              ...metaTags
             });
           }
         })
       );
-      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {

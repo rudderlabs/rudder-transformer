@@ -1,0 +1,694 @@
+[
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "batchSeq": 1,
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "identify",
+            "traits": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "batchSeq": 1,
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event3",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "batchSeq": 1,
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "batchSeq": 1,
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "ANYTHING"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL"
+                ],
+                "isHashRequired": false,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com",
+                        "FN": "shrouti"
+                    },
+                    {
+                        "EMAIL": " utsab@abc.com"
+                    },
+                    {
+                        "EMAIL": " manashi@abc.com"
+                    }
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com"
+                    },
+                    {
+                        "EMAIL": "arnab@abc.com"
+                    },
+                    {
+                        "EMAIL": "sudip@abc.com"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL",
+                    "FN"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com",
+                        "DOBM": "2",
+                        "DOBD": "13",
+                        "DOBY": "2013",
+                        "PHONE":"@09432457768",
+                        "GEN":"f",
+                        "FI":"Ms.",
+                        "MOBILE_ADVERTISER_ID":"ABC",
+                        "ZIP":"ZIP ",
+                        "ST":"123abc ",
+                        "COUNTRY":"IN"
+                    }
+                    
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com",
+                        "DOBM": "11",
+                        "DOBD":"1",
+                        "DOBY":"2014",
+                        "PHONE":"@0943246768",
+                        "GEN":"female",
+                        "FI":"Ms.",
+                        "MOBILE_ADVERTISER_ID":"abc",
+                        "ZIP":" zip",
+                        "ST":"123ABC",
+                        "COUNTRY":"IND"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL",
+                    "DOBM",
+                    "DOBD",
+                    "DOBY",
+                    "PHONE",
+                    "GEN",
+                    "FI",
+                    "MOBILE_ADVERTISER_ID",
+                    "ZIP",
+                    "ST",
+                    "COUNTRY"
+                ],
+                "isHashRequired": true,
+                "disableFormat": false,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "isRaw": false,
+                "sessionIdAdd": "123",
+                "sessionIdDelete":"456",
+                "lastBatchFlag": false,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "userListAdd": [
+                    {
+                        "EMAIL": "shrouti@abc.com",
+                        "DOBM": "2",
+                        "DOBD": "13",
+                        "DOBY": "2013",
+                        "PHONE":"@09432457768",
+                        "GEN":"f",
+                        "FI":"Ms.",
+                        "MOBILE_ADVERTISER_ID":"ABC",
+                        "ZIP":"ZIP ",
+                        "ST":"123abc ",
+                        "COUNTRY":"IN"
+                    }
+                    
+                ],
+                "userListDelete": [
+                    {
+                        "EMAIL": "ruchira@abc.com",
+                        "DOBM": "11",
+                        "DOBD":"1",
+                        "DOBY":"2014",
+                        "PHONE":"@0943246768",
+                        "GEN":"female",
+                        "FI":"Ms.",
+                        "MOBILE_ADVERTISER_ID":"abc",
+                        "ZIP":" zip",
+                        "ST":"123ABC",
+                        "COUNTRY":"IND"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": [
+                    "EMAIL",
+                    "DOBM",
+                    "DOBD",
+                    "DOBY",
+                    "PHONE",
+                    "GEN",
+                    "FI",
+                    "MOBILE_ADVERTISER_ID",
+                    "ZIP",
+                    "ST",
+                    "COUNTRY"
+                ],
+                "isHashRequired": true,
+                "disableFormat": true,
+                "eventAudienceMapping": [
+                    {
+                        "from": "event1",
+                        "to": "123"
+                    },
+                    {
+                        "from": "event2",
+                        "to": "456"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    }
+]

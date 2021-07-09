@@ -8,13 +8,16 @@ const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
+const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
+const { hsGetRequestHandler } = require("./hs.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
-  "active.campaigns.rudder.com": "active_campaigns"
+  "active.campaigns.rudder.com": "active_campaigns",
+  "api.aptrinsic.com": "gainsight_px"
 };
 
 const fs = require("fs");
@@ -22,7 +25,9 @@ const path = require("path");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;
-  const paramString = Object.keys(params).map(key => `${key}=${params[key]}`).join("&");
+  const paramString = Object.keys(params)
+    .map(key => `${key}=${params[key]}`)
+    .join("&");
   return `${url}?${paramString}`;
 };
 
@@ -60,6 +65,12 @@ function get(url) {
       resolve(mailchimpGetRequestHandler(url));
     });
   }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return gainsightPXGetRequestHandler(url, mockData);
+  }
+  if (url.includes("https://api.hubapi.com")) {
+    return hsGetRequestHandler(url, mockData);
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -76,15 +87,20 @@ function post(url, payload) {
       resolve(acPostRequestHandler(url, payload));
     });
   }
-  if(url.includes("https://a.klaviyo.com")) {
+  if (url.includes("https://a.klaviyo.com")) {
     return new Promise((resolve, reject) => {
       resolve(klaviyoPostRequestHandler(url, payload));
     });
   }
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
-      resolve(gainsightRequestHandler(url, payload))
-    })
+      resolve(gainsightRequestHandler(url, payload));
+    });
+  }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return new Promise(resolve => {
+      resolve({ status: 201 });
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
@@ -99,8 +115,15 @@ function put(url, payload, options) {
   const mockData = getData(url);
   if (url.includes("https://demo-domain.gainsightcloud.com")) {
     return new Promise(resolve => {
-      resolve(gainsightRequestHandler(getParamEncodedUrl(url, options), payload));
-    })
+      resolve(
+        gainsightRequestHandler(getParamEncodedUrl(url, options), payload)
+      );
+    });
+  }
+  if (url.includes("https://api.aptrinsic.com")) {
+    return new Promise(resolve => {
+      resolve({ status: 204 });
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

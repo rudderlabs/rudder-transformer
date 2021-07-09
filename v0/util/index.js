@@ -36,7 +36,7 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
-
+const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -64,7 +64,7 @@ const isPrimitive = arg => {
  * @param {*} arg
  * @returns {type}
  *
- * Returns type of passed arg 
+ * Returns type of passed arg
  * for null argss returns "NULL" insted of "object"
  *
  */
@@ -83,6 +83,19 @@ const formatValue = value => {
 
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
+}
+
+/**
+ * Returns true for empty object {}
+ * @param {*} obj
+ * @returns
+ */
+function isEmptyObject(obj) {
+  if (!obj) {
+    logger.warn("input is undefined or null");
+    return true;
+  }
+  return Object.keys(obj).length === 0;
 }
 
 // Format the destination.Config.dynamicMap arrays to hashMap
@@ -427,7 +440,8 @@ const handleMetadataForValue = (value, metadata) => {
     template,
     defaultValue,
     excludes,
-    multikeyMap
+    multikeyMap,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -489,6 +503,9 @@ const handleMetadataForValue = (value, metadata) => {
       case "toFloat":
         formattedVal = parseFloat(formattedVal);
         break;
+      case "toInt":
+        formattedVal = parseInt(formattedVal, 10);
+        break;
       case "hashToSha256":
         formattedVal = hashToSha256(String(formattedVal));
         break;
@@ -502,6 +519,11 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = formattedVal
           .replace("https://", "")
           .replace("http://", "");
+        break;
+      case "IsBoolean":
+        if (!(typeof formattedVal === "boolean")) {
+          logger.debug("Boolean value missing, so dropping it");
+        }
         break;
       default:
         break;
@@ -565,6 +587,21 @@ const handleMetadataForValue = (value, metadata) => {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
     if (!foundVal) formattedVal = undefined;
+  }
+
+  if (allowedKeyCheck) {
+    let foundVal = false;
+    if (Array.isArray(allowedKeyCheck)) {
+      allowedKeyCheck.some(key => {
+        if (key.sourceVal.includes(formattedVal)) {
+          foundVal = true;
+          return true;
+        }
+      });
+    }
+    if (!foundVal) {
+      formattedVal = undefined;
+    }
   }
 
   return formattedVal;
@@ -909,6 +946,22 @@ const getMetadata = (metadata) => {
     namespace: metadata.namespace
   }
 }
+// checks if array 2 is a subset of array 1
+function checkSubsetOfArray(array1, array2) {
+  const result = array2.every(val => array1.includes(val));
+  return result;
+}
+
+// splits array into equal parts and returns array of sub arrays
+function returnArrayOfSubarrays(arr, len) {
+  const chunks = [];
+  let i = 0;
+  const n = arr.length;
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+  return chunks;
+}
 
 class CustomError extends Error {
   constructor(message, statusCode) {
@@ -925,6 +978,7 @@ module.exports = {
   ErrorMessage,
   checkEmptyStringInarray,
   constructPayload,
+  CustomError,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -934,6 +988,7 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  flattenMap,
   formatTimeStamp,
   formatValue,
   getBrowserInfo,
@@ -957,6 +1012,7 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEmptyObject,
   isNonFuncObject,
   isObject,
   isPrimitive,
@@ -971,5 +1027,7 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   getMetadata,
-  CustomError
+  CustomError,
+  checkSubsetOfArray,
+  returnArrayOfSubarrays
 };

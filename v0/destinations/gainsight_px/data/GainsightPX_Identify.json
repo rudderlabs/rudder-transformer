@@ -1,0 +1,201 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "FEMALE"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "MALE"
+        },
+        {
+          "sourceVal": [
+            "o",
+            "O",
+            "other",
+            "others",
+            "Others",
+            "Other",
+            "OTHERS",
+            "OTHER"
+          ],
+          "destVal": "OTHER"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "lastSeenDate",
+    "sourceKeys": ["traits.lastSeenDate", "context.traits.lastSeenDate"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "signUpDate",
+    "sourceKeys": [
+      "traits.signUpDate",
+      "context.traits.signUpDate",
+      "originalTimestamp"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "firstVisitDate",
+    "sourceKeys": ["traits.firstVisitDate", "context.traits.firstVisitDate"],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": ["traits.title", "context.traits.title"],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "score",
+    "sourceKeys": ["traits.score", "context.traits.score"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "role",
+    "sourceKeys": ["traits.role", "context.traits.role"],
+    "required": false
+  },
+  {
+    "destKey": "subscriptionId",
+    "sourceKeys": ["traits.subscriptionId", "context.traits.subscriptionId"],
+    "required": false
+  },
+  {
+    "destKey": "numberOfVisits",
+    "sourceKeys": ["traits.numberOfVisits", "context.traits.numberOfVisits"],
+    "required": false
+  },
+  {
+    "destKey": "createDate",
+    "sourceKeys": [
+      "traits.createDate",
+      "context.traits.createDate",
+      "originalTimestamp"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "globalUnsubscribe",
+    "sourceKeys": [
+      "traits.globalUnsubscribe",
+      "context.traits.globalUnsubscribe"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "sfdcContactId",
+    "sourceKeys": ["traits.sfdcContactId", "context.traits.sfdcContactId"],
+    "required": false
+  },
+  {
+    "destKey": "location.countryName",
+    "sourceKeys": ["traits.countryName", "context.traits.countryName"],
+    "required": false
+  },
+  {
+    "destKey": "location.countryCode",
+    "sourceKeys": ["traits.countryCode", "context.traits.countryCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.stateName",
+    "sourceKeys": ["traits.stateName", "context.traits.stateName"],
+    "required": false
+  },
+  {
+    "destKey": "location.stateCode",
+    "sourceKeys": ["traits.stateCode", "context.traits.stateCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.city",
+    "sourceKeys": ["traits.city", "context.traits.city"],
+    "required": false
+  },
+  {
+    "destKey": "location.street",
+    "sourceKeys": ["traits.street", "context.traits.street"],
+    "required": false
+  },
+  {
+    "destKey": "location.postalCode",
+    "sourceKeys": ["traits.postalCode", "context.traits.postalCode"],
+    "required": false
+  },
+  {
+    "destKey": "location.continent",
+    "sourceKeys": ["traits.continent", "context.traits.continent"],
+    "required": false
+  },
+  {
+    "destKey": "location.regionName",
+    "sourceKeys": ["traits.regionName", "context.traits.regionName"],
+    "required": false
+  },
+  {
+    "destKey": "location.timeZone",
+    "sourceKeys": ["traits.timeZone", "context.traits.timeZone"],
+    "required": false
+  },
+  {
+    "destKey": "location.coordinates.latitude",
+    "sourceKeys": ["traits.latitude", "context.traits.latitude"],
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
+  },
+  {
+    "destKey": "location.coordinates.longitude",
+    "sourceKeys": ["traits.longitude", "context.traits.longitude"],
+    "required": false,
+    "metadata": {
+      "type": "toFloat"
+    }
+  }
+]

@@ -66,7 +66,7 @@ async function checkIfDoubleOptIn(mailChimpConfig) {
     });
   } catch (error) {
     throw new CustomError(
-      "User does not have access to the requested operation",
+      "[mailchimp] User does not have access to the requested operation",
       error.status || 400
     );
   }
@@ -215,7 +215,7 @@ async function processIdentify(message, destination) {
 
 async function processSingleMessage(message, destination) {
   if (message.type !== EventType.IDENTIFY) {
-    throw new CustomError(`message type ${message.type} is not supported`, 400);
+    throw new CustomError("Message type not supported", 400);
   }
 
   return processIdentify(message, destination);
@@ -251,12 +251,13 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

@@ -24,6 +24,7 @@
     "[sfmc] Event not mapped for this track call": 602,
     "[sf] SALESFORCE AUTH FAILED": 400,
     "[sf] Invalid Email address for Lead Objet": 602,
-    "[sf] Invalid traits for Salesforce request": 602
+    "[sf] Invalid traits for Salesforce request": 602,
+    "[mailchimp] User does not have access to the requested operation": 602
   }
 }

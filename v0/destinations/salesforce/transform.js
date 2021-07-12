@@ -286,7 +286,7 @@ const processRouterDest = async inputs => {
         return getErrorRespEvents(
           [input.metadata],
           error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

@@ -1,7 +1,22 @@
 {
   "transformerRules": {
+    "Message type not supported": 601,
+    "Error occurred while processing payload": 400,
+    "Payload could not be constructed": 400,
+    "Message Type is not present, aborting message": 400,
+    "[webhook] Invalid URL in destination config": 603,
     "[webhook] Failed to process request": 400,
-    "Invalid URL in destination config": 603,
-    "Message type not supported": 601
+    "[userlist] Missing required user id": 602,
+    "[Trengo] %skip% is not present in Event-Map template keys, aborting event": 602,
+    "[Trengo] Mandatory field for Channel-Identifier :%skip% not present": 603,
+    "[Trengo] lookupContact failed": 400,
+    "[Trengo] Inside lookupContact, failed to make request": 400,
+    "[Trengo] Inside lookupContact, duplicates present for identifer": 602,
+    "[Trengo] LookupContact failed for term: %skip% update failed, aborting as dedup option is enabled": 400,
+    "[Trengo] LookupContact failed for term: %skip% track event failed": 400,
+    "[Trengo] No contact found for term: %skip% track event failed": 602,
+    "[Trengo] Error occured in parsing event template": 400,
+    "[Trengo] Cound not process event, missing mandatory field channelId": 603
+
   }
 }

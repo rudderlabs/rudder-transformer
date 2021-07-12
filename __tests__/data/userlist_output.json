@@ -211,15 +211,15 @@
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "[userlist] Missing required user id"
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "[userlist] Missing required user id"
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "[userlist] Missing required user id"
   },
   {
     "statusCode": 400,

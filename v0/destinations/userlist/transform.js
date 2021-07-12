@@ -45,7 +45,7 @@ function buildResponse(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (isBlank(message.userId)) {
-    throw new CustomError("Missing required user id", 400);
+    throw new CustomError("[userlist] Missing required user id", 400);
   }
 
   switch (message.type) {
@@ -91,12 +91,13 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

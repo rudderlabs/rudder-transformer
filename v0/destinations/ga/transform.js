@@ -869,7 +869,7 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new CustomError("message type not supported", 400);
+      throw new CustomError("Message type not supported", 400);
   }
 
   return responseBuilderSimple(

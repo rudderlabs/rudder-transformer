@@ -37,7 +37,7 @@ const getTemplate = (message, destination) => {
   const hashMap = getHashFromArray(eventTemplateMap, "from", "to", false);
   if (!Object.keys(hashMap).includes(event)) {
     throw new CustomError(
-      `[Trengo] :: ${event} is not present in Event-Map template keys, aborting event`,
+      `[Trengo] ${event} is not present in Event-Map template keys, aborting event`,
       400
     );
   }
@@ -60,7 +60,7 @@ const validate = (email, phone, channelIdentifier) => {
     (channelIdentifier === "email" && !email)
   ) {
     throw new CustomError(
-      `[Trengo] :: Mandatory field for Channel-Identifier :${channelIdentifier} not present`,
+      `[Trengo] Mandatory field for Channel-Identifier : ${channelIdentifier} not present`,
       400
     );
   }
@@ -89,10 +89,13 @@ const lookupContact = async (term, destination) => {
   } catch (err) {
     // check if exists err.response && err.response.status else 500
     if (err.response && err.response.status) {
-      throw new CustomError(err.response.statusText, err.response.status);
+      throw new CustomError(
+        `[Trengo] lookupContact failed , ${err.response.statusText}`,
+        err.response.status
+      );
     }
     throw new CustomError(
-      "[Trengo] :: Inside lookupContact, failed to make request",
+      "[Trengo] Inside lookupContact, failed to make request",
       500
     );
   }
@@ -106,7 +109,7 @@ const lookupContact = async (term, destination) => {
     const { data } = res.data;
     if (data.length > 1) {
       throw new CustomError(
-        `[Trengo] :: Inside lookupContact, duplicates present for identifer : ${term}`,
+        `[Trengo] Inside lookupContact, duplicates present for identifer : ${term}`,
         400
       );
     } else if (data.length === 1) {
@@ -172,7 +175,7 @@ const contactBuilderTrengo = async (
       if (!contactId) {
         // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
         throw new CustomError(
-          `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
+          `[Trengo] LookupContact failed for term: ${identifier} update failed, aborting as dedup option is enabled`,
           400
         );
       }
@@ -205,14 +208,14 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
     contactId = await lookupContact(identifer, destination);
     if (!contactId) {
       throw new CustomError(
-        `[Trengo] :: LookupContact failed for term:${identifer} track event failed`,
+        `[Trengo] LookupContact failed for term: ${identifer} track event failed`,
         400
       );
     }
 
     if (contactId === -1) {
       throw new CustomError(
-        `[Trengo] :: No contact found for term:${identifer} track event failed`,
+        `[Trengo] No contact found for term: ${identifer} track event failed`,
         400
       );
     }
@@ -231,7 +234,7 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
         subjectLine = hTemplate(templateInput).trim();
       } catch (err) {
         throw new CustomError(
-          `[Trengo] :: Error occured in parsing event template for ${message.event}`,
+          `[Trengo] Error occured in parsing event template for ${message.event}`,
           400
         );
       }
@@ -270,7 +273,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     destination.Config.channelId.length === 0
   ) {
     throw new CustomError(
-      "[Trengo] :: Cound not process event, missing mandatory field channelId",
+      "[Trengo] Cound not process event, missing mandatory field channelId",
       400
     );
   }
@@ -376,7 +379,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
  */
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw CustomError("Message Type is not present. Aborting message.", 400);
+    throw CustomError("Message Type is not present, aborting message", 400);
   }
   const messageType = message.type.toLowerCase();
   if (messageType !== EventType.IDENTIFY && messageType !== EventType.TRACK) {

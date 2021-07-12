@@ -12,6 +12,7 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
+const { collectStats } = require("../../util/stats/statsConfig");
 const { EventType } = require("../../../constants");
 
 const getPropertyParams = message => {
@@ -93,14 +94,14 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.appendPath && typeof message.appendPath === "string" ) {
+      if (message.appendPath && typeof message.appendPath === "string") {
         response.endpoint += message.appendPath;
-        delete message.appendPath
+        delete message.appendPath;
       }
 
       return response;
     }
-    throw new CustomError("Invalid URL in destination config", 400);
+    throw new CustomError("[webhook] Invalid URL in destination config", 400);
   } catch (err) {
     throw new CustomError(
       err.message || "[webhook] Failed to process request",
@@ -133,14 +134,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        collectStats(error, input, "router");
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 const _ = require("lodash");
-const { isDefined } = require("..");
+const { isDefined, matchSkipTemplate } = require("../index");
 const stats = require("../../../util/stats");
 const GenericResponseRules = require("./data/GenericResponseRules.json");
 
@@ -18,6 +18,21 @@ const collectStats = (error, event, transformedAt) => {
     destConfig = DestinationDefinition.Config;
   }
   statusCode = genericTransformerRules[errKey];
+  // We should always throw absolute errors otherwise we will have to check if the error-key is present as a substring in the error
+  if (!statusCode) {
+    const genErrorStrArray = Object.keys(genericTransformerRules);
+    genErrorStrArray.some(errStr => {
+      if (_.includes(errKey, errStr)) {
+        statusCode = genericTransformerRules[errStr];
+        return true;
+      }
+      if (matchSkipTemplate(errKey, errStr)) {
+        statusCode = genericTransformerRules[errStr];
+        return true;
+      }
+    });
+  }
+
   if (
     !statusCode &&
     destConfig &&
@@ -32,6 +47,10 @@ const collectStats = (error, event, transformedAt) => {
       const errorStrArray = Object.keys(transformerRules);
       errorStrArray.some(errStr => {
         if (_.includes(errKey, errStr)) {
+          statusCode = transformerRules[errStr];
+          return true;
+        }
+        if (matchSkipTemplate(errKey, errStr)) {
           statusCode = transformerRules[errStr];
           return true;
         }

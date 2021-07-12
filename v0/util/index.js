@@ -936,7 +936,7 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
-const getMetadata = (metadata) => {
+const getMetadata = metadata => {
   return {
     sourceId: metadata.sourceId,
     sourceType: metadata.sourceType,
@@ -944,8 +944,8 @@ const getMetadata = (metadata) => {
     destinationType: metadata.destinationType,
     workspaceId: metadata.workspaceId,
     namespace: metadata.namespace
-  }
-}
+  };
+};
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every(val => array1.includes(val));
@@ -961,6 +961,34 @@ function returnArrayOfSubarrays(arr, len) {
     chunks.push(arr.slice(i, (i += len)));
   }
   return chunks;
+}
+/**
+ *
+ * @param {*} arg
+ * @param {*} patitalMatcher
+ * @returns boolean
+ *
+ * arg : `LookupContact failed for term: ${identifer} track event failed
+ * partialMatcher: `LookupContact failed for term: %skip% track event failed`
+ * This will result in a truthy response from this function
+ *
+ * The term %skip% will skip the word in the specific index of the original
+ * argument string and then match them.
+ */
+function matchSkipTemplate(arg, partitalMatcher) {
+  const originalArray = arg.split(" ");
+  const matcherArray = partitalMatcher.split(" ");
+  const matchFxn = element => element === "%skip%";
+  const index = matcherArray.findIndex(matchFxn);
+  // skip match
+  originalArray.splice(index, 1);
+  matcherArray.splice(index, 1);
+  arg = originalArray.join(" ");
+  partitalMatcher = matcherArray.join(" ");
+  if (matcherArray.findIndex(matchFxn) !== -1) {
+    return matchSkipTemplate(arg, partitalMatcher);
+  }
+  return _.isEqual(originalArray, matcherArray);
 }
 
 class CustomError extends Error {
@@ -1017,6 +1045,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  matchSkipTemplate,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
@@ -1027,7 +1056,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   getMetadata,
-  CustomError,
   checkSubsetOfArray,
   returnArrayOfSubarrays
 };

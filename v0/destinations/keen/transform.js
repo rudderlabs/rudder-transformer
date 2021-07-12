@@ -139,7 +139,7 @@ function process(event) {
       response = processTrack(message, destination);
       break;
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new CustomError("Message type not supported", 400);
   }
 
   response.statusCode = 200;

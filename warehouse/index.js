@@ -178,7 +178,7 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || (options.sourceCategory == 'cloud' && level < 3) )) {
+    if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,

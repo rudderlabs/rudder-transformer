@@ -32,6 +32,13 @@
     "[intercom] Email or userId is mandatory": 602,
     "[hubspot] Failed to get hubspot properties": 400,
     "[hubspot] Failed to get hubspot properties : indvalid response": 400,
-    "[hubspot] Identify without email is not supported": 602
+    "[hubspot] Identify without email is not supported": 602,
+    "[ga] Invalid Url": 602,
+    "[ga] unknown ProductListEvent type": 602,
+    "[ga] unknown ProductEvent type": 602,
+    "[ga] unknown TransactionEvent type": 602,
+    "[ga] No product information supplied for transaction event": 602,
+    "[ga] server side identify is not on": 601,
+    "[ga] Event name is not present/is not a string": 602
   }
 }

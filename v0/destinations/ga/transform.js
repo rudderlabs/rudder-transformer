@@ -138,7 +138,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new CustomError(`Invalid Url: ${documentUrl}`, 400);
+        throw new CustomError(`[ga] Invalid Url: ${documentUrl}`, 400);
       }
     }
   }
@@ -526,7 +526,7 @@ function processProductListEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown ProductListEvent type", 400);
+        throw new CustomError("[ga] unknown ProductListEvent type", 400);
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
@@ -616,7 +616,7 @@ function processProductEvent(message, destination) {
         parameters.pa = "remove";
         break;
       default:
-        throw new CustomError("unknown ProductEvent type", 400);
+        throw new CustomError("[ga] unknown ProductEvent type", 400);
     }
 
     // add produt level custom dimensions and metrics to parameters
@@ -662,7 +662,7 @@ function processTransactionEvent(message, destination) {
       parameters.pa = "refund";
       break;
     default:
-      throw new CustomError("unknown TransactionEvent type", 400);
+      throw new CustomError("[ga] unknown TransactionEvent type", 400);
   }
 
   // One of total/revenue/value should be there
@@ -696,7 +696,7 @@ function processTransactionEvent(message, destination) {
   } else {
     // throw error, empty Product List in Product List Viewed event payload
     throw new CustomError(
-      "No product information supplied for transaction event",
+      "[ga] No product information supplied for transaction event",
       400
     );
   }
@@ -736,7 +736,7 @@ function processEComGenericEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown TransactionEvent type", 400);
+        throw new CustomError("[ga] unknown TransactionEvent type", 400);
     }
   }
   const { products } = message.properties;
@@ -759,7 +759,7 @@ function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
   if (!messageType) {
-    throw new CustomError("Message type is not present", 400);
+    throw new CustomError("Message Type is not present, aborting message", 400);
   }
   let customParams = {};
   let category;
@@ -772,7 +772,7 @@ function processSingleMessage(message, destination) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
-        throw new CustomError("server side identify is not on", 400);
+        throw new CustomError("[ga] server side identify is not on", 400);
       }
       break;
     case EventType.PAGE:
@@ -786,7 +786,10 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK: {
       let eventName = message.event;
       if (!(typeof eventName === "string" || eventName instanceof String)) {
-        throw new CustomError("Event name is not present/is not a string", 400);
+        throw new CustomError(
+          "[ga] Event name is not present/is not a string",
+          400
+        );
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();

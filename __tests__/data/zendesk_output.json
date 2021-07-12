@@ -394,7 +394,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Zendesk : UserId is a mandatory field for group"
+    "error": "[zendesk] UserId is a mandatory field for group"
   },
   {
     "statusCode": 400,

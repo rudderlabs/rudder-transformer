@@ -48,6 +48,7 @@ function responseBuilder(message, headers, payload, endpoint) {
 async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
+  // eslint-disable-next-line no-param-reassign
   fieldJson = fieldJson.slice(0, -1);
   newFields.forEach(async field => {
     // create payload for each new user field
@@ -207,7 +208,7 @@ async function createUser(message, headers, destinationConfig, type) {
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`Couldn't create User: ${name}`);
       throw new CustomError(
-        "user not found",
+        "[zendesk] user not found",
         resp.status || resp.data.status || 400
       );
     }
@@ -218,7 +219,10 @@ async function createUser(message, headers, destinationConfig, type) {
   } catch (error) {
     logger.debug(error);
     logger.debug(`Couldn't find user: ${name}`);
-    throw new CustomError(`Couldn't find user: ${name}`, error.status || 400);
+    throw new CustomError(
+      `[zendesk] Couldn't find user: ${name}`,
+      error.status || 400
+    );
   }
 }
 
@@ -241,7 +245,7 @@ async function getUserMembershipPayload(
       );
       zendeskUserID = zendeskUserId;
     } else {
-      throw new CustomError("User not found", 400);
+      throw new CustomError("[zendesk] User not found", 400);
     }
   }
   const payload = {
@@ -318,7 +322,7 @@ async function createOrganization(
 function validateUserId(message) {
   if (!message.userId) {
     throw new CustomError(
-      `Zendesk : UserId is a mandatory field for ${message.type}`,
+      `[zendesk] UserId is a mandatory field for ${message.type}`,
       400
     );
   }
@@ -407,10 +411,10 @@ async function processTrack(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!zendeskUserId) {
-      throw new CustomError("user not found", 400);
+      throw new CustomError("[zendesk] user not found", 400);
     }
     if (!email) {
-      throw new CustomError("user email not found", 400);
+      throw new CustomError("[zendesk] user email not found", 400);
     }
     zendeskUserID = zendeskUserId;
     userEmail = email;
@@ -459,7 +463,7 @@ async function processGroup(message, destinationConfig, headers) {
     );
     if (!orgId) {
       throw new CustomError(
-        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`,
+        `[zendesk] Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`,
         400
       );
     }
@@ -476,7 +480,7 @@ async function processGroup(message, destinationConfig, headers) {
     const userId = payload.organization_membership.user_id;
     if (await isUserAlreadyAssociated(userId, orgId, headers)) {
       throw new CustomError(
-        "user is already associated with organization",
+        "[zendesk] user is already associated with organization",
         400
       );
     }
@@ -550,12 +554,13 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

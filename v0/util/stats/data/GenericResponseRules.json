@@ -39,6 +39,13 @@
     "[ga] unknown TransactionEvent type": 602,
     "[ga] No product information supplied for transaction event": 602,
     "[ga] server side identify is not on": 601,
-    "[ga] Event name is not present/is not a string": 602
+    "[ga] Event name is not present/is not a string": 602,
+    "[zendesk] user not found": 602,
+    "[zendesk] Couldn't find user": 400,
+    "[zendesk] User not found": 602,
+    "[zendesk] UserId is a mandatory field": 602,
+    "[zendesk] user email not found": 602,
+    "[zendesk] Couldn't create user membership for user having external id %skip% as Organization %skip% wasn't created": 400,
+    "[zendesk] user is already associated with organization": 602
   }
 }

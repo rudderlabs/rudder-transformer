@@ -32,7 +32,6 @@ phases:
     commands:
       - docker push rudderlabs/rudder-transformer:$VERSION
       - docker push rudderlabs/rudder-transformer:latest
-  change_version:
       - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
       - git config --global user.email \"$MAIL\"
       - git config --global user.name \"$USER_NAME\"

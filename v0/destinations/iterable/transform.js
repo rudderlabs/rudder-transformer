@@ -13,7 +13,10 @@ const logger = require("../../../logger");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
-    throw new CustomError("userId or email is mandatory for this request", 400);
+    throw new CustomError(
+      "[iterable] userId or email is mandatory for this request",
+      400
+    );
   }
 }
 
@@ -66,7 +69,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new CustomError("Invalid page call", 400);
+        throw new CustomError("[iterable] Invalid page call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -97,7 +100,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new CustomError("Invalid screen call", 400);
+        throw new CustomError("[iterable] Invalid screen call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -338,12 +341,13 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

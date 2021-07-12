@@ -216,9 +216,13 @@ const trackResponseBuilder = (message, { Config }) => {
  */
 const process = async event => {
   const { message, destination } = event;
-  const messageType = getValueFromMessage(message, "type")
-    .toLowerCase()
-    .trim();
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
+  const messageType = message.type.toLowerCase();
 
   let response;
   switch (messageType) {

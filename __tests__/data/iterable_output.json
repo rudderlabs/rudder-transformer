@@ -681,6 +681,41 @@
   {
     "statusCode": 400,
     "message": "Invalid page call"
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "user": {
+                "email": "jessica@jlpdesign.net",
+                "dataFields": {
+                    "email": "jessica@jlpdesign.net"
+                },
+                "userId": "8751",
+                "preferUserId": true,
+                "mergeNestedObjects": true
+            },
+            "items": [
+                {
+                    "id": 10606,
+                    "sku": "JB24691400-W05",
+                    "name": "Vira Console Cabinet",
+                    "price": 797,
+                    "quantity": 1
+                }
+            ]
+        },
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {}
+}
 ]
 

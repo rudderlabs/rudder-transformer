@@ -1,0 +1,188 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://s2s.adjust.com/event",
+      "headers": {
+        "Accept": "*/*"
+      },
+      "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "gps_adid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "EUR",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "21e13f4bc7ceddad"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "ID": "1i3Em7GMU9xVEiDlZUN8c88BMS9",
+      "Name": "ADJ",
+      "DestinationDefinition": {
+        "ID": "1i3DeZo6eSUKrS3KzDUqjbBPCDJ",
+        "Name": "ADJ",
+        "DisplayName": "Adjust",
+        "Config": {
+          "destConfig": {
+            "android": [
+              "useNativeSDK"
+            ],
+            "defaultConfig": [
+              "appToken",
+              "customMappings",
+              "delay",
+              "environment"
+            ],
+            "ios": [
+              "useNativeSDK"
+            ],
+            "reactnative": [
+              "useNativeSDK"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "appToken",
+            "customMappings",
+            "delay"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "reactnative",
+            "cloud"
+          ]
+        }
+      },
+      "Config": {
+        "appToken": "t1yurrb968zk",
+        "customMappings": [
+          {
+            "from": "Application Installed",
+            "to": "3fdmll"
+          },
+          {
+            "from": "First Investment",
+            "to": "tf4gm5"
+          }
+        ],
+        "environment": true
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://s2s.adjust.com/event",
+      "headers": {
+        "Accept": "*/*"
+      },
+      "params": {
+        "callback_params": "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3.k4\":\"v4\",\"key3.k5.k6\":\"v6\",\"key5[0].k\":\"v1\",\"key5[1].k\":\"v2\"}",
+        "revenue": 20.38,
+        "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "currency": "EUR",
+        "s2s": 1,
+        "app_token": "t1yurrb968zk",
+        "event_token": "tf4gm5",
+        "environment": "production"
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "21e13f4bc7ceddad"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "ID": "1i3Em7GMU9xVEiDlZUN8c88BMS9",
+      "Name": "ADJ",
+      "DestinationDefinition": {
+        "ID": "1i3DeZo6eSUKrS3KzDUqjbBPCDJ",
+        "Name": "ADJ",
+        "DisplayName": "Adjust",
+        "Config": {
+          "destConfig": {
+            "android": [
+              "useNativeSDK"
+            ],
+            "defaultConfig": [
+              "appToken",
+              "customMappings",
+              "delay",
+              "environment"
+            ],
+            "ios": [
+              "useNativeSDK"
+            ],
+            "reactnative": [
+              "useNativeSDK"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "appToken",
+            "customMappings",
+            "delay"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "reactnative",
+            "cloud"
+          ]
+        }
+      },
+      "Config": {
+        "appToken": "t1yurrb968zk",
+        "customMappings": [
+          {
+            "from": "Application Installed",
+            "to": "3fdmll"
+          },
+          {
+            "from": "First Investment",
+            "to": "tf4gm5"
+          }
+        ],
+        "environment": true
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  }
+]

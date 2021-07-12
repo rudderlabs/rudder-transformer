@@ -18,7 +18,11 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
-const { fetchKustomer, CustomError } = require("./util");
+const {
+  fetchKustomer,
+  handleAdvancedtransformations,
+  CustomError
+} = require("./util");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
@@ -177,6 +181,9 @@ const responseBuilderSimple = async (message, category, destination) => {
         break;
     }
     eventPayload = removeUndefinedAndNullValues(eventPayload);
+    if (destination.Config.advancedTransform) {
+      eventPayload = handleAdvancedtransformations(eventPayload);
+    }
     payload = {
       identity: {
         externalId: getFieldValueFromMessage(message, "userId")

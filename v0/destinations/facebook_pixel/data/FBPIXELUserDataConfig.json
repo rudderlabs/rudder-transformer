@@ -115,7 +115,7 @@
   },
   {
     "destKey": "client_ip_address",
-    "sourceKeys": ["request_ip", "context.ip"],
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": false
   },
   {

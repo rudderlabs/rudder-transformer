@@ -8,7 +8,10 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
@@ -41,13 +44,13 @@ const responseBuilderSimple = (payload, category, destination) => {
         response.body.FORM = responseBody;
         break;
       default:
-        throw new Error("Message format type not supported");
+        throw new CustomError("Message format type not supported", 400);
     }
 
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("Payload could not be constructed", 400);
 };
 
 const customTagProcessor = async (message, category, destination) => {
@@ -81,7 +84,10 @@ const customTagProcessor = async (message, category, destination) => {
       }
     );
   } catch (err) {
-    throw new Error("Failed to Create new Contact");
+    throw new CustomError(
+      "Failed to Create new Contact",
+      err.response.status || 400
+    );
   }
   const createdContact = res.data.contact;
 
@@ -394,7 +400,8 @@ const screenRequestHandler = async (message, category, destination) => {
       }
     );
   } catch (err) {}
-  if (res.status !== 200) throw new Error("Unable to fetch dest events");
+  if (res.status !== 200)
+    throw new CustomError("Unable to fetch dest events", res.status || 400);
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -424,7 +431,8 @@ const screenRequestHandler = async (message, category, destination) => {
       );
     } catch (err) {}
 
-    if (res.status !== 201) throw new Error("Unable to create dest event");
+    if (res.status !== 201)
+      throw new CustomError("Unable to create dest event", res.status || 400);
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -460,7 +468,8 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     );
   } catch (err) {}
-  if (res.status !== 200) throw new Error("Unable to fetch dest events");
+  if (res.status !== 200)
+    throw new CustomError("Unable to fetch dest events", res.status || 400);
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -490,7 +499,8 @@ const trackRequestHandler = async (message, category, destination) => {
       );
     } catch (err) {}
 
-    if (res.status !== 201) throw new Error("Unable to create dest event");
+    if (res.status !== 201)
+      throw new CustomError("Unable to create dest event", res.status || 400);
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -514,7 +524,10 @@ const trackRequestHandler = async (message, category, destination) => {
 // subsquent processing and transformations and the response is sent to rudder-server
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -537,7 +550,7 @@ const processEvent = async (message, destination) => {
       response = await trackRequestHandler(message, category, destination);
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   return response;
 };
@@ -547,4 +560,43 @@ const process = async event => {
   return result;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

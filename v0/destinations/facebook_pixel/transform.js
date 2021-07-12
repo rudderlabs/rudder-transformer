@@ -5,7 +5,8 @@ const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,
-  FB_PIXEL_DEFAULT_EXCLUSION
+  FB_PIXEL_DEFAULT_EXCLUSION,
+  STANDARD_ECOMM_EVENTS_TYPE
 } = require("./config");
 const { EventType } = require("../../../constants");
 
@@ -15,7 +16,10 @@ const {
   defaultRequestConfig,
   flattenJson,
   isObject,
-  extractCustomFields
+  extractCustomFields,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -89,23 +93,26 @@ const handleOrder = (message, categoryToContent) => {
   const contentIds = [];
   const contents = [];
   const { category } = message.properties;
-
-  for (let i = 0; i < products.length; i += 1) {
-    const pId =
-      products[i].product_id || products[i].sku || products[i].id || "";
-    contentIds.push(pId);
-    const content = {
-      id: pId,
-      quantity: products[i].quantity,
-      item_price: products[i].price
-    };
-    contents.push(content);
-  }
-  contents.forEach(content => {
-    if (content.id === "") {
-      throw Error("Product id is required. Event not sent");
+  if (products && products.length > 0 && Array.isArray(products)) {
+    for (let i = 0; i < products.length; i += 1) {
+      const pId =
+        products[i].product_id || products[i].sku || products[i].id || "";
+      contentIds.push(pId);
+      const content = {
+        id: pId,
+        quantity: products[i].quantity,
+        item_price: products[i].price
+      };
+      contents.push(content);
     }
-  });
+    contents.forEach(content => {
+      if (content.id === "") {
+        throw new CustomError("Product id is required. Event not sent", 400);
+      }
+    });
+  } else {
+    throw new CustomError("Product is not an object. Event not sent", 400);
+  }
   return {
     content_category: category,
     content_ids: contentIds,
@@ -129,7 +136,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   const contentIds = [];
   const contents = [];
   const { products } = message.properties;
-  if (Array.isArray(products)) {
+  if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
         const productId = product.product_id;
@@ -141,7 +148,7 @@ const handleProductListViewed = (message, categoryToContent) => {
           });
         }
       } else {
-        throw Error("Product is not an object. Event not sent");
+        throw new CustomError("Product is not an object. Event not sent", 400);
       }
     });
   }
@@ -158,7 +165,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   }
   contents.forEach(content => {
     if (content.id === "") {
-      throw Error("Product id is required. Event not sent");
+      throw new CustomError("Product id is required. Event not sent", 400);
     }
   });
   return {
@@ -203,7 +210,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   ];
   contents.forEach(content => {
     if (content.id === "") {
-      throw Error("Product id is required. Event not sent");
+      throw new CustomError("Product id is required. Event not sent", 400);
     }
   });
   return {
@@ -299,6 +306,7 @@ const transformedPayloadData = (
   ];
   blacklistPiiProperties = blacklistPiiProperties || [];
   whitelistPiiProperties = whitelistPiiProperties || [];
+  eventCustomProperties = eventCustomProperties || [];
   const customBlackListedPiiProperties = {};
   const customWhiteListedProperties = {};
   const customEventProperties = {};
@@ -358,10 +366,11 @@ const responseBuilderSimple = (message, category, destination) => {
     whitelistPiiProperties,
     limitedDataUSage,
     testDestination,
-    testEventCode
+    testEventCode,
+    standardPageCall
   } = Config;
 
-  const endpoint = `https://graph.facebook.com/v10.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
@@ -387,7 +396,7 @@ const responseBuilderSimple = (message, category, destination) => {
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw Error("Invalid Action Source type");
+      throw new CustomError("Invalid Action Source type", 400);
     }
   }
   if (category.type !== "identify") {
@@ -399,8 +408,14 @@ const responseBuilderSimple = (message, category, destination) => {
         FB_PIXEL_DEFAULT_EXCLUSION
       )
     );
+    if (standardPageCall && category.type === "page") {
+      category.standard = true;
+    }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw Error("No properties for the event so the event cannot be sent.");
+      throw new CustomError(
+        "No properties for the event so the event cannot be sent.",
+        400
+      );
     }
     customData = transformedPayloadData(
       message,
@@ -455,15 +470,23 @@ const responseBuilderSimple = (message, category, destination) => {
           };
           commonData.event_name = "InitiateCheckout";
           break;
+        case "page_view": // executed when sending track calls but with standard type PageView
+        case "page": // executed when page call is done with standard PageView turned on
+          customData = { ...customData };
+          commonData.event_name = "PageView";
+          break;
         default:
-          throw Error("This standard event does not exist");
+          throw new CustomError("This standard event does not exist", 400);
       }
-      customData.currency = message.properties.currency || "USD";
+      customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
+        ? message.properties.currency || "USD"
+        : undefined;
     } else {
-      if (category.type === "page") {
+      const { type } = category;
+      if (type === "page" || type === "screen") {
         commonData.event_name = message.name
-          ? `Viewed Page ${message.name}`
-          : "Viewed a Page";
+          ? `Viewed ${type} ${message.name}`
+          : `Viewed a ${type}`;
       }
       if (category.type === "simple track") {
         customData.value = message.properties
@@ -508,12 +531,15 @@ const responseBuilderSimple = (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("Payload could not be constructed", 400);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const { advancedMapping, eventsToEvents } = destination.Config;
   let standard;
@@ -527,8 +553,9 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw Error(
-          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent."
+        throw new CustomError(
+          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
+          400
         );
       }
     case EventType.PAGE:
@@ -571,13 +598,30 @@ const processEvent = (message, destination) => {
         case "InitiateCheckout":
           category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
           break;
+        case "AddToWishlist":
+        case "AddPaymentInfo":
+        case "Lead":
+        case "CompleteRegistration":
+        case "Contact":
+        case "CustomizeProduct":
+        case "Donate":
+        case "FindLocation":
+        case "Schedule":
+        case "StartTrial":
+        case "SubmitApplication":
+        case "Subscribe":
+          category = CONFIG_CATEGORIES.OTHER_STANDARD;
+          break;
+        case "PageView":
+          category = CONFIG_CATEGORIES.PAGE_VIEW;
+          break;
         default:
           category = CONFIG_CATEGORIES.SIMPLE_TRACK;
           break;
       }
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   // build the response
   return responseBuilderSimple(message, category, destination);
@@ -587,4 +631,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

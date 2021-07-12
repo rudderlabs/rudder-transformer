@@ -5,7 +5,10 @@ const {
   getHashFromArray,
   getFieldValueFromMessage,
   isBlank,
-  isDefined
+  isDefined,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 async function process(ev) {
@@ -14,7 +17,7 @@ async function process(ev) {
   const { customMappings, trackingId } = destination.Config;
 
   if (!event) {
-    throw new Error(" Cannot process if no event name specified");
+    throw new CustomError(" Cannot process if no event name specified", 400);
   }
 
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
@@ -34,7 +37,7 @@ async function process(ev) {
       !MANDATORY_PROPERTIES.includes(key.toUpperCase())
     ) {
       if (!isDefined(value)) {
-        throw new Error(`Mapped property ${keyMap[key]} not found`);
+        throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
       }
       // all the values inside property has to be sent as strings
       outputEvent.properties[_.camelCase(key)] = String(value);
@@ -43,7 +46,10 @@ async function process(ev) {
         (!isDefinedAndNotNull(value) || isBlank(value)) &&
         key.toUpperCase() !== "ITEM_ID"
       ) {
-        throw new Error(`Null values cannot be sent for ${keyMap[key]} `);
+        throw new CustomError(
+          `Null values cannot be sent for ${keyMap[key]} `,
+          400
+        );
       }
       if (
         !(
@@ -65,7 +71,7 @@ async function process(ev) {
       } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
         outputEvent[_.camelCase(key)] = parseFloat(value);
-      } else throw new Error(" EVENT_VALUE should be a float value");
+      } else throw new CustomError(" EVENT_VALUE should be a float value", 400);
     }
   });
   // manipulate for itemId
@@ -94,4 +100,43 @@ async function process(ev) {
   };
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

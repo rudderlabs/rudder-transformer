@@ -5,7 +5,10 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 const handleProperties = properties => {
@@ -19,7 +22,9 @@ const handleProperties = properties => {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       if (cur.length > 0) {
+        // array for primitive type
         const pArr = [];
+        // array for storing the objects of the array
         const cArr = [];
         cur.forEach(item => {
           if (Object(item) !== item) {
@@ -40,43 +45,54 @@ const handleProperties = properties => {
 
         // handle object array
         if (cArr.length > 0) {
+          // take the first element
           const fel = cArr[0];
           const objectMap = {};
 
+          // take the keys from the first element and store
+          // we're expecting all the objects of the array are same
+          // we'll discard if a new item is found later on
           Object.keys(fel).forEach(key => {
             // discarding nested objects and arrays for array of objects
             // only allowing primitive times for array of objects
             if (Object(fel[key]) !== fel[key]) {
+              // initiate empty arrays for each of the
+              // properties from the object
               objectMap[key] = [];
             }
           });
 
+          // now iterate over the cArr
           for (i = 0, l = cArr.length; i < l; i += 1) {
             const el = cArr[i];
             Object.keys(el).forEach(k => {
               if (Object.keys(objectMap).indexOf(k) !== -1) {
+                // if the key is in the objectMap -
+                // in other words, the key was present in the first element of the array
                 objectMap[k].push(el[k]);
               }
             });
           }
 
+          // fonally add the stringified arrays to the final result
           Object.keys(objectMap).forEach(key => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
-      } else {
-        result[prop] = [];
       }
+      // else {
+      // result[prop] = [];
+      // }
     } else {
-      let isEmpty = true;
+      // let isEmpty = true;
       Object.keys(cur).forEach(key => {
-        isEmpty = false;
+        // isEmpty = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
 
-      if (isEmpty && prop) {
-        result[prop] = {};
-      }
+      // if (isEmpty && prop) {
+      //   result[prop] = {};
+      // }
     }
   };
 
@@ -105,12 +121,15 @@ const responseBuilderSimple = (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("Payload could not be constructed", 400);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
   const formattedMessage = message;
@@ -134,7 +153,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   // append context.page to properties for page, track
@@ -175,4 +194,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

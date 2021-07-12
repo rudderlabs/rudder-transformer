@@ -12,7 +12,10 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
-  flattenJson
+  flattenJson,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 function responseBuilderSimple(message, category, destination) {
@@ -31,7 +34,7 @@ function responseBuilderSimple(message, category, destination) {
       response.endpoint = `${endpointIND[category.type]}${apiId}`;
       break;
     default:
-      throw new Error("The region is not valid");
+      throw new CustomError("The region is not valid", 400);
   }
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
@@ -75,20 +78,23 @@ function responseBuilderSimple(message, category, destination) {
         ];
         break;
       default:
-        throw new Error("Call type is not valid");
+        throw new CustomError("Call type is not valid", 400);
     }
 
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
     // fail-safety for developer error
-    throw new Error("Payload could not be constructed");
+    throw new CustomError("Payload could not be constructed", 400);
   }
   return response;
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
 
   const messageType = message.type.toLowerCase();
@@ -120,7 +126,7 @@ const processEvent = (message, destination) => {
       response = responseBuilderSimple(message, category, destination);
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   return response;
@@ -130,4 +136,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

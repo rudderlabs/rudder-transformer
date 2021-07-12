@@ -11,7 +11,10 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 function getCompanyAttribute(company) {
@@ -64,7 +67,7 @@ function validateIdentify(message, payload) {
 
     return finalPayload;
   }
-  throw new Error("Email or userId is mandatory");
+  throw new CustomError("Email or userId is mandatory", 400);
 }
 
 function validateTrack(message, payload) {
@@ -81,7 +84,7 @@ function validateTrack(message, payload) {
     }
     return { ...payload, metadata };
   }
-  throw new Error("Email or userId is mandatory");
+  throw new CustomError("Email or userId is mandatory", 400);
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -99,7 +102,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       );
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -115,7 +118,10 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -131,7 +137,7 @@ function processSingleMessage(message, destination) {
     //   category = ConfigCategory.GROUP;
     //   break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
 
   // build the response and return
@@ -144,9 +150,51 @@ function process(event) {
   try {
     response = processSingleMessage(event.message, event.destination);
   } catch (error) {
-    throw new Error(error.message || "Unknown error");
+    throw new CustomError(
+      error.message || "Unknown error",
+      error.status || 400
+    );
   }
   return response;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

@@ -37,7 +37,7 @@ async function getSFDCHeader(destination) {
   } catch (error) {
     logger.error(error);
     throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${error.message}`,
+      `[sf] SALESFORCE AUTH FAILED: ${error.message}`,
       error.status || 400
     );
   }
@@ -143,7 +143,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     const email = getFieldValueFromMessage(message, "email");
 
     if (!email) {
-      throw new CustomError("Invalid Email address for Lead Objet", 400);
+      throw new CustomError("[sf] Invalid Email address for Lead Objet", 400);
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
@@ -178,7 +178,7 @@ async function processIdentify(message, authorizationData, mapProperty) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError("Invalid traits for Salesforce request", 400);
+    throw new CustomError("[sf] Invalid traits for Salesforce request", 400);
   }
 
   // if traits is correct, start processing
@@ -213,7 +213,7 @@ async function processSingleMessage(message, authorizationData, mapProperty) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, mapProperty);
   } else {
-    throw new CustomError(`message type ${message.type} is not supported`, 400);
+    throw new CustomError("Message type not supported", 400);
   }
   return response;
 }

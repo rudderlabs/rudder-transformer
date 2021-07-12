@@ -21,6 +21,9 @@
     "[sfmc] Could not retrieve authorisation token": 400,
     "[sfmc] Either userId or email is required": 602,
     "[sfmc] Creating or updating contacts is disabled": 602,
-    "[sfmc] Event not mapped for this track call": 602
+    "[sfmc] Event not mapped for this track call": 602,
+    "[sf] SALESFORCE AUTH FAILED": 400,
+    "[sf] Invalid Email address for Lead Objet": 602,
+    "[sf] Invalid traits for Salesforce request": 602
   }
 }

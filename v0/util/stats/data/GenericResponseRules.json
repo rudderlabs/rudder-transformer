@@ -28,6 +28,10 @@
     "[mailchimp] User does not have access to the requested operation": 602,
     "[iterable] userId or email is mandatory for this request": 602,
     "[iterable] Invalid page call": 603,
-    "[iterable] Invalid screen call": 603
+    "[iterable] Invalid screen call": 603,
+    "[intercom] Email or userId is mandatory": 602,
+    "[hubspot] Failed to get hubspot properties": 400,
+    "[hubspot] Failed to get hubspot properties : indvalid response": 400,
+    "[hubspot] Identify without email is not supported": 602
   }
 }

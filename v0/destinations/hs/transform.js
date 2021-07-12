@@ -37,14 +37,18 @@ async function getProperties(destination) {
 
       if (err.response) {
         throw new CustomError(
-          JSON.stringify(err.response.data) ||
-            JSON.stringify(err.response.statusText) ||
-            "Failed to get hubspot properties",
+          `[hubspot] Failed to get hubspot properties ${JSON.stringify(
+            err.response.data
+          )}` ||
+            `[hubspot] Failed to get hubspot properties ${JSON.stringify(
+              err.response.statusText
+            )}` ||
+            "[hubspot] Failed to get hubspot properties",
           err.response.status || 500
         );
       }
       throw new CustomError(
-        "Failed to get hubspot properties : indvalid response",
+        "[hubspot] Failed to get hubspot properties : indvalid response",
         500
       );
     }
@@ -158,7 +162,10 @@ async function processTrack(message, destination) {
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !traits.email) {
-    throw new CustomError("Identify without email is not supported.", 400);
+    throw new CustomError(
+      "[hubspot] Identify without email is not supported",
+      400
+    );
   }
   const userProperties = await getTransformedJSON(
     message,
@@ -178,7 +185,7 @@ async function processSingleMessage(message, destination) {
   let response;
 
   if (!message.type) {
-    throw new CustomError("message type not present", 400);
+    throw new CustomError("Message Type is not present, aborting message", 400);
   }
 
   switch (message.type) {
@@ -189,10 +196,7 @@ async function processSingleMessage(message, destination) {
       response = await processIdentify(message, destination);
       break;
     default:
-      throw new CustomError(
-        `message type ${message.type} is not supported`,
-        400
-      );
+      throw new CustomError("Message type not supported", 400);
   }
 
   return response;
@@ -230,7 +234,7 @@ const processRouterDest = async inputs => {
         return getErrorRespEvents(
           [input.metadata],
           error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

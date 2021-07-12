@@ -191,6 +191,6 @@
     ],
     "batched": false,
     "statusCode": 429,
-    "error": "{\"status\":\"error\",\"message\":\"Request Rate Limit reached\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"RATE-LIMIT_REACHED\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
+    "error": "[hubspot] Failed to get hubspot properties {\"status\":\"error\",\"message\":\"Request Rate Limit reached\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"RATE-LIMIT_REACHED\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
   }
 ]

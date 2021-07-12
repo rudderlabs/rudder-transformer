@@ -67,7 +67,7 @@ function validateIdentify(message, payload) {
 
     return finalPayload;
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new CustomError("[intercom] Email or userId is mandatory", 400);
 }
 
 function validateTrack(message, payload) {
@@ -84,7 +84,7 @@ function validateTrack(message, payload) {
     }
     return { ...payload, metadata };
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new CustomError("[intercom] Email or userId is mandatory", 400);
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -118,10 +118,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("Message Type is not present, aborting message", 400);
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -184,12 +181,13 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

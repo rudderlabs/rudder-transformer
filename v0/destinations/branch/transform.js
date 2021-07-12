@@ -22,16 +22,9 @@ function responseBuilder(payload, message, destination, category) {
       payload.idfa = get(message, "context.device.advertisingId");
       payload.idfv = get(message, "context.device.id");
     } else if (os.toLowerCase() === "android") {
-      payload.advertising_id = get(
-        message,
-        "context.device.advertisingId"
-      );
+      payload.android_id = get(message, "context.device.id");
+      payload.aaid = get(message, "context.device.advertisingId");
     }
-  }
-
-  const att = get(message, "context.device.attTrackingStatus");
-  if (isDefinedAndNotNull(att)) {
-    payload.att = att;
   }
 
   const response = defaultRequestConfig();

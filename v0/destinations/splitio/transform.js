@@ -85,7 +85,10 @@ function prepareResponse(message, destination, category) {
         throw new CustomError("Message type not supported", 400);
     }
   } else {
-    throw new CustomError("eventTypeId does not match with ideal format", 400);
+    throw new CustomError(
+      "[splitio] eventTypeId does not match with ideal format",
+      400
+    );
   }
   if (isDefinedAndNotNullAndNotEmpty(environment)) {
     outputPayload.environmentName = environment;
@@ -98,10 +101,7 @@ function prepareResponse(message, destination, category) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("Message Type is not present, aborting message", 400);
   }
   const category = CONFIG_CATEGORIES.EVENT;
   const response = prepareResponse(message, destination, category);
@@ -139,6 +139,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

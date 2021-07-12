@@ -1,6 +1,6 @@
 [
   {
-    "error": "Creating or updating contacts is disabled"
+    "error": "[sfmc] Creating or updating contacts is disabled"
   },
   [
     {
@@ -62,10 +62,10 @@
     }
   ],
   {
-    "error": "Either userId or email is required"
+    "error": "[sfmc] Either userId or email is required"
   },
   {
-    "error": "Message Type is not present. Aborting message."
+    "error": "Message Type is not present, aborting message"
   },
   {
     "error": "Message type not supported"
@@ -220,10 +220,10 @@
     "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Uuid:50360b9c-ea8d-409c-b672-c9230f91cce5"
   },
   {
-    "error": "Event not mapped for this track call"
+    "error": "[sfmc] Event not mapped for this track call"
   },
   {
-    "error": "Either userId or email is required"
+    "error": "[sfmc] Either userId or email is required"
   },
   {
     "body": {

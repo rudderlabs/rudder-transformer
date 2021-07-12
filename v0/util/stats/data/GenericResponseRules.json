@@ -16,7 +16,11 @@
     "[Trengo] LookupContact failed for term: %skip% track event failed": 400,
     "[Trengo] No contact found for term: %skip% track event failed": 602,
     "[Trengo] Error occured in parsing event template": 400,
-    "[Trengo] Cound not process event, missing mandatory field channelId": 603
-
+    "[Trengo] Cound not process event, missing mandatory field channelId": 603,
+    "[splitio] eventTypeId does not match with ideal format": 602,
+    "[sfmc] Could not retrieve authorisation token": 400,
+    "[sfmc] Either userId or email is required": 602,
+    "[sfmc] Creating or updating contacts is disabled": 602,
+    "[sfmc] Event not mapped for this track call": 602
   }
 }

@@ -35,9 +35,12 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     if (resp && resp.data) {
       return resp.data.access_token;
     }
-    throw new CustomError("Could not retrieve authorisation token", 400);
+    throw new CustomError("[sfmc] Could not retrieve authorisation token", 400);
   } catch (error) {
-    throw new CustomError(error.response.statusText, error.response.status);
+    throw new CustomError(
+      `[sfmc] Could not retrieve authorisation token ${error.response.statusText}`,
+      error.response.status
+    );
   }
 };
 
@@ -52,7 +55,7 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new CustomError("Either userId or email is required", 400);
+    throw new CustomError("[sfmc] Either userId or email is required", 400);
   }
   response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
@@ -79,7 +82,7 @@ const responseBuilderForInsertData = (
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new CustomError("Either userId or email is required", 400);
+    throw new CustomError("[sfmc] Either userId or email is required", 400);
   }
 
   const response = defaultRequestConfig();
@@ -193,7 +196,10 @@ const responseBuilderSimple = async (message, category, destination) => {
   }
 
   if (category.type === "identify" && createOrUpdateContacts) {
-    throw new CustomError("Creating or updating contacts is disabled", 400);
+    throw new CustomError(
+      "[sfmc] Creating or updating contacts is disabled",
+      400
+    );
   }
 
   if (
@@ -212,15 +218,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new CustomError("Event not mapped for this track call", 400);
+  throw new CustomError("[sfmc] Event not mapped for this track call", 400);
 };
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("Message Type is not present, aborting message", 400);
   }
 
   const messageType = message.type.toLowerCase();

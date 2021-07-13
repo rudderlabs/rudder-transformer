@@ -11,7 +11,6 @@ const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 require("dotenv").config();
 
-
 const versions = ["v0"];
 const API_VERSION = "1";
 
@@ -56,15 +55,16 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
-
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
 
-
-  const metaTags = events && events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+  const metaTags =
+    events && events.length && events[0].metadata
+      ? getMetadata(events[0].metadata)
+      : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
     version,
@@ -103,7 +103,11 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version, ...metaTags });
+        stats.increment("dest_transform_errors", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       }
     })
   );
@@ -146,13 +150,22 @@ if (startDestTransformer) {
         await handleDest(ctx, version, destination);
         // Assuming that events are from one single source
 
-        let metaTags = ctx.request.body && ctx.request.body.length && ctx.request.body[0].metadata ? getMetadata(ctx.request.body[0].metadata) : {};
+        let metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
           version,
           ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
@@ -160,13 +173,22 @@ if (startDestTransformer) {
         await handleDest(ctx, version, destination);
         // Assuming that events are from one single source
 
-        let metaTags = ctx.request.body && ctx.request.body.length && ctx.request.body[0].metadata ? getMetadata(ctx.request.body[0].metadata) : {};
+        const metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
           version,
           ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version, ...metaTags });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       router.post("/routerTransform", async ctx => {
         await routerHandleDest(ctx);
@@ -191,7 +213,10 @@ if (startDestTransformer) {
           return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(events, event => event.metadata.destinationId + '_' + event.metadata.sourceId );
+        groupedEvents = _.groupBy(
+          events,
+          event => event.metadata.destinationId + "_" + event.metadata.sourceId
+        );
       }
       stats.counter(
         "user_transform_function_group_size",
@@ -227,7 +252,10 @@ if (startDestTransformer) {
             messageIds
           };
 
-          const metaTags = destEvents.length && destEvents[0].metadata ? getMetadata(destEvents[0].metadata) : {};
+          const metaTags =
+            destEvents.length && destEvents[0].metadata
+              ? getMetadata(destEvents[0].metadata)
+              : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -400,7 +428,7 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.get("/features", ctx =>{
+router.get("/features", ctx => {
   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
   ctx.body = JSON.stringify(obj);
 });

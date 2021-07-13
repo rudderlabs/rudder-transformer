@@ -921,7 +921,7 @@ const processRouterDest = inputs => {
       return getErrorRespEvents(
         [input.metadata],
         error.response ? error.response.status : error.code ? error.code : 400,
-        error.message || "Error occurred while processing payload."
+        error.message || "Error occurred while processing payload"
       );
     }
   });

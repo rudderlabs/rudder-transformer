@@ -434,7 +434,7 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
       error.response ? error.response.status : 500, // default to retryable
-      error.message || "Error occurred while processing payload."
+      error.message || "Error occurred while processing payload"
     );
     return [respEvents];
   }
@@ -468,7 +468,7 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 500,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

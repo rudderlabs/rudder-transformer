@@ -177,7 +177,7 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload"
         );
       }
     })

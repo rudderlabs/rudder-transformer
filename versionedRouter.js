@@ -100,7 +100,7 @@ async function handleDest(ctx, version, destination) {
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
+          error: error.message || "Error occurred while processing payload"
         });
         stats.increment("dest_transform_errors", 1, { destination, version, ...metaTags });
       }
@@ -349,7 +349,7 @@ async function handleSource(ctx, version, source) {
         logger.error(error);
         respList.push({
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
+          error: error.message || "Error occurred while processing payload"
         });
         stats.counter("source_transform_errors", events.length, {
           source,
@@ -420,7 +420,7 @@ router.post("/batch", ctx => {
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
       response.errors.push(
-        error.message || "Error occurred while processing payload."
+        error.message || "Error occurred while processing payload"
       );
     }
   });

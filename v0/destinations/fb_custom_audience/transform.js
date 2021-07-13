@@ -408,7 +408,7 @@ const processRouterDest = inputs => {
         [input.metadata],
         // eslint-disable-next-line no-nested-ternary
         400,
-        error.message || "Error occurred while processing payload."
+        error.message || "Error occurred while processing payload"
       );
     }
   });

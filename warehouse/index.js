@@ -195,7 +195,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
-      if (isObject(input[key]) && (options.sourceCategory == 'cloud' && level == 3)) {
+      if (options.sourceCategory === 'cloud' && level >= 3 && isObject(input[key])) {
         val = JSON.stringify(val);
       }
       

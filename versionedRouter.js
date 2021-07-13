@@ -63,7 +63,7 @@ async function handleDest(ctx, version, destination) {
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
 
-  const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+  const metaTags = events && events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
     version,
@@ -144,7 +144,7 @@ if (startDestTransformer) {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
         // Assuming that events are from one single source
-        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
+        let metaTags = ctx.request.body && ctx.request.body.length && ctx.request.body[0].metadata ? getMetadata(ctx.request.body[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
           version,
@@ -157,7 +157,7 @@ if (startDestTransformer) {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
         // Assuming that events are from one single source
-        let metaTags = ctx.request.body.events.length && ctx.request.body.events[0].metadata ? getMetadata(ctx.request.body.events[0].metadata) : {};
+        let metaTags = ctx.request.body && ctx.request.body.length && ctx.request.body[0].metadata ? getMetadata(ctx.request.body[0].metadata) : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
           version,

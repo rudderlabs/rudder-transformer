@@ -150,7 +150,7 @@ if (startDestTransformer) {
         await handleDest(ctx, version, destination);
         // Assuming that events are from one single source
 
-        let metaTags =
+        const metaTags =
           ctx.request.body &&
           ctx.request.body.length &&
           ctx.request.body[0].metadata

@@ -732,6 +732,71 @@ describe("handle recordId from cloud sources", () => {
   });
 });
 
+describe("handle level three nested events from sources", () => {
+  it("should stringify event properties whose level ge 3 for cloud sources",() => {
+    const i = input("track");
+    i.metadata = { sourceCategory: "cloud" };
+    i.message.properties = Object.assign(
+      i.message.properties,
+      {
+        n0: {
+          prop0: "prop level 0",
+          n1: {
+            prop1: "prop level 1",
+            n2: {
+              prop2: "prop level 2",
+              n3: {
+                prop3: "prop level 3",
+                n4: { prop4: "prop level 4" }
+              }
+            }
+          }
+        }
+      }
+    );
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+    });
+  });
+
+  it("should not stringify event properties whose level ge 3 for non cloud sources",() => {
+    const i = input("track");
+    i.message.properties = Object.assign(
+      i.message.properties,
+      {
+        n0: {
+          prop0: "prop level 0",
+          n1: {
+            prop1: "prop level 1",
+            n2: {
+              prop2: "prop level 2",
+              n3: {
+                prop3: "prop level 3",
+                n4: { prop4: "prop level 4" }
+              }
+            }
+          }
+        }
+      }
+    );
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+    });
+  });
+});
+
 
 describe("Handle no of columns in an event", () => {
 

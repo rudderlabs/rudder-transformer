@@ -32,7 +32,8 @@
           "manufacturer": "Google",
           "model": "AOSP on IA Emulator",
           "name": "generic_x86_arm",
-          "type": "ios"
+          "type": "ios",
+          "attTrackingStatus": 3
         },
         "ip": "0.0.0.0",
         "library": {
@@ -103,7 +104,8 @@
           "manufacturer": "Google",
           "model": "AOSP on IA Emulator",
           "name": "generic_x86_arm",
-          "type": "Android"
+          "type": "Android",
+          "attTrackingStatus": 2
         },
         "ip": "0.0.0.0",
         "library": {

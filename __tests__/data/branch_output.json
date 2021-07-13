@@ -15,6 +15,7 @@
         "name": "ADD_TO_CART",
         "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
         "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "limit_ad_tracking": false,
         "content_items": [
           {
             "$product_name": "sampath"
@@ -50,6 +51,7 @@
         "name": "sampath",
         "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
         "aaid": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "limit_ad_tracking": true,
         "custom_data": {
           "anonymousId": "sampath",
           "email": "sampath@gmail.com"

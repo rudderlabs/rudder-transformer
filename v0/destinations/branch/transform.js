@@ -27,6 +27,15 @@ function responseBuilder(payload, message, destination, category) {
     }
   }
 
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att == 3) {
+      payload.limit_ad_tracking = false;
+    } else if (att == 2) {
+      payload.limit_ad_tracking = true;
+    }
+  }
+
   const response = defaultRequestConfig();
 
   if (category === "custom") {

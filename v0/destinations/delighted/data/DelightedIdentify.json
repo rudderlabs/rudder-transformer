@@ -1,0 +1,22 @@
+[
+    {
+        "destKey": "email",
+        "sourceKeys": "email",
+        "required": false
+    },
+    {
+        "destKey": "name",
+        "sourceKeys":"name",
+        "required": false
+    },
+    {
+        "destKey": "phone_number",
+        "sourceKeys": "phone",
+        "required":false
+    },
+    {
+        "destKey": "channel",
+        "sourceKeys": "channel",
+        "required":false
+    }
+]

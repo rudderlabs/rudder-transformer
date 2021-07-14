@@ -28,7 +28,7 @@ async function getSFDCHeader(destination) {
     destination.Config.userName
   }&password=${encodeURIComponent(
     destination.Config.password
-  )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+  )}&client_id=${
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
   let response;
@@ -118,6 +118,14 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   // define default map
   const salesforceMaps = [];
 
+  const contactId = get(message, "properties.contactId");
+  const salesforceTrue = get(message, "properties.salesforce", { default: false });
+  logger.info("salesforce: ", salesforceTrue);
+  if (contactId && salesforceTrue) {
+	  salesforceMaps.push({salesforceType: "Event"})
+		              
+  }
+
   // get externalId
   const externalIds = get(message, "context.externalId");
 
@@ -205,13 +213,54 @@ async function processIdentify(message, authorizationData, mapProperty) {
 
   return responseData;
 }
+//
+// Function for handling track events
+async function processTrack(message, authorizationData, mapProperty) {
+
+  logger.info("in processTrack");
+  const traits = {
+	"Who": {
+        "attributes": {"type": "Contact"},
+        "ID__c": get(message, "properties.contactId")
+        },
+        "Subject": get(message, "event"),
+        "StartDateTime": get(message, "originalTimestamp"),
+        "EndDateTime": get(message, "originalTimestamp")
+    }
+
+  const responseData = [];
+
+  // get salesforce object map
+  const salesforceMaps = await getSalesforceIdFromPayload(
+    message,
+    authorizationData
+  );
+
+  // iterate over the object types found
+  salesforceMaps.forEach(salesforceMap => {
+    // finally build the response and push to the list
+    responseData.push(
+      responseBuilderSimple(
+        traits,
+        salesforceMap,
+        authorizationData,
+        mapProperty
+      )
+    );
+  });
+
+  return responseData;
+}
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 async function processSingleMessage(message, authorizationData, mapProperty) {
   let response;
+  //logger.info("in processSingleMessage, type=", message.type);
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, mapProperty);
+  } else if (message.type === EventType.TRACK) {
+    response = await processTrack(message, authorizationData, mapProperty);
   } else {
     throw new CustomError(`message type ${message.type} is not supported`, 400);
   }

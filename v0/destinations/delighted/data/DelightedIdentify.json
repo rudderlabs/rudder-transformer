@@ -1,22 +1,17 @@
 [
     {
         "destKey": "email",
-        "sourceKeys": "email",
+        "sourceKeys": ["traits.email","context.traits.email"],
         "required": false
     },
     {
         "destKey": "name",
-        "sourceKeys":"name",
+        "sourceKeys":["traits.name","context.traits.name"],
         "required": false
     },
     {
         "destKey": "phone_number",
-        "sourceKeys": "phone",
-        "required":false
-    },
-    {
-        "destKey": "channel",
-        "sourceKeys": "channel",
+        "sourceKeys": ["traits.phone","context.traits.phone"],
         "required":false
     }
 ]

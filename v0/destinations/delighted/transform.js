@@ -40,14 +40,14 @@ const identifyResponseBuilder = async (message, { destination }) => {
     if(channel == "email"){
         if(!ValidateEmail(userId)){
             throw new CustomError(
-                "Email format is not correct",
+                "Email format is not correct.",
                 400
             );
         }
     }else if(channel === "phone"){
         if(!ValidatePhone(userId)){
             throw new CustomError(
-                "Phone number format must be in E.164",
+                "Phone number format must be E.164.",
                 400
             );
         }

@@ -26,7 +26,7 @@ function ValidatePhone(phone){
 }
 
 const identifyResponseBuilder = async (message, { destination }) => {
-    const userId = getFieldValueFromMessage(message, "userId");
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
       throw new CustomError(
         "userId is required for identify",
@@ -35,7 +35,6 @@ const identifyResponseBuilder = async (message, { destination }) => {
     }
     let channel = getDestinationExternalID(message, "delightedChannelType") || destination.Config.channel;
     channel = channel.toLowerCase();
-    let payload = constructPayload(message, identifyMapping);
 
     //validate userId
     if(channel == "email"){
@@ -54,19 +53,17 @@ const identifyResponseBuilder = async (message, { destination }) => {
         }
     }
 
-    
-    //let payload = constructPayload(message, identifyMapping);
+    let payload = constructPayload(message, identifyMapping);
 
     payload.send = false;
     payload.channel = channel;
     payload.delay = destination.Config.delay || message.context.traits.delay || 0 ;
     //payload.last_sent_at = message.timestamp;
 
-    let name;
     if(!payload.name){
         const fName = getFieldValueFromMessage(message, "firstName" );
         const lName = getFieldValueFromMessage(message, "lastName");
-        name= fName.concat(lName);
+        let name= fName.concat(lName);
         if(name)
             payload.name = name;
         else

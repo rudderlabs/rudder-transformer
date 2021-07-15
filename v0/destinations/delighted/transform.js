@@ -52,7 +52,7 @@ const identifyResponseBuilder = async (message, { destination }) => {
     channel = channel.toLowerCase();
 
     //validate userId
-    if(channel == "email"){
+    if(channel === "email"){
         if(!ValidateEmail(userId)){
             throw new CustomError(
                 "Email format is not correct.",
@@ -115,7 +115,7 @@ const trackResponseBuilder = (message, {destination}) => {
     //check if the event sent in message is configured on RS dashboard
     let found = false;
     for(let i =0 ; i < eventList.length && !found ; i++){
-        if(eventList[i].toLowerCase() == event.toLowerCase()){
+        if(eventList[i].toLowerCase() === event.toLowerCase()){
             found=true;
             break;
         }
@@ -141,7 +141,7 @@ const trackResponseBuilder = (message, {destination}) => {
 
     let getpayload;
     //validate userId and get GET payload build
-    if(channel == "email"){
+    if(channel === "email"){
         if(!ValidateEmail(userId)){
             throw new CustomError(
                 "Email format is not correct.",
@@ -167,7 +167,7 @@ const trackResponseBuilder = (message, {destination}) => {
                 "Content-Type" : "application/json"
             }
         });
-        if(!getresponse || getresponse.status != 200 || getresponse.body.JSON.length == 0 ){
+        if(!getresponse || getresponse.status != 200 || getresponse.body.JSON.length === 0 ){
             throw new CustomError(` ${userId} not found. Try to create user first using identify`,400);
         }
     } catch(error){
@@ -185,7 +185,7 @@ const trackResponseBuilder = (message, {destination}) => {
         );
     }
 
-    let payload = constructPayload(message, trackMapping);
+    let payload = constructPayload(message, identifyMapping); //mapping values are same no need to create separate file for track
 
     payload.send = true;
     payload.channel = channel;

@@ -21,7 +21,7 @@
     "merge-check": "npm run verify || exit 1; codecov",
     "start": "node destTransformer.js",
     "test": "npx jest --runInBand --detectOpenHandles --coverage --notify",
-    "testVersioned": "npx jest versionedRouter --destName=all --type=all",
+    "testVersioned": "npx jest versionedRouter --destName=braze --type=batch",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
   },
   "dependencies": {

@@ -82,7 +82,7 @@ async function handleDest(ctx, version, destination) {
             respEvents = [respEvents];
           }
           respList.push(
-            ...respEvents.map(async ev => {
+            ...respEvents.map(ev => {
               let { userId } = ev;
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;

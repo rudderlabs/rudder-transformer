@@ -25,19 +25,18 @@ function ValidatePhone(phone){
     return phoneformat.test(String(phone));
 }
 
-function getEventList(config) {
-    let event;
-    const eventList = [] ;
-    const key = "en" ; // in webapp all the event names must be under key "en"
-    if(config) {
-        config.forEach(obj => {
-            event = obj[key];
-            if(event) {
-                eventList.push(event);
-            }
-        });
+function getEventList(destination,eventList) {
+    destination.Config.eventNameSettings.forEach(eventName => {
+    if (
+      eventName.event
+        ? eventName.event.trim().length !== 0
+          ? eventName.event
+          : undefined
+        : undefined
+    ) {
+      eventList.push(eventName.event.toLowerCase());
     }
-    return eventList;
+  });
 }
 
 const identifyResponseBuilder = async (message, { destination }) => {
@@ -110,23 +109,16 @@ const identifyResponseBuilder = async (message, { destination }) => {
 
 const trackResponseBuilder = (message, {destination}) => {
     let event = getValueFromMessage(message,"event");
-    const eventList = getEventList(destination.Config);
+    const eventList = [];
+    getEventList(destination,eventList);
 
-    //check if the event sent in message is configured on RS dashboard
-    let found = false;
-    for(let i =0 ; i < eventList.length && !found ; i++){
-        if(eventList[i].toLowerCase() === event.toLowerCase()){
-            found=true;
-            break;
-        }
-    }
-    if(!found){
+    if( ! eventList.includes(event) ){
         throw new CustomError(
-            "Event received is not configured on your Rudderstack dasboard.",
+            "Event received is not configured on your Rudderstack dashboard",
             400
         );
     }
-
+    
     //getting the userId
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
@@ -167,7 +159,7 @@ const trackResponseBuilder = (message, {destination}) => {
                 "Content-Type" : "application/json"
             }
         });
-        if(!getresponse || getresponse.status != 200 || getresponse.body.JSON.length === 0 ){
+        if(!getresponse || getresponse.status !== 200 || getresponse.body.JSON.length === 0 ){
             throw new CustomError(` ${userId} not found. Try to create user first using identify`,400);
         }
     } catch(error){

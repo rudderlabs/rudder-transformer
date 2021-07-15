@@ -107,6 +107,7 @@ async function handleDest(ctx, version, destination) {
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
+  return ctx.body;
 }
 
 async function routerHandleDest(ctx) {
@@ -115,7 +116,7 @@ async function routerHandleDest(ctx) {
   if (!routerDestHandler || !routerDestHandler.processRouterDest) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support router transform`;
-    return;
+    return null;
   }
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
@@ -126,6 +127,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  return ctx.body;
 }
 
 if (startDestTransformer) {
@@ -380,13 +382,13 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.post("/batch", ctx => {
+const batchHandler = async ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
   if (!destHandler || !destHandler.batch) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support batching`;
-    return;
+    return null;
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
@@ -405,9 +407,14 @@ router.post("/batch", ctx => {
   if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;
-    return;
+    return null;
   }
   ctx.body = response.batchedRequests;
+  return ctx.body;
+};
+
+router.post("/batch", async ctx => {
+  await batchHandler(ctx);
 });
 
-module.exports = router;
+module.exports = { router, routerHandleDest, handleDest, batchHandler };

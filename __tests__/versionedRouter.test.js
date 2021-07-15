@@ -23,7 +23,7 @@ if (destArg && typeArg) {
   
   if (type === "router") {
     it(`Testing: routerHandleDest`, async () => {
-      const output = await vRouter.routerHandleDest(JSON.parse(reqBody));
+      const output = await vRouter.routerHandleDest(reqBody);
       expect(output).toEqual(respBody);
     });
   } else if (type === "process") {

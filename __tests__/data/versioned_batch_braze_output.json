@@ -1,0 +1,1129 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/identify",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "partner": "RudderStack",
+          "aliases_to_identify": [
+            {
+              "user_alias": {
+                "alias_name": "ruchira",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "moitra",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      }
+    ],
+    "destination": {
+      "ID": "a"
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/identify",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "partner": "RudderStack",
+          "aliases_to_identify": [
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "hello",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      }
+    ],
+    "destination": {
+      "ID": "a"
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/identify",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer b9a4eded-992d-403f-ba31-974705306c74"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "partner": "RudderStack",
+          "aliases_to_identify": [
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            },
+            {
+              "user_alias": {
+                "alias_name": "3f6c2ed1-415c-4f6a-ba27-843008291066",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "03a4d996-4c49-4079-964b-daba14e752a2"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      },
+      {
+        "job_id": 1
+      }
+    ],
+    "destination": {
+      "ID": "a"
+    }
+  }
+]

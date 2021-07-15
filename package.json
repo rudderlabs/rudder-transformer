@@ -21,6 +21,7 @@
     "merge-check": "npm run verify || exit 1; codecov",
     "start": "node destTransformer.js",
     "test": "npx jest --runInBand --detectOpenHandles --coverage --notify",
+    "testVersioned": "npx jest versionedRouter --destName=all --type=all",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
   },
   "dependencies": {
@@ -74,6 +75,6 @@
     "prettier": "^1.18.2"
   },
   "precommit": {
-    "run": "lint, test"
+    "run": "lint, test, testVersioned"
   }
 }

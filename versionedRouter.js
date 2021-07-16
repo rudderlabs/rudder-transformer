@@ -14,6 +14,7 @@ require("dotenv").config();
 
 let successfulVersions = [];
 let failedVersions = [];
+let finalResults = {};
 const versionIdsMap = {
   "1kMS1g7jakfkPbyXM46i6m9rdq5": "1uecaaVRNOypgusF2DraeAgIIGp",
   "1fHddAUiVeBwp2SwZ0aG71X454q": "1uecaeOsMHcwnySPZbfjJYXpzpP",
@@ -222,34 +223,34 @@ async function routerHandleDest(ctx) {
 }
 
 if (startDestTransformer) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      // eg. v0/destinations/ga
-      router.post(`/${version}/destinations/${destination}`, async ctx => {
-        const startTime = new Date();
-        await handleDest(ctx, version, destination);
-        stats.timing("dest_transform_request_latency", startTime, {
-          destination,
-          version
-        });
-        stats.increment("dest_transform_requests", 1, { destination, version });
-      });
-      // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
-      router.post(`/${version}/${destination}`, async ctx => {
-        const startTime = new Date();
-        await handleDest(ctx, version, destination);
-        stats.timing("dest_transform_request_latency", startTime, {
-          destination,
-          version
-        });
-        stats.increment("dest_transform_requests", 1, { destination, version });
-      });
-      router.post("/routerTransform", async ctx => {
-        await routerHandleDest(ctx);
-      });
-    });
-  });
+  // versions.forEach(version => {
+  //   const destinations = getIntegrations(`${version}/destinations`);
+  //   destinations.forEach(destination => {
+  //     // eg. v0/destinations/ga
+  //     router.post(`/${version}/destinations/${destination}`, async ctx => {
+  //       const startTime = new Date();
+  //       await handleDest(ctx, version, destination);
+  //       stats.timing("dest_transform_request_latency", startTime, {
+  //         destination,
+  //         version
+  //       });
+  //       stats.increment("dest_transform_requests", 1, { destination, version });
+  //     });
+  //     // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
+  //     router.post(`/${version}/${destination}`, async ctx => {
+  //       const startTime = new Date();
+  //       await handleDest(ctx, version, destination);
+  //       stats.timing("dest_transform_request_latency", startTime, {
+  //         destination,
+  //         version
+  //       });
+  //       stats.increment("dest_transform_requests", 1, { destination, version });
+  //     });
+  //     router.post("/routerTransform", async ctx => {
+  //       await routerHandleDest(ctx);
+  //     });
+  //   });
+  // });
 
   if (functionsEnabled()) {
     router.post("/customTransform", async ctx => {
@@ -485,21 +486,21 @@ async function handleSource(ctx, version, source) {
 }
 
 if (startSourceTransformer) {
-  versions.forEach(version => {
-    const sources = getIntegrations(`${version}/sources`);
-    sources.forEach(source => {
-      // eg. v0/sources/customerio
-      router.post(`/${version}/sources/${source}`, async ctx => {
-        const startTime = new Date();
-        await handleSource(ctx, version, source);
-        stats.timing("source_transform_request_latency", startTime, {
-          source,
-          version
-        });
-        stats.increment("source_transform_requests", 1, { source, version });
-      });
-    });
-  });
+  // versions.forEach(version => {
+  //   const sources = getIntegrations(`${version}/sources`);
+  //   sources.forEach(source => {
+  //     // eg. v0/sources/customerio
+  //     router.post(`/${version}/sources/${source}`, async ctx => {
+  //       const startTime = new Date();
+  //       await handleSource(ctx, version, source);
+  //       stats.timing("source_transform_request_latency", startTime, {
+  //         source,
+  //         version
+  //       });
+  //       stats.increment("source_transform_requests", 1, { source, version });
+  //     });
+  //   });
+  // });
 }
 
 router.get("/version", ctx => {
@@ -514,39 +515,39 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.get("/features", ctx =>{
-  const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
-  ctx.body = JSON.stringify(obj);
-});
+// router.get("/features", ctx =>{
+//   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
+//   ctx.body = JSON.stringify(obj);
+// });
 
-router.post("/batch", ctx => {
-  const { destType, input } = ctx.request.body;
-  const destHandler = getDestHandler("v0", destType);
-  if (!destHandler || !destHandler.batch) {
-    ctx.status = 404;
-    ctx.body = `${destType} doesn't support batching`;
-    return;
-  }
-  const allDestEvents = _.groupBy(input, event => event.destination.ID);
+// router.post("/batch", ctx => {
+//   const { destType, input } = ctx.request.body;
+//   const destHandler = getDestHandler("v0", destType);
+//   if (!destHandler || !destHandler.batch) {
+//     ctx.status = 404;
+//     ctx.body = `${destType} doesn't support batching`;
+//     return;
+//   }
+//   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
-  const response = { batchedRequests: [], errors: [] };
-  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
-    // TODO: check await needed?
-    try {
-      const destBatchedRequests = destHandler.batch(destEvents);
-      response.batchedRequests.push(...destBatchedRequests);
-    } catch (error) {
-      response.errors.push(
-        error.message || "Error occurred while processing payload."
-      );
-    }
-  });
-  if (response.errors.length > 0) {
-    ctx.status = 500;
-    ctx.body = response.errors;
-    return;
-  }
-  ctx.body = response.batchedRequests;
-});
+//   const response = { batchedRequests: [], errors: [] };
+//   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+//     // TODO: check await needed?
+//     try {
+//       const destBatchedRequests = destHandler.batch(destEvents);
+//       response.batchedRequests.push(...destBatchedRequests);
+//     } catch (error) {
+//       response.errors.push(
+//         error.message || "Error occurred while processing payload."
+//       );
+//     }
+//   });
+//   if (response.errors.length > 0) {
+//     ctx.status = 500;
+//     ctx.body = response.errors;
+//     return;
+//   }
+//   ctx.body = response.batchedRequests;
+// });
 
 module.exports = router;

@@ -9,11 +9,12 @@ const {
     constructPayload,
     getSuccessRespEvents,
     getDestinationExternalID,
-    isEmptyObject
+    isEmptyObject,
+    defaultPostRequestConfig
 } = require("../../util");
 
 const {
-    channelValidity,
+    isValidUserId,
     eventValidity,
     isValidEmail,
     isValidPhone,
@@ -36,26 +37,28 @@ const identifyResponseBuilder = async (message, {Config}) => {
     let channel = getDestinationExternalID(message, "delightedChannelType") || Config.channel;
     channel = channel.toLowerCase();
 
-    channel= channelValidity(channel,userId);
-    let payload = constructPayload(message, identifyMapping);
+    isValidUserId(channel,userId);
+    const payload = constructPayload(message, identifyMapping);
 
     payload.send = false;
     payload.channel = channel;
-    payload.delay = Config.delay || message.context.traits.delay || 0 ;
+    payload.delay = Config.delay || 0 ;
     payload.last_sent_at = message.lastSentAt;
 
     if(!payload.name){
         const fName = getFieldValueFromMessage(message, "firstName" );
         const lName = getFieldValueFromMessage(message, "lastName");
-        let name= fName.concat(lName);
-        payload.name = name ? name : userId;
+        const name = fName.concat(lName);
+        if(name){
+            payload.name = name;
+        }
     }
     
-    let properties = {};
+    const properties = {};
     properties = extractCustomFields(
         message,
         properties,
-        ["context.traits"],
+        ["traits", "context.traits"],
         DELIGHTED_EXCLUSION_FIELDS
     );
     payload = {
@@ -65,11 +68,11 @@ const identifyResponseBuilder = async (message, {Config}) => {
     //update/create the user
     const response = defaultRequestConfig();
     response.headers = {
-        "Authorization": Config.apiKey,
+        "Authorization": `Basic ${Config.apiKey}`,
         "Content-Type":  "application/json"
     }
     response.method = defaultPostRequestConfig.requestMethd;
-    response.endpoint=`${ENDPOINT}`; // since ENDPOINT remains same
+    response.endpoint= ENDPOINT ; // since ENDPOINT remains same
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
 };
@@ -89,21 +92,21 @@ const trackResponseBuilder = async (message, {Config}) => {
     let channel = getDestinationExternalID(message, "delightedChannelType") || Config.channel;
     channel = channel.toLowerCase();
 
-    channel= channelValidity(channel,userId);
+    isValidUserId(channel,userId);
     
     //checking if user already exists or not, throw error if it doesn't
-    let check = await userValidity(channel, Config);
+    const check = await userValidity(channel, Config,userId);
     if(!check){
         throw new CustomError(
             `user ${userId} doesnot exist`,
             400
         );
     }
-    let payload = {};
+    const payload = {};
 
     payload.send = true;
     payload.channel = channel;
-    payload.delay = Config.delay || message.context.traits.delay || 0 ;
+    payload.delay = Config.delay || message.properties.delay || 0 ;
     payload.last_sent_at = message.properties.lastSentAt;
 
     if(message.properties)
@@ -115,7 +118,7 @@ const trackResponseBuilder = async (message, {Config}) => {
         "Content-Type":  "application/json"
     };
     response.method = defaultPostRequestConfig.requestMethd;
-    response.endpoint=`${ENDPOINT}`;
+    response.endpoint = ENDPOINT;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
 };
@@ -128,8 +131,8 @@ const aliasResponseBuilder = ( message , {Config}) => {
     if (!userId) {
         throw new CustomError("userId is required for identify",400);
     }
-    let payload = {};
-    let previousId = message.previousId;
+    const payload = {};
+    const previousId = message.previousId;
     if(!previousId){
         throw new CustomError("Previous Id field not found",400);
     }
@@ -156,7 +159,7 @@ const aliasResponseBuilder = ( message , {Config}) => {
         "Authorization" : `Basic ${Config.apiKey}`,
         "Content-Type":  "application/json"
     };
-    response.endpoint = `${ENDPOINT}`;
+    response.endpoint = ENDPOINT;
     return response;
 };
 const process = async event => {
@@ -175,7 +178,7 @@ const process = async event => {
 
     const messageType =  message.type.toLowerCase();
 
-    let response;
+    const response;
     switch(messageType){
         case EventType.IDENTIFY:
             response = identifyResponseBuilder(message, destination);

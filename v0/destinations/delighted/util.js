@@ -12,11 +12,11 @@ function isValidEmail(email){
     return re.test(String(email).toLowerCase());
 }
 function isValidPhone(phone){
-    var phoneformat= /^\+[1-9]\d{10,14}$/;
+    const phoneformat= /^\+[1-9]\d{10,14}$/;
     return phoneformat.test(String(phone));
 }
 
-const channelValidity = (channel, userId) => {
+const isValidUserId = (channel, userId) => {
     if(channel === "email"){
         if(!isValidEmail(userId)){
             throw new CustomError(
@@ -37,32 +37,32 @@ const channelValidity = (channel, userId) => {
             400
         );
     }
-    return channel;
 };
 
-const userValidity = async (channel , Config) => {
-    let getpayload = {};
+const userValidity = async (channel , Config, userId) => {
+    const payload = {};
     if(channel === "email"){
-        getpayload.email = userId;
+        payload.email = userId;
     }else if(channel === "phone"){
-        getpayload.phone = userId;
+        payload.phone = userId;
     }else{
         throw new CustomError(
             "Unable to generate payload for GET request.",
             400
         );
     }
-    let response ;
+    const response ;
     try{
-        response = await axios.get(`${ENDPOINT}`,getpayload,{
+        response = await axios.get(`${ENDPOINT}`,payload,{
             headers:{
                 "Authorization" : `Basic ${Config.apiKey}`,
                 "Content-Type" : "application/json"
             }
         });
         if(response && response.status === 200 ){
-            if(Array.isArray(response.data) && response.data.length === 0 )
+            if(Array.isArray(response.data) && response.data.length === 0 ){
             return false;
+            }
         return true;
         }
     }catch(error){
@@ -70,26 +70,23 @@ const userValidity = async (channel , Config) => {
     }
 }
 const  eventValidity = (Config, message) => {
-    let event = getValueFromMessage(message,"event");
+    const event = getValueFromMessage(message,"event");
     if(!event){
         throw new CustomError("No event found.",400);
     }
+    let flag = false;
     Config.eventNameSettings.forEach(eventName => {
     if (eventName.event  && eventName.event.trim().length !== 0 ) {
-      eventList.push(eventName.event.trim().toLowerCase());
+        if(eventName.event.trim().toLowerCase() === event){
+            flag = true;
+        }
     }
-    if( !eventList.includes(event) ){
-        throw new CustomError(
-            "Event received is not configured on the Rudderstack dashboard.",
-            400
-        );
-    }
-    return true;
+    return flag;
   });
 };
 
 module.exports = {
-    channelValidity,
+    isValidUserId,
     eventValidity,
     userValidity,
     isValidEmail,

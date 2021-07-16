@@ -43,7 +43,7 @@ const identifyResponseBuilder = async (message, {Config}) => {
     payload.send = false;
     payload.channel = channel;
     payload.delay = Config.delay || 0 ;
-    payload.last_sent_at = message.lastSentAt;
+    payload.last_sent_at = message.context.traits.lastSentAt;
 
     if(!payload.name){
         const fName = getFieldValueFromMessage(message, "firstName" );

@@ -1,71 +1,86 @@
 
 const axios = require("axios");
-const { 
-    getDestinationExternalID,
+const {
     CustomError,
     getValueFromMessage
 } = require("../../util");
 const { ENDPOINT } = require("./config");
 
 
-function ValidateEmail(email){
+function isValidEmail(email){
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
-function ValidatePhone(phone){
+function isValidPhone(phone){
     var phoneformat= /^\+[1-9]\d{10,14}$/;
     return phoneformat.test(String(phone));
 }
 
-const validity = (message, destination) => {
-
-    let channel = getDestinationExternalID(message, "delightedChannelType") || destination.Config.channel;
-    channel = channel.toLowerCase();
-
+const channelValidity = (channel, userId) => {
     if(channel === "email"){
-        if(!ValidateEmail(userId)){
+        if(!isValidEmail(userId)){
             throw new CustomError(
                 "Email format is not correct.",
                 400
             );
         }
     }else if(channel === "phone"){
-        if(!ValidatePhone(userId)){
+        if(!isValidPhone(userId)){
             throw new CustomError(
                 "Phone number format must be E.164.",
                 400
             );
         }
+    }else{
+        throw new CustomError(
+            "User Id is not matching the channel type.",
+            400
+        );
     }
     return channel;
 };
 
-const userValidity = async (getpayload , destination) => {
-    let getresponse ;
+const userValidity = async (channel , Config) => {
+    let getpayload = {};
+    if(channel === "email"){
+        getpayload.email = userId;
+    }else if(channel === "phone"){
+        getpayload.phone = userId;
+    }else{
+        throw new CustomError(
+            "Unable to generate payload for GET request.",
+            400
+        );
+    }
+    let response ;
     try{
-        getresponse = await axios.get(`${ENDPOINT}`,getpayload,{
+        response = await axios.get(`${ENDPOINT}`,getpayload,{
             headers:{
-                "Authorization" : `Basic ${destination.Config.apiKey}`,
+                "Authorization" : `Basic ${Config.apiKey}`,
                 "Content-Type" : "application/json"
             }
         });
-        if(getresponse && getresponse.status === 200 ){
-            if(Array.isArray(getresponse.data) && getresponse.data.length === 0 )
-            throw new CustomError(` ${userId} not found. Try to create user first using identify`,400);
+        if(response && response.status === 200 ){
+            if(Array.isArray(response.data) && response.data.length === 0 )
+            return false;
+        return true;
         }
     }catch(error){
-        logger.debug("Error : User not verified. " ,error);
+        throw new CustomError("Error occured while searching user", JSON.stringify(error.response.data));
     }
 }
-const  eventValidity = (destination, message) => {
+const  eventValidity = (Config, message) => {
     let event = getValueFromMessage(message,"event");
-    destination.Config.eventNameSettings.forEach(eventName => {
+    if(!event){
+        throw new CustomError("No event found.",400);
+    }
+    Config.eventNameSettings.forEach(eventName => {
     if (eventName.event  && eventName.event.trim().length !== 0 ) {
       eventList.push(eventName.event.trim().toLowerCase());
     }
-    if( ! eventList.includes(event) ){
+    if( !eventList.includes(event) ){
         throw new CustomError(
-            "Event received is not configured on your Rudderstack dashboard",
+            "Event received is not configured on the Rudderstack dashboard.",
             400
         );
     }
@@ -74,9 +89,9 @@ const  eventValidity = (destination, message) => {
 };
 
 module.exports = {
-    validity,
+    channelValidity,
     eventValidity,
     userValidity,
-    ValidateEmail,
-    ValidatePhone
+    isValidEmail,
+    isValidPhone
 };

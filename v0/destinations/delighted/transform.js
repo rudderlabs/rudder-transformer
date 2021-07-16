@@ -1,22 +1,23 @@
-const axios = require("axios");
+const { EventType } = require("../../../constants");
 const {
     getFieldValueFromMessage,
     CustomError,
     defaultRequestConfig,
-    defaultPostRequestConfig,
     extractCustomFields,
     removeUndefinedAndNullValues,
     getErrorRespEvents,
     constructPayload,
     getSuccessRespEvents,
-    defaultGetRequestConfig
+    getDestinationExternalID,
+    isEmptyObject
 } = require("../../util");
 
 const {
-    validity,
+    channelValidity,
     eventValidity,
-    ValidatePhone,
-    ValidateEmail
+    isValidEmail,
+    isValidPhone,
+    userValidity
 } = require("./util");
 const {
     ENDPOINT,
@@ -24,7 +25,7 @@ const {
     identifyMapping
 } = require("./config");
 
-const identifyResponseBuilder = async (message, { destination }) => {
+const identifyResponseBuilder = async (message, {Config}) => {
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
       throw new CustomError(
@@ -32,23 +33,22 @@ const identifyResponseBuilder = async (message, { destination }) => {
         400
       );
     }
+    let channel = getDestinationExternalID(message, "delightedChannelType") || Config.channel;
+    channel = channel.toLowerCase();
 
-    let channel= validity(message,destination);
+    channel= channelValidity(channel,userId);
     let payload = constructPayload(message, identifyMapping);
 
     payload.send = false;
     payload.channel = channel;
-    payload.delay = destination.Config.delay || message.context.traits.delay || 0 ;
-    //payload.last_sent_at = message.timestamp;
+    payload.delay = Config.delay || message.context.traits.delay || 0 ;
+    payload.last_sent_at = message.lastSentAt;
 
     if(!payload.name){
         const fName = getFieldValueFromMessage(message, "firstName" );
         const lName = getFieldValueFromMessage(message, "lastName");
         let name= fName.concat(lName);
-        if(name)
-            payload.name = name;
-        else
-            payload.name = userId;
+        payload.name = name ? name : userId;
     }
     
     let properties = {};
@@ -65,7 +65,7 @@ const identifyResponseBuilder = async (message, { destination }) => {
     //update/create the user
     const response = defaultRequestConfig();
     response.headers = {
-        "Authorization": destination.Config.apiKey,
+        "Authorization": Config.apiKey,
         "Content-Type":  "application/json"
     }
     response.method = defaultPostRequestConfig.requestMethd;
@@ -74,9 +74,10 @@ const identifyResponseBuilder = async (message, { destination }) => {
     return response;
 };
 
-const trackResponseBuilder = async (message, {destination}) => {
-    eventValidity(destination,message); //checks if the event is valid if not throws error else nothing
-    
+const trackResponseBuilder = async (message, {Config}) => {
+
+    //checks if the event is valid if not throws error else nothing
+    eventValidity(Config,message);
     //getting the userId
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
@@ -85,29 +86,32 @@ const trackResponseBuilder = async (message, {destination}) => {
         400
       );
     }
+    let channel = getDestinationExternalID(message, "delightedChannelType") || Config.channel;
+    channel = channel.toLowerCase();
 
-    let channel= validity(message,destination);
-    let getpayload;
-    if(channel === "email"){
-        getpayload.email = userId;
-    }else if(channel === "phone"){
-        getpayload.phone = userId;
-    }
+    channel= channelValidity(channel,userId);
+    
     //checking if user already exists or not, throw error if it doesn't
-    await userValidity(getpayload, destination);
-    let payload;
+    let check = await userValidity(channel, Config);
+    if(!check){
+        throw new CustomError(
+            `user ${userId} doesnot exist`,
+            400
+        );
+    }
+    let payload = {};
 
     payload.send = true;
     payload.channel = channel;
-    payload.delay = destination.Config.delay || message.context.traits.delay || 0 ;
-    //payload.last_sent_at = message.timestamp;
+    payload.delay = Config.delay || message.context.traits.delay || 0 ;
+    payload.last_sent_at = message.properties.lastSentAt;
 
     if(message.properties)
         payload.properties = message.properties;
     
     const response = defaultRequestConfig();
     response.headers = {
-        "Authorization": `Basic ${destination.Config.apiKey}`,
+        "Authorization": `Basic ${Config.apiKey}`,
         "Content-Type":  "application/json"
     };
     response.method = defaultPostRequestConfig.requestMethd;
@@ -116,31 +120,30 @@ const trackResponseBuilder = async (message, {destination}) => {
     return response;
 };
 
-const aliasResponseBuilder = ( message , {destination}) => {
-    let payload;
-    let previousId = message.previousId;
-    if(previousId && ValidateEmail(previousId)){
-        if(userId && ValidateEmail(userId)){
-            payload.email = previousId;
-            payload.email_upddate = userId;
-        }else{
-            throw new CustomError (
-                "Invalid email entered",
-                400
-            );
-        }
-    }else if(previousId && ValidatePhone(previousId)){
-        if(userId && ValidatePhone(userId)){
-            payload.phone_number = previousId;
-            payload.phone_number_update = userId;
-        }else{
-            throw new CustomError(
-                "Invalid phone number entered.",
-                400
-            );
-        }
+const aliasResponseBuilder = ( message , {Config}) => {
+    let channel = getDestinationExternalID(message, "delightedChannelType") || Config.channel;
+    channel = channel.toLowerCase();
+
+    const userId = getFieldValueFromMessage(message, "userIdOnly");
+    if (!userId) {
+        throw new CustomError("userId is required for identify",400);
     }
-    if( !payload) {
+    let payload = {};
+    let previousId = message.previousId;
+    if(!previousId){
+        throw new CustomError("Previous Id field not found",400);
+    }
+    const emailType = isValidEmail(previousId) && isValidEmail(userId) && channel === "email";
+    if(emailType){
+        payload.email = previousId;
+        payload.email_update = userId;
+    }
+    const phoneType = isValidPhone(previousId) && isValidPhone(userId) && channel === "phone";
+    if(phoneType){
+        payload.phone_number= previousId;
+        payload.phone_number_update = userId;
+    }
+    if( isEmptyObject(payload)) {
         throw new CustomError(
             "Payload could not be constructed.",
             400
@@ -150,7 +153,7 @@ const aliasResponseBuilder = ( message , {destination}) => {
     response.method =defaultPostRequestConfig.requestMethod;
     response.body.JSON = payload;
     response.headers = {
-        "Authorization" : `Basic ${destination.Config.apiKey}`,
+        "Authorization" : `Basic ${Config.apiKey}`,
         "Content-Type":  "application/json"
     };
     response.endpoint = `${ENDPOINT}`;
@@ -172,16 +175,16 @@ const process = async event => {
 
     const messageType =  message.type.toLowerCase();
 
-    let reponse;
+    let response;
     switch(messageType){
         case EventType.IDENTIFY:
-            response = await identifyResponseBuilder(message, destination);
+            response = identifyResponseBuilder(message, destination);
             break;
         case EventType.TRACK:
             response = await trackResponseBuilder(message, destination);
             break;
         case EventType.ALIAS:
-            response = await aliasResponseBuilder(message, destination);
+            response = aliasResponseBuilder(message, destination);
             break;
         default:
             throw new CustomError(`message type ${messageType} not supported`,400);
@@ -220,4 +223,3 @@ const processRouterDest = async inputs => {
   };
 
   module.exports= { process, processRouterDest };
-  

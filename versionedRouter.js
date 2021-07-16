@@ -10,6 +10,7 @@ const stats = require("./util/stats");
 const { isNonFuncObject } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
+const heapdump = require("heapdump");
 require("dotenv").config();
 
 let successfulVersions = [];
@@ -549,5 +550,12 @@ router.get("/health", ctx => {
 //   }
 //   ctx.body = response.batchedRequests;
 // });
+
+router.get("/heapdump", ctx => {
+  heapdump.writeSnapshot((err, filename) => {
+    console.log("Heap dump written to", filename);
+  });
+  ctx.body = "OK";
+});
 
 module.exports = router;

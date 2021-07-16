@@ -6,13 +6,17 @@ const {
     defaultPostRequestConfig,
     extractCustomFields,
     removeUndefinedAndNullValues,
-    getValueFromMessage,
-    constructPayload
+    getErrorRespEvents,
+    constructPayload,
+    getSuccessRespEvents,
+    defaultGetRequestConfig
 } = require("../../util");
 
 const {
     validity,
-    eventValidity
+    eventValidity,
+    ValidatePhone,
+    ValidateEmail
 } = require("./util");
 const {
     ENDPOINT,
@@ -105,7 +109,7 @@ const trackResponseBuilder = async (message, {destination}) => {
     response.headers = {
         "Authorization": `Basic ${destination.Config.apiKey}`,
         "Content-Type":  "application/json"
-    }
+    };
     response.method = defaultPostRequestConfig.requestMethd;
     response.endpoint=`${ENDPOINT}`;
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -113,11 +117,48 @@ const trackResponseBuilder = async (message, {destination}) => {
 };
 
 const aliasResponseBuilder = ( message , {destination}) => {
-    let payload = constructPayload(message,)
+    let payload;
+    let previousId = message.previousId;
+    if(previousId && ValidateEmail(previousId)){
+        if(userId && ValidateEmail(userId)){
+            payload.email = previousId;
+            payload.email_upddate = userId;
+        }else{
+            throw new CustomError (
+                "Invalid email entered",
+                400
+            );
+        }
+    }else if(previousId && ValidatePhone(previousId)){
+        if(userId && ValidatePhone(userId)){
+            payload.phone_number = previousId;
+            payload.phone_number_update = userId;
+        }else{
+            throw new CustomError(
+                "Invalid phone number entered.",
+                400
+            );
+        }
+    }
+    if( !payload) {
+        throw new CustomError(
+            "Payload could not be constructed.",
+            400
+        );
+    }
+    const response = defaultRequestConfig();
+    response.method =defaultPostRequestConfig.requestMethod;
+    response.body.JSON = payload;
+    response.headers = {
+        "Authorization" : `Basic ${destination.Config.apiKey}`,
+        "Content-Type":  "application/json"
+    };
+    response.endpoint = `${ENDPOINT}`;
+    return response;
 };
 const process = async event => {
     const { message,destination } = event;
-    if(!messgae.type){
+    if(!message.type){
         throw new CustomError(
             "Message Type is not present. Aborting message.",
             400
@@ -132,5 +173,50 @@ const process = async event => {
     const messageType =  message.type.toLowerCase();
 
     let reponse;
-    switch(messageType){};
+    switch(messageType){
+        case EventType.IDENTIFY:
+            response = await identifyResponseBuilder(message, destination);
+            break;
+        case EventType.TRACK:
+            response = await trackResponseBuilder(message, destination);
+            break;
+        case EventType.ALIAS:
+            response = await aliasResponseBuilder(message, destination);
+            break;
+        default:
+            throw new CustomError(`message type ${messageType} not supported`,400);
+    }
+    return response;
 };
+
+const processRouterDest = async inputs => {
+    if (!Array.isArray(inputs) || inputs.length <= 0) {
+      const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+      return [respEvents];
+    }
+  
+    const respList = await Promise.all(
+      inputs.map(async input => {
+        try {
+          return getSuccessRespEvents(
+            await process(input),
+            [input.metadata],
+            input.destination
+          );
+        } catch (error) {
+          return getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          );
+        }
+      })
+    );
+    return respList;
+  };
+
+  module.exports= { process, processRouterDest };

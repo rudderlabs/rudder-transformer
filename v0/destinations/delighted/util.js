@@ -76,5 +76,7 @@ const  eventValidity = (destination, message) => {
 module.exports = {
     validity,
     eventValidity,
-    userValidity
+    userValidity,
+    ValidateEmail,
+    ValidatePhone
 };

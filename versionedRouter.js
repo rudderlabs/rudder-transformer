@@ -9,7 +9,6 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
-const http = require("http");
 const heapdump = require("heapdump");
 require("dotenv").config();
 

@@ -18,7 +18,8 @@ async function getTransformationCodeV1(versionId) {
   const transformation = transformationCache[versionId];
   if (transformation) return transformation;
   const tags = {
-    transformerVersionId: versionId
+    transformerVersionId: versionId,
+    version: 1
   };
   try {
     const startTime = new Date();
@@ -41,7 +42,8 @@ async function getLibraryCodeV1(versionId) {
   const library = libraryCache[versionId];
   if (library) return library;
   const tags = {
-    transformerVersionId: versionId
+    transformerVersionId: versionId,
+    version: 1
   };
   try {
     const startTime = new Date();

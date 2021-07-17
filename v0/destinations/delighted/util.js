@@ -1,5 +1,6 @@
 
 const axios = require("axios");
+const { email } = require("is");
 const {
     CustomError,
     getValueFromMessage
@@ -7,11 +8,11 @@ const {
 const { ENDPOINT } = require("./config");
 
 
-function isValidEmail(email){
+const isValidEmail = (email) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
-function isValidPhone(phone){
+const isValidPhone = (phone) => {
     const phoneformat= /^\+[1-9]\d{10,14}$/;
     return phoneformat.test(String(phone));
 }
@@ -51,7 +52,7 @@ const userValidity = async (channel , Config, userId) => {
             400
         );
     }
-    const response ;
+    let response ;
     try{
         response = await axios.get(`${ENDPOINT}`,payload,{
             headers:{
@@ -74,14 +75,13 @@ const  eventValidity = (Config, message) => {
     if(!event){
         throw new CustomError("No event found.",400);
     }
-    let flag = false;
     Config.eventNameSettings.forEach(eventName => {
     if (eventName.event  && eventName.event.trim().length !== 0 ) {
         if(eventName.event.trim().toLowerCase() === event){
-            flag = true;
+            return true;
         }
     }
-    return flag;
+    return false;
   });
 };
 

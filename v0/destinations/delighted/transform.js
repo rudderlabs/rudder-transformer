@@ -26,7 +26,7 @@ const {
     identifyMapping
 } = require("./config");
 
-const identifyResponseBuilder = async (message, {Config}) => {
+const identifyResponseBuilder = (message, {Config}) => {
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
       throw new CustomError(
@@ -72,7 +72,7 @@ const identifyResponseBuilder = async (message, {Config}) => {
         "Content-Type":  "application/json"
     }
     response.method = defaultPostRequestConfig.requestMethd;
-    response.endpoint= ENDPOINT ; // since ENDPOINT remains same
+    response.endpoint= ENDPOINT ; 
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
 };
@@ -81,7 +81,7 @@ const trackResponseBuilder = async (message, {Config}) => {
 
     //checks if the event is valid if not throws error else nothing
     eventValidity(Config,message);
-    //getting the userId
+    
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
       throw new CustomError(
@@ -178,7 +178,7 @@ const process = async event => {
 
     const messageType =  message.type.toLowerCase();
 
-    const response;
+    let response;
     switch(messageType){
         case EventType.IDENTIFY:
             response = identifyResponseBuilder(message, destination);

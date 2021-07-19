@@ -213,7 +213,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   ctx.body = respList;
-  ctx.set("apiVersion", API_VERSION);
+  return ctx.body;
 }
 
 async function routerHandleDest(ctx) {
@@ -222,7 +222,7 @@ async function routerHandleDest(ctx) {
   if (!routerDestHandler || !routerDestHandler.processRouterDest) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support router transform`;
-    return;
+    return null;
   }
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
@@ -233,6 +233,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  return ctx.body;
 }
 
 if (startDestTransformer) {
@@ -609,4 +610,4 @@ router.get("/heapdump", ctx => {
   ctx.body = "OK";
 });
 
-module.exports = router;
+module.exports = { router, handleDest, routerHandleDest, batchHandler };

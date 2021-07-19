@@ -19,7 +19,8 @@ const DELIGHTED_EXCLUSION_FIELDS = [
   "first_name",
   "lastName",
   "lastname",
-  "last_name"
+  "last_name",
+  "lastSentAt"
 ];
 module.exports = {
   ENDPOINT,

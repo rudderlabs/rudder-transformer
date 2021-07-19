@@ -24,18 +24,17 @@
                 "os": { "name": "", "version": "" },
                 "screen": { "density": 2 }
               },
-              "lastSentAt" : "1626681595",
               "messageId": "84e26acc-56a5-4835-8233-591137fca468",
               "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
               "originalTimestamp": "2019-10-14T09:03:17.562Z",
               "type": "identify",
               "userId": "abc@123.com",
               "delightedChannelType" : "email",
+              "lastSentAt" : "1626698350",
               "traits": {
-                "email": "jamesDoe@gmail.com",
                 "firstName": "James",
                 "lastName": "Doe",
-                "phone": "+92374162212"
+                "phone": "+91237416221"
               },
               "integrations": { "All": true },
               "sentAt": "2019-10-14T09:03:22.563Z"
@@ -66,7 +65,6 @@
                 "os": { "name": "", "version": "" },
                 "screen": { "density": 2 }
               },
-              "lastSentAt" : "1626681595",
               "messageId": "84e26acc-56a5-4835-8233-591137fca468",
               "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
               "originalTimestamp": "2019-10-14T09:03:17.562Z",

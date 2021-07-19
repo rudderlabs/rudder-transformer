@@ -1,27 +1,28 @@
 [
     {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.delighted.com/v1/people.json",
+        "headers": {
+            "Authorization" : "Basic tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
+          "Content-Type": "application/json"
+        },
+        "params": {},
         "body": {
           "XML": {},
           "FORM": {},
           "JSON": {
-            "email": "jamesDoe@gmail.com",
+            "email": "abc@123.com",
             "send" : "false",
             "channel": "email",
             "delay" : 0,
-            "last_sent_at": "1626681595",
             "name": "James Doe",
-            "phone_number": "+92374162212"
+            "phone_number": "+91237416221",
+            "last_sent_at": "1626698350"
           }
         },
-        "type": "REST",
-        "files": {},
-        "method": "POST",
-        "params": {},
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "version": "1",
-        "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
+        "files": {}
       },
       {
         "body": {
@@ -37,9 +38,10 @@
         "method": "POST",
         "params": {},
         "headers": {
+            "Authorization" : "Basic tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
           "Content-Type": "application/json"
         },
         "version": "1",
-        "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
+        "endpoint": "https://api.delighted.com/v1/people.json"
       }
 ]

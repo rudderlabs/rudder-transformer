@@ -10,9 +10,10 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   isEmptyObject,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getValueFromMessage
 } = require("../../util");
-
+const logger = require("../../../logger");
 const {
   isValidUserIdOrError,
   eventValidity,
@@ -40,23 +41,21 @@ const identifyResponseBuilder = (message, { Config }) => {
   
   if(channel === "email"){
     payload.email = userId;
-    if(payload.phone_number && !isValidPhone(payload.phone)){
+    if(payload.phone_number && !isValidPhone(payload.phone_number)){
       payload.phone_number= null;
-      logger("Phone number format must be E.164.");
+      logger.error("Phone number format must be E.164.");
   }
   }else if(channel == "phone"){
     payload.phone_number = userId;
     if(payload.email && !isValidEmail(payload.email)){
       payload.email = null;
-      logger("Email format is not correct.");
+      logger.error("Email format is not correct.");
     }
   }
   
-  payload.send = false;
+  payload.send = "false";
   payload.channel = channel;
   payload.delay = Config.delay || 0;
-  payload.last_sent_at = message.context.traits.lastSentAt;
-
   if (!payload.name) {
     const fName = getFieldValueFromMessage(message, "firstName").trim();
     const lName = getFieldValueFromMessage(message, "lastName").trim();
@@ -72,17 +71,23 @@ const identifyResponseBuilder = (message, { Config }) => {
     ["traits", "context.traits"],
     DELIGHTED_EXCLUSION_FIELDS
   );
-  payload = {
-    ...payload,
-    properties
-  };
+  if(!isEmptyObject(properties)){
+    payload = {
+      ...payload,
+      properties
+    };
+  }
+  let lastSentAt= getValueFromMessage(message,"lastSentAt");
+  if(lastSentAt !== undefined && lastSentAt !== null)
+  payload.last_sent_at= lastSentAt;
+
   // update/create the user
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${Config.apiKey}`,
     "Content-Type": "application/json"
   };
-  response.method = defaultPostRequestConfig.requestMethd;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -109,10 +114,12 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const payload = {};
 
-  payload.send = true;
+  payload.send = "true";
   payload.channel = channel;
   payload.delay = Config.delay || message.properties.delay || 0;
+  if(message.properties.lastSentAt){
   payload.last_sent_at = message.properties.lastSentAt;
+  }
 
   if (message.properties) payload.properties = message.properties;
 

@@ -610,4 +610,4 @@ router.get("/heapdump", ctx => {
   ctx.body = "OK";
 });
 
-module.exports = { router, handleDest, routerHandleDest, batchHandler };
+module.exports = { router, handleDest, routerHandleDest };

@@ -118,7 +118,6 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   ctx.body = respList;
-  ctx.set("apiVersion", API_VERSION);
   return ctx.body;
 }
 
@@ -150,6 +149,7 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
         // Assuming that events are from one single source
 
         const metaTags =
@@ -173,6 +173,7 @@ if (startDestTransformer) {
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
         // Assuming that events are from one single source
 
         const metaTags =

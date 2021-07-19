@@ -14,7 +14,7 @@ const {
 } = require("../../util");
 
 const {
-  isValidUserId,
+  isValidUserIdOrError,
   eventValidity,
   isValidEmail,
   isValidPhone,
@@ -35,23 +35,36 @@ const identifyResponseBuilder = (message, { Config }) => {
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
 
-  isValidUserId(channel, userId);
+  isValidUserIdOrError(channel, userId);
   let payload = constructPayload(message, identifyMapping);
-
+  
+  if(channel === "email"){
+    payload.email = userId;
+    if(payload.phone_number && !isValidPhone(payload.phone)){
+      payload.phone_number= null;
+      logger("Phone number format must be E.164.");
+  }
+  }else if(channel == "phone"){
+    payload.phone_number = userId;
+    if(payload.email && !isValidEmail(payload.email)){
+      payload.email = null;
+      logger("Email format is not correct.");
+    }
+  }
+  
   payload.send = false;
   payload.channel = channel;
   payload.delay = Config.delay || 0;
   payload.last_sent_at = message.context.traits.lastSentAt;
 
   if (!payload.name) {
-    const fName = getFieldValueFromMessage(message, "firstName");
-    const lName = getFieldValueFromMessage(message, "lastName");
-    const name = fName.concat(lName);
+    const fName = getFieldValueFromMessage(message, "firstName").trim();
+    const lName = getFieldValueFromMessage(message, "lastName").trim();
+    const name = fName.concat(" ").concat(lName);
     if (name) {
       payload.name = name;
     }
   }
-
   let properties = {};
   properties = extractCustomFields(
     message,
@@ -87,7 +100,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
 
-  isValidUserId(channel, userId);
+  isValidUserIdOrError(channel, userId);
 
   // checking if user already exists or not, throw error if it doesn't
   const check = await userValidity(channel, Config, userId);
@@ -162,8 +175,7 @@ const process = async event => {
     );
   }
 
-  const { apiKey } = destination.Config;
-  if (!apiKey) {
+  if (!destination.Config.apiKey) {
     throw new CustomError("Inavalid API Key. Aborting message.", 400);
   }
 

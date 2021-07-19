@@ -1,0 +1,46 @@
+[
+    {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "email": "jamesDoe@gmail.com",
+            "send" : "false",
+            "channel": "email",
+            "delay" : 0,
+            "last_sent_at": "1626681595",
+            "name": "James Doe",
+            "phone_number": "+92374162212"
+          }
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
+      },
+      {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+              "email" : "123@abc.com",
+              "email_update" : "abc@123.com"
+          }
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
+      }
+
+]

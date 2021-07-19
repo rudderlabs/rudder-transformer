@@ -11,7 +11,7 @@ const isValidPhone = phone => {
   return phoneformat.test(String(phone));
 };
 
-const isValidUserId = (channel, userId) => {
+const isValidUserIdOrError = (channel, userId) => {
   if (channel === "email") {
     if (!isValidEmail(userId)) {
       throw new CustomError("Email format is not correct.", 400);
@@ -71,7 +71,7 @@ const eventValidity = (Config, message) => {
 };
 
 module.exports = {
-  isValidUserId,
+  isValidUserIdOrError,
   eventValidity,
   userValidity,
   isValidEmail,

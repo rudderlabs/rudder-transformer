@@ -9,6 +9,7 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
+const heapdump = require("heapdump");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -461,6 +462,13 @@ router.post("/batch", ctx => {
     return;
   }
   ctx.body = response.batchedRequests;
+});
+
+router.get("/heapdump", ctx => {
+  heapdump.writeSnapshot((err, filename) => {
+    console.log("Heap dump written to", filename);
+  });
+  ctx.body = "OK";
 });
 
 module.exports = router;

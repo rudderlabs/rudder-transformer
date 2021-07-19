@@ -31,8 +31,6 @@ const userValidity = async (channel, Config, userId) => {
     payload.email = userId;
   } else if (channel === "phone") {
     payload.phone = userId;
-  } else {
-    throw new CustomError("Unable to generate payload for GET request.", 400);
   }
   let response;
   try {

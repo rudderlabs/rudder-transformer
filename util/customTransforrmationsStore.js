@@ -32,4 +32,30 @@ async function getTransformationCode(versionId) {
   }
 }
 
-exports.getTransformationCode = getTransformationCode;
+async function updateTransformationCodeV1(versionId, newVersionId, publish=false) {
+  let newTransformation = await getTransformationCode(newVersionId);
+  let newCode = newTransformation.code;
+
+  let oldTransformation = await getTransformationCode(versionId);
+  try {
+    let requestBody = {
+      name: oldTransformation.name,
+      description: oldTransformation.description,
+      code: newTransformation.code,
+      upgradeTransformation: true,
+    }
+    const workspaceId = oldTransformation.workspaceId;
+    const transformationId = oldTransformation.id;
+    const response = await fetchWithProxy(
+      `${CONFIG_BACKEND_URL}/work-spaces/${workspaceId}/transformations/${transformationId}?publish=${publish}`,
+      { method: 'POST', body: requestBody }
+    );
+    const myJson = await response.json();
+    return myJson;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+exports.getTransformationCode = { getTransformationCode, updateTransformationCodeV1 };

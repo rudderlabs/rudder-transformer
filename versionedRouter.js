@@ -11,6 +11,7 @@ const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
 const heapdump = require("heapdump");
+const { updateTransformationCodeV1 } = require("./util/customTransforrmationsStore");
 require("dotenv").config();
 
 let successfulVersions = [];
@@ -353,6 +354,12 @@ if (startDestTransformer) {
                 );
 
                 logger.info('version Hit ', transformationVersionId);
+                if (!(transformationVersionId in finalResults)) {
+                  finalResults[transformationVersionId] = {
+                    success: 0,
+                    fail: 0
+                  }
+                }
                 let responseMatched = true;
                 for (let i = 0; i < destTransformedEvents.length; i++) {
                   let responseDiff = jsonDiff.diff(destTransformedEventsNew[i].transformedEvent, destTransformedEvents[i].transformedEvent);
@@ -363,6 +370,7 @@ if (startDestTransformer) {
                 }
                 if (!responseMatched) {
                   logger.info("Failed Hit ", transformationVersionId);
+                  finalResults[transformationVersionId]['fail'] = 1 + finalResults[transformationVersionId]['fail'];
                   if (!failedVersions.includes(transformationVersionId)) {
                     failedVersions.push(transformationVersionId)
                     fs.writeFileSync('./failedVersions.txt', failedVersions.length.toString() + '\n' + failedVersions.toString())
@@ -374,6 +382,7 @@ if (startDestTransformer) {
                   )
                 } else {
                   logger.info('Successful Hit ', transformationVersionId)
+                  finalResults[transformationVersionId].success = 1 + finalResults[transformationVersionId].success;
                   if (!successfulVersions.includes(transformationVersionId)) {
                     successfulVersions.push(transformationVersionId);
                     fs.writeFileSync('./successfulVersions.txt', successfulVersions.length.toString() + '\n' + successfulVersions.toString())
@@ -540,6 +549,27 @@ router.get("/health", ctx => {
 router.get("/features", ctx => {
   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
   ctx.body = JSON.stringify(obj);
+});
+
+router.get("/results", ctx => {
+  ctx.body = finalResults;
+});
+
+router.post("/publish", async ctx => {
+  const { versionId, publish } = ctx.query;
+  if(! (versionId in versionIdsMap)) {
+    ctx.body = "versionId not found in map";
+    ctx.status = 400;
+  }
+  
+  const newVersionId = versionIdsMap[versionId];
+  try {
+    const res = await updateTransformationCodeV1(versionId, newVersionId, publish);
+    ctx.body = res;
+  } catch(err) {
+    console.log(err);
+    ctx.body = err.message;
+  }
 });
 
 // router.post("/batch", ctx => {

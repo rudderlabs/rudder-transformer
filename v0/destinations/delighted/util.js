@@ -48,6 +48,7 @@ const userValidity = async (channel, Config, userId) => {
       }
       return true;
     }
+    throw new CustomError("invalid response", 400);
   } catch (error) {
     throw new CustomError(
       "Error occured while searching user",

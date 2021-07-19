@@ -34,9 +34,8 @@ async function getTransformationCode(versionId) {
 
 async function updateTransformationCodeV1(versionId, newVersionId, publish=false) {
   let newTransformation = await getTransformationCode(newVersionId);
-  let newCode = newTransformation.code;
-
   let oldTransformation = await getTransformationCode(versionId);
+
   try {
     let requestBody = {
       name: oldTransformation.name,
@@ -58,4 +57,4 @@ async function updateTransformationCodeV1(versionId, newVersionId, publish=false
   }
 }
 
-exports.getTransformationCode = { getTransformationCode, updateTransformationCodeV1 };
+module.exports = { getTransformationCode, updateTransformationCodeV1 };

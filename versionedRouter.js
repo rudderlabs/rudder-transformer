@@ -343,6 +343,7 @@ if (startDestTransformer) {
               let destTransformedEventsNew;
               logger.info('Executing difference check');
               if (transformationVersionId in versionIdsMap) {
+                logger.info('version Hit ', transformationVersionId);
                 destTransformedEvents = await userTransformHandler()(
                   destEvents,
                   transformationVersionId,
@@ -354,7 +355,6 @@ if (startDestTransformer) {
                   librariesVersionIDs
                 );
 
-                logger.info('version Hit ', transformationVersionId);
                 if (!(transformationVersionId in finalResults)) {
                   finalResults[transformationVersionId] = {
                     success: 0,
@@ -389,6 +389,7 @@ if (startDestTransformer) {
                     fs.writeFileSync('./successfulVersions.txt', successfulVersions.length.toString() + '\n' + successfulVersions.toString())
                   }
                 }
+                logger.info(finalResults);
               } else {
                 throw new Error('Filtered out');
               }
@@ -449,7 +450,7 @@ if (startDestTransformer) {
             }
           } else {
             const errorMessage = "Transformation VersionID not found";
-            logger.error(`[CT] ${errorMessage}`);
+            // logger.error(`[CT] ${errorMessage}`);
             transformedEvents.push({
               statusCode: 400,
               error: errorMessage,
@@ -463,7 +464,7 @@ if (startDestTransformer) {
           }
         })
       );
-      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {

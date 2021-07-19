@@ -75,6 +75,6 @@
     "prettier": "^1.18.2"
   },
   "precommit": {
-    "run": "lint, test, testVersioned"
+    "run": "lint, test"
   }
 }

@@ -42,5 +42,4 @@
         "version": "1",
         "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
       }
-
 ]

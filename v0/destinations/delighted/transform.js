@@ -85,7 +85,7 @@ const trackResponseBuilder = async (message, {Config}) => {
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
       throw new CustomError(
-        "userId is required for identify",
+        "userId is required.",
         400
       );
     }
@@ -129,7 +129,7 @@ const aliasResponseBuilder = ( message , {Config}) => {
 
     const userId = getFieldValueFromMessage(message, "userIdOnly");
     if (!userId) {
-        throw new CustomError("userId is required for identify",400);
+        throw new CustomError("userId is required.",400);
     }
     const payload = {};
     const previousId = message.previousId;

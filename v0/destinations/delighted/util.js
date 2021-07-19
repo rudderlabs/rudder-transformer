@@ -77,7 +77,7 @@ const  eventValidity = (Config, message) => {
     }
     Config.eventNameSettings.forEach(eventName => {
     if (eventName.event  && eventName.event.trim().length !== 0 ) {
-        if(eventName.event.trim().toLowerCase() === event){
+        if(eventName.event.trim().toLowerCase() === event.toLowerCase()){
             return true;
         }
     }

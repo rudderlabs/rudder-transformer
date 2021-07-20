@@ -40,17 +40,27 @@ const userValidity = async (channel, Config, userId) => {
         "Content-Type": "application/json"
       }
     });
-    if (response && response.status === 200) {
-      if (Array.isArray(response.data) && response.data.length === 0) {
-        return false;
-      }
-      return true;
+    if (
+      response &&
+      response.data &&
+      response.status === 200 &&
+      Array.isArray(response.data)
+    ) {
+      return response.data.length !== 0;
     }
-    throw new CustomError("invalid response", 400);
+    throw new CustomError("Invalid response", 400);
   } catch (error) {
+    let errMsg = "";
+    let errStatus = "";
+    if (error.response && error.response.data) {
+      errMsg = JSON.stringify(error.response.data);
+    }
+    if (error.response.status) {
+      errStatus = error.response.status;
+    }
     throw new CustomError(
-      "Error occured while searching user",
-      JSON.stringify(error.response.data)
+      `Error occurred while checking userId : ${errMsg}`,
+      errStatus
     );
   }
 };

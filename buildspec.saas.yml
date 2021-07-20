@@ -13,10 +13,7 @@ phases:
     commands:
       - wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 -O /usr/bin/yq
       - chmod +x /usr/bin/yq
-      - apt update
-      - apt install -y git 
-      - apt update
-      - apt install -y hub
+      - yum install -y hub
   pre_build:
     commands:
       - docker login --username rudderlabs --password $dockerhub_passwd

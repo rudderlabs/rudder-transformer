@@ -47,7 +47,7 @@ async function updateTransformationCodeV1(versionId, newVersionId, publish=false
     const transformationId = oldTransformation.id;
     const response = await fetchWithProxy(
       `${CONFIG_BACKEND_URL}/work-spaces/${workspaceId}/transformations/${transformationId}?publish=${publish}`,
-      { method: 'POST', body: requestBody }
+      { method: 'POST', body: JSON.stringify(requestBody), headers: { 'Content-Type': 'application/json' }}
     );
     const myJson = await response.json();
     return myJson;

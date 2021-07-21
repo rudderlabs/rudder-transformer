@@ -86,9 +86,11 @@ const identifyResponseBuilder = (message, { Config }) => {
   ]);
 
   // update/create the user
+
+  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   const response = defaultRequestConfig();
   response.headers = {
-    Authorization: `Basic ${Config.apiKey}`,
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -136,9 +138,10 @@ const trackResponseBuilder = async (message, { Config }) => {
     delete payload.properties.lastSentAt;
   }
 
+  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   const response = defaultRequestConfig();
   response.headers = {
-    Authorization: `Basic ${Config.apiKey}`,
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethd;
@@ -179,11 +182,12 @@ const aliasResponseBuilder = (message, { Config }) => {
       400
     );
   }
+  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = payload;
   response.headers = {
-    Authorization: `Basic ${Config.apiKey}`,
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.endpoint = ENDPOINT;

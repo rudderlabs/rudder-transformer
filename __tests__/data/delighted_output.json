@@ -5,7 +5,7 @@
         "method": "POST",
         "endpoint": "https://api.delighted.com/v1/people.json",
         "headers": {
-            "Authorization" : "Basic tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
+            "Authorization" : "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -38,7 +38,7 @@
         "method": "POST",
         "params": {},
         "headers": {
-            "Authorization" : "Basic tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
+            "Authorization" : "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
           "Content-Type": "application/json"
         },
         "version": "1",

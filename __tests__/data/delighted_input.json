@@ -2,7 +2,7 @@
     {
         "destination": {
             "Config": {
-                "apiKey" : "tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
+                "apiKey" : "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
                 "channel" : "email",
                 "delay" : 0,
                 "whitelistedTraitsSettings": [{ "event": "" }]
@@ -43,7 +43,7 @@
     {
         "destination": {
             "Config": {
-                "apiKey" : "tZrPAgHyn2jMWOVGKrS6gBGLYT8v9kJE",
+                "apiKey" : "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
                 "channel" : "email",
                 "delay" : 0,
                 "whitelistedTraitsSettings": [{ "event": "" }]

@@ -36,10 +36,11 @@ const userValidity = async (channel, Config, userId) => {
     payload.phone = userId;
   }
   let response;
+  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   try {
     response = await axios.get(`${ENDPOINT}`, payload, {
       headers: {
-        Authorization: `Basic ${Config.apiKey}`,
+        Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/json"
       }
     });

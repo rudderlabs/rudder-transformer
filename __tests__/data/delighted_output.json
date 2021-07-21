@@ -14,7 +14,7 @@
           "FORM": {},
           "JSON": {
             "email": "abc@123.com",
-            "send" : "false",
+            "send" : false,
             "channel": "email",
             "delay" : 0,
             "name": "James Doe",

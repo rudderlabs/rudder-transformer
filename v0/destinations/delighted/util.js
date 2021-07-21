@@ -14,14 +14,17 @@ const isValidPhone = phone => {
 const isValidUserIdOrError = (channel, userId) => {
   if (channel === "email") {
     if (!isValidEmail(userId)) {
-      throw new CustomError("Email format is not correct.", 400);
+      throw new CustomError("Email format in userId is not correct.", 400);
     }
-  } else if (channel === "phone") {
+  } else if (channel === "sms") {
     if (!isValidPhone(userId)) {
-      throw new CustomError("Phone number format must be E.164.", 400);
+      throw new CustomError(
+        "Phone number format in userId must be E.164.",
+        400
+      );
     }
   } else {
-    throw new CustomError("User Id is not matching the channel type.", 400);
+    throw new CustomError("Invalid Channel type", 400);
   }
 };
 
@@ -29,7 +32,7 @@ const userValidity = async (channel, Config, userId) => {
   const payload = {};
   if (channel === "email") {
     payload.email = userId;
-  } else if (channel === "phone") {
+  } else if (channel === "sms") {
     payload.phone = userId;
   }
   let response;

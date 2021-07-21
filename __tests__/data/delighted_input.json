@@ -30,11 +30,11 @@
               "type": "identify",
               "userId": "abc@123.com",
               "delightedChannelType" : "email",
-              "lastSentAt" : "1626698350",
               "traits": {
                 "firstName": "James",
                 "lastName": "Doe",
-                "phone": "+91237416221"
+                "phone": "+91237416221",
+                "lastSentAt" : "1626698350"
               },
               "integrations": { "All": true },
               "sentAt": "2019-10-14T09:03:22.563Z"

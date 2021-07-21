@@ -38,28 +38,30 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   isValidUserIdOrError(channel, userId);
   let payload = constructPayload(message, identifyMapping);
-  
-  if(channel === "email"){
+
+  if (channel === "email") {
     payload.email = userId;
-    if(payload.phone_number && !isValidPhone(payload.phone_number)){
-      payload.phone_number= null;
+    if (payload.phone_number && !isValidPhone(payload.phone_number)) {
+      payload.phone_number = null;
       logger.error("Phone number format must be E.164.");
-  }
-  }else if(channel == "phone"){
+    }
+  } else if (channel === "sms") {
     payload.phone_number = userId;
-    if(payload.email && !isValidEmail(payload.email)){
+    if (payload.email && !isValidEmail(payload.email)) {
       payload.email = null;
       logger.error("Email format is not correct.");
     }
   }
-  
-  payload.send = "false";
+
+  payload.send = false;
   payload.channel = channel;
   payload.delay = Config.delay || 0;
   if (!payload.name) {
-    const fName = getFieldValueFromMessage(message, "firstName").trim();
-    const lName = getFieldValueFromMessage(message, "lastName").trim();
-    const name = fName.concat(" ").concat(lName);
+    const fName = getFieldValueFromMessage(message, "firstName");
+    const lName = getFieldValueFromMessage(message, "lastName");
+    const name = `${fName ? fName.trim() : ""} ${
+      lName ? lName.trim() : ""
+    }`.trim();
     if (name) {
       payload.name = name;
     }
@@ -71,15 +73,17 @@ const identifyResponseBuilder = (message, { Config }) => {
     ["traits", "context.traits"],
     DELIGHTED_EXCLUSION_FIELDS
   );
-  if(!isEmptyObject(properties)){
+  if (!isEmptyObject(properties)) {
     payload = {
       ...payload,
       properties
     };
   }
-  let lastSentAt= getValueFromMessage(message,"lastSentAt");
-  if(lastSentAt !== undefined && lastSentAt !== null)
-  payload.last_sent_at= lastSentAt;
+
+  payload.last_sent_at = getValueFromMessage(message, [
+    "traits.lastSentAt",
+    "context.traits.lastSentAt"
+  ]);
 
   // update/create the user
   const response = defaultRequestConfig();
@@ -95,7 +99,13 @@ const identifyResponseBuilder = (message, { Config }) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   // checks if the event is valid if not throws error else nothing
-  eventValidity(Config, message);
+  const isValidEvent = eventValidity(Config, message);
+  if (!isValidEvent) {
+    throw new CustomError(
+      "Event is not configured on your Rudderstack Dashboard",
+      400
+    );
+  }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
@@ -114,14 +124,17 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const payload = {};
 
-  payload.send = "true";
+  payload.send = true;
   payload.channel = channel;
   payload.delay = Config.delay || message.properties.delay || 0;
-  if(message.properties.lastSentAt){
-  payload.last_sent_at = message.properties.lastSentAt;
+  if (message.properties) {
+    payload.properties = message.properties;
   }
 
-  if (message.properties) payload.properties = message.properties;
+  if (message.properties.lastSentAt) {
+    payload.last_sent_at = message.properties.lastSentAt;
+    delete payload.properties.lastSentAt;
+  }
 
   const response = defaultRequestConfig();
   response.headers = {
@@ -146,22 +159,25 @@ const aliasResponseBuilder = (message, { Config }) => {
   const payload = {};
   const { previousId } = message;
   if (!previousId) {
-    throw new CustomError("Previous Id field not found", 400);
+    throw new CustomError("Previous Id is required for alias.", 400);
   }
   const emailType =
-    isValidEmail(previousId) && isValidEmail(userId) && channel === "email";
+    channel === "email" && isValidEmail(previousId) && isValidEmail(userId);
   if (emailType) {
     payload.email = previousId;
     payload.email_update = userId;
   }
   const phoneType =
-    isValidPhone(previousId) && isValidPhone(userId) && channel === "phone";
+    channel === "sms" && isValidPhone(previousId) && isValidPhone(userId);
   if (phoneType) {
     payload.phone_number = previousId;
     payload.phone_number_update = userId;
   }
-  if (isEmptyObject(payload)) {
-    throw new CustomError("Payload could not be constructed.", 400);
+  if (!emailType && !phoneType) {
+    throw new CustomError(
+      "User Id and Previous Id should be of same type i.e. phone/sms",
+      400
+    );
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

@@ -55,13 +55,10 @@ const userValidity = async (channel, Config, userId) => {
     throw new CustomError("Invalid response", 400);
   } catch (error) {
     let errMsg = "";
-    let errStatus = 400;
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);
     }
-    if (error.response.status) {
-      errStatus = error.response.status;
-    }
+    const errStatus = error.response.status || 400;
     throw new CustomError(
       `Error occurred while checking userId : ${errMsg}`,
       errStatus

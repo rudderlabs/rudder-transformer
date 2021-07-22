@@ -241,11 +241,11 @@ const prepareResponse = (
   paramsPayload.is_raw = isRaw;
   // creating the data_source block
 
-  if (type && typeFields.includes(type)) {
+  if (type && type !== "NA" && typeFields.includes(type)) {
     dataSource.type = type;
   }
 
-  if (subType && subTypeFields.includes(subType)) {
+  if (subType && subType !== "NA" && subTypeFields.includes(subType)) {
     dataSource.subType = subType;
   }
   if (Object.keys(dataSource).length > 0) {
@@ -267,7 +267,7 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
-  const { userSchema, isHashRequired, audieneceId } = destination.Config;
+  const { userSchema, isHashRequired, audienceId } = destination.Config;
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -277,7 +277,11 @@ const processEvent = (message, destination) => {
   if (message.type !== "audiencelist") {
     throw new CustomError(` ${message.type} call is not supported `, 400);
   }
-  const operationAudienceId = audieneceId;
+  const operationAudienceId = audienceId;
+
+  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
+    throw new CustomError("Audience ID is a mandatory field", 400);
+  }
 
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {

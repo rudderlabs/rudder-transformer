@@ -14,12 +14,15 @@ const isValidPhone = phone => {
 const isValidUserIdOrError = (channel, userId) => {
   if (channel === "email") {
     if (!isValidEmail(userId)) {
-      throw new CustomError("Email format in userId is not correct.", 400);
+      throw new CustomError(
+        "Channel is set to email. Enter correct email.",
+        400
+      );
     }
   } else if (channel === "sms") {
     if (!isValidPhone(userId)) {
       throw new CustomError(
-        "Phone number format in userId must be E.164.",
+        "Channel is set to sms. Enter correct phone number i.e. E.164",
         400
       );
     }
@@ -39,7 +42,6 @@ const userValidity = async (channel, Config, userId) => {
 
   const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   let response;
-
   try {
     response = await axios.get(`${ENDPOINT}`, {
       headers: {

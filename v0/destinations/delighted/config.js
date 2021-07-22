@@ -20,10 +20,14 @@ const DELIGHTED_EXCLUSION_FIELDS = [
   "lastName",
   "lastname",
   "last_name",
-  "lastSentAt"
+  "last_sent_at"
 ];
+
+const TRACKING_EXCLUSION_FIELDS = ["channel", "delay", "last_sent_at", "send"];
+
 module.exports = {
   ENDPOINT,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-  DELIGHTED_EXCLUSION_FIELDS
+  DELIGHTED_EXCLUSION_FIELDS,
+  TRACKING_EXCLUSION_FIELDS
 };

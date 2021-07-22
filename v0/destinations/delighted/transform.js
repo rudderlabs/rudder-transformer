@@ -24,10 +24,11 @@ const {
 const {
   ENDPOINT,
   DELIGHTED_EXCLUSION_FIELDS,
+  TRACKING_EXCLUSION_FIELDS,
   identifyMapping
 } = require("./config");
 
-const identifyResponseBuilder = (message, { Config }) => {
+const identifyResponseBuilder = (message, { Config }) => { 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
     throw new CustomError("userId is required for identify", 400);
@@ -35,7 +36,6 @@ const identifyResponseBuilder = (message, { Config }) => {
   let channel =
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
-
   const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
   let payload = constructPayload(message, identifyMapping);
 
@@ -66,6 +66,10 @@ const identifyResponseBuilder = (message, { Config }) => {
       payload.name = name;
     }
   }
+  payload.last_sent_at = getValueFromMessage(message, [
+    "traits.last_sent_at",
+    "context.traits.last_sent_at"
+  ]);
   let properties = {};
   properties = extractCustomFields(
     message,
@@ -79,12 +83,6 @@ const identifyResponseBuilder = (message, { Config }) => {
       properties
     };
   }
-
-  payload.last_sent_at = getValueFromMessage(message, [
-    "traits.lastSentAt",
-    "context.traits.lastSentAt"
-  ]);
-
   // update/create the user
 
   const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
@@ -110,7 +108,6 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  //console.log(userId);
   if (!userId) {
     throw new CustomError("userId is required.", 400);
   }
@@ -122,26 +119,35 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   // checking if user already exists or not, throw error if it doesn't
   const check = await userValidity(channel, Config, userId);
-  //console.log("after userValidity");
+
   if (!check) {
     throw new CustomError(`user ${userId} doesnot exist`, 400);
   }
-  const payload = {};
+  let payload = {};
   payload[userIdType] = userIdValue;
   payload.send = true;
   payload.channel = channel;
   if (message.properties) {
-    payload.properties = message.properties;
+    //payload.properties = message.properties;
     payload.delay = Config.delay || message.properties.delay || 0;
   }
 
-  // if (message.properties.lastSentAt) {
-  //   payload.last_sent_at = message.properties.lastSentAt;
-  // }
-
-  delete payload.properties.channel;
-  delete payload.properties.delay;
-  delete payload.properties.lastSentAt;
+  let properties = {};
+  properties = extractCustomFields(
+    message,
+    properties,
+    ["properties"],
+    TRACKING_EXCLUSION_FIELDS
+  );
+  if (!isEmptyObject(properties)) {
+    payload = {
+      ...payload,
+      properties
+    };
+  }
+  // delete payload.properties.channel;
+  // delete payload.properties.delay;
+  // delete payload.properties.lastSentAt;
 
   const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   const response = defaultRequestConfig();
@@ -152,7 +158,6 @@ const trackResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethd;
   response.endpoint = ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  console.log(payload);
   return response;
 };
 

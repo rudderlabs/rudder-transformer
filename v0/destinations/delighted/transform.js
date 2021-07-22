@@ -36,17 +36,17 @@ const identifyResponseBuilder = (message, { Config }) => {
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
 
-  isValidUserIdOrError(channel, userId);
+  const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
   let payload = constructPayload(message, identifyMapping);
 
-  if (channel === "email") {
-    payload.email = userId;
+  payload[userIdType] = userIdValue;
+
+  if (payload.email) {
     if (payload.phone_number && !isValidPhone(payload.phone_number)) {
       payload.phone_number = null;
       logger.error("Phone number format must be E.164.");
     }
-  } else if (channel === "sms") {
-    payload.phone_number = userId;
+  } else if (payload.phone_number) {
     if (payload.email && !isValidEmail(payload.email)) {
       payload.email = null;
       logger.error("Email format is not correct.");
@@ -110,6 +110,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
+  //console.log(userId);
   if (!userId) {
     throw new CustomError("userId is required.", 400);
   }
@@ -117,26 +118,30 @@ const trackResponseBuilder = async (message, { Config }) => {
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
 
-  isValidUserIdOrError(channel, userId);
+  const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
 
   // checking if user already exists or not, throw error if it doesn't
   const check = await userValidity(channel, Config, userId);
+  //console.log("after userValidity");
   if (!check) {
     throw new CustomError(`user ${userId} doesnot exist`, 400);
   }
   const payload = {};
-
+  payload[userIdType] = userIdValue;
   payload.send = true;
   payload.channel = channel;
-  payload.delay = Config.delay || message.properties.delay || 0;
   if (message.properties) {
     payload.properties = message.properties;
+    payload.delay = Config.delay || message.properties.delay || 0;
   }
 
-  if (message.properties.lastSentAt) {
-    payload.last_sent_at = message.properties.lastSentAt;
-    delete payload.properties.lastSentAt;
-  }
+  // if (message.properties.lastSentAt) {
+  //   payload.last_sent_at = message.properties.lastSentAt;
+  // }
+
+  delete payload.properties.channel;
+  delete payload.properties.delay;
+  delete payload.properties.lastSentAt;
 
   const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
   const response = defaultRequestConfig();
@@ -147,6 +152,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethd;
   response.endpoint = ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  console.log(payload);
   return response;
 };
 

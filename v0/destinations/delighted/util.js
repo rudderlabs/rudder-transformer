@@ -26,23 +26,27 @@ const isValidUserIdOrError = (channel, userId) => {
   } else {
     throw new CustomError("Invalid Channel type", 400);
   }
+  return { userIdType: channel, userIdValue: userId };
 };
 
 const userValidity = async (channel, Config, userId) => {
-  const payload = {};
+  const paramsdata = {};
   if (channel === "email") {
-    payload.email = userId;
+    paramsdata.email = userId;
   } else if (channel === "sms") {
-    payload.phone = userId;
+    paramsdata.phone_number = userId;
   }
-  let response;
+
   const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
+  let response;
+
   try {
-    response = await axios.get(`${ENDPOINT}`, payload, {
+    response = await axios.get(`${ENDPOINT}`, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/json"
-      }
+      },
+      params: paramsdata
     });
     if (
       response &&
@@ -55,12 +59,26 @@ const userValidity = async (channel, Config, userId) => {
     throw new CustomError("Invalid response", 400);
   } catch (error) {
     let errMsg = "";
+    let errStatus = 400;
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);
+      switch (error.response.status) {
+        case 422:
+        case 401:
+        case 406:
+        case 403:
+          errStatus = 400;
+          break;
+        case 500:
+        case 503:
+          errStatus = 500;
+          break;
+        default:
+          errStatus = 400;
+      }
     }
-    const errStatus = error.response.status || 400;
     throw new CustomError(
-      `Error occurred while checking userId : ${errMsg}`,
+      `Error occurred while checking user : ${errMsg}`,
       errStatus
     );
   }
@@ -70,14 +88,15 @@ const eventValidity = (Config, message) => {
   if (!event) {
     throw new CustomError("No event found.", 400);
   }
-  Config.eventNameSettings.forEach(eventName => {
+  let flag = false;
+  Config.eventNamesSettings.forEach(eventName => {
     if (eventName.event && eventName.event.trim().length !== 0) {
       if (eventName.event.trim().toLowerCase() === event.toLowerCase()) {
-        return true;
+        flag = true;
       }
     }
-    return false;
   });
+  return flag;
 };
 
 module.exports = {

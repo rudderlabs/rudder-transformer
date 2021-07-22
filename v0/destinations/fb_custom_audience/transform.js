@@ -248,7 +248,7 @@ const prepareResponse = (
   }
 
   if (subType && subType !== "NA" && subTypeFields.includes(subType)) {
-    dataSource.subType = subType;
+    dataSource.sub_type = subType;
   }
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;

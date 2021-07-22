@@ -238,7 +238,9 @@ const prepareResponse = (
   prepareParams.access_token = accessToken;
 
   // creating the payload field for parameters
-  paramsPayload.is_raw = isRaw;
+  if (isRaw) {
+    paramsPayload.is_raw = isRaw;
+  }
   // creating the data_source block
 
   if (type && type !== "NA" && typeFields.includes(type)) {

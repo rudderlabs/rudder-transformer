@@ -41,13 +41,13 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   payload[userIdType] = userIdValue;
 
-  if (payload.email) {
-    if (payload.phone_number && !isValidPhone(payload.phone_number)) {
+  if (userIdType === "email" && payload.phone_number) {
+    if (!isValidPhone(payload.phone_number)) {
       payload.phone_number = null;
       logger.error("Phone number format must be E.164.");
     }
-  } else if (payload.phone_number) {
-    if (payload.email && !isValidEmail(payload.email)) {
+  } else if (userIdType === "sms" && payload.email) {
+    if (!isValidEmail(payload.email)) {
       payload.email = null;
       logger.error("Email format is not correct.");
     }
@@ -83,7 +83,6 @@ const identifyResponseBuilder = (message, { Config }) => {
       properties
     };
   }
-  // update/create the user
 
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();

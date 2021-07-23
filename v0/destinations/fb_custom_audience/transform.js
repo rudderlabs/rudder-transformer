@@ -17,7 +17,6 @@ const {
 const {
   getEndPoint,
   schemaFields,
-  MAX_USER_COUNT,
   USER_ADD,
   USER_DELETE,
   typeFields,
@@ -269,7 +268,12 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
-  const { userSchema, isHashRequired, audienceId } = destination.Config;
+  const {
+    userSchema,
+    isHashRequired,
+    audienceId,
+    maxUserCount
+  } = destination.Config;
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -298,7 +302,7 @@ const processEvent = (message, destination) => {
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       listData[USER_DELETE],
-      MAX_USER_COUNT
+      maxUserCount
     );
     audienceChunksArray.forEach(allowedAudienceArray => {
       response = prepareResponse(
@@ -320,7 +324,7 @@ const processEvent = (message, destination) => {
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       listData[USER_ADD],
-      MAX_USER_COUNT
+      maxUserCount
     );
     audienceChunksArray.forEach(allowedAudienceArray => {
       response = prepareResponse(

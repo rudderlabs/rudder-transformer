@@ -93,7 +93,7 @@ const subTypeFields = [
   "DATA_FILE"
 ];
 // as per real time experimentation maximum 500 users can be added at a time
-const MAX_USER_COUNT = 500;
+// const MAX_USER_COUNT = 500; (using from destination definition)
 const USER_ADD = "add";
 const USER_DELETE = "remove";
 
@@ -102,7 +102,6 @@ module.exports = {
   schemaFields,
   USER_ADD,
   USER_DELETE,
-  MAX_USER_COUNT,
   typeFields,
   subTypeFields
 };

@@ -129,8 +129,11 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.channel = channel;
   if (message.properties) {
     payload.delay = Config.delay || message.properties.delay || 0;
+    payload.last_sent_at = getValueFromMessage(
+      message,
+      "properties.last_sent_at"
+    );
   }
-
   let properties = {};
   properties = extractCustomFields(
     message,

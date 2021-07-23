@@ -40,7 +40,7 @@ const userValidity = async (channel, Config, userId) => {
     paramsdata.phone_number = userId;
   }
 
-  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   let response;
   try {
     response = await axios.get(`${ENDPOINT}`, {

@@ -28,7 +28,7 @@ const {
   identifyMapping
 } = require("./config");
 
-const identifyResponseBuilder = (message, { Config }) => { 
+const identifyResponseBuilder = (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
     throw new CustomError("userId is required for identify", 400);
@@ -85,7 +85,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   // update/create the user
 
-  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
@@ -128,7 +128,6 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.send = true;
   payload.channel = channel;
   if (message.properties) {
-    //payload.properties = message.properties;
     payload.delay = Config.delay || message.properties.delay || 0;
   }
 
@@ -145,11 +144,8 @@ const trackResponseBuilder = async (message, { Config }) => {
       properties
     };
   }
-  // delete payload.properties.channel;
-  // delete payload.properties.delay;
-  // delete payload.properties.lastSentAt;
 
-  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
@@ -193,7 +189,7 @@ const aliasResponseBuilder = (message, { Config }) => {
       400
     );
   }
-  const basicAuth = Buffer.from(`${Config.apiKey}`).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = payload;

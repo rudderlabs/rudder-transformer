@@ -104,7 +104,6 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       }
       break;
     case "MADID":
-    case "MOBILE_ADVERTISER_ID":
       updatedProperty = userInformation.toLowerCase();
       break;
     case "COUNTRY":

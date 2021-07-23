@@ -3,29 +3,43 @@
     "batchedRequest": {
       "version": "1",
       "type": "REST",
-      "method": "POST",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
+      "method": "DELETE",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
         "payload": {
-          "is_raw": false,
+          "is_raw": true,
           "data_source": {
             "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
           "schema": [
-            "EMAIL"
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MOBILE_ADVERTISER_ID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
           ],
           "data": [
             [
-              "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
-            ],
-            [
-              "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
-            ],
-            [
-              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+              "shrouti@abc.com",
+              "2",
+              "13",
+              "2013",
+              "@09432457768",
+              "f",
+              "Ms.",
+              "ABC",
+              "ZIP ",
+              "123abc ",
+              "IN"
             ]
           ]
         }
@@ -48,20 +62,111 @@
       "Config": {
         "accessToken": "ABC",
         "userSchema": [
-          "EMAIL"
+          "EMAIL",
+          "DOBM",
+          "DOBD",
+          "DOBY",
+          "PHONE",
+          "GEN",
+          "FI",
+          "MOBILE_ADVERTISER_ID",
+          "ZIP",
+          "ST",
+          "COUNTRY"
         ],
-        "isHashRequired": true,
-        "disableValidation": false,
-        "eventAudienceMapping": [
-          {
-            "from": "event1",
-            "to": "123"
+        "isHashRequired": false,
+        "disableFormat": false,
+        "audienceId": "aud1",
+        "isRaw": true,
+        "type": "UNKNOWN",
+        "subType": "ANYTHING"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
+      "headers": {},
+      "params": {
+        "access_token": "ABC",
+        "payload": {
+          "is_raw": true,
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
           },
-          {
-            "from": "event2",
-            "to": "456"
-          }
-        ]
+          "schema": [
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MOBILE_ADVERTISER_ID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
+          ],
+          "data": [
+            [
+              "shrouti@abc.com",
+              "2",
+              "13",
+              "2013",
+              "@09432457768",
+              "f",
+              "Ms.",
+              "ABC",
+              "ZIP ",
+              "123abc ",
+              "IN"
+            ]
+          ]
+        }
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "accessToken": "ABC",
+        "userSchema": [
+          "EMAIL",
+          "DOBM",
+          "DOBD",
+          "DOBY",
+          "PHONE",
+          "GEN",
+          "FI",
+          "MOBILE_ADVERTISER_ID",
+          "ZIP",
+          "ST",
+          "COUNTRY"
+        ],
+        "isHashRequired": false,
+        "disableFormat": false,
+        "audienceId": "aud1",
+        "isRaw": true,
+        "type": "UNKNOWN",
+        "subType": "ANYTHING"
       },
       "Enabled": true,
       "Transformations": [],
@@ -73,28 +178,41 @@
       "version": "1",
       "type": "REST",
       "method": "DELETE",
-      "endpoint": "https://graph.facebook.com/v11.0/123/users",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
         "payload": {
-          "is_raw": false,
+          "is_raw": true,
           "data_source": {
-            "type": "UNKNOWN",
             "sub_type": "ANYTHING"
           },
           "schema": [
-            "EMAIL"
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MOBILE_ADVERTISER_ID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
           ],
           "data": [
             [
-              "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
-            ],
-            [
-              "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
-            ],
-            [
-              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+              "shrouti@abc.com",
+              "2",
+              "13",
+              "2013",
+              "@09432457768",
+              "f",
+              "Ms.",
+              "ABC",
+              "ZIP ",
+              "123abc ",
+              "IN"
             ]
           ]
         }
@@ -117,20 +235,24 @@
       "Config": {
         "accessToken": "ABC",
         "userSchema": [
-          "EMAIL"
+          "EMAIL",
+          "DOBM",
+          "DOBD",
+          "DOBY",
+          "PHONE",
+          "GEN",
+          "FI",
+          "MOBILE_ADVERTISER_ID",
+          "ZIP",
+          "ST",
+          "COUNTRY"
         ],
-        "isHashRequired": true,
-        "disableValidation": false,
-        "eventAudienceMapping": [
-          {
-            "from": "event1",
-            "to": "123"
-          },
-          {
-            "from": "event2",
-            "to": "456"
-          }
-        ]
+        "isHashRequired": false,
+        "disableFormat": false,
+        "audienceId": "aud1",
+        "isRaw": true,
+        "type": "NA",
+        "subType": "ANYTHING"
       },
       "Enabled": true,
       "Transformations": [],
@@ -138,13 +260,89 @@
     }
   },
   {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
+      "headers": {},
+      "params": {
+        "access_token": "ABC",
+        "payload": {
+          "is_raw": true,
+          "data_source": {
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MOBILE_ADVERTISER_ID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
+          ],
+          "data": [
+            [
+              "shrouti@abc.com",
+              "2",
+              "13",
+              "2013",
+              "@09432457768",
+              "f",
+              "Ms.",
+              "ABC",
+              "ZIP ",
+              "123abc ",
+              "IN"
+            ]
+          ]
+        }
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
     "metadata": [
       {
         "jobId": 2
       }
     ],
     "batched": false,
-    "statusCode": 400,
-    "error": " identify call is not supported "
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "accessToken": "ABC",
+        "userSchema": [
+          "EMAIL",
+          "DOBM",
+          "DOBD",
+          "DOBY",
+          "PHONE",
+          "GEN",
+          "FI",
+          "MOBILE_ADVERTISER_ID",
+          "ZIP",
+          "ST",
+          "COUNTRY"
+        ],
+        "isHashRequired": false,
+        "disableFormat": false,
+        "audienceId": "aud1",
+        "isRaw": true,
+        "type": "NA",
+        "subType": "ANYTHING"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
   }
 ]

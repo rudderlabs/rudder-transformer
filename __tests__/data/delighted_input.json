@@ -34,7 +34,8 @@
                 "firstName": "James",
                 "lastName": "Doe",
                 "phone": "+91237416221",
-                "last_sent_at" : "1626698350"
+                "last_sent_at" : "1626698350",
+                "filter1" : "val1"
               },
               "integrations": { "All": true },
               "sentAt": "2019-10-14T09:03:22.563Z"

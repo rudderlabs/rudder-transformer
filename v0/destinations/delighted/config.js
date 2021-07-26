@@ -7,27 +7,16 @@ const CONFIG_CATEGORIES = {
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-const DELIGHTED_EXCLUSION_FIELDS = [
-  "email",
-  "name",
-  "phone",
-  "delay",
-  "send",
+const TRACKING_EXCLUSION_FIELDS = [
   "channel",
-  "firstName",
-  "firstname",
-  "first_name",
-  "lastName",
-  "lastname",
-  "last_name",
-  "last_sent_at"
+  "delay",
+  "last_sent_at",
+  "send",
+  "delightedChannelType"
 ];
-
-const TRACKING_EXCLUSION_FIELDS = ["channel", "delay", "last_sent_at", "send"];
 
 module.exports = {
   ENDPOINT,
   identifyMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-  DELIGHTED_EXCLUSION_FIELDS,
   TRACKING_EXCLUSION_FIELDS
 };

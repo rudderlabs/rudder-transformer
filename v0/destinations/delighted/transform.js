@@ -24,6 +24,7 @@ const {
 const {
   ENDPOINT,
   TRACKING_EXCLUSION_FIELDS,
+  DELIGHTED_EXCLUSION_FIELDS,
   identifyMapping
 } = require("./config");
 
@@ -36,7 +37,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
   channel = channel.toLowerCase();
   const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
-  const payload = constructPayload(message, identifyMapping);
+  let payload = constructPayload(message, identifyMapping);
 
   payload[userIdType] = userIdValue;
 
@@ -70,6 +71,19 @@ const identifyResponseBuilder = (message, { Config }) => {
     "context.traits.last_sent_at"
   ]);
 
+  let properties = {};
+  properties = extractCustomFields(
+    message,
+    properties,
+    ["traits", "context.traits"],
+    DELIGHTED_EXCLUSION_FIELDS
+  );
+  if (!isEmptyObject(properties)) {
+    payload = {
+      ...payload,
+      properties
+    };
+  }
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
   response.headers = {

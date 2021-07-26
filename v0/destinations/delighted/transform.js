@@ -127,7 +127,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.send = true;
   payload.channel = channel;
   if (message.properties) {
-    payload.delay = Config.delay || message.properties.delay || 0;
+    payload.delay = parseInt(Config.delay || message.properties.delay || 0, 10);
     payload.last_sent_at = getValueFromMessage(
       message,
       "properties.last_sent_at"
@@ -153,7 +153,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
-  response.method = defaultPostRequestConfig.requestMethd;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -202,6 +202,7 @@ const aliasResponseBuilder = (message, { Config }) => {
   response.endpoint = ENDPOINT;
   return response;
 };
+
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {

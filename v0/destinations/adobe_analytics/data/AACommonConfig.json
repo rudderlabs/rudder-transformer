@@ -28,11 +28,6 @@
     }
   },
   {
-    "destKey": "events",
-    "sourceKeys": "event",
-    "required": false
-  },
-  {
     "destKey": "ipaddress",
     "sourceKeys": ["context.ip", "request_ip"],
     "required": false

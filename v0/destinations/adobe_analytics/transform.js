@@ -11,29 +11,11 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   isDefinedAndNotNull,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  CustomError
 } = require("../../util");
 
-const responseBuilderSimple = async (message, destination, payload) => {
-  const xmlResponse = jsonxml(
-    {
-      request: { ...payload, reportSuiteID: destination.reportSuiteIds }
-    },
-    true // add generic XML header
-  );
-
-  const response = defaultRequestConfig();
-  response.type = defaultPostRequestConfig.requestMethod;
-  response.body.XML = xmlResponse;
-  response.endpoint = destination.trackingServerSecureUrl;
-  response.headers = {
-    "Content-type": "application/xml"
-  };
-
-  return response;
-};
-
-const handleTrack = (message, destination) => {
+const responseBuilderSimple = async (message, destination, basicPayload) => {
   const payload = constructPayload(message, commonConfig);
   const { context, properties } = message;
 
@@ -194,6 +176,238 @@ const handleTrack = (message, destination) => {
     payload.marketingcloudorgid = marketingCloudOrgId;
   }
 
+  const xmlResponse = jsonxml(
+    {
+      request: {
+        ...payload,
+        ...basicPayload,
+        reportSuiteID: destination.reportSuiteIds
+      }
+    },
+    true // add generic XML header
+  );
+
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.XML = { payload: xmlResponse };
+  response.endpoint = destination.trackingServerSecureUrl;
+  response.headers = {
+    "Content-type": "application/xml"
+  };
+
+  return response;
+};
+
+const processTrackEvent = (
+  message,
+  adobeEventName,
+  destination,
+  extras = {}
+) => {
+  // set event string and product string only
+  // handle extra properties
+  // rest of the properties are handled under common properties
+  const {
+    eventMerchEventToAdobeEvent,
+    eventMerchProperties,
+    productMerchEventToAdobeEvent,
+    productIdentifier,
+    productMerchProperties,
+    productMerchEvarsMap
+  } = destination;
+  const { event, properties } = message;
+  const adobeEventArr = adobeEventName ? adobeEventName.split(",") : [];
+
+  // merch event section
+  if (
+    eventMerchEventToAdobeEvent[event.toLowerCase()] &&
+    eventMerchProperties
+  ) {
+    const adobeMerchEvent = eventMerchEventToAdobeEvent[
+      event.toLowerCase()
+    ].split(",");
+    eventMerchProperties.forEach(rudderProp => {
+      if (rudderProp.eventMerchProperties in properties) {
+        adobeMerchEvent.forEach(value => {
+          if (properties[rudderProp.eventMerchProperties]) {
+            const merchEventString = `${value}=${
+              properties[rudderProp.eventMerchProperties]
+            }`;
+            adobeEventArr.push(merchEventString);
+          }
+        });
+      }
+    });
+  }
+
+  if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
+    productMerchEventToAdobeEvent.forEach(value => {
+      adobeEventArr.push(value);
+    });
+  }
+
+  // product string section
+  const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
+  const prodString = [];
+  if (adobeProdEvent) {
+    const isSingleProdEvent =
+      adobeProdEvent === "scAdd" ||
+      adobeProdEvent === "scRemove" ||
+      (adobeProdEvent === "prodView" &&
+        event.toLowerCase() !== "product list viewed") ||
+      !Array.isArray(properties.products);
+    const productsArr = isSingleProdEvent ? [properties] : properties.products;
+
+    productsArr.forEach(value => {
+      const category = value.category || "";
+      const quantity = value.quantity || 1;
+      const total = value.price ? (value.price * quantity).toFixed(2) : 0;
+      let item;
+      if (productIdentifier === "id") {
+        item = value.product_id || value.id;
+      } else {
+        item = value[productIdentifier];
+      }
+
+      const merchMap = [];
+      if (
+        productMerchEventToAdobeEvent[event.toLowerCase()] &&
+        productMerchProperties
+      ) {
+        productMerchProperties.forEach(rudderProp => {
+          if (rudderProp.productMerchProperties.startsWith("products.")) {
+            const key = rudderProp.productMerchProperties.split(".");
+            // take the keys after products. and find the value in properties
+            const v = get(properties, key[1]);
+            if (isDefinedAndNotNull(v)) {
+              adobeProdEvent.forEach(val => {
+                merchMap.push(`${val}=${v}`);
+              });
+            }
+          } else if (rudderProp.productMerchProperties in properties) {
+            adobeProdEvent.forEach(val => {
+              merchMap.push(
+                `${val}=${properties[rudderProp.productMerchProperties]}`
+              );
+            });
+          }
+        });
+        const prodEventString = merchMap.join("|");
+
+        const eVars = [];
+        Object.keys(productMerchEvarsMap).forEach(prodKey => {
+          const prodVal = productMerchEvarsMap[prodKey];
+
+          if (prodKey.startsWith("products.")) {
+            // take the keys after products. and find the value in properties
+            const productValue = get(properties, prodKey.split(".")[1]);
+            if (isDefinedAndNotNull(productValue)) {
+              eVars.push(`eVar${prodVal}=${productValue}`);
+            }
+          } else if (prodKey in properties) {
+            eVars.push(`eVar${prodVal}=${properties[prodKey]}`);
+          }
+        });
+        const prodEVarsString = eVars.join("|");
+
+        if (prodEventString !== "" || prodEVarsString !== "") {
+          const test = [
+            category,
+            item,
+            quantity,
+            total,
+            prodEventString,
+            prodEVarsString
+          ].map(val => {
+            if (val == null) {
+              return String(val);
+            }
+            return val;
+          });
+          prodString.push(test.join(";"));
+        } else {
+          const test = [category, item, quantity, total]
+            .map(val => {
+              if (val === null) {
+                return String(val);
+              }
+              return val;
+            })
+            .join(";");
+          prodString.push(test);
+        }
+      }
+    });
+  }
+
+  return {
+    ...extras,
+    events: adobeEventArr.join(","),
+    products: prodString
+  };
+};
+
+const handleTrack = (message, destination) => {
+  const { event } = message;
+  let payload = null;
+  // handle ecommerce events separately
+  // generic events should go to the default
+  switch (event && event.toLowerCase()) {
+    case "product viewed":
+    case "viewed product":
+    case "product list viewed":
+    case "viewed product list":
+      payload = processTrackEvent(message, "prodView", destination);
+      break;
+    case "product added":
+    case "added product":
+      payload = processTrackEvent(message, "scAdd", destination);
+      break;
+    case "product removed":
+    case "removed product":
+      payload = processTrackEvent(message, "scRemove", destination);
+      break;
+    case "order completed":
+    case "completed order":
+      payload = processTrackEvent(message, "purchase", destination, {
+        purchaseID:
+          get(message, "properties.purchaseId") ||
+          get(message, "properties.order_id"),
+        transactionID:
+          get(message, "properties.transactionID") ||
+          get(message, "properties.order_id")
+      });
+      break;
+    case "cart viewed":
+    case "viewed cart":
+      payload = processTrackEvent(message, "scView", destination);
+      break;
+    case "checkout started":
+    case "started checkout":
+      payload = processTrackEvent(message, "scCheckout", destination, {
+        purchaseID:
+          get(message, "properties.purchaseId") ||
+          get(message, "properties.order_id"),
+        transactionID:
+          get(message, "properties.transactionID") ||
+          get(message, "properties.order_id")
+      });
+      break;
+    case "cart opened":
+    case "opened cart":
+      payload = processTrackEvent(message, "scOpen", destination);
+      break;
+    default:
+      if (destination.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+        payload = processTrackEvent(
+          message,
+          destination.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destination
+        );
+      }
+      break;
+  }
+
   return payload;
 };
 
@@ -216,12 +430,15 @@ const process = async event => {
       throw new Error("Message type is not supported");
   }
 
-  const response = await responseBuilderSimple(
-    message,
-    formattedDestination,
-    payload
-  );
-  return response;
+  if (payload) {
+    const response = await responseBuilderSimple(
+      message,
+      formattedDestination,
+      payload
+    );
+    return response;
+  }
+  throw new CustomError("AA: Unprocessable Event", 400);
 };
 
 const processRouterDest = async inputs => {

@@ -22,6 +22,12 @@ const formatDestinationConfig = config => {
       "to",
       false
     ),
+    eventMerchProperties: getHashFromArray(
+      config.eventMerchProperties,
+      "from",
+      "to",
+      false
+    ),
     eventMerchEventToAdobeEvent: getHashFromArray(
       config.eventMerchEventToAdobeEvent,
       "from",

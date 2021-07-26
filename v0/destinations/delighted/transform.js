@@ -46,7 +46,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       payload.phone_number = null;
       logger.error("Phone number format must be E.164.");
     }
-  } else if (userIdType === "sms" && payload.email) {
+  } else if (userIdType === "phone_number" && payload.email) {
     if (!isValidEmail(payload.email)) {
       payload.email = null;
       logger.error("Email format is not correct.");

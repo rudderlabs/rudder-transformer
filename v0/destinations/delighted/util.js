@@ -29,7 +29,11 @@ const isValidUserIdOrError = (channel, userId) => {
   } else {
     throw new CustomError("Invalid Channel type", 400);
   }
-  return { userIdType: channel, userIdValue: userId };
+
+  return {
+    userIdType: channel === "sms" ? "phone_number" : "email",
+    userIdValue: userId
+  };
 };
 
 const userValidity = async (channel, Config, userId) => {

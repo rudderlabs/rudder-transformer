@@ -267,6 +267,7 @@ const processEvent = (message, destination) => {
   let response;
   const respList = [];
   const toSendEvents = [];
+  let maxUserCountNumber;
   let wrappedResponse = {};
   const {
     userSchema,
@@ -279,6 +280,11 @@ const processEvent = (message, destination) => {
       "Message Type is not present. Aborting message.",
       400
     );
+  }
+  try {
+    maxUserCountNumber = parseInt(maxUserCount, 10);
+  } catch (error) {
+    throw new CustomError("Batch size must be an Integer.", 400);
   }
   if (message.type !== "audiencelist") {
     throw new CustomError(` ${message.type} call is not supported `, 400);
@@ -302,7 +308,7 @@ const processEvent = (message, destination) => {
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       listData[USER_DELETE],
-      maxUserCount
+      maxUserCountNumber
     );
     audienceChunksArray.forEach(allowedAudienceArray => {
       response = prepareResponse(
@@ -324,7 +330,7 @@ const processEvent = (message, destination) => {
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(
       listData[USER_ADD],
-      maxUserCount
+      maxUserCountNumber
     );
     audienceChunksArray.forEach(allowedAudienceArray => {
       response = prepareResponse(

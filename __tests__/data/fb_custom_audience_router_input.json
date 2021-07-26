@@ -71,7 +71,8 @@
                 "audienceId": "aud1",
                 "isRaw": true,
                 "type": "UNKNOWN",
-                "subType": "ANYTHING"
+                "subType": "ANYTHING",
+                "maxUserCount": "50"
             },
             "Enabled": true,
             "Transformations": [],
@@ -150,7 +151,8 @@
                 "audienceId": "aud1",
                 "isRaw": true,
                 "type": "NA",
-                "subType": "ANYTHING"
+                "subType": "ANYTHING",
+                "maxUserCount": "50"
             },
             "Enabled": true,
             "Transformations": [],

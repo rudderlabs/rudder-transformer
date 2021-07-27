@@ -1,0 +1,117 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.delighted.com/v1/people.json",
+    "headers": {
+      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email": "abc@123.com",
+        "send": false,
+        "channel": "email",
+        "delay": 0,
+        "name": "James Doe",
+        "phone_number": "+91237416221",
+        "last_sent_at": "1626698350"
+      }
+    },
+    "files": {}
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email": "123@abc.com",
+        "email_update": "abc@123.com"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.delighted.com/v1/people.json"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "properties": {
+          "review_id": "12345",
+          "product_id": "123",
+          "rating": 3.0,
+          "review_body": "Average product, expected much more."
+        },
+        "send": true,
+        "channel": "email",
+        "delay": 0,
+        "email": "identified_user@email.com"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.delighted.com/v1/people.json"
+  },
+  {
+    "error": "user unidentified_user@email.com doesnot exist"
+  },
+  {
+    "error": "Event is not configured on your Rudderstack Dashboard"
+  },
+  {
+    "error": "userId is required."
+  },
+  {
+    "error": "userId is required."
+  },
+  {
+    "error": "User Id and Previous Id should be of same type i.e. phone/sms"
+  },
+  {
+    "error": "Channel is set to sms. Enter correct phone number i.e. E.164"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.delighted.com/v1/people.json",
+    "headers": {
+      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "send": false,
+        "channel": "sms",
+        "delay": 0,
+        "name": "James Doe",
+        "phone_number": "+911234567890",
+        "last_sent_at": "1626698350"
+      }
+    },
+    "files": {}
+  }
+]

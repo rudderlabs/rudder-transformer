@@ -111,7 +111,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
     "Content-Type": "application/json",
     Accept: "application/json"
   };
-  response.userId = "509032";
+  response.userId = message.anonymousId;
   return response;
 }
 

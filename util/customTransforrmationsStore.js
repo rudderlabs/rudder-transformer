@@ -6,8 +6,7 @@ const stats = require("./stats");
 const myCache = new NodeCache();
 
 const CONFIG_BACKEND_URL =
-  // process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
-  process.env.CONFIG_BACKEND_URL || "http://localhost:5000";
+  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 
 // Gets the transformation from config backend.
@@ -34,3 +33,4 @@ async function getTransformationCode(versionId) {
 }
 
 exports.getTransformationCode = getTransformationCode;
+exports.CONFIG_BACKEND_URL = CONFIG_BACKEND_URL;

@@ -12,6 +12,7 @@ const { DestHandlerMap } = require("./constants");
 const heapdump = require("heapdump");
 const { default: axios } = require("axios");
 require("dotenv").config();
+const { CONFIG_BACKEND_URL } = require("./util/customTransforrmationsStore");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -83,7 +84,7 @@ async function handleDest(ctx, version, destination) {
         const { workspaceId, destinationId } = event.metadata;
         if (!wkDestCache[`${workspaceId}|${destinationId}`]) {
           wkDestCache[`${workspaceId}|${destinationId}`] = await axios.get(
-            `http://localhost:5000/workspace/${workspaceId}/dest/${destinationId}/oauthDetails`
+            `${CONFIG_BACKEND_URL}/workspace/${workspaceId}/dest/${destinationId}/oauthDetails`
           );
         }
         if (respEvents) {

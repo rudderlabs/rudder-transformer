@@ -16,6 +16,8 @@ async function transform(isolatevm, events) {
     ).copyInto({
       transferIn: true
     });
+    console.log('IsolateVm');
+    console.log(isolatevm.bootstrapScriptResult);
     try {
       await isolatevm.bootstrapScriptResult.apply(
         undefined,

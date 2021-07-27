@@ -109,10 +109,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.endpoint = category.endpoint;
   response.headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${destination.Config.apiKey}`,
     Accept: "application/json"
   };
-  response.userId = message.anonymousId;
+  response.userId = "509032";
   return response;
 }
 
@@ -155,6 +154,8 @@ function process(event) {
       error.status || 400
     );
   }
+  // This only has been added to go through the data flow using OAuth
+  delete response.body.JSON.custom_attributes;
   return response;
 }
 

@@ -228,6 +228,7 @@ async function createIvm(code, libraryVersionIds) {
   });
   await customScriptModule.evaluate();
 
+  //add one more function name here for destination config changes
   const supportedFuncNames = ["transformEvent", "transformBatch"];
   const supportedFuncs = {};
 

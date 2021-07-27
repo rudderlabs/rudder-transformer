@@ -10,6 +10,7 @@ const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 const heapdump = require("heapdump");
+const { default: axios } = require("axios");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -72,12 +73,19 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
+  const wkDestCache = {};
   await Promise.all(
     events.map(async event => {
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
+        const { workspaceId, destinationId } = event.metadata;
+        if (!wkDestCache[`${workspaceId}|${destinationId}`]) {
+          wkDestCache[`${workspaceId}|${destinationId}`] = await axios.get(
+            `http://localhost:5000/workspace/${workspaceId}/dest/${destinationId}/oauthDetails`
+          );
+        }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -88,6 +96,8 @@ async function handleDest(ctx, version, destination) {
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }
+              const oAuthDetails = wkDestCache[`${workspaceId}|${destinationId}`];
+              ev.headers.Authorization = `Bearer ${oAuthDetails.data.secret.accessToken}`;
               return {
                 output: { ...ev, userId },
                 metadata: event.metadata,

@@ -956,9 +956,9 @@ function returnArrayOfSubarrays(arr, len) {
 // Helper method to add external Id to traits
 // Traverse through the possible keys for traits using generic mapping and add externalId if traits found
 function addExternalIdToTraits(message) {
-    const identifierType = message.context.externalId[0].identifierType;
-    const identifierValue = message.context.externalId[0].id;
-    set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
+  const identifierType = get(message, "context.externalId.0.identifierType");
+  const identifierValue = get(message, "context.externalId.0.id");
+  set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
 } 
 
 class CustomError extends Error {

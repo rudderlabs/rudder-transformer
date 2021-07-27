@@ -155,7 +155,7 @@ async function getPayload(
     }
     return rawPayload;
   }
-    return null;
+  return null;
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {

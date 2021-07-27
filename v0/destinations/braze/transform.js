@@ -1,6 +1,6 @@
 const get = require("get-value");
 
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultBatchRequestConfig,
   defaultRequestConfig,
@@ -100,7 +100,8 @@ function getUserAttributesObject(message, mappingJson) {
   // get traits from message
   const traits = getFieldValueFromMessage(message, "traits");
 
-  if(message.mappedToDestination) {
+  // return the traits as-is if message is mapped to destination
+  if(get(message, MappedToDestinationKey)) {
     return traits;
   }
 
@@ -147,8 +148,10 @@ function getUserAttributesObject(message, mappingJson) {
 function processIdentify(message, destination) {
   
   // override userId with externalId in context(if present) and event is mapped to destination
-  if(message.mappedToDestination && message.context.externalId[0].id) {
-      message.userId = message.context.externalId[0].id; 
+  const externalId = get(message, "context.externalId.0.id")
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if(mappedToDestination && externalId) {
+      message.userId = externalId; 
   }
 
   return buildResponse(

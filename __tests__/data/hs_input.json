@@ -521,7 +521,9 @@
   {
     "message": {
       "channel": "web",
-      "mappedToDestination": true,
+      "meta": { 
+        "mappedToDestination": true
+      },
       "context": {
         "externalId": [
           {

@@ -297,7 +297,9 @@
       "Transformations": []
     },
     "message": {
-      "mappedToDestination": true,
+      "meta": {
+        "mappedToDestination": true
+      },
       "anonymousId": "userId12345",
       "channel": "web",
       "context": {

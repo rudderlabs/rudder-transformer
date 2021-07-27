@@ -1,6 +1,6 @@
 const get = require("get-value");
 const axios = require("axios");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
@@ -186,7 +186,8 @@ async function processIdentify(message, authorizationData, mapProperty) {
   }
 
   //append external ID to traits if event is mapped to destination
-  if(message.mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if(mappedToDestination) {
     addExternalIdToTraits(message)
   }
 
@@ -208,7 +209,7 @@ async function processIdentify(message, authorizationData, mapProperty) {
         salesforceMap,
         authorizationData,
         mapProperty,
-        message.mappedToDestination
+        mappedToDestination
       )
     );
   });

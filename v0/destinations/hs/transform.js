@@ -1,7 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const axios = require("axios");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -158,9 +158,9 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
-  
+  const mappedToDestination = get(message, MappedToDestinationKey)
   //If mapped to destination, Add externalId to traits
-  if(message.mappedToDestination) {
+  if(mappedToDestination) {
     addExternalIdToTraits(message);
   }
 

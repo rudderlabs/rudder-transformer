@@ -604,7 +604,9 @@
       "Transformations": []
     },
     "message": {
-      "mappedToDestination": true,
+      "meta": {
+        "mappedToDestination": true
+      },
       "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
       "channel": "web",
       "context": {

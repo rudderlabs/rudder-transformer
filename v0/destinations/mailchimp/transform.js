@@ -1,7 +1,7 @@
 const get = require("get-value");
 const axios = require("axios");
 const md5 = require("md5");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   getEndpoint,
   destinationConfigKeys,
@@ -18,7 +18,6 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
-const set = require("set-value");
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {
@@ -161,7 +160,8 @@ async function getPayload(
 
 async function getTransformedJSON(message, mailChimpConfig) {
   
-  if(message.mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if(mappedToDestination) {
     addExternalIdToTraits(message);
     return getFieldValueFromMessage(message, "traits");
   }

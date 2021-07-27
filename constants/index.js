@@ -50,10 +50,13 @@ const DestHandlerMap = {
   ga360: "ga"
 };
 
+const MappedToDestinationKey = "meta.mappedToDestination";
+
 module.exports = {
   DestHandlerMap,
   EventType,
   SpecedTraits,
   TraitsMapping,
-  WhiteListedTraits
+  WhiteListedTraits,
+  MappedToDestinationKey
 };

@@ -133,7 +133,10 @@ async function processTrack(message, destination) {
     _n: message.event
   };
 
-  if (message.properties.revenue || message.properties.value) {
+  if (
+    message.properties &&
+    (message.properties.revenue || message.properties.value)
+  ) {
     // eslint-disable-next-line dot-notation
     parameters["_m"] = message.properties.revenue || message.properties.value;
   }

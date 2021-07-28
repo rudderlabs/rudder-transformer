@@ -20,7 +20,6 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
-const set = require("set-value");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -149,7 +148,6 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     }
     
     const objectType = type.toLowerCase().replace("salesforce-", "")
-    
     let salesforceId = id;
     
     // Fetch the salesforce Id if the identifierType is not ID

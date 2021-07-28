@@ -124,9 +124,10 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
 
   // get externalId
   const externalIds = get(message, "context.externalId");
+  const mappedToDestination = get(message, MappedToDestinationKey)
 
   // if externalIds are present look for type `Salesforce-`
-  if (externalIds && Array.isArray(externalIds)) {
+  if (externalIds && Array.isArray(externalIds) && !mappedToDestination) {
     externalIds.forEach(extIdMap => {
       const { type, id } = extIdMap;
       if (type.includes("Salesforce")) {

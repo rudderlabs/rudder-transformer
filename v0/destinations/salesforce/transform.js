@@ -110,8 +110,9 @@ function responseBuilderSimple(
 //
 // ------------------------
 // {
-//   "type": "Salesforce-Contact",
-//   "id": "0035g000001FaHfAAK"
+//   "type": "Salesforce-Library",
+//   "id": "test@gmail.com"
+
 // }
 // ------------------------
 //
@@ -139,9 +140,29 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     });
   }
 
+  // Support All salesforce objects, do not fallback to lead in case event is mapped to destination
+  if(mappedToDestination) {
+    const { id, type, identifierType } = get(message, "context.externalId.0");
+    
+    if(!id || !type || !identifierType) {
+      throw new CustomError("Invalid externalId. id, type, identifierType must be provided", 400);
+    }
+    
+    const objectType = type.toLowerCase().replace("salesforce-", "")
+    
+    let salesforceId = id;
+    
+    // Fetch the salesforce Id if the identifierType is not ID
+    if(identifierType.toUpperCase() !== "ID") {
+      salesforceId = await getSaleforceIdForRecord(authorizationData, objectType, identifierType, id);
+    }
+    
+    salesforceMaps.push({salesforceType: objectType, salesforceId: salesforceId});
+  }
+
   // if nothing is present consider it as a Lead Object
   // BACKWORD COMPATIBILITY
-  if (salesforceMaps.length === 0) {
+  if (salesforceMaps.length === 0 && !mappedToDestination) {
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
     // need to perform a parameterized search for this using email
@@ -178,6 +199,18 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   return salesforceMaps;
 }
 
+async function getSaleforceIdForRecord(authorizationData, objectType, identifierType, identifierValue) {
+  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
+
+  const objSearchResponse = await axios.get(objSearchUrl, {
+    headers: { Authorization: authorizationData.token }
+  });
+
+  let recordId = get(objSearchResponse, "data.searchRecords.0.Id");
+
+  return recordId;
+}
+
 // Function for handling identify events
 async function processIdentify(message, authorizationData, mapProperty) {
   // check the traits before hand
@@ -186,9 +219,11 @@ async function processIdentify(message, authorizationData, mapProperty) {
     throw new CustomError("Invalid traits for Salesforce request", 400);
   }
 
-  //append external ID to traits if event is mapped to destination
+  // Append external ID to traits if event is mapped to destination and only if identifier type is not id
+  // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination) {
+  const identifierType = get(message, "context.externalId.0.type")
+  if(mappedToDestination && identifierType && identifierType.toLowerCase !== 'id') {
     addExternalIdToTraits(message)
   }
 

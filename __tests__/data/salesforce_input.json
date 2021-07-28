@@ -611,7 +611,7 @@
         "externalId": [{
           "identifierType": "Email",
           "id": "peter.gibbons@initech.com",
-          "type": "Lead"
+          "type": "Salesforce-Lead"
         }],
         "app": {
           "build": "1.0.0",

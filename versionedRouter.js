@@ -119,7 +119,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   ctx.body = respList;
-  ctx.set("apiVersion", API_VERSION);
+  return ctx.body;
 }
 
 async function routerHandleDest(ctx) {
@@ -128,7 +128,7 @@ async function routerHandleDest(ctx) {
   if (!routerDestHandler || !routerDestHandler.processRouterDest) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support router transform`;
-    return;
+    return null;
   }
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
@@ -139,6 +139,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  return ctx.body;
 }
 
 if (startDestTransformer) {
@@ -149,6 +150,7 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
         // Assuming that events are from one single source
 
         const metaTags =
@@ -172,6 +174,7 @@ if (startDestTransformer) {
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
         // Assuming that events are from one single source
 
         const metaTags =
@@ -434,13 +437,13 @@ router.get("/features", ctx => {
   ctx.body = JSON.stringify(obj);
 });
 
-router.post("/batch", ctx => {
+const batchHandler = ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
   if (!destHandler || !destHandler.batch) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support batching`;
-    return;
+    return null;
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
@@ -459,9 +462,13 @@ router.post("/batch", ctx => {
   if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;
-    return;
+    return null;
   }
   ctx.body = response.batchedRequests;
+  return ctx.body;
+};
+router.post("/batch", ctx => {
+  batchHandler(ctx);
 });
 
 router.get("/heapdump", ctx => {

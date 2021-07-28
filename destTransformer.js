@@ -3,7 +3,7 @@ const bodyParser = require("koa-bodyparser");
 const logger = require("./logger");
 require("dotenv").config();
 
-const router = require("./versionedRouter");
+const { router } = require("./versionedRouter");
 const cluster = require("./util/cluster");
 
 const clusterEnabled = true;

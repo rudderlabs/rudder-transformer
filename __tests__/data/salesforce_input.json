@@ -604,12 +604,10 @@
       "Transformations": []
     },
     "message": {
-      "meta": {
-        "mappedToDestination": true
-      },
       "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
       "channel": "web",
       "context": {
+        "mappedToDestination": true,
         "externalId": [{
           "identifierType": "Email",
           "id": "peter.gibbons@initech.com",

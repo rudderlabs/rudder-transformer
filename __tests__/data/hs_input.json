@@ -521,10 +521,8 @@
   {
     "message": {
       "channel": "web",
-      "meta": { 
-        "mappedToDestination": true
-      },
       "context": {
+        "mappedToDestination": true,
         "externalId": [
           {
             "identifierType": "email",

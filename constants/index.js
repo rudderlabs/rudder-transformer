@@ -50,7 +50,7 @@ const DestHandlerMap = {
   ga360: "ga"
 };
 
-const MappedToDestinationKey = "meta.mappedToDestination";
+const MappedToDestinationKey = "context.mappedToDestination";
 
 module.exports = {
   DestHandlerMap,

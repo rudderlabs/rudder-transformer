@@ -936,6 +936,16 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+const getMetadata = (metadata) => {
+  return {
+    sourceId: metadata.sourceId,
+    sourceType: metadata.sourceType,
+    destinationId: metadata.destinationId,
+    destinationType: metadata.destinationType,
+    workspaceId: metadata.workspaceId,
+    namespace: metadata.namespace
+  }
+}
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every(val => array1.includes(val));
@@ -1025,6 +1035,8 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
+  getMetadata,
+  CustomError,
   checkSubsetOfArray,
   returnArrayOfSubarrays
 };

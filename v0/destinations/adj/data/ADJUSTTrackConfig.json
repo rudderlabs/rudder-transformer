@@ -31,5 +31,15 @@
     "destKey": "idfa",
     "sourceKeys": "context.device.advertisingId",
     "required": false
+  },
+  {
+    "destKey": "att_status",
+    "sourceKeys": "context.device.attTrackingStatus",
+    "required": false
+  },
+  {
+    "destKey": "tracking_enabled",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": false
   }
 ]

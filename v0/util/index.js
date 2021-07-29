@@ -936,6 +936,16 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+const getMetadata = (metadata) => {
+  return {
+    sourceId: metadata.sourceId,
+    sourceType: metadata.sourceType,
+    destinationId: metadata.destinationId,
+    destinationType: metadata.destinationType,
+    workspaceId: metadata.workspaceId,
+    namespace: metadata.namespace
+  }
+}
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every(val => array1.includes(val));
@@ -953,6 +963,14 @@ function returnArrayOfSubarrays(arr, len) {
   return chunks;
 }
 
+// Helper method to add external Id to traits
+// Traverse through the possible keys for traits using generic mapping and add externalId if traits found
+function addExternalIdToTraits(message) {
+  const identifierType = get(message, "context.externalId.0.identifierType");
+  const identifierValue = get(message, "context.externalId.0.id");
+  set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
+} 
+
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -965,6 +983,7 @@ class CustomError extends Error {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  addExternalIdToTraits,
   ErrorMessage,
   checkEmptyStringInarray,
   constructPayload,
@@ -1016,6 +1035,8 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
+  getMetadata,
+  CustomError,
   checkSubsetOfArray,
   returnArrayOfSubarrays
 };

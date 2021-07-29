@@ -21,13 +21,13 @@ async function getTransformationCode(versionId) {
       `${getTransformationURL}?versionId=${versionId}`
     );
     stats.increment("get_transformation_code.success");
-    stats.timing("get_transformation_code", startTime);
+    stats.timing("get_transformation_code", startTime, { versionId });
     const myJson = await response.json();
     myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment("get_transformation_code.error");
+    stats.increment("get_transformation_code.error", 1, { versionId });
     throw error;
   }
 }

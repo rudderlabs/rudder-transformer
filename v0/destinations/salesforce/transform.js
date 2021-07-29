@@ -20,6 +20,7 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
+const { includes } = require("lodash");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -143,7 +144,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   if(mappedToDestination) {
     const { id, type, identifierType } = get(message, "context.externalId.0");
     
-    if(!id || !type || !identifierType) {
+    if(!id || !type || !identifierType || !type.toLowerCase().includes('salesforce')) {
       throw new CustomError("Invalid externalId. id, type, identifierType must be provided", 400);
     }
     

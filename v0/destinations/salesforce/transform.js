@@ -4,6 +4,7 @@ const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
+  SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyMappingJson,
   ignoredTraits
 } = require("./config");
@@ -26,7 +27,13 @@ const { includes } = require("lodash");
 // The "Authorization: Bearer <token>" header element needs to be passed for
 // authentication for all SFDC REST API calls
 async function getSFDCHeader(destination) {
-  const authUrl = `${SF_TOKEN_REQUEST_URL}?username=${
+  let SF_TOKEN_URL;
+  if (destination.Config.sandbox) {
+    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
+  } else {
+    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
+  }
+  const authUrl = `${SF_TOKEN_URL}?username=${
     destination.Config.userName
   }&password=${encodeURIComponent(
     destination.Config.password
@@ -174,9 +181,17 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
 
     // request configuration will be conditional
-    const leadQueryResponse = await axios.get(leadQueryUrl, {
-      headers: { Authorization: authorizationData.token }
-    });
+    let leadQueryResponse;
+    try {
+      leadQueryResponse = await axios.get(leadQueryUrl, {
+        headers: { Authorization: authorizationData.token }
+      });
+    } catch (err) {
+      throw new CustomError(
+        JSON.stringify(err.response.data[0]) || err.message,
+        err.response.status || 500
+      ); // default 500
+    }
 
     let leadObjectId;
     if (

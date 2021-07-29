@@ -589,9 +589,10 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "7fiy1FKcO9sohsxq1v6J88sg",
+        "password": "vfNx8&8%JR",
+        "userName": "utsab.c97-qvpd@force.com.test",
+        "sandbox": true
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -599,20 +600,14 @@
         "Name": "SALESFORCE"
       },
       "Enabled": true,
-      "ID": "1WqFFH5esuVPnUgHkvEoYxDcX3y",
-      "Name": "tst",
+      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSY",
+      "Name": "Test SF",
       "Transformations": []
     },
     "message": {
       "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
       "channel": "web",
       "context": {
-        "mappedToDestination": true,
-        "externalId": [{
-          "identifierType": "Email",
-          "id": "peter.gibbons@initech.com",
-          "type": "Salesforce-Lead"
-        }],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -633,12 +628,20 @@
           "density": 2
         },
         "traits": {
-          "Company": "Initech",
-          "FirstName": "Peter",
-          "LastName": "Gibbons",
-          "Phone": "570-690-4150",
-          "Rating": "Hot",
-          "Title": "VP of Derp"
+          "anonymousId": "1e7673da-9473-49c6-97f7-da848ecafa76",
+          "company": "Initech",
+          "address": {
+            "city": "east greenwich",
+            "country": "USA",
+            "state": "California",
+            "street": "19123 forest lane",
+            "postalCode": "94115"
+          },
+          "email": "peter.gibbons@initech.com",
+          "name": "Peter Gibbons",
+          "phone": "570-690-4150",
+          "rating": "Hot",
+          "title": "VP of Derp"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },

@@ -266,6 +266,65 @@
       "userId": "Randomuser2222"
     }
   ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/identify",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "aliases_to_identify": [
+            {
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
+              },
+              "external_id": "mickey@disney.com"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "mickey@disney.com"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "home_city": "Disney",
+              "country": "USA",
+              "external_id": "mickey@disney.com",
+              "first_name": "Mickey"
+            }
+          ]
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "mickey@disney.com"
+    }
+  ],
   {
     "statusCode": 400,
     "message": "Message type is not supported"

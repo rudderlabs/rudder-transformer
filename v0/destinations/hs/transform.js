@@ -1,7 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const axios = require("axios");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -10,7 +10,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -60,9 +61,9 @@ async function getProperties(destination) {
 
 async function getTransformedJSON(message, mappingJson, destination) {
   const rawPayload = {};
-
   const sourceKeys = Object.keys(mappingJson);
   const traits = getFieldValueFromMessage(message, "traits");
+
   if (traits) {
     const traitsKeys = Object.keys(traits);
     const propertyMap = await getProperties(destination);
@@ -160,6 +161,12 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  //If mapped to destination, Add externalId to traits
+  if(mappedToDestination) {
+    addExternalIdToTraits(message);
+  }
+
   if (!traits || !traits.email) {
     throw new CustomError("Identify without email is not supported.", 400);
   }

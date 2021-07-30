@@ -1,0 +1,120 @@
+[
+    {
+        "destKey": "email",
+        "sourceKeys": ["traits.email","context.traits.email"],
+        "required":false
+    },
+    {
+        "destKey": "new_email",
+        "sourceKeys": ["traits.newEmail", "context.traits.newEmail"],
+        "required": false
+    },
+    {
+        "destKey":"phone",
+        "sourceKeys":["traits.phone","context.traits.phone"],
+        "required":false
+    },
+    {
+        "destKey":"first_name",
+        "sourceKeys":["traits.firstName",
+            "context.traits.firstName",
+            "traits.firstname",
+            "context.traits.firstname"
+        ],
+        "required": false
+    },
+    {
+        "destKey":"last_name",
+        "sourceKeys":["traits.lastName",
+            "context.traits.lastName",
+            "traits.lastname",
+            "context.traits.lastname"
+        ],
+        "required":false
+    },
+    {
+        "destKey":"tags",
+        "sourceKeys":["traits.tags","context.traits.tags"],
+        "required":false
+    },
+    {
+        "destKey":"remove_tags",
+        "sourceKeys":["traits.removeTags","context.traits.removeTags"],
+        "required":false
+    },
+    {
+        "destKey":"status",
+        "sourceKeys":["traits.status","context.traits.status"],
+        "required":false
+    },
+    {
+        "destKey":"initial_status",
+        "sourceKeys":["traits.initialStatus","context.traits.initialStatus"],
+        "required":false
+    },
+    {
+        "destKey":"time_zone",
+        "sourceKeys":["context.timezone","context.traits.timezone"],
+        "required":false
+    },
+    { 
+        "destKey": "country", 
+        "sourceKeys": ["traits.address.country",
+            "traits.country",
+            "context.traits.address.country",
+            "context.traits.country"],
+        "required":false
+    },
+    { 
+        "destKey": "city", 
+        "sourceKeys": ["traits.address.city",
+            "traits.city",
+            "context.traits.address.city",
+            "context.traits.city"],
+        "required":false
+    },
+    {
+        "destKey":"zip",
+        "sourceKeys":["traits.zip","traits.address.zip","context.traits.zip","context.traits.address.zip"],
+        "required": false
+    },
+    {
+        "destKey": "eu_consent",
+        "sourceKeys":["traits.euConsent","contex.traits.euConsent"],
+        "required":false
+    },
+    {
+        "destKey": "eu_consent_message",
+        "sourceKeys": ["traits.euConsentMessage","context.traits.euConsentMessage"],
+        "required":false
+    },
+    {
+        "destKey": "ip_address",
+        "sourceKeys":["context.ip"],
+        "required":false
+    },
+    {
+        "destKey": "address1",
+        "sourceKeys":["traits.address","context.traits.address"],
+        "required":false
+    },
+    {
+        "destKey": "address2",
+        "sourceKeys": ["traits.address2","context.traits.address2"]
+    },
+    {
+        "destKey": "lifetime_value",
+        "sourceKeys": ["traits.lifetimeValue","context.traits.lifetimeValue"],
+        "required":false
+    },
+    {
+        "destKey": "prospect",
+        "sourceKeys":["traits.prospect","context.traits.prospect"],
+        "required":false
+    },
+    {
+        "destKey": "base_lead_score",
+        "sourceKeys": ["traits.baseLeadScore","context.traits.baseLeadScore"],
+        "required":false
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "destKey": "action",
+        "sourceKeys": ["traits.action","context.traits.action"],
+        "required":false
+    },
+    {
+        "destKey": "prospect",
+        "sourceKeys": ["traits.prospect","context.traits.prospect"],
+        "required":false
+    },
+    {
+        "destKey" : "occurred_at",
+        "sourceKeys": ["timestamp", "originalTimestamp"],
+        "required": false
+    }
+]

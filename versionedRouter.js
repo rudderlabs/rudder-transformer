@@ -5,14 +5,13 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
+const AccountCache = require("./cache/account-cache");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants");
 const heapdump = require("heapdump");
-const { default: axios } = require("axios");
 require("dotenv").config();
-const { CONFIG_BACKEND_URL } = require("./util/customTransforrmationsStore");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -24,6 +23,7 @@ const startDestTransformer =
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 
 const router = new Router();
+const accountCache = new AccountCache();
 
 const isDirectory = source => {
   return lstatSync(source).isDirectory();
@@ -74,19 +74,18 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
-  const wkDestCache = {};
   await Promise.all(
     events.map(async event => {
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        const { workspaceId, destinationId } = event.metadata;
-        if (!wkDestCache[`${workspaceId}|${destinationId}`]) {
-          wkDestCache[`${workspaceId}|${destinationId}`] = await axios.get(
-            `${CONFIG_BACKEND_URL}/workspace/${workspaceId}/dest/${destinationId}/oauthDetails`
-          );
-        }
+        const { workspaceId } = event.metadata;
+        const { accountId } = event.destination.Config;
+        // If account Id is not available, don't need to hit the API
+        const key = AccountCache.formKeyForCache(workspaceId, accountId);
+        await accountCache.setValue(key);
+
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -97,8 +96,8 @@ async function handleDest(ctx, version, destination) {
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }
-              const oAuthDetails = wkDestCache[`${workspaceId}|${destinationId}`];
-              ev.headers.Authorization = `Bearer ${oAuthDetails.data.secret.accessToken}`;
+              const oAuthAccount = accountCache.get(key);
+              ev.headers.Authorization = `Bearer ${oAuthAccount.secret.accessToken}`;
               return {
                 output: { ...ev, userId },
                 metadata: event.metadata,

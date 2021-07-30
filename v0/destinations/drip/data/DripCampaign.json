@@ -1,0 +1,56 @@
+[
+  {
+    "destKey": "double_optin",
+    "sourceKeys": ["traits.doubleOptin", "context.traits.doubleOptin"],
+    "required": false
+  },
+  {
+    "destKey": "starting_email_index",
+    "sourceKeys": [
+      "traits.startingEmailIndex",
+      "context.traits.startingEmailIndex"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "reactivate_if_removed",
+    "sourceKeys": [
+      "traits.reactivateIfRemoved",
+      "context.traits.reactivateIfRemoved"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": ["traits.tags", "context.traits.tags"],
+    "required": false
+  },
+  {
+    "destKey": "prospect",
+    "sourceKeys": ["traits.prospect", "context.traits.prospect"],
+    "required": false
+  },
+  {
+    "destKey": "eu_consent",
+    "sourceKeys": ["traits.euConsent", "contex.traits.euConsent"],
+    "required": false
+  },
+  {
+    "destKey": "eu_consent_message",
+    "sourceKeys": [
+      "traits.euConsentMessage",
+      "context.traits.euConsentMessage"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "base_lead_score",
+    "sourceKeys": ["traits.baseLeadScore", "context.traits.baseLeadScore"],
+    "required": false
+  },
+  {
+    "destKey": "time_zone",
+    "sourceKeys": ["context.timezone","context.traits.timezone"],
+    "required": false
+  }
+]

@@ -35,7 +35,14 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "removeTags"
 ];
 
-const TRACKING_EXLCUSION_FIELDS = ["action", "email", "prospect"];
+const TRACKING_EXLCUSION_FIELDS = [
+  "action",
+  "email",
+  "prospect",
+  "occurred_at",
+  "properties",
+  "id"
+];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

@@ -25,7 +25,6 @@ const {
   idValidity,
   isValidEmail,
   isValidTimestamp,
-  callValidity,
   createUpdateUser
 } = require("./util");
 
@@ -33,9 +32,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const { accountId } = Config.accountId;
 
   const id = getDestinationExternalID(message, "dripId");
-  if (id) {
-    await idValidity(Config, id);
-  }
 
   let email = getFieldValueFromMessage(message, "email");
   if (!isValidEmail(email)) {
@@ -43,6 +39,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
     logger.error("Email format is incorrect");
   }
   const userId = getFieldValueFromMessage(message, "userId");
+  if (!(id || email || userId)) {
+    throw new CustomError(
+      "dripId, email or userId is required for the call",
+      400
+    );
+  }
 
   let payload = constructPayload(message, identifyMapping);
   payload.id = id;
@@ -57,13 +59,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
   // 				  |
   // 				  (no)—> call can’t be made
 
-  const check = callValidity(id, email, userId, Config);
-  if (!check) {
-    throw new CustomError(
-      "dripId, email or userId is required for the call",
-      400
-    );
-  }
   if (!payload.first_name && !payload.last_name) {
     const name = getFieldValueFromMessage(message, "name");
     if (name && typeof name === "string") {
@@ -72,16 +67,17 @@ const identifyResponseBuilder = async (message, { Config }) => {
       payload.last_name = lname;
     }
   }
-
-  let customFields = {};
-  customFields = extractCustomFields(
-    message,
-    customFields,
-    ["traits", "context.traits"],
-    IDENTIFY_EXCLUSION_FIELDS
-  );
-  if (!isEmptyObject(customFields)) {
-    payload.custom_fields = customFields;
+  if (!payload.custom_fields) {
+    let customFields = {};
+    customFields = extractCustomFields(
+      message,
+      customFields,
+      ["traits", "context.traits"],
+      IDENTIFY_EXCLUSION_FIELDS
+    );
+    if (!isEmptyObject(customFields)) {
+      payload.custom_fields = customFields;
+    }
   }
 
   payload = removeUndefinedAndNullValues(payload);
@@ -101,9 +97,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     let campaignPayload = constructPayload(message, campaignMapping);
     campaignPayload.email = email;
 
-    if (!isEmptyObject(customFields)) {
-      campaignPayload.custom_fields = customFields;
-    }
+    // if (!isEmptyObject(customFields)) {
+    //   campaignPayload.custom_fields = customFields;
+    // }
 
     campaignPayload = removeUndefinedAndNullValues(campaignPayload);
     const finalCampaignPayload = {
@@ -123,20 +119,21 @@ const trackResponseBuilder = async (message, { Config }) => {
   const { accountId } = Config.accountId;
 
   const id = getDestinationExternalID(message, "dripId");
-  await idValidity(Config, id);
 
   let email = getFieldValueFromMessage(message, "email");
   if (!isValidEmail(email)) {
     email = null;
     logger.error("Enter correct email format.");
   }
-
+  if (!id && !email) {
+    throw new CustomError("Drip Id or email is required.", 400);
+  }
+  if (!Config.enableUserCreation) {
+    await idValidity(Config, email);
+  }
   let payload = constructPayload(message, trackMapping);
   payload.id = id;
   payload.email = email;
-  if (!payload.id && !payload.email) {
-    throw new CustomError("Drip Id or email is required.", 400);
-  }
   if (!payload.action) {
     throw new CustomError("Action field is required.", 400);
   }
@@ -144,19 +141,20 @@ const trackResponseBuilder = async (message, { Config }) => {
     payload.occurred_at = null;
     logger.error("Timestamp format must be ISO-8601.");
   }
-
-  let properties = {};
-  properties = extractCustomFields(
-    message,
-    properties,
-    ["properties"],
-    TRACKING_EXLCUSION_FIELDS
-  );
-  if (!isEmptyObject(properties)) {
-    payload = {
-      ...payload,
-      properties
-    };
+  if (!payload.properties) {
+    let properties = {};
+    properties = extractCustomFields(
+      message,
+      properties,
+      ["properties"],
+      TRACKING_EXLCUSION_FIELDS
+    );
+    if (!isEmptyObject(properties)) {
+      payload = {
+        ...payload,
+        properties
+      };
+    }
   }
   payload = removeUndefinedAndNullValues(payload);
   const finalpayload = {

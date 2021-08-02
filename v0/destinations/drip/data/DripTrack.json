@@ -1,17 +1,22 @@
 [
-    {
-        "destKey": "action",
-        "sourceKeys": ["traits.action","context.traits.action"],
-        "required":false
-    },
-    {
-        "destKey": "prospect",
-        "sourceKeys": ["traits.prospect","context.traits.prospect"],
-        "required":false
-    },
-    {
-        "destKey" : "occurred_at",
-        "sourceKeys": ["timestamp", "originalTimestamp"],
-        "required": false
-    }
+  {
+    "destKey": "action",
+    "sourceKeys": "properties.action",
+    "required": false
+  },
+  {
+    "destKey": "prospect",
+    "sourceKeys": "properties.prospect",
+    "required": false
+  },
+  {
+    "destKey": "occurred_at",
+    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties.properties",
+    "required": false
+  }
 ]

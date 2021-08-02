@@ -42,20 +42,6 @@ const idValidity = async (Config, id) => {
   }
 };
 
-const callValidity = async (id, email, userId, Config) => {
-  let check = true;
-  if (id) {
-    await idValidity(Config, id);
-  } else if (email) {
-    check = isValidEmail(email);
-  } else if (userId) {
-    await idValidity(Config, userId);
-  } else {
-    check = false;
-  }
-  return check;
-};
-
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   try {
     const response = await axios.post(
@@ -88,6 +74,5 @@ module.exports = {
   idValidity,
   isValidEmail,
   isValidTimestamp,
-  callValidity,
   createUpdateUser
 };

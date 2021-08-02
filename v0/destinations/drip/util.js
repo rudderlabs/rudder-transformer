@@ -12,7 +12,7 @@ const isValidTimestamp = timestamp => {
   return re.test(String(timestamp).toLowerCase());
 };
 
-const idValidity = async (Config, id) => {
+const userExists = async (Config, id) => {
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   let response;
   try {
@@ -25,10 +25,10 @@ const idValidity = async (Config, id) => {
         }
       }
     );
-    if (response && response.status === 200) {
-      return true;
+    if (response) {
+      return response.status === 200;
     }
-    throw new Error("User not found");
+    throw new Error("Invalid response.");
   } catch (error) {
     let errMsg = "";
     const errStatus = 400;
@@ -71,7 +71,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
 };
 
 module.exports = {
-  idValidity,
+  userExists,
   isValidEmail,
   isValidTimestamp,
   createUpdateUser

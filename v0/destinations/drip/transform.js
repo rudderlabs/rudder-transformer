@@ -22,7 +22,7 @@ const {
   TRACKING_EXLCUSION_FIELDS
 } = require("./config");
 const {
-  idValidity,
+  userExists,
   isValidEmail,
   isValidTimestamp,
   createUpdateUser
@@ -91,6 +91,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
+
   if (Config.campaign_id && email) {
     await createUpdateUser(finalpayload, Config, basicAuth);
 
@@ -129,7 +130,13 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Drip Id or email is required.", 400);
   }
   if (!Config.enableUserCreation) {
-    await idValidity(Config, email);
+    const check = await userExists(Config, email);
+    if (!check) {
+      throw new CustomError(
+        "User creation mode is disabled and user does not exist. Track call aborted.",
+        400
+      );
+    }
   }
   let payload = constructPayload(message, trackMapping);
   payload.id = id;

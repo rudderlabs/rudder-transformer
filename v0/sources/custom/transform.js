@@ -12,8 +12,7 @@ function processEvent(events) {
 
 function process(event) {
   const response = processEvent(event);
-  const returnValue = removeUndefinedAndNullValues(response);
-  return returnValue;
+  return removeUndefinedAndNullValues(response);
 }
 
 exports.process = process;

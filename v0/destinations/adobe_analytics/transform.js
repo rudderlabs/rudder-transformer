@@ -187,10 +187,13 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     true // add generic XML header
   );
 
+  const { trackingServerSecureUrl } = destination;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.XML = { payload: xmlResponse };
-  response.endpoint = destination.trackingServerSecureUrl;
+  response.endpoint = trackingServerSecureUrl.startsWith("https")
+    ? trackingServerSecureUrl
+    : `https://${trackingServerSecureUrl}`;
   response.headers = {
     "Content-type": "application/xml"
   };

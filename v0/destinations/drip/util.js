@@ -9,7 +9,7 @@ const isValidEmail = email => {
 
 const isValidTimestamp = timestamp => {
   const re = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z)?$/;
-  return re.test(String(timestamp).toLowerCase());
+  return re.test(String(timestamp));
 };
 
 const userExists = async (Config, id) => {
@@ -54,9 +54,10 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
         }
       }
     );
-    if (response && (response.status !== 201 || response.status !== 200)) {
-      throw new Error("Unable to create account");
+    if (response) {
+      return response.status === 200 || response.status === 201;
     }
+    throw new Error("Unable to create account");
   } catch (error) {
     let errMsg = "";
     const errStatus = 400;

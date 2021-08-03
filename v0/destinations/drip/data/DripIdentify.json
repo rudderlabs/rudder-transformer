@@ -83,7 +83,7 @@
   },
   {
     "destKey": "eu_consent",
-    "sourceKeys": ["traits.euConsent", "contex.traits.euConsent"],
+    "sourceKeys": ["traits.euConsent", "context.traits.euConsent"],
     "required": false
   },
   {
@@ -126,6 +126,11 @@
   {
     "destKey": "custom_fields",
     "sourceKeys": ["traits.customFields", "context.traits.customFields"],
+    "required": false
+  },
+  {
+    "destKey": "visitor_uuid",
+    "sourceKeys": ["traits.visitorUuid", "context.traits.visitorUuid"],
     "required": false
   }
 ]

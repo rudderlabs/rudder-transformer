@@ -32,7 +32,7 @@
   },
   {
     "destKey": "eu_consent",
-    "sourceKeys": ["traits.euConsent", "contex.traits.euConsent"],
+    "sourceKeys": ["traits.euConsent", "context.traits.euConsent"],
     "required": false
   },
   {

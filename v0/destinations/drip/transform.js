@@ -29,8 +29,6 @@ const {
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const { accountId } = Config.accountId;
-
   const id = getDestinationExternalID(message, "dripId");
 
   let email = getFieldValueFromMessage(message, "email");
@@ -38,18 +36,18 @@ const identifyResponseBuilder = async (message, { Config }) => {
     email = null;
     logger.error("Email format is incorrect");
   }
+
+  let payload = constructPayload(message, identifyMapping);
   const userId = getFieldValueFromMessage(message, "userId");
-  if (!(id || email || userId)) {
+  if (!(id || email || payload.visitor_uuid)) {
     throw new CustomError(
-      "dripId, email or userId is required for the call",
+      "dripId, email or visitor_uuid is required for the call",
       400
     );
   }
-
-  let payload = constructPayload(message, identifyMapping);
   payload.id = id;
   payload.email = email;
-  payload.visitor_uuid = userId;
+  payload.user_id = userId;
 
   // id — >(yes) -> check if the user already exists (GET call): exists? continue: error;
   // |
@@ -86,14 +84,17 @@ const identifyResponseBuilder = async (message, { Config }) => {
   };
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
-  response.header = {
+  response.headers = {
     Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
 
-  if (Config.campaign_id && email) {
-    await createUpdateUser(finalpayload, Config, basicAuth);
+  if (Config.campaignId && email) {
+    const check = await createUpdateUser(finalpayload, Config, basicAuth);
+    if (!check) {
+      throw new CustomError("Unable to create/update user.", 400);
+    }
 
     let campaignPayload = constructPayload(message, campaignMapping);
     campaignPayload.email = email;
@@ -107,18 +108,16 @@ const identifyResponseBuilder = async (message, { Config }) => {
       subscribers: [campaignPayload]
     };
 
-    response.endpoint = `${ENDPOINT}/${accountId}/campaigns/${Config.campaign_id}/subscribers`;
+    response.endpoint = `${ENDPOINT}/${Config.accountId}/campaigns/${Config.campaignId}/subscribers`;
     response.body.JSON = finalCampaignPayload;
     return response;
   }
-  response.endpoint = `${ENDPOINT}/${accountId}/subscribers`;
+  response.endpoint = `${ENDPOINT}/${Config.accountId}/subscribers`;
   response.body.JSON = finalpayload;
   return response;
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const { accountId } = Config.accountId;
-
   const id = getDestinationExternalID(message, "dripId");
 
   let email = getFieldValueFromMessage(message, "email");
@@ -169,12 +168,12 @@ const trackResponseBuilder = async (message, { Config }) => {
   };
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   const response = defaultRequestConfig();
-  response.header = {
+  response.headers = {
     Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${ENDPOINT}/${accountId}/events`;
+  response.endpoint = `${ENDPOINT}/${Config.accountId}/events`;
   response.body.JSON = finalpayload;
   return response;
 };

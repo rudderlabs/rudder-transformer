@@ -37,14 +37,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
     logger.error("Email format is incorrect");
   }
 
-  let payload = constructPayload(message, identifyMapping);
   const userId = getFieldValueFromMessage(message, "userId");
-  if (!(id || email || payload.visitor_uuid)) {
-    throw new CustomError(
-      "dripId, email or visitor_uuid is required for the call",
-      400
-    );
+  if (!(id || email)) {
+    throw new CustomError("dripId or email is required for the call", 400);
   }
+
+  let payload = constructPayload(message, identifyMapping);
   payload.id = id;
   payload.email = email;
   payload.user_id = userId;
@@ -98,10 +96,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
     let campaignPayload = constructPayload(message, campaignMapping);
     campaignPayload.email = email;
-
-    // if (!isEmptyObject(customFields)) {
-    //   campaignPayload.custom_fields = customFields;
-    // }
 
     campaignPayload = removeUndefinedAndNullValues(campaignPayload);
     const finalCampaignPayload = {

@@ -9,7 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
 const versions = ["v0"];

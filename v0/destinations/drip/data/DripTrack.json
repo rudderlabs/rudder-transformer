@@ -1,7 +1,7 @@
 [
   {
     "destKey": "action",
-    "sourceKeys": "properties.action",
+    "sourceKeys": ["event","properties.action"],
     "required": false
   },
   {
@@ -11,7 +11,7 @@
   },
   {
     "destKey": "occurred_at",
-    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "sourceKeys": ["properties.occurredAt","timestamp", "originalTimestamp"],
     "required": false
   },
   {

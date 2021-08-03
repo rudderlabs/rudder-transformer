@@ -1,10 +1,5 @@
 [
   {
-    "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
-    "required": false
-  },
-  {
     "destKey": "new_email",
     "sourceKeys": ["traits.newEmail", "context.traits.newEmail"],
     "required": false
@@ -126,11 +121,6 @@
   {
     "destKey": "custom_fields",
     "sourceKeys": ["traits.customFields", "context.traits.customFields"],
-    "required": false
-  },
-  {
-    "destKey": "visitor_uuid",
-    "sourceKeys": ["traits.visitorUuid", "context.traits.visitorUuid"],
     "required": false
   }
 ]

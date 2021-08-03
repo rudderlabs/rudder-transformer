@@ -16,7 +16,7 @@
   },
   {
     "destKey": "properties",
-    "sourceKeys": "properties.properties",
+    "sourceKeys": "properties.customFields",
     "required": false
   }
 ]

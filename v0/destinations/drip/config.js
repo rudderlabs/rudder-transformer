@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const ENDPOINT = "https://api.getdrip.com/v2";
+const ENDPOINT = "https://api.getdrip.com";
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { type: "identify", name: "DripIdentify" },

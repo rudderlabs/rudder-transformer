@@ -1,5 +1,6 @@
 const axios = require("axios");
-const { CustomError } = require("../../util");
+const logger = require("../../../logger");
+const { CustomError, removeUndefinedAndNullValues } = require("../../util");
 const { ENDPOINT } = require("./config");
 
 const isValidEmail = email => {
@@ -17,7 +18,7 @@ const userExists = async (Config, id) => {
   let response;
   try {
     response = await axios.get(
-      `${ENDPOINT}/${Config.accountId}/subscribers/${id}`,
+      `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
       {
         headers: {
           Authorization: `Basic ${basicAuth}`,
@@ -45,7 +46,7 @@ const userExists = async (Config, id) => {
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   try {
     const response = await axios.post(
-      `${ENDPOINT}/${Config.accountId}/subscribers`,
+      `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
       finalpayload,
       {
         headers: {
@@ -71,9 +72,44 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   }
 };
 
+const createList = productList => {
+  const itemList = [];
+  if (productList.length > 0) {
+    productList.forEach(product => {
+      let props = {};
+      props.product_id = product.product_id;
+      props.sku = product.sku;
+      props.name = product.name;
+      props.product_variant_id = product.product_variant_id;
+      props.brand = product.brand;
+      props.price = product.price;
+      props.quantity = product.quantity;
+      props.categories = product.categories;
+      props.discounts = product.discounts;
+      props.taxes = product.taxes;
+      props.fees = product.fees;
+      props.shipping = product.shipping;
+      props.total = product.total;
+      props.product_url = product.url;
+      props.image_url = product.image_url;
+      props = removeUndefinedAndNullValues(props);
+      if (!props.name || !props.price) {
+        logger.error(
+          "List rejected. Name and price is mandatory for the item field."
+        );
+      } else {
+        itemList.push(props);
+      }
+      props = {};
+    });
+  }
+  return itemList;
+};
+
 module.exports = {
   userExists,
   isValidEmail,
   isValidTimestamp,
-  createUpdateUser
+  createUpdateUser,
+  createList
 };

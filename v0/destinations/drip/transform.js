@@ -10,7 +10,8 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  getValueFromMessage
 } = require("../../util");
 const logger = require("../../../logger");
 const {
@@ -25,7 +26,8 @@ const {
   userExists,
   isValidEmail,
   isValidTimestamp,
-  createUpdateUser
+  createUpdateUser,
+  createList
 } = require("./util");
 
 const identifyResponseBuilder = async (message, { Config }) => {
@@ -58,7 +60,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (!payload.first_name && !payload.last_name) {
     const name = getFieldValueFromMessage(message, "name");
     if (name && typeof name === "string") {
-      const [fname, lname] = name.split(" ");
+      const [fname, lname] = name.trim().split(" ");
       payload.first_name = fname;
       payload.last_name = lname;
     }
@@ -87,8 +89,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
-
-  if (Config.campaignId && email) {
+  const campaignId =
+    getDestinationExternalID(message, "dripCampaignId") || Config.campaignId;
+  if (campaignId && email) {
     const check = await createUpdateUser(finalpayload, Config, basicAuth);
     if (!check) {
       throw new CustomError("Unable to create/update user.", 400);
@@ -102,11 +105,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
       subscribers: [campaignPayload]
     };
 
-    response.endpoint = `${ENDPOINT}/${Config.accountId}/campaigns/${Config.campaignId}/subscribers`;
+    response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/campaigns/${campaignId}/subscribers`;
     response.body.JSON = finalCampaignPayload;
     return response;
   }
-  response.endpoint = `${ENDPOINT}/${Config.accountId}/subscribers`;
+  response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/subscribers`;
   response.body.JSON = finalpayload;
   return response;
 };
@@ -118,6 +121,74 @@ const trackResponseBuilder = async (message, { Config }) => {
   if (!isValidEmail(email)) {
     email = null;
     logger.error("Enter correct email format.");
+  }
+  const event = getValueFromMessage(message, "event");
+  const ecomEvents = [
+    "order updated",
+    "order completed",
+    "order refunded",
+    "order cancelled",
+    "checkout started",
+    "fulfilled"
+  ];
+  if (ecomEvents.includes(event.trim().toLowerCase())) {
+    const personId = getDestinationExternalID(message, "person_id");
+    if (!personId && !email) {
+      throw new CustomError(
+        "Either person Id or email is required to make call.",
+        400
+      );
+    }
+    const payload = constructPayload(message, trackMapping);
+    payload.email = email;
+    payload.person_id = personId;
+    if (!payload.provider || !payload.order_id) {
+      throw new CustomError(
+        "Either provider or order Id field is missing.",
+        400
+      );
+    }
+    if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
+      payload.occurred_at = null;
+      logger.error("Timestamp format must be ISO-8601.");
+    }
+    const productList = getValueFromMessage(message, "properties.product");
+    if (productList) {
+      const itemList = createList(productList);
+      if (itemList && itemList.length > 0) {
+        payload.items = itemList;
+      }
+    }
+    switch (event) {
+      case "order updated":
+        payload.action = "updated";
+        break;
+      case "order cancelled":
+        payload.action = "cancelled";
+        break;
+      case "order refunded":
+        payload.action = "refunded";
+        break;
+      case "order completed":
+        payload.action = "paid";
+        break;
+      case "checkout started":
+        payload.action = "placed";
+        break;
+      default:
+        payload.action = "fulfilled";
+    }
+
+    const basicAuth = Buffer.from(Config.apiKey).toString("base64");
+    const response = defaultRequestConfig();
+    response.headers = {
+      Authorization: `Basic ${basicAuth}`,
+      "Content-Type": "application/json"
+    };
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = `${ENDPOINT}/v3/${Config.accountId}/shopper_activity/order`;
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    return response;
   }
   if (!id && !email) {
     throw new CustomError("Drip Id or email is required.", 400);
@@ -132,15 +203,17 @@ const trackResponseBuilder = async (message, { Config }) => {
     }
   }
   let payload = constructPayload(message, trackMapping);
-  payload.id = id;
-  payload.email = email;
+  payload.action = event || getValueFromMessage(message, "action");
   if (!payload.action) {
     throw new CustomError("Action field is required.", 400);
   }
+  payload.id = id;
+  payload.email = email;
   if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
     payload.occurred_at = null;
     logger.error("Timestamp format must be ISO-8601.");
   }
+
   if (!payload.properties) {
     let properties = {};
     properties = extractCustomFields(
@@ -167,7 +240,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${ENDPOINT}/${Config.accountId}/events`;
+  response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/events`;
   response.body.JSON = finalpayload;
   return response;
 };

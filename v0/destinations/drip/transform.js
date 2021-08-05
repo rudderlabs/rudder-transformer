@@ -22,7 +22,8 @@ const {
   IDENTIFY_EXCLUSION_FIELDS,
   TRACKING_EXLCUSION_FIELDS,
   ecomEvents,
-  ecomMapping
+  ecomMapping,
+  eventNameMapping
 } = require("./config");
 const {
   userExists,
@@ -124,55 +125,29 @@ const trackResponseBuilder = async (message, { Config }) => {
     email = null;
     logger.error("Enter correct email format.");
   }
+  if (!id && !email) {
+    throw new CustomError("Drip Id or email is required.", 400);
+  }
+
   let event = getValueFromMessage(message, "event");
   if (event && ecomEvents.includes(event.trim().toLowerCase())) {
-    event = event.trim();
-    const personId = getDestinationExternalID(message, "person_id");
-    if (!personId && !email) {
-      throw new CustomError(
-        "Either person Id or email is required to make call.",
-        400
-      );
-    }
+    event = event.trim().toLowerCase();
     const payload = constructPayload(message, ecomMapping);
     payload.email = email;
-    payload.person_id = personId;
+    payload.person_id = id;
 
     if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
       payload.occurred_at = null;
       logger.error("Timestamp format must be ISO-8601.");
     }
-    const productList = getValueFromMessage(message, "properties.product");
+    const productList = getValueFromMessage(message, "properties.products");
     if (productList) {
       const itemList = createList(productList);
       if (itemList && itemList.length > 0) {
         payload.items = itemList;
       }
     }
-    switch (event) {
-      case "order updated":
-        payload.action = "updated";
-        break;
-      case "order cancelled":
-        payload.action = "cancelled";
-        break;
-      case "order refunded":
-        payload.action = "refunded";
-        break;
-      case "order completed":
-        payload.action = "paid";
-        break;
-      case "checkout started":
-        payload.action = "placed";
-        break;
-      case "fulfilled":
-      case "order fulfilled":
-        payload.action = "fulfilled";
-        break;
-      default:
-        break;
-    }
-
+    payload.action = eventNameMapping[event];
     const basicAuth = Buffer.from(Config.apiKey).toString("base64");
     const response = defaultRequestConfig();
     response.headers = {
@@ -184,10 +159,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-  if (!id && !email) {
-    throw new CustomError("Drip Id or email is required.", 400);
-  }
-  if (!Config.enableUserCreation) {
+  if (!Config.enableUserCreation && !id) {
     const check = await userExists(Config, email);
     if (!check) {
       throw new CustomError(

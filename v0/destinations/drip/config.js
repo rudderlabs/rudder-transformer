@@ -52,9 +52,18 @@ const ecomEvents = [
   "order refunded",
   "order cancelled",
   "checkout started",
-  "fulfilled"
+  "fulfilled",
+  "order fulfilled"
 ];
 
+const eventNameMapping = {
+  fulfilled: "fulfilled",
+  "order fulfilled": "fulfilled",
+  "order updated": "updated",
+  "order completed": "completed",
+  "order refunded": "refunded",
+  "order cancelled": "cancelled"
+};
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
@@ -66,5 +75,6 @@ module.exports = {
   productMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT.name],
   IDENTIFY_EXCLUSION_FIELDS,
   TRACKING_EXLCUSION_FIELDS,
-  ecomEvents
+  ecomEvents,
+  eventNameMapping
 };

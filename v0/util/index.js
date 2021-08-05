@@ -74,6 +74,9 @@ const getType = arg => {
   if (arg == null) {
     return "NULL";
   }
+  if (Array.isArray(arg)) {
+    return "array";
+  }
   return type;
 };
 
@@ -963,7 +966,7 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
-const getMetadata = (metadata) => {
+const getMetadata = metadata => {
   return {
     sourceId: metadata.sourceId,
     sourceType: metadata.sourceType,
@@ -971,8 +974,8 @@ const getMetadata = (metadata) => {
     destinationType: metadata.destinationType,
     workspaceId: metadata.workspaceId,
     namespace: metadata.namespace
-  }
-}
+  };
+};
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every(val => array1.includes(val));
@@ -1003,6 +1006,27 @@ class CustomError extends Error {
     super(message);
     this.response = { status: statusCode };
   }
+}
+
+/**
+ *
+ * Utility function for UUID genration
+ * @returns
+ */
+function generateUUID() {
+  // Public Domain/MIT
+  let d = new Date().getTime();
+  if (
+    typeof performance !== "undefined" &&
+    typeof performance.now === "function"
+  ) {
+    d += performance.now(); // use high-precision timer if available
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    const r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
 }
 
 // ========================================================================
@@ -1066,5 +1090,9 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  getMetadata,
+  checkSubsetOfArray,
+  returnArrayOfSubarrays,
+  generateUUID
 };

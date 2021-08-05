@@ -137,12 +137,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     const payload = constructPayload(message, ecomMapping);
     payload.email = email;
     payload.person_id = personId;
-    if (!payload.provider || !payload.order_id) {
-      throw new CustomError(
-        "Either provider or order Id field is missing.",
-        400
-      );
-    }
+
     if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
       payload.occurred_at = null;
       logger.error("Timestamp format must be ISO-8601.");

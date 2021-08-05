@@ -2,7 +2,7 @@
   {
     "destKey": "provider",
     "sourceKeys": "properties.affiliation",
-    "required": false
+    "required": true
   },
   {
     "destKey": "initial_status",
@@ -12,7 +12,7 @@
   {
     "destKey": "order_id",
     "sourceKeys": "properties.order_id",
-    "required": false
+    "required": true
   },
   {
     "destKey": "order_public_id",

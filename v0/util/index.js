@@ -74,6 +74,9 @@ const getType = arg => {
   if (arg == null) {
     return "NULL";
   }
+  if (Array.isArray(arg)) {
+    return "array";
+  }
   return type;
 };
 

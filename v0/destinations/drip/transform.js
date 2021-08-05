@@ -20,7 +20,9 @@ const {
   trackMapping,
   campaignMapping,
   IDENTIFY_EXCLUSION_FIELDS,
-  TRACKING_EXLCUSION_FIELDS
+  TRACKING_EXLCUSION_FIELDS,
+  ecomEvents,
+  ecomMapping
 } = require("./config");
 const {
   userExists,
@@ -122,16 +124,9 @@ const trackResponseBuilder = async (message, { Config }) => {
     email = null;
     logger.error("Enter correct email format.");
   }
-  const event = getValueFromMessage(message, "event");
-  const ecomEvents = [
-    "order updated",
-    "order completed",
-    "order refunded",
-    "order cancelled",
-    "checkout started",
-    "fulfilled"
-  ];
-  if (ecomEvents.includes(event.trim().toLowerCase())) {
+  let event = getValueFromMessage(message, "event");
+  if (event && ecomEvents.includes(event.trim().toLowerCase())) {
+    event = event.trim();
     const personId = getDestinationExternalID(message, "person_id");
     if (!personId && !email) {
       throw new CustomError(
@@ -139,7 +134,7 @@ const trackResponseBuilder = async (message, { Config }) => {
         400
       );
     }
-    const payload = constructPayload(message, trackMapping);
+    const payload = constructPayload(message, ecomMapping);
     payload.email = email;
     payload.person_id = personId;
     if (!payload.provider || !payload.order_id) {
@@ -175,8 +170,12 @@ const trackResponseBuilder = async (message, { Config }) => {
       case "checkout started":
         payload.action = "placed";
         break;
-      default:
+      case "fulfilled":
+      case "order fulfilled":
         payload.action = "fulfilled";
+        break;
+      default:
+        break;
     }
 
     const basicAuth = Buffer.from(Config.apiKey).toString("base64");

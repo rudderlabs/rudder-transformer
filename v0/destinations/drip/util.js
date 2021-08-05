@@ -1,7 +1,7 @@
 const axios = require("axios");
 const logger = require("../../../logger");
-const { CustomError, removeUndefinedAndNullValues } = require("../../util");
-const { ENDPOINT } = require("./config");
+const { CustomError, constructPayload } = require("../../util");
+const { ENDPOINT, productMapping } = require("./config");
 
 const isValidEmail = email => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -75,32 +75,15 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
 const createList = productList => {
   const itemList = [];
   if (productList.length > 0) {
-    productList.forEach(product => {
-      let props = {};
-      props.product_id = product.product_id;
-      props.sku = product.sku;
-      props.name = product.name;
-      props.product_variant_id = product.product_variant_id;
-      props.brand = product.brand;
-      props.price = product.price;
-      props.quantity = product.quantity;
-      props.categories = product.categories;
-      props.discounts = product.discounts;
-      props.taxes = product.taxes;
-      props.fees = product.fees;
-      props.shipping = product.shipping;
-      props.total = product.total;
-      props.product_url = product.url;
-      props.image_url = product.image_url;
-      props = removeUndefinedAndNullValues(props);
-      if (!props.name || !props.price) {
-        logger.error(
-          "List rejected. Name and price is mandatory for the item field."
-        );
+    productList.forEach((product, index) => {
+      const itemPayload = constructPayload(product, productMapping);
+      if (itemPayload.name && itemPayload.price) {
+        itemList.push(itemPayload);
       } else {
-        itemList.push(props);
+        logger.error(
+          `Item at index ${index} dropped. Name and price is required`
+        );
       }
-      props = {};
     });
   }
   return itemList;

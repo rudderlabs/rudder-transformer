@@ -7,21 +7,27 @@ const {
   marketoBulkUploadRequestConfig
 } = require("../../util");
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES } = require("./config");
 
-function responseBuilderSimple(message, category, destination) {
-  let payload;
-  const fieldHashmap = getHashFromArray(destination.Config.columnFieldsMapping);
+function responseBuilderSimple(message, destination) {
+  const payload = {};
+  const fieldHashmap = getHashFromArray(
+    destination.Config.columnFieldsMapping,
+    "from",
+    "to",
+    false
+  );
+
   const traits = getFieldValueFromMessage(message, "traits");
+
   Object.keys(fieldHashmap).forEach(key => {
-    const val = traits[key];
-    payload[fieldHashmap[key]] = val;
+    const val = traits[fieldHashmap[key]];
+    if (val) {
+      payload[key] = val;
+    }
   });
+
   const response = marketoBulkUploadRequestConfig();
-
-  const payloadString = JSON.parse(payload);
-  const payloadValues = Object.values(payloadString);
-
+  const payloadValues = Object.values(payload);
   response.body.CSVRow = payloadValues.toString();
 
   return response;
@@ -37,11 +43,9 @@ const processEvent = (message, destination) => {
 
   const messageType = message.type.toLowerCase();
   let response;
-  let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.category;
-      response = responseBuilderSimple(message, category, destination);
+      response = responseBuilderSimple(message, destination);
       break;
     default:
       throw new CustomError("Message type not supported", 400);

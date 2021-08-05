@@ -1,0 +1,72 @@
+[
+  {
+    "destKey": "provider",
+    "sourceKeys": "properties.affiliation",
+    "required": false
+  },
+  {
+    "destKey": "initial_status",
+    "sourceKeys": "properties.initial_status",
+    "required": false
+  },
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id",
+    "required": false
+  },
+  {
+    "destKey": "order_public_id",
+    "sourceKeys": "properties.order_public_id",
+    "required": false
+  },
+  {
+    "destKey": "grand_total",
+    "sourceKeys": "properties.total",
+    "required": false
+  },
+  {
+    "destKey": "total_discounts",
+    "sourceKeys": "properties.discount",
+    "required": false
+  },
+  {
+    "destKey": "total_taxes",
+    "sourceKeys": "properties.taxes",
+    "required": false
+  },
+  {
+    "destKey": "total_fees",
+    "sourceKeys": "properties.total_fees",
+    "required": false
+  },
+  {
+    "destKey": "total_shipping",
+    "sourceKeys": "properties.shipping",
+    "required": false
+  },
+  {
+    "destKey": "refund_amount",
+    "sourceKeys": "properties.refund_amount",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "order_url",
+    "sourceKeys": "properties.order_url",
+    "required": false
+  },
+  {
+    "destKey": "billing_address",
+    "sourceKeys": "properties.billing_address",
+    "required": false
+  },
+  {
+    "destKey": "shipping_address",
+    "sourceKeys": "properties.shipping_address",
+    "required": false
+  }
+]

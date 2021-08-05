@@ -68,5 +68,10 @@
     "destKey": "shipping_address",
     "sourceKeys": "properties.shipping_address",
     "required": false
+  },
+  {
+    "destKey": "occurred_at",
+    "sourceKeys": ["properties.occurred_at", "originalTimestamp"],
+    "required": false
   }
 ]

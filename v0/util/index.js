@@ -20,6 +20,7 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
+const { DestCanonicalNames } = require("../../constants/destinationCanonicalNames");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -428,7 +429,7 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata) => {
+const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   if (!metadata) {
     return value;
   }
@@ -507,7 +508,10 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = parseInt(formattedVal, 10);
         break;
       case "hashToSha256":
-        formattedVal = hashToSha256(String(formattedVal));
+        formattedVal =
+          integrationsObj && integrationsObj.hashed
+            ? String(formattedVal)
+            : hashToSha256(String(formattedVal));
         break;
       case "getFbGenderVal":
         formattedVal = getFbGenderVal(formattedVal);
@@ -607,8 +611,27 @@ const handleMetadataForValue = (value, metadata) => {
   return formattedVal;
 };
 
+// Given a destinationName according to the destination definition names,
+// It'll look for the canonical names for that integration and return the
+// `integrations` object for that destination, else null
+const getIntegrationsObj = (message, destinationName = null) => {
+  if (destinationName) {
+    const canonicalNames = DestCanonicalNames[destinationName];
+    for (let index = 0; index < canonicalNames.length; index += 1) {
+      const integrationsObj = get(
+        message,
+        `integrations.${canonicalNames[index]}`
+      );
+      if (integrationsObj) {
+        return integrationsObj;
+      }
+    }
+  }
+  return null;
+};
+
 // construct payload from an event and mappingJson
-const constructPayload = (message, mappingJson) => {
+const constructPayload = (message, mappingJson, destinationName = null) => {
   // Mapping JSON should be an array
   if (Array.isArray(mappingJson) && mappingJson.length > 0) {
     // - construct a blank payload and return at the end
@@ -659,11 +682,15 @@ const constructPayload = (message, mappingJson) => {
       } = mapping;
       // get the value from event, pass sourceFromGenericMap in the mapping to force this to take the
       // sourcekeys from GenericFieldMapping, else take the sourceKeys from specific destination mapping sourceKeys
+      const integrationsObj = destinationName
+        ? getIntegrationsObj(message, destinationName)
+        : null;
       const value = handleMetadataForValue(
         sourceFromGenericMap
           ? getFieldValueFromMessage(message, sourceKeys)
           : getValueFromMessage(message, sourceKeys),
-        metadata
+        metadata,
+        integrationsObj
       );
 
       if (value || value === 0 || value === false) {
@@ -963,6 +990,14 @@ function returnArrayOfSubarrays(arr, len) {
   return chunks;
 }
 
+// Helper method to add external Id to traits
+// Traverse through the possible keys for traits using generic mapping and add externalId if traits found
+function addExternalIdToTraits(message) {
+  const identifierType = get(message, "context.externalId.0.identifierType");
+  const identifierValue = get(message, "context.externalId.0.id");
+  set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
+}
+
 class CustomError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -996,10 +1031,13 @@ function generateUUID() {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
-  ErrorMessage,
-  checkEmptyStringInarray,
-  constructPayload,
   CustomError,
+  CustomError,
+  ErrorMessage,
+  addExternalIdToTraits,
+  checkEmptyStringInarray,
+  checkSubsetOfArray,
+  constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
@@ -1020,7 +1058,9 @@ module.exports = {
   getFieldValueFromMessage,
   getFirstAndLastName,
   getHashFromArray,
+  getIntegrationsObj,
   getMappingConfig,
+  getMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -1042,6 +1082,7 @@ module.exports = {
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
+  returnArrayOfSubarrays,
   setValues,
   stripTrailingSlash,
   toTitleCase,

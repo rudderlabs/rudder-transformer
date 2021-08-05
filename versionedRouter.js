@@ -1,6 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -8,8 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
-const heapdump = require("heapdump");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -473,7 +473,7 @@ router.post("/batch", ctx => {
 
 router.get("/heapdump", ctx => {
   heapdump.writeSnapshot((err, filename) => {
-    console.log("Heap dump written to", filename);
+    logger.debug("Heap dump written to", filename);
   });
   ctx.body = "OK";
 });

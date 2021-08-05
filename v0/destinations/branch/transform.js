@@ -9,10 +9,33 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isDefinedAndNotNull
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
+
+  const os = get(message, "context.os.name");
+
+  if (isDefinedAndNotNull(os)) {
+    if (os.toLowerCase() === "ios") {
+      payload.idfa = get(message, "context.device.advertisingId");
+      payload.idfv = get(message, "context.device.id");
+    } else if (os.toLowerCase() === "android") {
+      payload.android_id = get(message, "context.device.id");
+      payload.aaid = get(message, "context.device.advertisingId");
+    }
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att == 3) {
+      payload.limit_ad_tracking = false;
+    } else if (att == 2) {
+      payload.limit_ad_tracking = true;
+    }
+  }
+
   const response = defaultRequestConfig();
 
   if (category === "custom") {

@@ -131,7 +131,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
           val = val.join(delimeter);
         }
 
-        props[`prop${listMapping[key]}`] = val.toString();
+        props[`prop${customPropsMapping[key]}`] = val.toString();
       }
     });
   }
@@ -192,8 +192,8 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.XML = { payload: xmlResponse };
   response.endpoint = trackingServerSecureUrl.startsWith("https")
-    ? trackingServerSecureUrl
-    : `https://${trackingServerSecureUrl}`;
+    ? `${trackingServerSecureUrl}/b/ss//6`
+    : `https://${trackingServerSecureUrl}/b/ss//6`;
   response.headers = {
     "Content-type": "application/xml"
   };

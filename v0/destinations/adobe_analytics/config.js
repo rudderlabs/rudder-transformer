@@ -21,7 +21,7 @@ const formatDestinationConfig = config => {
     rudderEventsToAdobeEvents: getHashFromArray(
       config.rudderEventsToAdobeEvents
     ),
-    customPropsMapping: getHashFromArray(config.listMapping),
+    customPropsMapping: getHashFromArray(config.customPropsMapping),
     propsDelimiter: getHashFromArray(config.propsDelimiter),
     eVarMapping: getHashFromArray(config.eVarMapping),
     hierMapping: getHashFromArray(config.hierMapping),

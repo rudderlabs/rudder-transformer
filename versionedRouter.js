@@ -37,6 +37,9 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -476,6 +479,26 @@ router.get("/heapdump", ctx => {
     logger.debug("Heap dump written to", filename);
   });
   ctx.body = "OK";
+});
+
+const fileUpload = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getDestFileUploadHandler("v0", destType);
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  const response = await destFileUploadHandler.processFileData(
+    ctx.request.body
+  );
+  ctx.body = response;
+  return ctx.body;
+};
+
+router.post("/fileUpload", ctx => {
+  fileUpload(ctx);
 });
 
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

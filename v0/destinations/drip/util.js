@@ -58,7 +58,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
     if (response) {
       return response.status === 200 || response.status === 201;
     }
-    throw new Error("Unable to create account");
+    throw new Error("Unable to create/update user.");
   } catch (error) {
     let errMsg = "";
     const errStatus = 400;
@@ -66,7 +66,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
       errMsg = JSON.stringify(error.response.data);
     }
     throw new CustomError(
-      `Error occurred while creating user : ${errMsg}`,
+      `Error occurred while creating/updating user : ${errMsg}`,
       errStatus
     );
   }

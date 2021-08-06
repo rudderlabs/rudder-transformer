@@ -60,9 +60,10 @@ const eventNameMapping = {
   fulfilled: "fulfilled",
   "order fulfilled": "fulfilled",
   "order updated": "updated",
-  "order completed": "completed",
+  "order completed": "paid",
   "order refunded": "refunded",
-  "order cancelled": "cancelled"
+  "order cancelled": "canceled",
+  "checkout started": "placed"
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

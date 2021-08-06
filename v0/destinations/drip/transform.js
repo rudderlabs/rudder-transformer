@@ -130,8 +130,21 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   let event = getValueFromMessage(message, "event");
-  if (event && ecomEvents.includes(event.trim().toLowerCase())) {
-    event = event.trim().toLowerCase();
+  if (!event) {
+    throw new CustomError("Event name is required", 400);
+  }
+  event = event.trim().toLowerCase();
+
+  if (!Config.enableUserCreation && !id) {
+    const check = await userExists(Config, email);
+    if (!check) {
+      throw new CustomError(
+        "User creation mode is disabled and user does not exist. Track call aborted.",
+        400
+      );
+    }
+  }
+  if (ecomEvents.includes(event)) {
     const payload = constructPayload(message, ecomMapping);
     payload.email = email;
     payload.person_id = id;
@@ -159,20 +172,9 @@ const trackResponseBuilder = async (message, { Config }) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-  if (!Config.enableUserCreation && !id) {
-    const check = await userExists(Config, email);
-    if (!check) {
-      throw new CustomError(
-        "User creation mode is disabled and user does not exist. Track call aborted.",
-        400
-      );
-    }
-  }
+
   let payload = constructPayload(message, trackMapping);
-  payload.action = event || getValueFromMessage(message, "action");
-  if (!payload.action) {
-    throw new CustomError("Action field is required.", 400);
-  }
+  payload.action = event;
   payload.id = id;
   payload.email = email;
   if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {

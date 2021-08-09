@@ -1,0 +1,94 @@
+[
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "subscribers": [
+            {
+              "email": "test1@gmail.com",
+              "first_name": "James",
+              "last_name": "Doe",
+              "phone": "237416221",
+              "ip_address": "0.0.0.0",
+              "custom_fields": {
+                "filter1": "filterval1"
+              }
+            }
+          ]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.getdrip.com/v2/1809802/subscribers"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "",
+        "enableUserCreation": true
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+            "events": [
+                {
+                  "email": "user1@gmail.com",
+                  "properties": {
+                    "field1": "val1"
+                  },
+                  "action": "testing",
+                  "occurred_at": "2019-10-14T09:03:17.562Z"
+                }
+              ]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.getdrip.com/v2/1809802/events"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": true
+      }
+    }
+  }
+]

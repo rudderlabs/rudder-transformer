@@ -1,0 +1,491 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "identify",
+      "traits": {
+        "email": "test1@gmail.com",
+        "firstName": "James",
+        "lastName": "Doe",
+        "phone": "237416221",
+        "customFields":{
+            "filter1":"filterval1"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "identify",
+      "traits": {
+        "email": "12324adfgs",
+        "firstName": "James",
+        "lastName": "Doe",
+        "phone": "237416221",
+        "customFields":{
+            "filter1":"filterval1"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "identify",
+      "traits": {
+        "email": "test1@gmail.com",
+        "name": "James Doe",
+        "phone": "237416221",
+        "filter1":"filterval1",
+        "filter2": "filterval2"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "identify",
+      "traits": {
+        "email": "test1@gmail.com",
+        "name": "James Doe",
+        "phone": "237416221",
+        "filter1":"filterval1",
+        "filter2": "filterval2",
+        "tags": ["tag1","tag2"],
+        "startingEmailIndex": 1
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "testing",
+      "properties":{
+        "email" : "user1@gmail.com",
+        "custom_fields": {
+          "field1": "val1"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": true
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "",
+      "properties":{
+        "email" : "user1@gmail.com",
+        "custom_fields": {
+          "field1": "val1"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "testing",
+      "properties":{
+        "email" : "identified_user@gmail.com",
+        "custom_fields": {
+          "field1": "val1"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "testing",
+      "properties":{
+        "email" : "identified_user@gmail.com",
+        "field1": "val1"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "testing",
+      "properties":{
+        "email" : "unidentified_user@gmail.com",
+        "field1": "val1"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "checkout started",
+      "properties":{
+        "email" : "identified_user@gmail.com",
+        "field1": "val1",
+        "affiliation": "my_custom_order",
+        "order_id": "456445746"
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "checkout started",
+      "properties":{
+        "email" : "identified_user@gmail.com",
+        "field1": "val1",
+        "affiliation": "my_custom_order",
+        "order_id": "456445746",
+        "products":[
+          {
+            "name":"shirt",
+            "price": 11.16
+          }
+        ]
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "accountId": "1809802",
+        "campaignId": "915194776",
+        "enableUserCreation": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": { "name": "", "version": "" },
+        "screen": { "density": 2 }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "type": "track",
+      "event": "checkout",
+      "properties":{
+        "email" : "identified_user@gmail.com",
+        "field1": "val1",
+        "custom_fields":{
+          "field2":"val2"
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  }
+]

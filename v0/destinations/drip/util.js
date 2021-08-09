@@ -26,15 +26,21 @@ const userExists = async (Config, id) => {
         }
       }
     );
-    if (response) {
+    if (response && response.status) {
       return response.status === 200;
     }
     throw new Error("Invalid response.");
   } catch (error) {
     let errMsg = "";
-    const errStatus = 400;
-    if (error.response && error.response.data) {
-      errMsg = JSON.stringify(error.repsonse.data);
+    let errStatus = 400;
+    if (error.response) {
+      errStatus = error.response.status || 400;
+      errMsg =
+        errStatus === 404
+          ? "user does not exist"
+          : error.response.data
+          ? JSON.stringify(error.response.data)
+          : "error response not found";
     }
     throw new CustomError(
       `Error occurred while checking user : ${errMsg}`,

@@ -52,14 +52,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
   payload.email = email;
   payload.user_id = userId;
 
-  // id — >(yes) -> check if the user already exists (GET call): exists? continue: error;
-  // |
-  // (no)->email —>(yes) —> no need to check anything --> continue;
-  // 	|
-  // 	(no)—> visitor_uuid—>(yes) -> check if the visitor_uuid is present in the list: exists? continue: erorr;
-  // 				  |
-  // 				  (no)—> call can’t be made
-
   if (!payload.first_name && !payload.last_name) {
     const name = getFieldValueFromMessage(message, "name");
     if (name && typeof name === "string") {
@@ -120,7 +112,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
 const trackResponseBuilder = async (message, { Config }) => {
   const id = getDestinationExternalID(message, "dripId");
 
-  let email = getFieldValueFromMessage(message, "email");
+  let email = getValueFromMessage(message, [
+    "properties.email",
+    "traits.email",
+    "context.traits.email"
+  ]);
   if (!isValidEmail(email)) {
     email = null;
     logger.error("Enter correct email format.");

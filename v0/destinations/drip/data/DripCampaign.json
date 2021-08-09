@@ -19,38 +19,5 @@
       "context.traits.reactivateIfRemoved"
     ],
     "required": false
-  },
-  {
-    "destKey": "tags",
-    "sourceKeys": ["traits.tags", "context.traits.tags"],
-    "required": false
-  },
-  {
-    "destKey": "prospect",
-    "sourceKeys": ["traits.prospect", "context.traits.prospect"],
-    "required": false
-  },
-  {
-    "destKey": "eu_consent",
-    "sourceKeys": ["traits.euConsent", "context.traits.euConsent"],
-    "required": false
-  },
-  {
-    "destKey": "eu_consent_message",
-    "sourceKeys": [
-      "traits.euConsentMessage",
-      "context.traits.euConsentMessage"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "base_lead_score",
-    "sourceKeys": ["traits.baseLeadScore", "context.traits.baseLeadScore"],
-    "required": false
-  },
-  {
-    "destKey": "time_zone",
-    "sourceKeys": ["context.timezone","context.traits.timezone"],
-    "required": false
   }
 ]

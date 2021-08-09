@@ -1,6 +1,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
+const { getAccessToken } = require("./util");
 const { getHashFromArray } = require("../../util");
 
 const getFileData = async (data, columnFields) => {
@@ -19,16 +20,6 @@ const getFileData = async (data, columnFields) => {
   file.end();
 
   return fs.createReadStream("marketo_bulk_upload.csv");
-};
-
-const getAccessToken = async config => {
-  const { clientId, clientSecret, munchkinId } = config;
-
-  const resp = await axios.get(
-    `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`
-  );
-
-  return resp.data.access_token;
 };
 
 const getImportID = async (data, config) => {

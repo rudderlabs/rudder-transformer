@@ -50,6 +50,11 @@ const getDestNetHander = (version, dest) => {
 const getDestFileUploadHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fileUpload`);
 };
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -529,8 +534,26 @@ const fileUpload = async ctx => {
   return ctx.body;
 };
 
-router.post("/fileUpload", ctx => {
-  fileUpload(ctx);
+const pollStatus = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getPollStatusHandler("v0", destType);
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  const response = await destFileUploadHandler.processPolling(ctx.request.body);
+  ctx.body = response;
+  return ctx.body;
+};
+
+router.post("/fileUpload", async ctx => {
+  await fileUpload(ctx);
+});
+
+router.post("/pollStatus", async ctx => {
+  await pollStatus(ctx);
 });
 
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

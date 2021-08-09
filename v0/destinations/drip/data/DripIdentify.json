@@ -91,7 +91,7 @@
   },
   {
     "destKey": "ip_address",
-    "sourceKeys": ["context.ip"],
+    "sourceKeys": "context.ip",
     "required": false
   },
   {

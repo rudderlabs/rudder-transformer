@@ -6,7 +6,7 @@ const { getHashFromArray } = require("../../util");
 
 const getFileData = async (data, columnFields) => {
   const fieldHashmap = getHashFromArray(columnFields, "from", "to", false);
-  data = `${Object.keys(fieldHashmap).toString()}|${data}`;
+  data = `${Object.values(fieldHashmap).toString()}|${data}`;
   const dataArr = data.split("|");
   const file = fs.createWriteStream("marketo_bulk_upload.csv");
   file.on("error", err => {
@@ -53,12 +53,11 @@ const responseHandler = async (data, config) => {
   const response = {};
   response.importId = await getImportID(data, config);
   response.pollURL = "/pollStatus";
-  return responseHandler;
+  return response;
 };
 const processFileData = async event => {
   const { data, config } = event;
   const resp = await responseHandler(data, config);
-  console.log(resp)
   return resp;
 };
 

@@ -45,6 +45,10 @@ const getPollStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/poll`);
 };
 
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -516,6 +520,23 @@ const pollStatus = async ctx => {
   return ctx.body;
 };
 
+const getJobStatus = async (ctx, type) => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getJobStatusHandler("v0", destType);
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  const response = await destFileUploadHandler.processJobStatus(
+    ctx.request.body,
+    type
+  );
+  ctx.body = response;
+  return ctx.body;
+};
+
 router.post("/fileUpload", async ctx => {
   await fileUpload(ctx);
 });
@@ -524,4 +545,11 @@ router.post("/pollStatus", async ctx => {
   await pollStatus(ctx);
 });
 
+router.post("/getFailedJobs", async ctx => {
+  await getJobStatus(ctx, "fail");
+});
+
+router.post("/getWarningJobs", async ctx => {
+  await getJobStatus(ctx, "warn");
+});
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

@@ -20,6 +20,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
+const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
 
 const router = new Router();
 
@@ -35,6 +36,15 @@ const getDestHandler = (version, dest) => {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
+};
+
+const getDestNetHander = (version, dest) => {
+  const destination = _.toLower(dest);
+  let destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
+  if (!destNetHandler && !destNetHandler.sendData) {
+    destNetHandler = require("./adapters/genericnethandler");
+  }
+  return destNetHandler;
 };
 
 const getSourceHandler = (version, source) => {
@@ -416,6 +426,28 @@ if (startSourceTransformer) {
         });
         stats.increment("source_transform_requests", 1, { source, version });
       });
+    });
+  });
+}
+
+async function handleDestinationNetwork(version, ctx) {
+  const { destination } = ctx.request.body;
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.sendData) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support transformer proxy`;
+    return ctx.body;
+  }
+  const resp = await destNetHandler.sendData(ctx.request.body);
+  ctx.body = { output: resp };
+  return ctx.body;
+}
+
+if (networkMode) {
+  versions.forEach(version => {
+    router.post("/network/proxy", async ctx => {
+      await handleDestinationNetwork(version, ctx);
     });
   });
 }

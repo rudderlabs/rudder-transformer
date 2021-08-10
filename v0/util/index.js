@@ -1027,7 +1027,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   getMetadata,
-  CustomError,
   checkSubsetOfArray,
   returnArrayOfSubarrays
 };

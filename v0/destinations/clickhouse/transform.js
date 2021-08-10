@@ -17,10 +17,10 @@ function getDataTypeOverride(val, options) {
       return "string";
     }
     // check for different data types in the array. if there are different then return array(string)
-    const firstValueDataType = getDataType(val[0],{});
+    const firstValueDataType = getDataType(val[0], {});
     let finalDataType = firstValueDataType;
     for (let i = 1; i < val.length; i += 1) {
-      const dataType = getDataType(val[i],{});
+      const dataType = getDataType(val[i], {});
       if (finalDataType !== dataType) {
         if (finalDataType === "string") {
           break;
@@ -49,6 +49,7 @@ function process(event) {
   const chEnableArraySupport =
     event.request.query.chEnableArraySupport || "false";
   return processSingleMessage(event.message, {
+    metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,

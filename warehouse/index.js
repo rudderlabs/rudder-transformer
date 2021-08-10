@@ -474,6 +474,13 @@ function processWarehouseMessage(message, options) {
     message.messageId = `auto-${randomID}`;
   }
 
+  if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
+    message.receivedAt =
+      options.metadata && options.metadata.receivedAt
+        ? options.metadata.receivedAt
+        : new Date().toISOString();
+  }
+
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
     case "track": {

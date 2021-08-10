@@ -41,13 +41,15 @@ const send = async options => {
   // Send a request
   let res;
   try {
-    res = await axios(requestOptions);
+    const resp = await axios(requestOptions);
+    res = { data: resp.data, status: resp.status };
   } catch (err) {
-    const { response, message, status } = err;
-    if (response) {
-      res = response;
+    const { response, status, statusText } = err;
+    let data = { error: statusText || "Network Request Failed" };
+    if (response && response.data) {
+      data = response.data;
     }
-    res = { message, status };
+    res = { data, statusText, status };
   }
   return res;
 };
@@ -71,7 +73,8 @@ Request Structure
     "Authorization": "Bearer undefined"
   },
   "version": "1",
-  "endpoint": "https://rest.fra-01.braze.eu/users/track"
+  "endpoint": "https://rest.fra-01.braze.eu/users/track",
+  "destination": "Braze" --> new addition
 }
  */
 const sendRequest = async request => {
@@ -114,7 +117,7 @@ const sendRequest = async request => {
       throw new Error(`body format ${format} not supported`);
   }
   const rOptions = {
-    endpoint,
+    url: endpoint,
     data,
     params,
     headers,

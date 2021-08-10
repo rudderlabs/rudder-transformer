@@ -13,6 +13,7 @@ function process(event) {
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const provider = azureSynapse;
   return processSingleMessage(event.message, {
+    metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,

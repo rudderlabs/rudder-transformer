@@ -34,7 +34,8 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "euConsent",
   "address",
   "tags",
-  "removeTags"
+  "removeTags",
+  "newEmail"
 ];
 
 const TRACKING_EXLCUSION_FIELDS = [

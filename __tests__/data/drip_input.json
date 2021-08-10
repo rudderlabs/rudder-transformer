@@ -197,7 +197,7 @@
       "event": "testing",
       "properties":{
         "email" : "user1@gmail.com",
-        "custom_fields": {
+        "customFields": {
           "field1": "val1"
         }
       },
@@ -277,7 +277,7 @@
       "event": "testing",
       "properties":{
         "email" : "identified_user@gmail.com",
-        "custom_fields": {
+        "customFields": {
           "field1": "val1"
         }
       },
@@ -480,7 +480,7 @@
       "properties":{
         "email" : "identified_user@gmail.com",
         "field1": "val1",
-        "custom_fields":{
+        "customFields":{
           "field2":"val2"
         }
       },

@@ -46,7 +46,7 @@
   },
   {
     "destKey": "time_zone",
-    "sourceKeys": ["context.timezone", "context.traits.timezone"],
+    "sourceKeys": ["context.timeZone", "context.traits.timeZone"],
     "required": false
   },
   {

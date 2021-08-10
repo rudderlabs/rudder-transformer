@@ -370,7 +370,7 @@ if (startDestTransformer) {
           }
         })
       );
-      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {

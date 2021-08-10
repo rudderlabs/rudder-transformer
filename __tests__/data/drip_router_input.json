@@ -79,7 +79,7 @@
       "event": "testing",
       "properties":{
         "email" : "user1@gmail.com",
-        "custom_fields": {
+        "customFields": {
           "field1": "val1"
         }
       },

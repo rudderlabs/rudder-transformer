@@ -531,9 +531,17 @@ const fileUpload = async ctx => {
     ctx.body = `${destType} doesn't support bulk upload`;
     return null;
   }
-  const response = await destFileUploadHandler.processFileData(
+  let response;
+  try{ 
+  response = await destFileUploadHandler.processFileData(
     ctx.request.body
   );
+  }
+  catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
   ctx.body = response;
   return ctx.body;
 };
@@ -541,13 +549,20 @@ const fileUpload = async ctx => {
 const pollStatus = async ctx => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler("v0", destType);
-
+  let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support bulk upload`;
     return null;
   }
-  const response = await destFileUploadHandler.processPolling(ctx.request.body);
+  try {
+    response = await destFileUploadHandler.processPolling(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
   ctx.body = response;
   return ctx.body;
 };
@@ -561,10 +576,18 @@ const getJobStatus = async (ctx, type) => {
     ctx.body = `${destType} doesn't support bulk upload`;
     return null;
   }
-  const response = await destFileUploadHandler.processJobStatus(
+  let response;
+  try {
+  response = await destFileUploadHandler.processJobStatus(
     ctx.request.body,
     type
   );
+  }
+  catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
   ctx.body = response;
   return ctx.body;
 };

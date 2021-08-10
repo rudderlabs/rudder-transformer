@@ -857,8 +857,6 @@ describe("Add auto generated messageId for events missing it", () => {
     eventTypes.forEach(evType => {
       let i = input(evType);
       delete i.message.messageId;
-      // const propsKey = propsKeyMap[evType];
-      // _.set(i.message, `${propsKey}.context_ip`, "test prop");
 
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
@@ -871,6 +869,26 @@ describe("Add auto generated messageId for events missing it", () => {
         expect(
           received[0].data[integrationCasedString(integrations[index], "id")]
         ).toMatch(/auto-.*/);
+      });
+    });
+  });
+});
+
+describe("Add receivedAt for events missing it", () => {
+  it("should remove context_ip set by user in properties if missing in event", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      delete i.message.receivedAt;
+      delete i.message.received_at;
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).toHaveProperty(
+          integrationCasedString(integrations[index], "received_at")
+        );
+        expect(received[0].data).toHaveProperty(
+          integrationCasedString(integrations[index], "received_at")
+        );
       });
     });
   });

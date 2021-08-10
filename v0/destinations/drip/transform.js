@@ -11,7 +11,8 @@ const {
   defaultPostRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
-  getValueFromMessage
+  getValueFromMessage,
+  isObject
 } = require("../../util");
 const logger = require("../../../logger");
 const {
@@ -48,6 +49,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   let payload = constructPayload(message, identifyMapping);
+  if (payload.address1 && isObject(payload.address1)) {
+    let addressString = "";
+    Object.keys(payload.address1).forEach(key => {
+      addressString = addressString.concat(` ${payload.address1[key]}`);
+    });
+    payload.address1 = addressString.trim();
+  }
+
   payload.id = id;
   payload.email = email;
   payload.user_id = userId;

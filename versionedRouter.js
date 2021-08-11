@@ -532,16 +532,14 @@ const fileUpload = async ctx => {
     return null;
   }
   let response;
-  try{ 
-  response = await destFileUploadHandler.processFileData(
-    ctx.request.body
-  );
-  }
-  catch (error) {
+  try {
+    response = await destFileUploadHandler.processFileData(ctx.request.body);
+  } catch (error) {
     response = {
       statusCode: 400,
       error: error.message || "Error occurred while processing payload."
     };
+  }
   ctx.body = response;
   return ctx.body;
 };
@@ -578,16 +576,16 @@ const getJobStatus = async (ctx, type) => {
   }
   let response;
   try {
-  response = await destFileUploadHandler.processJobStatus(
-    ctx.request.body,
-    type
-  );
-  }
-  catch (error) {
+    response = await destFileUploadHandler.processJobStatus(
+      ctx.request.body,
+      type
+    );
+  } catch (error) {
     response = {
       statusCode: 400,
       error: error.message || "Error occurred while processing payload."
     };
+  }
   ctx.body = response;
   return ctx.body;
 };

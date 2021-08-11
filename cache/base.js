@@ -16,11 +16,11 @@ class BaseCache extends NodeCache {
   }
 
   async onDeleted(_k, _v) {
-    throw new Error("method not been implemented");
+    // a callback for del event fired in node-cache
   }
 
   async onExpired(_k, _v) {
-    throw new Error("method not been implemented");
+    // a callback for expired event fired in node-cache
   }
 }
 

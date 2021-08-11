@@ -198,4 +198,16 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+async function processAuth(AccountCache, event, response) {
+  // OAuth for Intercom destination
+  const { workspaceId } = event.metadata;
+  const { accountId } = event.destination.Config;
+  const oAuthAccount = await AccountCache.getTokenFromCache(
+    workspaceId,
+    accountId
+  );
+  response.headers.Authorization = `Bearer ${oAuthAccount.secret.accessToken}`;
+  return response;
+}
+
+module.exports = { process, processRouterDest, processAuth };

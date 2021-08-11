@@ -14,29 +14,29 @@ class AccountCache extends BaseCache {
     return `${workspaceId}|${accountId}`;
   }
 
-  static getAccountUrl(key) {
+  static getTokenUrl(key) {
     const [workspaceId, accountId] = key.split("|");
-    return `${CONFIG_BACKEND_URL}/workspaces/${workspaceId}/dest/accounts/${accountId}`;
+    return `${CONFIG_BACKEND_URL}/dest/workspaces/${workspaceId}/accounts/${accountId}/token`;
   }
 
-  async insertNewValueIntoCache(key, value='') {
-    const accountUrl = AccountCache.getAccountUrl(key);
-    const { data: account } = await axios.get(accountUrl);
-    this.set(key, account);
+  async getToken(key) {
+    const tokenUrl = this.getTokenUrl(key);
+    const { data: account } = await axios.get(tokenUrl);
+    return account;
   }
 
   async onExpired(k, v) {
-    await this.insertNewValueIntoCache(k, v);
+    // The Account Secrets like accessToken, refreshToken, expirationDate etc., are being fetched
+    const account = await this.getToken(k);
+    this.set(k, account, account.secret.expiresIn * 0.3);
   }
 
-  async onDeleted(k, v) {
-    await this.insertNewValueIntoCache(k, v);
-  }
-
-  async setValue(key) {
-    if (!this.has(key)) {
-      await this.insertNewValueIntoCache(key);
+  static async getTokenFromCache(workspaceId, accountId) {
+    const key = this.formKeyForCache(workspaceId, accountId);
+    if (!this.get(key)) {
+      await this.onExpired(key, "");
     }
+    return this.get(key);
   }
 }
 

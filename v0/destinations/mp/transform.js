@@ -398,6 +398,10 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+// Documentation about how Mixpanel handles the utm parameters
+// Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
+// Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
+
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");

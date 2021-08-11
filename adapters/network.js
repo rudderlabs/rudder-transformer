@@ -41,15 +41,9 @@ const send = async options => {
   // Send a request
   let res;
   try {
-    const resp = await axios(requestOptions);
-    res = { data: resp.data, status: resp.status };
+    res = await axios(requestOptions);
   } catch (err) {
-    const { response, status, statusText } = err;
-    let data = { error: statusText || "Network Request Failed" };
-    if (response && response.data) {
-      data = response.data;
-    }
-    res = { data, statusText, status };
+    res = err;
   }
   return res;
 };

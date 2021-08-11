@@ -10,6 +10,7 @@
     "TRENGO": true,
     "KUSTOMER": true,
     "FB_CUSTOM_AUDIENCE":true,
-    "DELIGHTED": true
+    "DELIGHTED": true,
+    "DRIP": true
   }
 }

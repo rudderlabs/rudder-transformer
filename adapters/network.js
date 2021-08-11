@@ -41,10 +41,12 @@ const send = async options => {
   // Send a request
   let res;
   try {
-    res = await axios(requestOptions);
+    const response = await axios(requestOptions);
+    res = { success: true, response };
   } catch (err) {
-    res = err;
+    res = { success: false, response: err };
   }
+  console.log(res)
   return res;
 };
 

@@ -294,6 +294,27 @@ const defaultRequestConfig = () => {
   };
 };
 
+// Request Configs for marketo bulk uploads
+
+const marketoBulkUploadRequestConfig = () => {
+  return {
+    version: "1",
+    type: "REST",
+    method: "POST",
+    endpoint: "/fileUpload",
+    headers: {},
+    params: {},
+    body: {
+      JSON: {},
+      XML: {},
+      FORM: {},
+      CSVRow: ""
+    },
+    files: {}
+  };
+};
+
+
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -1086,6 +1107,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  marketoBulkUploadRequestConfig,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

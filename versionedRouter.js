@@ -47,6 +47,18 @@ const getDestNetHander = (version, dest) => {
   return destNetHandler;
 };
 
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -510,4 +522,87 @@ router.get("/heapdump", ctx => {
   ctx.body = "OK";
 });
 
+const fileUpload = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getDestFileUploadHandler("v0", destType);
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processFileData(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const pollStatus = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getPollStatusHandler("v0", destType);
+  let response;
+  if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  try {
+    response = await destFileUploadHandler.processPolling(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const getJobStatus = async (ctx, type) => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getJobStatusHandler("v0", destType);
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processJobStatus(
+      ctx.request.body,
+      type
+    );
+  } catch (error) {
+    response = {
+      statusCode: 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+router.post("/fileUpload", async ctx => {
+  await fileUpload(ctx);
+});
+
+router.post("/pollStatus", async ctx => {
+  await pollStatus(ctx);
+});
+
+router.post("/getFailedJobs", async ctx => {
+  await getJobStatus(ctx, "fail");
+});
+
+router.post("/getWarningJobs", async ctx => {
+  await getJobStatus(ctx, "warn");
+});
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

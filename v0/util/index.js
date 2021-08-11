@@ -20,7 +20,9 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
-const { DestCanonicalNames } = require("../../constants/destinationCanonicalNames");
+const {
+  DestCanonicalNames
+} = require("../../constants/destinationCanonicalNames");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1019,7 +1021,11 @@ function returnArrayOfSubarrays(arr, len) {
 function addExternalIdToTraits(message) {
   const identifierType = get(message, "context.externalId.0.identifierType");
   const identifierValue = get(message, "context.externalId.0.id");
-  set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
+  set(
+    getFieldValueFromMessage(message, "traits"),
+    identifierType,
+    identifierValue
+  );
 }
 
 class CustomError extends Error {
@@ -1112,8 +1118,5 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  getMetadata,
-  checkSubsetOfArray,
-  returnArrayOfSubarrays,
   generateUUID
 };

@@ -1,37 +1,116 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const axios = require("axios");
-const { removeUndefinedValues } = require("../../util");
-const { getAccessToken } = require("./util");
+const { removeUndefinedValues, CustomError } = require("../../util");
+const {
+  getAccessToken,
+  ABORTABLE_CODES,
+  THROTTLED_CODES,
+  RETRYABLE_CODES
+} = require("./util");
+const { send } = require("../../../adapters/network");
 
 const getFailedJobStatus = async event => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
-  const resp = await axios.get(
-    `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+  const requestOptions = {
+    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
-  );
-  return resp;
+  };
+
+  const resp = await send(requestOptions);
+  if (resp.success) {
+    if (resp.response && resp.response.data) {
+      return resp.response;
+    }
+    throw new CustomError("Could fetch failure job status", 400);
+  }
+  if (resp.response) {
+    if (
+      ABORTABLE_CODES.indexOf(resp.response.code) > -1 ||
+      (resp.response.code >= 400 && resp.response.code <= 499)
+    ) {
+      throw new CustomError(resp.response.code, 400);
+    } else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
+      throw new CustomError(resp.response.code, 500);
+    } else if (resp.response.response) {
+      if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText ||
+            "Error during fetching failure job status",
+          400
+        );
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText ||
+            "Error during fetching failure job status",
+          429
+        );
+      }
+      throw new CustomError(
+        resp.response.response.statusText ||
+          "Error during fetching failure job status",
+        500
+      );
+    }
+    throw new CustomError("Could fetch failure job status", 400);
+  }
+  throw new CustomError("Could fetch failure job status", 400);
 };
 
 const getWarningJobStatus = async event => {
-  const { config, importId, data } = event;
+  const { config, importId } = event;
   const accessToken = await getAccessToken(config);
-  const resp = await axios.get(
-    `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+  const requestOptions = {
+    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
-  );
-  return resp;
+  };
+
+  const resp = await send(requestOptions);
+  if (resp.success) {
+    if (resp.response && resp.response.data) {
+      return resp.response;
+    }
+    throw new CustomError("Could fetch warning job status", 400);
+  }
+  if (resp.response) {
+    if (
+      ABORTABLE_CODES.indexOf(resp.response.code) > -1 ||
+      (resp.response.code >= 400 && resp.response.code <= 499)
+    ) {
+      throw new CustomError(resp.response.code, 400);
+    } else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
+      throw new CustomError(resp.response.code, 500);
+    } else if (resp.response.response) {
+      if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText ||
+            "Error during fetching warning job status",
+          400
+        );
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText ||
+            "Error during fetching warning job status",
+          429
+        );
+      }
+      throw new CustomError(
+        resp.response.response.statusText ||
+          "Error during fetching warning job status",
+        500
+      );
+    }
+    throw new CustomError("Could fetch warning job status", 400);
+  }
+  throw new CustomError("Could fetch warning job status", 400);
 };
 
 const responseHandler = async (event, type) => {

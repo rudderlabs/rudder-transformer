@@ -25,7 +25,7 @@ const send = async options => {
       responseEncoding: "utf8",
 
       // `maxBodyLength` (Node only option) defines the max size of the http request content in bytes allowed,
-      maxBodyLength: 2000 * 2000,
+      maxBodyLength: 1000 * 1000 * 10,
 
       // `maxRedirects` defines the maximum number of redirects to follow in node.js,
       maxRedirects: 5,
@@ -46,7 +46,6 @@ const send = async options => {
   } catch (err) {
     res = { success: false, response: err };
   }
-  console.log(res)
   return res;
 };
 

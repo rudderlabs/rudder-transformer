@@ -1,20 +1,48 @@
-const axios = require("axios");
 const { removeUndefinedValues } = require("../../util");
-const { getAccessToken } = require("./util");
+const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require("./util");
+const { send } = require("../../../adapters/network");
+const { CustomError } = require("../../util");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
-
-  const resp = await axios.get(
-    `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+  const requestOptions = {
+    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
-  );
-  return resp;
+  };
+
+  const resp = await send(requestOptions);
+  if (resp.success) {
+    if (resp.response && resp.response.data.success) {
+      return resp.response;
+    }
+    if (resp.response && resp.response.data) {
+      if (
+        resp.response.data.errors[0] &&
+        ((resp.response.data.errors[0].code >= 1000 &&
+          resp.response.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+      ) {
+        throw new CustomError(
+          resp.response.data.errors[0].message || "Could not poll status",
+          400
+        );
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText || "Could not poll status",
+          429
+        );
+      }
+      throw new CustomError(
+        resp.response.response.statusText || "Error during polling status",
+        500
+      );
+    }
+  }
+  throw new CustomError("Could not poll status", 400);
 };
 
 const responseHandler = async event => {

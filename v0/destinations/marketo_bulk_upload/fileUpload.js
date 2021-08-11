@@ -1,25 +1,32 @@
-const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
-const { getAccessToken } = require("./util");
-const { getHashFromArray } = require("../../util");
+const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require("./util");
+const { getHashFromArray, CustomError } = require("../../util");
+const { send } = require("../../../adapters/network");
 
 const getFileData = async (data, columnFields) => {
   const fieldHashmap = getHashFromArray(columnFields, "from", "to", false);
-  data = `${Object.values(fieldHashmap).toString()}|${data}`;
-  const dataArr = data.split("|");
-  const file = fs.createWriteStream("marketo_bulk_upload.csv");
-  file.on("error", err => {
-    console.log(err);
-  });
-  dataArr.forEach(v => {
-    fs.appendFileSync("marketo_bulk_upload.csv", `${v}\n`, err => {
-      if (err) throw err;
-    });
-  });
-  file.end();
+  if (Object.values(fieldHashmap).length > 0) {
+    data = `${Object.values(fieldHashmap).toString()}|${data}`;
+    const dataArr = data.split("|");
+    try {
+      const file = fs.createWriteStream("marketo_bulk_upload.csv");
+      file.on("error", err => {
+        throw new CustomError(err.message, 400);
+      });
+      dataArr.forEach(v => {
+        fs.appendFileSync("marketo_bulk_upload.csv", `${v}\n`, err => {
+          if (err) throw err;
+        });
+      });
+      file.end();
 
-  return fs.createReadStream("marketo_bulk_upload.csv");
+      return fs.createReadStream("marketo_bulk_upload.csv");
+    } catch (error) {
+      throw new CustomError(error.message, 400);
+    }
+  }
+  throw new CustomError("Header fields not present", 400);
 };
 
 const getImportID = async (data, config) => {
@@ -33,20 +40,51 @@ const getImportID = async (data, config) => {
   );
   formReq.append("access_token", await getAccessToken(config));
 
-  const resp = await axios.post(
-    `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-    formReq,
-    {
-      headers: {
-        ...formReq.getHeaders()
-      }
+  const requestOptions = {
+    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+    method: "post",
+    data: formReq,
+    headers: {
+      ...formReq.getHeaders()
     }
-  );
-
-  if (resp.data && resp.data.result[0] && resp.data.result[0].importId) {
-    return resp.data.result[0].importId;
+  };
+  const resp = await send(requestOptions);
+  if (resp.success) {
+    if (resp.response && resp.response.data.success) {
+      if (
+        resp.response &&
+        resp.response.data.success &&
+        resp.response.data.result[0] &&
+        resp.response.data.result[0].importId
+      ) {
+        return resp.response.data.result[0].importId;
+      }
+      return resp.response;
+    }
+    if (resp.response && resp.response.data) {
+      if (
+        resp.response.data.errors[0] &&
+        ((resp.response.data.errors[0].code >= 1000 &&
+          resp.response.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+      ) {
+        throw new CustomError(
+          resp.response.data.errors[0].message || "Could not upload file",
+          400
+        );
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        throw new CustomError(
+          resp.response.response.statusText || "Could not upload file",
+          429
+        );
+      }
+      throw new CustomError(
+        resp.response.response.statusText || "Error during uploading file",
+        500
+      );
+    }
   }
-  return null;
+  throw new CustomError("Error during uploading file", 400);
 };
 
 const responseHandler = async (data, config) => {

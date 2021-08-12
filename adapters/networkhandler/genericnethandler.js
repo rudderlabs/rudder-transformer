@@ -31,72 +31,54 @@ const { ErrorBuilder } = require("../../v0/util/index");
  */
 const handleDestinationResponse = (dresponse, metadata) => {
   let status;
-  let message;
   let handledResponse;
 
   if (dresponse.success) {
     // success case
     handledResponse = trimResponse(dresponse);
-    if (
-      handledResponse.status &&
-      handledResponse.status >= 200 &&
-      handledResponse.status <= 300
-    ) {
+    if (handledResponse.status >= 200 && handledResponse.status <= 300) {
       status = 200;
     } else {
       status = handledResponse.status;
     }
-    message = handledResponse.statusText;
-  } else {
-    // failure case
-    const { response } = dresponse.response;
-    if (!response && dresponse.response && dresponse.response.code) {
-      const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
-      throw new ErrorBuilder()
-        .setStatus(nodeSysErr.status || 500)
-        .setMessage(nodeSysErr.message)
-        .setMetadata(metadata)
-        .build();
-      // status = nodeSysErr.status;
-      // message = nodeSysErr.message;
-      // handledResponse = { status, message, ...response };
-    } else {
-      const temp = trimResponse(dresponse.response);
-      throw new ErrorBuilder()
-        .setStatus(temp.status || 500)
-        .setMessage(temp.message)
-        .setDestinationResponse({ ...temp, success: false })
-        .setMetadata(metadata)
-        .build();
-      // handledResponse = trimResponse(dresponse.response);
-      // status = handledResponse.status;
-      // message = handledResponse.statusText;
-    }
-    // handledResponse.success = false;
+    const message = handledResponse.statusText;
+    const destination = {
+      response: handledResponse,
+      status: handledResponse.status
+    };
+    const apiLimit = {
+      available: "",
+      resetAt: ""
+    };
+    return {
+      status,
+      message,
+      destination,
+      apiLimit,
+      metadata
+    };
   }
 
-  // status = status || 500;
-
-  // const destination = {
-  //   response: handledResponse,
-  //   status: handledResponse.status
-  // };
-
-  // const apiLimit = {
-  //   available: "",
-  //   resetAt: ""
-  // };
-
-  // // TODO: What other info do we need to pass here
-  // const response = {
-  //   status,
-  //   destination,
-  //   apiLimit,
-  //   metadata,
-  //   message
-  // };
-
-  return response;
+  // failure case
+  const { response } = dresponse.response;
+  if (!response && dresponse.response && dresponse.response.code) {
+    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
+    throw new ErrorBuilder()
+      .setStatus(nodeSysErr.status || 500)
+      .setMessage(nodeSysErr.message)
+      .setMetadata(metadata)
+      .isTransformerNetwrokFailure(true)
+      .build();
+  } else {
+    const temp = trimResponse(dresponse.response);
+    throw new ErrorBuilder()
+      .setStatus(temp.status || 500)
+      .setMessage(temp.statusText)
+      .setDestinationResponse({ ...temp, success: false })
+      .setMetadata(metadata)
+      .isTransformerNetwrokFailure(true)
+      .build();
+  }
 };
 
 const sendData = async payload => {

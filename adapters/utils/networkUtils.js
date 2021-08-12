@@ -38,7 +38,7 @@ const trimResponse = response => {
     status: get(response, "response.status"),
     statusText: get(response, "response.statusText"),
     headers: get(response, "response.headers"),
-    data: get(response, "response.headers"),
+    data: get(response, "response.data"),
     success: get(response, "suceess")
   };
 };

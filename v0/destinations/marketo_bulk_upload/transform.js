@@ -10,6 +10,19 @@ const { EventType } = require("../../../constants");
 
 function responseBuilderSimple(message, destination) {
   const payload = {};
+
+  /**     
+  * "columnFieldsMapping": [
+    {
+        "from": "marketoColumnName",
+        "to": "traitsName"
+    },
+    {
+        "from": "firstName",
+        "to": "name"
+    }
+]
+*/
   const fieldHashmap = getHashFromArray(
     destination.Config.columnFieldsMapping,
     "from",
@@ -19,6 +32,7 @@ function responseBuilderSimple(message, destination) {
 
   const traits = getFieldValueFromMessage(message, "traits");
 
+  // columnNames with trait's values from rudder payload
   Object.keys(fieldHashmap).forEach(key => {
     const val = traits[fieldHashmap[key]];
     if (val) {
@@ -27,9 +41,10 @@ function responseBuilderSimple(message, destination) {
   });
 
   const response = marketoBulkUploadRequestConfig();
+  // Take only values to create each row to be sent to server
   const payloadValues = Object.values(payload);
+  // Format to send "value1,value2,value3"
   response.body.CSVRow = payloadValues.toString();
-
   return response;
 }
 
@@ -43,6 +58,7 @@ const processEvent = (message, destination) => {
 
   const messageType = message.type.toLowerCase();
   let response;
+  // Only identify type of events are processed
   switch (messageType) {
     case EventType.IDENTIFY:
       response = responseBuilderSimple(message, destination);

@@ -1,0 +1,138 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": ["traits.phoneNumber", "context.traits.phoneNumber"],
+    "required": false
+  },
+  {
+    "destKey": "@collection",
+    "sourceKeys": ["traits.collection", "context.traits.collection"],
+    "required": false
+  },
+  {
+    "destKey": "marketing_optin",
+    "sourceKeys": ["traits.marketinOptin", "context.traits.marketinOptin"],
+    "required": false
+  },
+  {
+    "destKey": "customer_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "prefix",
+    "sourceKeys": ["traits.prefix", "context.traits.prefix"],
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": "first_name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "last_name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "middleName",
+    "sourceKeys": "middle_name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "date_of_birth",
+    "sourceKeys": ["traits.dateOfBirth", "context.traits.dateOfBirth"],
+    "required": false
+  },
+  {
+    "destKey": "country_id",
+    "sourceKeys": ["traits.countryId", "context.traits.countryId"],
+    "required": false
+  },
+  {
+    "destKey": "timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_acquired",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_subscribed",
+    "sourceKeys": ["traits.timestampSubscribed", "context.traits.timestampSubscribed"],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_unsubscribed",
+    "sourceKeys": ["traits.timestampUnsubscribed", "context.traits.timestampUnsubscribed"],
+    "required": false
+  },
+  {
+    "destKey": "channels",
+    "sourceKeys": ["traits.channels", "context.traits.channels"],
+    "required": false
+  },
+  {
+    "destKey": "store_ids",
+    "sourceKeys": ["traits.storeIds", "context.traits.storeIds"],
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "f"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "m"
+        },
+        {
+          "sourceVal": ["o", "O", "Others", "others", "OTHERS"],
+          "destVal": "o"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "@remove_from_lists",
+    "sourceKeys": ["traits.removeFromLists", "context.traits.removeFromLists"],
+    "required": false
+  },
+  {
+    "destKey": "@add_to_lists",
+    "sourceKeys": ["traits.addToLists", "context.traits.addToLists"],
+    "required": false
+  },
+  {
+    "destKey": "marketing_optin",
+    "sourceKeys": ["traits.marketingOptin", "context.traits.marketingOptin"],
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": ["traits.properties", "context.traits.properties"],
+    "required": false
+  }
+]

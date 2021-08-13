@@ -1,20 +1,11 @@
-const axios = require("axios");
-const logger = require("../../../logger");
-
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  CONTACT_KEY_LIST,
-  getEndpoint
-} = require("./config");
+const { CONFIG_CATEGORIES, getEndpoint } = require("./config");
+const { contactExists, prepareResponse } = require("./util");
 const { EventType } = require("../../../constants");
 const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
-  constructPayload,
-  getFieldValueFromMessage,
   isDefinedAndNotNull,
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -22,51 +13,7 @@ const {
   getDestinationExternalID
 } = require("../../util");
 
-// function responsible to check if the contact exists wrt the extRef key
-async function contactExists(dataCenterId, directoryId, apiToken, extRef) {
-  let flag = true;
-  let res;
-  let contactInfo;
-  const url = `https://${dataCenterId}.qualtrics.com/API/v3/directories/${directoryId}/contacts/search`;
-  console.log(url);
-
-  const searchCallBody = {
-    filter: {
-      comparison: "eq",
-      filterType: "extRef",
-      value: extRef
-    }
-  };
-
-  const searchCallHeader = {
-    headers: {
-      "X-API-TOKEN": apiToken,
-      "Content-Type": "application/json"
-    }
-  };
-
-  try {
-    // eslint-disable-next-line no-unused-vars
-    res = await axios.post(url, searchCallBody, searchCallHeader);
-    if (res.data.result.elements.length === 0) {
-      flag = false;
-      contactInfo = null;
-    } else {
-      contactInfo = res.data.result.elements[0].id;
-    }
-  } catch (error) {
-    throw new CustomError("Axios call fails", 400);
-  }
-
-  const contactUpdate = {
-    contactId: contactInfo,
-    requireUpdate: flag
-  };
-
-  return contactUpdate;
-}
-
-async function responseBuilderSimple(wrappedResponse, destination, type) {
+const responseBuilderSimple = async (wrappedResponse, destination, type) => {
   if (wrappedResponse.res) {
     let requireUpdate;
     const { apiToken, eventEndPoint, dataCenterId } = destination.Config;
@@ -130,36 +77,7 @@ async function responseBuilderSimple(wrappedResponse, destination, type) {
   }
   // fail-safety for developer error
   throw new CustomError("Payload could not be constructed", 400);
-}
-
-// embeddedData contains every other trait fields that are not listed inside schema
-function populateEmbeddedData(traitsObject) {
-  const embeddedDataBlock = {};
-  Object.keys(traitsObject).forEach(key => {
-    if (!CONTACT_KEY_LIST.includes(key))
-      embeddedDataBlock[key] = traitsObject[key];
-  });
-
-  return embeddedDataBlock;
-}
-
-// function responsible to prepare the payload
-function prepareResponse(message, category) {
-  console.log("inside prepareResponse");
-  let embeddedData = {};
-
-  let outputPayload = {};
-
-  outputPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (isDefinedAndNotNull(traits)) {
-    embeddedData = populateEmbeddedData(traits);
-  }
-  outputPayload.embeddedData = embeddedData;
-
-  return outputPayload;
-}
+};
 
 const processEvent = (message, destination) => {
   const { type } = message;
@@ -178,7 +96,6 @@ const processEvent = (message, destination) => {
 
   switch (type) {
     case EventType.IDENTIFY:
-      console.log("inside identify");
       contactIdExt = getDestinationExternalID(message, "qualtricsContactId");
       directoryIdExt = getDestinationExternalID(
         message,

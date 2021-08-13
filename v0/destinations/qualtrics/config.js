@@ -19,21 +19,8 @@ const CONFIG_CATEGORIES = {
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-const CONTACT_KEY_LIST = [
-  "firstName",
-  "lastName",
-  "email",
-  "phone",
-  "extRef",
-  "lanuage",
-  "unsubscribed",
-  "contactId",
-  "userId"
-];
-
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  CONTACT_KEY_LIST,
   getEndpoint
 };

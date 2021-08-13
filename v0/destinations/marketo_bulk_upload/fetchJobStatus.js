@@ -149,9 +149,8 @@ const responseHandler = async (event, type) => {
   const reasons = {};
 
   responseArr.forEach(element => {
-    const elemArr = element.split(",");
+    const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     const reasonMessage = elemArr.pop();
-
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];

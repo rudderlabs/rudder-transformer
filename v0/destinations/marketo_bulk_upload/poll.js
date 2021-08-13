@@ -91,7 +91,6 @@ const responseHandler = async event => {
 } // Failed Upload
 {
     "success": false,
-    "statusCode": 500,
 } // Importing or Queue
 
   */
@@ -112,7 +111,6 @@ const responseHandler = async event => {
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === "Importing" || status === "Queued") {
         success = false;
-        statusCode = 500;
       }
     } else {
       success = false;

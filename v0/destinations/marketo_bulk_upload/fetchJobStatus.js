@@ -118,10 +118,10 @@ const getWarningJobStatus = async event => {
 };
 
 const responseHandler = async (event, type) => {
-  let failedKeys;
-  let failedReasons;
-  let warningKeys;
-  let warningReasons;
+  let failedKeys = [];
+  let failedReasons = {};
+  let warningKeys = [];
+  let warningReasons = {};
 
   /**
    * {
@@ -182,7 +182,7 @@ const responseHandler = async (event, type) => {
     warningReasons,
     succeededKeys
   };
-  return removeUndefinedValues(response);
+  return response;
 };
 
 const processJobStatus = async (event, type) => {

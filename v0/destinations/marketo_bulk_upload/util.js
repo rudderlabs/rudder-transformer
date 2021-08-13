@@ -14,6 +14,8 @@ const RETRYABLE_CODES = [
 ];
 const THROTTLED_CODES = [502, 606, 607, 608, 615];
 
+// Fetch access token from client id and client secret
+// DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async config => {
   const { clientId, clientSecret, munchkinId } = config;
   const requestOptions = {
@@ -32,27 +34,32 @@ const getAccessToken = async config => {
     throw new CustomError("Could not retrieve authorisation token", 400);
   }
   if (resp.response) {
+    // handle for abortable codes
     if (
       ABORTABLE_CODES.indexOf(resp.response.code) > -1 ||
       (resp.response.code >= 400 && resp.response.code <= 499)
     ) {
       throw new CustomError(resp.response.code, 400);
-    } else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
+    } // handle for retryable codes
+    else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
       throw new CustomError(resp.response.code, 500);
-    } else if (resp.response.response) {
+    } // handle for abortable codes
+    else if (resp.response.response) {
       if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",
           400
         );
-      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+      } // handle for throttled codes
+      else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",
           429
         );
       }
+      // Assuming none we should retry the remaining errors
       throw new CustomError(
         resp.response.response.statusText ||
           "Error during fetching access token",

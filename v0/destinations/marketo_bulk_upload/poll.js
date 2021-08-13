@@ -5,6 +5,9 @@ const { CustomError } = require("../../util");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
+
+  // To see the status of the import job polling is done
+  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
   const requestOptions = {
     url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
     method: "get",
@@ -19,7 +22,22 @@ const getPollStatus = async event => {
     if (resp.response && resp.response.data.success) {
       return resp.response;
     }
+    // DOC: https://developers.marketo.com/rest-api/error-codes/
     if (resp.response && resp.response.data) {
+      // Abortable jobs
+      // Errors from polling come as
+      /**
+       * {
+    "requestId": "e42b#14272d07d78",
+    "success": false,
+    "errors": [
+        {
+            "code": "601",
+            "message": "Unauthorized"
+        }
+    ]
+}
+       */
       if (
         resp.response.data.errors[0] &&
         ((resp.response.data.errors[0].code >= 1000 &&
@@ -55,6 +73,28 @@ const responseHandler = async event => {
   let hasWarnings;
   let warningJobsURL;
   let errorResponse;
+  // Server expects :
+  /**
+  * 
+  * {
+    "success": true,
+    "statusCode": 200,
+    "hasFailed": true,
+    "failedJobsURL": "<some-url>", // transformer URL
+    "hasWarnings": false,
+    "warningJobsURL": "<some-url>", // transformer URL
+} // Succesful Upload     
+{
+    "success": false,
+    "statusCode": 400,
+    "errorResponse": <some-error-response>
+} // Failed Upload
+{
+    "success": false,
+    "statusCode": 500,
+} // Importing or Queue
+
+  */
   if (pollResp && pollResp.data) {
     pollSuccess = pollResp.data.success;
     if (pollSuccess) {

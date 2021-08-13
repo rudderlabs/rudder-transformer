@@ -32,6 +32,7 @@ const getFileData = async (data, columnFields) => {
 const getImportID = async (data, config) => {
   const formReq = new FormData();
   const { columnFieldsMapping, munchkinId } = config;
+  // create file for multipart form
   formReq.append("format", "csv");
   formReq.append(
     "file",
@@ -39,7 +40,8 @@ const getImportID = async (data, config) => {
     "marketo_bulk_upload.csv"
   );
   formReq.append("access_token", await getAccessToken(config));
-
+  // Upload data received from server as files to marketo
+  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
   const requestOptions = {
     url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
     method: "post",
@@ -51,6 +53,20 @@ const getImportID = async (data, config) => {
   const resp = await send(requestOptions);
   if (resp.success) {
     if (resp.response && resp.response.data.success) {
+      /**
+       * 
+{
+    "requestId": "d01f#15d672f8560",
+    "result": [
+        {
+            "batchId": 3404,
+            "importId": "3404",
+            "status": "Queued"
+        }
+    ],
+    "success": true
+}
+       */
       if (
         resp.response &&
         resp.response.data.success &&
@@ -89,6 +105,12 @@ const getImportID = async (data, config) => {
 
 const responseHandler = async (data, config) => {
   const response = {};
+  /**
+  * {
+  "importId" : <some-id>,
+  "pollURL" : <some-url-to-poll-status>,
+}
+  */
   response.importId = await getImportID(data, config);
   response.pollURL = "/pollStatus";
   return response;

@@ -12,6 +12,8 @@ const { send } = require("../../../adapters/network");
 const getFailedJobStatus = async event => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
+  // Get status of each lead for failed leads
+  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
     url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
     method: "get",
@@ -64,6 +66,8 @@ const getFailedJobStatus = async event => {
 const getWarningJobStatus = async event => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
+  // Get status of each lead for warning leads
+  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {
     url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
     method: "get",
@@ -118,6 +122,22 @@ const responseHandler = async (event, type) => {
   let failedReasons;
   let warningKeys;
   let warningReasons;
+
+  /**
+   * {
+	"failedKeys" : [jobID1,jobID3],
+	"failedReasons" : {
+		"jobID1" : "failure-reason-1",
+		"jobID3" : "failure-reason-2",
+	},
+	"warningKeys" : [jobID2,jobID4],
+	"warningReasons" : {
+		"jobID2" : "warning-reason-1",
+		"jobID4" : "warning-reason-2",
+	},
+	"succeededKeys" : [jobID5]
+}
+   */
 
   const responseStatus =
     type === "fail"

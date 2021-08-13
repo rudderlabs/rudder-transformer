@@ -20,7 +20,7 @@ class AccountCache extends BaseCache {
   }
 
   async getToken(key) {
-    const tokenUrl = this.getTokenUrl(key);
+    const tokenUrl = this.constructor.getTokenUrl(key);
     const { data: account } = await axios.get(tokenUrl);
     return account;
   }
@@ -31,8 +31,8 @@ class AccountCache extends BaseCache {
     this.set(k, account, account.secret.expiresIn * 0.3);
   }
 
-  static async getTokenFromCache(workspaceId, accountId) {
-    const key = this.formKeyForCache(workspaceId, accountId);
+  async getTokenFromCache(workspaceId, accountId) {
+    const key = AccountCache.formKeyForCache(workspaceId, accountId);
     if (!this.get(key)) {
       await this.onExpired(key, "");
     }

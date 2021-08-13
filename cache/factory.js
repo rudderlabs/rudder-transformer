@@ -1,4 +1,4 @@
-import AccountCache from "./account-cache";
+const AccountCache = require('./account-cache');
 
 class CacheFactory {
   static cache = {};
@@ -25,4 +25,4 @@ class CacheFactory {
   }
 }
 
-export default CacheFactory;
+module.exports = CacheFactory;

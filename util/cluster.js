@@ -77,4 +77,7 @@ function start(port, app) {
   logger.debug("transformerServer: started");
 }
 
-exports.start = start;
+module.exports = {
+  start,
+  processInfo
+};

@@ -48,18 +48,15 @@ async function contactExists(dataCenterId, directoryId, apiToken, extRef) {
   try {
     // eslint-disable-next-line no-unused-vars
     res = await axios.post(url, searchCallBody, searchCallHeader);
-    if (res.result.elements.length === 0) {
+    if (res.data.result.elements.length === 0) {
       flag = false;
       contactInfo = null;
     } else {
-      contactInfo = res.result.elements[0].id;
+      contactInfo = res.data.result.elements[0].id;
     }
   } catch (error) {
-    console.error(error.response.data);
-    console.error(error.response.status);
     throw new CustomError("Axios call fails", 400);
   }
-  console.log(JSON.stringify(res));
 
   const contactUpdate = {
     contactId: contactInfo,
@@ -69,7 +66,7 @@ async function contactExists(dataCenterId, directoryId, apiToken, extRef) {
   return contactUpdate;
 }
 
-function responseBuilderSimple(wrappedResponse, destination, type) {
+async function responseBuilderSimple(wrappedResponse, destination, type) {
   if (wrappedResponse.res) {
     let requireUpdate;
     const { apiToken, eventEndPoint, dataCenterId } = destination.Config;
@@ -89,7 +86,7 @@ function responseBuilderSimple(wrappedResponse, destination, type) {
           response.method = defaultPutRequestConfig.requestMethod;
         } else {
           // otherwise, contact will be searched using extRef
-          const contactInfo = contactExists(
+          const contactInfo = await contactExists(
             dataCenterId,
             wrappedResponse.directoryId,
             apiToken,

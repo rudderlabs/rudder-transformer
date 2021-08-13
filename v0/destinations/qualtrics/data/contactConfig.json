@@ -1,0 +1,63 @@
+[
+    {
+        "destKey": "firstName",
+        "sourceKeys": "firstName",
+        "required": false,
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "lastName",
+        "sourceKeys": "lastName",
+        "required": false,
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "email",
+        "sourceKeys": "email",
+        "required": false,
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "phone",
+        "sourceKeys": "phone",
+        "required": false,
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "extRef",
+        "sourceKeys": "userId",
+        "required": false,
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "tostring"
+        }
+    },
+    {
+        "destKey": "lanuage",
+        "sourceKeys": ["traits.language","context.traits.language"],
+        "required": false,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "unsubscribed",
+        "sourceKeys": ["traits.unsubscribed","context.traits.unsubscribed"],
+        "required": false,
+        "metadata": {
+            "type": "IsBoolean"
+        }
+    }
+]

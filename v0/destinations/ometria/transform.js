@@ -1,5 +1,4 @@
 const { EventType } = require("../../../constants");
-const logger = require("../../../logger");
 const {
   constructPayload,
   extractCustomFields,
@@ -8,16 +7,19 @@ const {
   getErrorRespEvents,
   defaultBatchRequestConfig,
   returnArrayOfSubarrays,
-  CustomError
+  defaultPostRequestConfig,
+  CustomError,
+  defaultRequestConfig
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
   contactDataMapping,
   IDENTIFY_EXCLUSION_FIELDS,
-  ENDPOINT
+  ENDPOINT,
+  MARKETING_OPTIN_LIST
 } = require("./config");
 
-const identifyPayloadBuilder = message => {
+const identifyPayloadBuilder = (message, { Config }) => {
   // TODO: validate payload
   const payload = constructPayload(message, contactDataMapping);
   payload["@type"] = "contact";
@@ -31,7 +33,20 @@ const identifyPayloadBuilder = message => {
     );
     payload.properties = customFields;
   }
-  return removeUndefinedAndNullValues(payload);
+  if (
+    payload.marketing_optin &&
+    !MARKETING_OPTIN_LIST.includes(payload.marketing_optin)
+  ) {
+    payload.marketing_optin = null;
+  }
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = [removeUndefinedAndNullValues(payload)];
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    "X-Ometria-Auth": Config.apiKey
+  };
+  return response;
 };
 
 /**
@@ -44,6 +59,10 @@ const process = event => {
       "Message Type is not present. Aborting message.",
       400
     );
+  }
+
+  if (!destination.Config.apiKey) {
+    throw new CustomError("Invalid api key", 400);
   }
 
   const messageType = message.type.toLowerCase();
@@ -92,19 +111,11 @@ const processRouterDest = async inputs => {
 const batch = destEvents => {
   const respList = [];
   const batchEventResponse = defaultBatchRequestConfig();
-  let apiKey = "";
+  const apiKey = destEvents[0].body.JSON[0].headers["X-Ometria-Auth"];
 
-  // divide into batches of size 100
   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
   arrayChunks.forEach(chunk => {
-    chunk.forEach(event => {
-      if (event.Config.apiKey) {
-        respList.push(process(event));
-        apiKey = event.Config.apiKey;
-      } else {
-        logger.debug("apiKey missing. Dropping event from batch");
-      }
-    });
+    respList.push(chunk.body.JSON[0]);
   });
 
   batchEventResponse.batchedRequest.body.JSON = respList;

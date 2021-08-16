@@ -40,8 +40,13 @@ const getDestHandler = (version, dest) => {
 
 const getDestNetHander = (version, dest) => {
   const destination = _.toLower(dest);
-  let destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
-  if (!destNetHandler && !destNetHandler.sendData) {
+  let destNetHandler;
+  try {
+    destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
+    if (!destNetHandler && !destNetHandler.sendData) {
+      destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    }
+  } catch (err) {
     destNetHandler = require("./adapters/networkhandler/genericnethandler");
   }
   return destNetHandler;

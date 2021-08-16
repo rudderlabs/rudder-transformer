@@ -36,7 +36,7 @@ const handleDestinationResponse = (dresponse, metadata) => {
   if (dresponse.success) {
     // success case
     handledResponse = trimResponse(dresponse);
-    if (handledResponse.status >= 200 && handledResponse.status <= 300) {
+    if (handledResponse.status >= 200 && handledResponse.status < 300) {
       status = 200;
     } else {
       status = handledResponse.status;

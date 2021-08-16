@@ -13,7 +13,7 @@ const getEndpoint = (datacenterId, directoryId, contactId) => {
 
 const CONFIG_CATEGORIES = {
   CONTACT: {
-    name: "contactConfig"
+    name: "QualtricsContact"
   }
 };
 

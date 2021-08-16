@@ -15,21 +15,27 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "userIdOnly",
   "prefix",
   "first_name",
+  "firstName",
   "last_name",
+  "lastName",
   "middle_name",
+  "middleName",
+  "firstName",
+  "lastname",
+  "middlename",
   "dateOfBirth",
   "countryId",
   "timezone",
   "timestampSubscribed",
   "timestampUnsubscribed",
   "channels",
-  "channels",
   "storeIds",
   "gender",
   "removeFromLists",
   "addToLists",
   "marketingOptin",
-  "properties"
+  "properties",
+  "listingId"
 ];
 
 const MARKETING_OPTIN_LIST = [

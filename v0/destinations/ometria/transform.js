@@ -3,8 +3,6 @@ const {
   constructPayload,
   extractCustomFields,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   defaultBatchRequestConfig,
   returnArrayOfSubarrays,
   defaultPostRequestConfig,
@@ -78,44 +76,17 @@ const process = event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
-  return respList;
-};
-
 const batch = destEvents => {
   const respList = [];
-  const batchEventResponse = defaultBatchRequestConfig();
-  const apiKey = destEvents[0].body.JSON[0].headers["X-Ometria-Auth"];
+  const metadata = [];
+  let batchEventResponse = defaultBatchRequestConfig();
+  const { destination } = destEvents[0];
+  const { apiKey } = destination.Config;
 
   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
   arrayChunks.forEach(chunk => {
-    respList.push(chunk.body.JSON[0]);
+    respList.push(chunk[0].message.body.JSON[0]);
+    metadata.push(chunk[0].metadata);
   });
 
   batchEventResponse.batchedRequest.body.JSON = respList;
@@ -123,8 +94,13 @@ const batch = destEvents => {
   batchEventResponse.batchedRequest.headers = {
     "X-Ometria-Auth": apiKey
   };
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination
+  };
 
-  return batchEventResponse;
+  return [batchEventResponse];
 };
 
-module.exports = { processRouterDest, process, batch };
+module.exports = { process, batch };

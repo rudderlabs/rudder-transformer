@@ -74,7 +74,7 @@ Request Structure
 }
  */
 const sendRequest = async request => {
-  const { body, method, params, endpoint } = request;
+  const { body, method, params, endpoint, requestOptions } = request;
   let { headers } = request;
   let data;
   let payload;
@@ -117,7 +117,8 @@ const sendRequest = async request => {
     data,
     params,
     headers,
-    method
+    method,
+    ...requestOptions
   };
   const response = await send(rOptions);
   return response;

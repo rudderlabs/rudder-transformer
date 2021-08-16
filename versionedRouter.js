@@ -85,7 +85,15 @@ async function handleDest(ctx, version, destination) {
         let respEvents = await destHandler.process(parsedEvent);
         // if processAuth is implemented, that destination needs OAuth
         // TODO: Change this to destDef.auth
-        if (destHandler.processAuth) {
+        const {
+          Config: destConf
+        } = parsedEvent.destination.DestinationDefinition;
+        if (
+          destConf.auth &&
+          destConf.auth.type === "OAuth" &&
+          destHandler.processAuth &&
+          typeof destHandler.processAuth === "function"
+        ) {
           await destHandler.processAuth(AccountCache, parsedEvent, respEvents);
         }
 

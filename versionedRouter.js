@@ -84,8 +84,7 @@ async function handleDest(ctx, version, destination) {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        // if processAuth is implemented, that destination needs OAuth
-        // TODO: Change this to destDef.auth
+        // if destination needs OAuth, processAuth should be implemented
         if (isOAuthSupported(parsedEvent.destination, destHandler)) {
           await destHandler.processAuth(AccountCache, parsedEvent, respEvents);
         }

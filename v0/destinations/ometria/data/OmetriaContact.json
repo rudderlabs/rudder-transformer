@@ -37,19 +37,19 @@
     "required": false
   },
   {
-    "destKey": "firstName",
+    "destKey": "firstname",
     "sourceKeys": "first_name",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "destKey": "lastName",
+    "destKey": "lastname",
     "sourceKeys": "last_name",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "destKey": "middleName",
+    "destKey": "middlename",
     "sourceKeys": "middle_name",
     "sourceFromGenericMap": true,
     "required": false
@@ -66,12 +66,12 @@
   },
   {
     "destKey": "timezone",
-    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "sourceKeys": ["context.timezone","traits.timezone", "context.traits.timezone"],
     "required": false
   },
   {
     "destKey": "timestamp_acquired",
-    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "sourceKeys": ["traits.timestampAcquired", "context.traits.timestampAcquired"],
     "required": false
   },
   {

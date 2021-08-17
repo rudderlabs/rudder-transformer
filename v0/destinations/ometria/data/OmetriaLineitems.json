@@ -1,0 +1,72 @@
+[
+    {
+        "destKey": "product_id",
+        "sourceKeys": "productId",
+        "required": false
+    },
+    {
+        "destKey": "variant_id",
+        "sourceKeys": "variantId",
+        "required": false
+    },
+    {
+        "destKey": "quantity",
+        "sourceKeys": "quantity",
+        "required": false
+    },
+    {
+        "destKey": "sku",
+        "sourceKeys": "sku",
+        "required": false
+    },
+    {
+        "destKey": "unit_price",
+        "sourceKeys": "unitPrice",
+        "required": false
+    },
+    {
+        "destKey": "quantity_refunded",
+        "sourceKeys": "quantityRefunded",
+        "required": false
+    },
+    {
+        "destKey": "refunded",
+        "sourceKeys": "refunded",
+        "required": false
+    },
+    {
+        "destKey": "sub_total",
+        "sourceKeys": "subTotal",
+        "required": false
+    },
+    {
+        "destKey": "tax",
+        "sourceKeys": "tax",
+        "required": false
+    },
+    {
+        "destKey": "total",
+        "sourceKeys": "total",
+        "required": false
+    },
+    {
+        "destKey": "discount",
+        "sourceKeys": "discount",
+        "required": false
+    },
+    {
+        "destKey": "is_on_sale",
+        "sourceKeys": "isOnSale",
+        "required": false
+    },
+    {
+        "destKey": "totals",
+        "sourceKeys": "totals",
+        "required": false
+    },
+    {
+        "destKey": "properties",
+        "sourceKeys": "properties",
+        "required": false
+    }
+]

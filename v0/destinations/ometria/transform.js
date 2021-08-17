@@ -1,3 +1,4 @@
+const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
@@ -7,15 +8,28 @@ const {
   returnArrayOfSubarrays,
   defaultPostRequestConfig,
   CustomError,
-  defaultRequestConfig
+  defaultRequestConfig,
+  getValueFromMessage
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
   contactDataMapping,
+  customEventMapping,
+  orderMapping,
+  productMapping,
   IDENTIFY_EXCLUSION_FIELDS,
+  CUSTOM_EVENT_EXCLUSION_FIELDS,
+  ORDER_EXCLUSION_FIELDS,
+  PRODUCT_EXCLUSION_FIELDS,
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
+const {
+  isValidTimestamp,
+  createList,
+  createAttributeList,
+  createListingList
+} = require("./util");
 
 const identifyPayloadBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -29,13 +43,108 @@ const identifyPayloadBuilder = (message, { Config }) => {
       ["traits", "context.traits"],
       IDENTIFY_EXCLUSION_FIELDS
     );
-    payload.properties = customFields;
+    payload.properties = [customFields];
   }
   if (
     payload.marketing_optin &&
     !MARKETING_OPTIN_LIST.includes(payload.marketing_optin)
   ) {
     payload.marketing_optin = null;
+  }
+  if (payload.channels && payload.channels.sms) {
+    if (!payload.phone_number) {
+      payload.channels = null;
+      logger.error("SMS added in Channel but phone number not provided.");
+    }
+  }
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = [removeUndefinedAndNullValues(payload)];
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    "X-Ometria-Auth": Config.apiKey
+  };
+  return response;
+};
+
+const trackResponseBuilder = (message, { Config }) => {
+  let type = getValueFromMessage(message, "event");
+  if (!type) {
+    throw new CustomError("Event name is required for track call.", 400);
+  }
+  type = type.trim().toLowerCase();
+  let payload = {};
+  if (type === "custom event") {
+    payload = constructPayload(message, customEventMapping);
+    payload["@type"] = type;
+    if (!payload.properties) {
+      let customFields = {};
+      customFields = extractCustomFields(
+        message,
+        customFields,
+        ["properties"],
+        CUSTOM_EVENT_EXCLUSION_FIELDS
+      );
+      payload.properties = [customFields];
+    }
+    if (!isValidTimestamp(payload.timestamp)) {
+      throw new CustomError("Timestamp format must be ISO-8601", 400);
+    }
+    if (payload.properties.length < 1) {
+      throw new CustomError("Properties field is required", 400);
+    }
+  } else if (type === "order") {
+    payload = constructPayload(message, orderMapping);
+    payload["@type"] = type;
+    if (!payload.properties) {
+      let customFields = {};
+      customFields = extractCustomFields(
+        message,
+        customFields,
+        ["properties"],
+        ORDER_EXCLUSION_FIELDS
+      );
+      payload.properties = [customFields];
+    }
+    if (!isValidTimestamp(payload.timestamp)) {
+      throw new CustomError("Timestamp format must be ISO-8601", 400);
+    }
+    const items = getValueFromMessage(message, "properties.lineitems");
+    if (items) {
+      const lineitems = createList(items);
+      if (lineitems && lineitems.length > 0) {
+        payload.lineitems = lineitems;
+      }
+    }
+  } else if (type === "product") {
+    payload = constructPayload(message, productMapping);
+    payload["@type"] = type;
+    if (!payload.properties) {
+      let customFields = {};
+      customFields = extractCustomFields(
+        message,
+        customFields,
+        ["properties"],
+        PRODUCT_EXCLUSION_FIELDS
+      );
+      payload.properties = [customFields];
+    }
+    const attributes = getValueFromMessage(message, "properties.attributes");
+    if (attributes) {
+      const attributeList = createAttributeList(attributes);
+      if (attributeList && attributeList.length > 0) {
+        payload.attributes = attributeList;
+      }
+    }
+    const listings = getValueFromMessage(message, "properties.listings");
+    if (listings) {
+      const listingList = createListingList(listings);
+      if (listingList && listingList.length > 0) {
+        payload.listings = listingList;
+      }
+    }
+  } else {
+    throw new CustomError("Invalid Event.", 400);
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
@@ -69,6 +178,9 @@ const process = event => {
   switch (messageType) {
     case EventType.IDENTIFY:
       response = identifyPayloadBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`message type ${messageType} not supported`, 400);

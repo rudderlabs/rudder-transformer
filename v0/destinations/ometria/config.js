@@ -2,7 +2,13 @@ const { getMappingConfig } = require("../../util");
 
 const ENDPOINT = "https://api.ometria.com/v2/push";
 const CONFIG_CATEGORIES = {
-  IDENTIFY: { type: "identify", name: "OmetriaContact" }
+  IDENTIFY: { type: "identify", name: "OmetriaContact" },
+  CUSTOM_EVENT: { type: "custom event", name: "OmetriaCustomEvent" },
+  ORDER: { type: "order", name: "OmetriaOrder" },
+  LINEITEMS: { type: "lineitems", name: "OmetriaLineitems" },
+  VARIANT: { type: "variant", name: "OmetriaVariant" },
+  PRODUCT: { type: "product", name: "OmetriaProduct" },
+  LISTING: { type: "listing", name: "OmetriaListing" }
 };
 
 const MAX_BATCH_SIZE = 100;
@@ -26,6 +32,7 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "dateOfBirth",
   "countryId",
   "timezone",
+  "timestampAcquired",
   "timestampSubscribed",
   "timestampUnsubscribed",
   "channels",
@@ -38,6 +45,54 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "listingId"
 ];
 
+const CUSTOM_EVENT_EXCLUSION_FIELDS = [
+  "eventId",
+  "eventType",
+  "timestamp",
+  "profileId",
+  "identityEmail",
+  "identityAccountId"
+];
+
+const ORDER_EXCLUSION_FIELDS = [
+  "orderId",
+  "timestamp",
+  "grandTotal",
+  "subTotal",
+  "discount",
+  "shipping",
+  "tax",
+  "currency",
+  "webId",
+  "status",
+  "isValid",
+  "customer",
+  "lineitems",
+  "IPAddress",
+  "channels",
+  "store",
+  "paymentMethod",
+  "shippingMethod",
+  "shippingAddress",
+  "billingAddress",
+  "couponCode"
+];
+
+const PRODUCT_EXCLUSION_FIELDS = [
+  "productId",
+  "title",
+  "isVariant",
+  "price",
+  "sku",
+  "specialPriceDtFrom",
+  "specialPriceDtTo",
+  "specialPrice",
+  "isActive",
+  "isInStock",
+  "url",
+  "imageUrl"
+];
+
 const MARKETING_OPTIN_LIST = [
   "EXPLICITYLY_OPTED_OUT",
   "NOT_SPECIFIED",
@@ -48,6 +103,15 @@ module.exports = {
   ENDPOINT,
   MAX_BATCH_SIZE,
   IDENTIFY_EXCLUSION_FIELDS,
+  CUSTOM_EVENT_EXCLUSION_FIELDS,
   MARKETING_OPTIN_LIST,
-  contactDataMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+  ORDER_EXCLUSION_FIELDS,
+  PRODUCT_EXCLUSION_FIELDS,
+  contactDataMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
+  customEventMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.CUSTOM_EVENT.name],
+  orderMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER.name],
+  lineitemsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.LINEITEMS.name],
+  variantMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.VARIANT.name],
+  productMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT.name],
+  listingMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.LISTING.name]
 };

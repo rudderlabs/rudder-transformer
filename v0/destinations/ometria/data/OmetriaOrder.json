@@ -1,0 +1,112 @@
+[
+    {
+        "destKey": "id",
+        "sourceKeys": "properties.orderId",
+        "required": true
+    },
+    {
+        "destKey": "timestamp",
+        "sourceKeys": ["properties.timestamp", "originalTimestamp"],
+        "required": true
+    },
+    {
+        "destKey": "grand_total",
+        "sourceKeys": "properties.grandTotal",
+        "required": true
+    },
+    {
+        "destKey": "sub_total",
+        "sourceKeys": "properties.subTotal",
+        "required": false
+    },
+    {
+        "destKey": "discount",
+        "sourceKeys": "properties.discount",
+        "required": false
+    },
+    {
+        "destKey": "shipping",
+        "sourceKeys": "properties.shipping",
+        "required": false
+    },
+    {
+        "destKey": "tax",
+        "sourceKeys": "properties.tax",
+        "required": false
+    },
+    {
+        "destKey": "currency",
+        "sourceKeys": "properties.currency",
+        "required": true
+    },
+    {
+        "destKey": "web_id",
+        "sourceKeys": "properties.webId",
+        "required": false
+    },
+    {
+        "destKey": "status",
+        "sourceKeys": "properties.status",
+        "required": false
+    },
+    {
+        "destKey": "is_valid",
+        "sourceKeys": "properties.isValid",
+        "required": false
+    },
+    {
+        "destKey": "customer",
+        "sourceKeys": "properties.customer",
+        "required": false
+    },
+    {
+        "destKey": "lineitems",
+        "sourceKeys": "properties.lineitems",
+        "required": false
+    },
+    {
+        "destKey": "ip_address",
+        "sourceKeys": ["context.ip","properties.IPAddress"],
+        "required": false
+    },
+    {
+        "destKey": "channels",
+        "sourceKeys": "properties.channels",
+        "required": false
+    },
+    {
+        "destKey": "store",
+        "sourceKeys": "properties.store",
+        "required": false
+    },
+    {
+        "destKey": "payment_method",
+        "sourceKeys": "properties.paymentMethod",
+        "required": false
+    },
+    {
+        "destKey": "shipping_method",
+        "sourceKeys": "properties.shippingMethod",
+        "required": false
+    },
+    {
+        "destKey": "shipping_address",
+        "sourceKeys": "properties.shippingAddress",
+        "required": false
+    },
+    {
+        "destKey": "billing_address",
+        "sourceKeys": "properties.billingAddress",
+        "required": false
+    },
+    {
+        "destKey": "coupon_code",
+        "sourceKeys": "properties.couponCode",
+        "required": false
+    },
+    {
+        "destKey": "properties",
+        "sourceKeys": "properties.customFields",
+        "required": false
+    }
+]

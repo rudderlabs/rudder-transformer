@@ -1,0 +1,67 @@
+[
+    {
+        "destKey": "id",
+        "sourceKeys": "properties.productId",
+        "required": true
+    },
+    {
+        "destKey": "title",
+        "sourceKeys": "properties.title",
+        "required": true
+    },
+    {
+        "destKey": "is_variant",
+        "sourceKeys": "properties.isVariant",
+        "required": false
+    },
+    {
+        "destKey": "price",
+        "sourceKeys": "properties.price",
+        "required": true
+    },
+    {
+        "destKey": "sku",
+        "sourceKeys": "properties.sku",
+        "required": false
+    },
+    {
+        "destKey": "special_price_dt_from",
+        "sourceKeys": "properties.specialPriceDtFrom",
+        "required": false
+    },
+    {
+        "destKey": "special_price_dt_to",
+        "sourceKeys": "properties.specialPriceDtTo",
+        "required": false
+    },
+    {
+        "destKey": "special_price",
+        "sourceKeys": "properties.specialPrice",
+        "required": false
+    },
+    {
+        "destKey": "is_active",
+        "sourceKeys": "properties.isActive",
+        "required": false
+    },
+    {
+        "destKey": "is_in_stock",
+        "sourceKeys": "properties.isInStock",
+        "required": false
+    },
+    {
+        "destKey": "url",
+        "sourceKeys": "properties.url",
+        "required": false
+    },
+    {
+        "destKey": "image_url",
+        "sourceKeys": "properties.imageUrl",
+        "required": false
+    },
+    {
+        "destKey": "properties",
+        "sourceKeys": "properties.customFields",
+        "required": false
+    }
+]

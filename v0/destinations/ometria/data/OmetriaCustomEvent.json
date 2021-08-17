@@ -1,0 +1,37 @@
+[
+    {
+        "destKey": "id",
+        "sourceKeys": "properties.eventId",
+        "required": true
+    },
+    {
+        "destKey": "event_type",
+        "sourceKeys": "properties.eventType",
+        "required": true
+    },
+    {
+        "destKey": "timestamp",
+        "sourceKeys": ["properties.timestamp", "originalTimestamp"],
+        "required": true
+    },
+    {
+        "destKey": "properties",
+        "sourceKeys": "properties.customFields",
+        "required": true
+    },
+    {
+        "destKey": "profile_id",
+        "sourceKeys": "properties.profileId",
+        "required": false
+    },
+    {
+        "destKey": "identity_email",
+        "sourceKeys": "properties.identityEmail",
+        "required": false
+    },
+    {
+        "destKey": "identity_account_id",
+        "sourceKeys": "properties.identityAccountId",
+        "required": false
+    }
+]

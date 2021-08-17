@@ -13,6 +13,7 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 const CacheFactory = require("./cache/factory");
 const cluster = require("./util/cluster");
+const { isOAuthSupported } = require("./v0/util");
 
 const procInfo = cluster.processInfo();
 const AccountCache = CacheFactory.createCache(procInfo.pid, "account");
@@ -85,15 +86,7 @@ async function handleDest(ctx, version, destination) {
         let respEvents = await destHandler.process(parsedEvent);
         // if processAuth is implemented, that destination needs OAuth
         // TODO: Change this to destDef.auth
-        const {
-          Config: destConf
-        } = parsedEvent.destination.DestinationDefinition;
-        if (
-          destConf.auth &&
-          destConf.auth.type === "OAuth" &&
-          destHandler.processAuth &&
-          typeof destHandler.processAuth === "function"
-        ) {
+        if (isOAuthSupported(parsedEvent.destination, destHandler)) {
           await destHandler.processAuth(AccountCache, parsedEvent, respEvents);
         }
 

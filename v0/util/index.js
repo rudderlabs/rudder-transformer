@@ -1029,6 +1029,16 @@ function generateUUID() {
   });
 }
 
+const isOAuthSupported = (destination, destHandler) => {
+  const { Config: destConf } = destination.DestinationDefinition;
+  return (
+    destConf.auth &&
+    destConf.auth.type === "OAuth" &&
+    destHandler.processAuth &&
+    typeof destHandler.processAuth === "function"
+  );
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1094,5 +1104,6 @@ module.exports = {
   getMetadata,
   checkSubsetOfArray,
   returnArrayOfSubarrays,
-  generateUUID
+  generateUUID,
+  isOAuthSupported
 };

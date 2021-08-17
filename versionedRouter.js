@@ -9,7 +9,7 @@ const heapdump = require("heapdump");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 const CacheFactory = require("./cache/factory");
 const cluster = require("./util/cluster");
@@ -368,7 +368,7 @@ if (startDestTransformer) {
           }
         })
       );
-      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
@@ -493,7 +493,7 @@ router.post("/batch", ctx => {
 
 router.get("/heapdump", ctx => {
   heapdump.writeSnapshot((err, filename) => {
-    console.log("Heap dump written to", filename);
+    logger.debug("Heap dump written to", filename);
   });
   ctx.body = "OK";
 });

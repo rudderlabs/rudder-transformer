@@ -52,7 +52,7 @@ function validateIdentify(message, payload) {
       if (firstName && lastName) {
         finalPayload.name = `${firstName} ${lastName}`;
       } else {
-        finalPayload.name = firstName ? `${firstName}` : `${lastName}`;
+        finalPayload.name = firstName || lastName;
       }
     }
 

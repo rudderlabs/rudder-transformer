@@ -170,8 +170,6 @@ const responseHandler = async (event, type) => {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];
-        console.log(val);
-        console.log(elemArr.join())
         if (val === `${elemArr.join()}`) {
           // add job keys if warning/failure
 

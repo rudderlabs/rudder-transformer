@@ -1,44 +1,73 @@
 const FormData = require("form-data");
 const fs = require("fs");
 const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require("./util");
-const { getHashFromArray, CustomError } = require("../../util");
+const { CustomError } = require("../../util");
 const { send } = require("../../../adapters/network");
 
-const getFileData = async (data, columnFields) => {
-  const fieldHashmap = getHashFromArray(columnFields, "from", "to", false);
-  if (Object.values(fieldHashmap).length > 0) {
-    data = `${Object.values(fieldHashmap).toString()}|${data}`;
-    const dataArr = data.split("|");
-    try {
-      const file = fs.createWriteStream("marketo_bulk_upload.csv");
-      file.on("error", err => {
-        throw new CustomError(err.message, 400);
-      });
-      dataArr.forEach(v => {
-        fs.appendFileSync("marketo_bulk_upload.csv", `${v}\n`, err => {
-          if (err) throw err;
-        });
-      });
-      file.end();
+const unsuccessfulJobs = [];
+const successfulJobs = [];
+const getFileData = async input => {
+  const messageArr = [];
+  input.forEach(i => {
+    const inputData = i;
+    const jobId = inputData.metadata.job_id;
+    const data = {};
+    data[jobId] = inputData.message;
+    messageArr.push(data);
+  });
+  const headerArr = [];
 
-      return fs.createReadStream("marketo_bulk_upload.csv");
-    } catch (error) {
-      throw new CustomError(error.message, 400);
-    }
+  input.forEach(m => {
+    Object.keys(m.message).forEach(k => {
+      if (headerArr.indexOf(k) < 0) {
+        headerArr.push(k);
+      }
+    });
+  });
+  if (!Object.keys(headerArr).length) {
+    throw new CustomError("Header fields not present", 400);
   }
-  throw new CustomError("Header fields not present", 400);
+  const csv = [];
+  csv.push(headerArr.toString());
+
+  messageArr.map(row => {
+    const csvSize = JSON.stringify(csv).replace(/[\[\]\,\"]/g, ""); // stringify and remove all "stringification" extra data
+    const response = headerArr
+      .map(fieldName => JSON.stringify(Object.values(row)[0][fieldName], ""))
+      .join(",");
+    if (csvSize.length <= 1048576) {
+      csv.push(response);
+      successfulJobs.push(Object.keys(row)[0]);
+    } else {
+      unsuccessfulJobs.push(Object.keys(row)[0]);
+    }
+    return response;
+  });
+  try {
+    const file = fs.createWriteStream("marketo_bulk_upload.csv");
+    file.on("error", err => {
+      throw new CustomError(err.message, 400);
+    });
+    fs.appendFileSync("marketo_bulk_upload.csv", csv.join("\n"), err => {
+      if (err) {
+        throw new CustomError(err.message, 400);
+      }
+    });
+
+    file.end();
+
+    return fs.createReadStream("marketo_bulk_upload.csv");
+  } catch (error) {
+    throw new CustomError(error.message, 400);
+  }
 };
 
-const getImportID = async (data, config) => {
+const getImportID = async (input, config) => {
   const formReq = new FormData();
-  const { columnFieldsMapping, munchkinId } = config;
+  const { munchkinId } = config;
   // create file for multipart form
   formReq.append("format", "csv");
-  formReq.append(
-    "file",
-    await getFileData(data, columnFieldsMapping),
-    "marketo_bulk_upload.csv"
-  );
+  formReq.append("file", await getFileData(input), "marketo_bulk_upload.csv");
   formReq.append("access_token", await getAccessToken(config));
   // Upload data received from server as files to marketo
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
@@ -103,7 +132,7 @@ const getImportID = async (data, config) => {
   throw new CustomError("Error during uploading file", 400);
 };
 
-const responseHandler = async (data, config) => {
+const responseHandler = async (input, config) => {
   const response = {};
   /**
   * {
@@ -111,13 +140,14 @@ const responseHandler = async (data, config) => {
   "pollURL" : <some-url-to-poll-status>,
 }
   */
-  response.importId = await getImportID(data, config);
+  response.importId = await getImportID(input, config);
   response.pollURL = "/pollStatus";
+  response.metadata = { unsuccessfulJobs, successfulJobs };
   return response;
 };
 const processFileData = async event => {
-  const { data, config } = event;
-  const resp = await responseHandler(data, config);
+  const { input, config } = event;
+  const resp = await responseHandler(input, config);
   return resp;
 };
 

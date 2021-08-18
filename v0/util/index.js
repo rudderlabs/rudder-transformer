@@ -1008,9 +1008,9 @@ function addExternalIdToTraits(message) {
 }
 
 class CustomError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode, metadata) {
     super(message);
-    this.response = { status: statusCode };
+    this.response = { status: statusCode, metadata };
   }
 }
 

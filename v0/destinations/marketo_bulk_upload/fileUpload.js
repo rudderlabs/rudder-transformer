@@ -42,29 +42,33 @@ const getFileData = async input => {
     }
     return response;
   });
-  try {
-    const file = fs.createWriteStream("marketo_bulk_upload.csv");
-    file.on("error", err => {
-      throw new CustomError(err.message, 400);
-    });
-    fs.appendFileSync("marketo_bulk_upload.csv", csv.join("\n"), err => {
-      if (err) {
-        throw new CustomError(err.message, 400);
-      }
-    });
 
-    file.end();
-    const readStream = fs.createReadStream("marketo_bulk_upload.csv");
-    return { readStream, successfulJobs, unsuccessfulJobs };
-  } catch (error) {
-    throw new CustomError(error.message, 400);
-  }
+  const file = fs.createWriteStream("marketo_bulk_upload.csv");
+  file.on("error", err => {
+    throw new CustomError(err.message, 400, {
+      successfulJobs,
+      unsuccessfulJobs
+    });
+  });
+  fs.appendFileSync("marketo_bulk_upload.csv", csv.join("\n"), err => {
+    if (err) {
+      throw new CustomError(err.message, 400, {
+        successfulJobs,
+        unsuccessfulJobs
+      });
+    }
+  });
+  file.end();
+  const readStream = fs.createReadStream("marketo_bulk_upload.csv");
+  return { readStream, successfulJobs, unsuccessfulJobs };
 };
 
 const getImportID = async (input, config) => {
   const formReq = new FormData();
   const { munchkinId } = config;
-  const { readStream } = await getFileData(input);
+  const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
+    input
+  );
   // create file for multipart form
   formReq.append("format", "csv");
   formReq.append("file", readStream, "marketo_bulk_upload.csv");
@@ -81,8 +85,7 @@ const getImportID = async (input, config) => {
   };
   const resp = await send(requestOptions);
   if (resp.success) {
-    if (resp.response && resp.response.data.success) {
-      /**
+    /**
        * 
 {
     "requestId": "d01f#15d672f8560",
@@ -96,16 +99,16 @@ const getImportID = async (input, config) => {
     "success": true
 }
        */
-      if (
-        resp.response &&
-        resp.response.data.success &&
-        resp.response.data.result[0] &&
-        resp.response.data.result[0].importId
-      ) {
-        return resp.response.data.result[0].importId;
-      }
-      return resp.response;
+    if (
+      resp.response &&
+      resp.response.data.success &&
+      resp.response.data.result[0] &&
+      resp.response.data.result[0].importId
+    ) {
+      const { importId } = resp.response.data.result[0];
+      return { importId, successfulJobs, unsuccessfulJobs };
     }
+
     if (resp.response && resp.response.data) {
       if (
         resp.response.data.errors[0] &&
@@ -115,17 +118,20 @@ const getImportID = async (input, config) => {
       ) {
         throw new CustomError(
           resp.response.data.errors[0].message || "Could not upload file",
-          400
+          400,
+          { successfulJobs, unsuccessfulJobs }
         );
       } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
         throw new CustomError(
           resp.response.response.statusText || "Could not upload file",
-          429
+          429,
+          { successfulJobs, unsuccessfulJobs }
         );
       }
       throw new CustomError(
         resp.response.response.statusText || "Error during uploading file",
-        500
+        500,
+        { successfulJobs, unsuccessfulJobs }
       );
     }
   }
@@ -140,9 +146,12 @@ const responseHandler = async (input, config) => {
   "pollURL" : <some-url-to-poll-status>,
 }
   */
-  response.importId = await getImportID(input, config);
+  const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
+    input,
+    config
+  );
+  response.importId = importId;
   response.pollURL = "/pollStatus";
-  const { successfulJobs, unsuccessfulJobs } = await getFileData(input);
   response.metadata = { successfulJobs, unsuccessfulJobs };
   return response;
 };

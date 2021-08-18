@@ -537,7 +537,8 @@ const fileUpload = async ctx => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload."
+      error: error.message || "Error occurred while processing payload.",
+      metadata: error.response ? error.response.metadata : null
     };
   }
   ctx.body = response;

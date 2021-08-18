@@ -18,4 +18,4 @@ ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "npm", "start" ]
 
 
-EXPOSE 9090
+EXPOSE 9090/tcp

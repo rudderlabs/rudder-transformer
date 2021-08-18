@@ -16,3 +16,6 @@ COPY --chown=node:node . .
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "npm", "start" ]
+
+
+EXPOSE 9090

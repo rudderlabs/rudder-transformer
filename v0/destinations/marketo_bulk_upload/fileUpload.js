@@ -4,8 +4,6 @@ const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require("./util");
 const { CustomError } = require("../../util");
 const { send } = require("../../../adapters/network");
 
-const unsuccessfulJobs = [];
-const successfulJobs = [];
 const getFileData = async input => {
   const messageArr = [];
   input.forEach(i => {
@@ -29,7 +27,8 @@ const getFileData = async input => {
   }
   const csv = [];
   csv.push(headerArr.toString());
-
+  const unsuccessfulJobs = [];
+  const successfulJobs = [];
   messageArr.map(row => {
     const csvSize = JSON.stringify(csv).replace(/[\[\]\,\"]/g, ""); // stringify and remove all "stringification" extra data
     const response = headerArr
@@ -55,8 +54,8 @@ const getFileData = async input => {
     });
 
     file.end();
-
-    return fs.createReadStream("marketo_bulk_upload.csv");
+    const readStream = fs.createReadStream("marketo_bulk_upload.csv");
+    return { readStream, successfulJobs, unsuccessfulJobs };
   } catch (error) {
     throw new CustomError(error.message, 400);
   }
@@ -65,9 +64,10 @@ const getFileData = async input => {
 const getImportID = async (input, config) => {
   const formReq = new FormData();
   const { munchkinId } = config;
+  const { readStream } = await getFileData(input);
   // create file for multipart form
   formReq.append("format", "csv");
-  formReq.append("file", await getFileData(input), "marketo_bulk_upload.csv");
+  formReq.append("file", readStream, "marketo_bulk_upload.csv");
   formReq.append("access_token", await getAccessToken(config));
   // Upload data received from server as files to marketo
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
@@ -142,7 +142,8 @@ const responseHandler = async (input, config) => {
   */
   response.importId = await getImportID(input, config);
   response.pollURL = "/pollStatus";
-  response.metadata = { unsuccessfulJobs, successfulJobs };
+  const { successfulJobs, unsuccessfulJobs } = await getFileData(input);
+  response.metadata = { successfulJobs, unsuccessfulJobs };
   return response;
 };
 const processFileData = async event => {

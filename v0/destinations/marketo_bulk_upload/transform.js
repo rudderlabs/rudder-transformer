@@ -4,7 +4,7 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  marketoBulkUploadRequestConfig
+  defaultRequestConfig
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -39,12 +39,8 @@ function responseBuilderSimple(message, destination) {
       payload[key] = val;
     }
   });
-
-  const response = marketoBulkUploadRequestConfig();
-  // Take only values to create each row to be sent to server
-  const payloadValues = Object.values(payload);
-  // Format to send "value1,value2,value3"
-  response.body.CSVRow = payloadValues.toString();
+  const response = defaultRequestConfig();
+  response.body.JSON = payload;
   return response;
 }
 

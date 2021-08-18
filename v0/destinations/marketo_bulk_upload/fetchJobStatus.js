@@ -149,12 +149,15 @@ const responseHandler = async (event, type) => {
   const reasons = {};
 
   responseArr.forEach(element => {
+    // split response by comma but ignore commas inside double quotes
     const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     const reasonMessage = elemArr.pop();
+    // match response data with received data from server
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];
         if (val === elemArr.join()) {
+          // add job keys if warning/failure
           unsuccessfulJobIdsArr.push(key);
           reasons[key] = reasonMessage;
         }

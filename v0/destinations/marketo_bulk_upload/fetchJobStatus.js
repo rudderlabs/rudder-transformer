@@ -162,7 +162,7 @@ const responseHandler = async (event, type) => {
   const unsuccessfulJobIdsArr = [];
   const reasons = {};
 
-  responseArr.forEach(element => {
+  for (const element of responseArr) {
     // split response by comma but ignore commas inside double quotes
     const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     const reasonMessage = elemArr.pop();
@@ -170,14 +170,19 @@ const responseHandler = async (event, type) => {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];
-        if (val === `${elemArr.join()},`) {
+        console.log(val);
+        console.log(elemArr.join())
+        if (val === `${elemArr.join()}`) {
           // add job keys if warning/failure
-          unsuccessfulJobIdsArr.push(key);
+
+          if (!unsuccessfulJobIdsArr.includes(key)) {
+            unsuccessfulJobIdsArr.push(key);
+          }
           reasons[key] = reasonMessage;
         }
       }
     }
-  });
+  }
 
   const successfulJobIdsArr = Object.keys(data).filter(
     x => !unsuccessfulJobIdsArr.includes(x)

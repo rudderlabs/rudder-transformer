@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const { removeUndefinedValues, CustomError } = require("../../util");
+const { CustomError } = require("../../util");
 const {
   getAccessToken,
   ABORTABLE_CODES,
@@ -76,7 +76,6 @@ const getWarningJobStatus = async event => {
       Authorization: `Bearer ${accessToken}`
     }
   };
-
   const resp = await send(requestOptions);
   if (resp.success) {
     if (resp.response && resp.response.data) {
@@ -144,7 +143,22 @@ const responseHandler = async (event, type) => {
       ? await getFailedJobStatus(event)
       : await getWarningJobStatus(event);
   const responseArr = responseStatus.data.split("\n");
-  const { data } = event;
+  const { input } = event;
+  const headerArr = [];
+  input.forEach(m => {
+    Object.keys(m.message).forEach(k => {
+      if (headerArr.indexOf(k) < 0) {
+        headerArr.push(k);
+      }
+    });
+  });
+  const data = {};
+  input.forEach(i => {
+    const response = headerArr
+      .map(fieldName => Object.values(i)[0][fieldName])
+      .join(",");
+    data[i.metadata.job_id] = response;
+  });
   const unsuccessfulJobIdsArr = [];
   const reasons = {};
 
@@ -156,7 +170,7 @@ const responseHandler = async (event, type) => {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];
-        if (val === elemArr.join()) {
+        if (val === `${elemArr.join()},`) {
           // add job keys if warning/failure
           unsuccessfulJobIdsArr.push(key);
           reasons[key] = reasonMessage;
@@ -179,11 +193,14 @@ const responseHandler = async (event, type) => {
   const succeededKeys = successfulJobIdsArr;
 
   const response = {
-    failedKeys,
-    failedReasons,
-    warningKeys,
-    warningReasons,
-    succeededKeys
+    statuCode: 200,
+    metadata: {
+      failedKeys,
+      failedReasons,
+      warningKeys,
+      warningReasons,
+      succeededKeys
+    }
   };
   return response;
 };

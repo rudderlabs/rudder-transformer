@@ -41,6 +41,7 @@ function responseBuilderSimple(message, destination) {
   });
   const response = defaultRequestConfig();
   response.body.JSON = payload;
+  response.endpoint = "/fileUpload";
   return response;
 }
 

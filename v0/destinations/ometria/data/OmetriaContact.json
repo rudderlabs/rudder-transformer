@@ -137,7 +137,7 @@
   },
   {
     "destKey": "properties",
-    "sourceKeys": ["traits.properties", "context.traits.properties"],
+    "sourceKeys": ["traits.custom_fields", "context.traits.custom_fields"],
     "required": false
   }
 ]

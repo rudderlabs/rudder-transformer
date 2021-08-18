@@ -1,12 +1,7 @@
 [
     {
         "destKey": "id",
-        "sourceKeys": "properties.eventId",
-        "required": true
-    },
-    {
-        "destKey": "event_type",
-        "sourceKeys": "properties.eventType",
+        "sourceKeys": "properties.event_id",
         "required": true
     },
     {
@@ -16,22 +11,22 @@
     },
     {
         "destKey": "properties",
-        "sourceKeys": "properties.customFields",
+        "sourceKeys": "properties.custom_fields",
         "required": true
     },
     {
         "destKey": "profile_id",
-        "sourceKeys": "properties.profileId",
+        "sourceKeys": "properties.profile_id",
         "required": false
     },
     {
         "destKey": "identity_email",
-        "sourceKeys": "properties.identityEmail",
+        "sourceKeys": "properties.identity_email",
         "required": false
     },
     {
         "destKey": "identity_account_id",
-        "sourceKeys": "properties.identityAccountId",
+        "sourceKeys": "properties.identity_account_id",
         "required": false
     }
 ]

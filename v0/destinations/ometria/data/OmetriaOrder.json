@@ -1,7 +1,7 @@
 [
     {
         "destKey": "id",
-        "sourceKeys": "properties.orderId",
+        "sourceKeys": "properties.order_id",
         "required": true
     },
     {
@@ -11,12 +11,12 @@
     },
     {
         "destKey": "grand_total",
-        "sourceKeys": "properties.grandTotal",
+        "sourceKeys": "properties.grand_total",
         "required": true
     },
     {
         "destKey": "sub_total",
-        "sourceKeys": "properties.subTotal",
+        "sourceKeys": "properties.subtotal",
         "required": false
     },
     {
@@ -41,17 +41,7 @@
     },
     {
         "destKey": "web_id",
-        "sourceKeys": "properties.webId",
-        "required": false
-    },
-    {
-        "destKey": "status",
-        "sourceKeys": "properties.status",
-        "required": false
-    },
-    {
-        "destKey": "is_valid",
-        "sourceKeys": "properties.isValid",
+        "sourceKeys": "properties.web_id",
         "required": false
     },
     {
@@ -60,13 +50,8 @@
         "required": false
     },
     {
-        "destKey": "lineitems",
-        "sourceKeys": "properties.lineitems",
-        "required": false
-    },
-    {
         "destKey": "ip_address",
-        "sourceKeys": ["context.ip","properties.IPAddress"],
+        "sourceKeys": ["context.ip","properties.ip_address"],
         "required": false
     },
     {
@@ -81,32 +66,32 @@
     },
     {
         "destKey": "payment_method",
-        "sourceKeys": "properties.paymentMethod",
+        "sourceKeys": "properties.payment_method",
         "required": false
     },
     {
         "destKey": "shipping_method",
-        "sourceKeys": "properties.shippingMethod",
+        "sourceKeys": "properties.shipping_method",
         "required": false
     },
     {
         "destKey": "shipping_address",
-        "sourceKeys": "properties.shippingAddress",
+        "sourceKeys": "properties.shipping_address",
         "required": false
     },
     {
         "destKey": "billing_address",
-        "sourceKeys": "properties.billingAddress",
+        "sourceKeys": "properties.billing_address",
         "required": false
     },
     {
         "destKey": "coupon_code",
-        "sourceKeys": "properties.couponCode",
+        "sourceKeys": "properties.coupon_code",
         "required": false
     },
     {
         "destKey": "properties",
-        "sourceKeys": "properties.customFields",
+        "sourceKeys": "properties.custom_fields",
         "required": false
     }
 ]

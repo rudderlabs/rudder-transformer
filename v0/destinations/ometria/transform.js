@@ -9,27 +9,23 @@ const {
   defaultPostRequestConfig,
   CustomError,
   defaultRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
+  isEmptyObject
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
+  ecomEvents,
+  eventNameMapping,
   contactDataMapping,
   customEventMapping,
   orderMapping,
-  productMapping,
   IDENTIFY_EXCLUSION_FIELDS,
   CUSTOM_EVENT_EXCLUSION_FIELDS,
   ORDER_EXCLUSION_FIELDS,
-  PRODUCT_EXCLUSION_FIELDS,
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const {
-  isValidTimestamp,
-  createList,
-  createAttributeList,
-  createListingList
-} = require("./util");
+const { isValidTimestamp, createList, isValidCurrency } = require("./util");
 
 const identifyPayloadBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -43,7 +39,9 @@ const identifyPayloadBuilder = (message, { Config }) => {
       ["traits", "context.traits"],
       IDENTIFY_EXCLUSION_FIELDS
     );
-    payload.properties = [customFields];
+    if (!isEmptyObject(customFields)) {
+      payload.properties = customFields;
+    }
   }
   if (
     payload.marketing_optin &&
@@ -74,28 +72,11 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   type = type.trim().toLowerCase();
   let payload = {};
-  if (type === "custom event") {
-    payload = constructPayload(message, customEventMapping);
-    payload["@type"] = type;
-    if (!payload.properties) {
-      let customFields = {};
-      customFields = extractCustomFields(
-        message,
-        customFields,
-        ["properties"],
-        CUSTOM_EVENT_EXCLUSION_FIELDS
-      );
-      payload.properties = [customFields];
-    }
-    if (!isValidTimestamp(payload.timestamp)) {
-      throw new CustomError("Timestamp format must be ISO-8601", 400);
-    }
-    if (payload.properties.length < 1) {
-      throw new CustomError("Properties field is required", 400);
-    }
-  } else if (type === "order") {
+  if (ecomEvents.includes(type)) {
     payload = constructPayload(message, orderMapping);
-    payload["@type"] = type;
+    payload["@type"] = "order";
+    payload.status = eventNameMapping[type];
+    payload.is_valid = true;
     if (!payload.properties) {
       let customFields = {};
       customFields = extractCustomFields(
@@ -104,47 +85,55 @@ const trackResponseBuilder = (message, { Config }) => {
         ["properties"],
         ORDER_EXCLUSION_FIELDS
       );
-      payload.properties = [customFields];
+      if (!isEmptyObject(customFields)) {
+        payload.properties = customFields;
+      }
     }
     if (!isValidTimestamp(payload.timestamp)) {
       throw new CustomError("Timestamp format must be ISO-8601", 400);
     }
-    const items = getValueFromMessage(message, "properties.lineitems");
+    payload.currency = payload.currency.trim().toUpperCase();
+    if (!isValidCurrency(payload.currency)) {
+      throw new CustomError("Currency should be only 3 characters.", 400);
+    }
+    const items = getValueFromMessage(message, "properties.products");
     if (items) {
       const lineitems = createList(items);
       if (lineitems && lineitems.length > 0) {
         payload.lineitems = lineitems;
       }
     }
-  } else if (type === "product") {
-    payload = constructPayload(message, productMapping);
-    payload["@type"] = type;
-    if (!payload.properties) {
-      let customFields = {};
-      customFields = extractCustomFields(
-        message,
-        customFields,
-        ["properties"],
-        PRODUCT_EXCLUSION_FIELDS
-      );
-      payload.properties = [customFields];
+    const response = defaultRequestConfig();
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = [removeUndefinedAndNullValues(payload)];
+    response.endpoint = ENDPOINT;
+    response.headers = {
+      "X-Ometria-Auth": Config.apiKey
+    };
+    return response;
+  }
+
+  // custom events
+  payload = constructPayload(message, customEventMapping);
+  payload["@type"] = "custom_event";
+  payload.event_type = type;
+  if (!payload.properties) {
+    let customFields = {};
+    customFields = extractCustomFields(
+      message,
+      customFields,
+      ["properties"],
+      CUSTOM_EVENT_EXCLUSION_FIELDS
+    );
+    if (!isEmptyObject(customFields)) {
+      payload.properties = customFields;
     }
-    const attributes = getValueFromMessage(message, "properties.attributes");
-    if (attributes) {
-      const attributeList = createAttributeList(attributes);
-      if (attributeList && attributeList.length > 0) {
-        payload.attributes = attributeList;
-      }
-    }
-    const listings = getValueFromMessage(message, "properties.listings");
-    if (listings) {
-      const listingList = createListingList(listings);
-      if (listingList && listingList.length > 0) {
-        payload.listings = listingList;
-      }
-    }
-  } else {
-    throw new CustomError("Invalid Event.", 400);
+  }
+  if (!isValidTimestamp(payload.timestamp)) {
+    throw new CustomError("Timestamp format must be ISO-8601", 400);
+  }
+  if (!payload.properties) {
+    throw new CustomError("Properties field is required", 400);
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

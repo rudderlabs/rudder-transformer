@@ -1,12 +1,12 @@
 [
     {
         "destKey": "product_id",
-        "sourceKeys": "productId",
+        "sourceKeys": "product_id",
         "required": false
     },
     {
         "destKey": "variant_id",
-        "sourceKeys": "variantId",
+        "sourceKeys": "variant_id",
         "required": false
     },
     {
@@ -21,12 +21,12 @@
     },
     {
         "destKey": "unit_price",
-        "sourceKeys": "unitPrice",
+        "sourceKeys": "unit_price",
         "required": false
     },
     {
         "destKey": "quantity_refunded",
-        "sourceKeys": "quantityRefunded",
+        "sourceKeys": "quantity_refunded",
         "required": false
     },
     {
@@ -36,7 +36,7 @@
     },
     {
         "destKey": "sub_total",
-        "sourceKeys": "subTotal",
+        "sourceKeys": "sub_total",
         "required": false
     },
     {
@@ -56,8 +56,20 @@
     },
     {
         "destKey": "is_on_sale",
-        "sourceKeys": "isOnSale",
-        "required": false
+        "sourceKeys": "is_on_sale",
+        "required": false,
+        "metadata": {
+            "multikeyMap": [
+              {
+                "sourceVal": true,
+                "destVal": true
+              },
+              {
+                "sourceVal": false,
+                "destVal": false
+              }
+            ]
+          }
     },
     {
         "destKey": "totals",

@@ -39,7 +39,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, success: false })
+          .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -49,7 +49,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, success: false })
+          .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -59,7 +59,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, success: false })
+          .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -70,7 +70,7 @@ const responseHandler = ({
         .setMessage(
           `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
         )
-        .setDestinationResponse({ ...data, success: false })
+        .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
         .isTransformerNetwrokFailure(true)
         .build();

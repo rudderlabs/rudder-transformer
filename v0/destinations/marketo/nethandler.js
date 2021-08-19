@@ -39,7 +39,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, status: trimmedResponse.status })
+          .setDestinationResponse({ ...data, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -49,7 +49,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, status: trimmedResponse.status })
+          .setDestinationResponse({ ...data, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -59,7 +59,7 @@ const responseHandler = ({
           .setMessage(
             `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
           )
-          .setDestinationResponse({ ...data, status: trimmedResponse.status })
+          .setDestinationResponse({ ...data, success: false })
           .setMetadata(metadata)
           .isTransformerNetwrokFailure(true)
           .build();
@@ -70,7 +70,7 @@ const responseHandler = ({
         .setMessage(
           `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
         )
-        .setDestinationResponse({ ...data, status: trimmedResponse.status })
+        .setDestinationResponse({ ...data, success: false })
         .setMetadata(metadata)
         .isTransformerNetwrokFailure(true)
         .build();
@@ -81,7 +81,7 @@ const responseHandler = ({
       .setMessage(`Request Failed for Marketo (Retryable).${sourceMessage}`)
       .setDestinationResponse({
         ...trimmedResponse,
-        status: trimmedResponse.status
+        success: false
       })
       .setMetadata(metadata)
       .isTransformerNetwrokFailure(true)
@@ -102,7 +102,7 @@ const responseHandler = ({
     throw new ErrorBuilder()
       .setStatus(temp.status || 500)
       .setMessage(temp.statusText)
-      .setDestinationResponse({ ...temp, status: temp.status })
+      .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
       .isTransformerNetwrokFailure(true)
       .build();

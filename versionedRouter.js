@@ -150,7 +150,6 @@ async function handleValidation(ctx) {
       }
     })
   );
-  // logger.info(`[DT] Output events: ${JSON.stringify(respList)}`);
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }

@@ -5,9 +5,7 @@ const stats = require("./stats");
 
 const tpCache = new NodeCache();
 
-// todo : uncomment
-const CONFIG_BACKEND_URL = "http://localhost:5000";
-// process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTrackingPlanURL = `${CONFIG_BACKEND_URL}/workspaces`;
 
 // Gets the trackingplan from config backend.
@@ -55,16 +53,6 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
         }
       }
     }
-    // // UnPlanned event case. Violation is raised
-    // if (!eventSchema || eventSchema === {}) {
-    //   rudderValidationError = {
-    //     type: "Unplanned Event",
-    //     message: `no schema for eventName : ${eventName}, eventType : ${eventType} in trackingPlanID : ${tpId}::${tpVersion}`,
-    //     meta: {}
-    //   };
-    //   return [null, rudderValidationError];
-    // }
-    // return [eventSchema, null];
     return eventSchema;
   } catch (error) {
     logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);

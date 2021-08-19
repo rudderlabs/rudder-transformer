@@ -1,4 +1,3 @@
-// import { getEventSchema } from "./trackingPlan";
 const Ajv = require("ajv");
 
 const NodeCache = require("node-cache");
@@ -19,7 +18,7 @@ const defaultOptions = {
   verbose: true
   // options to modify validated data:
   // removeAdditional: false, // "all" - it purges extra properties from event,
-  // useDefaults: false // *
+  // useDefaults: false
 };
 
 const violationTypes = {
@@ -30,7 +29,6 @@ const violationTypes = {
   UnplannedEvent: "Unplanned-Event"
 };
 
-// TODO : merge defaultOptions with options from sourceConfig
 let ajv = new Ajv(defaultOptions);
 
 // Ajv meta load to support draft-04/06/07/2019
@@ -67,23 +65,8 @@ function eventSchemaHash(tpId, tpVersion, eventType, eventName) {
   return `${tpId}::${tpVersion}::${eventType}::${eventName}`;
 }
 
-// interface ErrorObject {
-//   keyword: string // validation keyword.  ex: required
-//   instancePath: string // JSON Pointer to the location in the data instance (e.g., `"/prop/1/subProp"`).
-//   schemaPath: string // JSON Pointer to the location of the failing keyword in the schema ex
-//   params: object // type is defined by keyword value, see below
-//                  // params property is the object with the additional information about error
-//                  // it can be used to generate error messages
-//                  // (e.g., using [ajv-i18n](https://github.com/ajv-validator/ajv-i18n) package).
-//                  // See below for parameters set by all keywords.
-//   propertyName?: string // set for errors in `propertyNames` keyword schema.
-//                         // `instancePath` still points to the object in this case.
-//   message?: string // the error message (can be excluded with option `messages: false`).
-//   // Options below are added with `verbose` option:
-//   schema?: any // the value of the failing keyword in the schema.
-//   parentSchema?: object // the schema containing the keyword.
-//   data?: any // the data validated by the keyword.
-// }
+// Ajv Error objects info : https://ajv.js.org/api.html#error-objects
+// sample validation errors
 // {
 //                 "instancePath": "",
 //                 "schemaPath": "#/required",
@@ -134,8 +117,6 @@ async function validate(event) {
       event.message.event,
       event.metadata.workspaceId
     );
-    // If no eventSchema, returns a validationError
-    // if (!eventSchema[0]) return [eventSchema[1]];
     // UnPlanned event case - since no event schema is found. Violation is raised
     if (!eventSchema || eventSchema === {}) {
       rudderValidationError = {
@@ -181,16 +162,12 @@ async function validate(event) {
 
     const valid = validateEvent(event.message.properties);
     if (valid) {
-      // console.log(`${JSON.stringify(event.message.properties)} is Valid!`);
       return [];
     }
-    // console.log(`${event} Invalid: ${ajv.errorsText(validateEvent.errors)}`);
-    // throw new Error()
     var validationErrors = validateEvent.errors.map(function(error) {
       var rudderValidationError;
       switch (error.keyword) {
         case "required":
-          // requirement not fulfilled.
           rudderValidationError = {
             type: violationTypes.RequiredMissing,
             message: error.message,
@@ -234,8 +211,6 @@ async function validate(event) {
     });
     return validationErrors;
   } catch (error) {
-    // logger.error(`Failed during event validation : ${error}`);
-    // stats.increment("get_trackingplan.error");
     throw error;
   }
 }

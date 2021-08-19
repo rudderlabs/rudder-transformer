@@ -14,6 +14,9 @@ const RETRYABLE_CODES = [
 ];
 const THROTTLED_CODES = [502, 606, 607, 608, 615];
 
+const MERKETO_FILE_SIZE = 1048576;
+const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv_${Date.now()}`;
+
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async config => {
@@ -75,5 +78,7 @@ module.exports = {
   getAccessToken,
   ABORTABLE_CODES,
   RETRYABLE_CODES,
-  THROTTLED_CODES
+  THROTTLED_CODES,
+  MERKETO_FILE_SIZE,
+  MARKETO_FILE_PATH
 };

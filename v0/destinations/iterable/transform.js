@@ -134,9 +134,23 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(el => {
+      if (rawPayload.items) {
+        rawPayload.items.forEach(el => {
+          const element = constructPayload(
+            el,
+            mappingConfig[ConfigCategory.PRODUCT.name]
+          );
+          if (element.categories) {
+            element.categories = element.categories.split(",");
+          }
+          element.price = parseFloat(element.price);
+          element.quantity = parseInt(element.quantity, 10);
+          const clone = { ...element };
+          rawPayloadItemArr.push(clone);
+        });
+      } else {
         const element = constructPayload(
-          el,
+          message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
         if (element.categories) {
@@ -146,7 +160,7 @@ function constructPayloadItem(message, category, destination) {
         element.quantity = parseInt(element.quantity, 10);
         const clone = { ...element };
         rawPayloadItemArr.push(clone);
-      });
+      }
 
       rawPayload.items = rawPayloadItemArr;
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
@@ -170,9 +184,23 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(el => {
+      if (rawPayload.items) {
+        rawPayload.items.forEach(el => {
+          const element = constructPayload(
+            el,
+            mappingConfig[ConfigCategory.PRODUCT.name]
+          );
+          if (element.categories) {
+            element.categories = element.categories.split(",");
+          }
+          element.price = parseFloat(element.price);
+          element.quantity = parseInt(element.quantity, 10);
+          const clone = { ...element };
+          rawPayloadItemArr.push(clone);
+        });
+      } else {
         const element = constructPayload(
-          el,
+          message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
         if (element.categories) {
@@ -182,7 +210,7 @@ function constructPayloadItem(message, category, destination) {
         element.quantity = parseInt(element.quantity, 10);
         const clone = { ...element };
         rawPayloadItemArr.push(clone);
-      });
+      }
 
       rawPayload.items = rawPayloadItemArr;
       break;

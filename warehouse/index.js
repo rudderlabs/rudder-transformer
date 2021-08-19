@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
+const { v4: uuidv4 } = require("uuid");
 
 const {
   isObject,
@@ -173,11 +174,15 @@ function setDataFromInputAndComputeColumnTypes(
   input,
   columnTypes,
   options,
-  prefix = ""
+  prefix = "",
+  level = 0
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key])) {
+    if (
+      isObject(input[key]) &&
+      (options.sourceCategory !== "cloud" || level < 3)
+    ) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -185,7 +190,8 @@ function setDataFromInputAndComputeColumnTypes(
         input[key],
         columnTypes,
         options,
-        `${prefix + key}_`
+        `${prefix + key}_`,
+        level + 1
       );
     } else {
       let val = input[key];
@@ -193,6 +199,14 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
+      if (
+        options.sourceCategory === "cloud" &&
+        level >= 3 &&
+        isObject(input[key])
+      ) {
+        val = JSON.stringify(val);
+      }
+
       const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
@@ -454,6 +468,18 @@ function processWarehouseMessage(message, options) {
 
   const responses = [];
   const eventType = message.type.toLowerCase();
+
+  if (isBlank(message.messageId)) {
+    const randomID = uuidv4();
+    message.messageId = `auto-${randomID}`;
+  }
+
+  if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
+    message.receivedAt =
+      options.metadata && options.metadata.receivedAt
+        ? options.metadata.receivedAt
+        : new Date().toISOString();
+  }
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {

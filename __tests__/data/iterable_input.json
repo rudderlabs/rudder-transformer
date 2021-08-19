@@ -1144,6 +1144,82 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Product Added",
+      "sentAt": "2021-07-09T05:27:17.908Z",
+      "userId": "8751",
+      "channel": "web",
+      "context": {
+          "os": {
+              "name": "",
+              "version": ""
+          },
+          "app": {
+              "name": "RudderLabs JavaScript SDK",
+              "build": "1.0.0",
+              "version": "1.0.16",
+              "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+              "url": "https://joybird.com/cabinets/vira-console-cabinet/",
+              "path": "/cabinets/vira-console-cabinet/",
+              "title": "Vira Console Cabinet | Joybird",
+              "search": "",
+              "referrer": "$direct",
+              "referring_domain": ""
+          },
+          "locale": "en-us",
+          "screen": {
+              "density": 2
+          },
+          "traits": {
+              "email": "jessica@jlpdesign.net"
+          },
+          "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.0.16"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"
+      },
+      "rudderId": "1c42e104-97ec-4f54-a328-2379623583fe",
+      "messageId": "e58f6624-a1c3-48f4-a6af-610389602304",
+      "timestamp": "2021-07-09T05:27:18.131Z",
+      "properties": {
+          
+          "sku": "JB24691400-W05",
+          "name": "Vira Console Cabinet",
+          "price": 797,
+          "cart_id": "bd9b8dbf4ef8ee01d4206b04fe2ee6ae",
+          "variant": "Oak",
+          "quantity": 1,
+          "quickship": true,
+          "full_price": 1328,
+          "product_id": 10606,
+          "non_interaction": 1
+      },
+      "receivedAt": "2021-07-09T05:27:18.131Z",
+      "request_ip": "162.224.233.114",
+      "anonymousId": "8a7ff986-62d8-45ca-9a16-8895b3f9d341",
+      "integrations": {
+          "All": true
+      },
+      "originalTimestamp": "2021-07-09T05:27:17.908Z"
+  },
+    "destination": {
+      "Config": {
+        "credentials": "abc",
+        "eventToTopicMap": [
+          {
+            "from": "track",
+            "to": "projects/big-query-integration-poc/topics/test"
+          }
+        ]
+      }
+    }
   }
 ]
 

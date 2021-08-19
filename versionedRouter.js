@@ -1,16 +1,16 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
+const { isNonFuncObject, getMetadata } = require("./v0/util");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
-
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -62,9 +62,15 @@ async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+
+  const metaTags =
+    events && events.length && events[0].metadata
+      ? getMetadata(events[0].metadata)
+      : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   const respList = [];
   await Promise.all(
@@ -99,17 +105,22 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, { destination, version });
+        stats.increment("dest_transform_errors", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   ctx.body = respList;
-  ctx.set("apiVersion", API_VERSION);
+  return ctx.body;
 }
 async function handleValidation(ctx) {
   const events = ctx.request.body;
@@ -150,7 +161,7 @@ async function routerHandleDest(ctx) {
   if (!routerDestHandler || !routerDestHandler.processRouterDest) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support router transform`;
-    return;
+    return null;
   }
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
@@ -161,6 +172,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  return ctx.body;
 }
 
 if (startDestTransformer) {
@@ -171,21 +183,49 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
+        // Assuming that events are from one single source
+
+        const metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
+        // Assuming that events are from one single source
+
+        const metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       router.post("/routerTransform", async ctx => {
         await routerHandleDest(ctx);
@@ -207,10 +247,13 @@ if (startDestTransformer) {
         groupedEvents = _.groupBy(events, event => {
           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
           const rudderId = event.metadata.rudderId || event.message.anonymousId;
-          return `${event.destination.ID}_${rudderId}`;
+          return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(events, event => event.destination.ID);
+        groupedEvents = _.groupBy(
+          events,
+          event => event.metadata.destinationId + "_" + event.metadata.sourceId
+        );
       }
       stats.counter(
         "user_transform_function_group_size",
@@ -246,6 +289,10 @@ if (startDestTransformer) {
             messageIds
           };
 
+          const metaTags =
+            destEvents.length && destEvents[0].metadata
+              ? getMetadata(destEvents[0].metadata)
+              : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -255,7 +302,8 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   transformationVersionId,
-                  processSessions
+                  processSessions,
+                  ...metaTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -307,13 +355,14 @@ if (startDestTransformer) {
               transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
-                processSessions
+                processSessions,
+                ...metaTags
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions }
+                { transformationVersionId, processSessions, ...metaTags }
               );
             }
           } else {
@@ -326,7 +375,8 @@ if (startDestTransformer) {
             });
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
-              processSessions
+              processSessions,
+              ...metaTags
             });
           }
         })
@@ -416,18 +466,18 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.get("/features", ctx =>{
+router.get("/features", ctx => {
   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
   ctx.body = JSON.stringify(obj);
 });
 
-router.post("/batch", ctx => {
+const batchHandler = ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
   if (!destHandler || !destHandler.batch) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support batching`;
-    return;
+    return null;
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
@@ -446,13 +496,24 @@ router.post("/batch", ctx => {
   if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;
-    return;
+    return null;
   }
   ctx.body = response.batchedRequests;
+  return ctx.body;
+};
+router.post("/batch", ctx => {
+  batchHandler(ctx);
+});
+
+router.get("/heapdump", ctx => {
+  heapdump.writeSnapshot((err, filename) => {
+    logger.debug("Heap dump written to", filename);
+  });
+  ctx.body = "OK";
 });
 
 // eg. v0/validate. will validate events as per respective tracking plans
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
-module.exports = router;
+module.exports = { router, handleDest, routerHandleDest, batchHandler };

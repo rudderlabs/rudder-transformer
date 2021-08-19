@@ -1,0 +1,121 @@
+{
+  "output": [
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://heapanalytics.com/api/add_user_properties",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "identity": "sampath",
+            "properties": {
+              "anonymousId": "sampath",
+              "email": "sampath@gmail.com"
+            },
+            "app_id": "<app id>"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "userId": "sampath"
+      },
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "appId": "<app id>"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Heap.io",
+          "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+          "Name": "HEAP"
+        },
+        "Enabled": true,
+        "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+        "Name": "heap test",
+        "Transformations": []
+      }
+    },
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://heapanalytics.com/api/track",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "identity": "sampath",
+            "event": "Send Transactional Email",
+            "properties": {
+              "subject": "Welcome to My App!",
+              "variation": "A"
+            },
+            "app_id": "<app id>"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "userId": "sampath"
+      },
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "appId": "<app id>"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Heap.io",
+          "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+          "Name": "HEAP"
+        },
+        "Enabled": true,
+        "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+        "Name": "heap test",
+        "Transformations": []
+      }
+    },
+    {
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 400,
+      "error": "Message Type is not present. Aborting message."
+    },
+    {
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 400,
+      "error": "Message type not supported"
+    }
+  ]
+}

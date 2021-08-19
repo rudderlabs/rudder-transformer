@@ -3,13 +3,23 @@ const _ = require("lodash");
 const util = require("util");
 const { input, output } = require(`./data/warehouse/events.js`);
 const { names } = require(`./data/warehouse/names.js`);
-const { largeNoOfColumnsevent } = require(`./data/warehouse/event_columns_length`);
+const {
+  largeNoOfColumnsevent
+} = require(`./data/warehouse/event_columns_length`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
 
 const version = "v0";
-const integrations = ["rs", "bq", "postgres", "clickhouse", "snowflake", "mssql", "azure_synapse"];
+const integrations = [
+  "rs",
+  "bq",
+  "postgres",
+  "clickhouse",
+  "snowflake",
+  "mssql",
+  "azure_synapse"
+];
 const transformers = integrations.map(integration =>
   require(`../${version}/destinations/${integration}/transform`)
 );
@@ -135,34 +145,64 @@ describe("column & table names", () => {
   });
   it("should trim column names in postgres", () => {
     let i = input("track");
-    names.input.properties["a1a2a3a4a5b1b2b3b4b5c1c2c3c4c5d1d2d3d4d5e1e2e3e4e5f1f2f3f4f5g1g2g3g4g5"] = "70 letter identifier"
+    names.input.properties[
+      "a1a2a3a4a5b1b2b3b4b5c1c2c3c4c5d1d2d3d4d5e1e2e3e4e5f1f2f3f4f5g1g2g3g4g5"
+    ] = "70 letter identifier";
     i.message.properties = Object.assign(
-        i.message.properties,
-        names.input.properties
+      i.message.properties,
+      names.input.properties
     );
-    i.message.event = "a1a2a3a4a5b1b2b3b4b5c1c2c3c4c5d1d2d3d4d5e1e2e3e4e5f1f2f3f4f5g1g2g3g4g5"
+    i.message.event =
+      "a1a2a3a4a5b1b2b3b4b5c1c2c3c4c5d1d2d3d4d5e1e2e3e4e5f1f2f3f4f5g1g2g3g4g5";
 
     transformers.forEach((transformer, index) => {
       const received = transformer.process(i);
       if (integrations[index] === "postgres") {
-        expect(received[1].metadata).toHaveProperty("table", "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1")
-        expect(received[1].metadata.columns).toHaveProperty("a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1", "string")
-        expect(received[1].data).toHaveProperty("a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1", "70 letter identifier")
+        expect(received[1].metadata).toHaveProperty(
+          "table",
+          "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1"
+        );
+        expect(received[1].metadata.columns).toHaveProperty(
+          "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1",
+          "string"
+        );
+        expect(received[1].data).toHaveProperty(
+          "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1",
+          "70 letter identifier"
+        );
         //KEY should be trimmed to 63
-        return
+        return;
       }
       if (integrations[index] === "snowflake") {
-        expect(received[1].metadata).toHaveProperty("table", "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2")
-        expect(received[1].metadata.columns).toHaveProperty("A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2", "string")
-        expect(received[1].data).toHaveProperty("A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2", "70 letter identifier")
-        return
+        expect(received[1].metadata).toHaveProperty(
+          "table",
+          "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2"
+        );
+        expect(received[1].metadata.columns).toHaveProperty(
+          "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2",
+          "string"
+        );
+        expect(received[1].data).toHaveProperty(
+          "A_1_A_2_A_3_A_4_A_5_B_1_B_2_B_3_B_4_B_5_C_1_C_2_C_3_C_4_C_5_D_1_D_2_D_3_D_4_D_5_E_1_E_2_E_3_E_4_E_5_F_1_F_2_F_3_F_4_F_5_G_1_G_2",
+          "70 letter identifier"
+        );
+        return;
       }
-      expect(received[1].metadata).toHaveProperty("table", "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2")
-      expect(received[1].metadata.columns).toHaveProperty("a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2", "string")
-      expect(received[1].data).toHaveProperty("a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2", "70 letter identifier")
+      expect(received[1].metadata).toHaveProperty(
+        "table",
+        "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2"
+      );
+      expect(received[1].metadata.columns).toHaveProperty(
+        "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2",
+        "string"
+      );
+      expect(received[1].data).toHaveProperty(
+        "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2",
+        "70 letter identifier"
+      );
       //KEY should be trimmed to 127
     });
-  })
+  });
 });
 
 // tests case where properties set by user match the columns set by rudder(id, recevied etc)
@@ -732,26 +772,124 @@ describe("handle recordId from cloud sources", () => {
   });
 });
 
+describe("handle level three nested events from sources", () => {
+  it("should stringify event properties whose level ge 3 for cloud sources", () => {
+    const i = input("track");
+    i.metadata = { sourceCategory: "cloud" };
+    i.message.properties = Object.assign(i.message.properties, {
+      n0: {
+        prop0: "prop level 0",
+        n1: {
+          prop1: "prop level 1",
+          n2: {
+            prop2: "prop level 2",
+            n3: {
+              prop3: "prop level 3",
+              n4: { prop4: "prop level 4" }
+            }
+          }
+        }
+      }
+    });
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+    });
+  });
+
+  it("should not stringify event properties whose level ge 3 for non cloud sources", () => {
+    const i = input("track");
+    i.message.properties = Object.assign(i.message.properties, {
+      n0: {
+        prop0: "prop level 0",
+        n1: {
+          prop1: "prop level 1",
+          n2: {
+            prop2: "prop level 2",
+            n3: {
+              prop3: "prop level 3",
+              n4: { prop4: "prop level 4" }
+            }
+          }
+        }
+      }
+    });
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString(integrations[index], "n_0_n_1_n_2_n_3_prop_3")
+      );
+    });
+  });
+});
 
 describe("Handle no of columns in an event", () => {
-
-  it("should throw an error if no of columns are more than 200",() => {
+  it("should throw an error if no of columns are more than 200", () => {
     const i = input("track");
     transformers.forEach((transformer, index) => {
-      i.message.properties = largeNoOfColumnsevent
+      i.message.properties = largeNoOfColumnsevent;
       expect(() => transformer.process(i)).toThrow(
-          "transfomer: Too many columns outputted from the event"
-      )
+        "transfomer: Too many columns outputted from the event"
+      );
     });
+  });
 
-  })
-
-  it("should not throw an error if no of columns are more than 200 and the event is from rudder-sources",() => {
+  it("should not throw an error if no of columns are more than 200 and the event is from rudder-sources", () => {
     const i = input("track");
     transformers.forEach((transformer, index) => {
-      i.message.channel = "sources"
-      i.message.properties = largeNoOfColumnsevent
-      expect(() => transformer.process(i)).not.toThrow()
+      i.message.channel = "sources";
+      i.message.properties = largeNoOfColumnsevent;
+      expect(() => transformer.process(i)).not.toThrow();
     });
-  })
-})
+  });
+});
+
+describe("Add auto generated messageId for events missing it", () => {
+  it("should remove context_ip set by user in properties if missing in event", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      delete i.message.messageId;
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).toHaveProperty(
+          integrationCasedString(integrations[index], "id")
+        );
+        expect(received[0].data).toHaveProperty(
+          integrationCasedString(integrations[index], "id")
+        );
+        expect(
+          received[0].data[integrationCasedString(integrations[index], "id")]
+        ).toMatch(/auto-.*/);
+      });
+    });
+  });
+});
+
+describe("Add receivedAt for events missing it", () => {
+  it("should remove context_ip set by user in properties if missing in event", () => {
+    eventTypes.forEach(evType => {
+      let i = input(evType);
+      delete i.message.receivedAt;
+      delete i.message.received_at;
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received[0].metadata.columns).toHaveProperty(
+          integrationCasedString(integrations[index], "received_at")
+        );
+        expect(received[0].data).toHaveProperty(
+          integrationCasedString(integrations[index], "received_at")
+        );
+      });
+    });
+  });
+});

@@ -44,6 +44,21 @@ const transformDateField = fieldName => {
   }
   return `${transformedFieldName}${typeDelim}At`;
 };
+// handle boolen values
+const transformBooleanValue = value => {
+  const transformedFieldValue = `${value}`;
+  return transformedFieldValue;
+};
+// handle array values
+const transformArrayValue = arrValue => {
+  const transformedArrayValue = arrValue.map(x => JSON.stringify(x)).join(",");
+  return transformedArrayValue;
+};
+// handle object value
+const transformedObjectValue = objValue => {
+  const transformedObjectVal = JSON.stringify(objValue);
+  return transformedObjectVal;
+};
 // handles other type fields
 const transformField = fieldName => {
   const transformedFieldName = fieldName.trim().replace(/\s+/g, "-");
@@ -69,6 +84,18 @@ const handleAdvancedtransformations = event => {
         transformedMeta[transformNumberField(propKey)] = meta[propKey];
       } else if (ISO_8601.test(meta[propKey])) {
         transformedMeta[transformDateField(propKey)] = meta[propKey];
+      } else if (getType(meta[propKey]) == "boolean") {
+        transformedMeta[transformField(propKey)] = transformBooleanValue(
+          meta[propKey]
+        );
+      } else if (getType(meta[propKey]) == "array") {
+        transformedMeta[transformField(propKey)] = transformArrayValue(
+          meta[propKey]
+        );
+      } else if (getType(meta[propKey]) == "object") {
+        transformedMeta[transformField(propKey)] = transformedObjectValue(
+          meta[propKey]
+        );
       } else {
         transformedMeta[transformField(propKey)] = meta[propKey];
       }

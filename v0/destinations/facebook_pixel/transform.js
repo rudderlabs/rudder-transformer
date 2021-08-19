@@ -11,15 +11,16 @@ const {
 const { EventType } = require("../../../constants");
 
 const {
+  CustomError,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  flattenJson,
-  isObject,
   extractCustomFields,
-  getSuccessRespEvents,
+  flattenJson,
   getErrorRespEvents,
-  CustomError
+  getIntegrationsObj,
+  getSuccessRespEvents,
+  isObject
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -286,7 +287,8 @@ const transformedPayloadData = (
   blacklistPiiProperties,
   whitelistPiiProperties,
   isStandard,
-  eventCustomProperties
+  eventCustomProperties,
+  integrationsObj
 ) => {
   const defaultPiiProperties = [
     "email",
@@ -341,7 +343,10 @@ const transformedPayloadData = (
       )
     ) {
       if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] = sha256(String(message.properties[eventProp]));
+        customData[eventProp] =
+          integrationsObj && integrationsObj.hashed
+            ? String(message.properties[eventProp])
+            : sha256(String(message.properties[eventProp]));
       } else {
         delete customData[eventProp];
       }
@@ -369,18 +374,22 @@ const responseBuilderSimple = (message, category, destination) => {
     testEventCode,
     standardPageCall
   } = Config;
+  const integrationsObj = getIntegrationsObj(message, "fb_pixel");
 
   const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    "fb_pixel"
   );
   if (userData) {
     const split = userData.name ? userData.name.split(" ") : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
-      userData.fn = sha256(split[0]);
-      userData.ln = sha256(split[1]);
+      userData.fn =
+        integrationsObj && integrationsObj.hashed ? split[0] : sha256(split[0]);
+      userData.ln =
+        integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
     }
     delete userData.name;
   }
@@ -390,7 +399,8 @@ const responseBuilderSimple = (message, category, destination) => {
 
   commonData = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
+    "fb_pixel"
   );
   if (commonData.action_source) {
     const isActionSourceValid =
@@ -423,7 +433,8 @@ const responseBuilderSimple = (message, category, destination) => {
       blacklistPiiProperties,
       whitelistPiiProperties,
       category.standard,
-      eventCustomProperties
+      eventCustomProperties,
+      integrationsObj
     );
     message.properties = message.properties || {};
     if (category.standard) {

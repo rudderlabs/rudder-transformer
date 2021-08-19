@@ -7,7 +7,7 @@
     "originalTimestamp"
   ],
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
-  "email": ["traits.email", "context.traits.email", "properties.email"],
+  "email": ["traits.email", "context.traits.email", "properties.email", "context.externalId.0.id"],
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],

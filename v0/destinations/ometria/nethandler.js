@@ -1,69 +1,72 @@
 const { sendRequest } = require("../../../adapters/network");
-const { trimResponse } = require("../utils/networkUtils");
-const { ErrorBuilder } = require("../../v0/util/index");
+const {
+  nodeSysErrorToStatus,
+  trimResponse
+} = require("../../../adapters/utils/networkUtils");
+const { ErrorBuilder } = require("../../util/index");
 
 const responseHandler = (dresponse, metadata) => {
   let status;
-  let handledResponse;
   // success case
-  if (
-    dresponse &&
-    dresponse.status &&
-    dresponse.rejected &&
-    dresponse.status >= 200 &&
-    dresponse.status < 300 &&
-    dresponse.rejected === 0
-  ) {
-    handledResponse = trimResponse(dresponse);
-    status = 200;
-    const message = handledResponse.statusText;
-    const destination = {
-      response: handledResponse,
-      status: handledResponse.status
-    };
-    const apiLimit = {
-      available: "",
-      resetAt: ""
-    };
+  if (dresponse.success) {
+    // true success case
+    const trimmedResponse = trimResponse(dresponse);
+    const { data } = trimmedResponse;
+    if (data && data.rejected && data.rejected === 0) {
+      status = 200;
+      const message = trimmedResponse.statusText;
+      const destination = {
+        response: trimmedResponse,
+        status: trimmedResponse.status
+      };
+      const apiLimit = {
+        available: "",
+        resetAt: ""
+      };
+      return {
+        status,
+        message,
+        destination,
+        apiLimit,
+        metadata
+      };
+    }
+    // some requests rejected
+    if (data && data.rejected && data.rejected > 0) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(`${data.rejected} requests rejected.`)
+        .setDestinationResponse({ ...data, success: false })
+        .setMetadata(metadata)
+        .isTransformerNetworkFailure(true)
+        .build();
+    }
 
-    return {
-      status,
-      message,
-      destination,
-      apiLimit,
-      metadata
-    };
-  }
-  if (dresponse && dresponse.rejected && dresponse.rejected > 0) {
-    const message = "One or more requests were rejected.";
     throw new ErrorBuilder()
       .setStatus(400)
-      .setMessage(message)
+      .setMessage(`Request rejected due to bad request.`)
+      .setDestinationResponse({ ...data, success: false })
       .setMetadata(metadata)
       .isTransformerNetworkFailure(true)
       .build();
   }
-  if (
-    dresponse &&
-    dresponse.code &&
-    dresponse.code >= 400 &&
-    dresponse.code < 500
-  ) {
-    let message = "";
-    if (dresponse.data) {
-      message = JSON.stringify(dresponse.data);
-    }
+  // failure case
+  const { response } = dresponse.response;
+  if (!response && dresponse.response && dresponse.response.code) {
+    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
     throw new ErrorBuilder()
-      .setStatus(dresponse.code || 400)
-      .setMessage(`"Authentication error or destination side error. ${message}`)
+      .setStatus(nodeSysErr.status || 400)
+      .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetworkFailure(true)
+      .isTransformerNetwrokFailure(true)
       .build();
   } else {
     const temp = trimResponse(dresponse.response);
     throw new ErrorBuilder()
-      .setStatus(temp.status || 500)
-      .setMessage(temp.statusText)
+      .setStatus(temp.status || 400)
+      .setMessage(
+        `Authentication or destination side error : ${temp.statusText}`
+      )
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
       .isTransformerNetwrokFailure(true)

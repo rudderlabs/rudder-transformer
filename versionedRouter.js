@@ -524,7 +524,10 @@ router.get("/heapdump", ctx => {
 
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getDestFileUploadHandler("v0", destType);
+  const destFileUploadHandler = getDestFileUploadHandler(
+    "v0",
+    destType.toLowerCase()
+  );
 
   if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
     ctx.status = 404;
@@ -547,7 +550,10 @@ const fileUpload = async ctx => {
 
 const pollStatus = async ctx => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getPollStatusHandler("v0", destType);
+  const destFileUploadHandler = getPollStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
     ctx.status = 404;
@@ -568,7 +574,10 @@ const pollStatus = async ctx => {
 
 const getJobStatus = async (ctx, type) => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getJobStatusHandler("v0", destType);
+  const destFileUploadHandler = getJobStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
     ctx.status = 404;

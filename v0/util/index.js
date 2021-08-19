@@ -20,7 +20,9 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
-const { DestCanonicalNames } = require("../../constants/destinationCanonicalNames");
+const {
+  DestCanonicalNames
+} = require("../../constants/destinationCanonicalNames");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -288,7 +290,29 @@ const defaultRequestConfig = () => {
       XML: {},
       FORM: {}
     },
-    files: {}
+    files: {},
+    requestOptions: {}
+  };
+};
+
+// Request Configs for marketo bulk uploads
+
+const marketoBulkUploadRequestConfig = () => {
+  return {
+    version: "1",
+    type: "REST",
+    method: "POST",
+    endpoint: "/fileUpload",
+    headers: {},
+    params: {},
+    body: {
+      JSON: {},
+      XML: {},
+      FORM: {},
+      CSVRow: ""
+    },
+    files: {},
+    requestOptions: {}
   };
 };
 
@@ -306,7 +330,8 @@ const defaultBatchRequestConfig = () => {
         XML: {},
         FORM: {}
       },
-      files: {}
+      files: {},
+      requestOptions: {}
     }
   };
 };
@@ -998,7 +1023,11 @@ function returnArrayOfSubarrays(arr, len) {
 function addExternalIdToTraits(message) {
   const identifierType = get(message, "context.externalId.0.identifierType");
   const identifierValue = get(message, "context.externalId.0.id");
-  set(getFieldValueFromMessage(message, "traits"), identifierType, identifierValue);
+  set(
+    getFieldValueFromMessage(message, "traits"),
+    identifierType,
+    identifierValue
+  );
 }
 
 class CustomError extends Error {
@@ -1006,6 +1035,40 @@ class CustomError extends Error {
     super(message);
     this.response = { status: statusCode };
   }
+}
+
+function ErrorBuilder() {
+  this.err = new Error();
+
+  this.setMessage = message => {
+    this.err.message = message;
+    return this;
+  };
+  this.setStatus = status => {
+    this.err.status = status;
+    return this;
+  };
+
+  this.setDestinationResponse = destination => {
+    this.err.destination = destination;
+    return this;
+  };
+
+  this.setApiInfo = apiLimit => {
+    this.err.apiLimit = apiLimit;
+    return this;
+  };
+
+  this.setMetadata = metadata => {
+    this.err.metadata = metadata;
+    return this;
+  };
+
+  this.isTransformerNetwrokFailure = arg => {
+    this.err.networkFailure = arg;
+    return this;
+  };
+  this.build = () => this.err;
 }
 
 /**
@@ -1035,7 +1098,7 @@ function generateUUID() {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
-  CustomError,
+  ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
   checkEmptyStringInarray,
@@ -1081,6 +1144,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  marketoBulkUploadRequestConfig,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
@@ -1091,8 +1155,5 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  getMetadata,
-  checkSubsetOfArray,
-  returnArrayOfSubarrays,
   generateUUID
 };

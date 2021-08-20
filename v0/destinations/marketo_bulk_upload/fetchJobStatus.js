@@ -143,15 +143,9 @@ const responseHandler = async (event, type) => {
       ? await getFailedJobStatus(event)
       : await getWarningJobStatus(event);
   const responseArr = responseStatus.data.split("\n");
-  const { input } = event;
-  const headerArr = [];
-  input.forEach(m => {
-    Object.keys(m.message).forEach(k => {
-      if (headerArr.indexOf(k) < 0) {
-        headerArr.push(k);
-      }
-    });
-  });
+  const { input, metadata } = event;
+
+  const headerArr = metadata.csvHeader.split(",");
   const data = {};
   input.forEach(i => {
     const response = headerArr

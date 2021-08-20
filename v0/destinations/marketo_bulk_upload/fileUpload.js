@@ -5,7 +5,7 @@ const {
   ABORTABLE_CODES,
   THROTTLED_CODES,
   MERKETO_FILE_SIZE,
-  MARKETO_FILE_PATH
+  getMarketoFilePath
 } = require("./util");
 const { CustomError, getHashFromArray } = require("../../util");
 const { send } = require("../../../adapters/network");
@@ -38,6 +38,7 @@ const getFileData = async (input, config) => {
   csv.push(headerArr.toString());
   const unsuccessfulJobs = [];
   const successfulJobs = [];
+  const MARKETO_FILE_PATH = getMarketoFilePath();
   messageArr.map(row => {
     const csvSize = JSON.stringify(csv).replace(/[\[\]\,\"]/g, ""); // stringify and remove all "stringification" extra data
     const response = headerArr
@@ -52,55 +53,40 @@ const getFileData = async (input, config) => {
     return response;
   });
   if (csv.length > 1) {
-    const file = fs.createWriteStream(MARKETO_FILE_PATH);
-    file.on("error", err => {
-      throw new CustomError(err.message, 400, {
-        successfulJobs,
-        unsuccessfulJobs
-      });
-    });
-    fs.appendFileSync(MARKETO_FILE_PATH, csv.join("\n"), err => {
-      if (err) {
-        throw new CustomError(err.message, 400, {
-          successfulJobs,
-          unsuccessfulJobs
-        });
-      }
-    });
-    file.end();
+    fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
     const readStream = fs.createReadStream(MARKETO_FILE_PATH);
     fs.unlinkSync(MARKETO_FILE_PATH);
-
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
   return { successfulJobs, unsuccessfulJobs };
 };
 
 const getImportID = async (input, config) => {
-  const formReq = new FormData();
-  const { munchkinId } = config;
-  const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
-    input,
-    config
-  );
-  // create file for multipart form
-  if (readStream) {
-    formReq.append("format", "csv");
-    formReq.append("file", readStream, "marketo_bulk_upload.csv");
-    formReq.append("access_token", await getAccessToken(config));
-    // Upload data received from server as files to marketo
-    // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
-    const requestOptions = {
-      url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-      method: "post",
-      data: formReq,
-      headers: {
-        ...formReq.getHeaders()
-      }
-    };
-    const resp = await send(requestOptions);
-    if (resp.success) {
-      /**
+  try {
+    const formReq = new FormData();
+    const { munchkinId } = config;
+    const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
+      input,
+      config
+    );
+    // create file for multipart form
+    if (readStream) {
+      formReq.append("format", "csv");
+      formReq.append("file", readStream, "marketo_bulk_upload.csv");
+      formReq.append("access_token", await getAccessToken(config));
+      // Upload data received from server as files to marketo
+      // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
+      const requestOptions = {
+        url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+        method: "post",
+        data: formReq,
+        headers: {
+          ...formReq.getHeaders()
+        }
+      };
+      const resp = await send(requestOptions);
+      if (resp.success) {
+        /**
        * 
 {
     "requestId": "d01f#15d672f8560",
@@ -114,53 +100,69 @@ const getImportID = async (input, config) => {
     "success": true
 }
        */
-      if (
-        resp.response &&
-        resp.response.data.success &&
-        resp.response.data.result[0] &&
-        resp.response.data.result[0].importId
-      ) {
-        const { importId } = resp.response.data.result[0];
-        return { importId, successfulJobs, unsuccessfulJobs };
-      }
-
-      if (resp.response && resp.response.data) {
         if (
-          resp.response.data.errors[0] &&
-          ((resp.response.data.errors[0].code >= 1000 &&
-            resp.response.data.errors[0].code <= 1077) ||
-            ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+          resp.response &&
+          resp.response.data.success &&
+          resp.response.data.result.length > 0 &&
+          resp.response.data.result[0] &&
+          resp.response.data.result[0].importId
         ) {
-          if (resp.response.data.errors[0].message === "Empty file") {
+          const { importId } = resp.response.data.result[0];
+          return { importId, successfulJobs, unsuccessfulJobs };
+        }
+        if (resp.response && resp.response.data) {
+          if (
+            resp.response.data.errors[0] &&
+            resp.response.data.errors[0].message ===
+              "There are 10 imports currently being processed. Please try again later"
+          ) {
             throw new CustomError(
               resp.response.data.errors[0].message || "Could not upload file",
               500,
               { successfulJobs, unsuccessfulJobs }
             );
           }
+          if (
+            resp.response.data.errors[0] &&
+            ((resp.response.data.errors[0].code >= 1000 &&
+              resp.response.data.errors[0].code <= 1077) ||
+              ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+          ) {
+            if (resp.response.data.errors[0].message === "Empty file") {
+              throw new CustomError(
+                resp.response.data.errors[0].message || "Could not upload file",
+                500,
+                { successfulJobs, unsuccessfulJobs }
+              );
+            }
+            throw new CustomError(
+              resp.response.data.errors[0].message || "Could not upload file",
+              400,
+              { successfulJobs, unsuccessfulJobs }
+            );
+          } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+            throw new CustomError(
+              resp.response.response.statusText || "Could not upload file",
+              500,
+              { successfulJobs, unsuccessfulJobs }
+            );
+          }
           throw new CustomError(
-            resp.response.data.errors[0].message || "Could not upload file",
-            400,
-            { successfulJobs, unsuccessfulJobs }
-          );
-        } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
-          throw new CustomError(
-            resp.response.response.statusText || "Could not upload file",
-            429,
+            resp.response.response.statusText || "Error during uploading file",
+            500,
             { successfulJobs, unsuccessfulJobs }
           );
         }
-        throw new CustomError(
-          resp.response.response.statusText || "Error during uploading file",
-          500,
-          { successfulJobs, unsuccessfulJobs }
-        );
       }
+    } else {
+      return { successfulJobs, unsuccessfulJobs };
     }
-  } else {
-    return { successfulJobs, unsuccessfulJobs };
+  } catch (err) {
+    throw new CustomError(
+      err.message || "Error during uploading file",
+      err.response.status
+    );
   }
-  throw new CustomError("Error during uploading file", 400);
 };
 
 const responseHandler = async (input, config) => {

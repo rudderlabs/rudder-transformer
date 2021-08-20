@@ -51,7 +51,7 @@ const getPollStatus = async event => {
       } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
         throw new CustomError(
           resp.response.response.statusText || "Could not poll status",
-          429
+          500
         );
       }
       throw new CustomError(

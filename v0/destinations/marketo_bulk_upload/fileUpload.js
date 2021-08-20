@@ -154,9 +154,8 @@ const getImportID = async (input, config) => {
           );
         }
       }
-    } else {
-      return { successfulJobs, unsuccessfulJobs };
     }
+    return { successfulJobs, unsuccessfulJobs };
   } catch (err) {
     throw new CustomError(
       err.message || "Error during uploading file",

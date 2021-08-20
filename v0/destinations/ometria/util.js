@@ -38,7 +38,11 @@ const createList = items => {
   if (items.length > 0) {
     items.forEach((item, index) => {
       const itemPayload = constructPayload(item, lineitemsMapping);
-      if (itemPayload.product_id && itemPayload.quantity) {
+      if (
+        itemPayload.product_id &&
+        itemPayload.quantity &&
+        (itemPayload.unit_price || itemPayload.subtotal)
+      ) {
         const variantList = item.variant_options;
         if (!isEmptyObject(variantList)) {
           const variantOptions = createVariantList(variantList);
@@ -67,7 +71,7 @@ const createList = items => {
         itemList.push(removeUndefinedAndNullAndEmptyValues(itemPayload));
       } else {
         logger.error(
-          `Item at index ${index} dropped. Product id and quantity are required.`
+          `Item at index ${index} dropped. Product id , quantity and either unit_price or subtotal are required.`
         );
       }
     });

@@ -3,7 +3,7 @@ const {
   nodeSysErrorToStatus,
   trimResponse
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const { ErrorBuilder, isDefinedAndNotNull } = require("../../util/index");
 
 const responseHandler = (dresponse, metadata) => {
   let status;
@@ -12,7 +12,7 @@ const responseHandler = (dresponse, metadata) => {
     // true success case
     const trimmedResponse = trimResponse(dresponse);
     const { data } = trimmedResponse;
-    if (data && data.rejected && data.rejected === 0) {
+    if (data && isDefinedAndNotNull(data.rejected) && data.rejected === 0) {
       status = 200;
       const message = trimmedResponse.statusText;
       const destination = {
@@ -32,11 +32,11 @@ const responseHandler = (dresponse, metadata) => {
       };
     }
     // some requests rejected
-    if (data && data.rejected && data.rejected > 0) {
+    if (data && isDefinedAndNotNull(data.rejected) && data.rejected > 0) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage(`${data.rejected} requests rejected.`)
-        .setDestinationResponse({ ...data, success: false })
+        .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
         .isTransformerNetworkFailure(true)
         .build();
@@ -45,7 +45,7 @@ const responseHandler = (dresponse, metadata) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(`Request rejected due to bad request.`)
-      .setDestinationResponse({ ...data, success: false })
+      .setDestinationResponse({ ...trimmedResponse, success: false })
       .setMetadata(metadata)
       .isTransformerNetworkFailure(true)
       .build();
@@ -61,13 +61,13 @@ const responseHandler = (dresponse, metadata) => {
       .isTransformerNetwrokFailure(true)
       .build();
   } else {
-    const temp = trimResponse(dresponse.response);
+    const trimmedErrorResponse = trimResponse(dresponse.response);
     throw new ErrorBuilder()
-      .setStatus(temp.status || 400)
+      .setStatus(trimmedErrorResponse.status || 400)
       .setMessage(
-        `Authentication or destination side error : ${temp.statusText}`
+        `Authentication or destination side error : ${trimmedErrorResponse.statusText}`
       )
-      .setDestinationResponse({ ...temp, success: false })
+      .setDestinationResponse({ ...trimmedErrorResponse, success: false })
       .setMetadata(metadata)
       .isTransformerNetwrokFailure(true)
       .build();

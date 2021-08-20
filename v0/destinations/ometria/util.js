@@ -16,11 +16,6 @@ const isValidTimestamp = timestamp => {
   return re.test(String(timestamp));
 };
 
-const isValidCurrency = currency => {
-  const re = /^AED|AFN|ALL|AMD|ANG|AOA|ARS|AUD|AWG|AZN|BAM|BBD|BDT|BGN|BHD|BIF|BMD|BND|BOB|BRL|BSD|BTN|BWP|BYR|BZD|CAD|CDF|CHF|CLP|CNY|COP|CRC|CUC|CUP|CVE|CZK|DJF|DKK|DOP|DZD|EGP|ERN|ETB|EUR|FJD|FKP|GBP|GEL|GGP|GHS|GIP|GMD|GNF|GTQ|GYD|HKD|HNL|HRK|HTG|HUF|IDR|ILS|IMP|INR|IQD|IRR|ISK|JEP|JMD|JOD|JPY|KES|KGS|KHR|KMF|KPW|KRW|KWD|KYD|KZT|LAK|LBP|LKR|LRD|LSL|LYD|MAD|MDL|MGA|MKD|MMK|MNT|MOP|MRO|MUR|MVR|MWK|MXN|MYR|MZN|NAD|NGN|NIO|NOK|NPR|NZD|OMR|PAB|PEN|PGK|PHP|PKR|PLN|PYG|QAR|RON|RSD|RUB|RWF|SAR|SBD|SCR|SDG|SEK|SGD|SHP|SLL|SOS|SPL|SRD|STD|SVC|SYP|SZL|THB|TJS|TMT|TND|TOP|TRY|TTD|TVD|TWD|TZS|UAH|UGX|USD|UYU|UZS|VEF|VND|VUV|WST|XAF|XCD|XDR|XOF|XPF|YER|ZAR|ZMW|ZWD$/;
-  return re.test(String(currency));
-};
-
 const createVariantList = variants => {
   const variantList = [];
   if (variants.length > 0) {
@@ -72,7 +67,7 @@ const createList = items => {
         itemList.push(removeUndefinedAndNullAndEmptyValues(itemPayload));
       } else {
         logger.error(
-          `Item at index ${index} dropped. Product id and quantity is required`
+          `Item at index ${index} dropped. Product id and quantity are required.`
         );
       }
     });
@@ -82,6 +77,5 @@ const createList = items => {
 
 module.exports = {
   isValidTimestamp,
-  createList,
-  isValidCurrency
+  createList
 };

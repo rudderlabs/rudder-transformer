@@ -12,7 +12,7 @@
     {
         "destKey": "properties",
         "sourceKeys": "properties.custom_fields",
-        "required": true
+        "required": false
     },
     {
         "destKey": "profile_id",

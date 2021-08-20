@@ -19,13 +19,14 @@ const {
   contactDataMapping,
   customEventMapping,
   orderMapping,
+  currencyList,
   IDENTIFY_EXCLUSION_FIELDS,
   CUSTOM_EVENT_EXCLUSION_FIELDS,
   ORDER_EXCLUSION_FIELDS,
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const { isValidTimestamp, createList, isValidCurrency } = require("./util");
+const { isValidTimestamp, createList } = require("./util");
 
 const identifyPayloadBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -93,8 +94,11 @@ const trackResponseBuilder = (message, { Config }) => {
       throw new CustomError("Timestamp format must be ISO-8601", 400);
     }
     payload.currency = payload.currency.trim().toUpperCase();
-    if (!isValidCurrency(payload.currency)) {
-      throw new CustomError("Currency should be only 3 characters.", 400);
+    if (!currencyList.includes(payload.currency)) {
+      throw new CustomError(
+        "Currency should be only 3 characters and must follow format ISO 4217.",
+        400
+      );
     }
     const items = getValueFromMessage(message, "properties.products");
     if (items) {

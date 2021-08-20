@@ -15,8 +15,11 @@ const RETRYABLE_CODES = [
 const THROTTLED_CODES = [502, 606, 607, 608, 615];
 
 const MERKETO_FILE_SIZE = 1048576;
-const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv_${Date.now()}`;
+const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv`;
 
+const getMarketoFilePath = () => {
+  return MARKETO_FILE_PATH;
+}
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async config => {
@@ -59,7 +62,7 @@ const getAccessToken = async config => {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",
-          429
+          500
         );
       }
       // Assuming none we should retry the remaining errors
@@ -80,5 +83,5 @@ module.exports = {
   RETRYABLE_CODES,
   THROTTLED_CODES,
   MERKETO_FILE_SIZE,
-  MARKETO_FILE_PATH
+  getMarketoFilePath
 };

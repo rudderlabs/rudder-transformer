@@ -145,7 +145,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: [],
-          error: error || "Error occurred while validating payload."
+          error: `${error}` || "Error occurred while validating payload."
         });
       }
     })

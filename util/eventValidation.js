@@ -126,6 +126,9 @@ async function validate(event) {
       };
       return [rudderValidationError];
     }
+    //Current json schema is injected with version for non-track events in config-be, need to remove ot parse it succesfully
+    delete eventSchema["version"];
+
     // const [isSchemaValid, schemaCopy] = validateSchema(eventSchema);
     // const validateEvent = ajv.compile(schemaCopy);
     // Error: schema with key or id "http://rudder.com/order-completed" already exists
@@ -142,7 +145,7 @@ async function validate(event) {
       ...globalAjvOptions,
       ...eventTypeAjvOptions
     };
-    logger.info(merged);
+    logger.debug(merged);
     if (merged !== {}) {
       let configHash = hash(merged);
       ajv = ajvCache.get(configHash);
@@ -151,14 +154,14 @@ async function validate(event) {
         ajvCache.set(configHash, ajv);
       }
     }
-    logger.info(JSON.stringify(ajvCache.getStats()));
+    logger.debug(JSON.stringify(ajvCache.getStats()));
 
     let validateEvent = eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
     }
-    logger.info(JSON.stringify(eventSchemaCache.getStats()));
+    logger.debug(JSON.stringify(eventSchemaCache.getStats()));
 
     const valid = validateEvent(event.message.properties);
     if (valid) {

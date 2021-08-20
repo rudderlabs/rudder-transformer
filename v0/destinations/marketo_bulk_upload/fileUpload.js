@@ -7,10 +7,21 @@ const {
   MERKETO_FILE_SIZE,
   MARKETO_FILE_PATH
 } = require("./util");
-const { CustomError } = require("../../util");
+const { CustomError, getHashFromArray } = require("../../util");
 const { send } = require("../../../adapters/network");
 
-const getFileData = async input => {
+const getHeaderFields = config => {
+  const { columnFieldsMapping } = config;
+  const columnField = getHashFromArray(
+    columnFieldsMapping,
+    "from",
+    "to",
+    false
+  );
+  return Object.keys(columnField);
+};
+
+const getFileData = async (input, config) => {
   const messageArr = [];
   input.forEach(i => {
     const inputData = i;
@@ -19,15 +30,7 @@ const getFileData = async input => {
     data[jobId] = inputData.message;
     messageArr.push(data);
   });
-  const headerArr = [];
-
-  input.forEach(m => {
-    Object.keys(m.message).forEach(k => {
-      if (headerArr.indexOf(k) < 0) {
-        headerArr.push(k);
-      }
-    });
-  });
+  const headerArr = getHeaderFields(config);
   if (!Object.keys(headerArr).length) {
     throw new CustomError("Header fields not present", 400);
   }
@@ -77,7 +80,8 @@ const getImportID = async (input, config) => {
   const formReq = new FormData();
   const { munchkinId } = config;
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
-    input
+    input,
+    config
   );
   // create file for multipart form
   if (readStream) {
@@ -174,7 +178,8 @@ const responseHandler = async (input, config) => {
   response.statusCode = 200;
   response.importId = importId;
   response.pollURL = "/pollStatus";
-  response.metadata = { successfulJobs, unsuccessfulJobs };
+  const headerArr = getHeaderFields(config);
+  response.metadata = { successfulJobs, unsuccessfulJobs, headerArr };
   return response;
 };
 const processFileData = async event => {

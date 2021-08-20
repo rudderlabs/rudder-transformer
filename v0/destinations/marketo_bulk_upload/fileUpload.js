@@ -178,8 +178,8 @@ const responseHandler = async (input, config) => {
   response.statusCode = 200;
   response.importId = importId;
   response.pollURL = "/pollStatus";
-  const headerArr = getHeaderFields(config);
-  response.metadata = { successfulJobs, unsuccessfulJobs, headerArr };
+  const csvHeader = getHeaderFields(config).toString();
+  response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
   return response;
 };
 const processFileData = async event => {

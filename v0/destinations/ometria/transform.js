@@ -10,7 +10,8 @@ const {
   CustomError,
   defaultRequestConfig,
   getValueFromMessage,
-  isEmptyObject
+  isEmptyObject,
+  getFieldValueFromMessage
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -83,10 +84,39 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!event) {
     throw new CustomError("Event name is required for track call.", 400);
   }
+
   event = event.trim().toLowerCase();
   let payload = {};
   if (ecomEvents.includes(event)) {
     payload = constructPayload(message, orderMapping);
+    if (!isValidTimestamp(payload.timestamp)) {
+      throw new CustomError("Timestamp format must be ISO-8601", 400);
+    }
+    payload.currency = payload.currency.trim().toUpperCase();
+    if (!currencyList.includes(payload.currency)) {
+      throw new CustomError(
+        "Currency should be only 3 characters and must follow format ISO 4217.",
+        400
+      );
+    }
+
+    const customer = removeUndefinedAndNullValues({
+      id: getFieldValueFromMessage(message, "userId"),
+      email: getValueFromMessage(message, [
+        "traits.email",
+        "context.traits.email"
+      ]),
+      firstname: getFieldValueFromMessage(message, "firstName"),
+      lastname: getFieldValueFromMessage(message, "lastName")
+    });
+    if (isEmptyObject(customer)) {
+      throw new CustomError(
+        "Customer object is required for order related event",
+        400
+      );
+    }
+
+    payload.customer = customer;
     payload["@type"] = "order";
     payload.status = eventNameMapping[event];
     payload.is_valid = true;
@@ -101,16 +131,6 @@ const trackResponseBuilder = (message, { Config }) => {
       if (!isEmptyObject(customFields)) {
         payload.properties = customFields;
       }
-    }
-    if (!isValidTimestamp(payload.timestamp)) {
-      throw new CustomError("Timestamp format must be ISO-8601", 400);
-    }
-    payload.currency = payload.currency.trim().toUpperCase();
-    if (!currencyList.includes(payload.currency)) {
-      throw new CustomError(
-        "Currency should be only 3 characters and must follow format ISO 4217.",
-        400
-      );
     }
     const items = getValueFromMessage(message, "properties.products");
     if (items) {

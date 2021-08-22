@@ -45,11 +45,6 @@
         "required": false
     },
     {
-        "destKey": "customer",
-        "sourceKeys": "properties.customer",
-        "required": false
-    },
-    {
         "destKey": "ip_address",
         "sourceKeys": ["context.ip","properties.ip_address"],
         "required": false

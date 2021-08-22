@@ -202,8 +202,10 @@ const batch = destEvents => {
 
   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
   arrayChunks.forEach(chunk => {
-    respList.push(chunk[0].message.body.JSON[0]);
-    metadata.push(chunk[0].metadata);
+    chunk.forEach(ev => {
+      respList.push(ev.message.body.JSON[0]);
+      metadata.push(ev.metadata);
+    });
   });
 
   batchEventResponse.batchedRequest.body.JSON = respList;

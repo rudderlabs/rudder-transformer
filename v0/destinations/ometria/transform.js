@@ -56,6 +56,18 @@ const identifyPayloadBuilder = (message, { Config }) => {
       logger.error("SMS added in Channel but phone number not provided.");
     }
   }
+
+  const name = getValueFromMessage(message, [
+    "traits.name",
+    "context.traits.name"
+  ]);
+  if (name) {
+    const [fName, mName, lName] = name.split(" ");
+    payload.firstname = fName || "";
+    payload.middlename = mName || "";
+    payload.lastname = lName || "";
+  }
+
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = [removeUndefinedAndNullValues(payload)];
@@ -67,16 +79,16 @@ const identifyPayloadBuilder = (message, { Config }) => {
 };
 
 const trackResponseBuilder = (message, { Config }) => {
-  let type = getValueFromMessage(message, "event");
-  if (!type) {
+  let event = getValueFromMessage(message, "event");
+  if (!event) {
     throw new CustomError("Event name is required for track call.", 400);
   }
-  type = type.trim().toLowerCase();
+  event = event.trim().toLowerCase();
   let payload = {};
-  if (ecomEvents.includes(type)) {
+  if (ecomEvents.includes(event)) {
     payload = constructPayload(message, orderMapping);
     payload["@type"] = "order";
-    payload.status = eventNameMapping[type];
+    payload.status = eventNameMapping[event];
     payload.is_valid = true;
     if (!payload.properties) {
       let customFields = {};
@@ -120,7 +132,7 @@ const trackResponseBuilder = (message, { Config }) => {
   // custom events
   payload = constructPayload(message, customEventMapping);
   payload["@type"] = "custom_event";
-  payload.event_type = type;
+  payload.event_type = event;
   if (!payload.properties) {
     let customFields = {};
     customFields = extractCustomFields(

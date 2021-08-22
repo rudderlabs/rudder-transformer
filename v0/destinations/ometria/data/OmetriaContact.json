@@ -1,8 +1,7 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": true
   },
   {
@@ -27,7 +26,7 @@
   },
   {
     "destKey": "customer_id",
-    "sourceKeys": "userIdOnly",
+    "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": false
   },
@@ -38,19 +37,19 @@
   },
   {
     "destKey": "firstname",
-    "sourceKeys": "first_name",
+    "sourceKeys": "firstName",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "lastname",
-    "sourceKeys": "last_name",
+    "sourceKeys": "lastName",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "middlename",
-    "sourceKeys": "middle_name",
+    "sourceKeys": "middleName",
     "sourceFromGenericMap": true,
     "required": false
   },

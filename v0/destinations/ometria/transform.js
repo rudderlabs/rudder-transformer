@@ -194,32 +194,38 @@ const process = event => {
 };
 
 const batch = destEvents => {
-  const respList = [];
-  const metadata = [];
-  let batchEventResponse = defaultBatchRequestConfig();
-  const { destination } = destEvents[0];
-  const { apiKey } = destination.Config;
-
+  const batchedResponse = [];
   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
+
   arrayChunks.forEach(chunk => {
+    const respList = [];
+    const metadata = [];
+
+    // extracting the apiKey and destination value
+    // from the first event in a batch
+    const { destination } = chunk[0];
+    const { apiKey } = destination.Config;
+    let batchEventResponse = defaultBatchRequestConfig();
+
     chunk.forEach(ev => {
       respList.push(ev.message.body.JSON[0]);
       metadata.push(ev.metadata);
     });
+
+    batchEventResponse.batchedRequest.body.JSON = respList;
+    batchEventResponse.batchedRequest.endpoint = ENDPOINT;
+    batchEventResponse.batchedRequest.headers = {
+      "X-Ometria-Auth": apiKey
+    };
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponse.push(batchEventResponse);
   });
 
-  batchEventResponse.batchedRequest.body.JSON = respList;
-  batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-  batchEventResponse.batchedRequest.headers = {
-    "X-Ometria-Auth": apiKey
-  };
-  batchEventResponse = {
-    ...batchEventResponse,
-    metadata,
-    destination
-  };
-
-  return [batchEventResponse];
+  return batchedResponse;
 };
 
 module.exports = { process, batch };

@@ -1,5 +1,5 @@
 [
-  { "requestOptions": {} },
+  {},
   {
     "version": "1",
     "type": "REST",
@@ -16,8 +16,7 @@
     },
     "files": {},
     "userId": "12345",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "version": "1",
@@ -35,8 +34,7 @@
     },
     "files": {},
     "userId": "12345",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "version": "1",
@@ -54,7 +52,6 @@
     },
     "files": {},
     "userId": "12345",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   }
 ]

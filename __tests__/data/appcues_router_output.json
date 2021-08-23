@@ -13,15 +13,25 @@
       "files": {},
       "method": "POST",
       "params": {},
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "version": "1",
-      "endpoint": "https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity",
-      "requestOptions": {}
+      "endpoint": "https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
-    "destination": { "Config": { "accountId": "86086", "useNativeSDK": false } }
+    "destination": {
+      "Config": {
+        "accountId": "86086",
+        "useNativeSDK": false
+      }
+    }
   },
   {
     "batchedRequest": {
@@ -30,21 +40,34 @@
         "FORM": {},
         "JSON": {
           "request_id": "57494c6a-3c62-4b30-83aa-6e821d37ac75",
-          "profile_update": { "last name": "Abraham", "first name": "John" }
+          "profile_update": {
+            "last name": "Abraham",
+            "first name": "John"
+          }
         }
       },
       "type": "REST",
       "files": {},
       "method": "POST",
       "params": {},
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "version": "1",
-      "endpoint": "https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity",
-      "requestOptions": {}
+      "endpoint": "https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
-    "destination": { "Config": { "accountId": "86086", "useNativeSDK": false } }
+    "destination": {
+      "Config": {
+        "accountId": "86086",
+        "useNativeSDK": false
+      }
+    }
   }
 ]

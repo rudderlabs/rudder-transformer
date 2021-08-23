@@ -5,7 +5,9 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://app.posthog.com/batch",
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -36,10 +38,13 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -55,7 +60,9 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://app.posthog.com/batch",
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -118,14 +125,19 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE" }
+      "Config": {
+        "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE"
+      }
     }
   }
 ]

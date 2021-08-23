@@ -1,68 +1,78 @@
 [
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
-      "headers": {
-        "Content-Type": "application/json",
-        "authentication": "ef1d42390426e3f7c90ac78272e74344"
-      },
-      "method": "POST",
-      "params": {},
-      "body": {
-        "JSON": {
-          "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
-          "eventName": "page",
-          "appsflyer_id": "afUid",
-          "os": "",
-          "ip": "0.0.0.0"
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+        "headers": {
+          "Content-Type": "application/json",
+          "authentication": "ef1d42390426e3f7c90ac78272e74344"
         },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "requestOptions": {}
-    },
-    "metadata": [{ "jobId": 2 }],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" },
-      "Enabled": true
-    }
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
-      "headers": {
-        "Content-Type": "application/json",
-        "authentication": "ef1d42390426e3f7c90ac78272e74344"
-      },
-      "params": {},
-      "method": "POST",
-      "body": {
-        "JSON": {
-          "eventValue": "{\"user_actual_role\":\"system_admin, system_user\",\"user_actual_id\":12345}",
-          "eventName": "test track event hs",
-          "appsflyer_id": "afUid",
-          "os": "",
-          "ip": "0.0.0.0"
+        "method": "POST",
+        "params": {},
+        "body": {
+          "JSON": {
+            "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+            "eventName": "page",
+            "appsflyer_id": "afUid",
+            "os": "",
+            "ip": "0.0.0.0"
+          },
+          "XML": {},
+          "FORM": {}
         },
-        "XML": {},
-        "FORM": {}
+        "files": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "devKey": "ef1d42390426e3f7c90ac78272e74344"
+        },
+        "Enabled": true
+      }
     },
-    "metadata": [{ "jobId": 2 }],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": { "devKey": "ef1d42390426e3f7c90ac78272e74344" },
-      "Enabled": true
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+        "headers": {
+          "Content-Type": "application/json",
+          "authentication": "ef1d42390426e3f7c90ac78272e74344"
+        },
+        "params": {},
+        "method": "POST",
+        "body": {
+          "JSON": {
+            "eventValue": "{\"user_actual_role\":\"system_admin, system_user\",\"user_actual_id\":12345}",
+            "eventName": "test track event hs",
+            "appsflyer_id": "afUid",
+            "os": "",
+            "ip": "0.0.0.0"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      "metadata": [
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "devKey": "ef1d42390426e3f7c90ac78272e74344"
+        },
+        "Enabled": true
+      }
     }
-  }
-]
+  ]

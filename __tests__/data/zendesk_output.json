@@ -1,6 +1,6 @@
 [
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -19,7 +19,9 @@
             "email": "example124@email.com",
             "name": "abcd124",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124" },
+            "user_fields": {
+              "id": "abcd-124"
+            },
             "verified": true
           }
         },
@@ -28,9 +30,8 @@
       },
       "files": {},
       "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
     "version": "1",
     "type": "REST",
@@ -55,8 +56,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9",
-    "requestOptions": {}
+    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },
   {
     "version": "1",
@@ -77,23 +77,29 @@
           "description": "test-track-event124",
           "type": "test-track-event124",
           "source": "Rudder",
-          "properties": { "test_prop": "test_prop_value_124" }
+          "properties": {
+            "test_prop": "test_prop_value_124"
+          }
         },
         "profile": {
           "type": "test-track-event124",
           "source": "Rudder",
-          "identifiers": [{ "type": "email", "value": "example124@email.com" }]
+          "identifiers": [
+            {
+              "type": "email",
+              "value": "example124@email.com"
+            }
+          ]
         }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9",
-    "requestOptions": {}
+    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -106,11 +112,15 @@
         "X-Zendesk-Marketplace-Organization-Id": "3339"
       },
       "params": {},
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {},
       "userId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a"
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -129,7 +139,9 @@
             "email": "example124@email.com",
             "name": "abcd124",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124" },
+            "user_fields": {
+              "id": "abcd-124"
+            },
             "verified": true
           }
         },
@@ -138,11 +150,10 @@
       },
       "files": {},
       "userId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a"
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -155,11 +166,15 @@
         "X-Zendesk-Marketplace-Organization-Id": "3339"
       },
       "params": {},
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {},
       "userId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a"
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -178,7 +193,9 @@
             "email": "example124@email.com",
             "name": "abcd124",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124" },
+            "user_fields": {
+              "id": "abcd-124"
+            },
             "verified": true
           }
         },
@@ -187,11 +204,10 @@
       },
       "files": {},
       "userId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a"
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -210,7 +226,10 @@
             "email": "johnwick@example.com",
             "name": "John Wick",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124", "country": "UK" }
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
+            }
           }
         },
         "XML": {},
@@ -218,11 +237,10 @@
       },
       "files": {},
       "userId": "223b5f40-9543-4456-a7aa-945c43048185"
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -241,7 +259,10 @@
             "email": "johnwick@example.com",
             "name": "John Wick",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124", "country": "UK" }
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
+            }
           }
         },
         "XML": {},
@@ -249,11 +270,10 @@
       },
       "files": {},
       "userId": "223b5f40-9543-4456-a7aa-945c43048185"
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -272,7 +292,10 @@
             "email": "johnwick@example.com",
             "name": "John Wick",
             "external_id": "abcd-124",
-            "user_fields": { "id": "abcd-124", "country": "UK" },
+            "user_fields": {
+              "id": "abcd-124",
+              "country": "UK"
+            },
             "verified": true
           }
         },
@@ -281,9 +304,8 @@
       },
       "files": {},
       "userId": "223b5f40-9543-4456-a7aa-945c43048185"
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
     "body": {
       "FORM": {},
@@ -300,7 +322,12 @@
           "type": "Abhishek Track me"
         },
         "profile": {
-          "identifiers": [{ "type": "email", "value": "example124@email.com" }],
+          "identifiers": [
+            {
+              "type": "email",
+              "value": "example124@email.com"
+            }
+          ],
           "source": "Rudder",
           "type": "Abhishek Track me"
         }
@@ -320,8 +347,7 @@
     "params": {},
     "type": "REST",
     "userId": "223b5f40-9543-4456-a7aa-945c43048185",
-    "version": "1",
-    "requestOptions": {}
+    "version": "1"
   },
   {
     "body": {
@@ -339,7 +365,12 @@
           "type": "Abhishek Track me"
         },
         "profile": {
-          "identifiers": [{ "type": "email", "value": "example124@email.com" }],
+          "identifiers": [
+            {
+              "type": "email",
+              "value": "example124@email.com"
+            }
+          ],
           "source": "Rudder",
           "type": "Abhishek Track me"
         }
@@ -359,17 +390,14 @@
     "params": {},
     "type": "REST",
     "userId": "223b5f40-9543-4456-a7aa-945c43048185",
-    "version": "1",
-    "requestOptions": {}
+    "version": "1"
   },
   {
     "statusCode": 400,
-    "error": "Zendesk : UserId is a mandatory field for group",
-    "requestOptions": {}
+    "error": "Zendesk : UserId is a mandatory field for group"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported",
-    "requestOptions": {}
+    "error": "Message type not supported"
   }
 ]

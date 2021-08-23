@@ -13,8 +13,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -30,8 +29,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -47,8 +45,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -64,8 +61,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -81,8 +77,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -98,8 +93,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -115,8 +109,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "sessionId": "anon-id-new",
@@ -132,8 +125,7 @@
           "numberOfRatings": "checking with webapp change"
         }
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "userId": "identified user id",
@@ -150,8 +142,7 @@
         "impression": ["abc"],
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "userId": "identified user id",
@@ -169,8 +160,7 @@
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "userId": "identified user id",
@@ -188,8 +178,7 @@
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-    ],
-    "requestOptions": {}
+    ]
   },
   {
     "userId": "identified user id",
@@ -207,7 +196,6 @@
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
-    ],
-    "requestOptions": {}
+    ]
   }
 ]

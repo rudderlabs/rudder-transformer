@@ -1,6 +1,6 @@
 [
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -15,8 +15,13 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
@@ -24,14 +29,20 @@
             [
               "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
             ],
-            ["3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"]
+            [
+              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+            ]
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -46,8 +57,13 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
@@ -55,26 +71,31 @@
             [
               "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
             ],
-            ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]
+            [
+              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+            ]
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  { "error": " identify call is not supported ", "requestOptions": {} },
+    }
+  ],
   {
-    "error": "The event name does not match with configured audience ids'",
-    "requestOptions": {}
+    "error": " identify call is not supported "
   },
   {
-    "error": "One or more of the schema fields are not supported",
-    "requestOptions": {}
+    "error": "The event name does not match with configured audience ids'"
   },
   {
-    "0": {
+    "error": "One or more of the schema fields are not supported"
+  },
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -84,8 +105,13 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
@@ -93,14 +119,20 @@
             [
               "215f050a6f2dbb94f2621dc50433b8268b8e16b91d6f3c71d594fb51de1c9565"
             ],
-            ["3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"]
+            [
+              "3e2d9945d2b6e850ff0be0b314bb3515ddff4f8e25fcb7bcac5909892a7217f0"
+            ]
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -110,8 +142,13 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
             [
               "7075798475713e6001a15cfe63ea241377021cb9c6f962ed6d0269c0442c2185"
@@ -119,17 +156,22 @@
             [
               "44c13b47eafe217792b97a1dadf158f08eb356cb010e46be4cd213216827cf1b"
             ],
-            ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]
+            [
+              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+            ]
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -139,19 +181,34 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
           "data": [
-            ["shrouti@abc.com"],
-            [" utsab@abc.com"],
-            [" manashi@abc.com"]
+            [
+              "shrouti@abc.com"
+            ],
+            [
+              " utsab@abc.com"
+            ],
+            [
+              " manashi@abc.com"
+            ]
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -161,22 +218,39 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
-          "schema": ["EMAIL"],
-          "data": [["ruchira@abc.com"], ["arnab@abc.com"], ["sudip@abc.com"]]
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "EMAIL"
+          ],
+          "data": [
+            [
+              "ruchira@abc.com"
+            ],
+            [
+              "arnab@abc.com"
+            ],
+            [
+              "sudip@abc.com"
+            ]
+          ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
-    "error": "Configured Schema field FN is missing in one or more user records",
-    "requestOptions": {}
+    "error": "Configured Schema field FN is missing in one or more user records"
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -186,7 +260,10 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
           "schema": [
             "EMAIL",
             "DOBM",
@@ -217,10 +294,14 @@
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -230,7 +311,10 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
           "schema": [
             "EMAIL",
             "DOBM",
@@ -261,13 +345,16 @@
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -277,7 +364,10 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
           "schema": [
             "EMAIL",
             "DOBM",
@@ -308,10 +398,14 @@
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "DELETE",
@@ -321,7 +415,10 @@
         "access_token": "ABC",
         "payload": {
           "is_raw": false,
-          "data_source": { "type": "UNKNOWN", "sub_type": "ANYTHING" },
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
           "schema": [
             "EMAIL",
             "DOBM",
@@ -352,9 +449,12 @@
           ]
         }
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {}
-    },
-    "requestOptions": {}
-  }
+    }
+  ]
 ]

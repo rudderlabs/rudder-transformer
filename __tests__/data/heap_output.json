@@ -22,8 +22,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath",
-    "requestOptions": {}
+    "userId": "sampath"
   },
   {
     "version": "1",
@@ -46,17 +45,12 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath",
-    "requestOptions": {}
+    "userId": "sampath"
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message.",
-    "requestOptions": {}
+    "error": "Message Type is not present. Aborting message."
   },
-  {
-    "statusCode": 400,
-    "error": "Message type not supported",
-    "requestOptions": {}
-  }
+  { "statusCode": 400, "error": "Message type not supported" }
 ]
+

@@ -24,10 +24,13 @@
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.iterable.com/api/events/track",
-      "requestOptions": {}
+      "endpoint": "https://api.iterable.com/api/events/track"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -68,10 +71,13 @@
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.iterable.com/api/users/update",
-      "requestOptions": {}
+      "endpoint": "https://api.iterable.com/api/users/update"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {

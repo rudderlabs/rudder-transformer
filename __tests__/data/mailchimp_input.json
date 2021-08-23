@@ -301,13 +301,11 @@
       "channel": "web",
       "context": {
         "mappedToDestination": true,
-        "externalId": [
-          {
-            "identifierType": "email_address",
-            "id": "bob.dole@initech.com",
-            "type": "audience"
-          }
-        ],
+        "externalId": [{
+          "identifierType": "email_address",
+          "id": "bob.dole@initech.com",
+          "type": "audience"
+        }],
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",

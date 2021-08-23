@@ -16,25 +16,44 @@
           ]
         }
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
       "Config": {
         "limitedDataUsage": true,
         "blacklistPiiProperties": [
-          { "blacklistPiiProperties": "", "blacklistPiiHash": false }
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
         ],
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
-        "eventsToEvents": [{ "from": "", "to": "" }],
-        "eventCustomProperties": [{ "eventCustomProperties": "" }],
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
         "valueFieldIdentifier": "",
         "advancedMapping": false,
-        "whitelistPiiProperties": [{ "whitelistPiiProperties": "" }]
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
       },
       "Enabled": true
     }
@@ -56,24 +75,43 @@
           ]
         }
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
       "Config": {
         "blacklistPiiProperties": [
-          { "blacklistPiiProperties": "", "blacklistPiiHash": false }
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
         ],
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
-        "eventsToEvents": [{ "from": "", "to": "" }],
-        "eventCustomProperties": [{ "eventCustomProperties": "" }],
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
         "valueFieldIdentifier": "",
         "advancedMapping": true,
-        "whitelistPiiProperties": [{ "whitelistPiiProperties": "" }]
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
       },
       "Enabled": true
     }

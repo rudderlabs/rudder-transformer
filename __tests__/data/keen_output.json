@@ -1,9 +1,5 @@
 [
-  {
-    "message": "message type not supported",
-    "statusCode": 400,
-    "requestOptions": {}
-  },
+  { "message": "message type not supported", "statusCode": 400 },
   {
     "body": {
       "XML": {},
@@ -46,8 +42,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -89,7 +84,6 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   }
 ]

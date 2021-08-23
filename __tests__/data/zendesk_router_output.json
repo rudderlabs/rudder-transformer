@@ -1,7 +1,7 @@
 [
   {
-    "batchedRequest": {
-      "0": {
+    "batchedRequest": [
+      {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -20,7 +20,9 @@
               "email": "example124@email.com",
               "name": "abcd124",
               "external_id": "abcd-124",
-              "user_fields": { "id": "abcd-124" },
+              "user_fields": {
+                "id": "abcd-124"
+              },
               "verified": true
             }
           },
@@ -29,10 +31,13 @@
         },
         "files": {},
         "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
-      },
-      "requestOptions": {}
-    },
-    "metadata": [{ "jobId": 2 }],
+      }
+    ],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -81,10 +86,13 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9",
-      "requestOptions": {}
+      "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {

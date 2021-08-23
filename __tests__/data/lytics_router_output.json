@@ -5,7 +5,9 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -64,14 +66,20 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "apiKey": "11111122702j2a2U2K2C7H", "stream": "default" },
+      "Config": {
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
+      },
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
@@ -83,7 +91,9 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -97,14 +107,20 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "apiKey": "11111122702j2a2U2K2C7H", "stream": "default" },
+      "Config": {
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
+      },
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true

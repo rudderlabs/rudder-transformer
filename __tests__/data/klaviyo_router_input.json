@@ -132,7 +132,10 @@
       "properties": {
         "PreviouslyVicePresident": true,
         "YearElected": 1801,
-        "VicePresidents": ["Aaron Burr", "George Clinton"]
+        "VicePresidents": [
+          "Aaron Burr",
+          "George Clinton"
+        ]
       },
       "anonymousId": "9c6bd77ea9da3e68",
       "integrations": {

@@ -1,10 +1,9 @@
 [
   {
-    "error": "Creating or updating contacts is disabled",
-    "requestOptions": {}
+    "error": "Creating or updating contacts is disabled"
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -15,13 +14,16 @@
       },
       "params": {},
       "body": {
-        "JSON": { "attributeSets": [], "contactKey": "12345" },
+        "JSON": {
+          "attributeSets": [],
+          "contactKey": "12345"
+        },
         "XML": {},
         "FORM": {}
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "PUT",
@@ -57,17 +59,19 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  { "error": "Either userId or email is required", "requestOptions": {} },
+    }
+  ],
   {
-    "error": "Message Type is not present. Aborting message.",
-    "requestOptions": {}
+    "error": "Either userId or email is required"
   },
-  { "error": "Message type not supported", "requestOptions": {} },
   {
-    "0": {
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "error": "Message type not supported"
+  },
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -78,13 +82,16 @@
       },
       "params": {},
       "body": {
-        "JSON": { "attributeSets": [], "contactKey": "12345" },
+        "JSON": {
+          "attributeSets": [],
+          "contactKey": "12345"
+        },
         "XML": {},
         "FORM": {}
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "PUT",
@@ -129,9 +136,8 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
     "version": "1",
     "type": "REST",
@@ -166,8 +172,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "body": {
@@ -212,11 +217,14 @@
       "Authorization": "Bearer undefined"
     },
     "version": "1",
-    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Uuid:50360b9c-ea8d-409c-b672-c9230f91cce5",
-    "requestOptions": {}
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Uuid:50360b9c-ea8d-409c-b672-c9230f91cce5"
   },
-  { "error": "Event not mapped for this track call", "requestOptions": {} },
-  { "error": "Either userId or email is required", "requestOptions": {} },
+  {
+    "error": "Event not mapped for this track call"
+  },
+  {
+    "error": "Either userId or email is required"
+  },
   {
     "body": {
       "XML": {},
@@ -252,8 +260,7 @@
       "Authorization": "Bearer undefined"
     },
     "version": "1",
-    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434",
-    "requestOptions": {}
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434"
   },
   {
     "body": {
@@ -291,7 +298,7 @@
       "Authorization": "Bearer undefined"
     },
     "version": "1",
-    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434,Contact Key:12345",
-    "requestOptions": {}
+    "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434,Contact Key:12345"
   }
 ]
+

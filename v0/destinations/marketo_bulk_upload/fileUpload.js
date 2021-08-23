@@ -184,7 +184,9 @@ const getImportID = async (input, config) => {
               400,
               { successfulJobs, unsuccessfulJobs }
             );
-          } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+          } else if (
+            THROTTLED_CODES.indexOf(resp.response.data.errors[0].code)
+          ) {
             stats.increment(UPLOAD_FILE, 1, {
               integration: "Marketo_bulk_upload",
               requestTime,

@@ -154,14 +154,14 @@ async function validate(event) {
         ajvCache.set(configHash, ajv);
       }
     }
-    logger.debug(JSON.stringify(ajvCache.getStats()));
+    // logger.debug(JSON.stringify(ajvCache.getStats()));
 
     let validateEvent = eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
     }
-    logger.debug(JSON.stringify(eventSchemaCache.getStats()));
+    // logger.debug(JSON.stringify(eventSchemaCache.getStats()));
 
     const valid = validateEvent(event.message.properties);
     if (valid) {

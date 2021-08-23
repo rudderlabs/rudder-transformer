@@ -33,6 +33,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   // TODO: validate payload
   const payload = constructPayload(message, contactDataMapping);
   payload["@type"] = "contact";
+  if (!payload.id) {
+    payload.id = getFieldValueFromMessage(message, "userId");
+    if (!payload.id) {
+      throw new CustomError("Listing Id is required for identify call.", 400);
+    }
+  }
   if (!payload.properties) {
     let customFields = {};
     customFields = extractCustomFields(
@@ -115,9 +121,9 @@ const trackResponseBuilder = (message, { Config }) => {
       firstname: getFieldValueFromMessage(message, "firstName"),
       lastname: getFieldValueFromMessage(message, "lastName")
     });
-    if (isEmptyObject(customer)) {
+    if (!customer.id) {
       throw new CustomError(
-        "Customer object is required for order related event",
+        "Customer id is required for order related event.",
         400
       );
     }

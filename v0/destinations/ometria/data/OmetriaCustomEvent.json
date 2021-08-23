@@ -1,33 +1,37 @@
 [
-    {
-        "destKey": "id",
-        "sourceKeys": "properties.event_id",
-        "required": true
-    },
-    {
-        "destKey": "timestamp",
-        "sourceKeys": ["properties.timestamp", "originalTimestamp"],
-        "required": true
-    },
-    {
-        "destKey": "properties",
-        "sourceKeys": "properties.custom_fields",
-        "required": false
-    },
-    {
-        "destKey": "profile_id",
-        "sourceKeys": "properties.profile_id",
-        "required": false
-    },
-    {
-        "destKey": "identity_email",
-        "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
-        "required": false
-    },
-    {
-        "destKey": "identity_account_id",
-        "sourceKeys": "userId",
-        "sourceFromGenericMap": true,
-        "required": false
-    }
+  {
+    "destKey": "id",
+    "sourceKeys": "properties.event_id",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": ["properties.timestamp", "originalTimestamp"],
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties.custom_fields",
+    "required": false
+  },
+  {
+    "destKey": "profile_id",
+    "sourceKeys": [
+      "traits.profile_id",
+      "context.traits.profile_id",
+      "properties.profile_id"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "identity_email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "required": false
+  },
+  {
+    "destKey": "identity_account_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
 ]

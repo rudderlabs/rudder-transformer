@@ -65,22 +65,35 @@
   },
   {
     "destKey": "timezone",
-    "sourceKeys": ["context.timezone","traits.timezone", "context.traits.timezone"],
+    "sourceKeys": [
+      "context.timezone",
+      "traits.timezone",
+      "context.traits.timezone"
+    ],
     "required": false
   },
   {
     "destKey": "timestamp_acquired",
-    "sourceKeys": ["traits.timestampAcquired", "context.traits.timestampAcquired"],
+    "sourceKeys": [
+      "traits.timestampAcquired",
+      "context.traits.timestampAcquired"
+    ],
     "required": false
   },
   {
     "destKey": "timestamp_subscribed",
-    "sourceKeys": ["traits.timestampSubscribed", "context.traits.timestampSubscribed"],
+    "sourceKeys": [
+      "traits.timestampSubscribed",
+      "context.traits.timestampSubscribed"
+    ],
     "required": false
   },
   {
     "destKey": "timestamp_unsubscribed",
-    "sourceKeys": ["traits.timestampUnsubscribed", "context.traits.timestampUnsubscribed"],
+    "sourceKeys": [
+      "traits.timestampUnsubscribed",
+      "context.traits.timestampUnsubscribed"
+    ],
     "required": false
   },
   {
@@ -125,20 +138,15 @@
     "required": false
   },
   {
-    "destKey": "marketing_optin",
-    "sourceKeys": ["traits.marketingOptin", "context.traits.marketingOptin"],
-    "required": false
-  },
-  {
     "destKey": "properties",
     "sourceKeys": ["traits.custom_fields", "context.traits.custom_fields"],
     "required": false
   },
   {
     "destKey": "@force_optin",
-    "sourceKeys": ["traits.forceOpting" ,"context.traits.forceOptin"],
+    "sourceKeys": ["traits.forceOptin", "context.traits.forceOptin"],
     "required": false,
-    "metadata" :{
+    "metadata": {
       "multikeyMap": [
         {
           "sourceVal": false,
@@ -153,7 +161,7 @@
   },
   {
     "destKey": "@merge",
-    "sourceKeys": [ "traits.merge" ,"context.traits.merge"],
-    "required" : false
+    "sourceKeys": ["traits.merge", "context.traits.merge"],
+    "required": false
   }
 ]

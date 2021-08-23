@@ -25,6 +25,8 @@ const getHeaderFields = config => {
 
 const getFileData = (input, config) => {
   const messageArr = [];
+  const startTime = Date.now();
+  let endTime;
   input.forEach(i => {
     const inputData = i;
     const jobId = inputData.metadata.job_id;
@@ -59,18 +61,24 @@ const getFileData = (input, config) => {
     fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
     const readStream = fs.createReadStream(MARKETO_FILE_PATH);
     fs.unlinkSync(MARKETO_FILE_PATH);
-    return { readStream, successfulJobs, unsuccessfulJobs, fileSize };
+    endTime = Date.now();
+    const requestTime = endTime - startTime;
+    stats.gauge("marketo_bulk_upload_create_file_time", requestTime, {
+      integration: "Marketo_bulk_upload"
+    });
+    stats.gauge("marketo_bulk_upload_upload_file_size", fileSize, {
+      integration: "Marketo_bulk_upload"
+    });
+    return { readStream, successfulJobs, unsuccessfulJobs };
   }
-  return { successfulJobs, unsuccessfulJobs, fileSize };
+  return { successfulJobs, unsuccessfulJobs };
 };
 
 const getImportID = async (input, config) => {
-  const {
-    readStream,
-    successfulJobs,
-    unsuccessfulJobs,
-    fileSize
-  } = getFileData(input, config);
+  const { readStream, successfulJobs, unsuccessfulJobs } = getFileData(
+    input,
+    config
+  );
   try {
     const formReq = new FormData();
     const { munchkinId } = config;
@@ -93,6 +101,20 @@ const getImportID = async (input, config) => {
       const resp = await send(requestOptions);
       const endTime = Date.now();
       const requestTime = endTime - startTime;
+      stats.gauge(
+        "marketo_bulk_upload_upload_file_succJobs",
+        successfulJobs.length,
+        {
+          integration: "Marketo_bulk_upload"
+        }
+      );
+      stats.gauge(
+        "marketo_bulk_upload_upload_file_unsuccJobs",
+        unsuccessfulJobs.length,
+        {
+          integration: "Marketo_bulk_upload"
+        }
+      );
       if (resp.success) {
         /**
        * 
@@ -116,12 +138,11 @@ const getImportID = async (input, config) => {
           resp.response.data.result[0].importId
         ) {
           const { importId } = await resp.response.data.result[0];
+          stats.gauge("marketo_bulk_upload_upload_file_time", requestTime, {
+            integration: "Marketo_bulk_upload"
+          });
           stats.increment(UPLOAD_FILE, 1, {
             integration: "Marketo_bulk_upload",
-            requestTime,
-            fileSize,
-            successfulJobs,
-            unsuccessfulJobs,
             status: 200,
             state: "Success"
           });
@@ -135,10 +156,6 @@ const getImportID = async (input, config) => {
           ) {
             stats.increment(UPLOAD_FILE, 1, {
               integration: "Marketo_bulk_upload",
-              requestTime,
-              fileSize,
-              successfulJobs,
-              unsuccessfulJobs,
               status: 500,
               state: "Retryable"
             });
@@ -157,10 +174,6 @@ const getImportID = async (input, config) => {
             if (resp.response.data.errors[0].message === "Empty file") {
               stats.increment(UPLOAD_FILE, 1, {
                 integration: "Marketo_bulk_upload",
-                requestTime,
-                fileSize,
-                successfulJobs,
-                unsuccessfulJobs,
                 status: 500,
                 state: "Retryable"
               });
@@ -172,10 +185,6 @@ const getImportID = async (input, config) => {
             }
             stats.increment(UPLOAD_FILE, 1, {
               integration: "Marketo_bulk_upload",
-              requestTime,
-              fileSize,
-              successfulJobs,
-              unsuccessfulJobs,
               status: 400,
               state: "Abortable"
             });
@@ -189,10 +198,6 @@ const getImportID = async (input, config) => {
           ) {
             stats.increment(UPLOAD_FILE, 1, {
               integration: "Marketo_bulk_upload",
-              requestTime,
-              fileSize,
-              successfulJobs,
-              unsuccessfulJobs,
               status: 500,
               state: "Retryable"
             });
@@ -204,10 +209,6 @@ const getImportID = async (input, config) => {
           }
           stats.increment(UPLOAD_FILE, 1, {
             integration: "Marketo_bulk_upload",
-            requestTime,
-            fileSize,
-            successfulJobs,
-            unsuccessfulJobs,
             status: 500,
             state: "Retryable"
           });

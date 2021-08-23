@@ -28,11 +28,13 @@ const getFailedJobStatus = async event => {
   const resp = await send(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
+  stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {
+    integration: "Marketo_bulk_upload"
+  });
   if (resp.success) {
     if (resp.response && resp.response.data) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 200,
         state: "Success"
       });
@@ -40,7 +42,7 @@ const getFailedJobStatus = async event => {
     }
     stats.increment(JOB_STATUS_ACTIVITY, 1, {
       integration: "Marketo_bulk_upload",
-      requestTime,
+
       status: 400,
       state: "Abortable"
     });
@@ -53,7 +55,6 @@ const getFailedJobStatus = async event => {
     ) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 400,
         state: "Abortable"
       });
@@ -61,7 +62,6 @@ const getFailedJobStatus = async event => {
     } else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 500,
         state: "Retryable"
       });
@@ -70,7 +70,6 @@ const getFailedJobStatus = async event => {
       if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
         stats.increment(JOB_STATUS_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
-          requestTime,
           status: 400,
           state: "Abortable"
         });
@@ -82,7 +81,6 @@ const getFailedJobStatus = async event => {
       } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
         stats.increment(JOB_STATUS_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
-          requestTime,
           status: 500,
           state: "Retryable"
         });
@@ -94,7 +92,6 @@ const getFailedJobStatus = async event => {
       }
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 500,
         state: "Retryable"
       });
@@ -106,7 +103,6 @@ const getFailedJobStatus = async event => {
     }
     stats.increment(JOB_STATUS_ACTIVITY, 1, {
       integration: "Marketo_bulk_upload",
-      requestTime,
       status: 400,
       state: "Abortable"
     });
@@ -114,7 +110,6 @@ const getFailedJobStatus = async event => {
   }
   stats.increment(JOB_STATUS_ACTIVITY, 1, {
     integration: "Marketo_bulk_upload",
-    requestTime,
     status: 400,
     state: "Abortable"
   });
@@ -138,11 +133,13 @@ const getWarningJobStatus = async event => {
   const resp = await send(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
+  stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {
+    integration: "Marketo_bulk_upload"
+  });
   if (resp.success) {
     if (resp.response && resp.response.data) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 200,
         state: "Success"
       });
@@ -150,7 +147,6 @@ const getWarningJobStatus = async event => {
     }
     stats.increment(JOB_STATUS_ACTIVITY, 1, {
       integration: "Marketo_bulk_upload",
-      requestTime,
       status: 400,
       state: "Abortable"
     });
@@ -163,7 +159,6 @@ const getWarningJobStatus = async event => {
     ) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 400,
         state: "Abortable"
       });
@@ -171,7 +166,6 @@ const getWarningJobStatus = async event => {
     } else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 500,
         state: "Retryable"
       });
@@ -180,7 +174,6 @@ const getWarningJobStatus = async event => {
       if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
         stats.increment(JOB_STATUS_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
-          requestTime,
           status: 400,
           state: "Abortable"
         });
@@ -192,7 +185,6 @@ const getWarningJobStatus = async event => {
       } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
         stats.increment(JOB_STATUS_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
-          requestTime,
           status: 500,
           state: "Retryable"
         });
@@ -204,7 +196,6 @@ const getWarningJobStatus = async event => {
       }
       stats.increment(JOB_STATUS_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
-        requestTime,
         status: 500,
         state: "Retryable"
       });
@@ -216,7 +207,6 @@ const getWarningJobStatus = async event => {
     }
     stats.increment(JOB_STATUS_ACTIVITY, 1, {
       integration: "Marketo_bulk_upload",
-      requestTime,
       status: 400,
       state: "Abortable"
     });
@@ -224,7 +214,6 @@ const getWarningJobStatus = async event => {
   }
   stats.increment(JOB_STATUS_ACTIVITY, 1, {
     integration: "Marketo_bulk_upload",
-    requestTime,
     status: 400,
     state: "Abortable"
   });
@@ -274,7 +263,7 @@ const responseHandler = async (event, type) => {
   });
   const unsuccessfulJobIdsArr = [];
   const reasons = {};
-
+  const startTime = Date.now();
   for (const element of responseArr) {
     // split response by comma but ignore commas inside double quotes
     const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -307,7 +296,15 @@ const responseHandler = async (event, type) => {
     warningReasons = reasons;
   }
   const succeededKeys = successfulJobIdsArr;
-
+  const endTime = Date.now();
+  const requestTime = endTime - startTime;
+  stats.gauge(
+    "marketo_bulk_upload_fetch_job_create_response_time",
+    requestTime,
+    {
+      integration: "Marketo_bulk_upload"
+    }
+  );
   const response = {
     statuCode: 200,
     metadata: {

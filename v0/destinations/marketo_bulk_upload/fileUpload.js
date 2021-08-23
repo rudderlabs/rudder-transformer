@@ -251,6 +251,11 @@ const responseHandler = async (input, config) => {
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }
+  stats.increment(UPLOAD_FILE, 1, {
+    integration: "Marketo_bulk_upload",
+    status: 500,
+    state: "Retryable"
+  });
   throw new CustomError("No import id received", 500);
 };
 const processFileData = async event => {

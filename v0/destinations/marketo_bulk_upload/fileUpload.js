@@ -25,8 +25,10 @@ const getHeaderFields = config => {
 
 const getFileData = (input, config) => {
   const messageArr = [];
-  const startTime = Date.now();
+  let startTime;
   let endTime;
+  let requestTime;
+  startTime = Date.now();
   input.forEach(i => {
     const inputData = i;
     const jobId = inputData.metadata.job_id;
@@ -40,9 +42,15 @@ const getFileData = (input, config) => {
   }
   const csv = [];
   csv.push(headerArr.toString());
+  endTime = Date.now();
+  requestTime = endTime - startTime;
+  stats.gauge("marketo_bulk_upload_create_header_time", requestTime, {
+    integration: "Marketo_bulk_upload"
+  });
   const unsuccessfulJobs = [];
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
+  startTime = Date.now();
   messageArr.map(row => {
     const csvSize = JSON.stringify(csv).replace(/[\[\]\,\"]/g, ""); // stringify and remove all "stringification" extra data
     const response = headerArr
@@ -56,13 +64,19 @@ const getFileData = (input, config) => {
     }
     return response;
   });
+  endTime = Date.now();
+  requestTime = endTime - startTime;
+  stats.gauge("marketo_bulk_upload_create_csvloop_time", requestTime, {
+    integration: "Marketo_bulk_upload"
+  });
   const fileSize = Buffer.from(csv.join("\n")).length;
   if (csv.length > 1) {
+    startTime = Date.now();
     fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
     const readStream = fs.createReadStream(MARKETO_FILE_PATH);
     fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
-    const requestTime = endTime - startTime;
+    requestTime = endTime - startTime;
     stats.gauge("marketo_bulk_upload_create_file_time", requestTime, {
       integration: "Marketo_bulk_upload"
     });

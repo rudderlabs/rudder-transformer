@@ -50,8 +50,8 @@
         "required": false
     },
     {
-        "destKey": "channels",
-        "sourceKeys": "properties.channels",
+        "destKey": "channel",
+        "sourceKeys": "properties.channel",
         "required": false
     },
     {

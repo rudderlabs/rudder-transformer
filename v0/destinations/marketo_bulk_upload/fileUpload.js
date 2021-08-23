@@ -65,15 +65,15 @@ const getFileData = (input, config) => {
 };
 
 const getImportID = async (input, config) => {
+  const {
+    readStream,
+    successfulJobs,
+    unsuccessfulJobs,
+    fileSize
+  } = getFileData(input, config);
   try {
     const formReq = new FormData();
     const { munchkinId } = config;
-    const {
-      readStream,
-      successfulJobs,
-      unsuccessfulJobs,
-      fileSize
-    } = getFileData(input, config);
     // create file for multipart form
     if (readStream) {
       formReq.append("format", "csv");
@@ -115,7 +115,7 @@ const getImportID = async (input, config) => {
           resp.response.data.result[0] &&
           resp.response.data.result[0].importId
         ) {
-          const { importId } = resp.response.data.result[0];
+          const { importId } = await resp.response.data.result[0];
           stats.increment(UPLOAD_FILE, 1, {
             integration: "Marketo_bulk_upload",
             requestTime,
@@ -226,7 +226,8 @@ const getImportID = async (input, config) => {
     });
     throw new CustomError(
       err.message || "Error during uploading file",
-      err.response.status
+      err.response.status,
+      { successfulJobs, unsuccessfulJobs }
     );
   }
 };

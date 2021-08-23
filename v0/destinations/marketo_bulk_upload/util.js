@@ -17,6 +17,10 @@ const THROTTLED_CODES = [502, 606, 607, 608, 615];
 const MERKETO_FILE_SIZE = 1048576;
 const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv`;
 
+const POLL_ACTIVITY = "marketo_bulk_upload_polling";
+const UPLOAD_FILE = "marketo_bulk_upload_upload_file";
+const JOB_STATUS_ACTIVITY = "marketo_bulk_upload_get_job_status";
+
 const getMarketoFilePath = () => {
   return MARKETO_FILE_PATH;
 }
@@ -83,5 +87,8 @@ module.exports = {
   RETRYABLE_CODES,
   THROTTLED_CODES,
   MERKETO_FILE_SIZE,
-  getMarketoFilePath
+  getMarketoFilePath,
+  POLL_ACTIVITY,
+  UPLOAD_FILE,
+  JOB_STATUS_ACTIVITY
 };

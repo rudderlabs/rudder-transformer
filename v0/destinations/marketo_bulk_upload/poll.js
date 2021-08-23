@@ -1,7 +1,13 @@
 const { removeUndefinedValues } = require("../../util");
-const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require("./util");
+const {
+  getAccessToken,
+  ABORTABLE_CODES,
+  THROTTLED_CODES,
+  POLL_ACTIVITY
+} = require("./util");
 const { send } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
+const stats = require("../../../util/stats");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
@@ -16,10 +22,18 @@ const getPollStatus = async event => {
       Authorization: `Bearer ${accessToken}`
     }
   };
-
+  const startTime = Date.now();
   const resp = await send(requestOptions);
+  const endTime = Date.now();
+  const requestTime = endTime - startTime;
   if (resp.success) {
     if (resp.response && resp.response.data.success) {
+      stats.increment(POLL_ACTIVITY, 1, {
+        integration: "Marketo_bulk_upload",
+        requestTime,
+        status: 200,
+        state: "Success"
+      });
       return resp.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
@@ -44,22 +58,46 @@ const getPollStatus = async event => {
           resp.response.data.errors[0].code <= 1077) ||
           ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
       ) {
+        stats.increment(POLL_ACTIVITY, 1, {
+          integration: "Marketo_bulk_upload",
+          requestTime,
+          status: 400,
+          state: "Abortable"
+        });
         throw new CustomError(
           resp.response.data.errors[0].message || "Could not poll status",
           400
         );
       } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        stats.increment(POLL_ACTIVITY, 1, {
+          integration: "Marketo_bulk_upload",
+          requestTime,
+          status: 500,
+          state: "Retryable"
+        });
         throw new CustomError(
           resp.response.response.statusText || "Could not poll status",
           500
         );
       }
+      stats.increment(POLL_ACTIVITY, 1, {
+        integration: "Marketo_bulk_upload",
+        requestTime,
+        status: 500,
+        state: "Retryable"
+      });
       throw new CustomError(
         resp.response.response.statusText || "Error during polling status",
         500
       );
     }
   }
+  stats.increment(POLL_ACTIVITY, 1, {
+    integration: "Marketo_bulk_upload",
+    requestTime,
+    status: 400,
+    state: "Abortable"
+  });
   throw new CustomError("Could not poll status", 400);
 };
 

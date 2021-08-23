@@ -19,10 +19,12 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
-    "error": "[Trengo] :: LookupContact failed for term:null update failed, aborting as dedup option is enabled"
+    "error": "[Trengo] :: LookupContact failed for term:null update failed, aborting as dedup option is enabled",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -44,13 +46,16 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
-    "error": "[Trengo] :: LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled"
+    "error": "[Trengo] :: LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled",
+    "requestOptions": {}
   },
   {
-    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -72,7 +77,8 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -94,7 +100,8 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -116,10 +123,12 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
-    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -141,7 +150,8 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -162,7 +172,8 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -183,7 +194,8 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -205,10 +217,12 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
-    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys, aborting event"
+    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys, aborting event",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -221,14 +235,9 @@
       "Authorization": "Bearer trengo_integration_test_api_token"
     },
     "params": {},
-    "body": {
-      "JSON": {
-        "name": "Thalmor Bretz 2"
-      },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
+    "body": { "JSON": { "name": "Thalmor Bretz 2" }, "XML": {}, "FORM": {} },
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -249,6 +258,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   }
 ]

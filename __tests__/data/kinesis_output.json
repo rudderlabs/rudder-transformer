@@ -15,10 +15,7 @@
           "version": "1.1.1-rc.2"
         },
         "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
+        "os": { "name": "", "version": "" },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -26,9 +23,7 @@
           "title": "",
           "url": "http://localhost/tests/html/index4.html"
         },
-        "screen": {
-          "density": 2
-        },
+        "screen": { "density": 2 },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
@@ -37,15 +32,10 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
       "event": "Purchase",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "messageId": "09a85770-e2ab-47ae-8fd7-5770080fd4ab",
       "originalTimestamp": "2020-04-15T08:31:42.174Z",
-      "properties": {
-        "currency": "USD",
-        "revenue": 100
-      },
+      "properties": { "currency": "USD", "revenue": 100 },
       "receivedAt": "2020-04-15T14:01:42.198+05:30",
       "request_ip": "[::1]:58872",
       "sentAt": "2020-04-15T08:31:42.174Z",
@@ -53,7 +43,8 @@
       "type": "track",
       "userId": "user12345"
     },
-    "userId": "user12345"
+    "userId": "user12345",
+    "requestOptions": {}
   },
   {
     "message": {
@@ -71,10 +62,7 @@
           "version": "1.1.1-rc.2"
         },
         "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
+        "os": { "name": "", "version": "" },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -82,9 +70,7 @@
           "title": "",
           "url": "http://localhost/tests/html/index4.html"
         },
-        "screen": {
-          "density": 2
-        },
+        "screen": { "density": 2 },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
@@ -92,9 +78,7 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "messageId": "9e4aad09-7611-4162-9f5b-1150e53e0267",
       "name": "home",
       "originalTimestamp": "2020-04-15T08:31:42.166Z",
@@ -112,7 +96,8 @@
       "type": "page",
       "userId": "user12345"
     },
-    "userId": "user12345"
+    "userId": "user12345",
+    "requestOptions": {}
   },
   {
     "message": {
@@ -130,10 +115,7 @@
           "version": "1.1.1-rc.2"
         },
         "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
+        "os": { "name": "", "version": "" },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -141,9 +123,7 @@
           "title": "",
           "url": "http://localhost/tests/html/index4.html"
         },
-        "screen": {
-          "density": 2
-        },
+        "screen": { "density": 2 },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
@@ -151,9 +131,7 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "messageId": "89031a1e-29a9-40fd-82b5-37dab7190699",
       "originalTimestamp": "2020-04-15T08:31:42.169Z",
       "receivedAt": "2020-04-15T14:01:42.199+05:30",
@@ -163,7 +141,8 @@
       "type": "identify",
       "userId": "user12345"
     },
-    "userId": "user12345"
+    "userId": "user12345",
+    "requestOptions": {}
   },
   {
     "message": {
@@ -181,10 +160,7 @@
           "version": "1.1.1-rc.2"
         },
         "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
+        "os": { "name": "", "version": "" },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -192,9 +168,7 @@
           "title": "",
           "url": "http://localhost/tests/html/index4.html"
         },
-        "screen": {
-          "density": 2
-        },
+        "screen": { "density": 2 },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
@@ -203,9 +177,7 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
       "event": "test track without property",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "messageId": "2d165402-c301-4c4f-8f17-c3c2f5a83725",
       "originalTimestamp": "2020-04-15T08:31:42.17Z",
       "properties": {},
@@ -216,7 +188,8 @@
       "type": "track",
       "userId": "user12345"
     },
-    "userId": "user12345"
+    "userId": "user12345",
+    "requestOptions": {}
   },
   {
     "message": {
@@ -234,10 +207,7 @@
           "version": "1.1.1-rc.2"
         },
         "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
+        "os": { "name": "", "version": "" },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -245,9 +215,7 @@
           "title": "",
           "url": "http://localhost/tests/html/index4.html"
         },
-        "screen": {
-          "density": 2
-        },
+        "screen": { "density": 2 },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
@@ -256,15 +224,10 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
       "event": "test track with property",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "messageId": "c122dbd5-43cc-4636-9baf-b724be86ad10",
       "originalTimestamp": "2020-04-15T08:31:42.172Z",
-      "properties": {
-        "test_prop_1": "test prop",
-        "test_prop_2": 1232
-      },
+      "properties": { "test_prop_1": "test prop", "test_prop_2": 1232 },
       "receivedAt": "2020-04-15T14:01:42.199+05:30",
       "request_ip": "[::1]:58876",
       "sentAt": "2020-04-15T08:31:42.172Z",
@@ -272,6 +235,7 @@
       "type": "track",
       "userId": "user12345"
     },
-    "userId": "user12345"
+    "userId": "user12345",
+    "requestOptions": {}
   }
 ]

@@ -8,27 +8,15 @@
         "model": "Redmi 6",
         "name": "xiaomi"
       },
-      "network": {
-        "carrier": "Banglalink"
-      },
-      "os": {
-        "name": "android",
-        "version": "8.1.0"
-      },
+      "network": { "carrier": "Banglalink" },
+      "os": { "name": "android", "version": "8.1.0" },
       "traits": {
-        "address": {
-          "city": "Dhaka",
-          "country": "Bangladesh"
-        },
+        "address": { "city": "Dhaka", "country": "Bangladesh" },
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
       }
     },
     "event": "spin_result",
-    "integrations": {
-      "AM": true,
-      "All": false,
-      "GA": true
-    },
+    "integrations": { "AM": true, "All": false, "GA": true },
     "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
     "properties": {
       "additional_bet_index": 0,
@@ -89,9 +77,9 @@
       "total_payments": 0,
       "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "versionSessionCount": 2
-    }
+    },
+    "requestOptions": {}
   },
-
   {
     "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "context": {
@@ -101,27 +89,15 @@
         "model": "Redmi 6",
         "name": "xiaomi"
       },
-      "network": {
-        "carrier": "Banglalink"
-      },
-      "os": {
-        "name": "android",
-        "version": "8.1.0"
-      },
+      "network": { "carrier": "Banglalink" },
+      "os": { "name": "android", "version": "8.1.0" },
       "traits": {
-        "address": {
-          "city": "Dhaka",
-          "country": "Bangladesh"
-        },
+        "address": { "city": "Dhaka", "country": "Bangladesh" },
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
       }
     },
     "event": "spin_result",
-    "integrations": {
-      "AM": true,
-      "All": false,
-      "GA": true
-    },
+    "integrations": { "AM": true, "All": false, "GA": true },
     "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
     "properties": {
       "additional_bet_index": 0,
@@ -182,6 +158,7 @@
       "total_payments": 0,
       "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "versionSessionCount": 2
-    }
+    },
+    "requestOptions": {}
   }
 ]

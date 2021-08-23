@@ -350,7 +350,7 @@
         "referrer": "https://google.com"
       },
       "type": "track",
-      "event":"product added",
+      "event": "product added",
       "name": "Pizza",
       "_metadata": {
         "nodeVersion": "10.22.0"
@@ -395,7 +395,7 @@
         "referrer": "https://google.com"
       },
       "type": "track",
-      "event":"product added",
+      "event": "product added",
       "name": "Pizza",
       "_metadata": {
         "nodeVersion": "10.22.0"
@@ -438,7 +438,7 @@
         "referrer": "https://google.com"
       },
       "type": "track",
-      "event":"product added",
+      "event": "product added",
       "name": "Pizza",
       "_metadata": {
         "nodeVersion": "10.22.0"
@@ -485,7 +485,7 @@
         "referrer": "https://google.com"
       },
       "type": "track",
-      "event":"product added",
+      "event": "product added",
       "name": "Pizza",
       "_metadata": {
         "nodeVersion": "10.22.0"

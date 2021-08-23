@@ -1,14 +1,12 @@
 [
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
         "endpoint": "https://api.amplitude.com/2/httpapi",
-        "headers": {
-          "Content-Type": "application/json"
-        },
+        "headers": { "Content-Type": "application/json" },
         "params": {},
         "body": {
           "JSON": {
@@ -44,22 +42,17 @@
                 "ip": "0.0.0.0"
               }
             ],
-            "options": {
-              "min_id_length": 1
-            }
+            "options": { "min_id_length": 1 }
           },
           "XML": {},
           "FORM": {}
         },
         "files": {},
         "userId": "123456"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -71,15 +64,13 @@
     }
   },
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
         "endpoint": "https://api.amplitude.com/2/httpapi",
-        "headers": {
-          "Content-Type": "application/json"
-        },
+        "headers": { "Content-Type": "application/json" },
         "params": {},
         "body": {
           "JSON": {
@@ -119,28 +110,19 @@
                 "time": 1571051718299
               }
             ],
-            "options": {
-              "min_id_length": 1
-            }
+            "options": { "min_id_length": 1 }
           },
           "XML": {},
           "FORM": {}
         },
         "files": {},
         "userId": "00000000000000000000000000"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    }
+    "destination": { "Config": { "apiKey": "abcde" } }
   }
 ]

@@ -21,7 +21,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -46,11 +47,10 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
   },
-  {
-    "error": "email is required for identify"
-  },
+  { "error": "email is required for identify", "requestOptions": {} },
   {
     "body": {
       "XML": {},
@@ -75,7 +75,8 @@
       "eventVersion": "1.0.0"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -83,11 +84,7 @@
       "FORM": {},
       "JSON": {
         "Email": "krammer@seinfeld.com",
-        "companies": [
-          {
-            "Company_ID": "1P0203VCESP7AUQMV9E953G"
-          }
-        ]
+        "companies": [{ "Company_ID": "1P0203VCESP7AUQMV9E953G" }]
       }
     },
     "type": "REST",
@@ -99,7 +96,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -107,11 +105,7 @@
       "FORM": {},
       "JSON": {
         "Email": "krammer@seinfeld.com",
-        "companies": [
-          {
-            "Company_ID": "1P0203VCESP7AUQMV9E953G"
-          }
-        ]
+        "companies": [{ "Company_ID": "1P0203VCESP7AUQMV9E953G" }]
       }
     },
     "type": "REST",
@@ -123,7 +117,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -149,7 +144,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -176,32 +172,34 @@
       "contractId": "sample-contract-id"
     },
     "version": "1",
-    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event",
+    "requestOptions": {}
   },
   {
-  "body": {
-    "XML": {},
-    "FORM": {},
-    "JSON": {
-      "Name": "Bruce Wayne",
-      "Email": "ceo@waynefoundation.com",
-      "car__gc": "Batmobile",
-      "Comments": "I am Batman!",
-      "LastName": "Wayne",
-      "Location": "Gotham Central",
-      "FirstName": "Bruce",
-      "LinkedinUrl": "https://www.linkedin.com/in/notyourBatman/"
-    }
-  },
-  "type": "REST",
-  "files": {},
-  "method": "PUT",
-  "params": {},
-  "headers": {
-    "Accesskey": "sample-access-key",
-    "Content-Type": "application/json"
-  },
-  "version": "1",
-  "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
-}
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Name": "Bruce Wayne",
+        "Email": "ceo@waynefoundation.com",
+        "car__gc": "Batmobile",
+        "Comments": "I am Batman!",
+        "LastName": "Wayne",
+        "Location": "Gotham Central",
+        "FirstName": "Bruce",
+        "LinkedinUrl": "https://www.linkedin.com/in/notyourBatman/"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people",
+    "requestOptions": {}
+  }
 ]

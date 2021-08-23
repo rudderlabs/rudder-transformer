@@ -126,11 +126,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -222,11 +218,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],

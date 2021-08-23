@@ -32,11 +32,7 @@
                 "msgSms": true,
                 "msgemail": true,
                 "msgwhatsapp": false,
-                "custom_tags": [
-                  "Test_User",
-                  "Interested_User",
-                  "DIY_Hobby"
-                ],
+                "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
                 "custom_mappings": {
                   "Office": "Trastkiv",
                   "Country": "Russia"
@@ -55,13 +51,10 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -90,10 +83,7 @@
             {
               "evtName": "Web Page Viewed: Rudder",
               "identity": "anon-id-new",
-              "evtData": {
-                "title": "Home",
-                "path": "/"
-              },
+              "evtData": { "title": "Home", "path": "/" },
               "type": "event"
             }
           ]
@@ -101,13 +91,10 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

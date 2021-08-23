@@ -22,16 +22,14 @@
         "last_sent_at": "1626698350"
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "body": {
       "XML": {},
       "FORM": {},
-      "JSON": {
-        "email": "123@abc.com",
-        "email_update": "abc@123.com"
-      }
+      "JSON": { "email": "123@abc.com", "email_update": "abc@123.com" }
     },
     "type": "REST",
     "files": {},
@@ -42,7 +40,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.delighted.com/v1/people.json"
+    "endpoint": "https://api.delighted.com/v1/people.json",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -52,7 +51,7 @@
         "properties": {
           "review_id": "12345",
           "product_id": "123",
-          "rating": 3.0,
+          "rating": 3,
           "review_body": "Average product, expected much more."
         },
         "send": true,
@@ -70,25 +69,26 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.delighted.com/v1/people.json"
+    "endpoint": "https://api.delighted.com/v1/people.json",
+    "requestOptions": {}
   },
   {
-    "error": "user unidentified_user@email.com doesnot exist"
+    "error": "user unidentified_user@email.com doesnot exist",
+    "requestOptions": {}
   },
   {
-    "error": "Event is not configured on your Rudderstack Dashboard"
+    "error": "Event is not configured on your Rudderstack Dashboard",
+    "requestOptions": {}
+  },
+  { "error": "userId is required.", "requestOptions": {} },
+  { "error": "userId is required.", "requestOptions": {} },
+  {
+    "error": "User Id and Previous Id should be of same type i.e. phone/sms",
+    "requestOptions": {}
   },
   {
-    "error": "userId is required."
-  },
-  {
-    "error": "userId is required."
-  },
-  {
-    "error": "User Id and Previous Id should be of same type i.e. phone/sms"
-  },
-  {
-    "error": "Channel is set to sms. Enter correct phone number i.e. E.164"
+    "error": "Channel is set to sms. Enter correct phone number i.e. E.164",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -112,6 +112,7 @@
         "last_sent_at": "1626698350"
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   }
 ]

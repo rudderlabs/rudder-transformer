@@ -19,13 +19,10 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -35,29 +32,12 @@
         "channelIdentifier": "phone",
         "enableDedup": true,
         "eventTemplateMap": [
-          {
-            "from": "Product Purchased",
-            "to": "{{event}} from Rudderstack"
-          },
-          {
-            "from": "checkedOut",
-            "to": "Total cart value {{value}} shipped"
-          },
-          {
-            "from": "Order Completed",
-            "to": "Completed Order"
-          },
-          {
-            "from": "Stress Test"
-          },
-          {
-            "from": "Stress test2",
-            "to": ""
-          },
-          {
-            "from": "Stress test3",
-            "to": "{event} Stress test"
-          }
+          { "from": "Product Purchased", "to": "{{event}} from Rudderstack" },
+          { "from": "checkedOut", "to": "Total cart value {{value}} shipped" },
+          { "from": "Order Completed", "to": "Completed Order" },
+          { "from": "Stress Test" },
+          { "from": "Stress test2", "to": "" },
+          { "from": "Stress test3", "to": "{event} Stress test" }
         ]
       },
       "secretConfig": {},
@@ -125,13 +105,10 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -141,29 +118,12 @@
         "channelIdentifier": "email",
         "enableDedup": true,
         "eventTemplateMap": [
-          {
-            "from": "Product Purchased",
-            "to": "{{event}} from Rudderstack"
-          },
-          {
-            "from": "checkedOut",
-            "to": "Total cart value {{value}} shipped"
-          },
-          {
-            "from": "Order Completed",
-            "to": "Completed Order"
-          },
-          {
-            "from": "Stress Test"
-          },
-          {
-            "from": "Stress test2",
-            "to": ""
-          },
-          {
-            "from": "Stress test3",
-            "to": "{event} Stress test"
-          }
+          { "from": "Product Purchased", "to": "{{event}} from Rudderstack" },
+          { "from": "checkedOut", "to": "Total cart value {{value}} shipped" },
+          { "from": "Order Completed", "to": "Completed Order" },
+          { "from": "Stress Test" },
+          { "from": "Stress test2", "to": "" },
+          { "from": "Stress test3", "to": "{event} Stress test" }
         ]
       },
       "secretConfig": {},

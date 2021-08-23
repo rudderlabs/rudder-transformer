@@ -1,6 +1,6 @@
 [
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -31,7 +31,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -54,10 +54,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -88,7 +89,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -111,10 +112,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -145,7 +147,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -168,10 +170,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -202,7 +205,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -225,10 +228,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -259,7 +263,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -282,162 +286,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.leanplum.com/api",
-      "headers": { "Content-Type": "application/json" },
-      "params": { "action": "start" },
-      "body": {
-        "JSON": {
-          "apiVersion": "1.0.6",
-          "appId": "leanplum_application_id",
-          "clientKey": "leanplum_client_key",
-          "userId": "5094f5704b9cf2b3",
-          "deviceId": "5094f5704b9cf2b3",
-          "appVersion": "1.0",
-          "systemName": "Android",
-          "systemVersion": "8.1.0",
-          "deviceName": "generic_x86",
-          "deviceModel": "Android SDK built for x86",
-          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
-          "locale": "en-US",
-          "timezone": "Asia/Kolkata",
-          "time": 1584003903,
-          "devMode": true
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "5094f5704b9cf2b3"
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.leanplum.com/api",
-      "headers": { "Content-Type": "application/json" },
-      "params": { "action": "advance" },
-      "body": {
-        "JSON": {
-          "apiVersion": "1.0.6",
-          "appId": "leanplum_application_id",
-          "clientKey": "leanplum_client_key",
-          "userId": "5094f5704b9cf2b3",
-          "state": "MainActivity",
-          "deviceId": "5094f5704b9cf2b3",
-          "time": 1584003903,
-          "devMode": true
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.leanplum.com/api",
-      "headers": { "Content-Type": "application/json" },
-      "params": { "action": "start" },
-      "body": {
-        "JSON": {
-          "apiVersion": "1.0.6",
-          "appId": "leanplum_application_id",
-          "clientKey": "leanplum_client_key",
-          "userId": "5094f5704b9cf2b3",
-          "deviceId": "5094f5704b9cf2b3",
-          "appVersion": "1.0",
-          "systemName": "Android",
-          "systemVersion": "8.1.0",
-          "deviceName": "generic_x86",
-          "deviceModel": "Android SDK built for x86",
-          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
-          "locale": "en-US",
-          "timezone": "Asia/Kolkata",
-          "time": 1584003903,
-          "devMode": true
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "5094f5704b9cf2b3"
-    },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.leanplum.com/api",
-      "headers": { "Content-Type": "application/json" },
-      "params": { "action": "advance" },
-      "body": {
-        "JSON": {
-          "apiVersion": "1.0.6",
-          "appId": "leanplum_application_id",
-          "clientKey": "leanplum_client_key",
-          "userId": "5094f5704b9cf2b3",
-          "state": "MainActivity",
-          "deviceId": "5094f5704b9cf2b3",
-          "time": 1584003903,
-          "devMode": true
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  {
-    "statusCode": 400,
-    "error": "Missing required value from [\"properties.name\",\"event\"]"
+    "requestOptions": {}
   },
   {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.leanplum.com/api",
-      "headers": { "Content-Type": "application/json" },
-      "params": { "action": "setUserAttributes" },
-      "body": {
-        "JSON": {
-          "apiVersion": "1.0.6",
-          "appId": "leanplum_application_id",
-          "clientKey": "leanplum_client_key",
-          "userId": "00000000000000000000000000",
-          "newUserId": "some_developer_id",
-          "userAttributes": {
-            "id": "some_developer_id",
-            "createAt": "2019-10-14T09:03:17.562Z",
-            "address": { "country": "USA", "city": "NY" },
-            "country": "India",
-            "city": "Delhi"
-          },
-          "created": 1571043798,
-          "locale": "en-US",
-          "country": "USA",
-          "city": "NY",
-          "time": 1571043798,
-          "devMode": true
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "00000000000000000000000000"
-    },
-  [
-    {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -468,7 +321,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -491,10 +344,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -525,7 +379,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -548,14 +402,51 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
+    },
+    "requestOptions": {}
+  },
   {
     "statusCode": 400,
-    "error": "Missing required value from [\"properties.name\",\"event\"]"
+    "error": "Missing required value from [\"properties.name\",\"event\"]",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.leanplum.com/api",
+    "headers": { "Content-Type": "application/json" },
+    "params": { "action": "setUserAttributes" },
+    "body": {
+      "JSON": {
+        "apiVersion": "1.0.6",
+        "appId": "leanplum_application_id",
+        "clientKey": "leanplum_client_key",
+        "userId": "00000000000000000000000000",
+        "newUserId": "some_developer_id",
+        "userAttributes": {
+          "id": "some_developer_id",
+          "createAt": "2019-10-14T09:03:17.562Z",
+          "address": { "country": "USA", "city": "NY" },
+          "country": "India",
+          "city": "Delhi"
+        },
+        "created": 1571043798,
+        "locale": "en-US",
+        "country": "USA",
+        "city": "NY",
+        "time": 1571043798,
+        "devMode": true
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -586,7 +477,128 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.leanplum.com/api",
+      "headers": { "Content-Type": "application/json" },
+      "params": { "action": "advance" },
+      "body": {
+        "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "userId": "5094f5704b9cf2b3",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "time": 1584003903,
+          "devMode": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.leanplum.com/api",
+      "headers": { "Content-Type": "application/json" },
+      "params": { "action": "start" },
+      "body": {
+        "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "userId": "5094f5704b9cf2b3",
+          "deviceId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "systemName": "Android",
+          "systemVersion": "8.1.0",
+          "deviceName": "generic_x86",
+          "deviceModel": "Android SDK built for x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "locale": "en-US",
+          "timezone": "Asia/Kolkata",
+          "time": 1584003903,
+          "devMode": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    "1": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.leanplum.com/api",
+      "headers": { "Content-Type": "application/json" },
+      "params": { "action": "advance" },
+      "body": {
+        "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "userId": "5094f5704b9cf2b3",
+          "state": "MainActivity",
+          "deviceId": "5094f5704b9cf2b3",
+          "time": 1584003903,
+          "devMode": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    "requestOptions": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from [\"properties.name\",\"event\"]",
+    "requestOptions": {}
+  },
+  {
+    "0": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.leanplum.com/api",
+      "headers": { "Content-Type": "application/json" },
+      "params": { "action": "start" },
+      "body": {
+        "JSON": {
+          "apiVersion": "1.0.6",
+          "appId": "leanplum_application_id",
+          "clientKey": "leanplum_client_key",
+          "userId": "5094f5704b9cf2b3",
+          "deviceId": "5094f5704b9cf2b3",
+          "appVersion": "1.0",
+          "systemName": "Android",
+          "systemVersion": "8.1.0",
+          "deviceName": "generic_x86",
+          "deviceModel": "Android SDK built for x86",
+          "userAttributes": { "anonymousId": "5094f5704b9cf2b3" },
+          "locale": "en-US",
+          "timezone": "Asia/Kolkata",
+          "time": 1584003903,
+          "devMode": true
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -610,10 +622,11 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -644,7 +657,7 @@
       "files": {},
       "userId": "5094f5704b9cf2b3"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -675,6 +688,7 @@
       },
       "files": {},
       "userId": "5094f5704b9cf2b3"
-    }
-  ]
+    },
+    "requestOptions": {}
+  }
 ]

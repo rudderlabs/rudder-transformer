@@ -1,6 +1,6 @@
 [
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -59,10 +59,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -91,7 +92,7 @@
       "files": {},
       "userId": "123456"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -112,10 +113,11 @@
       },
       "files": {},
       "userId": "123456"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -146,7 +148,7 @@
       "files": {},
       "userId": "123456"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -167,10 +169,11 @@
       },
       "files": {},
       "userId": "123456"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -199,10 +202,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -232,10 +236,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -264,10 +269,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -296,10 +302,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -358,10 +365,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -382,18 +390,21 @@
       },
       "files": {},
       "userId": "test_new_user_id"
-    }
-  ],
-  {
-    "statusCode": 400,
-    "error": "Message Type is not present. Aborting message."
+    },
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Message Type is not present. Aborting message.",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "statusCode": 400,
+    "error": "Message type not supported",
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -421,10 +432,11 @@
       },
       "files": {},
       "userId": "test_anon_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -497,10 +509,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -571,7 +584,7 @@
       "files": {},
       "userId": "user12345"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -591,10 +604,11 @@
       },
       "files": {},
       "userId": "user12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -623,10 +637,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -655,10 +670,11 @@
       },
       "files": {},
       "userId": "12345"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -722,10 +738,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -803,10 +820,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -837,10 +855,11 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -899,6 +918,7 @@
       },
       "files": {},
       "userId": "test_user_id"
-    }
-  ]
+    },
+    "requestOptions": {}
+  }
 ]

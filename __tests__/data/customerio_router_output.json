@@ -1,7 +1,7 @@
 [
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "PUT",
@@ -29,13 +29,10 @@
         "files": {},
         "userId": "123456",
         "statusCode": 200
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -47,8 +44,8 @@
     }
   },
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -76,13 +73,10 @@
         "files": {},
         "userId": "12345",
         "statusCode": 200
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

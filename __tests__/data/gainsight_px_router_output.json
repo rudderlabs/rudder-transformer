@@ -18,22 +18,18 @@
           "title": "Director/Film Maker",
           "score": 100,
           "createDate": 1624611592891,
-          "location": {
-            "countryName": "USA",
-            "countryCode": "US"
-          },
+          "location": { "countryName": "USA", "countryCode": "US" },
           "firstName": "Stanley",
           "lastName": "Kubrick",
-          "customAttributes": {
-            "hobby": "Making films. Being a genius"
-          },
+          "customAttributes": { "hobby": "Making films. Being a genius" },
           "propertyKeys": ["AP-SAMPLE-2"],
           "type": "USER"
         },
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
     "metadata": [
       {
@@ -59,10 +55,7 @@
             "userId": "stanley-kubrick",
             "channel": "web",
             "context": {
-              "os": {
-                "name": "",
-                "version": ""
-              },
+              "os": { "name": "", "version": "" },
               "app": {
                 "name": "RudderLabs JavaScript SDK",
                 "build": "1.0.0",
@@ -111,9 +104,7 @@
             "receivedAt": "2021-06-25T14:29:52.911+05:30",
             "request_ip": "[::1]",
             "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
-            "integrations": {
-              "All": true
-            },
+            "integrations": { "All": true },
             "originalTimestamp": "2021-06-25T08:59:52.891Z"
           },
           "LastJobStatus": {
@@ -181,27 +172,14 @@
       },
       "Config": {
         "accountAttributeMap": [
-          {
-            "from": "cultureCustomField",
-            "to": "culture"
-          }
+          { "from": "cultureCustomField", "to": "culture" }
         ],
         "apiKey": "sample-api-key",
         "eventDelivery": false,
         "eventDeliveryTS": 1624472902670,
-        "globalContextMap": [
-          {
-            "from": "kubrickTest",
-            "to": "value"
-          }
-        ],
+        "globalContextMap": [{ "from": "kubrickTest", "to": "value" }],
         "productTagKey": "AP-SAMPLE-2",
-        "userAttributeMap": [
-          {
-            "from": "hobbyCustomField",
-            "to": "hobby"
-          }
-        ]
+        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }]
       },
       "Enabled": true,
       "Transformations": [],
@@ -235,14 +213,13 @@
           "referrer": "$direct",
           "propertyKey": "AP-SAMPLE-2",
           "userType": "USER",
-          "globalContext": {
-            "kubrickTest": "value"
-          }
+          "globalContext": { "kubrickTest": "value" }
         },
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
     "metadata": [
       {
@@ -269,10 +246,7 @@
             "userId": "adifhas9734",
             "channel": "web",
             "context": {
-              "os": {
-                "name": "",
-                "version": ""
-              },
+              "os": { "name": "", "version": "" },
               "app": {
                 "name": "RudderLabs JavaScript SDK",
                 "build": "1.0.0",
@@ -317,28 +291,18 @@
             "timestamp": "2021-06-26T16:11:22.335+05:30",
             "properties": {
               "array": [1, 2, 3],
-              "nested": {
-                "json": "test"
-              },
+              "nested": { "json": "test" },
               "status": "testing",
               "description": "Example track call",
               "fullyNested": [
-                {
-                  "a": 1,
-                  "b": 2
-                },
-                {
-                  "a": 1,
-                  "b": [1, 2, 3]
-                }
+                { "a": 1, "b": 2 },
+                { "a": 1, "b": [1, 2, 3] }
               ]
             },
             "receivedAt": "2021-06-26T16:11:22.335+05:30",
             "request_ip": "[::1]",
             "anonymousId": "1585ea2f-dddc-4d23-935f-c1196405d61e",
-            "integrations": {
-              "All": true
-            },
+            "integrations": { "All": true },
             "originalTimestamp": "2021-06-26T10:41:22.316Z"
           },
           "LastJobStatus": {
@@ -406,27 +370,14 @@
       },
       "Config": {
         "accountAttributeMap": [
-          {
-            "from": "cultureCustomField",
-            "to": "culture"
-          }
+          { "from": "cultureCustomField", "to": "culture" }
         ],
         "apiKey": "sample-api-key",
         "eventDelivery": false,
         "eventDeliveryTS": 1624472902670,
-        "globalContextMap": [
-          {
-            "from": "kubrickTest",
-            "to": "value"
-          }
-        ],
+        "globalContextMap": [{ "from": "kubrickTest", "to": "value" }],
         "productTagKey": "AP-SAMPLE-2",
-        "userAttributeMap": [
-          {
-            "from": "hobbyCustomField",
-            "to": "hobby"
-          }
-        ]
+        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }]
       },
       "Enabled": true,
       "Transformations": [],

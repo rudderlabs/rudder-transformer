@@ -29,13 +29,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -75,13 +72,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

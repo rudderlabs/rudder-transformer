@@ -1,7 +1,7 @@
 [
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -60,24 +60,17 @@
         },
         "files": {},
         "userId": "test_user_id"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    }
+    "destination": { "Config": { "apiKey": "abcde" } }
   },
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -106,7 +99,7 @@
         "files": {},
         "userId": "123456"
       },
-      {
+      "1": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -127,19 +120,12 @@
         },
         "files": {},
         "userId": "123456"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "abcde"
-      }
-    }
+    "destination": { "Config": { "apiKey": "abcde" } }
   }
 ]

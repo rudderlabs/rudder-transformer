@@ -23,7 +23,7 @@ const JOB_STATUS_ACTIVITY = "marketo_bulk_upload_get_job_status";
 
 const getMarketoFilePath = () => {
   return MARKETO_FILE_PATH;
-}
+};
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async config => {

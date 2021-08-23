@@ -12,9 +12,7 @@
         "kochava_app_id": "<kochava guid goes here>",
         "kochava_device_id": "sampath",
         "data": {
-          "app_tracking_transparency": {
-            "att": false
-          },
+          "app_tracking_transparency": { "att": false },
           "currency": "USD",
           "device_ids": {
             "idfa": "",
@@ -40,9 +38,14 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath"
+    "userId": "sampath",
+    "requestOptions": {}
   },
-  { "statusCode": 400, "message": "message type not supported" },
+  {
+    "statusCode": 400,
+    "message": "message type not supported",
+    "requestOptions": {}
+  },
   {
     "version": "1",
     "type": "REST",
@@ -56,9 +59,7 @@
         "kochava_app_id": "<kochava guid goes here>",
         "kochava_device_id": "00000000000000000000000000",
         "data": {
-          "app_tracking_transparency": {
-            "att": false
-          },
+          "app_tracking_transparency": { "att": false },
           "currency": "USD",
           "device_ids": {
             "idfa": "",
@@ -84,7 +85,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -99,9 +101,7 @@
         "kochava_app_id": "<kochava guid goes here>",
         "kochava_device_id": "00000000000000000000000000",
         "data": {
-          "app_tracking_transparency": {
-            "att": false
-          },
+          "app_tracking_transparency": { "att": false },
           "currency": "USD",
           "device_ids": {
             "idfa": "",
@@ -127,7 +127,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -167,7 +168,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "5094f5704b9cf2b3"
+    "userId": "5094f5704b9cf2b3",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -207,6 +209,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "5094f5704b9cf2b3"
+    "userId": "5094f5704b9cf2b3",
+    "requestOptions": {}
   }
 ]

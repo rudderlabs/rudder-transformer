@@ -1,7 +1,7 @@
 [
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "GET",
@@ -19,16 +19,13 @@
           "_t": "1579847342",
           "_d": 1
         },
-        "body": {
-          "JSON": {},
-          "XML": {},
-          "FORM": {}
-        },
+        "body": { "JSON": {}, "XML": {}, "FORM": {} },
         "files": {},
         "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
         "statusCode": 200
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
     "metadata": [
       {
         "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -59,8 +56,8 @@
     }
   },
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "GET",
@@ -76,16 +73,13 @@
           "_t": "1579847342",
           "_d": 1
         },
-        "body": {
-          "JSON": {},
-          "XML": {},
-          "FORM": {}
-        },
+        "body": { "JSON": {}, "XML": {}, "FORM": {} },
         "files": {},
         "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
         "statusCode": 200
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
     "metadata": [
       {
         "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",

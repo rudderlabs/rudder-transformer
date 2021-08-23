@@ -26,13 +26,10 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -61,20 +58,15 @@
           "timestamp": 1579566094208,
           "environmentName": "staging",
           "trafficTypeName": "user",
-          "properties": {
-            "martin": 21.565
-          }
+          "properties": { "martin": 21.565 }
         },
         "XML": {},
         "FORM": {}
       },
-      "files": {}
+      "files": {},
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

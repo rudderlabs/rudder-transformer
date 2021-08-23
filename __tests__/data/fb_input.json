@@ -615,7 +615,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Main"
+        "name": "Main"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
@@ -666,7 +666,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
@@ -717,7 +717,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
@@ -768,7 +768,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"

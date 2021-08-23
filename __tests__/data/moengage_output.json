@@ -79,7 +79,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -109,7 +110,8 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -137,10 +139,11 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "0": {
       "body": {
         "XML": {},
         "FORM": {},
@@ -170,7 +173,7 @@
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
     },
-    {
+    "1": {
       "body": {
         "XML": {},
         "FORM": {},
@@ -198,37 +201,8 @@
       },
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
-    }
-  ],
-  {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "type": "customer",
-        "attributes": {
-          "name": "Ruchira Moitra",
-          "plan": "Enterprise",
-          "email": "ruchira@gmail.com",
-          "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "company.id": "abc123",
-          "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
-        },
-        "customer_id": "ruchu123"
-      }
     },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
-    "headers": {
-      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
-    },
-    "version": "1",
-    "endpoint": "https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "requestOptions": {}
   },
   {
     "body": {
@@ -258,19 +232,54 @@
       "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
     },
     "version": "1",
-    "endpoint": "https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    "endpoint": "https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "requestOptions": {}
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "customer",
+        "attributes": {
+          "name": "Ruchira Moitra",
+          "plan": "Enterprise",
+          "email": "ruchira@gmail.com",
+          "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+          "company.id": "abc123",
+          "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
+        },
+        "customer_id": "ruchu123"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+    "headers": {
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Content-Type": "application/json",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "version": "1",
+    "endpoint": "https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "The region is not valid"
+    "error": "The region is not valid",
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message."
+    "error": "Message Type is not present. Aborting message.",
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Message type not supported",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -352,7 +361,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "ruchu123"
+    "userId": "ruchu123",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -433,6 +443,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+    "requestOptions": {}
   }
 ]

@@ -9,13 +9,8 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": {
-          "email": "ruchira@rudderlabs.com"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
+        "traits": { "email": "ruchira@rudderlabs.com" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
@@ -27,9 +22,7 @@
           "token": "some_device_token",
           "type": "android"
         },
-        "screen": {
-          "density": 2
-        }
+        "screen": { "density": 2 }
       },
       "type": "track",
       "event": "product added",
@@ -37,14 +30,13 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "userId": "123456",
     "topicId": "test",
-    "attributes": {}
+    "attributes": {},
+    "requestOptions": {}
   },
   {
     "message": {
@@ -56,13 +48,8 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": {
-          "email": "ruchira@rudderlabs.com"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
+        "traits": { "email": "ruchira@rudderlabs.com" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
@@ -74,9 +61,7 @@
           "token": "some_device_token",
           "type": "android"
         },
-        "screen": {
-          "density": 2
-        }
+        "screen": { "density": 2 }
       },
       "type": "track",
       "event": "product added",
@@ -84,14 +69,13 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "userId": "123456",
     "topicId": "test",
-    "attributes": {}
+    "attributes": {},
+    "requestOptions": {}
   },
   {
     "message": {
@@ -103,13 +87,8 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": {
-          "email": "ruchira@rudderlabs.com"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
+        "traits": { "email": "ruchira@rudderlabs.com" },
+        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
@@ -121,9 +100,7 @@
           "token": "some_device_token",
           "type": "android"
         },
-        "screen": {
-          "density": 2
-        }
+        "screen": { "density": 2 }
       },
       "type": "track",
       "event": "product added",
@@ -131,26 +108,28 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
-      "integrations": {
-        "All": true
-      },
+      "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "userId": "123456",
     "topicId": "test",
-    "attributes": {}
+    "attributes": {},
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "No topic set for this event"
+    "error": "No topic set for this event",
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "No topic set for this event"
+    "error": "No topic set for this event",
+    "requestOptions": {}
   },
   {
     "statusCode": 400,
-    "error": "No topic set for this event"
+    "error": "No topic set for this event",
+    "requestOptions": {}
   },
   {
     "message": {
@@ -159,10 +138,7 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
@@ -172,13 +148,12 @@
       },
       "type": "track",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "test",
-    "attributes": {}
+    "attributes": {},
+    "requestOptions": {}
   },
   {
     "message": {
@@ -187,10 +162,7 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
@@ -201,13 +173,12 @@
       "type": "track",
       "event": "product added",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "test b",
-    "attributes": {}
+    "attributes": {},
+    "requestOptions": {}
   },
   {
     "message": {
@@ -216,10 +187,7 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
@@ -230,15 +198,12 @@
       "type": "track",
       "event": "product added",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "Test-Topic",
-    "attributes": {
-      "name": "Pizza"
-    }
+    "attributes": { "name": "Pizza" },
+    "requestOptions": {}
   },
   {
     "message": {
@@ -247,10 +212,7 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
@@ -261,16 +223,12 @@
       "type": "track",
       "event": "product added",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "Test-Topic",
-    "attributes": {
-      "url": "https://dominos.com",
-      "title": "Pizza"
-    }
+    "attributes": { "url": "https://dominos.com", "title": "Pizza" },
+    "requestOptions": {}
   },
   {
     "message": {
@@ -279,10 +237,7 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
@@ -293,15 +248,12 @@
       "type": "track",
       "event": "product added",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "Test-Topic",
-    "attributes": {
-      "referrer": "https://google.com"
-    }
+    "attributes": { "referrer": "https://google.com" },
+    "requestOptions": {}
   },
   {
     "message": {
@@ -310,31 +262,23 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
         "url": "https://dominos.com",
         "title": "Pizza",
         "referrer": "https://google.com",
-        "nestedObject": {
-          "this": "will be picked"
-        }
+        "nestedObject": { "this": "will be picked" }
       },
       "type": "track",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "Test-Topic",
-    "attributes": {
-      "this": "will be picked"
-    }
+    "attributes": { "this": "will be picked" },
+    "requestOptions": {}
   },
   {
     "message": {
@@ -343,30 +287,22 @@
       "messageId": "node-cfc5fb7ec83b82bc29e16336a11331e2-0ba97212-0f6e-44cd-a0f1-c20b8b7a7cba",
       "anonymousId": "abcdeeeeeeeexxxx111",
       "context": {
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
+        "library": { "name": "analytics-node", "version": "0.0.3" }
       },
       "originalTimestamp": "2020-08-28T15:11:56.162Z",
       "properties": {
         "url": "https://dominos.com",
         "title": "Pizza",
         "referrer": "https://google.com",
-        "nestedObject": {
-          "this": "will be picked"
-        }
+        "nestedObject": { "this": "will be picked" }
       },
       "type": "track",
       "name": "Pizza",
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      }
+      "_metadata": { "nodeVersion": "10.22.0" }
     },
     "userId": "abcdeeeeeeeexxxx111",
     "topicId": "Test-Topic",
-    "attributes": {
-      "this": "will be picked"
-    }
+    "attributes": { "this": "will be picked" },
+    "requestOptions": {}
   }
 ]

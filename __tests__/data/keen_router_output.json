@@ -12,16 +12,12 @@
           "keen": {
             "addons": [
               {
-                "input": {
-                  "ip": "request_ip"
-                },
+                "input": { "ip": "request_ip" },
                 "name": "keen:ip_to_geo",
                 "output": "ip_geo_info"
               },
               {
-                "input": {
-                  "ua_string": "user_agent"
-                },
+                "input": { "ua_string": "user_agent" },
                 "name": "keen:ua_parser",
                 "output": "parsed_user_agent"
               }
@@ -29,10 +25,7 @@
           },
           "anonymousId": "00000000000000000000000000",
           "user": {
-            "traits": {
-              "anonymousId": "anon-id",
-              "email": "test@gmail.com"
-            },
+            "traits": { "anonymousId": "anon-id", "email": "test@gmail.com" },
             "userId": "12345"
           },
           "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
@@ -42,21 +35,15 @@
       "files": {},
       "endpoint": "https://api.keen.io/3.0/projects/abcde/events/test track event",
       "userId": "12345",
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "xyz"
-      },
+      "headers": { "Content-Type": "application/json", "Authorization": "xyz" },
       "version": "1",
       "params": {},
       "type": "REST",
       "method": "POST",
-      "statusCode": 200
+      "statusCode": 200,
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -84,16 +71,12 @@
           "keen": {
             "addons": [
               {
-                "input": {
-                  "ip": "request_ip"
-                },
+                "input": { "ip": "request_ip" },
                 "name": "keen:ip_to_geo",
                 "output": "ip_geo_info"
               },
               {
-                "input": {
-                  "ua_string": "user_agent"
-                },
+                "input": { "ua_string": "user_agent" },
                 "name": "keen:ua_parser",
                 "output": "parsed_user_agent"
               }
@@ -101,10 +84,7 @@
           },
           "anonymousId": "00000000000000000000000000",
           "user": {
-            "traits": {
-              "anonymousId": "anon-id",
-              "email": "test@gmail.com"
-            },
+            "traits": { "anonymousId": "anon-id", "email": "test@gmail.com" },
             "userId": "12345"
           },
           "path": "/test",
@@ -115,21 +95,15 @@
       "files": {},
       "endpoint": "https://api.keen.io/3.0/projects/abcde/events/Viewed ApplicationLoaded page",
       "userId": "12345",
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "xyz"
-      },
+      "headers": { "Content-Type": "application/json", "Authorization": "xyz" },
       "version": "1",
       "params": {},
       "type": "REST",
       "method": "POST",
-      "statusCode": 200
+      "statusCode": 200,
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

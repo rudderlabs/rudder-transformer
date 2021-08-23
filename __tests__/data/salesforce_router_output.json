@@ -1,7 +1,7 @@
 [
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -30,13 +30,10 @@
           "FORM": {}
         },
         "files": {}
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 1
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 1 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -57,8 +54,8 @@
     }
   },
   {
-    "batchedRequest": [
-      {
+    "batchedRequest": {
+      "0": {
         "version": "1",
         "type": "REST",
         "method": "POST",
@@ -87,13 +84,10 @@
           "FORM": {}
         },
         "files": {}
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+      },
+      "requestOptions": {}
+    },
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -143,13 +137,10 @@
         "FORM": {}
       },
       "files": {},
-      "statusCode": 200
+      "statusCode": 200,
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

@@ -376,9 +376,7 @@
       "Config": {
         "domain": "demo-domain.gainsightcloud.com",
         "accessKey": "sample-access-key",
-        "personMap": [
-          { "from": "car", "to": "car__gc" }
-        ],
+        "personMap": [{ "from": "car", "to": "car__gc" }],
         "companyMap": [],
         "eventNameMap": [],
         "eventVersionMap": []

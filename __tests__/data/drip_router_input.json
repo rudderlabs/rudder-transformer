@@ -36,8 +36,8 @@
         "firstName": "James",
         "lastName": "Doe",
         "phone": "237416221",
-        "customFields":{
-            "filter1":"filterval1"
+        "customFields": {
+          "filter1": "filterval1"
         }
       },
       "integrations": { "All": true },
@@ -77,8 +77,8 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "type": "track",
       "event": "testing",
-      "properties":{
-        "email" : "user1@gmail.com",
+      "properties": {
+        "email": "user1@gmail.com",
         "customFields": {
           "field1": "val1"
         }

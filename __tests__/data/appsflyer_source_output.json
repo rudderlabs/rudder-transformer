@@ -315,6 +315,5 @@
     "statusCode": 400,
     "message": "Unknwon event type from Appsflyer"
   },
-  {
-  }
+  {}
 ]

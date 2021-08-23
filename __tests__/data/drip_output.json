@@ -20,18 +20,15 @@
             "last_name": "Doe",
             "phone": "237416221",
             "ip_address": "0.0.0.0",
-            "custom_fields": {
-              "filter1": "filterval1"
-            }
+            "custom_fields": { "filter1": "filterval1" }
           }
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
-  {
-    "error": "dripId or email is required for the call"
-  },
+  { "error": "dripId or email is required for the call", "requestOptions": {} },
   {
     "version": "1",
     "type": "REST",
@@ -61,7 +58,8 @@
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -78,14 +76,12 @@
       "FORM": {},
       "JSON": {
         "subscribers": [
-          {
-            "email": "test1@gmail.com",
-            "starting_email_index": 1
-          }
+          { "email": "test1@gmail.com", "starting_email_index": 1 }
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -104,19 +100,43 @@
         "events": [
           {
             "email": "user1@gmail.com",
-            "properties": {
-              "field1": "val1"
-            },
+            "properties": { "field1": "val1" },
             "action": "testing",
             "occurred_at": "2019-10-14T09:03:17.562Z"
           }
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
+  { "error": "Event name is required", "requestOptions": {} },
   {
-    "error": "Event name is required"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/events",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "email": "identified_user@gmail.com",
+            "properties": { "field1": "val1" },
+            "action": "testing",
+            "occurred_at": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      }
+    },
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -135,47 +155,19 @@
         "events": [
           {
             "email": "identified_user@gmail.com",
-            "properties": {
-              "field1": "val1"
-            },
+            "properties": { "field1": "val1" },
             "action": "testing",
             "occurred_at": "2019-10-14T09:03:17.562Z"
           }
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.getdrip.com/v2/1809802/events",
-    "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "events": [
-          {
-            "email": "identified_user@gmail.com",
-            "properties": {
-              "field1": "val1"
-            },
-            "action": "testing",
-            "occurred_at": "2019-10-14T09:03:17.562Z"
-          }
-        ]
-      }
-    },
-    "files": {}
-  },
-  {
-    "error": "User creation mode is disabled and user does not exist. Track call aborted."
+    "error": "User creation mode is disabled and user does not exist. Track call aborted.",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -198,7 +190,8 @@
         "provider": "my_custom_order"
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -219,15 +212,11 @@
         "occurred_at": "2019-10-14T09:03:17.562Z",
         "order_id": "456445746",
         "provider": "my_custom_order",
-        "items": [
-          {
-            "name": "shirt",
-            "price": 11.16
-          }
-        ]
+        "items": [{ "name": "shirt", "price": 11.16 }]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -248,13 +237,12 @@
             "action": "checkout",
             "email": "identified_user@gmail.com",
             "occurred_at": "2019-10-14T09:03:17.562Z",
-            "properties":{
-              "field2":"val2"
-            }
+            "properties": { "field2": "val2" }
           }
         ]
       }
     },
-    "files": {}
+    "files": {},
+    "requestOptions": {}
   }
 ]

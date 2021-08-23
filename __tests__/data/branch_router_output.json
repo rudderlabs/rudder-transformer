@@ -14,11 +14,7 @@
         "JSON": {
           "branch_key": "<branch key goes here>",
           "name": "ADD_TO_CART",
-          "content_items": [
-            {
-              "$product_name": "sampath"
-            }
-          ],
+          "content_items": [{ "$product_name": "sampath" }],
           "user_data": {
             "os": "",
             "os_version": "",
@@ -31,13 +27,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "sampath"
+      "userId": "sampath",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -75,9 +68,7 @@
             "anonymousId": "sampath",
             "email": "sampath@gmail.com"
           },
-          "content_items": [
-            {}
-          ],
+          "content_items": [{}],
           "user_data": {
             "os": "",
             "os_version": "",
@@ -90,13 +81,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "sampath"
+      "userId": "sampath",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

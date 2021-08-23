@@ -23,13 +23,10 @@
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.delighted.com/v1/people.json"
+      "endpoint": "https://api.delighted.com/v1/people.json",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -46,10 +43,7 @@
       "body": {
         "XML": {},
         "FORM": {},
-        "JSON": {
-          "email": "123@abc.com",
-          "email_update": "abc@123.com"
-        }
+        "JSON": { "email": "123@abc.com", "email_update": "abc@123.com" }
       },
       "type": "REST",
       "files": {},
@@ -60,13 +54,10 @@
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.delighted.com/v1/people.json"
+      "endpoint": "https://api.delighted.com/v1/people.json",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

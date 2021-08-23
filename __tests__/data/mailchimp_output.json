@@ -22,7 +22,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "userId": "userId12345",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -43,14 +44,14 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "userId": "userId12345",
+    "requestOptions": {}
   },
   {
-    "error": "User does not have access to the requested operation"
+    "error": "User does not have access to the requested operation",
+    "requestOptions": {}
   },
-  {
-    "error": "message type page is not supported"
-  },
+  { "error": "message type page is not supported", "requestOptions": {} },
   {
     "version": "1",
     "type": "REST",
@@ -63,9 +64,7 @@
     "params": {},
     "body": {
       "JSON": {
-        "merge_fields": {
-          "FIRSTNAME": "Bob"
-        },
+        "merge_fields": { "FIRSTNAME": "Bob" },
         "status": "subscribed",
         "email_address": "bob.dole@initech.com"
       },
@@ -73,6 +72,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "userId": "userId12345",
+    "requestOptions": {}
   }
 ]

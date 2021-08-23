@@ -1,22 +1,16 @@
 [
   {
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 400,
-    "error": "If properties.revenue is present, properties.currency is required."
+    "error": "If properties.revenue is present, properties.currency is required.",
+    "batchedRequest": { "requestOptions": {} }
   },
   {
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 400,
-    "error": "{\"product_id\":123} is not of valid type"
+    "error": "{\"product_id\":123} is not of valid type",
+    "batchedRequest": { "requestOptions": {} }
   }
 ]

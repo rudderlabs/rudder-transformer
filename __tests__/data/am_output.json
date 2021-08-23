@@ -4,9 +4,7 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -42,24 +40,21 @@
             "ip": "0.0.0.0"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -99,24 +94,21 @@
             }
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -146,9 +138,7 @@
             },
             "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
             "ip": "1.1.1.1",
-            "groups": {
-              "Company": "ABC"
-            },
+            "groups": { "Company": "ABC" },
             "time": 1571051718299,
             "user_id": "12345",
             "user_properties": {
@@ -159,24 +149,21 @@
             }
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -210,24 +197,21 @@
             "ip": "0.0.0.0"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000"
+    "userId": "00000000000000000000000000",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -263,24 +247,21 @@
             "ip": "0.0.0.0"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -301,24 +282,21 @@
             "user_id": "ubcdfghi0001"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -339,24 +317,21 @@
             "user_id": "ubcdfghi0001"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -377,24 +352,21 @@
             "user_id": "ubcdfghi0001"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -415,25 +387,22 @@
             "user_id": "ubcdfghi0001"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "123456"
+    "userId": "123456",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -460,17 +429,13 @@
                 "initial_referring_domain": "docs.rudderstack.com",
                 "initial_referrer": "https://docs.rudderstack.com"
               },
-              "groups": {
-                "Company": "Comapny-ABC"
-              },
+              "groups": { "Company": "Comapny-ABC" },
               "time": 1603180498983,
               "user_id": "sampleusrRudder3",
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -478,7 +443,7 @@
       "files": {},
       "userId": "my-anonymous-id-new"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -497,11 +462,10 @@
       },
       "files": {},
       "userId": "my-anonymous-id-new"
-    }
-  ],
-  {
-    "error": "Group call parameters are not valid"
+    },
+    "requestOptions": {}
   },
+  { "error": "Group call parameters are not valid", "requestOptions": {} },
   {
     "version": "1",
     "type": "REST",
@@ -520,7 +484,8 @@
       }
     },
     "files": {},
-    "userId": "my-anonymous-id-new"
+    "userId": "my-anonymous-id-new",
+    "requestOptions": {}
   },
   {
     "version": "1",
@@ -540,16 +505,15 @@
       }
     },
     "files": {},
-    "userId": "my-anonymous-id-new"
+    "userId": "my-anonymous-id-new",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -579,24 +543,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "0572f78fa49c648e"
+    "userId": "0572f78fa49c648e",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -628,24 +589,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "0572f78fa49c648e"
+    "userId": "0572f78fa49c648e",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -678,24 +636,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "0572f78fa49c648e"
+    "userId": "0572f78fa49c648e",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -728,24 +683,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "0572f78fa49c648e"
+    "userId": "0572f78fa49c648e",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -779,24 +731,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "0572f78fa49c648e"
+    "userId": "0572f78fa49c648e",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -804,10 +753,7 @@
         "events": [
           {
             "device_id": "anon-id-new",
-            "event_properties": {
-              "prop1": "5",
-              "name": "Screen View"
-            },
+            "event_properties": { "prop1": "5", "name": "Screen View" },
             "event_type": "Viewed Screen View Screen",
             "time": 1580602989544,
             "user_id": "identified user id",
@@ -816,25 +762,22 @@
             "ip": "14.5.67.21"
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "anon-id-new"
+    "userId": "anon-id-new",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -870,9 +813,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -880,14 +821,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -914,9 +853,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -924,14 +861,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "2": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -956,25 +891,22 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
       },
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-    }
-  ],
+    },
+    "requestOptions": {}
+  },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1030,25 +962,22 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1080,9 +1009,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -1090,14 +1017,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1127,9 +1052,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -1137,14 +1060,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "2": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1172,26 +1093,23 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
       },
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1243,9 +1161,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -1253,14 +1169,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1290,9 +1204,7 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
@@ -1300,14 +1212,12 @@
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
     },
-    {
+    "2": {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.amplitude.com/2/httpapi",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "headers": { "Content-Type": "application/json" },
       "params": {},
       "body": {
         "JSON": {
@@ -1335,25 +1245,22 @@
               "session_id": -1
             }
           ],
-          "options": {
-            "min_id_length": 1
-          }
+          "options": { "min_id_length": 1 }
         },
         "XML": {},
         "FORM": {}
       },
       "files": {},
       "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
-    }
-  ],
+    },
+    "requestOptions": {}
+  },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1389,24 +1296,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1442,24 +1346,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1495,24 +1396,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1548,24 +1446,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1588,10 +1483,7 @@
               "phone": "990099009900",
               "subjects": 5,
               "experience": 2,
-              "$add": {
-                "age": 12,
-                "friends": 3
-              },
+              "$add": { "age": 12, "friends": 3 },
               "initial_referring_domain": "docs.rudderstack.com",
               "initial_referrer": "https://docs.rudderstack.com"
             },
@@ -1600,24 +1492,21 @@
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1641,33 +1530,28 @@
               "friends": 3,
               "age": 12,
               "experience": 2,
-              "$setOnce": {
-                "subjects": 5
-              }
+              "$setOnce": { "subjects": 5 }
             },
             "time": 1605853102342,
             "user_id": "User_111",
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1691,33 +1575,28 @@
               "age": 12,
               "subjects": 5,
               "experience": 2,
-              "$append": {
-                "name": "Manashi"
-              }
+              "$append": { "name": "Manashi" }
             },
             "time": 1605853102342,
             "user_id": "User_111",
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1741,33 +1620,28 @@
               "friends": 3,
               "age": 12,
               "subjects": 5,
-              "$prepend": {
-                "experience": 2
-              }
+              "$prepend": { "experience": 2 }
             },
             "time": 1605853102342,
             "user_id": "User_111",
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+    "requestOptions": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.amplitude.com/2/httpapi",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
@@ -1787,33 +1661,23 @@
             "user_properties": {
               "city": "Durgapur",
               "phone": "990099009900",
-              "$add": {
-                "age": 12,
-                "friends": 3
-              },
-              "$setOnce": {
-                "subjects": 5
-              },
-              "$append": {
-                "name": "Manashi"
-              },
-              "$prepend": {
-                "experience": 2
-              }
+              "$add": { "age": 12, "friends": 3 },
+              "$setOnce": { "subjects": 5 },
+              "$append": { "name": "Manashi" },
+              "$prepend": { "experience": 2 }
             },
             "time": 1605853102342,
             "user_id": "User_111",
             "session_id": -1
           }
         ],
-        "options": {
-          "min_id_length": 1
-        }
+        "options": { "min_id_length": 1 }
       },
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+    "requestOptions": {}
   }
 ]

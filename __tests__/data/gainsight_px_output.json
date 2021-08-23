@@ -23,10 +23,7 @@
         "identifyId": "sample-user-id",
         "date": 1571043797562,
         "eventName": "Product Added",
-        "globalContext": {
-          "projectId": "p-123",
-          "tag": "sample-category-tag"
-        }
+        "globalContext": { "projectId": "p-123", "tag": "sample-category-tag" }
       }
     },
     "type": "REST",
@@ -38,24 +35,21 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom",
+    "requestOptions": {}
   },
   {
     "body": {
       "XML": {},
       "FORM": {},
       "JSON": {
-        "attributes": {
-          "description": "Sample Track call"
-        },
+        "attributes": { "description": "Sample Track call" },
         "propertyKey": "AP-XABC-123",
         "userType": "USER",
         "identifyId": "sample-user-id",
         "date": 1571043797562,
         "eventName": "Track Me",
-        "globalContext": {
-          "testOverride": "some-value"
-        }
+        "globalContext": { "testOverride": "some-value" }
       }
     },
     "type": "REST",
@@ -67,7 +61,8 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -88,9 +83,7 @@
           "countryCode": "US",
           "city": "New York"
         },
-        "customAttributes": {
-          "hobby": "Sample Hobby"
-        }
+        "customAttributes": { "hobby": "Sample Hobby" }
       }
     },
     "type": "REST",
@@ -102,35 +95,58 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
+    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id",
+    "requestOptions": {}
   },
+  {
+    "body": { "XML": {}, "FORM": {}, "JSON": { "accountId": "ecorp-id" } },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id",
+    "requestOptions": {}
+  },
+  {
+    "error": "userId or anonymousId is required for identify",
+    "requestOptions": {}
+  },
+  { "error": "Missing required value from \"userId\"", "requestOptions": {} },
+  { "error": "groupId is required for group", "requestOptions": {} },
   {
     "body": {
       "XML": {},
       "FORM": {},
       "JSON": {
-        "accountId": "ecorp-id"
+        "attributes": {
+          "description": "Stringify test for object values",
+          "nested": "{\"a\":[1,2,3],\"b\":{\"c\":1}}",
+          "arr": "[1,2,3]"
+        },
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "date": 1571043797562,
+        "eventName": "Stringify Test",
+        "globalContext": { "projectId": "p-123", "tag": "sample-category-tag" }
       }
     },
     "type": "REST",
     "files": {},
-    "method": "PUT",
+    "method": "POST",
     "params": {},
     "headers": {
       "X-APTRINSIC-API-KEY": "sample-api-key",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/users/sample-user-id"
-  },
-  {
-    "error": "userId or anonymousId is required for identify"
-  },
-  {
-    "error": "Missing required value from \"userId\""
-  },
-  {
-    "error": "groupId is required for group"
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -147,10 +163,7 @@
         "identifyId": "sample-user-id",
         "date": 1571043797562,
         "eventName": "Stringify Test",
-        "globalContext": {
-          "projectId": "p-123",
-          "tag": "sample-category-tag"
-        }
+        "globalContext": { "someKey": "someVal" }
       }
     },
     "type": "REST",
@@ -162,41 +175,12 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom",
+    "requestOptions": {}
   },
   {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "attributes": {
-          "description": "Stringify test for object values",
-          "nested": "{\"a\":[1,2,3],\"b\":{\"c\":1}}",
-          "arr": "[1,2,3]"
-        },
-        "propertyKey": "AP-XABC-123",
-        "userType": "USER",
-        "identifyId": "sample-user-id",
-        "date": 1571043797562,
-        "eventName": "Stringify Test",
-        "globalContext": {
-          "someKey": "someVal"
-        }
-      }
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "headers": {
-      "X-APTRINSIC-API-KEY": "sample-api-key",
-      "Content-Type": "application/json"
-    },
-    "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
-  },
-  {
-    "error": "aborting group call: {\"status\":\"NOT_FOUND\",\"message\":\"User was not found for parameters {id=absent-id}\",\"debugMessage\":null,\"subErrors\":null}"
+    "error": "aborting group call: {\"status\":\"NOT_FOUND\",\"message\":\"User was not found for parameters {id=absent-id}\",\"debugMessage\":null,\"subErrors\":null}",
+    "requestOptions": {}
   },
   {
     "body": {
@@ -218,9 +202,7 @@
           "countryCode": "US",
           "city": "New York"
         },
-        "customAttributes": {
-          "hobby": "Sample Hobby"
-        }
+        "customAttributes": { "hobby": "Sample Hobby" }
       }
     },
     "type": "REST",
@@ -232,6 +214,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.aptrinsic.com/v1/users"
+    "endpoint": "https://api.aptrinsic.com/v1/users",
+    "requestOptions": {}
   }
 ]

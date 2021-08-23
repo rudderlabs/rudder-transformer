@@ -1,6 +1,6 @@
 [
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -38,10 +38,11 @@
       },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -69,7 +70,7 @@
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -101,10 +102,11 @@
       },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -135,9 +137,7 @@
             {
               "name": "braze revenue test",
               "time": "2020-01-24T11:59:02.403+05:30",
-              "properties": {
-                "revenue": 50
-              },
+              "properties": { "revenue": 50 },
               "_update_existing_only": false,
               "user_alias": {
                 "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -152,10 +152,11 @@
       },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -231,14 +232,16 @@
       },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
+    },
+    "requestOptions": {}
+  },
   {
     "statusCode": 400,
-    "message": "Invalid Order Completed event"
+    "message": "Invalid Order Completed event",
+    "requestOptions": {}
   },
-  [
-    {
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -252,10 +255,7 @@
       "body": {
         "JSON": {
           "attributes": [
-            {
-              "ab_rudder_group_1234": true,
-              "external_id":"Randomuser2222"
-            }
+            { "ab_rudder_group_1234": true, "external_id": "Randomuser2222" }
           ],
           "partner": "RudderStack"
         },
@@ -264,10 +264,11 @@
       },
       "files": {},
       "userId": "Randomuser2222"
-    }
-  ],
-  [
-    {
+    },
+    "requestOptions": {}
+  },
+  {
+    "0": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -296,7 +297,7 @@
       "files": {},
       "userId": "mickey@disney.com"
     },
-    {
+    "1": {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -323,11 +324,12 @@
       },
       "files": {},
       "userId": "mickey@disney.com"
-    }
-  ],
+    },
+    "requestOptions": {}
+  },
   {
     "statusCode": 400,
-    "message": "Message type is not supported"
+    "message": "Message type is not supported",
+    "requestOptions": {}
   }
 ]
-

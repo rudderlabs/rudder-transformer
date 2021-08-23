@@ -23,13 +23,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "userId12345"
+      "userId": "userId12345",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -69,13 +66,10 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "userId12345"
+      "userId": "userId12345",
+      "requestOptions": {}
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {

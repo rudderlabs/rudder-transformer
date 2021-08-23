@@ -55,14 +55,6 @@ const identifyResponseBuilder = (message, { Config }) => {
     payload.phone_number = null;
     logger.error("Phone number format incorrect.");
   }
-  if (payload.channels && payload.channels.sms) {
-    if (!payload.phone_number) {
-      payload.channels = null;
-      logger.error(
-        "SMS added in Channel but phone number either invalid or not provided."
-      );
-    }
-  }
 
   const name = getValueFromMessage(message, [
     "traits.name",

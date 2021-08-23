@@ -49,7 +49,9 @@ const createList = items => {
         (itemPayload.unit_price || itemPayload.subtotal)
       ) {
         const variantList = item.variant_options;
-        if (!isEmptyObject(variantList)) {
+        if (!variantList || !Array.isArray(variantList)) {
+          logger.error("Variant options must be an array of objects.");
+        } else {
           const variantOptions = createVariantList(variantList);
           if (variantOptions && variantOptions.length > 0) {
             itemPayload.variant_options = variantOptions;
@@ -69,7 +71,7 @@ const createList = items => {
         }
         if (
           itemPayload.is_on_sale &&
-          (itemPayload.is_on_sale !== true || itemPayload.is_on_sale !== false)
+          typeof itemPayload.is_on_sale !== "boolean"
         ) {
           itemPayload.is_on_sale = null;
         }

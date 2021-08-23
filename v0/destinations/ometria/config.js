@@ -91,7 +91,8 @@ const LINEITEMS_EXCLUSION_FIELDS = [
   "discount",
   "is_on_sale",
   "totals",
-  "properties"
+  "properties",
+  "variant_options"
 ];
 
 const MARKETING_OPTIN_LIST = [

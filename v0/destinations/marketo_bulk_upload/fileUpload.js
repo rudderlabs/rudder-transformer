@@ -232,7 +232,6 @@ const getImportID = async (input, config) => {
 };
 
 const responseHandler = async (input, config) => {
-  const response = {};
   /**
   * {
   "importId" : <some-id>,
@@ -243,12 +242,16 @@ const responseHandler = async (input, config) => {
     input,
     config
   );
-  response.statusCode = 200;
-  response.importId = importId;
-  response.pollURL = "/pollStatus";
-  const csvHeader = getHeaderFields(config).toString();
-  response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
-  return response;
+  if (importId) {
+    const response = {};
+    response.statusCode = 200;
+    response.importId = importId;
+    response.pollURL = "/pollStatus";
+    const csvHeader = getHeaderFields(config).toString();
+    response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
+    return response;
+  }
+  throw new CustomError("No import id received", 500);
 };
 const processFileData = async event => {
   const { input, config } = event;

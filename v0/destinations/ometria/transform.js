@@ -167,15 +167,10 @@ const trackResponseBuilder = (message, { Config }) => {
       ["properties"],
       CUSTOM_EVENT_EXCLUSION_FIELDS
     );
-    if (!isEmptyObject(customFields)) {
-      payload.properties = customFields;
-    }
+    payload.properties = customFields;
   }
   if (!isValidTimestamp(payload.timestamp)) {
     throw new CustomError("Timestamp format must be ISO-8601", 400);
-  }
-  if (!payload.properties) {
-    throw new CustomError("Properties field is required", 400);
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

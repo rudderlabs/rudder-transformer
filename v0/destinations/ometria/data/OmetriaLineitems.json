@@ -35,8 +35,8 @@
         "required": false
     },
     {
-        "destKey": "sub_total",
-        "sourceKeys": "sub_total",
+        "destKey": "subtotal",
+        "sourceKeys": "subtotal",
         "required": false
     },
     {

@@ -86,7 +86,7 @@ const LINEITEMS_EXCLUSION_FIELDS = [
   "unit_price",
   "quantity_refunded",
   "refunded",
-  "sub_total",
+  "subtotal",
   "tax",
   "total",
   "discount",

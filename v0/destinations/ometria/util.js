@@ -6,7 +6,7 @@ const {
 const logger = require("../../../logger");
 const {
   constructPayload,
-  removeUndefinedAndNullAndEmptyValues,
+  removeUndefinedAndNullValues,
   extractCustomFields,
   isEmptyObject
 } = require("../../util");
@@ -73,7 +73,7 @@ const createList = items => {
         ) {
           itemPayload.is_on_sale = null;
         }
-        itemList.push(removeUndefinedAndNullAndEmptyValues(itemPayload));
+        itemList.push(removeUndefinedAndNullValues(itemPayload));
       } else {
         logger.error(
           `Item at index ${index} dropped. Product id , quantity and either unit_price or subtotal are required.`

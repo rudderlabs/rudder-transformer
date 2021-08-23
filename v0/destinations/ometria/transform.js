@@ -33,12 +33,6 @@ const identifyResponseBuilder = (message, { Config }) => {
   // TODO: validate payload
   const payload = constructPayload(message, contactDataMapping);
   payload["@type"] = "contact";
-  if (!payload.id) {
-    payload.id = getFieldValueFromMessage(message, "userId");
-    if (!payload.id) {
-      throw new CustomError("Listing Id is required for identify call.", 400);
-    }
-  }
   if (!payload.properties) {
     let customFields = {};
     customFields = extractCustomFields(
@@ -163,6 +157,9 @@ const trackResponseBuilder = (message, { Config }) => {
 
   // custom events
   payload = constructPayload(message, customEventMapping);
+  if (!isValidTimestamp(payload.timestamp)) {
+    throw new CustomError("Timestamp format must be ISO-8601", 400);
+  }
   payload["@type"] = "custom_event";
   payload.event_type = event;
   if (!payload.properties) {
@@ -174,9 +171,6 @@ const trackResponseBuilder = (message, { Config }) => {
       CUSTOM_EVENT_EXCLUSION_FIELDS
     );
     payload.properties = customFields;
-  }
-  if (!isValidTimestamp(payload.timestamp)) {
-    throw new CustomError("Timestamp format must be ISO-8601", 400);
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

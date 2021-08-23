@@ -29,7 +29,7 @@ const {
 } = require("./config");
 const { isValidTimestamp, createList, isValidPhone } = require("./util");
 
-const identifyPayloadBuilder = (message, { Config }) => {
+const identifyResponseBuilder = (message, { Config }) => {
   // TODO: validate payload
   const payload = constructPayload(message, contactDataMapping);
   payload["@type"] = "contact";
@@ -208,7 +208,7 @@ const process = event => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyPayloadBuilder(message, destination);
+      response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);

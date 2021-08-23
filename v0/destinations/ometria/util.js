@@ -16,6 +16,11 @@ const isValidTimestamp = timestamp => {
   return re.test(String(timestamp));
 };
 
+const isValidPhone = phone => {
+  const phoneformat = /^\+[1-9]\d{10,14}$/;
+  return phoneformat.test(String(phone));
+};
+
 const createVariantList = variants => {
   const variantList = [];
   if (variants.length > 0) {
@@ -81,5 +86,6 @@ const createList = items => {
 
 module.exports = {
   isValidTimestamp,
-  createList
+  createList,
+  isValidPhone
 };

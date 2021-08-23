@@ -27,7 +27,7 @@ const {
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const { isValidTimestamp, createList } = require("./util");
+const { isValidTimestamp, createList, isValidPhone } = require("./util");
 
 const identifyPayloadBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -51,10 +51,16 @@ const identifyPayloadBuilder = (message, { Config }) => {
   ) {
     payload.marketing_optin = null;
   }
+  if (payload.phone_number && !isValidPhone(payload.phone_number)) {
+    payload.phone_number = null;
+    logger.error("Phone number format incorrect.");
+  }
   if (payload.channels && payload.channels.sms) {
     if (!payload.phone_number) {
       payload.channels = null;
-      logger.error("SMS added in Channel but phone number not provided.");
+      logger.error(
+        "SMS added in Channel but phone number either invalid or not provided."
+      );
     }
   }
 

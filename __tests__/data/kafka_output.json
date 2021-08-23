@@ -10,9 +10,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.1.1"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.1" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
         "locale": "en-GB",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/index7.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -20,7 +26,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/index7.html"
         },
-        "screen": { "density": 2 },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "age": 23,
           "email": "test@kinesis.com",
@@ -28,7 +36,9 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "b7fac7f5-8e15-4807-8eb6-3a539e802990",
       "originalTimestamp": "2020-05-14T06:54:08.731Z",
       "properties": {
@@ -45,8 +55,7 @@
       "type": "page",
       "userId": "user-12345"
     },
-    "userId": "user-12345",
-    "requestOptions": {}
+    "userId": "user-12345"
   },
   {
     "message": {
@@ -59,9 +68,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.1.1"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.1" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
         "locale": "en-GB",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/index7.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -69,7 +84,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/index7.html"
         },
-        "screen": { "density": 2 },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "age": 23,
           "email": "test@kinesis.com",
@@ -77,7 +94,9 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "bad95337-65ab-4707-9ed5-e9b141281e5c",
       "originalTimestamp": "2020-05-14T06:54:08.741Z",
       "receivedAt": "2020-05-14T12:24:08.757+05:30",
@@ -87,8 +106,7 @@
       "type": "identify",
       "userId": "user-12345"
     },
-    "userId": "user-12345",
-    "requestOptions": {}
+    "userId": "user-12345"
   },
   {
     "message": {
@@ -101,9 +119,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.1.1"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.1" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
         "locale": "en-GB",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/index7.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -111,7 +135,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/index7.html"
         },
-        "screen": { "density": 2 },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "age": 23,
           "email": "test@kinesis.com",
@@ -120,7 +146,9 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
       },
       "event": "test track without property",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "c8975325-9ad2-4cef-a08e-7ff4f00d081d",
       "originalTimestamp": "2020-05-14T06:54:08.742Z",
       "properties": {},
@@ -131,8 +159,7 @@
       "type": "track",
       "userId": "user-12345"
     },
-    "userId": "user-12345",
-    "requestOptions": {}
+    "userId": "user-12345"
   },
   {
     "message": {
@@ -145,9 +172,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.1.1"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.1" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
         "locale": "en-GB",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/index7.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -155,7 +188,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/index7.html"
         },
-        "screen": { "density": 2 },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "age": 23,
           "email": "test@kinesis.com",
@@ -164,10 +199,15 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
       },
       "event": "test track with property",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "03a65e70-870f-4e3b-a8a6-dabe85e9c911",
       "originalTimestamp": "2020-05-14T06:54:08.744Z",
-      "properties": { "test_prop_1": "test prop", "test_prop_2": 1232 },
+      "properties": {
+        "test_prop_1": "test prop",
+        "test_prop_2": 1232
+      },
       "receivedAt": "2020-05-14T12:24:08.781+05:30",
       "request_ip": "[::1]:53197",
       "sentAt": "2020-05-14T06:54:08.744Z",
@@ -175,8 +215,7 @@
       "type": "track",
       "userId": "user-12345"
     },
-    "userId": "user-12345",
-    "requestOptions": {}
+    "userId": "user-12345"
   },
   {
     "message": {
@@ -189,9 +228,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.1.1"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.1" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
         "locale": "en-GB",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/index7.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -199,7 +244,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/index7.html"
         },
-        "screen": { "density": 2 },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "age": 23,
           "email": "test@kinesis.com",
@@ -208,10 +255,15 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
       },
       "event": "Purchase",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
       "originalTimestamp": "2020-05-14T06:54:08.745Z",
-      "properties": { "currency": "USD", "revenue": 100 },
+      "properties": {
+        "currency": "USD",
+        "revenue": 100
+      },
       "receivedAt": "2020-05-14T12:24:08.781+05:30",
       "request_ip": "[::1]:53194",
       "sentAt": "2020-05-14T06:54:08.746Z",
@@ -219,7 +271,6 @@
       "type": "track",
       "userId": "user-12345"
     },
-    "userId": "user-12345",
-    "requestOptions": {}
+    "userId": "user-12345"
   }
 ]

@@ -24,7 +24,9 @@
           "versionSessionCount": 2,
           "game_name": "FireEagleSlots"
         },
-        "integrations": { "All": true },
+        "integrations": {
+          "All": true
+        },
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
@@ -37,10 +39,18 @@
           },
           "traits": {
             "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-            "address": { "city": "Dhaka", "country": "Bangladesh" }
+            "address": {
+              "city": "Dhaka",
+              "country": "Bangladesh"
+            }
           },
-          "os": { "version": "8.1.0", "name": "android" },
-          "network": { "carrier": "Banglalink" }
+          "os": {
+            "version": "8.1.0",
+            "name": "android"
+          },
+          "network": {
+            "carrier": "Banglalink"
+          }
         },
         "type": "track",
         "properties": {
@@ -94,8 +104,7 @@
     "version": "1",
     "params": {},
     "type": "REST",
-    "method": "POST",
-    "requestOptions": {}
+    "method": "POST"
   },
   {
     "body": {
@@ -122,7 +131,9 @@
           "versionSessionCount": 2,
           "game_name": "FireEagleSlots"
         },
-        "integrations": { "All": true },
+        "integrations": {
+          "All": true
+        },
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
@@ -135,10 +146,18 @@
           },
           "traits": {
             "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-            "address": { "city": "Dhaka", "country": "Bangladesh" }
+            "address": {
+              "city": "Dhaka",
+              "country": "Bangladesh"
+            }
           },
-          "os": { "version": "8.1.0", "name": "android" },
-          "network": { "carrier": "Banglalink" }
+          "os": {
+            "version": "8.1.0",
+            "name": "android"
+          },
+          "network": {
+            "carrier": "Banglalink"
+          }
         },
         "type": "track",
         "properties": {
@@ -185,12 +204,13 @@
     "files": {},
     "endpoint": "https://6b0e6a60.ngrok.io/n",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "headers": { "content-type": "application/json" },
+    "headers": {
+      "content-type": "application/json"
+    },
     "version": "1",
     "params": {},
     "type": "REST",
-    "method": "POST",
-    "requestOptions": {}
+    "method": "POST"
   },
   {
     "body": {
@@ -217,7 +237,9 @@
           "versionSessionCount": 2,
           "game_name": "FireEagleSlots"
         },
-        "integrations": { "All": true },
+        "integrations": {
+          "All": true
+        },
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
@@ -230,10 +252,18 @@
           },
           "traits": {
             "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-            "address": { "city": "Dhaka", "country": "Bangladesh" }
+            "address": {
+              "city": "Dhaka",
+              "country": "Bangladesh"
+            }
           },
-          "os": { "version": "8.1.0", "name": "android" },
-          "network": { "carrier": "Banglalink" }
+          "os": {
+            "version": "8.1.0",
+            "name": "android"
+          },
+          "network": {
+            "carrier": "Banglalink"
+          }
         },
         "type": "track",
         "properties": {
@@ -280,19 +310,22 @@
     "files": {},
     "endpoint": "https://6b0e6a60.",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "headers": { "content-type": "application/json" },
+    "headers": {
+      "content-type": "application/json"
+    },
     "version": "1",
     "params": {},
     "type": "REST",
-    "method": "POST",
-    "requestOptions": {}
+    "method": "POST"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "http://6b0e6a60.ngrok.io",
-    "headers": { "content-type": "application/json" },
+    "headers": {
+      "content-type": "application/json"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -304,16 +337,26 @@
             "model": "Redmi 6",
             "name": "xiaomi"
           },
-          "network": { "carrier": "Banglalink" },
-          "os": { "name": "android", "version": "8.1.0" },
+          "network": {
+            "carrier": "Banglalink"
+          },
+          "os": {
+            "name": "android",
+            "version": "8.1.0"
+          },
           "traits": {
-            "address": { "city": "Dhaka", "country": "Bangladesh" },
+            "address": {
+              "city": "Dhaka",
+              "country": "Bangladesh"
+            },
             "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
           },
           "ip": "127.0.0.1"
         },
         "event": "spin_result",
-        "integrations": { "All": true },
+        "integrations": {
+          "All": true
+        },
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "properties": {
           "additional_bet_index": 0,
@@ -361,7 +404,6 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-    "requestOptions": {}
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
   }
 ]

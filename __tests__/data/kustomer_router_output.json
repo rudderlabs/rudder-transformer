@@ -41,9 +41,23 @@
             }
           ],
           "birthdayAt": "2005-01-01T23:28:56.782Z",
-          "emails": [{ "type": "home", "email": "utsab@rudderstack.com" }],
-          "phones": [{ "type": "home", "phone": "+12345578900" }],
-          "urls": [{ "url": "www.mattertoast873.com" }],
+          "emails": [
+            {
+              "type": "home",
+              "email": "utsab@rudderstack.com"
+            }
+          ],
+          "phones": [
+            {
+              "type": "home",
+              "phone": "+12345578900"
+            }
+          ],
+          "urls": [
+            {
+              "url": "www.mattertoast873.com"
+            }
+          ],
           "locations": [
             {
               "type": "home",
@@ -54,10 +68,13 @@
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -81,21 +98,29 @@
       "params": {},
       "body": {
         "JSON": {
-          "identity": { "externalId": "user@doe" },
+          "identity": {
+            "externalId": "user@doe"
+          },
           "event": {
             "name": "Tracking-Weekender",
             "sessionId": "63nsa22",
             "trackingId": "sahetwiac",
-            "meta": { "YearServicedNum": 211, "region": "strapis" }
+            "meta": {
+              "YearServicedNum": 211,
+              "region": "strapis"
+            }
           }
         },
         "XML": {},
         "FORM": {}
       },
-      "files": {},
-      "requestOptions": {}
+      "files": {}
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {

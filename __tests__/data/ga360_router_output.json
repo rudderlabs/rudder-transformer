@@ -27,12 +27,19 @@
         "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "ul": "en-US"
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {},
-      "userId": "00000000000000000000000000",
-      "requestOptions": {}
+      "userId": "00000000000000000000000000"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -61,20 +68,42 @@
         "useGoogleAmpClientId": true,
         "web-useNativeSDK": true,
         "dimensions": [
-          { "from": "name", "to": "dimension1" },
-          { "from": "custom2", "to": "dimension2" }
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
         ],
         "metrics": [
-          { "from": "email", "to": "metric1" },
-          { "from": "trait2", "to": "metric2" }
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
         ],
         "resetCustomDimensionsOnPage": [
-          { "resetCustomDimensionsOnPage": "abc" },
-          { "resetCustomDimensionsOnPage": "xyz" }
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
         ],
         "contentGroupings": [
-          { "from": "plan", "to": "contentGroup1" },
-          { "from": "name", "to": "contentGroup2" }
+          {
+            "from": "plan",
+            "to": "contentGroup1"
+          },
+          {
+            "from": "name",
+            "to": "contentGroup2"
+          }
         ]
       },
       "Enabled": true
@@ -108,12 +137,19 @@
         "dr": "q",
         "dt": "a"
       },
-      "body": { "JSON": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {},
-      "userId": "00000000000000000000000000",
-      "requestOptions": {}
+      "userId": "00000000000000000000000000"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -142,20 +178,42 @@
         "useGoogleAmpClientId": true,
         "web-useNativeSDK": true,
         "dimensions": [
-          { "from": "name", "to": "dimension1" },
-          { "from": "custom2", "to": "dimension2" }
+          {
+            "from": "name",
+            "to": "dimension1"
+          },
+          {
+            "from": "custom2",
+            "to": "dimension2"
+          }
         ],
         "metrics": [
-          { "from": "email", "to": "metric1" },
-          { "from": "trait2", "to": "metric2" }
+          {
+            "from": "email",
+            "to": "metric1"
+          },
+          {
+            "from": "trait2",
+            "to": "metric2"
+          }
         ],
         "resetCustomDimensionsOnPage": [
-          { "resetCustomDimensionsOnPage": "abc" },
-          { "resetCustomDimensionsOnPage": "xyz" }
+          {
+            "resetCustomDimensionsOnPage": "abc"
+          },
+          {
+            "resetCustomDimensionsOnPage": "xyz"
+          }
         ],
         "contentGroupings": [
-          { "from": "plan", "to": "contentGroup1" },
-          { "from": "prop2", "to": "contentGroup2" }
+          {
+            "from": "plan",
+            "to": "contentGroup1"
+          },
+          {
+            "from": "prop2",
+            "to": "contentGroup2"
+          }
         ]
       },
       "Enabled": true

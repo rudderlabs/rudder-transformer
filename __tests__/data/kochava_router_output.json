@@ -23,21 +23,28 @@
             "screen_dpi": 2,
             "locale": "en-US",
             "event_name": "Add to Cart",
-            "event_data": { "name": "sampath" }
+            "event_data": {
+              "name": "sampath"
+            }
           }
         },
         "XML": {},
         "FORM": {}
       },
       "files": {},
-      "userId": "sampath",
-      "requestOptions": {}
+      "userId": "sampath"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "apiKey": "<kochava guid goes here>" },
+      "Config": {
+        "apiKey": "<kochava guid goes here>"
+      },
       "DestinationDefinition": {
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
@@ -79,14 +86,19 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "00000000000000000000000000",
-      "requestOptions": {}
+      "userId": "00000000000000000000000000"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "apiKey": "<kochava guid goes here>" },
+      "Config": {
+        "apiKey": "<kochava guid goes here>"
+      },
       "DestinationDefinition": {
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",

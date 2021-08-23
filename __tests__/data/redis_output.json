@@ -21,8 +21,7 @@
         "nestedProp.innerProp2": "innerPropVal2"
       }
     },
-    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
-    "requestOptions": {}
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
   },
   {
     "message": {
@@ -46,8 +45,7 @@
         "nestedProp.innerProp2": "innerPropVal2"
       }
     },
-    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
-    "requestOptions": {}
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
   },
   {
     "message": {
@@ -61,8 +59,7 @@
         "nestedProp.innerProp2": "innerPropVal2"
       }
     },
-    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
-    "requestOptions": {}
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
   },
   {
     "message": {
@@ -77,11 +74,9 @@
         "nestedProp.innerProp2": "innerPropVal2"
       }
     },
-    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
-    "requestOptions": {}
+    "userId": "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33"
   },
   {
-    "error": "context or context.traits or traits is empty",
-    "requestOptions": {}
+    "error": "context or context.traits or traits is empty"
   }
 ]

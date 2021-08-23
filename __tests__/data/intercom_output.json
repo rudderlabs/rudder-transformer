@@ -28,8 +28,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
@@ -59,8 +58,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
@@ -90,8 +88,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
@@ -121,13 +118,11 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "statusCode": 400,
-    "error": "Email or userId is mandatory",
-    "requestOptions": {}
+    "error": "Email or userId is mandatory"
   },
   {
     "version": "1",
@@ -165,8 +160,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
@@ -204,8 +198,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
     "version": "1",
@@ -225,7 +218,7 @@
         "signed_up_at": 1601493060337,
         "last_seen_user_agent": "unknown",
         "update_last_request_at": true,
-        "custom_attributes": {
+         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"
         },
@@ -236,68 +229,67 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.intercom.io/events",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "user_id": "test_user_id_1",
-        "email": "test_1@test.com",
-        "event_name": "Test Event 2",
-        "created": 1601493060,
-        "metadata": {
-          "property1": 1,
-          "property2": "test",
-          "property3": true,
-          "property4": "2020-10-05T09:09:03.731Z"
-        }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.intercom.io/events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Accept": "application/json"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.intercom.io/events",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
-      "Accept": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "email": "test_1@test.com",
-        "event_name": "Test Event 2",
-        "created": 1601493060,
-        "metadata": {}
+      "params": {},
+      "body": {
+        "JSON": {
+          "user_id": "test_user_id_1",
+          "email": "test_1@test.com",
+          "event_name": "Test Event 2",
+          "created": 1601493060,
+          "metadata": {
+            "property1": 1,
+            "property2": "test",
+            "property3": true,
+            "property4": "2020-10-05T09:09:03.731Z"
+          }
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
+      "files": {},
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
     },
-    "files": {},
-    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-    "requestOptions": {}
-  },
-  {
-    "statusCode": 400,
-    "error": "Email or userId is mandatory",
-    "requestOptions": {}
-  }
+
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.intercom.io/events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Accept": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "test_1@test.com",
+          "event_name": "Test Event 2",
+          "created": 1601493060,
+          "metadata": {
+
+          }
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
+    },
+    {
+      "statusCode": 400,
+      "error": "Email or userId is mandatory"
+    }
 ]

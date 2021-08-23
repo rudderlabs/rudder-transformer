@@ -12,17 +12,18 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "Message type not supported",
-    "batchedRequest": { "requestOptions": {} }
+    "error": "Message type not supported"
   },
   {
-    "batchedRequest": {
-      "0": {
+    "batchedRequest": [
+      {
         "version": "1",
         "type": "REST",
         "method": "POST",
         "endpoint": "https://hooks.slack.com/services/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",
-        "headers": { "Content-Type": "application/x-www-form-urlencoded" },
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
         "params": {},
         "body": {
           "JSON": {},
@@ -34,9 +35,8 @@
         "files": {},
         "userId": "12345",
         "statusCode": 200
-      },
-      "requestOptions": {}
-    },
+      }
+    ],
     "metadata": [
       {
         "anonymousId": "12345",
@@ -56,7 +56,10 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
@@ -65,8 +68,16 @@
             "eventName": "is",
             "eventRegex": true
           },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          {
+            "eventChannel": "",
+            "eventName": "",
+            "eventRegex": false
+          },
+          {
+            "eventChannel": "",
+            "eventName": "",
+            "eventRegex": false
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -74,11 +85,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/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",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],

@@ -26,8 +26,7 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -56,8 +55,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -84,8 +82,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -112,8 +109,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -141,11 +137,14 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
@@ -156,11 +155,14 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
@@ -171,13 +173,11 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "message": "userId or device_token not present",
-    "statusCode": 400,
-    "requestOptions": {}
+    "statusCode": 400
   },
   {
     "body": {
@@ -204,8 +204,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -232,8 +231,7 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -260,8 +258,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -288,8 +285,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -316,11 +312,14 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
@@ -331,8 +330,7 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -360,8 +358,7 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -390,8 +387,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -418,8 +414,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -446,8 +441,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -475,11 +469,14 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
@@ -490,11 +487,14 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
@@ -505,13 +505,11 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "message": "userId or device_token not present",
-    "statusCode": 400,
-    "requestOptions": {}
+    "statusCode": 400
   },
   {
     "body": {
@@ -538,8 +536,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -566,8 +563,7 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -594,8 +590,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -622,8 +617,7 @@
     "params": {},
     "type": "REST",
     "method": "POST",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "body": {
@@ -650,11 +644,14 @@
     "params": {},
     "type": "REST",
     "method": "PUT",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
-    "body": { "XML": {}, "JSON": {}, "FORM": {} },
+    "body": {
+      "XML": {},
+      "JSON": {},
+      "FORM": {}
+    },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
@@ -665,8 +662,7 @@
     "params": {},
     "type": "REST",
     "method": "DELETE",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "version": "1",
@@ -693,8 +689,7 @@
     },
     "files": {},
     "userId": "00000000000000000000000000",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   },
   {
     "version": "1",
@@ -721,7 +716,6 @@
     },
     "files": {},
     "userId": "00000000000000000000000000",
-    "statusCode": 200,
-    "requestOptions": {}
+    "statusCode": 200
   }
 ]

@@ -12,10 +12,11 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity"
   },
   {
     "body": {
@@ -23,17 +24,21 @@
       "FORM": {},
       "JSON": {
         "request_id": "57494c6a-3c62-4b30-83aa-6e821d37ac75",
-        "profile_update": { "last name": "Abraham", "first name": "John" }
+        "profile_update": {
+          "last name": "Abraham",
+          "first name": "John"
+        }
       }
     },
     "type": "REST",
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity"
   },
   {
     "body": {
@@ -54,10 +59,11 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -68,7 +74,9 @@
           {
             "name": "eventWithProperties",
             "timestamp": 1609749187,
-            "attributes": { "category": "blah" }
+            "attributes": {
+              "category": "blah"
+            }
           }
         ],
         "request_id": "4b99c45d-8591-473c-b79d-abd466f6f4d5"
@@ -78,10 +86,11 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -98,7 +107,9 @@
             "attributes": {
               "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
               "path": "/rudder-sdk-js/tests/html/script-test.html",
-              "_identity": { "userId": "sampleId" }
+              "_identity": {
+                "userId": "sampleId"
+              }
             }
           }
         ],
@@ -117,10 +128,11 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "body": {
@@ -130,14 +142,18 @@
         "events": [
           {
             "name": "Visited a Page",
-            "context": { "url": "https://pagecall.com/testing" },
+            "context": {
+              "url": "https://pagecall.com/testing"
+            },
             "timestamp": 1609749785,
             "attributes": {
               "url": "https://pagecall.com/testing",
               "name": "page name",
               "path": "/testing",
               "category": "page category",
-              "_identity": { "userId": "sampleId" }
+              "_identity": {
+                "userId": "sampleId"
+              }
             }
           }
         ],
@@ -156,17 +172,20 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "version": "1",
-    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "requestOptions": {}
+    "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -189,25 +208,30 @@
               "path": "/testing",
               "title": "properties title",
               "url": "https://pagecall.com/properties_url",
-              "_identity": { "userId": "sampleId" }
+              "_identity": {
+                "userId": "sampleId"
+              }
             },
             "name": "Visited a Page",
-            "context": { "url": "https://pagecall.com/properties_url" }
+            "context": {
+              "url": "https://pagecall.com/properties_url"
+            }
           }
         ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -228,25 +252,30 @@
               "category": "page category",
               "name": "page name",
               "path": "/testing",
-              "_identity": { "userId": "sampleId" }
+              "_identity": {
+                "userId": "sampleId"
+              }
             },
             "name": "Visited a Page",
-            "context": { "url": "https://pagecall.com/context_url" }
+            "context": {
+              "url": "https://pagecall.com/context_url"
+            }
           }
         ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.appcues.com/v1/accounts/86086/users/sampleId/activity",
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -255,29 +284,28 @@
           {
             "name": "Viewed a Screen",
             "timestamp": 1584003903,
-            "attributes": { "name": "MainActivity", "automatic": true }
+            "attributes": {
+              "name": "MainActivity",
+              "automatic": true
+            }
           }
         ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "statusCode": 400,
-    "error": "User id is absent. Aborting event as userId is mandatory for Appcues",
-    "requestOptions": {}
+    "error": "User id is absent. Aborting event as userId is mandatory for Appcues"
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message.",
-    "requestOptions": {}
+    "error": "Message Type is not present. Aborting message."
   },
   {
     "statusCode": 400,
-    "error": "Message type is not supported",
-    "requestOptions": {}
+    "error": "Message type is not supported"
   }
 ]

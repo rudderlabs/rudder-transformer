@@ -1,5 +1,8 @@
 [
-  { "statusCode": 400, "message": "Invalid page call", "requestOptions": {} },
+  {
+    "statusCode": 400,
+    "message": "Invalid page call"
+  },
   {
     "body": {
       "XML": {},
@@ -26,8 +29,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.iterable.com/api/users/update",
-    "requestOptions": {}
+    "endpoint": "https://api.iterable.com/api/users/update"
   },
   {
     "body": {
@@ -53,15 +55,17 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.iterable.com/api/events/track",
-    "requestOptions": {}
+    "endpoint": "https://api.iterable.com/api/events/track"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -81,15 +85,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -113,15 +119,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -141,15 +149,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -168,15 +178,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -196,15 +208,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -228,15 +242,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -256,15 +272,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -283,26 +301,29 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "statusCode": 400,
-    "message": "Message type not supported",
-    "requestOptions": {}
+    "message": "Message type not supported"
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/update",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
           "email": "ruchira@rudderlabs.com",
-          "dataFields": { "email": "ruchira@rudderlabs.com" },
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
           "userId": "123456",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -312,12 +333,15 @@
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -329,21 +353,25 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/update",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
           "email": "ruchira@rudderlabs.com",
-          "dataFields": { "email": "ruchira@rudderlabs.com" },
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
           "userId": "123456",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -353,12 +381,15 @@
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -375,21 +406,25 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/update",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
           "email": "ruchira@rudderlabs.com",
-          "dataFields": { "email": "ruchira@rudderlabs.com" },
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
           "userId": "123456",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -399,12 +434,15 @@
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -421,21 +459,25 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/commerce/updateCart",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
         "user": {
           "email": "sayan@gmail.com",
-          "dataFields": { "email": "sayan@gmail.com" },
+          "dataFields": {
+            "email": "sayan@gmail.com"
+          },
           "userId": "12345",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -466,15 +508,17 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
@@ -515,7 +559,9 @@
         "total": 1000,
         "user": {
           "email": "sayan@gmail.com",
-          "dataFields": { "email": "sayan@gmail.com" },
+          "dataFields": {
+            "email": "sayan@gmail.com"
+          },
           "userId": "12345",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -546,26 +592,28 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/events/track",
-    "headers": { "Content-Type": "application/json", "api_key": "12345" },
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
     "params": {},
     "body": {
       "JSON": {
-        "email": "ruchira@rudderlabs.com",
+        "email":"ruchira@rudderlabs.com",
         "dataFields": {
           "campaignId": "1",
           "templateId": "0",
           "category": "test-category",
           "user_actual_role": "system_admin, system_user",
           "user_actual_id": 12345,
-          "email": "ruchira@rudderlabs.com"
+          "email":"ruchira@rudderlabs.com"
         },
         "userId": "12345",
         "eventName": "test track event GA3",
@@ -576,21 +624,25 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/update",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
           "email": "ruchira@rudderlabs.com",
-          "dataFields": { "email": "ruchira@rudderlabs.com" },
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
           "userId": "123456",
           "preferUserId": true,
           "mergeNestedObjects": true
@@ -600,12 +652,15 @@
       },
       "files": {}
     },
-    "1": {
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
-      "headers": { "Content-Type": "application/json", "api_key": "12345" },
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
       "params": {},
       "body": {
         "JSON": {
@@ -617,45 +672,50 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
+    }
+  ],
+  {
+    "statusCode": 400,
+    "message": "userId or email is mandatory for this request"
   },
   {
     "statusCode": 400,
-    "message": "userId or email is mandatory for this request",
-    "requestOptions": {}
+    "message": "Invalid page call"
   },
-  { "statusCode": 400, "message": "Invalid page call", "requestOptions": {} },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.iterable.com/api/commerce/updateCart",
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+        "Content-Type": "application/json"
+    },
     "params": {},
     "body": {
-      "JSON": {
-        "user": {
-          "email": "jessica@jlpdesign.net",
-          "dataFields": { "email": "jessica@jlpdesign.net" },
-          "userId": "8751",
-          "preferUserId": true,
-          "mergeNestedObjects": true
+        "JSON": {
+            "user": {
+                "email": "jessica@jlpdesign.net",
+                "dataFields": {
+                    "email": "jessica@jlpdesign.net"
+                },
+                "userId": "8751",
+                "preferUserId": true,
+                "mergeNestedObjects": true
+            },
+            "items": [
+                {
+                    "id": 10606,
+                    "sku": "JB24691400-W05",
+                    "name": "Vira Console Cabinet",
+                    "price": 797,
+                    "quantity": 1
+                }
+            ]
         },
-        "items": [
-          {
-            "id": 10606,
-            "sku": "JB24691400-W05",
-            "name": "Vira Console Cabinet",
-            "price": 797,
-            "quantity": 1
-          }
-        ]
-      },
-      "XML": {},
-      "FORM": {}
+        "XML": {},
+        "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
-  }
+    "files": {}
+}
 ]
+

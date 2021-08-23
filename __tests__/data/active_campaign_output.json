@@ -22,8 +22,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
-    "requestOptions": {}
+    "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync"
   },
   {
     "body": {
@@ -31,7 +30,9 @@
       "FORM": {},
       "JSON": {
         "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "siteTrackingDomain": { "name": "www.rudderlabs.com" }
+        "siteTrackingDomain": {
+          "name": "www.rudderlabs.com"
+        }
       }
     },
     "type": "REST",
@@ -43,8 +44,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains",
-    "requestOptions": {}
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains"
   },
   {
     "body": {
@@ -68,8 +68,7 @@
       "Content-Type": "application/x-www-form-urlencoded"
     },
     "version": "1",
-    "endpoint": "https://trackcmp.net/event",
-    "requestOptions": {}
+    "endpoint": "https://trackcmp.net/event"
   },
   {
     "body": {
@@ -93,7 +92,6 @@
       "Content-Type": "application/x-www-form-urlencoded"
     },
     "version": "1",
-    "endpoint": "https://trackcmp.net/event",
-    "requestOptions": {}
+    "endpoint": "https://trackcmp.net/event"
   }
 ]

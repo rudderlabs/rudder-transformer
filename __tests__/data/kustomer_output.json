@@ -40,18 +40,34 @@
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [{ "type": "home", "email": "utsab@rudderstack.com" }],
-        "phones": [{ "type": "home", "phone": "+12345578900" }],
-        "urls": [{ "url": "www.mattertoast873.com" }],
+        "emails": [
+          {
+            "type": "home",
+            "email": "utsab@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578900"
+          }
+        ],
+        "urls": [
+          {
+            "url": "www.mattertoast873.com"
+          }
+        ],
         "locations": [
-          { "type": "home", "address": "24 Dovers Lane Miami Florida 1890001" }
+          {
+            "type": "home",
+            "address": "24 Dovers Lane Miami Florida 1890001"
+          }
         ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -69,14 +85,23 @@
         "externalId": "annodD",
         "locale": "en-US",
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [{ "type": "home", "email": "ano@rudderstack.com" }],
-        "phones": [{ "type": "home", "phone": "+12345578000" }]
+        "emails": [
+          {
+            "type": "home",
+            "email": "ano@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578000"
+          }
+        ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -90,7 +115,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "utsabc" },
+        "identity": {
+          "externalId": "utsabc"
+        },
         "event": {
           "name": "Screen-Viewed-Test-Event-Screen",
           "meta": {
@@ -103,8 +130,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -118,7 +144,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "user@doe" },
+        "identity": {
+          "externalId": "user@doe"
+        },
         "event": {
           "name": "Web-Page-Viewed-Cart-Viewed",
           "meta": {
@@ -136,8 +164,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -151,7 +178,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "user@doe" },
+        "identity": {
+          "externalId": "user@doe"
+        },
         "event": {
           "name": "Web-Page-Viewed",
           "sessionId": "hsad522",
@@ -170,8 +199,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -185,19 +213,23 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "user@doe" },
+        "identity": {
+          "externalId": "user@doe"
+        },
         "event": {
           "name": "Tracking-Weekender",
           "sessionId": "63nsa22",
           "trackingId": "sahetwiac",
-          "meta": { "YearServicedNum": 211, "region": "strapis" }
+          "meta": {
+            "YearServicedNum": 211,
+            "region": "strapis"
+          }
         }
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -213,17 +245,21 @@
       "FORM": {},
       "JSON": {
         "event": {
-          "meta": { "YearServicedNum": 211, "reg_8-821x": false },
+          "meta": {
+            "YearServicedNum": 211,
+            "reg_8-821x": false
+          },
           "name": "Tracking-Weekender2",
           "sessionId": "63nsa22",
           "trackingId": "sahetwiac"
         },
-        "identity": { "externalId": "user@doe" }
+        "identity": {
+          "externalId": "user@doe"
+        }
       },
       "XML": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -237,7 +273,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "user@doe" },
+        "identity": {
+          "externalId": "user@doe"
+        },
         "event": {
           "name": "Web-Page-Viewed",
           "meta": {
@@ -254,8 +292,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -269,7 +306,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": { "externalId": "utsabc" },
+        "identity": {
+          "externalId": "utsabc"
+        },
         "event": {
           "name": "Screen-Viewed",
           "meta": {
@@ -282,8 +321,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -326,18 +364,34 @@
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [{ "type": "home", "email": "utsab@rudderstack.com" }],
-        "phones": [{ "type": "home", "phone": "+12345578900" }],
-        "urls": [{ "url": "www.mattertoast873.com" }],
+        "emails": [
+          {
+            "type": "home",
+            "email": "utsab@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578900"
+          }
+        ],
+        "urls": [
+          {
+            "url": "www.mattertoast873.com"
+          }
+        ],
         "locations": [
-          { "type": "home", "address": "24 Dovers Lane Miami Florida 1890001" }
+          {
+            "type": "home",
+            "address": "24 Dovers Lane Miami Florida 1890001"
+          }
         ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -380,16 +434,34 @@
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [{ "type": "home", "email": "utsab@rudderstack.com" }],
-        "phones": [{ "type": "home", "phone": "+12345578900" }],
-        "urls": [{ "url": "www.mattertoast873.com" }],
-        "locations": [{ "type": "home", "address": "test address string" }]
+        "emails": [
+          {
+            "type": "home",
+            "email": "utsab@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578900"
+          }
+        ],
+        "urls": [
+          {
+            "url": "www.mattertoast873.com"
+          }
+        ],
+        "locations": [
+          {
+            "type": "home",
+            "address": "test address string"
+          }
+        ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   },
   {
     "version": "1",
@@ -432,15 +504,33 @@
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [{ "type": "home", "email": "utsab@rudderstack.com" }],
-        "phones": [{ "type": "home", "phone": "+12345578900" }],
-        "urls": [{ "url": "www.mattertoast873.com" }],
-        "locations": [{ "type": "home", "address": "test address string" }]
+        "emails": [
+          {
+            "type": "home",
+            "email": "utsab@rudderstack.com"
+          }
+        ],
+        "phones": [
+          {
+            "type": "home",
+            "phone": "+12345578900"
+          }
+        ],
+        "urls": [
+          {
+            "url": "www.mattertoast873.com"
+          }
+        ],
+        "locations": [
+          {
+            "type": "home",
+            "address": "test address string"
+          }
+        ]
       },
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "requestOptions": {}
+    "files": {}
   }
 ]

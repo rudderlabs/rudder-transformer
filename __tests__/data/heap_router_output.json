@@ -23,14 +23,19 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "sampath",
-      "requestOptions": {}
+      "userId": "sampath"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
@@ -57,21 +62,29 @@
         "JSON": {
           "identity": "sampath",
           "event": "Send Transactional Email",
-          "properties": { "subject": "Welcome to My App!", "variation": "A" },
+          "properties": {
+            "subject": "Welcome to My App!",
+            "variation": "A"
+          },
           "app_id": "<app id>"
         },
         "XML": {},
         "FORM": {}
       },
       "files": {},
-      "userId": "sampath",
-      "requestOptions": {}
+      "userId": "sampath"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",

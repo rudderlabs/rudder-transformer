@@ -24,7 +24,10 @@
               "msgemail": true,
               "msgwhatsapp": false,
               "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-              "custom_mappings": { "Office": "Trastkiv", "Country": "Russia" },
+              "custom_mappings": {
+                "Office": "Trastkiv",
+                "Country": "Russia"
+              },
               "address": {
                 "city": "kolkata",
                 "country": "India",
@@ -47,8 +50,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
     "body": {
@@ -60,7 +62,10 @@
             "identity": "anon-id-new",
             "type": "event",
             "evtName": "Web Page Viewed: Rudder",
-            "evtData": { "title": "Home", "path": "/" }
+            "evtData": {
+              "title": "Home",
+              "path": "/"
+            }
           }
         ]
       }
@@ -75,8 +80,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
     "body": {
@@ -88,7 +92,9 @@
             "identity": "identified_user_id",
             "type": "event",
             "evtName": "Screen Viewed: Rudder-Screen",
-            "evtData": { "prop1": "5" }
+            "evtData": {
+              "prop1": "5"
+            }
           }
         ]
       }
@@ -103,8 +109,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
     "body": {
@@ -116,7 +121,10 @@
             "identity": "user123",
             "type": "event",
             "evtName": "Product Purchased",
-            "evtData": { "name": "Rubik's Cube", "revenue": 4.99 }
+            "evtData": {
+              "name": "Rubik's Cube",
+              "revenue": 4.99
+            }
           }
         ]
       }
@@ -131,14 +139,14 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
-    "error": "Message Type is not present. Aborting message.",
-    "requestOptions": {}
+    "error": "Message Type is not present. Aborting message."
   },
-  { "error": "Message type not supported", "requestOptions": {} },
+  {
+    "error": "Message type not supported"
+  },
   {
     "body": {
       "XML": {},
@@ -195,12 +203,10 @@
       "X-CleverTap-Account-Id": "476550467"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
-    "error": "userId, not present cannot track anonymous user",
-    "requestOptions": {}
+    "error": "userId, not present cannot track anonymous user"
   },
   {
     "body": {
@@ -227,7 +233,10 @@
               "msgemail": true,
               "msgwhatsapp": false,
               "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-              "custom_mappings": { "Office": "Trastkiv", "Country": "Russia" },
+              "custom_mappings": {
+                "Office": "Trastkiv",
+                "Country": "Russia"
+              },
               "address": {
                 "city": "kolkata",
                 "country": "India",
@@ -250,8 +259,7 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   },
   {
     "body": {
@@ -277,7 +285,10 @@
               "msgemail": true,
               "msgwhatsapp": false,
               "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-              "custom_mappings": { "Office": "Trastkiv", "Country": "Russia" },
+              "custom_mappings": {
+                "Office": "Trastkiv",
+                "Country": "Russia"
+              },
               "address": {
                 "city": "kolkata",
                 "country": "India",
@@ -300,7 +311,6 @@
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endpoint": "https://api.clevertap.com/1/upload",
-    "requestOptions": {}
+    "endpoint": "https://api.clevertap.com/1/upload"
   }
 ]

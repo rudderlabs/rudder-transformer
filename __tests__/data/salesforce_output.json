@@ -1,6 +1,6 @@
 [
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -29,11 +29,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -62,11 +61,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -96,16 +94,14 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
+    }
+  ],
   {
     "statusCode": 400,
-    "error": "message type track is not supported",
-    "requestOptions": {}
+    "error": "message type track is not supported"
   },
-  {
-    "0": {
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -136,11 +132,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -170,11 +165,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -203,11 +197,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -235,11 +228,10 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  },
-  {
-    "0": {
+    }
+  ],
+  [
+    {
       "version": "1",
       "type": "REST",
       "method": "POST",
@@ -268,7 +260,7 @@
         "FORM": {}
       },
       "files": {}
-    },
-    "requestOptions": {}
-  }
+    } 
+  ]
 ]
+

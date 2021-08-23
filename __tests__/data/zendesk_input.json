@@ -412,7 +412,9 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": ["apiToken"],
+          "secretKeys": [
+            "apiToken"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -530,7 +532,9 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": ["apiToken"],
+          "secretKeys": [
+            "apiToken"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -648,7 +652,9 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": ["apiToken"],
+          "secretKeys": [
+            "apiToken"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -769,7 +775,9 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": ["apiToken"],
+          "secretKeys": [
+            "apiToken"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -890,7 +898,9 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": ["apiToken"],
+          "secretKeys": [
+            "apiToken"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",

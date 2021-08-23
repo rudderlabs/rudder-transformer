@@ -16,7 +16,11 @@
         "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
         "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
         "limit_ad_tracking": false,
-        "content_items": [{ "$product_name": "sampath" }],
+        "content_items": [
+          {
+            "$product_name": "sampath"
+          }
+        ],
         "user_data": {
           "os": "iOS",
           "os_version": "14.4.1",
@@ -29,8 +33,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath",
-    "requestOptions": {}
+    "userId": "sampath"
   },
   {
     "version": "1",
@@ -66,12 +69,8 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "sampath",
-    "requestOptions": {}
+    "userId": "sampath"
   },
-  {
-    "statusCode": 400,
-    "error": "Message type is not supported",
-    "requestOptions": {}
-  }
+  { "statusCode": 400, "error": "Message type is not supported" }
 ]
+

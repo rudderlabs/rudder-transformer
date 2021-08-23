@@ -15,7 +15,7 @@
         "required": true
     },
     {
-        "destKey": "sub_total",
+        "destKey": "subtotal",
         "sourceKeys": "properties.subtotal",
         "required": false
     },

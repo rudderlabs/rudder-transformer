@@ -54,7 +54,7 @@ const CUSTOM_EVENT_EXCLUSION_FIELDS = [
 ];
 
 const ORDER_EXCLUSION_FIELDS = [
-  "order_d",
+  "order_id",
   "timestamp",
   "grand_total",
   "subtotal",
@@ -64,7 +64,6 @@ const ORDER_EXCLUSION_FIELDS = [
   "currency",
   "web_id",
   "status",
-  "isValid",
   "customer",
   "products",
   "ip_address",

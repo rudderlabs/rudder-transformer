@@ -133,5 +133,27 @@
     "destKey": "properties",
     "sourceKeys": ["traits.custom_fields", "context.traits.custom_fields"],
     "required": false
+  },
+  {
+    "destKey": "@force_optin",
+    "sourceKeys": ["traits.forceOpting" ,"context.traits.forceOptin"],
+    "required": false,
+    "metadata" :{
+      "multikeyMap": [
+        {
+          "sourceVal": false,
+          "destVal": false
+        },
+        {
+          "sourceVal": true,
+          "destVal": true
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "@merge",
+    "sourceKeys": [ "traits.merge" ,"context.traits.merge"],
+    "required" : false
   }
 ]

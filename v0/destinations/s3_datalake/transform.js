@@ -1,34 +1,24 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
-// redshift destination string limit, if the string length crosses 512 we will change data type to text which is varchar(max) in redshift
-const RSStringLimit = 512;
-const redshift = "rs";
+// use postgres providers for s3-datalake
+const s3datalakeProvider = "postgres";
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {
-  if (options.rsAlterStringToText === "true") {
-    if (val && val.length > RSStringLimit) {
-      return "text";
-    }
-  }
-  return "string";
-}
+function getDataTypeOverride(val, options) {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
-  const rsAlterStringToText =
-    event.request.query.rsAlterStringToText || "false";
-  const provider = redshift;
+  const provider = s3datalakeProvider;
   return processSingleMessage(event.message, {
+    metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,
     provider,
-    rsAlterStringToText,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null
   });
 }

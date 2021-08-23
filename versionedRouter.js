@@ -456,6 +456,7 @@ async function handleDestinationNetwork(version, destination, ctx) {
     return ctx.body;
   }
   let response;
+  logger.info("Request recieved for destination", destination);
   try {
     response = await destNetHandler.sendData(ctx.request.body);
   } catch (err) {

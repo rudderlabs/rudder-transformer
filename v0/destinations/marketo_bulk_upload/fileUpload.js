@@ -5,10 +5,12 @@ const {
   ABORTABLE_CODES,
   THROTTLED_CODES,
   MERKETO_FILE_SIZE,
-  getMarketoFilePath
+  getMarketoFilePath,
+  UPLOAD_FILE
 } = require("./util");
 const { CustomError, getHashFromArray } = require("../../util");
 const { send } = require("../../../adapters/network");
+const stats = require("../../../util/stats");
 
 const getHeaderFields = config => {
   const { columnFieldsMapping } = config;
@@ -21,7 +23,7 @@ const getHeaderFields = config => {
   return Object.keys(columnField);
 };
 
-const getFileData = async (input, config) => {
+const getFileData = (input, config) => {
   const messageArr = [];
   input.forEach(i => {
     const inputData = i;
@@ -52,23 +54,26 @@ const getFileData = async (input, config) => {
     }
     return response;
   });
+  const fileSize = Buffer.from(csv.join("\n")).length;
   if (csv.length > 1) {
     fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
     const readStream = fs.createReadStream(MARKETO_FILE_PATH);
     fs.unlinkSync(MARKETO_FILE_PATH);
-    return { readStream, successfulJobs, unsuccessfulJobs };
+    return { readStream, successfulJobs, unsuccessfulJobs, fileSize };
   }
-  return { successfulJobs, unsuccessfulJobs };
+  return { successfulJobs, unsuccessfulJobs, fileSize };
 };
 
 const getImportID = async (input, config) => {
   try {
     const formReq = new FormData();
     const { munchkinId } = config;
-    const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
-      input,
-      config
-    );
+    const {
+      readStream,
+      successfulJobs,
+      unsuccessfulJobs,
+      fileSize
+    } = getFileData(input, config);
     // create file for multipart form
     if (readStream) {
       formReq.append("format", "csv");
@@ -84,7 +89,10 @@ const getImportID = async (input, config) => {
           ...formReq.getHeaders()
         }
       };
+      const startTime = Date.now();
       const resp = await send(requestOptions);
+      const endTime = Date.now();
+      const requestTime = endTime - startTime;
       if (resp.success) {
         /**
        * 
@@ -108,6 +116,15 @@ const getImportID = async (input, config) => {
           resp.response.data.result[0].importId
         ) {
           const { importId } = resp.response.data.result[0];
+          stats.increment(UPLOAD_FILE, 1, {
+            integration: "Marketo_bulk_upload",
+            requestTime,
+            fileSize,
+            successfulJobs,
+            unsuccessfulJobs,
+            status: 200,
+            state: "Success"
+          });
           return { importId, successfulJobs, unsuccessfulJobs };
         }
         if (resp.response && resp.response.data) {
@@ -116,6 +133,15 @@ const getImportID = async (input, config) => {
             resp.response.data.errors[0].message ===
               "There are 10 imports currently being processed. Please try again later"
           ) {
+            stats.increment(UPLOAD_FILE, 1, {
+              integration: "Marketo_bulk_upload",
+              requestTime,
+              fileSize,
+              successfulJobs,
+              unsuccessfulJobs,
+              status: 500,
+              state: "Retryable"
+            });
             throw new CustomError(
               resp.response.data.errors[0].message || "Could not upload file",
               500,
@@ -129,24 +155,60 @@ const getImportID = async (input, config) => {
               ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
           ) {
             if (resp.response.data.errors[0].message === "Empty file") {
+              stats.increment(UPLOAD_FILE, 1, {
+                integration: "Marketo_bulk_upload",
+                requestTime,
+                fileSize,
+                successfulJobs,
+                unsuccessfulJobs,
+                status: 500,
+                state: "Retryable"
+              });
               throw new CustomError(
                 resp.response.data.errors[0].message || "Could not upload file",
                 500,
                 { successfulJobs, unsuccessfulJobs }
               );
             }
+            stats.increment(UPLOAD_FILE, 1, {
+              integration: "Marketo_bulk_upload",
+              requestTime,
+              fileSize,
+              successfulJobs,
+              unsuccessfulJobs,
+              status: 400,
+              state: "Abortable"
+            });
             throw new CustomError(
               resp.response.data.errors[0].message || "Could not upload file",
               400,
               { successfulJobs, unsuccessfulJobs }
             );
           } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+            stats.increment(UPLOAD_FILE, 1, {
+              integration: "Marketo_bulk_upload",
+              requestTime,
+              fileSize,
+              successfulJobs,
+              unsuccessfulJobs,
+              status: 500,
+              state: "Retryable"
+            });
             throw new CustomError(
               resp.response.response.statusText || "Could not upload file",
               500,
               { successfulJobs, unsuccessfulJobs }
             );
           }
+          stats.increment(UPLOAD_FILE, 1, {
+            integration: "Marketo_bulk_upload",
+            requestTime,
+            fileSize,
+            successfulJobs,
+            unsuccessfulJobs,
+            status: 500,
+            state: "Retryable"
+          });
           throw new CustomError(
             resp.response.response.statusText || "Error during uploading file",
             500,
@@ -157,6 +219,11 @@ const getImportID = async (input, config) => {
     }
     return { successfulJobs, unsuccessfulJobs };
   } catch (err) {
+    stats.increment(UPLOAD_FILE, 1, {
+      integration: "Marketo_bulk_upload",
+      status: err.response.status,
+      errorMessage: err.message || "Error during uploading file"
+    });
     throw new CustomError(
       err.message || "Error during uploading file",
       err.response.status

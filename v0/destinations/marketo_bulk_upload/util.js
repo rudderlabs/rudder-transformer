@@ -14,7 +14,7 @@ const RETRYABLE_CODES = [
 ];
 const THROTTLED_CODES = [502, 606, 607, 608, 615];
 
-const MARKETO_FILE_SIZE = 1073741824;
+const MARKETO_FILE_SIZE = 10485760;
 const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv`;
 
 const POLL_ACTIVITY = "marketo_bulk_upload_polling";

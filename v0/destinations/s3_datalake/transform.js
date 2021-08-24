@@ -1,7 +1,7 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
 // use postgres providers for s3-datalake
-const s3datalakeProvider = "postgres";
+const s3datalakeProvider = "s3_datalake";
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);

@@ -26,7 +26,7 @@
   {
     "destKey": "identity_email",
     "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
-    "required": false
+    "required": true
   },
   {
     "destKey": "identity_account_id",

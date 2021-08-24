@@ -18,6 +18,9 @@ let successfulVersions = [];
 let failedVersions = [];
 let finalResults = {};
 const versionIdsMap = {
+  "1iI4BsKlN9bk9tbma6RMG1NAl96": "1uecb0KPUjewpswma6JRQmNuUiB",
+  "1sj3iELDQ0F34CPoMmUzldXJ7Ke": "1uecawYb9QCFWOuR41Hiz1laJAg",
+  "1tcUcd97ENXdJTJTWmj96wtCOfq": "1tcUcjHv3QXgOGMroYl2Dz4frgF",
   "1kMS1g7jakfkPbyXM46i6m9rdq5": "1uecaaVRNOypgusF2DraeAgIIGp",
   "1fHddAUiVeBwp2SwZ0aG71X454q": "1uecaeOsMHcwnySPZbfjJYXpzpP",
   "1htBITAbZb6oMHymeum7UF7xRzd": "1uecaaj2fdUA4VbMuhk7akkRxLd",
@@ -32,7 +35,7 @@ const versionIdsMap = {
   "1iUDrOIvGBZwji5SeKtVgNmG6UR": "1uecahgeDgRdzvFrEkW9iRBL92H",
   "1hvMxM8v2BzhlXQWj1bLUxvulIP": "1uecaejuXoeDAYaZNlF9cVlahNL",
   "1o2mvdEPpuDYu3z6UeW0iHBMffG": "1uecayY1yudoMOlIx8SCcASyMbQ",
-  "1nfoA7DejDNssSrs4bppo6lOmOP": "1uecazLuJFMmc6EpFJRcJM3rY9k",
+  "1wVXJRkXjmv0zWmWf0Q1NkWuJnK": "1x8MHXSbaoeddzcwnEkaTSyqCM2",
   "1nfq4Xwi3w3nAzDtwZq3JTLOj3Z": "1uecb21QsxkZ2QSYTfVSPNxYYW8",
   "1qoFjAV3SKvqkgrEYvGGS0ykRSr": "1uecb1KoHxeab28BcDExwypi8uU",
   "1pUJhDv9xc8BrmKYdbZJNAzAvyA": "1uecb0b8ZIMtgJKoezDLh8GdBRG",

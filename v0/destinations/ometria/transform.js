@@ -121,9 +121,9 @@ const trackResponseBuilder = (message, { Config }) => {
       firstname: getFieldValueFromMessage(message, "firstName"),
       lastname: getFieldValueFromMessage(message, "lastName")
     });
-    if (!customer.id) {
+    if (!customer.id && !customer.email) {
       throw new CustomError(
-        "Customer id is required for order related event.",
+        "Customer id and email is required for order related event.",
         400
       );
     }

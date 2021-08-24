@@ -28,7 +28,6 @@ function toSafeDBString(provider, name = "") {
 }
 
 function safeTableName(provider, name = "") {
-  console.log("lulll - tablesafe", name)
   let tableName = name;
   if (tableName === "") {
     tableName = "STRINGEMPTY";

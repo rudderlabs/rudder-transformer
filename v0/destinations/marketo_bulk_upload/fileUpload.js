@@ -4,7 +4,7 @@ const {
   getAccessToken,
   ABORTABLE_CODES,
   THROTTLED_CODES,
-  MERKETO_FILE_SIZE,
+  MARKETO_FILE_SIZE,
   getMarketoFilePath,
   UPLOAD_FILE
 } = require("./util");
@@ -56,7 +56,7 @@ const getFileData = (input, config) => {
     const response = headerArr
       .map(fieldName => JSON.stringify(Object.values(row)[0][fieldName], ""))
       .join(",");
-    if (csvSize.length <= MERKETO_FILE_SIZE) {
+    if (csvSize.length <= MARKETO_FILE_SIZE) {
       csv.push(response);
       successfulJobs.push(Object.keys(row)[0]);
     } else {

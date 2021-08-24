@@ -52,7 +52,7 @@ const getFileData = (input, config) => {
   const MARKETO_FILE_PATH = getMarketoFilePath();
   startTime = Date.now();
   messageArr.map(row => {
-    const csvSize = JSON.stringify(csv).replace(/[\[\]\,\"]/g, ""); // stringify and remove all "stringification" extra data
+    const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
     const response = headerArr
       .map(fieldName => JSON.stringify(Object.values(row)[0][fieldName], ""))
       .join(",");
@@ -83,6 +83,7 @@ const getFileData = (input, config) => {
     stats.gauge("marketo_bulk_upload_upload_file_size", fileSize, {
       integration: "Marketo_bulk_upload"
     });
+
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
   return { successfulJobs, unsuccessfulJobs };

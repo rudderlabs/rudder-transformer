@@ -45,6 +45,20 @@ const identifyResponseBuilder = (message, { Config }) => {
       payload.properties = customFields;
     }
   }
+
+  if (payload.channels && isEmptyObject(payload.channels)) {
+    delete payload.channels;
+  } else if (
+    payload.channels &&
+    payload.channels.sms &&
+    isEmptyObject(payload.channels.sms)
+  ) {
+    delete payload.channels.sms;
+    if (isEmptyObject(payload.channels)) {
+      delete payload.channels;
+    }
+  }
+
   if (
     payload.marketing_optin &&
     !MARKETING_OPTIN_LIST.includes(payload.marketing_optin)

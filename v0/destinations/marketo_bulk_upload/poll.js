@@ -1,20 +1,104 @@
-const axios = require("axios");
 const { removeUndefinedValues } = require("../../util");
-const { getAccessToken } = require("./util");
+const {
+  getAccessToken,
+  ABORTABLE_CODES,
+  THROTTLED_CODES,
+  POLL_ACTIVITY
+} = require("./util");
+const { send } = require("../../../adapters/network");
+const { CustomError } = require("../../util");
+const stats = require("../../../util/stats");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
 
-  const resp = await axios.get(
-    `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
+  // To see the status of the import job polling is done
+  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
+  const requestOptions = {
+    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
-  );
-  return resp;
+  };
+  const startTime = Date.now();
+  const resp = await send(requestOptions);
+  const endTime = Date.now();
+  const requestTime = endTime - startTime;
+  if (resp.success) {
+    if (resp.response && resp.response.data.success) {
+      stats.increment(POLL_ACTIVITY, 1, {
+        integration: "Marketo_bulk_upload",
+        requestTime,
+        status: 200,
+        state: "Success"
+      });
+      return resp.response;
+    }
+    // DOC: https://developers.marketo.com/rest-api/error-codes/
+    if (resp.response && resp.response.data) {
+      // Abortable jobs
+      // Errors from polling come as
+      /**
+       * {
+    "requestId": "e42b#14272d07d78",
+    "success": false,
+    "errors": [
+        {
+            "code": "601",
+            "message": "Unauthorized"
+        }
+    ]
+}
+       */
+      if (
+        resp.response.data.errors[0] &&
+        ((resp.response.data.errors[0].code >= 1000 &&
+          resp.response.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+      ) {
+        stats.increment(POLL_ACTIVITY, 1, {
+          integration: "Marketo_bulk_upload",
+          requestTime,
+          status: 400,
+          state: "Abortable"
+        });
+        throw new CustomError(
+          resp.response.data.errors[0].message || "Could not poll status",
+          400
+        );
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+        stats.increment(POLL_ACTIVITY, 1, {
+          integration: "Marketo_bulk_upload",
+          requestTime,
+          status: 500,
+          state: "Retryable"
+        });
+        throw new CustomError(
+          resp.response.response.statusText || "Could not poll status",
+          500
+        );
+      }
+      stats.increment(POLL_ACTIVITY, 1, {
+        integration: "Marketo_bulk_upload",
+        requestTime,
+        status: 500,
+        state: "Retryable"
+      });
+      throw new CustomError(
+        resp.response.response.statusText || "Error during polling status",
+        500
+      );
+    }
+  }
+  stats.increment(POLL_ACTIVITY, 1, {
+    integration: "Marketo_bulk_upload",
+    requestTime,
+    status: 400,
+    state: "Abortable"
+  });
+  throw new CustomError("Could not poll status", 400);
 };
 
 const responseHandler = async event => {
@@ -27,6 +111,27 @@ const responseHandler = async event => {
   let hasWarnings;
   let warningJobsURL;
   let errorResponse;
+  // Server expects :
+  /**
+  * 
+  * {
+    "success": true,
+    "statusCode": 200,
+    "hasFailed": true,
+    "failedJobsURL": "<some-url>", // transformer URL
+    "hasWarnings": false,
+    "warningJobsURL": "<some-url>", // transformer URL
+} // Succesful Upload     
+{
+    "success": false,
+    "statusCode": 400,
+    "errorResponse": <some-error-response>
+} // Failed Upload
+{
+    "success": false,
+} // Importing or Queue
+
+  */
   if (pollResp && pollResp.data) {
     pollSuccess = pollResp.data.success;
     if (pollSuccess) {
@@ -44,7 +149,6 @@ const responseHandler = async event => {
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === "Importing" || status === "Queued") {
         success = false;
-        statusCode = 500;
       }
     } else {
       success = false;

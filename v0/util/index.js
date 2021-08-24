@@ -295,27 +295,6 @@ const defaultRequestConfig = () => {
   };
 };
 
-// Request Configs for marketo bulk uploads
-
-const marketoBulkUploadRequestConfig = () => {
-  return {
-    version: "1",
-    type: "REST",
-    method: "POST",
-    endpoint: "/fileUpload",
-    headers: {},
-    params: {},
-    body: {
-      JSON: {},
-      XML: {},
-      FORM: {},
-      CSVRow: ""
-    },
-    files: {},
-    requestOptions: {}
-  };
-};
-
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -1031,9 +1010,9 @@ function addExternalIdToTraits(message) {
 }
 
 class CustomError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode, metadata) {
     super(message);
-    this.response = { status: statusCode };
+    this.response = { status: statusCode, metadata };
   }
 }
 
@@ -1144,7 +1123,6 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
-  marketoBulkUploadRequestConfig,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

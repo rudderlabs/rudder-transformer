@@ -545,7 +545,10 @@ router.post("/batch", ctx => {
 
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getDestFileUploadHandler("v0", destType);
+  const destFileUploadHandler = getDestFileUploadHandler(
+    "v0",
+    destType.toLowerCase()
+  );
 
   if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
     ctx.status = 404;
@@ -557,8 +560,9 @@ const fileUpload = async ctx => {
     response = await destFileUploadHandler.processFileData(ctx.request.body);
   } catch (error) {
     response = {
-      statusCode: 400,
-      error: error.message || "Error occurred while processing payload."
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload.",
+      metadata: error.response ? error.response.metadata : null
     };
   }
   ctx.body = response;
@@ -567,7 +571,10 @@ const fileUpload = async ctx => {
 
 const pollStatus = async ctx => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getPollStatusHandler("v0", destType);
+  const destFileUploadHandler = getPollStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
     ctx.status = 404;
@@ -578,7 +585,7 @@ const pollStatus = async ctx => {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
   } catch (error) {
     response = {
-      statusCode: 400,
+      statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occurred while processing payload."
     };
   }
@@ -588,7 +595,10 @@ const pollStatus = async ctx => {
 
 const getJobStatus = async (ctx, type) => {
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getJobStatusHandler("v0", destType);
+  const destFileUploadHandler = getJobStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
     ctx.status = 404;
@@ -603,7 +613,7 @@ const getJobStatus = async (ctx, type) => {
     );
   } catch (error) {
     response = {
-      statusCode: 400,
+      statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occurred while processing payload."
     };
   }

@@ -290,8 +290,7 @@ const defaultRequestConfig = () => {
       XML: {},
       FORM: {}
     },
-    files: {},
-    requestOptions: {}
+    files: {}
   };
 };
 
@@ -311,8 +310,7 @@ const marketoBulkUploadRequestConfig = () => {
       FORM: {},
       CSVRow: ""
     },
-    files: {},
-    requestOptions: {}
+    files: {}
   };
 };
 
@@ -330,8 +328,7 @@ const defaultBatchRequestConfig = () => {
         XML: {},
         FORM: {}
       },
-      files: {},
-      requestOptions: {}
+      files: {}
     }
   };
 };

@@ -20,11 +20,6 @@
     "required": false
   },
   {
-    "destKey": "marketing_optin",
-    "sourceKeys": ["traits.marketinOptin", "context.traits.marketinOptin"],
-    "required": false
-  },
-  {
     "destKey": "customer_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
@@ -94,11 +89,6 @@
       "traits.timestampUnsubscribed",
       "context.traits.timestampUnsubscribed"
     ],
-    "required": false
-  },
-  {
-    "destKey": "channels",
-    "sourceKeys": ["traits.channels", "context.traits.channels"],
     "required": false
   },
   {

@@ -1,3 +1,5 @@
+/* eslint-disable one-var */
+/* eslint-disable camelcase */
 const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
@@ -11,7 +13,9 @@ const {
   defaultRequestConfig,
   getValueFromMessage,
   isEmptyObject,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getIntegrationsObj,
+  isObject
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -46,25 +50,35 @@ const identifyResponseBuilder = (message, { Config }) => {
     }
   }
 
-  if (payload.channels && isEmptyObject(payload.channels)) {
-    delete payload.channels;
-  } else if (
-    payload.channels &&
-    payload.channels.sms &&
-    isEmptyObject(payload.channels.sms)
-  ) {
-    delete payload.channels.sms;
-    if (isEmptyObject(payload.channels)) {
-      delete payload.channels;
+  let { marketingOptin, allowMarketing, allowTransactional } = Config;
+  let dt_updated_marketing, dt_updated_transactional;
+
+  const integrationsObj = getIntegrationsObj(message, "ometria");
+  if (integrationsObj && isObject(integrationsObj)) {
+    if (
+      integrationsObj.marketingOptin &&
+      MARKETING_OPTIN_LIST.includes(integrationsObj.marketingOptin)
+    ) {
+      marketingOptin = integrationsObj.marketingOptin;
     }
+
+    allowMarketing = integrationsObj.allowMarketing || allowMarketing;
+    allowTransactional =
+      integrationsObj.allowTransactional || allowTransactional;
+    dt_updated_marketing = integrationsObj.dt_updated_marketing;
+    dt_updated_transactional = integrationsObj.dt_updated_transactional;
   }
 
-  if (
-    payload.marketing_optin &&
-    !MARKETING_OPTIN_LIST.includes(payload.marketing_optin)
-  ) {
-    payload.marketing_optin = null;
-  }
+  payload.marketing_optin = marketingOptin;
+  payload.channels = {
+    sms: removeUndefinedAndNullValues({
+      dt_updated_marketing,
+      dt_updated_transactional,
+      allow_marketing: allowMarketing,
+      allow_transactional: allowTransactional
+    })
+  };
+
   if (payload.phone_number && !isValidPhone(payload.phone_number)) {
     payload.phone_number = null;
     logger.error("Phone number format incorrect.");
@@ -75,10 +89,16 @@ const identifyResponseBuilder = (message, { Config }) => {
     "context.traits.name"
   ]);
   if (name) {
-    const [fName, mName, lName] = name.split(" ");
-    payload.firstname = fName || "";
-    payload.middlename = mName || "";
-    payload.lastname = lName || "";
+    const splitArr = name.split(" ");
+    const [fName, mName, lName] = splitArr;
+    if (splitArr.length <= 2) {
+      payload.firstname = fName || null;
+      payload.lastname = mName || null;
+    } else {
+      payload.firstname = fName || null;
+      payload.middlename = mName || null;
+      payload.lastname = lName || null;
+    }
   }
 
   const response = defaultRequestConfig();

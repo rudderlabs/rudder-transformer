@@ -1,4 +1,5 @@
-jest.mock("axios");
+// jest.mock("axios");
+const { mockaxios } = require("../__mocks__/network");
 const integration = "marketo";
 const name = "Marketo";
 const version = "v0";
@@ -28,6 +29,17 @@ const outputRouterDataFile = fs.readFileSync(
 );
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
+
+jest.mock("../adapters/network", () => {
+  const originalModule = jest.requireActual("../adapters/network");
+
+  //Mock the default export and named export 'send'
+  return {
+    __esModule: true,
+    ...originalModule,
+    send: jest.fn(mockaxios)
+  };
+});
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {

@@ -17,10 +17,14 @@ function toSafeDBString(provider, name = "") {
     parsedStr = `_${name}`;
   }
   parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");
-  if (provider === "postgres") {
-    parsedStr = parsedStr.substr(0, 63);
-  } else parsedStr = parsedStr.substr(0, 127);
-  return parsedStr;
+  switch (provider) {
+    case "s3_datalake":
+      return parsedStr
+    case "postgres":
+      return parsedStr.substr(0, 63);
+    default:
+      return parsedStr.substr(0, 127);
+  }
 }
 
 function safeTableName(provider, name = "") {
@@ -31,7 +35,7 @@ function safeTableName(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
-  if (provider === "rs") {
+  if (provider === "rs" || provider === "s3_datalake") {
     tableName = tableName.toLowerCase();
   }
   if (provider === "postgres") {
@@ -54,7 +58,7 @@ function safeColumnName(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
-  if (provider === "rs") {
+  if (provider === "rs" || provider === "s3_datalake") {
     columnName = columnName.toLowerCase();
   }
   if (provider === "postgres") {

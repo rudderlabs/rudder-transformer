@@ -1,5 +1,6 @@
 const get = require("get-value");
 const set = require("set-value");
+const axios = require("axios");
 
 const { EventType } = require("../../../constants");
 const {
@@ -22,7 +23,6 @@ const {
   CustomError
 } = require("../../util");
 const logger = require("../../../logger");
-const { sendGetRequest, sendPostRequest } = require("./nethandler");
 
 let endPoint;
 
@@ -61,7 +61,7 @@ async function createUserFields(url, config, newFields, fieldJson) {
     };
 
     try {
-      const response = await sendPostRequest(url, fieldData, config);
+      const response = await axios.post(url, fieldData, config);
       if (response.status !== 201) {
         logger.debug("Failed to create User Field : ", field);
       }
@@ -85,7 +85,7 @@ async function checkAndCreateUserFields(
   const config = { headers };
 
   try {
-    const response = await sendGetRequest(url, config);
+    const response = await axios.get(url, config);
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
@@ -153,7 +153,7 @@ async function getUserId(message, headers, type) {
   const config = { headers };
 
   try {
-    const resp = await sendGetRequest(url, config);
+    const resp = await axios.get(url, config);
     if (!resp || !resp.data || resp.data.count === 0) {
       logger.debug("User not found");
       return undefined;
@@ -173,7 +173,7 @@ async function getUserId(message, headers, type) {
 async function isUserAlreadyAssociated(userId, orgId, headers) {
   const url = `${endPoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
-  const response = await sendGetRequest(url, config);
+  const response = await axios.get(url, config);
   if (
     response.data &&
     response.data.organization_memberships.length > 0 &&
@@ -202,7 +202,7 @@ async function createUser(message, headers, destinationConfig, type) {
   const payload = { user: userObject };
 
   try {
-    const resp = await sendPostRequest(url, payload, config);
+    const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`Couldn't create User: ${name}`);
@@ -300,7 +300,7 @@ async function createOrganization(
   const config = { headers };
 
   try {
-    const resp = await sendPostRequest(url, payload, config);
+    const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.organization) {
       logger.debug(`Couldn't create Organization: ${message.traits.name}`);
@@ -357,7 +357,7 @@ async function processIdentify(message, destinationConfig, headers) {
       const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const response = await sendGetRequest(membershipUrl, config);
+        const response = await axios.get(membershipUrl, config);
         if (
           response.data &&
           response.data.organization_memberships &&
@@ -399,7 +399,7 @@ async function processTrack(message, destinationConfig, headers) {
 
   let url = `${endPoint}users/search.json?query=${userEmail}`;
   const config = { headers };
-  const userResponse = await sendGetRequest(url, config);
+  const userResponse = await axios.get(url, config);
   if (!userResponse || !userResponse.data || userResponse.data.count === 0) {
     const { zendeskUserId, email } = await createUser(
       message,
@@ -550,6 +550,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

@@ -135,19 +135,7 @@
   {
     "destKey": "@force_optin",
     "sourceKeys": ["traits.forceOptin", "context.traits.forceOptin"],
-    "required": false,
-    "metadata": {
-      "multikeyMap": [
-        {
-          "sourceVal": false,
-          "destVal": false
-        },
-        {
-          "sourceVal": true,
-          "destVal": true
-        }
-      ]
-    }
+    "required": false
   },
   {
     "destKey": "@merge",

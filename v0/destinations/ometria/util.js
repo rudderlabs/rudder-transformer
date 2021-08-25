@@ -38,7 +38,7 @@ const createVariantList = variants => {
   return variantList;
 };
 
-const createList = items => {
+const createLineItems = items => {
   const itemList = [];
   if (items.length > 0) {
     items.forEach((item, index) => {
@@ -88,6 +88,6 @@ const createList = items => {
 
 module.exports = {
   isValidTimestamp,
-  createList,
+  createLineItems,
   isValidPhone
 };

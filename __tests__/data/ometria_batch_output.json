@@ -46,7 +46,9 @@
           "apiKey": "trueapikey"
         }
       }
-    }],[
+    }
+  ],
+  [
     {
       "batchedRequest": {
         "body": {
@@ -76,7 +78,7 @@
                   "product_id": "prod123",
                   "quantity": 4,
                   "subtotal": 10,
-                  "variant_options":[
+                  "variant_options": [
                     {
                       "type": "size",
                       "id": "newid",

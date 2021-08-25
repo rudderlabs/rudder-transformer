@@ -31,13 +31,19 @@
         "files": {},
         "method": "POST",
         "params": {},
-        "headers": { "X-Ometria-Auth": "trueapikey"},
+        "headers": { "X-Ometria-Auth": "trueapikey" },
         "version": "1",
         "endpoint": "https://api.ometria.com/v2/push"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a", "Config": {"apiKey": "trueapikey"} }
-    }],[
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "apiKey": "trueapikey" }
+      }
+    }
+  ],
+  [
     {
       "message": {
         "body": {
@@ -67,7 +73,7 @@
                   "product_id": "prod123",
                   "quantity": 4,
                   "subtotal": 10,
-                  "variant_options":[
+                  "variant_options": [
                     {
                       "type": "size",
                       "id": "newid",
@@ -83,12 +89,16 @@
         "files": {},
         "method": "POST",
         "params": {},
-        "headers": { "X-Ometria-Auth": "trueapikey"},
+        "headers": { "X-Ometria-Auth": "trueapikey" },
         "version": "1",
         "endpoint": "https://api.ometria.com/v2/push"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a", "Config": {"apiKey": "trueapikey"} }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "apiKey": "trueapikey" }
+      }
     }
   ]
 ]

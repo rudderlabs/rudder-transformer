@@ -77,7 +77,7 @@
         "traits": {
           "listingId": "test1",
           "email": "testone@gmail.com",
-          "name" : "test one two",
+          "name": "test one two",
           "field1": "val1",
           "ip": "0.0.0.0"
         },
@@ -524,7 +524,7 @@
             "product_id": "prod123",
             "quantity": 4,
             "subtotal": 10,
-            "variant_options":[
+            "variant_options": [
               {
                 "type": "size",
                 "id": "newid",
@@ -599,13 +599,13 @@
         "currency": "INR",
         "field1": "val1",
         "billing_address": "Ba",
-        "shipping_address":"Sa",
+        "shipping_address": "Sa",
         "products": [
           {
             "product_id": "prod123",
             "quantity": 4,
             "subtotal": 10,
-            "variant_options":[
+            "variant_options": [
               {
                 "type": "size",
                 "id": "newid",

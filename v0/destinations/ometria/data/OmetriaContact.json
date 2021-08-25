@@ -7,7 +7,7 @@
   {
     "destKey":"id",
     "sourceKeys": ["traits.listingId","context.traits.listingId"],
-    "required": true
+    "required": false
   },
   {
     "destKey": "phone_number",

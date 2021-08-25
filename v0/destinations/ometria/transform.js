@@ -51,27 +51,30 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   let { marketingOptin, allowMarketing, allowTransactional } = Config;
+  let dt_updated_marketing, dt_updated_transactional;
 
   const integrationsObj = getIntegrationsObj(message, "ometria");
-  if (!integrationsObj || !integrationsObj.listingId) {
-    throw new CustomError(
-      "listingId in integrations object is required for identify",
-      400
-    );
-  }
-  if (
-    integrationsObj.marketingOptin &&
-    MARKETING_OPTIN_LIST.includes(integrationsObj.marketingOptin)
-  ) {
-    marketingOptin = integrationsObj.marketingOptin;
+  if (integrationsObj) {
+    if (
+      integrationsObj.marketingOptin &&
+      MARKETING_OPTIN_LIST.includes(integrationsObj.marketingOptin)
+    ) {
+      marketingOptin = integrationsObj.marketingOptin;
+    }
+    if (integrationsObj.listingId) {
+      payload.id = integrationsObj.listingId;
+    }
+
+    allowMarketing = integrationsObj.allowMarketing || allowMarketing;
+    allowTransactional =
+      integrationsObj.allowTransactional || allowTransactional;
+    dt_updated_marketing = integrationsObj.dt_updated_marketing;
+    dt_updated_transactional = integrationsObj.dt_updated_marketing;
   }
 
-  payload.id = integrationsObj.listingId;
-  allowMarketing = integrationsObj.allowMarketing || allowMarketing;
-  allowTransactional = integrationsObj.allowTransactional || allowTransactional;
-  const { dt_updated_marketing } = integrationsObj;
-  const { dt_updated_transactional } = integrationsObj;
-
+  if (!payload.id) {
+    throw new CustomError("listingId is required for identify", 400);
+  }
   payload.marketing_optin = marketingOptin;
   payload.channels = {
     sms: removeUndefinedAndNullValues({

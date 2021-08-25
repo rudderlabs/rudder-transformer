@@ -43,8 +43,8 @@ const handleDestinationResponse = (dresponse, metadata) => {
     }
     const message = handledResponse.statusText;
     const destination = {
-      response: handledResponse,
-      status: handledResponse.status
+      ...handledResponse,
+      success: true
     };
     const apiLimit = {
       available: "",

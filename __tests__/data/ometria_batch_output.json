@@ -1,0 +1,112 @@
+[
+  [
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": [
+            {
+              "@type": "contact",
+              "id": "test1",
+              "customer_id": "userId1",
+              "email": "testone@gmail.com",
+              "firstname": "test",
+              "lastname": "one",
+              "marketing_optin": "EXPLICITLY_OPTEDOUT",
+              "properties": {
+                "field1": "val1",
+                "ip": "0.0.0.0"
+              },
+              "channels": {
+                "sms": {
+                  "allow_marketing": false,
+                  "allow_transactional": false
+                }
+              }
+            }
+          ]
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "requestOptions": {},
+        "headers": {
+          "X-Ometria-Auth": "trueapikey"
+        },
+        "version": "1",
+        "endpoint": "https://api.ometria.com/v2/push"
+      },
+      "metadata": [{ "job_id": 1 }],
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "apiKey": "trueapikey"
+        }
+      }
+    }],[
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": [
+            {
+              "@type": "order",
+              "id": "orderId1",
+              "grand_total": 1000,
+              "properties": {
+                "field1": "val1"
+              },
+              "currency": "INR",
+              "timestamp": "2017-05-01T14:00:00Z",
+              "customer": {
+                "id": "userId1",
+                "email": "testone@gmail.com",
+                "firstname": "test",
+                "lastname": "one"
+              },
+              "ip_address": "0.0.0.0",
+              "is_valid": true,
+              "status": "complete",
+              "lineitems": [
+                {
+                  "product_id": "prod123",
+                  "quantity": 4,
+                  "subtotal": 10,
+                  "variant_options":[
+                    {
+                      "type": "size",
+                      "id": "newid",
+                      "label": "5"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "requestOptions": {},
+        "headers": {
+          "X-Ometria-Auth": "trueapikey"
+        },
+        "version": "1",
+        "endpoint": "https://api.ometria.com/v2/push"
+      },
+      "metadata": [{ "job_id": 1 }],
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "apiKey": "trueapikey"
+        }
+      }
+    }
+  ]
+]

@@ -18,6 +18,7 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "marketinOptin",
   "userIdOnly",
   "prefix",
+  "name",
   "first_name",
   "firstName",
   "last_name",

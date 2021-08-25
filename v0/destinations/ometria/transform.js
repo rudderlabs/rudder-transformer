@@ -31,7 +31,7 @@ const {
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const { isValidTimestamp, createList, isValidPhone } = require("./util");
+const { isValidTimestamp, createLineItems, isValidPhone } = require("./util");
 
 const identifyResponseBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -49,7 +49,9 @@ const identifyResponseBuilder = (message, { Config }) => {
       payload.properties = customFields;
     }
   }
-
+  if (payload["@force_optin"] && typeof payload["@force_optin"] !== "boolean") {
+    payload["@force_optin"] = null;
+  }
   let { marketingOptin, allowMarketing, allowTransactional } = Config;
   let dt_updated_marketing, dt_updated_transactional;
 
@@ -182,7 +184,7 @@ const trackResponseBuilder = (message, { Config }) => {
     }
     const items = getValueFromMessage(message, "properties.products");
     if (items) {
-      const lineitems = createList(items);
+      const lineitems = createLineItems(items);
       if (lineitems && lineitems.length > 0) {
         payload.lineitems = lineitems;
       }

@@ -5,6 +5,11 @@
     "required": true
   },
   {
+    "destKey":"id",
+    "sourceKeys": ["traits.listingId","context.traits.listingId"],
+    "required": true
+  },
+  {
     "destKey": "phone_number",
     "sourceKeys": ["traits.phoneNumber", "context.traits.phoneNumber"],
     "required": false

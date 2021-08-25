@@ -14,8 +14,7 @@ const {
   getValueFromMessage,
   isEmptyObject,
   getFieldValueFromMessage,
-  getIntegrationsObj,
-  isObject
+  getIntegrationsObj
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -51,23 +50,26 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   let { marketingOptin, allowMarketing, allowTransactional } = Config;
-  let dt_updated_marketing, dt_updated_transactional;
 
   const integrationsObj = getIntegrationsObj(message, "ometria");
-  if (integrationsObj && isObject(integrationsObj)) {
-    if (
-      integrationsObj.marketingOptin &&
-      MARKETING_OPTIN_LIST.includes(integrationsObj.marketingOptin)
-    ) {
-      marketingOptin = integrationsObj.marketingOptin;
-    }
-
-    allowMarketing = integrationsObj.allowMarketing || allowMarketing;
-    allowTransactional =
-      integrationsObj.allowTransactional || allowTransactional;
-    dt_updated_marketing = integrationsObj.dt_updated_marketing;
-    dt_updated_transactional = integrationsObj.dt_updated_transactional;
+  if (!integrationsObj || !integrationsObj.listingId) {
+    throw new CustomError(
+      "listingId in integrations object is required for identify",
+      400
+    );
   }
+  if (
+    integrationsObj.marketingOptin &&
+    MARKETING_OPTIN_LIST.includes(integrationsObj.marketingOptin)
+  ) {
+    marketingOptin = integrationsObj.marketingOptin;
+  }
+
+  payload.id = integrationsObj.listingId;
+  allowMarketing = integrationsObj.allowMarketing || allowMarketing;
+  allowTransactional = integrationsObj.allowTransactional || allowTransactional;
+  const { dt_updated_marketing } = integrationsObj;
+  const { dt_updated_transactional } = integrationsObj;
 
   payload.marketing_optin = marketingOptin;
   payload.channels = {

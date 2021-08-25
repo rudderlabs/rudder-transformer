@@ -14,7 +14,8 @@ const {
   getValueFromMessage,
   isEmptyObject,
   getFieldValueFromMessage,
-  getIntegrationsObj
+  getIntegrationsObj,
+  isObject
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -172,6 +173,14 @@ const trackResponseBuilder = (message, { Config }) => {
       if (lineitems && lineitems.length > 0) {
         payload.lineitems = lineitems;
       }
+    }
+    if (payload.billing_address && !isObject(payload.billing_address)) {
+      payload.billing_address = null;
+      logger.error("Billing Address should be an object.");
+    }
+    if (payload.shipping_address && !isObject(payload.shipping_address)) {
+      payload.shipping_address = null;
+      logger.error("Shipping Address should be an object.");
     }
     const response = defaultRequestConfig();
     response.method = defaultPostRequestConfig.requestMethod;

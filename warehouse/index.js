@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
+const { v4: uuidv4 } = require("uuid");
 
 const {
   isObject,
@@ -178,7 +179,10 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
+    if (
+      isObject(input[key]) &&
+      (options.sourceCategory !== "cloud" || level < 3)
+    ) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -195,10 +199,14 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
-      if (options.sourceCategory === 'cloud' && level >= 3 && isObject(input[key])) {
+      if (
+        options.sourceCategory === "cloud" &&
+        level >= 3 &&
+        isObject(input[key])
+      ) {
         val = JSON.stringify(val);
       }
-      
+
       const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
@@ -244,7 +252,7 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event)
+    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -260,7 +268,8 @@ const fullEventColumnTypeByProvider = {
   postgres: "json",
   mssql: "json",
   azure_synapse: "json",
-  clickhouse: "string"
+  clickhouse: "string",
+  s3_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
@@ -460,6 +469,18 @@ function processWarehouseMessage(message, options) {
 
   const responses = [];
   const eventType = message.type.toLowerCase();
+
+  if (isBlank(message.messageId)) {
+    const randomID = uuidv4();
+    message.messageId = `auto-${randomID}`;
+  }
+
+  if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
+    message.receivedAt =
+      options.metadata && options.metadata.receivedAt
+        ? options.metadata.receivedAt
+        : new Date().toISOString();
+  }
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {

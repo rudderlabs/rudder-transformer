@@ -1,7 +1,7 @@
 const get = require("get-value");
 const axios = require("axios");
 const md5 = require("md5");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   getEndpoint,
   destinationConfigKeys,
@@ -14,7 +14,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -158,6 +159,13 @@ async function getPayload(
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
+  
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if(mappedToDestination) {
+    addExternalIdToTraits(message);
+    return getFieldValueFromMessage(message, "traits");
+  }
+
   const traits = getFieldValueFromMessage(message, "traits");
 
   const updateSubscription = get(message, "integrations.MailChimp")

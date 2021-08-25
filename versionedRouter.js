@@ -1,6 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -8,10 +9,12 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
+
 const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
 const heapdump = require("heapdump");
 const { updateTransformationCodeV1 } = require("./util/customTransforrmationsStore");
+
 require("dotenv").config();
 
 let successfulVersions = [];
@@ -117,6 +120,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
+const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
 
 const router = new Router();
 
@@ -132,6 +136,27 @@ const getDestHandler = (version, dest) => {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
+};
+
+const getDestNetHander = (version, dest) => {
+  const destination = _.toLower(dest);
+  let destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
+  if (!destNetHandler && !destNetHandler.sendData) {
+    destNetHandler = require("./adapters/genericnethandler");
+  }
+  return destNetHandler;
+};
+
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
 const getSourceHandler = (version, source) => {
@@ -539,6 +564,28 @@ if (startSourceTransformer) {
   // });
 }
 
+async function handleDestinationNetwork(version, ctx) {
+  const { destination } = ctx.request.body;
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.sendData) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support transformer proxy`;
+    return ctx.body;
+  }
+  const resp = await destNetHandler.sendData(ctx.request.body);
+  ctx.body = { output: resp };
+  return ctx.body;
+}
+
+if (networkMode) {
+  versions.forEach(version => {
+    router.post("/network/proxy", async ctx => {
+      await handleDestinationNetwork(version, ctx);
+    });
+  });
+}
+
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
@@ -609,7 +656,7 @@ router.post("/publish", async ctx => {
 
 router.get("/heapdump", ctx => {
   heapdump.writeSnapshot((err, filename) => {
-    console.log("Heap dump written to", filename);
+    logger.debug("Heap dump written to", filename);
   });
   ctx.body = "OK";
 });

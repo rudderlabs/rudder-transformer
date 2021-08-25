@@ -25,6 +25,16 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
         "ip": "0.0.0.0",
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -32,8 +42,8 @@
         },
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "14.4.1"
         },
         "screen": {
           "density": 2
@@ -87,6 +97,16 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "Android",
+          "attTrackingStatus": 2
+        },
         "ip": "0.0.0.0",
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -94,8 +114,8 @@
         },
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "Android",
+          "version": "9"
         },
         "screen": {
           "density": 2

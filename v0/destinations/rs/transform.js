@@ -24,6 +24,7 @@ function process(event) {
     event.request.query.rsAlterStringToText || "false";
   const provider = redshift;
   return processSingleMessage(event.message, {
+    metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,

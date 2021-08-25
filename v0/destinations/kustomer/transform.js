@@ -189,6 +189,13 @@ const responseBuilderSimple = async (message, category, destination) => {
       },
       event: eventPayload
     };
+    // handle email for track calls
+    if (destination.Config.setIdentityEmail) {
+      payload.identity.email = getFieldValueFromMessage(message, "email");
+      if (destination.Config.disableEmailAsTrackingProperty) {
+        delete payload.event.meta.email;
+      }
+    }
   }
   if (payload) {
     const response = defaultRequestConfig();

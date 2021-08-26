@@ -114,7 +114,7 @@ const contactPayloadValidator = payload => {
   const updatedPayload = payload;
   if (payload["@force_optin"] && typeof payload["@force_optin"] !== "boolean") {
     updatedPayload["@force_optin"] = null;
-    logger.error("forceOpting must contain only boolean value.");
+    logger.error("forceOptin must contain only boolean value.");
   }
   if (payload.phone_number && !isValidPhone(payload.phone_number)) {
     updatedPayload.phone_number = null;

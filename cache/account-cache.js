@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-constructor */
 const { default: axios } = require("axios");
+const moment = require("moment");
 const { CONFIG_BACKEND_URL } = require("../util/customTransforrmationsStore");
 const BaseCache = require("./base");
 
@@ -10,12 +11,8 @@ class AccountCache extends BaseCache {
     });
   }
 
-  static formKeyForCache(workspaceId, accountId) {
-    return `${workspaceId}|${accountId}`;
-  }
-
   static getTokenUrl(key) {
-    const [workspaceId, accountId] = key.split("|");
+    const [accountId, workspaceId] = key.split("|");
     return `${CONFIG_BACKEND_URL}/dest/workspaces/${workspaceId}/accounts/${accountId}/token`;
   }
 
@@ -28,11 +25,12 @@ class AccountCache extends BaseCache {
   async onExpired(k, v) {
     // The Account Secrets like accessToken, refreshToken, expirationDate etc., are being fetched
     const account = await this.getToken(k);
-    this.set(k, account, account.secret.expiresIn * 0.3);
+    const diffTimeMs = moment(account.secret.expirationDate).valueOf() - moment().valueOf();
+    this.set(k, account, diffTimeMs / 1000);
   }
 
   async getTokenFromCache(workspaceId, accountId) {
-    const key = AccountCache.formKeyForCache(workspaceId, accountId);
+    const key = `${accountId}|${workspaceId}`;
     if (!this.get(key)) {
       await this.onExpired(key, "");
     }

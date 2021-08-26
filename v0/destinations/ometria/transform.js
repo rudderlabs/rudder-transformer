@@ -142,7 +142,7 @@ const trackResponseBuilder = (message, { Config }) => {
     payload.currency = payload.currency.trim().toUpperCase();
     if (!currencyList.includes(payload.currency)) {
       throw new CustomError(
-        "Currency should be only 3 characters and must follow format ISO 4217.",
+        "currency should be only 3 characters and must follow format ISO 4217.",
         400
       );
     }
@@ -159,7 +159,7 @@ const trackResponseBuilder = (message, { Config }) => {
     });
     if (!customer.id || !customer.email) {
       throw new CustomError(
-        "Customer id and email is required for order related event.",
+        "customer_id and email is required for order related event.",
         400
       );
     }
@@ -237,13 +237,13 @@ const process = event => {
   const { message, destination } = event;
   if (!message.type) {
     throw new CustomError(
-      "Message Type is not present. Aborting message.",
+      "message Type is not present. Aborting message.",
       400
     );
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Invalid api key", 400);
+    throw new CustomError("Invalid Api Key", 400);
   }
 
   const messageType = message.type.toLowerCase();

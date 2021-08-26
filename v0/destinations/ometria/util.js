@@ -32,7 +32,7 @@ const createVariantList = variants => {
         variantList.push(variantPayload);
       } else {
         logger.error(
-          `Varinat at index ${index} dropped. Id, type and label is required.`
+          `variant at index ${index} dropped. Id, type and label are required.`
         );
       }
     });
@@ -52,7 +52,7 @@ const createLineItems = items => {
       ) {
         const variantList = item.variant_options;
         if (!variantList || !Array.isArray(variantList)) {
-          logger.error("Variant options must be an array of objects.");
+          logger.error("variant options must be an array of objects.");
         } else {
           const variantOptions = createVariantList(variantList);
           if (variantOptions && variantOptions.length > 0) {
@@ -80,7 +80,7 @@ const createLineItems = items => {
         itemList.push(removeUndefinedAndNullValues(itemPayload));
       } else {
         logger.error(
-          `Item at index ${index} dropped. Product id , quantity and either unit_price or subtotal are required.`
+          `item at index ${index} dropped. Product id , quantity and either unit_price or subtotal are required.`
         );
       }
     });
@@ -90,7 +90,7 @@ const createLineItems = items => {
 
 const addressMappper = address => {
   if (!isObject(address)) {
-    logger.error("Billing Address or Shipping Address should be an object.");
+    logger.error("billing address or shipping address should be an object.");
     return null;
   }
   const res = {
@@ -118,28 +118,28 @@ const contactPayloadValidator = payload => {
   }
   if (payload.phone_number && !isValidPhone(payload.phone_number)) {
     updatedPayload.phone_number = null;
-    logger.error("Phone number format must be E.164.");
+    logger.error("phone number format must be E.164.");
   }
   if (
     payload.timestamp_acquired &&
     !isValidTimestamp(payload.timestamp_acquired)
   ) {
     updatedPayload.timestamp_acquired = null;
-    logger.error("Timestamp format must be ISO 8601.");
+    logger.error("timestamp format must be ISO 8601.");
   }
   if (
     payload.timestamp_subscribed &&
     !isValidTimestamp(payload.timestamp_subscribed)
   ) {
     updatedPayload.timestamp_subscribed = null;
-    logger.error("Timestamp format must be ISO 8601.");
+    logger.error("timestamp format must be ISO 8601.");
   }
   if (
     payload.timestamp_unsubscribed &&
     !isValidTimestamp(payload.timestamp_unsubscribed)
   ) {
     updatedPayload.timestamp_unsubscribed = null;
-    logger.error("Timestamp format must be ISO 8601.");
+    logger.error("timestamp format must be ISO 8601.");
   }
   return updatedPayload;
 };

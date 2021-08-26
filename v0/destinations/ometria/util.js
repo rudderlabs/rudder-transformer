@@ -8,7 +8,9 @@ const {
   constructPayload,
   removeUndefinedAndNullValues,
   extractCustomFields,
-  isEmptyObject
+  isEmptyObject,
+  getValueFromMessage,
+  isObject
 } = require("../../util");
 
 const isValidTimestamp = timestamp => {
@@ -86,8 +88,31 @@ const createLineItems = items => {
   return itemList;
 };
 
+const addressMappper = address => {
+  if (!isObject(address)) {
+    logger.error("Billing Address or Shipping Address should be an object.");
+    return null;
+  }
+  const res = {
+    city: getValueFromMessage(address, "city"),
+    state: getValueFromMessage(address, "state"),
+    country_code: getValueFromMessage(address, [
+      "country_code",
+      "country",
+      "countryCode"
+    ]),
+    postcode: getValueFromMessage(address, [
+      "postcode",
+      "postalCode",
+      "postalcode"
+    ])
+  };
+  return res;
+};
+
 module.exports = {
   isValidTimestamp,
   createLineItems,
-  isValidPhone
+  isValidPhone,
+  addressMappper
 };

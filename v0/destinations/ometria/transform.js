@@ -31,7 +31,7 @@ const {
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const { isValidTimestamp, createLineItems, isValidPhone } = require("./util");
+const { isValidTimestamp, createLineItems, isValidPhone, addressMappper } = require("./util");
 
 const identifyResponseBuilder = (message, { Config }) => {
   // TODO: validate payload
@@ -189,13 +189,11 @@ const trackResponseBuilder = (message, { Config }) => {
         payload.lineitems = lineitems;
       }
     }
-    if (payload.billing_address && !isObject(payload.billing_address)) {
-      payload.billing_address = null;
-      logger.error("Billing Address should be an object.");
+    if (payload.billing_address) {
+      payload.billing_address = addressMappper(payload.billing_address);
     }
-    if (payload.shipping_address && !isObject(payload.shipping_address)) {
-      payload.shipping_address = null;
-      logger.error("Shipping Address should be an object.");
+    if (payload.shipping_address) {
+      payload.shipping_address = addressMappper(payload.shipping_address);
     }
     const response = defaultRequestConfig();
     response.method = defaultPostRequestConfig.requestMethod;

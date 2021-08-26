@@ -31,7 +31,6 @@
         "files": {},
         "method": "POST",
         "params": {},
-        "requestOptions": {},
         "headers": {
           "X-Ometria-Auth": "trueapikey"
         },
@@ -94,7 +93,6 @@
         "files": {},
         "method": "POST",
         "params": {},
-        "requestOptions": {},
         "headers": {
           "X-Ometria-Auth": "trueapikey"
         },

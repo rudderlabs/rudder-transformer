@@ -386,5 +386,61 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.ometria.com/v2/push",
+    "headers": {
+      "X-Ometria-Auth": "4f9880adb424c5065df868a339b1c0e0"
+    },
+    "params": {},
+    "body": {
+      "JSON": [
+        {
+          "@type": "order",
+          "id": "orderId1",
+          "grand_total": 1000,
+          "properties": {
+            "field1": "val1"
+          },
+          "currency": "INR",
+          "timestamp": "2017-05-01T14:00:00Z",
+          "customer": {
+            "id": "userId1",
+            "email": "testone@gmail.com",
+            "firstname": "test",
+            "lastname": "one"
+          },
+          "shipping_address":{
+            "city":"Kolkata",
+            "state": "West Bengal",
+            "postcode":"700001",
+            "country_code": "IN"
+          },
+          "ip_address": "0.0.0.0",
+          "is_valid": true,
+          "status": "complete",
+          "lineitems": [
+            {
+              "product_id": "prod123",
+              "quantity": 4,
+              "subtotal": 10,
+              "variant_options": [
+                {
+                  "type": "size",
+                  "id": "newid",
+                  "label": "5"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

@@ -151,7 +151,8 @@ const trackResponseBuilder = (message, { Config }) => {
       id: getFieldValueFromMessage(message, "userId"),
       email: getValueFromMessage(message, [
         "traits.email",
-        "context.traits.email"
+        "context.traits.email",
+        "properties.email"
       ]),
       firstname: getFieldValueFromMessage(message, "firstName"),
       lastname: getFieldValueFromMessage(message, "lastName")

@@ -290,8 +290,7 @@ const defaultRequestConfig = () => {
       XML: {},
       FORM: {}
     },
-    files: {},
-    requestOptions: {}
+    files: {}
   };
 };
 
@@ -309,8 +308,7 @@ const defaultBatchRequestConfig = () => {
         XML: {},
         FORM: {}
       },
-      files: {},
-      requestOptions: {}
+      files: {}
     }
   };
 };

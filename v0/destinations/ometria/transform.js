@@ -82,7 +82,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       integrationsObj.dt_updated_marketing &&
       isValidTimestamp(integrationsObj.dt_updated_marketing)
     ) {
-      dt_updated_transactional = integrationsObj.dt_updated_marketing;
+      dt_updated_transactional = integrationsObj.dt_updated_transactional;
     }
   }
 

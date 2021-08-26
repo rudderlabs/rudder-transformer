@@ -14,9 +14,11 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 const IDENTIFY_EXCLUSION_FIELDS = [
   "email",
   "phoneNumber",
+  "phone",
   "collection",
   "marketinOptin",
-  "userIdOnly",
+  "userId",
+  "anonymousId",
   "prefix",
   "name",
   "first_name",
@@ -29,9 +31,11 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "lastname",
   "middlename",
   "dateOfBirth",
+  "birthday",
   "countryId",
   "timezone",
   "timestampAcquired",
+  "createdAt",
   "timestampSubscribed",
   "timestampUnsubscribed",
   "channels",
@@ -41,7 +45,9 @@ const IDENTIFY_EXCLUSION_FIELDS = [
   "addToLists",
   "marketingOptin",
   "custom_fields",
-  "listingId"
+  "listingId",
+  "forceOptin",
+  "merge"
 ];
 
 const CUSTOM_EVENT_EXCLUSION_FIELDS = [
@@ -49,8 +55,9 @@ const CUSTOM_EVENT_EXCLUSION_FIELDS = [
   "event_type",
   "timestamp",
   "profile_id",
-  "identity_email",
-  "identity_account_id",
+  "email",
+  "userId",
+  "anonymousId",
   "custom_fields"
 ];
 
@@ -68,14 +75,16 @@ const ORDER_EXCLUSION_FIELDS = [
   "customer",
   "products",
   "ip_address",
-  "channels",
+  "channel",
   "store",
   "payment_method",
   "shipping_method",
   "shipping_address",
   "billing_address",
   "coupon_code",
-  "custom_fields"
+  "custom_fields",
+  "is_valid",
+  "status"
 ];
 
 const LINEITEMS_EXCLUSION_FIELDS = [

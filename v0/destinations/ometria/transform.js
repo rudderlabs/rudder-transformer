@@ -1,6 +1,5 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
@@ -14,8 +13,7 @@ const {
   getValueFromMessage,
   isEmptyObject,
   getFieldValueFromMessage,
-  getIntegrationsObj,
-  isObject
+  getIntegrationsObj
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -31,11 +29,17 @@ const {
   ENDPOINT,
   MARKETING_OPTIN_LIST
 } = require("./config");
-const { isValidTimestamp, createLineItems, isValidPhone, addressMappper } = require("./util");
+const {
+  isValidTimestamp,
+  createLineItems,
+  addressMappper,
+  contactPayloadValidator
+} = require("./util");
 
 const identifyResponseBuilder = (message, { Config }) => {
-  // TODO: validate payload
-  const payload = constructPayload(message, contactDataMapping);
+  let payload = constructPayload(message, contactDataMapping);
+  payload = contactPayloadValidator(payload);
+
   payload["@type"] = "contact";
   if (!payload.properties) {
     let customFields = {};
@@ -49,9 +53,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       payload.properties = customFields;
     }
   }
-  if (payload["@force_optin"] && typeof payload["@force_optin"] !== "boolean") {
-    payload["@force_optin"] = null;
-  }
+
   let { marketingOptin, allowMarketing, allowTransactional } = Config;
   let dt_updated_marketing, dt_updated_transactional;
 
@@ -96,11 +98,6 @@ const identifyResponseBuilder = (message, { Config }) => {
       allow_transactional: allowTransactional
     })
   };
-
-  if (payload.phone_number && !isValidPhone(payload.phone_number)) {
-    payload.phone_number = null;
-    logger.error("Phone number format incorrect.");
-  }
 
   const name = getValueFromMessage(message, [
     "traits.name",

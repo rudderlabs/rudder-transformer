@@ -110,9 +110,44 @@ const addressMappper = address => {
   return res;
 };
 
+const contactPayloadValidator = payload => {
+  const updatedPayload = payload;
+  if (payload["@force_optin"] && typeof payload["@force_optin"] !== "boolean") {
+    updatedPayload["@force_optin"] = null;
+    logger.error("forceOpting must contain only boolean value.");
+  }
+  if (payload.phone_number && !isValidPhone(payload.phone_number)) {
+    updatedPayload.phone_number = null;
+    logger.error("Phone number format must be E.164.");
+  }
+  if (
+    payload.timestamp_acquired &&
+    !isValidTimestamp(payload.timestamp_acquired)
+  ) {
+    updatedPayload.timestamp_acquired = null;
+    logger.error("Timestamp format must be ISO 8601.");
+  }
+  if (
+    payload.timestamp_subscribed &&
+    !isValidTimestamp(payload.timestamp_subscribed)
+  ) {
+    updatedPayload.timestamp_subscribed = null;
+    logger.error("Timestamp format must be ISO 8601.");
+  }
+  if (
+    payload.timestamp_unsubscribed &&
+    !isValidTimestamp(payload.timestamp_unsubscribed)
+  ) {
+    updatedPayload.timestamp_unsubscribed = null;
+    logger.error("Timestamp format must be ISO 8601.");
+  }
+  return updatedPayload;
+};
+
 module.exports = {
   isValidTimestamp,
   createLineItems,
   isValidPhone,
-  addressMappper
+  addressMappper,
+  contactPayloadValidator
 };

@@ -343,6 +343,140 @@ const sampleEvents = {
             EVENT: "button_clicked"
           }
         }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "tracks",
+            columns: {
+              uuid_ts: "datetime",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              event_text: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              _timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string",
+              event: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            event_text: "button clicked",
+            id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.364Z",
+            _timestamp: "2020-01-24T06:29:02.403Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.364Z",
+            channel: "web",
+            event: "button_clicked"
+          }
+        },
+        {
+          metadata: {
+            table: "button_clicked",
+            columns: {
+              uuid_ts: "datetime",
+              currency: "string",
+              revenue: "int",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              event_text: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              _timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string",
+              event: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            currency: "USD",
+            revenue: 50,
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            event_text: "button clicked",
+            id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.364Z",
+            _timestamp: "2020-01-24T06:29:02.403Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.364Z",
+            channel: "web",
+            event: "button_clicked"
+          }
+        }
       ]
     }
   },
@@ -678,6 +812,136 @@ const sampleEvents = {
             RECEIVED_AT: "2020-01-24T06:29:02.403Z"
           }
         }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "identifies",
+            columns: {
+              uuid_ts: "datetime",
+              city: "string",
+              country: "string",
+              email: "string",
+              firstname: "string",
+              lastname: "string",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              _timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            city: "Disney",
+            country: "UK",
+            email: "mickey@disney.com",
+            firstname: "Mickey",
+            lastname: "Mouse",
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            id: "2536eda4-d638-4c93-8014-8ffe3f083214",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.363Z",
+            _timestamp: "2020-01-24T06:29:02.402Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.362Z",
+            channel: "web"
+          }
+        },
+        {
+          metadata: {
+            table: "users",
+            columns: {
+              uuid_ts: "datetime",
+              city: "string",
+              country: "string",
+              email: "string",
+              firstname: "string",
+              lastname: "string",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              id: "string",
+              received_at: "datetime"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            city: "Disney",
+            country: "UK",
+            email: "mickey@disney.com",
+            firstname: "Mickey",
+            lastname: "Mouse",
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            received_at: "2020-01-24T06:29:02.403Z"
+          }
+        }
       ]
     }
   },
@@ -871,6 +1135,65 @@ const sampleEvents = {
             CHANNEL: "web"
           }
         }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "pages",
+            columns: {
+              uuid_ts: "datetime",
+              path: "string",
+              url: "string",
+              name: "string",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_user_agent: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              _timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            path: "/tests/html/index2.html",
+            url: "http://localhost/tests/html/index2.html",
+            name: "sample title",
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            id: "dd266c67-9199-4a52-ba32-f46ddde67312",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.359Z",
+            _timestamp: "2020-01-24T06:29:02.402Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.358Z",
+            channel: "web"
+          }
+        }
       ]
     }
   },
@@ -1062,6 +1385,67 @@ const sampleEvents = {
             TIMESTAMP: "2020-01-24T06:29:02.402Z",
             CHANNEL: "web",
             NAME: "ApplicationLoaded"
+          }
+        }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "screens",
+            columns: {
+              uuid_ts: "datetime",
+              path: "string",
+              category: "string",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_traits_email: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_user_agent: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              original_timestamp: "datetime",
+              received_at: "datetime",
+              _timestamp: "datetime",
+              channel: "string",
+              name: "string"
+            }
+          },
+          data: {
+            path: "/abc",
+            category: "test-category",
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.0",
+            context_traits_email: "sayan@gmail.com",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.0",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            context_locale: "en-US",
+            context_screen_density: 2,
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            id: "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            anonymous_id: "00000000000000000000000000",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2019-10-14T11:15:53.296Z",
+            original_timestamp: "2019-10-14T11:15:18.299Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            _timestamp: "2020-01-24T06:29:02.402Z",
+            channel: "web",
+            name: "ApplicationLoaded"
           }
         }
       ]
@@ -1264,6 +1648,73 @@ const sampleEvents = {
             CHANNEL: "web"
           }
         }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "groups",
+            columns: {
+              uuid_ts: "datetime",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_traits_email: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_user_agent: "string",
+              context_locale: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              context_os_id: "string",
+              context_os_manufacturer: "string",
+              context_os_model: "string",
+              context_os_type: "string",
+              context_screen_density: "int",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              group_id: "string",
+              sent_at: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              _timestamp: "datetime",
+              channel: "string"
+            }
+          },
+          data: {
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.0",
+            context_traits_email: "ruchira@rudderlabs.com",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.0",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            context_locale: "en-US",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_os_id: "72e528f869711c3d",
+            context_os_manufacturer: "Google",
+            context_os_model: "sdk_gphone_x86",
+            context_os_name: "",
+            context_os_token: "",
+            context_os_type: "android",
+            context_screen_density: 2,
+            id: "84e26acc-56a5-4835-8233-591137fca468",
+            anonymous_id: "00000000000000000000000000",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            group_id: "g1",
+            sent_at: "2019-10-14T09:03:22.563Z",
+            original_timestamp: "2019-10-14T09:03:17.562Z",
+            _timestamp: "2020-01-24T11:59:02.403Z",
+            received_at: "2020-01-24T11:59:02.403Z",
+            channel: "web"
+          }
+        }
       ]
     }
   },
@@ -1464,6 +1915,70 @@ const sampleEvents = {
             PREVIOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
           }
         }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "aliases",
+            columns: {
+              uuid_ts: "datetime",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              _timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string",
+              previous_id: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            id: "79313729-7fe5-4204-963a-dc46f4205e4e",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "1234abc",
+            sent_at: "2020-01-24T06:29:02.366Z",
+            _timestamp: "2020-01-24T06:29:02.403Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.366Z",
+            channel: "web",
+            previous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+          }
+        }
       ]
     }
   }
@@ -1476,6 +1991,9 @@ function input(eventType) {
 function output(eventType, provider) {
   if (provider === "snowflake") {
     return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+  }
+  if (provider === "s3_datalake") {
+    return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
   }
   return _.cloneDeep(sampleEvents[eventType].output.default);
 }

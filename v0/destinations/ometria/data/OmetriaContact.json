@@ -5,13 +5,18 @@
     "required": true
   },
   {
-    "destKey":"id",
-    "sourceKeys": ["traits.listingId","context.traits.listingId"],
+    "destKey": "id",
+    "sourceKeys": ["traits.listingId", "context.traits.listingId"],
     "required": false
   },
   {
     "destKey": "phone_number",
-    "sourceKeys": ["traits.phoneNumber", "context.traits.phoneNumber"],
+    "sourceKeys": [
+      "traits.phoneNumber",
+      "traits.phone",
+      "context.traits.phoneNumber",
+      "context.traits.phone"
+    ],
     "required": false
   },
   {
@@ -50,7 +55,12 @@
   },
   {
     "destKey": "date_of_birth",
-    "sourceKeys": ["traits.dateOfBirth", "context.traits.dateOfBirth"],
+    "sourceKeys": [
+      "traits.dateOfBirth",
+      "traits.birthday",
+      "context.traits.dateOfBirth",
+      "context.traits.birthday"
+    ],
     "required": false
   },
   {
@@ -71,7 +81,9 @@
     "destKey": "timestamp_acquired",
     "sourceKeys": [
       "traits.timestampAcquired",
-      "context.traits.timestampAcquired"
+      "traits.createdAt",
+      "context.traits.timestampAcquired",
+      "context.traits.createdAt"
     ],
     "required": false
   },

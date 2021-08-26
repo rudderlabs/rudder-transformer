@@ -50,6 +50,43 @@
       "JSON": [
         {
           "@type": "contact",
+          "id": "updatedId1",
+          "customer_id": "userId1",
+          "email": "testone@gmail.com",
+          "firstname": "test",
+          "lastname": "one",
+          "marketing_optin": "EXPLICITLY_OPTEDOUT",
+          "properties": {
+            "field1": "val1",
+            "ip": "0.0.0.0"
+          },
+          "channels": {
+            "sms": {
+              "allow_marketing": true,
+              "allow_transactional": false
+            }
+          }
+        }
+      ],
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.ometria.com/v2/push",
+    "headers": {
+      "X-Ometria-Auth": "4f9880adb424c5065df868a339b1c0e0"
+    },
+    "params": {},
+    "requestOptions": {},
+    "body": {
+      "JSON": [
+        {
+          "@type": "contact",
           "id": "test1",
           "customer_id": "userId1",
           "email": "testone@gmail.com",

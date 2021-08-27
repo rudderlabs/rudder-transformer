@@ -38,7 +38,7 @@ const responseHandler = (dresponse, metadata) => {
         .setMessage(`${data.rejected} requests rejected.`)
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetworkFailure(true)
+        .isTransformerNetwrokFailure(true)
         .build();
     }
 
@@ -47,7 +47,7 @@ const responseHandler = (dresponse, metadata) => {
       .setMessage(`Request rejected due to bad request.`)
       .setDestinationResponse({ ...trimmedResponse, success: false })
       .setMetadata(metadata)
-      .isTransformerNetworkFailure(true)
+      .isTransformerNetwrokFailure(true)
       .build();
   }
   // failure case

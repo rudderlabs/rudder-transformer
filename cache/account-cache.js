@@ -25,8 +25,12 @@ class AccountCache extends BaseCache {
   async onExpired(k, v) {
     // The Account Secrets like accessToken, refreshToken, expirationDate etc., are being fetched
     const account = await this.getToken(k);
-    const diffTimeMs = moment(account.secret.expirationDate).valueOf() - moment().valueOf();
-    this.set(k, account, diffTimeMs / 1000);
+    let diffTimeMs = 5 * 60;
+    if (account && account.secret && account.secret.expirationDate) {
+      diffTimeMs = moment(account.secret.expirationDate).valueOf() - moment().valueOf();
+      diffTimeMs /= 1000;
+    }
+    this.set(k, account, diffTimeMs);
   }
 
   async getTokenFromCache(workspaceId, accountId) {

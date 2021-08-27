@@ -252,7 +252,7 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event)
+    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -268,7 +268,8 @@ const fullEventColumnTypeByProvider = {
   postgres: "json",
   mssql: "json",
   azure_synapse: "json",
-  clickhouse: "string"
+  clickhouse: "string",
+  s3_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {

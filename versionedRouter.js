@@ -46,9 +46,14 @@ const getDestHandler = (version, dest) => {
 
 const getDestNetHander = (version, dest) => {
   const destination = _.toLower(dest);
-  let destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
-  if (!destNetHandler && !destNetHandler.sendData) {
-    destNetHandler = require("./adapters/genericnethandler");
+  let destNetHandler;
+  try {
+    destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
+    if (!destNetHandler && !destNetHandler.sendData) {
+      destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    }
+  } catch (err) {
+    destNetHandler = require("./adapters/networkhandler/genericnethandler");
   }
   return destNetHandler;
 };
@@ -454,8 +459,7 @@ if (startSourceTransformer) {
   });
 }
 
-async function handleDestinationNetwork(version, ctx) {
-  const { destination } = ctx.request.body;
+async function handleDestinationNetwork(version, destination, ctx) {
   const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
   if (!destNetHandler || !destNetHandler.sendData) {
@@ -463,15 +467,33 @@ async function handleDestinationNetwork(version, ctx) {
     ctx.body = `${destination} doesn't support transformer proxy`;
     return ctx.body;
   }
-  const resp = await destNetHandler.sendData(ctx.request.body);
-  ctx.body = { output: resp };
+  let response;
+  logger.info("Request recieved for destination", destination);
+  try {
+    response = await destNetHandler.sendData(ctx.request.body);
+  } catch (err) {
+    response = {
+      statusCode: 500, // keeping retryable default
+      error: err.message || "Error occurred while processing payload."
+    };
+    // error from network failure should directly parsable as response
+    if (err.networkFailure) {
+      response = { ...err };
+    }
+  }
+
+  ctx.body = { output: response };
+  ctx.status = response.status;
   return ctx.body;
 }
 
 if (networkMode) {
   versions.forEach(version => {
-    router.post("/network/proxy", async ctx => {
-      await handleDestinationNetwork(version, ctx);
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(`/network/${destination}/proxy`, async ctx => {
+        await handleDestinationNetwork(version, destination, ctx);
+      });
     });
   });
 }

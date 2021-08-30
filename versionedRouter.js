@@ -495,7 +495,7 @@ function handleResponseTransform(version, destination, ctx) {
     return ctx.body;
   }
   let handledResponse;
-  logger.info("Request recieved for destination", destination);
+  logger.info("Request recieved for response transform", destination);
   try {
     handledResponse = handler.responseTransform(ctx.request.body);
   } catch (err) {

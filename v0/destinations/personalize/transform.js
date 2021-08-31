@@ -115,14 +115,16 @@ const putItemsHandler = (message, destination) => {
   }
   if (
     !datasetARN.startsWith("arn:") &&
-    !datasetARN.contains(":personalize:") &&
+    !datasetARN.includes(":personalize:") &&
     !datasetARN.includes("/ITEMS") // should we do endswith here?
   ) {
-    throw new CustomError("Dataset ARN is not correctly entered.", 400);
+    throw new CustomError(
+      "Either Dataset ARN is not correctly entered or invalid",
+      400
+    );
   }
-  const outputItem = {
-    properties: {}
-  };
+  const outputItem = {};
+  const itemProperty = {};
   Object.keys(keyMap).forEach(key => {
     let value;
 
@@ -136,11 +138,14 @@ const putItemsHandler = (message, destination) => {
     }
     if (key.toUpperCase() !== "ITEM_ID") {
       // itemId is not allowed inside properties
-      outputItem.properties[_.camelCase(key)] = String(value);
+      itemProperty[_.camelCase(key)] = String(value);
     } else {
       outputItem.itemId = String(value);
     }
   });
+
+  // personalize only accepts stringified properties for each item
+  outputItem.properties = JSON.stringify(itemProperty);
   if (!outputItem.itemId) {
     throw new CustomError(
       "itemId is a mandatory property for using PutItems",
@@ -200,13 +205,16 @@ const identifyRequestHandler = (message, destination) => {
     !datasetARN.includes(":personalize:") &&
     !datasetARN.includes("/USERS") // should we do endswith here?
   ) {
-    throw new CustomError("Dataset ARN is not correctly entered.", 400);
+    throw new CustomError(
+      "Either Dataset ARN is not correctly entered or invalid.",
+      400
+    );
   }
 
   const outputUser = {
-    userId: getFieldValueFromMessage(message, "userId"),
-    properties: {}
+    userId: getFieldValueFromMessage(message, "userId")
   };
+  const userProperty = {};
   Object.keys(keyMap).forEach(key => {
     const value = traits && traits[keyMap[key]];
 
@@ -215,9 +223,11 @@ const identifyRequestHandler = (message, destination) => {
     }
     if (key.toUpperCase() !== "USER_ID") {
       // userId is not allowed inside properties
-      outputUser.properties[_.camelCase(key)] = String(value);
+      userProperty[_.camelCase(key)] = String(value);
     }
   });
+  // personalize excepts properties in in stringified version only
+  outputUser.properties = JSON.stringify(userProperty);
   if (!outputUser.userId) {
     throw new CustomError(
       "userId is a mandatory property for using PutUsers",

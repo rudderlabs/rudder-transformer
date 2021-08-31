@@ -1,5 +1,5 @@
 const NodeCache = require("node-cache");
-const { fetchWithProxy } = require("./fetch");
+const {fetchWithProxy} = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
 
@@ -12,53 +12,53 @@ const getTrackingPlanURL = `${CONFIG_BACKEND_URL}/workspaces`;
 // Stores the trackingplan object in memory with time to live after which it expires.
 // tpId is updated any time user changes the code in transformation, so there wont be any stale code issues.
 async function getTrackingPlan(tpId, version, workspaceId) {
-  // TODO: if version is not given, latest TP may be fetched, extract version and populate node cache
-  const trackingPlan = tpCache.get(`${tpId}::${version}`);
-  if (trackingPlan) return trackingPlan;
-  try {
-    const startTime = new Date();
-    const response = await fetchWithProxy(
-      `${getTrackingPlanURL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`
-    );
-    stats.timing("get_trackingplan", startTime);
-    const myJson = await response.json();
-    if(myJson.error || response.status !== 200){
-      throw new Error(`${tpId}::${version}  :: ${myJson.error}`);
+    // TODO: if version is not given, latest TP may be fetched, extract version and populate node cache
+    const trackingPlan = tpCache.get(`${tpId}::${version}`);
+    if (trackingPlan) return trackingPlan;
+    try {
+        const startTime = new Date();
+        const response = await fetchWithProxy(
+            `${getTrackingPlanURL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`
+        );
+        stats.timing("get_trackingplan", startTime);
+        const myJson = await response.json();
+        if (myJson.error || response.status !== 200) {
+            throw new Error(`${tpId}::${version}  :: ${myJson.error}`);
+        }
+        tpCache.set(`${tpId}::${version}`, myJson);
+        return myJson;
+    } catch (error) {
+        logger.error(`Failed during trackingPlan fetch : ${error}`);
+        stats.increment("get_trackingplan.error");
+        throw error.message;
     }
-    tpCache.set(`${tpId}::${version}`, myJson);
-    return myJson;
-  } catch (error) {
-    logger.error(`Failed during trackingPlan fetch : ${error}`);
-    stats.increment("get_trackingplan.error");
-    throw error.message;
-  }
 }
 
 async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId) {
-  var eventSchema;
-  try {
-    const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
+    var eventSchema;
+    try {
+        const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
 
-    if (eventType !== "track") {
-      if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
-        eventSchema = tp.rules[eventType];
-      }
-    } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
-      const { events } = tp.rules;
-      for (var i = 0; i < events.length; i++) {
-        // eventName will be unique
-        if (events[i].name === eventName) {
-          eventSchema = events[i].rules;
-          break;
+        if (eventType !== "track") {
+            if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
+                eventSchema = tp.rules[eventType];
+            }
+        } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
+            const {events} = tp.rules;
+            for (var i = 0; i < events.length; i++) {
+                // eventName will be unique
+                if (events[i].name === eventName) {
+                    eventSchema = events[i].rules;
+                    break;
+                }
+            }
         }
-      }
+        return eventSchema;
+    } catch (error) {
+        logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
+        stats.increment("get_eventSchema.error");
+        throw error;
     }
-    return eventSchema;
-  } catch (error) {
-    logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
-    stats.increment("get_eventSchema.error");
-    throw error;
-  }
 }
 
 exports.getTrackingPlan = getTrackingPlan;

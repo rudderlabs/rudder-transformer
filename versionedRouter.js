@@ -144,36 +144,47 @@ async function handleDest(ctx, version, destination) {
   ctx.body = respList;
   return ctx.body;
 }
+
 async function handleValidation(ctx) {
+  const startTime = new Date();
   const events = ctx.request.body;
+  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
   const reqParams = ctx.request.query;
   const respList = [];
   await Promise.all(
-    events.map(async event => {
-      try {
-        const parsedEvent = event;
-        parsedEvent.request = { query: reqParams };
-        const validationErrors = await eventValidator.validate(parsedEvent);
-        respList.push({
-          output: event.message,
-          metadata: event.metadata,
-          statusCode: 200,
-          validationErrors: validationErrors
-        });
-      } catch (error) {
-        logger.error(`Error : ${error}`);
-        respList.push({
-          output: event.message,
-          metadata: event.metadata,
-          statusCode: 400,
-          validationErrors: [],
-          error: `${error}` || "Error occurred while validating payload."
-        });
-      }
-    })
+      events.map(async event => {
+        const eventStartTime = new Date();
+        try {
+          const parsedEvent = event;
+          parsedEvent.request = {query: reqParams};
+          const validationErrors = await eventValidator.validate(parsedEvent);
+          respList.push({
+            output: event.message,
+            metadata: event.metadata,
+            statusCode: 200,
+            validationErrors: validationErrors
+          });
+        } catch (error) {
+          logger.error(`Error : ${error}`);
+          respList.push({
+            output: event.message,
+            metadata: event.metadata,
+            statusCode: 400,
+            validationErrors: [],
+            error: `${error}` || "Error occurred while validating payload."
+          });
+        } finally {
+          stats.timing("validate_event_latency", startTime, {
+            ...metaTags
+          });
+        }
+      })
   );
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
+  stats.timing("handle_validation_request_latency", startTime, {
+    ...metaTags
+  });
 }
 
 async function routerHandleDest(ctx) {

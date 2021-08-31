@@ -148,6 +148,7 @@ async function handleDest(ctx, version, destination) {
 async function handleValidation(ctx) {
   const startTime = new Date();
   const events = ctx.request.body;
+  const requestSize = ctx.request.get("content-length");
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
   const reqParams = ctx.request.query;
   const respList = [];
@@ -174,7 +175,7 @@ async function handleValidation(ctx) {
             error: `${error}` || "Error occurred while validating payload."
           });
         } finally {
-          stats.timing("validate_event_latency", startTime, {
+          stats.timing("validate_event_latency", eventStartTime, {
             ...metaTags
           });
         }
@@ -184,6 +185,12 @@ async function handleValidation(ctx) {
   ctx.set("apiVersion", API_VERSION);
   stats.timing("handle_validation_request_latency", startTime, {
     ...metaTags
+  });
+  stats.counter("handle_validation_request_size", requestSize, {
+    metaTags
+  });
+  stats.counter("handle_validation_events", events.length, {
+    metaTags
   });
 }
 

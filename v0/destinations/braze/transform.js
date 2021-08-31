@@ -673,20 +673,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-const responseTransform = input => {
-  if (input.errors && input.errors.length > 0) {
-    return {
-      status: 400,
-      destination: { ...input },
-      message: "Request Failed for Braze (Aborted)",
-      networkFailure: true
-    };
-  }
-  return {
-    status: 200,
-    destination: { ...input },
-    message: "Processed Successfully"
-  };
-};
-
-module.exports = { process, processRouterDest, batch, responseTransform };
+module.exports = { process, processRouterDest, batch };

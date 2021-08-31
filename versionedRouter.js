@@ -21,7 +21,6 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
-const startResponseTransformer = process.env.RESPONSE_TRANSFORMER || true;
 
 const router = new Router();
 
@@ -487,39 +486,6 @@ if (networkMode) {
   });
 }
 
-function handleResponseTransform(version, destination, ctx) {
-  const handler = getDestHandler(version, destination);
-  if (!handler || !handler.responseTransform) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support response transform`;
-    return ctx.body;
-  }
-  let handledResponse;
-  logger.info("Request recieved for response transform", destination);
-  try {
-    handledResponse = handler.responseTransform(ctx.request.body);
-  } catch (err) {
-    handledResponse = {
-      status: 400,
-      error: err.message || "Error occurred while processing response."
-    };
-  }
-
-  ctx.body = handledResponse;
-  ctx.status = handledResponse.status;
-  return ctx.body;
-}
-
-if (startResponseTransformer) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      router.post(`/response/${destination}/transform`, async ctx => {
-        handleResponseTransform(version, destination, ctx);
-      });
-    });
-  });
-}
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });

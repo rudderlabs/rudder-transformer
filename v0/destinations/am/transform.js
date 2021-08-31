@@ -774,12 +774,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-const responseTransform = input => {
-  return {
-    status: 200,
-    destination: { ...input },
-    message: "Processed Successfully"
-  };
-};
-
-module.exports = { process, processRouterDest, batch, responseTransform };
+module.exports = { process, processRouterDest, batch };

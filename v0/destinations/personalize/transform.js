@@ -123,8 +123,9 @@ const putItemsHandler = (message, destination) => {
       400
     );
   }
-  const outputItem = {};
-  const itemProperty = {};
+  const outputItem = {
+    properties: {}
+  };
   Object.keys(keyMap).forEach(key => {
     let value;
 
@@ -138,14 +139,11 @@ const putItemsHandler = (message, destination) => {
     }
     if (key.toUpperCase() !== "ITEM_ID") {
       // itemId is not allowed inside properties
-      itemProperty[_.camelCase(key)] = String(value);
+      outputItem.properties[_.camelCase(key)] = String(value);
     } else {
       outputItem.itemId = String(value);
     }
   });
-
-  // personalize only accepts stringified properties for each item
-  outputItem.properties = JSON.stringify(itemProperty);
   if (!outputItem.itemId) {
     throw new CustomError(
       "itemId is a mandatory property for using PutItems",
@@ -212,9 +210,9 @@ const identifyRequestHandler = (message, destination) => {
   }
 
   const outputUser = {
-    userId: getFieldValueFromMessage(message, "userId")
+    userId: getFieldValueFromMessage(message, "userId"),
+    properties: {}
   };
-  const userProperty = {};
   Object.keys(keyMap).forEach(key => {
     const value = traits && traits[keyMap[key]];
 
@@ -223,11 +221,9 @@ const identifyRequestHandler = (message, destination) => {
     }
     if (key.toUpperCase() !== "USER_ID") {
       // userId is not allowed inside properties
-      userProperty[_.camelCase(key)] = String(value);
+      outputUser.properties[_.camelCase(key)] = String(value);
     }
   });
-  // personalize excepts properties in in stringified version only
-  outputUser.properties = JSON.stringify(userProperty);
   if (!outputUser.userId) {
     throw new CustomError(
       "userId is a mandatory property for using PutUsers",

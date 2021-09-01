@@ -146,33 +146,46 @@ async function handleDest(ctx, version, destination) {
 }
 
 async function handleValidation(ctx) {
-  const startTime = new Date();
+  const requestStartTime = new Date();
   const events = ctx.request.body;
   const requestSize = ctx.request.get("content-length");
-  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
   const reqParams = ctx.request.query;
   const respList = [];
+  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
   await Promise.all(
       events.map(async event => {
         const eventStartTime = new Date();
         try {
           const parsedEvent = event;
           parsedEvent.request = {query: reqParams};
-          const validationErrors = await eventValidator.validate(parsedEvent);
+          const validationResponse = await eventValidator.handleValidation(parsedEvent);
+          if (validationResponse.dropEvent) {
+            const errMessage = `Error occurred while validating because : ${validationResponse.dropEventViolationType}`
+            logger.error(errMessage);
+            respList.push({
+              output: event.message,
+              metadata: event.metadata,
+              statusCode: 400,
+              validationErrors: validationResponse.ValidationErrors,
+              errors: errMessage
+            });
+          } else {
+            respList.push({
+              output: event.message,
+              metadata: event.metadata,
+              statusCode: 200,
+              validationErrors: validationResponse.ValidationErrors,
+            });
+          }
+        } catch (error) {
+          const errMessage = `Error occurred while validating : ${error}`
+          logger.error(errMessage);
           respList.push({
             output: event.message,
             metadata: event.metadata,
             statusCode: 200,
-            validationErrors: validationErrors
-          });
-        } catch (error) {
-          logger.error(`Error : ${error}`);
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 400,
             validationErrors: [],
-            error: `${error}` || "Error occurred while validating payload."
+            error: errMessage
           });
         } finally {
           stats.timing("validate_event_latency", eventStartTime, {
@@ -183,15 +196,9 @@ async function handleValidation(ctx) {
   );
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
-  stats.timing("handle_validation_request_latency", startTime, {
-    ...metaTags
-  });
-  stats.counter("handle_validation_request_size", requestSize, {
-    metaTags
-  });
-  stats.counter("handle_validation_events", events.length, {
-    metaTags
-  });
+  stats.counter("handle_validation_events_count", events.length, metaTags);
+  stats.counter("handle_validation_request_size", requestSize, metaTags);
+  stats.timing("handle_validation_request_latency", requestStartTime, metaTags);
 }
 
 async function routerHandleDest(ctx) {

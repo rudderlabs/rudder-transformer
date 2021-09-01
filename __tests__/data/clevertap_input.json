@@ -413,6 +413,143 @@
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true
+      }
+    },
+    "message": {
+      "type": "identify",
+      "event": "identify",
+      "sentAt": "2021-05-24T08:53:38.762Z",
+      "userId": "useran4",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "10"
+        },
+        "app": {
+          "name": "myfirstapp",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.example.myfirstapp"
+        },
+        "device": {
+          "id": "f54bb572361c4fd1",
+          "name": "whyred",
+          "type": "Android",
+          "model": "Redmi Note 5 Pro",
+          "manufacturer": "Xiaomi",
+          "token": "frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf"
+        },
+        "locale": "en-IN",
+        "screen": {
+          "width": 1080,
+          "height": 2118,
+          "density": 420
+        },
+        "traits": {
+          "id": "useran4",
+          "email": "tony4an@testmail.com",
+          "phone": "4444457700",
+          "userId": "useran4",
+          "lastname": "Stark",
+          "firstname": "Tony4AN",
+          "anonymousId": "f54bb572361c4fd1"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.12"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "airtel",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi Note 5 Pro Build/QQ3A.200805.001)"
+      },
+      "rudderId": "d8dd4917-bdb2-4c17-8f62-24c79d87a937",
+      "messageId": "1621846417928-7fbb739f-5f96-48ca-9ebb-5bfc4076a687",
+      "anonymousId": "f54bb572361c4fd1",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-05-24T08:53:37.929Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true
+      }
+    },
+    "message": {
+      "type": "identify",
+      "event": "identify",
+      "sentAt": "2021-04-21T12:05:42.383Z",
+      "userId": "ankur4",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "iOS",
+          "version": "13.0"
+        },
+        "app": {
+          "name": "Rudder-CleverTap_Example",
+          "build": "1.0",
+          "version": "1.0",
+          "namespace": "org.cocoapods.demo.Rudder-CleverTap-Example"
+        },
+        "device": {
+          "id": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
+          "name": "iPhone 11 Pro Max",
+          "type": "iOS",
+          "model": "iPhone",
+          "manufacturer": "Apple",
+          "token":"frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 896,
+          "height": 414,
+          "density": 3
+        },
+        "traits": {
+          "name": "Ankur4 Mittal",
+          "email": "ankur4gmail",
+          "phone": "8260294239",
+          "userId": "ankur4",
+          "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+        },
+        "library": {
+          "name": "rudder-ios-library",
+          "version": "1.0.11"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "unavailable",
+          "cellular": false,
+          "bluetooth": false
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "unknown"
+      },
+      "rudderId": "f5bb9c22-4987-4ef2-9b58-52788035ffb7",
+      "messageId": "1619006730-60fa60c0-3c77-4de7-95d4-e7dc58214947",
+      "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-04-21T12:05:30.330Z"
+    }
   }
-
 ]

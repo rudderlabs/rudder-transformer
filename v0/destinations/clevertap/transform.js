@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -18,6 +19,22 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
+
+const responseWrapper = (payload, destination) => {
+  const response = defaultRequestConfig();
+  // If the acount belongs to specific regional server,
+  // we need to modify the url endpoint based on dest config.
+  // Source: https://developer.clevertap.com/docs/idc
+  response.endpoint = getEndpoint(destination);
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "X-CleverTap-Account-Id": destination.Config.accountId,
+    "X-CleverTap-Passcode": destination.Config.passcode,
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = payload;
+  return response;
+};
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
@@ -43,7 +60,6 @@ const responseBuilderSimple = (message, category, destination) => {
       ["traits", "context.traits"],
       CLEVERTAP_DEFAULT_EXCLUSION
     );
-
     payload = {
       d: [
         {
@@ -53,6 +69,29 @@ const responseBuilderSimple = (message, category, destination) => {
         }
       ]
     };
+    // In casse we have device token present we return an array of response the first object is identify payload and second
+    // object is the upload device token payload
+    const deviceToken = get(message, "context.device.token");
+    const deviceOS = get(message, "context.os.name").toLowerCase();
+    if (deviceToken && ["ios", "android"].includes(deviceOS)) {
+      const tokenType = deviceOS === "android" ? "fcm" : "apns";
+      const payloadForDeviceToken = {
+        d: [
+          {
+            type: "token",
+            tokenData: {
+              id: deviceToken,
+              type: tokenType
+            },
+            objectId: getFieldValueFromMessage(message, "userId")
+          }
+        ]
+      };
+      const respArr = [];
+      respArr.push(responseWrapper(payload, destination)); // identify
+      respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
+      return respArr;
+    }
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
     // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
@@ -102,19 +141,7 @@ const responseBuilderSimple = (message, category, destination) => {
   }
 
   if (payload) {
-    const response = defaultRequestConfig();
-    // If the acount belongs to specific regional server,
-    // we need to modify the url endpoint based on dest config.
-    // Source: https://developer.clevertap.com/docs/idc
-    response.endpoint = getEndpoint(destination);
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "X-CleverTap-Account-Id": destination.Config.accountId,
-      "X-CleverTap-Passcode": destination.Config.passcode,
-      "Content-Type": "application/json"
-    };
-    response.body.JSON = payload;
-    return response;
+    return responseWrapper(payload, destination);
   }
   // fail-safety for developer error
   throw new CustomError("Payload could not be constructed", 400);

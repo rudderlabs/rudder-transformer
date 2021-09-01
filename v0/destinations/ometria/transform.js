@@ -140,9 +140,6 @@ const trackResponseBuilder = (message, { Config }) => {
     if (!isValidTimestamp(payload.timestamp)) {
       throw new CustomError("Timestamp format must be ISO-8601", 400);
     }
-    if (!payload.id) {
-      payload.id = uuidv4();
-    }
     payload.currency = payload.currency.trim().toUpperCase();
     if (!currencyList.includes(payload.currency)) {
       throw new CustomError(

@@ -210,7 +210,7 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new CustomError("Timestamp format must be ISO-8601", 400);
   }
   if (!payload.id) {
-    payload.id = uuidv4();
+    payload.id = message.messageId;
   }
   payload["@type"] = "custom_event";
   payload.event_type = event;

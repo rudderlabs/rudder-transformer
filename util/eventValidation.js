@@ -2,13 +2,12 @@ const Ajv = require("ajv");
 
 const NodeCache = require("node-cache");
 const _ = require("lodash");
-const logger = require("./logger");
+const logger = require("../logger");
 const trackingPlan = require("./trackingPlan");
 const hash = require("object-hash");
 const eventSchemaCache = new NodeCache();
 const ajvCache = new NodeCache();
 const { isEmptyObject } = require("../v0/util");
-const { getSuccessRespEvents } = require("../../util");
 const defaultOptions = {
   strictRequired: true,
   allErrors: true,
@@ -174,7 +173,7 @@ async function handleValidation(event) {
       };
     }
 
-    const validationErrors = await validate(parsedEvent);
+    const validationErrors = await validate(event);
     if (validationErrors.length === 0) {
       return {
         dropEvent: dropEvent,
@@ -183,7 +182,7 @@ async function handleValidation(event) {
       };
     }
 
-    const violationsByType = [...new Set(validationErrors.map(err => err.type))];
+    const violationsByType = new Set(validationErrors.map(err => err.type));
     for (const [key, value] of Object.entries(mergedTpConfig)) {
       switch (key) {
         case "allowUnplannedEvents": {
@@ -214,13 +213,13 @@ async function handleValidation(event) {
           const exists1 = violationsByType.has(violationTypes.UnknownViolation);
           const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
           const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-          if (value === "drop" && (exists || exists1 || exists2)) {
+          if (value === "drop" && (exists1 || exists2 || exists3)) {
             if (exists1) {
-              dropEventViolationType = transformer.UnknownViolation;
-            } else if (exists1) {
-              dropEventViolationType = transformer.DatatypeMismatch;
+              dropEventViolationType = violationTypes.UnknownViolation;
+            } else if (exists2) {
+              dropEventViolationType = violationTypes.DatatypeMismatch;
             } else {
-              dropEventViolationType = transformer.RequiredMissing;
+              dropEventViolationType = violationTypes.RequiredMissing;
             }
             dropEvent = true;
             break;

@@ -2,7 +2,7 @@
   {
     "destKey": "id",
     "sourceKeys": "properties.event_id",
-    "required": true
+    "required": false
   },
   {
     "destKey": "timestamp",

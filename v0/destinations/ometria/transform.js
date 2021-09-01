@@ -1,5 +1,6 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
+const { v4: uuidv4 } = require("uuid");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
@@ -139,6 +140,9 @@ const trackResponseBuilder = (message, { Config }) => {
     if (!isValidTimestamp(payload.timestamp)) {
       throw new CustomError("Timestamp format must be ISO-8601", 400);
     }
+    if (!payload.id) {
+      payload.id = uuidv4();
+    }
     payload.currency = payload.currency.trim().toUpperCase();
     if (!currencyList.includes(payload.currency)) {
       throw new CustomError(
@@ -207,6 +211,9 @@ const trackResponseBuilder = (message, { Config }) => {
   payload = constructPayload(message, customEventMapping);
   if (!isValidTimestamp(payload.timestamp)) {
     throw new CustomError("Timestamp format must be ISO-8601", 400);
+  }
+  if (!payload.id) {
+    payload.id = uuidv4();
   }
   payload["@type"] = "custom_event";
   payload.event_type = event;

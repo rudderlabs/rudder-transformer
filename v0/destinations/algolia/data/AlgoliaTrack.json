@@ -1,13 +1,13 @@
 [
   {
-    "destKey": "eventType",
-    "sourceKeys": "properties.eventType",
-    "required": true
-  },
-  {
     "destKey": "index",
     "sourceKeys": "properties.index",
     "required": true
+  },
+  {
+    "destKey": "eventType",
+    "sourceKeys": "properties.eventType",
+    "required": false
   },
   {
     "destKey": "userToken",
@@ -28,6 +28,11 @@
   {
     "destKey": "filters",
     "sourceKeys": "properties.filters",
+    "required": false
+  },
+  {
+    "destKey":"objectIDs",
+    "sourceKeys":"properties.objectIds",
     "required": false
   }
 ]

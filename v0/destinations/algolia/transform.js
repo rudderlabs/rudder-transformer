@@ -1,4 +1,3 @@
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -13,24 +12,34 @@ const {
 
 const {
   ENDPOINT,
+  ECOM_EVENTS,
   MAX_BATCH_SIZE,
-  EVENT_TYPE,
   trackMapping
 } = require("./config");
 
-const { payloadValidator, createObjectArray } = require("./util");
+const {
+  payloadValidator,
+  createObjectArray,
+  ecomTypeMapping,
+  trackPayloadValidator,
+  clickPayloadValidator
+} = require("./util");
 
 const trackResponseBuilder = (message, { Config }) => {
-  const event = getValueFromMessage(message, "event");
-  if (!event) {
-    throw new CustomError("Event name is required for track call.", 400);
-  }
+  let event = getValueFromMessage(message, "event");
   let payload = constructPayload(message, trackMapping);
+  if (!event) {
+    throw new CustomError("event is required for track call", 400);
+  }
+  event = event.trim().toLowerCase();
+  const ecomMapping = ecomTypeMapping(Config);
   payload.eventName = event;
-  payload.eventType = payload.eventType.trim().toLowerCase();
-  if (!EVENT_TYPE.includes(payload.eventType)) {
+  if (ECOM_EVENTS.includes(event)) {
+    payload.eventType = ecomMapping[event];
+  }
+  if (!payload.eventName || !payload.eventType) {
     throw new CustomError(
-      "eventType should be either click, conversion or view.",
+      "event and eventType is mandatory for track call",
       400
     );
   }
@@ -39,65 +48,47 @@ const trackResponseBuilder = (message, { Config }) => {
     payload.filters.splice(10);
   }
 
-  const products = getValueFromMessage(message, "properties.products");
-  if (products) {
-    const { objectList, positionList } = createObjectArray(
-      products,
-      payload.eventType
-    );
-    const objLen = objectList.length;
-    const posLen = positionList.length;
-    if (objectList && objLen > 0) {
-      payload.objectIDs = objectList;
-      payload.objectIDs.splice(20);
-    }
-    if (positionList && posLen > 0) {
-      payload.positions = positionList;
-      payload.positions.splice(20);
-    }
-    // making size of object list and position list equal
-    if (positionList && objectList && posLen > 0 && objLen > 0) {
-      if (posLen !== objLen) {
-        const minSize = posLen > objLen ? objLen : posLen;
-        payload.positions.splice(minSize);
-        payload.objectIDs.splice(minSize);
+  if (event === "product list viewed" || event === "order completed") {
+    const products = getValueFromMessage(message, "properties.products");
+    if (products) {
+      const { objectList, positionList } = createObjectArray(
+        products,
+        payload.eventType
+      );
+      const objLen = objectList.length;
+      const posLen = positionList.length;
+      if (objLen > 0) {
+        payload.objectIDs = objectList;
+        payload.objectIDs.splice(20);
       }
-    }
-  }
-  if (
-    payload.positions &&
-    !Array.isArray(payload.positions) &&
-    typeof payload.positions[0] !== "number"
-  ) {
-    payload.positions = null;
-    logger.error("positions should be an array of integers.");
-  }
-  // click event validator
-  if (payload.eventType === "click" && !payload.filters) {
-    if (payload.positions || payload.queryID) {
-      if (!payload.positions) {
-        throw new CustomError(
-          "positions is required with objectId when queryId is provided.",
-          400
-        );
+      if (posLen > 0) {
+        payload.positions = positionList;
+        payload.positions.splice(20);
       }
-      if (!payload.queryID) {
-        throw new CustomError(
-          "queryId is required with in click event when positions is provided.",
-          400
-        );
+      // making size of object list and position list equal
+      if (posLen > 0 && objLen > 0) {
+        if (posLen !== objLen) {
+          const minSize = posLen > objLen ? objLen : posLen;
+          payload.positions.splice(minSize);
+          payload.objectIDs.splice(minSize);
+        }
       }
     }
   }
 
+  trackPayloadValidator(payload); // general validator
+  if (payload.eventType === "click") {
+    payload = clickPayloadValidator(payload); // click event validator
+  }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.body.JSON = { events: [removeUndefinedAndNullValues(payload)] };
   response.endpoint = ENDPOINT;
   response.headers = {
     "X-Algolia-Application-Id": Config.applicationId,
     "X-Algolia-API-Key": Config.apiKey
   };
+  return response;
 };
 
 const process = event => {
@@ -112,7 +103,9 @@ const process = event => {
   if (!destination.Config.apiKey) {
     throw new CustomError("Invalid Api Key", 400);
   }
-
+  if (!destination.Config.applicationId) {
+    throw new CustomError("Invalid Application Id", 400);
+  }
   const messageType = message.type.toLowerCase();
 
   let response;
@@ -134,14 +127,14 @@ const batch = destEvents => {
     const respList = [];
     const metadata = [];
 
-    // extracting the apiKey and destination value
+    // extracting the apiKey, applicationId and destination value
     // from the first event in a batch
     const { destination } = chunk[0];
     const { apiKey, applicationId } = destination.Config;
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      respList.push(ev.message.body.JSON[0]);
+      respList.push(ev.message.body.JSON.events[0]);
       metadata.push(ev.metadata);
     });
 

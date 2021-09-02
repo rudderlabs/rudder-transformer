@@ -16,9 +16,13 @@ const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event } = message;
   const { customMappings, trackingId } = destination.Config;
 
+  if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
+    throw new CustomError(" Cannot process if no event name specified", 400);
+  }
+
   if (!trackingId) {
     throw new CustomError(
-      "Tracking Id is a mandatory information to use putUsers"
+      "Tracking Id is a mandatory information to use putEvents"
     );
   }
 
@@ -114,9 +118,9 @@ const putItemsHandler = (message, destination) => {
     );
   }
   if (
-    !datasetARN.startsWith("arn:") &&
-    !datasetARN.includes(":personalize:") &&
-    !datasetARN.includes("/ITEMS") // should we do endswith here?
+    !datasetARN.startsWith("arn:") ||
+    !datasetARN.includes(":personalize:") ||
+    !datasetARN.includes("/ITEMS")
   ) {
     throw new CustomError(
       "Either Dataset ARN is not correctly entered or invalid",
@@ -132,14 +136,18 @@ const putItemsHandler = (message, destination) => {
     if (key.toUpperCase() !== "ITEM_ID") {
       value = properties && properties[keyMap[key]];
     } else {
-      value = String(_.get(message, keyMap[key]));
+      // eslint-disable-next-line no-lonely-if
+      if (!isDefinedAndNotNull(value) || isBlank(value)) {
+        // itemId cannot be null
+        value = String(_.get(message, keyMap[key]));
+      }
     }
     if (!isDefined(value)) {
       throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
     }
     if (key.toUpperCase() !== "ITEM_ID") {
       // itemId is not allowed inside properties
-      outputItem.properties[_.camelCase(key)] = String(value);
+      outputItem.properties[_.camelCase(key)] = value;
     } else {
       outputItem.itemId = String(value);
     }
@@ -159,17 +167,15 @@ const putItemsHandler = (message, destination) => {
 
 const trackRequestHandler = async (message, destination) => {
   let response;
-  const { event } = message;
-  const { eventChoice } = destination.Config;
-  if (!event) {
-    throw new CustomError(" Cannot process if no event name specified", 400);
-  }
+  let { eventChoice } = destination.Config;
+  eventChoice = eventChoice || "PutEvents";
+
   switch (eventChoice) {
     case "PutEvents":
-      response = putEventsHandler(message, destination);
+      response = await putEventsHandler(message, destination);
       break;
     case "PutItems":
-      response = putItemsHandler(message, destination);
+      response = await putItemsHandler(message, destination);
       break;
     default:
       throw new CustomError(
@@ -181,14 +187,14 @@ const trackRequestHandler = async (message, destination) => {
 };
 
 const identifyRequestHandler = (message, destination) => {
-  const { traits } = message;
+  const traits = getFieldValueFromMessage(message, "traits");
   const { customMappings, datasetARN, eventChoice } = destination.Config;
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
   if (eventChoice !== "PutUsers") {
     throw new CustomError(
-      `This Message Type does not support ${eventChoice}. Aborting message.",
-    400`
+      `This Message Type does not support ${eventChoice}. Aborting message.`,
+      400
     );
   }
 
@@ -199,9 +205,9 @@ const identifyRequestHandler = (message, destination) => {
   }
 
   if (
-    !datasetARN.startsWith("arn:") &&
-    !datasetARN.includes(":personalize:") &&
-    !datasetARN.includes("/USERS") // should we do endswith here?
+    !datasetARN.startsWith("arn:") ||
+    !datasetARN.includes(":personalize:") ||
+    !datasetARN.includes("/USERS")
   ) {
     throw new CustomError(
       "Either Dataset ARN is not correctly entered or invalid.",
@@ -215,13 +221,12 @@ const identifyRequestHandler = (message, destination) => {
   };
   Object.keys(keyMap).forEach(key => {
     const value = traits && traits[keyMap[key]];
-
     if (!isDefined(value)) {
       throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
     }
     if (key.toUpperCase() !== "USER_ID") {
       // userId is not allowed inside properties
-      outputUser.properties[_.camelCase(key)] = String(value);
+      outputUser.properties[_.camelCase(key)] = value;
     }
   });
   if (!outputUser.userId) {

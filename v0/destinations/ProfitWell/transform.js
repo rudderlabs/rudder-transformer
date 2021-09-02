@@ -8,15 +8,12 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  constructPayload
 } = require("../../util");
-const {
-  updateSubscriptionPayload,
-  createSubscriptionPayload
-} = require("./utils");
+const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const baseEndpoint = "https://api.profitwell.com";
   const response = defaultRequestConfig();
 
   let subscriptionId = getDestinationExternalID(
@@ -32,7 +29,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
     isDefinedAndNotNull(subscriptionId) ||
     isDefinedAndNotNull(subscriptionAlias)
   ) {
-    payload = updateSubscriptionPayload(message);
+    payload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name]
+    );
+    payload = removeUndefinedAndNullValues(payload);
     response.method = defaultPutRequestConfig.requestMethod;
     response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
       subscriptionAlias}`;
@@ -51,24 +52,16 @@ const identifyResponseBuilder = async (message, { Config }) => {
     get(message, "context.traits.userId") ||
     get(message, "traits.anonymousId") ||
     get(message, "context.traits.anonymousId");
-  const email =
-    get(message, "traits.email") || get(message, "context.traits.email");
 
   if (user_id || user_alias) {
     let res;
     const targetUrl = `${baseEndpoint}/v2/users/${user_id || user_alias}`;
     try {
-      res = await getSubscriptionHistory(
-        targetUrl,
-        {
-          email
-        },
-        {
-          headers: {
-            Authorization: Config.privateApiKey
-          }
+      res = await getSubscriptionHistory(targetUrl, null, {
+        headers: {
+          Authorization: Config.privateApiKey
         }
-      );
+      });
     } catch (err) {
       throw new CustomError(
         "Failed to get user's subscription history",
@@ -93,7 +86,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
     });
 
     if (valFound) {
-      payload = updateSubscriptionPayload(message);
+      payload = constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name]
+      );
+      payload = removeUndefinedAndNullValues(payload);
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}`;
@@ -107,12 +104,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   // subscriptionId or user_id does not exist
-  payload = createSubscriptionPayload(message);
+  payload = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.IDENTIFY_CREATE.name]
+  );
   payload = {
     ...payload,
     user_id,
-    user_alias,
-    email
+    user_alias
   };
   payload = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;

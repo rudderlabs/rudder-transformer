@@ -2,7 +2,7 @@ const logger = require("../../../logger");
 const { CustomError } = require("../../util");
 
 const eventTypeMapping = Config => {
-  const eventMap = [];
+  const eventMap = {};
   let eventName = "";
   Config.eventTypeSettings.forEach(event => {
     if (event.from && event.to) {
@@ -39,6 +39,9 @@ const payloadValidator = payload => {
       updatedPayload.timestamp = null;
       logger.error("timestamp must be max 4 days old.");
     }
+  }
+  if (payload.eventType !== "click" && !payload.positions) {
+    updatedPayload.positions = null;
   }
   return updatedPayload;
 };
@@ -82,27 +85,27 @@ const trackPayloadValidator = payload => {
 
 const clickPayloadValidator = payload => {
   const updatedPayload = payload;
-  if (
-    payload.positions &&
-    !Array.isArray(payload.positions) &&
-    typeof payload.positions[0] !== "number"
-  ) {
+  if (payload.positions && !Array.isArray(payload.positions)) {
     updatedPayload.positions = null;
     logger.error("positions should be an array of integers.");
+  } else if (payload.positions) {
+    updatedPayload.positions.forEach((num, index) => {
+      if (!isNaN(Number(num)) && Number.isInteger(Number(num))) {
+        updatedPayload.positions[index] = Number(num);
+      } else {
+        updatedPayload.positions = null;
+      }
+    });
   }
   if (!payload.filters) {
     if (payload.positions || payload.queryID) {
       if (!payload.positions) {
-        throw new CustomError(
-          "positions is required with objectId when queryId is provided.",
-          400
-        );
+        updatedPayload.queryID = null;
+        logger.error("With queryId positions is also required.");
       }
       if (!payload.queryID) {
-        throw new CustomError(
-          "queryId is required with in click event when positions is provided.",
-          400
-        );
+        updatedPayload.positions = null;
+        logger.error("With positions queryId is also required.");
       }
     }
   }

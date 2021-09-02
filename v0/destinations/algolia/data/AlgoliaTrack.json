@@ -31,8 +31,13 @@
     "required": false
   },
   {
-    "destKey":"objectIDs",
-    "sourceKeys":"properties.objectIds",
+    "destKey": "objectIDs",
+    "sourceKeys": "properties.objectIds",
+    "required": false
+  },
+  {
+    "destKey": "positions",
+    "sourceKeys": "properties.positions",
     "required": false
   }
 ]

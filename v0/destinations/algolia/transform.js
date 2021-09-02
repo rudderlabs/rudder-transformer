@@ -10,32 +10,27 @@ const {
   defaultBatchRequestConfig
 } = require("../../util/index");
 
-const {
-  ENDPOINT,
-  ECOM_EVENTS,
-  MAX_BATCH_SIZE,
-  trackMapping
-} = require("./config");
+const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
 
 const {
   payloadValidator,
   createObjectArray,
-  ecomTypeMapping,
+  eventTypeMapping,
   trackPayloadValidator,
   clickPayloadValidator
 } = require("./util");
 
 const trackResponseBuilder = (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
-  let payload = constructPayload(message, trackMapping);
   if (!event) {
     throw new CustomError("event is required for track call", 400);
   }
   event = event.trim().toLowerCase();
-  const ecomMapping = ecomTypeMapping(Config);
+  let payload = constructPayload(message, trackMapping);
+  const eventMapping = eventTypeMapping(Config);
   payload.eventName = event;
-  if (ECOM_EVENTS.includes(event)) {
-    payload.eventType = ecomMapping[event];
+  if (eventMapping[event]) {
+    payload.eventType = eventMapping[event];
   }
   if (!payload.eventName && !payload.eventType) {
     throw new CustomError(

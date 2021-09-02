@@ -1,24 +1,18 @@
 const logger = require("../../../logger");
 const { CustomError } = require("../../util");
 
-const { ECOM_EVENTS } = require("./config");
-
-const ecomTypeMapping = Config => {
-  const ecomMap = [];
+const eventTypeMapping = Config => {
+  const eventMap = [];
   let eventName = "";
-  Config.eventTypeSettings.forEach((eventMap, index) => {
-    if (eventMap.from && eventMap.to) {
-      eventName = eventMap.from.trim().toLowerCase();
-      if (ECOM_EVENTS.includes(eventName)) {
-        if (!ecomMap[eventName]) {
-          ecomMap[eventName] = eventMap.to.trim().toLowerCase();
-        }
-      } else {
-        logger.error(`event at index ${index} dropped. Invalid event`);
+  Config.eventTypeSettings.forEach(event => {
+    if (event.from && event.to) {
+      eventName = event.from.trim().toLowerCase();
+      if (!eventMap[eventName]) {
+        eventMap[eventName] = event.to.trim().toLowerCase();
       }
     }
   });
-  return ecomMap;
+  return eventMap;
 };
 
 const payloadValidator = payload => {
@@ -118,7 +112,7 @@ const clickPayloadValidator = payload => {
 module.exports = {
   payloadValidator,
   createObjectArray,
-  ecomTypeMapping,
+  eventTypeMapping,
   clickPayloadValidator,
   trackPayloadValidator
 };

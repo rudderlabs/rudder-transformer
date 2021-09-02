@@ -37,7 +37,7 @@ const trackResponseBuilder = (message, { Config }) => {
   if (ECOM_EVENTS.includes(event)) {
     payload.eventType = ecomMapping[event];
   }
-  if (!payload.eventName || !payload.eventType) {
+  if (!payload.eventName && !payload.eventType) {
     throw new CustomError(
       "event and eventType is mandatory for track call",
       400

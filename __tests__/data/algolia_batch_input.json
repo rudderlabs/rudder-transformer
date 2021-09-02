@@ -1,0 +1,41 @@
+[
+  [
+    {
+      "message": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {"events":[
+            {
+              "eventName": "product clicked",
+              "eventType": "click",
+              "filters": ["field1:hello", "val1:val2"],
+              "index": "products",
+              "timestamp": "1630408594788",
+              "userToken": "testuserId1"
+            }
+          ]}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "X-Algolia-API-Key": "34d8efa09c5b048bbacc6af157f2e687",
+          "X-Algolia-Application-Id": "O2YARRI15I"
+        },
+        "version": "1",
+        "endpoint": "https://insights.algolia.io/1/events"
+      },
+      "metadata": { "job_id": 1 },
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+          "applicationId": "O2YARRI15I"
+        }
+      }
+    }
+  ]
+]

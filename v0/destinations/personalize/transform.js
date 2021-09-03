@@ -117,11 +117,7 @@ const putItemsHandler = (message, destination) => {
       "Dataset ARN is a mandatory information to use putUsers"
     );
   }
-  if (
-    !datasetARN.startsWith("arn:") ||
-    !datasetARN.includes(":personalize:") ||
-    !datasetARN.includes("/ITEMS")
-  ) {
+  if (!datasetARN.includes("/ITEMS")) {
     throw new CustomError(
       "Either Dataset ARN is not correctly entered or invalid",
       400
@@ -204,11 +200,7 @@ const identifyRequestHandler = (message, destination) => {
     );
   }
 
-  if (
-    !datasetARN.startsWith("arn:") ||
-    !datasetARN.includes(":personalize:") ||
-    !datasetARN.includes("/USERS")
-  ) {
+  if (!datasetARN.includes("/USERS")) {
     throw new CustomError(
       "Either Dataset ARN is not correctly entered or invalid.",
       400

@@ -1766,7 +1766,7 @@
         "region": "us-east-1",
         "secretAccessKey": "DEF",
         "trackingId": "c60",
-        "datasetARN": "aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup/ITEMS",
+        "datasetARN": "arn:aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup",
         "eventChoice": "PutItems"
       },
       "Enabled": true,

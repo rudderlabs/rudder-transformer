@@ -42,7 +42,7 @@
     "sourceKeys": [
       "traits.effectiveDate",
       "context.traits.effectiveDate",
-      "context.originalTimeStamp"
+      "originalTimestamp"
     ],
     "required": true
   }

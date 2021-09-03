@@ -1,22 +1,30 @@
 const get = require("get-value");
+const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const { getSubscriptionHistory } = require("./nethandler");
 const {
   CustomError,
   getDestinationExternalID,
-  isDefinedAndNotNull,
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  getValueFromMessage
 } = require("../../util");
 const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
+
+  const user_id = getDestinationExternalID(message, "profitwellUserId");
+  const user_alias = getValueFromMessage(message, "userId");
+
+  if (!user_id && !user_alias) {
+    logger.error("UserId must be provided");
+  }
 
   let subscriptionId = getDestinationExternalID(
     message,
@@ -26,67 +34,57 @@ const identifyResponseBuilder = async (message, { Config }) => {
     get(message, "traits.subscriptionAlias") ||
     get(message, "context.traits.subscriptionAlias");
 
-  let payload;
-  if (
-    isDefinedAndNotNull(subscriptionId) ||
-    isDefinedAndNotNull(subscriptionAlias)
-  ) {
-    payload = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name]
-    );
-    payload = removeUndefinedAndNullValues(payload);
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
-      subscriptionAlias}`;
-    response.headers = {
-      "Content-Type": "application/json",
+  const targetUrl = `${baseEndpoint}/v2/users/${user_id || user_alias}`;
+  const res = await getSubscriptionHistory(targetUrl, {
+    headers: {
       Authorization: Config.privateApiKey
-    };
-    response.body.JSON = payload;
-    return response;
-  }
-
-  // If SubscriptionId or SubscriptionAlias is not given
-  const user_id = getDestinationExternalID(message, "profitwellUserId");
-  const user_alias =
-    get(message, "traits.userId") ||
-    get(message, "context.traits.userId") ||
-    get(message, "traits.anonymousId") ||
-    get(message, "context.traits.anonymousId");
-
-  if (user_id || user_alias) {
-    let res;
-    const targetUrl = `${baseEndpoint}/v2/users/${user_id || user_alias}`;
-    try {
-      res = await getSubscriptionHistory(targetUrl, null, {
-        headers: {
-          Authorization: Config.privateApiKey
-        }
-      });
-    } catch (err) {
-      throw new CustomError(
-        "Failed to get user's subscription history",
-        err.response.status || 400
-      );
     }
+  });
 
-    // user_id exists in response payload
+  let payload;
+  if (res.success) {
     // some() breaks if the callback returns true
-    const valFound = res.some(element => {
-      if (element.user_id || element.user_alias) {
-        if (element.subscription_id) {
+    let subscriptionFound = true;
+    const valFound = res.response.some(element => {
+      if (user_id === element.user_id || user_alias === element.user_alias) {
+        if (subscriptionId === element.subscription_id) {
           subscriptionId = element.subscription_id;
+          subscriptionFound = true;
           return true;
         }
-        if (element.subscription_alias) {
+        if (subscriptionAlias === element.subscription_alias) {
           subscriptionAlias = element.subscription_alias;
+          subscriptionFound = true;
           return true;
         }
+        subscriptionFound = false;
       }
       return false;
     });
 
+    // for a given userId, subscriptionId not found
+    if (!subscriptionFound) {
+      payload = constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IDENTIFY_CREATE.name]
+      );
+      payload = {
+        ...payload,
+        user_id,
+        user_alias
+      };
+      payload = removeUndefinedAndNullValues(payload);
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.endpoint = `${baseEndpoint}/v2/subscriptions`;
+      response.headers = {
+        "Content-Type": "application/json",
+        Authorization: Config.privateApiKey
+      };
+      response.body.JSON = payload;
+      return response;
+    }
+
+    // userId and SubscriptionId is found
     if (valFound) {
       payload = constructPayload(
         message,
@@ -105,14 +103,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
     }
   }
 
-  // subscriptionId or user_id does not exist
+  // userId and subscriptionId does not exist
+  // create new subscription for new user
   payload = constructPayload(
     message,
     mappingConfig[ConfigCategory.IDENTIFY_CREATE.name]
   );
   payload = {
     ...payload,
-    user_id,
     user_alias
   };
   payload = removeUndefinedAndNullValues(payload);
@@ -120,7 +118,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   response.endpoint = `${baseEndpoint}/v2/subscriptions`;
   response.headers = {
     "Content-Type": "application/json",
-    Authorization: Config.Authorization
+    Authorization: Config.privateApiKey
   };
   response.body.JSON = payload;
   return response;
@@ -157,14 +155,6 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
         // if not transformed
         return getSuccessRespEvents(
           await process(input),

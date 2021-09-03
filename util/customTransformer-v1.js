@@ -75,13 +75,11 @@ async function userTransformHandlerV1(
       logger.debug(`Pooled transformer VM being created... `);
       isolatevmPool = await getPool(userTransformation, libraryVersionIds);
       isolatevm = await isolatevmPool.acquire();
-      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
+
       logger.debug(`Pooled transformer VM created... `);
     }
 
     // Transform the event...
-    stats.counter("events_into_vm", events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(
       isolatevm.isolateStartWallTime
     );
@@ -93,16 +91,7 @@ async function userTransformHandlerV1(
       isolatevm.isolate.wallTime
     );
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
-    stats.timing(
-      "isolate_wall_time",
-      isolateEndWallTime - isolateStartWallTime,
-      tags
-    );
-    stats.timing(
-      "isolate_cpu_time",
-      isolateEndCPUTime - isolateStartCPUTime,
-      tags
-    );
+
 
     // Destroy the isolated vm resources created
     if (isAcquireTransformerIsolatedVMMode) {
@@ -112,8 +101,6 @@ async function userTransformHandlerV1(
     } else {
       logger.debug(`Pooled Tranformer VMs being destroyed.. `);
       isolatevmPool.release(isolatevm);
-      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
       logger.debug(`Pooled Tranformer VMs destroyed.. `);
     }
     return transformedEvents;

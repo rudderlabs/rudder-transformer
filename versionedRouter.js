@@ -203,11 +203,6 @@ async function handleDest(ctx, version, destination) {
     events && events.length && events[0].metadata
       ? getMetadata(events[0].metadata)
       : {};
-  stats.increment("dest_transform_input_events", events.length, {
-    destination,
-    version,
-    ...metaTags
-  });
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -241,20 +236,10 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, {
-          destination,
-          version,
-          ...metaTags
-        });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  stats.increment("dest_transform_output_events", respList.length, {
-    destination,
-    version,
-    ...metaTags
-  });
   ctx.body = respList;
   return ctx.body;
 }
@@ -315,9 +300,6 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter("user_transform_input_events", events.length, {
-        processSessions
-      });
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(events, event => {
@@ -331,11 +313,6 @@ if (startDestTransformer) {
           event => event.metadata.destinationId + "_" + event.metadata.sourceId
         );
       }
-      stats.counter(
-        "user_transform_function_group_size",
-        Object.entries(groupedEvents).length,
-        { processSessions }
-      );
 
       const transformedEvents = [];
       let librariesVersionIDs = [];
@@ -373,15 +350,7 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter(
-                "user_transform_function_input_events",
-                destEvents.length,
-                {
-                  transformationVersionId,
-                  processSessions,
-                  ...metaTags
-                }
-              );
+
               
               let destTransformedEventsNew;
               logger.info('Executing difference check');
@@ -478,18 +447,8 @@ if (startDestTransformer) {
                   error: errorString
                 };
               });
-              transformedEvents.push(...destTransformedEvents);
-              stats.counter("user_transform_errors", destEvents.length, {
-                transformationVersionId,
-                processSessions,
-                ...metaTags
-              });
+
             } finally {
-              stats.timing(
-                "user_transform_function_latency",
-                userFuncStartTime,
-                { transformationVersionId, processSessions, ...metaTags }
-              );
             }
           } else {
             const errorMessage = "Transformation VersionID not found";
@@ -499,24 +458,14 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata
             });
-            stats.counter("user_transform_errors", destEvents.length, {
-              transformationVersionId,
-              processSessions,
-              ...metaTags
-            });
+
           }
         })
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
-      stats.timing("user_transform_request_latency", startTime, {
-        processSessions
-      });
-      stats.increment("user_transform_requests", 1, { processSessions });
-      stats.counter("user_transform_output_events", transformedEvents.length, {
-        processSessions
-      });
+
     });
   }
 }
@@ -525,10 +474,7 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
-  stats.increment("source_transform_input_events", events.length, {
-    source,
-    version
-  });
+
   const respList = [];
   await Promise.all(
     events.map(async event => {
@@ -545,18 +491,12 @@ async function handleSource(ctx, version, source) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.counter("source_transform_errors", events.length, {
-          source,
-          version
-        });
+
       }
     })
   );
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
-  stats.increment("source_transform_output_events", respList.length, {
-    source,
-    version
-  });
+
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 }

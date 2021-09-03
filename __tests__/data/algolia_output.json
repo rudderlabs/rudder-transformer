@@ -56,6 +56,44 @@
   },
   {
     "statusCode": "400",
-    "message": "Either filters or  products is required."
+    "message": "Either filters or  objectIds is required."
+  },
+  {
+    "statusCode": "400",
+    "message": "eventType is mandatory for track call"
+  },
+  {
+    "statusCode": "400",
+    "message": "for click eventType either both positions and queryId should be present or none"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {"events":[{
+            "eventName": "product list viewed",
+            "eventType": "view",
+            "index": "products",
+            "timestamp": "1630408594788",
+            "objectIDs": ["ecommerce-sample-data-919","9780439784542"],
+            "userToken": "testuserId1",
+            "queryID": "43b15df305339e827f0ac0bdc5ebcaa7"
+          }
+        ]},
+      "XML": {}
+    },
+    "endpoint": "https://insights.algolia.io/1/events",
+    "files": {},
+    "headers": {
+      "X-Algolia-API-Key": "34d8efa09c5b048bbacc6af157f2e687",
+      "X-Algolia-Application-Id": "O2YARRI15I"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "version": "1"
+  },
+  {
+    "statusCode": "400",
+    "message": "for click eventType either both positions and queryId should be present or none"
   }
 ]

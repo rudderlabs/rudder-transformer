@@ -15,12 +15,8 @@ const eventTypeMapping = Config => {
   return eventMap;
 };
 
-const payloadValidator = payload => {
+const genericpayloadValidator = payload => {
   const updatedPayload = payload;
-  if (payload.products && !Array.isArray(payload.products)) {
-    updatedPayload.products = null;
-    logger.error("products should be an array of objects.");
-  }
   if (payload.filters && !Array.isArray(payload.filters)) {
     updatedPayload.filters = null;
     logger.error("filters should be an array of strings.");
@@ -34,14 +30,23 @@ const payloadValidator = payload => {
     logger.error("objectIds must be an array of strings");
   }
   if (payload.timestamp) {
-    const diff = Date.now() - payload.timestamp;
-    if (diff > 345600000) {
+    const ts = payload.timestamp.toString();
+    if (ts.length < 13) {
       updatedPayload.timestamp = null;
-      logger.error("timestamp must be max 4 days old.");
+      logger.error("timestamp should be unix timestamp in milliseconds");
+    } else {
+      const diff = Date.now() - payload.timestamp;
+      if (diff > 345600000) {
+        updatedPayload.timestamp = null;
+        logger.error("timestamp must be max 4 days old.");
+      }
     }
   }
-  if (payload.eventType !== "click" && !payload.positions) {
+  if (payload.eventType !== "click" && payload.positions) {
     updatedPayload.positions = null;
+  }
+  if (payload.filters && payload.filters.length > 10) {
+    updatedPayload.filters.splice(10);
   }
   return updatedPayload;
 };
@@ -61,7 +66,7 @@ const createObjectArray = (objects, eventType) => {
             );
           }
         } else {
-          objectList.push(object);
+          objectList.push(object.objectId);
         }
       } else {
         logger.error(`object at index ${index} dropped. objectId is required.`);
@@ -71,51 +76,37 @@ const createObjectArray = (objects, eventType) => {
   return { objectList, positionList };
 };
 
-const trackPayloadValidator = payload => {
-  if (!payload.filters && !payload.objectIDs) {
-    throw new CustomError("Either filters or  products is required.", 400);
-  }
-  if (payload.filters && payload.objectIDs) {
-    throw new CustomError(
-      "event can’t have both products and filters at the same time.",
-      400
-    );
-  }
-};
-
 const clickPayloadValidator = payload => {
   const updatedPayload = payload;
-  if (payload.positions && !Array.isArray(payload.positions)) {
-    updatedPayload.positions = null;
-    logger.error("positions should be an array of integers.");
-  } else if (payload.positions) {
-    updatedPayload.positions.forEach((num, index) => {
+  if (payload.positions) {
+    if (!Array.isArray(payload.positions)) {
+      updatedPayload.positions = null;
+      logger.error("positions should be an array of integers.");
+    }
+    updatedPayload.positions.some((num, index) => {
       if (!isNaN(Number(num)) && Number.isInteger(Number(num))) {
         updatedPayload.positions[index] = Number(num);
       } else {
         updatedPayload.positions = null;
+        return false;
       }
     });
   }
+
   if (!payload.filters) {
-    if (payload.positions || payload.queryID) {
-      if (!payload.positions) {
-        updatedPayload.queryID = null;
-        logger.error("With queryId positions is also required.");
-      }
-      if (!payload.queryID) {
-        updatedPayload.positions = null;
-        logger.error("With positions queryId is also required.");
-      }
+    if (!(payload.positions && payload.queryID)) {
+      throw new CustomError(
+        "for click eventType either both positions and queryId should be present or none",
+        400
+      );
     }
   }
   return updatedPayload;
 };
 
 module.exports = {
-  payloadValidator,
+  genericpayloadValidator,
   createObjectArray,
   eventTypeMapping,
-  clickPayloadValidator,
-  trackPayloadValidator
+  clickPayloadValidator
 };

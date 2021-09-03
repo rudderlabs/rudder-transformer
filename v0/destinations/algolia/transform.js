@@ -13,10 +13,9 @@ const {
 const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
 
 const {
-  payloadValidator,
+  genericpayloadValidator,
   createObjectArray,
   eventTypeMapping,
-  trackPayloadValidator,
   clickPayloadValidator
 } = require("./util");
 
@@ -32,16 +31,10 @@ const trackResponseBuilder = (message, { Config }) => {
   if (eventMapping[event]) {
     payload.eventType = eventMapping[event];
   }
-  if (!payload.eventName && !payload.eventType) {
-    throw new CustomError(
-      "event and eventType is mandatory for track call",
-      400
-    );
+  if (!payload.eventType) {
+    throw new CustomError("eventType is mandatory for track call", 400);
   }
-  payload = payloadValidator(payload);
-  if (payload.filters && payload.filters.length > 10) {
-    payload.filters.splice(10);
-  }
+  payload = genericpayloadValidator(payload);
 
   if (event === "product list viewed" || event === "order completed") {
     const products = getValueFromMessage(message, "properties.products");
@@ -61,17 +54,23 @@ const trackResponseBuilder = (message, { Config }) => {
         payload.positions.splice(20);
       }
       // making size of object list and position list equal
-      if (posLen > 0 && objLen > 0) {
-        if (posLen !== objLen) {
-          const minSize = posLen > objLen ? objLen : posLen;
-          payload.positions.splice(minSize);
-          payload.objectIDs.splice(minSize);
-        }
+      if (posLen > 0 && objLen > 0 && posLen !== objLen) {
+        throw new CustomError(
+          "length of objectId and position should be equal ",
+          400
+        );
       }
     }
   }
-
-  trackPayloadValidator(payload); // general validator
+  if (!payload.filters && !payload.objectIDs) {
+    throw new CustomError("Either filters or  objectIds is required.", 400);
+  }
+  if (payload.filters && payload.objectIDs) {
+    throw new CustomError(
+      "event can’t have both objectIds and filters at the same time.",
+      400
+    );
+  }
   if (payload.eventType === "click") {
     payload = clickPayloadValidator(payload); // click event validator
   }

@@ -161,17 +161,15 @@ const putItemsHandler = (message, destination) => {
   return response;
 };
 
-const trackRequestHandler = async (message, destination) => {
+const trackRequestHandler = (message, destination, eventChoice) => {
   let response;
-  let { eventChoice } = destination.Config;
-  eventChoice = eventChoice || "PutEvents";
 
   switch (eventChoice) {
     case "PutEvents":
-      response = await putEventsHandler(message, destination);
+      response = putEventsHandler(message, destination);
       break;
     case "PutItems":
-      response = await putItemsHandler(message, destination);
+      response = putItemsHandler(message, destination);
       break;
     default:
       throw new CustomError(
@@ -182,9 +180,10 @@ const trackRequestHandler = async (message, destination) => {
   return response;
 };
 
-const identifyRequestHandler = (message, destination) => {
+const identifyRequestHandler = (message, destination, eventChoice) => {
   const traits = getFieldValueFromMessage(message, "traits");
-  const { customMappings, datasetARN, eventChoice } = destination.Config;
+  const { customMappings, datasetARN } = destination.Config;
+
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
   if (eventChoice !== "PutUsers") {
@@ -236,7 +235,8 @@ const identifyRequestHandler = (message, destination) => {
 
 const processEvent = async (message, destination) => {
   let response;
-  const { eventChoice } = destination.Config;
+  let { eventChoice } = destination.Config;
+  eventChoice = eventChoice || "PutEvents";
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -247,10 +247,10 @@ const processEvent = async (message, destination) => {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyRequestHandler(message, destination);
+      response = identifyRequestHandler(message, destination, eventChoice);
       break;
     case EventType.TRACK:
-      response = await trackRequestHandler(message, destination);
+      response = trackRequestHandler(message, destination, eventChoice);
       break;
     default:
       throw new CustomError("Message type not supported", 400);

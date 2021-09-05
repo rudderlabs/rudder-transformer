@@ -253,6 +253,7 @@ async function handleValidation(event) {
                     break;
                 }
                 case "ajvOptions":
+                    break;
                 default:
                     logger.error(`Unknown option ${value} in ${key} in eventSchema config"`);
             }

@@ -158,23 +158,25 @@ async function handleValidation(ctx) {
         try {
           const parsedEvent = event;
           parsedEvent.request = {query: reqParams};
-          const validationResponse = await eventValidator.handleValidation(parsedEvent);
-          if (validationResponse.dropEvent) {
-            const errMessage = `Error occurred while validating because : ${validationResponse.dropEventViolationType}`
-            logger.error(errMessage);
+          const hV = await eventValidator.handleValidation(parsedEvent);
+          if (hV.dropEvent) {
+            const errMessage = `Error occurred while validating because : ${hV.violationType}`
             respList.push({
               output: event.message,
               metadata: event.metadata,
               statusCode: 400,
-              validationErrors: validationResponse.ValidationErrors,
+              validationErrors: hV.validationErrors,
               errors: errMessage
+            });
+            stats.timing("validate_event_violation_type", hV.violationType, {
+              ...metaTags
             });
           } else {
             respList.push({
               output: event.message,
               metadata: event.metadata,
               statusCode: 200,
-              validationErrors: validationResponse.ValidationErrors,
+              validationErrors: hV.validationErrors,
             });
           }
         } catch (error) {

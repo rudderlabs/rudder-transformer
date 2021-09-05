@@ -4,15 +4,21 @@ const logger = require("../logger");
 const stats = require("./stats");
 
 const tpCache = new NodeCache();
-
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTrackingPlanURL = `${CONFIG_BACKEND_URL}/workspaces`;
 
-// Gets the trackingplan from config backend.
-// Stores the trackingplan object in memory with time to live after which it expires.
-// tpId is updated any time user changes the code in transformation, so there wont be any stale code issues.
+/**
+ * @param {*} tpId
+ * @param {*} version
+ * @param {*} workspaceId
+ * @returns {Object}
+ *
+ * Gets the tracking plan from config backend.
+ * Stores the tracking plan object in memory with time to live after which it expires.
+ * tpId is updated any time user changes the code in transformation, so there wont be any stale code issues.
+ * TODO: if version is not given, latest TP may be fetched, extract version and populate node cache
+ */
 async function getTrackingPlan(tpId, version, workspaceId) {
-    // TODO: if version is not given, latest TP may be fetched, extract version and populate node cache
     const trackingPlan = tpCache.get(`${tpId}::${version}`);
     if (trackingPlan) return trackingPlan;
     try {
@@ -20,7 +26,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
         const response = await fetchWithProxy(
             `${getTrackingPlanURL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`
         );
-        stats.timing("get_trackingplan", startTime);
+        stats.timing("get_tracking_plan", startTime);
         const myJson = await response.json();
         if (myJson.error || response.status !== 200) {
             throw new Error(`${tpId}::${version}  :: ${myJson.error}`);
@@ -29,11 +35,21 @@ async function getTrackingPlan(tpId, version, workspaceId) {
         return myJson;
     } catch (error) {
         logger.error(`Failed during trackingPlan fetch : ${error}`);
-        stats.increment("get_trackingplan.error");
+        stats.increment("get_tracking_plan.error");
         throw error.message;
     }
 }
 
+/**
+ * @param {*} tpId
+ * @param {*} tpVersion
+ * @param {*} eventType
+ * @param {*} eventName
+ * @param {*} workspaceId
+ * @returns {Object}
+ *
+ * Gets the event schema.
+ */
 async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId) {
     var eventSchema;
     try {
@@ -61,5 +77,4 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     }
 }
 
-exports.getTrackingPlan = getTrackingPlan;
 exports.getEventSchema = getEventSchema;

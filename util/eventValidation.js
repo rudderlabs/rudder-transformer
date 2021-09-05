@@ -1,7 +1,6 @@
 const Ajv = require("ajv");
 
 const NodeCache = require("node-cache");
-const _ = require("lodash");
 const logger = require("../logger");
 const trackingPlan = require("./trackingPlan");
 const hash = require("object-hash");
@@ -252,10 +251,6 @@ async function handleValidation(event) {
                     }
                     break;
                 }
-                case "ajvOptions":
-                    break;
-                default:
-                    logger.error(`Unknown option ${value} in ${key} in eventSchema config"`);
             }
         }
 

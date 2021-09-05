@@ -158,25 +158,26 @@ async function handleValidation(ctx) {
         try {
           const parsedEvent = event;
           parsedEvent.request = {query: reqParams};
-          const hV = await eventValidator.handleValidation(parsedEvent);
-          if (hV.dropEvent) {
-            const errMessage = `Error occurred while validating because : ${hV.violationType}`
+          const hv = await eventValidator.handleValidation(parsedEvent);
+          if (hv.dropEvent) {
+            const errMessage = `Error occurred while validating because : ${hv.violationType}`
             respList.push({
               output: event.message,
               metadata: event.metadata,
               statusCode: 400,
-              validationErrors: hV.validationErrors,
+              validationErrors: hv.validationErrors,
               errors: errMessage
             });
-            stats.timing("validate_event_violation_type", hV.violationType, {
-              ...metaTags
+            stats.counter("hv_violation_type", 1, {
+              violationType: hv.violationType,
+              ...metaTags,
             });
           } else {
             respList.push({
               output: event.message,
               metadata: event.metadata,
               statusCode: 200,
-              validationErrors: hV.validationErrors,
+              validationErrors: hv.validationErrors,
             });
           }
         } catch (error) {
@@ -190,7 +191,7 @@ async function handleValidation(ctx) {
             error: errMessage
           });
         } finally {
-          stats.timing("validate_event_latency", eventStartTime, {
+          stats.timing("hv_event_latency", eventStartTime, {
             ...metaTags
           });
         }
@@ -198,9 +199,16 @@ async function handleValidation(ctx) {
   );
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
-  stats.counter("handle_validation_events_count", events.length, metaTags);
-  stats.counter("handle_validation_request_size", requestSize, metaTags);
-  stats.timing("handle_validation_request_latency", requestStartTime, metaTags);
+
+  stats.counter("hv_events_count", events.length, {
+    ...metaTags
+  });
+  stats.counter("hv_request_size", requestSize, {
+    ...metaTags
+  });
+  stats.timing("hv_request_latency", requestStartTime, {
+    ...metaTags
+  });
 }
 
 async function routerHandleDest(ctx) {

@@ -1031,6 +1031,16 @@ function ErrorBuilder() {
     return this;
   };
 
+  this.setAuthErrorCategory = errorCat => {
+    this.err.authErrorCategory = errorCat;
+    return this;
+  };
+
+  this.setAccessToken = token => {
+    this.err.accessToken = token;
+    return this;
+  };
+
   this.setApiInfo = apiLimit => {
     this.err.apiLimit = apiLimit;
     return this;

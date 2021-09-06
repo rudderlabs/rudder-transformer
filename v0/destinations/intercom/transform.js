@@ -154,8 +154,6 @@ function process(event) {
       error.status || 400
     );
   }
-  // This only has been added to go through the data flow using OAuth
-  delete response.body.JSON.custom_attributes;
   return response;
 }
 

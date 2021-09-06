@@ -6,9 +6,7 @@ const BaseCache = require("./base");
 
 class AccountCache extends BaseCache {
   constructor() {
-    super({
-      stdTTL: 10 * 60
-    });
+    super();
   }
 
   static getTokenUrl(key) {
@@ -18,19 +16,14 @@ class AccountCache extends BaseCache {
 
   async getToken(key) {
     const tokenUrl = this.constructor.getTokenUrl(key);
-    const { data: account } = await axios.get(tokenUrl);
-    return account;
+    const { data: token } = await axios.post(tokenUrl);
+    return token;
   }
 
   async onExpired(k, v) {
     // The Account Secrets like accessToken, refreshToken, expirationDate etc., are being fetched
-    const account = await this.getToken(k);
-    let diffTimeMs = 5 * 60;
-    if (account && account.secret && account.secret.expirationDate) {
-      diffTimeMs = moment(account.secret.expirationDate).valueOf() - moment().valueOf();
-      diffTimeMs /= 1000;
-    }
-    this.set(k, account, diffTimeMs);
+    const token = await this.getToken(k);
+    this.set(k, token);
   }
 
   async getTokenFromCache(workspaceId, accountId) {

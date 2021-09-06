@@ -152,51 +152,50 @@ async function handleValidation(ctx) {
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
-  await Promise.all(
-      events.map(async event => {
-        const eventStartTime = new Date();
-        try {
-          const parsedEvent = event;
-          parsedEvent.request = {query: reqParams};
-          const hv = await eventValidator.handleValidation(parsedEvent);
-          if (hv.dropEvent) {
-            const errMessage = `Error occurred while validating because : ${hv.violationType}`
-            respList.push({
-              output: event.message,
-              metadata: event.metadata,
-              statusCode: 400,
-              validationErrors: hv.validationErrors,
-              errors: errMessage
-            });
-            stats.counter("hv_violation_type", 1, {
-              violationType: hv.violationType,
-              ...metaTags,
-            });
-          } else {
-            respList.push({
-              output: event.message,
-              metadata: event.metadata,
-              statusCode: 200,
-              validationErrors: hv.validationErrors,
-            });
-          }
-        } catch (error) {
-          const errMessage = `Error occurred while validating : ${error}`
-          logger.error(errMessage);
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 200,
-            validationErrors: [],
-            error: errMessage
-          });
-        } finally {
-          stats.timing("hv_event_latency", eventStartTime, {
-            ...metaTags
-          });
-        }
-      })
-  );
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    const eventStartTime = new Date();
+    try {
+      const parsedEvent = event;
+      parsedEvent.request = {query: reqParams};
+      const hv = await eventValidator.handleValidation(parsedEvent);
+      if (hv.dropEvent) {
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 400,
+          validationErrors: hv.validationErrors,
+          errors: errMessage
+        });
+        stats.counter("hv_violation_type", 1, {
+          violationType: hv.violationType,
+          ...metaTags,
+        });
+      } else {
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 200,
+          validationErrors: hv.validationErrors,
+        });
+      }
+    } catch (error) {
+      const errMessage = `Error occurred while validating : ${error}`
+      logger.error(errMessage);
+      respList.push({
+        output: event.message,
+        metadata: event.metadata,
+        statusCode: 200,
+        validationErrors: [],
+        error: errMessage
+      });
+    } finally {
+      stats.timing("hv_event_latency", eventStartTime, {
+        ...metaTags
+      });
+    }
+  }
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
 

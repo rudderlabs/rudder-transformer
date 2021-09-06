@@ -23,7 +23,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const user_alias = getFieldValueFromMessage(message, "userId");
 
   if (!user_id && !user_alias) {
-    throw new CustomError("UserId not found", 404);
+    throw new CustomError("User not found", 400);
   }
 
   let subscriptionId = getDestinationExternalID(
@@ -133,6 +133,10 @@ const process = async event => {
       "Message type is not present. Aborting message.",
       400
     );
+  }
+
+  if (!destination.Config.privateApiKey) {
+    throw new CustomError("Private API Key not found. Aborting message.", 400);
   }
 
   const messageType = message.type.toLowerCase();

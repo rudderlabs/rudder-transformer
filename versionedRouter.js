@@ -375,9 +375,11 @@ if (startDestTransformer) {
                 }
                 let responseMatched = true;
                 try {
-                  destTransformedEvents.sort((a,b) => a.transformedEvent.messageId > a.transformedEvent.messageId ? 1: 
-                  (a.transformedEvent.messageId < a.transformedEvent.messageId ? -1 : 0));
-                } catch (err) {}
+                  destTransformedEvents.sort((a,b) => a.transformedEvent.messageId > b.transformedEvent.messageId ? 1: 
+                    (a.transformedEvent.messageId < b.transformedEvent.messageId ? -1 : 0));
+                  destTransformedEventsNew.sort((a,b) => a.transformedEvent.messageId > b.transformedEvent.messageId ? 1: 
+                    (a.transformedEvent.messageId < b.transformedEvent.messageId ? -1 : 0));
+                } catch (err) {console.log("sorting issue")}
                 for (let i = 0; i < destTransformedEvents.length; i++) {
                   let responseDiff = jsonDiff.diff(destTransformedEventsNew[i].transformedEvent, destTransformedEvents[i].transformedEvent);
                   if (responseDiff) {

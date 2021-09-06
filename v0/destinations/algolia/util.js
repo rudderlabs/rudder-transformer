@@ -1,5 +1,6 @@
 const logger = require("../../../logger");
 const { CustomError } = require("../../util");
+const { EVENT_TYPES } = require("./config");
 
 const eventTypeMapping = Config => {
   const eventMap = {};
@@ -17,6 +18,13 @@ const eventTypeMapping = Config => {
 
 const genericpayloadValidator = payload => {
   const updatedPayload = payload;
+  updatedPayload.eventType = payload.eventType.trim().toLowerCase();
+  if (!EVENT_TYPES.includes(payload.eventType)) {
+    throw new CustomError(
+      "eventType can be either click, view or conversion",
+      400
+    );
+  }
   if (payload.filters && !Array.isArray(payload.filters)) {
     updatedPayload.filters = null;
     logger.error("filters should be an array of strings.");

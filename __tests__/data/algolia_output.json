@@ -92,5 +92,9 @@
   {
     "statusCode": "400",
     "message": "for click eventType either both positions and queryId should be present or none"
+  },
+  {
+    "statusCode": "400",
+    "message": "eventType can be either click, view or conversion"
   }
 ]

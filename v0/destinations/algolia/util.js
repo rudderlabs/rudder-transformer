@@ -30,17 +30,17 @@ const genericpayloadValidator = payload => {
     logger.error("objectIds must be an array of strings");
   }
   if (payload.timestamp) {
-    const ts = payload.timestamp.toString();
-    if (ts.length < 13) {
+    // const ts = payload.timestamp.toString();
+    // if (ts.length < 13) {
+    //   updatedPayload.timestamp = null;
+    //   logger.error("timestamp should be unix timestamp in milliseconds");
+    // } else {
+    const diff = Date.now() - payload.timestamp;
+    if (diff > 345600000) {
       updatedPayload.timestamp = null;
-      logger.error("timestamp should be unix timestamp in milliseconds");
-    } else {
-      const diff = Date.now() - payload.timestamp;
-      if (diff > 345600000) {
-        updatedPayload.timestamp = null;
-        logger.error("timestamp must be max 4 days old.");
-      }
+      logger.error("timestamp must be max 4 days old.");
     }
+    // }
   }
   if (payload.eventType !== "click" && payload.positions) {
     updatedPayload.positions = null;
@@ -61,7 +61,7 @@ const createObjectArray = (objects, eventType) => {
             objectList.push(object.objectId);
             positionList.push(object.position);
           } else {
-            logger.error(
+            logger.info(
               `object at index ${index} dropped. position is required if eventType is click`
             );
           }
@@ -94,7 +94,10 @@ const clickPayloadValidator = payload => {
   }
 
   if (!payload.filters) {
-    if (!(payload.positions && payload.queryID)) {
+    if (
+      (payload.positions && !payload.queryID) ||
+      (!payload.positions && payload.queryID)
+    ) {
       throw new CustomError(
         "for click eventType either both positions and queryId should be present or none",
         400

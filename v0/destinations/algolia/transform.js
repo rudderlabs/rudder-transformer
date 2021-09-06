@@ -62,6 +62,7 @@ const trackResponseBuilder = (message, { Config }) => {
       }
     }
   }
+  // for all events either filter or objectID should be there
   if (!payload.filters && !payload.objectIDs) {
     throw new CustomError("Either filters or  objectIds is required.", 400);
   }

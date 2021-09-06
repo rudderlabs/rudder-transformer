@@ -48,7 +48,6 @@
       "userId": "testuserId1",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "filters": ["field1:hello", "val1:val2"]
       },
       "integrations": {
@@ -118,7 +117,6 @@
       "userId": "testuserId1",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "products": [
           {
             "objectId": "ecommerce-sample-data-919",
@@ -199,7 +197,6 @@
       "properties": {
         "eventType": "click",
         "index": "products",
-        "timestamp": "1630408594788",
         "queryId": "43b15df305339e827f0ac0bdc5ebcaa8"
       },
       "integrations": {
@@ -264,7 +261,6 @@
       "event": "product clicked",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "queryId": "43b15df305339e827f0ac0bdc5ebcaa7"
       },
       "integrations": {
@@ -329,7 +325,6 @@
       "userId": "testuserId1",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "products": [
           {
             "objectId": "ecommerce-sample-data-919",
@@ -409,7 +404,6 @@
       "userId": "testuserId1",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "products": [
           {
             "objectId": "ecommerce-sample-data-919",
@@ -489,7 +483,6 @@
       "userId": "testuserId1",
       "properties": {
         "index": "products",
-        "timestamp": "1630408594788",
         "products": [
           {
             "objectId": "ecommerce-sample-data-919",

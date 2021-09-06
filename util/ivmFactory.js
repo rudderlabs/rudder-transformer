@@ -251,7 +251,6 @@ async function createIvm(code, libraryVersionIds) {
 
   const fnRef = await customScriptModule.namespace.get("transformWrapper");
   const fName = availableFuncNames[0];
-  stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
 

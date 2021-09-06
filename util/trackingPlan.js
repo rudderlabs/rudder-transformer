@@ -21,6 +21,7 @@ const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
 async function getTrackingPlan(tpId, version, workspaceId) {
     const trackingPlan = tpCache.get(`${tpId}::${version}`);
     if (trackingPlan) return trackingPlan;
+    logger.info(`getTrackingPlan ${process.pid}`);
     try {
         const startTime = new Date();
         const response = await fetchWithProxy(

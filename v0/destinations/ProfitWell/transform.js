@@ -12,7 +12,7 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  getValueFromMessage
+  getFieldValueFromMessage
 } = require("../../util");
 const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
 
@@ -20,10 +20,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
 
   const user_id = getDestinationExternalID(message, "profitwellUserId");
-  const user_alias = getValueFromMessage(message, "userId");
+  const user_alias = getFieldValueFromMessage(message, "userId");
 
   if (!user_id && !user_alias) {
-    logger.error("UserId must be provided");
+    throw new CustomError("UserId not found", 404);
   }
 
   let subscriptionId = getDestinationExternalID(
@@ -101,6 +101,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
       response.body.JSON = payload;
       return response;
     }
+  } else {
+    logger.debug("Failed to get subscription history for a user");
   }
 
   // userId and subscriptionId does not exist

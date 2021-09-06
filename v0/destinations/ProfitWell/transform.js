@@ -101,9 +101,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
       response.body.JSON = payload;
       return response;
     }
-  } else {
-    logger.debug("Failed to get subscription history for a user");
   }
+
+  logger.debug("Failed to get subscription history for a user");
 
   // userId and subscriptionId does not exist
   // create new subscription for new user

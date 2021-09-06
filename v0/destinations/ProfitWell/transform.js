@@ -19,10 +19,10 @@ const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
 const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
 
-  const user_id = getDestinationExternalID(message, "profitwellUserId");
-  const user_alias = getFieldValueFromMessage(message, "userId");
+  const userId = getDestinationExternalID(message, "profitwellUserId");
+  const userAlias = getFieldValueFromMessage(message, "userId");
 
-  if (!user_id && !user_alias) {
+  if (!userId && !userAlias) {
     throw new CustomError("User not found", 400);
   }
 
@@ -34,7 +34,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     get(message, "traits.subscriptionAlias") ||
     get(message, "context.traits.subscriptionAlias");
 
-  const targetUrl = `${baseEndpoint}/v2/users/${user_id || user_alias}`;
+  const targetUrl = `${baseEndpoint}/v2/users/${userId || userAlias}`;
   const res = await getSubscriptionHistory(targetUrl, {
     headers: {
       Authorization: Config.privateApiKey
@@ -46,7 +46,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     // some() breaks if the callback returns true
     let subscriptionFound = true;
     const valFound = res.response.some(element => {
-      if (user_id === element.user_id || user_alias === element.user_alias) {
+      if (userId === element.user_id || userAlias === element.user_alias) {
         if (subscriptionId === element.subscription_id) {
           subscriptionId = element.subscription_id;
           subscriptionFound = true;
@@ -70,8 +70,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
       );
       payload = {
         ...payload,
-        user_id,
-        user_alias
+        user_id: userId,
+        user_alias: userAlias
       };
       payload = removeUndefinedAndNullValues(payload);
       response.method = defaultPostRequestConfig.requestMethod;
@@ -113,7 +113,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   );
   payload = {
     ...payload,
-    user_alias
+    user_alias: userAlias
   };
   payload = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;

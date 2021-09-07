@@ -591,10 +591,10 @@ router.get("/results", ctx => {
 router.get("/debug", ctx => {
   ctx.body = {
     tsize: JSON.stringify(myCache.data || '').length,
-    tkeys: Object.keys(myCache?.data || {}).length,
+    tkeys: Object.keys(myCache.data || {}).length,
     tmem: sizeof(myCache),
     lsize: JSON.stringify(cache.data || '').length,
-    lkeys: Object.keys(cache?.data || {}).length,
+    lkeys: Object.keys(cache.data || {}).length,
     lmem: sizeof(cache)
   }
 });

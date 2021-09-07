@@ -13,4 +13,9 @@ const ConfigCategory = {
   }
 };
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-module.exports = { ConfigCategory, mappingConfig, baseEndpoint };
+module.exports = {
+  createPayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_CREATE.name],
+  updatePayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name],
+  mappingConfig,
+  baseEndpoint
+};

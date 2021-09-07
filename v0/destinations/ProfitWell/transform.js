@@ -14,14 +14,18 @@ const {
   getErrorRespEvents,
   getFieldValueFromMessage
 } = require("../../util");
-const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
+const {
+  createPayloadMapping,
+  updatePayloadMapping,
+  baseEndpoint
+} = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getDestinationExternalID(message, "profitwellUserId");
   const userAlias = getFieldValueFromMessage(message, "userId");
 
   if (!userId && !userAlias) {
-    throw new CustomError("userId or userAlias is required for Identify", 400);
+    throw new CustomError("userId or userAlias is required for identify", 400);
   }
 
   let subscriptionId = getDestinationExternalID(
@@ -34,7 +38,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   if (!subscriptionId && !subscriptionAlias) {
     throw new CustomError(
-      "subscriptionId or subscriptionAlias is required for Identify",
+      "subscriptionId or subscriptionAlias is required for identify",
       400
     );
   }
@@ -71,33 +75,25 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
     // for a given userId, subscriptionId not found
     if (!subscriptionFound) {
-      payload = constructPayload(
-        message,
-        mappingConfig[ConfigCategory.IDENTIFY_CREATE.name]
-      );
+      payload = constructPayload(message, createPayloadMapping);
       payload = {
         ...payload,
         user_id: userId,
         user_alias: userAlias
       };
-      payload = removeUndefinedAndNullValues(payload);
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions`;
       response.headers = {
         "Content-Type": "application/json",
         Authorization: Config.privateApiKey
       };
-      response.body.JSON = payload;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
       return response;
     }
 
     // userId and SubscriptionId is found
     if (valFound) {
-      payload = constructPayload(
-        message,
-        mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name]
-      );
-      payload = removeUndefinedAndNullValues(payload);
+      payload = constructPayload(message, updatePayloadMapping);
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}`;
@@ -105,7 +101,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
         "Content-Type": "application/json",
         Authorization: Config.privateApiKey
       };
-      response.body.JSON = payload;
+      response.body.JSON = removeUndefinedAndNullValues(payload);
       return response;
     }
   }
@@ -120,36 +116,29 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   // userId and subscriptionId does not exist
   // create new subscription for new user
-  payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.IDENTIFY_CREATE.name]
-  );
+  payload = constructPayload(message, createPayloadMapping);
   payload = {
     ...payload,
     user_alias: userAlias
   };
-  payload = removeUndefinedAndNullValues(payload);
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${baseEndpoint}/v2/subscriptions`;
   response.headers = {
     "Content-Type": "application/json",
     Authorization: Config.privateApiKey
   };
-  response.body.JSON = payload;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };
 
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type. Aborting.", 400);
   }
 
   if (!destination.Config.privateApiKey) {
-    throw new CustomError("Private API Key not found. Aborting message.", 400);
+    throw new CustomError("Private API Key not found. Aborting.", 400);
   }
 
   const messageType = message.type.toLowerCase();

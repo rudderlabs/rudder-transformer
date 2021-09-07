@@ -12,7 +12,8 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  toUnixTimestamp
 } = require("../../util");
 const {
   createPayloadMapping,
@@ -85,6 +86,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       if (!isValidPlanCurrency(payload)) {
         payload.plan_currency = null;
       }
+      payload.effective_date = toUnixTimestamp(payload.effective_date);
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
       response.headers = {
@@ -98,6 +100,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     // userId and SubscriptionId is found
     if (valFound) {
       payload = constructPayload(message, updatePayloadMapping);
+      payload.effective_date = toUnixTimestamp(payload.effective_date);
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}/`;
@@ -128,6 +131,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (!isValidPlanCurrency(payload)) {
     payload.plan_currency = null;
   }
+  payload.effective_date = toUnixTimestamp(payload.effective_date);
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
   response.headers = {

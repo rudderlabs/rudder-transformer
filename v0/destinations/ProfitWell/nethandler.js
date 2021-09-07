@@ -1,4 +1,7 @@
-const { send } = require("../../../adapters/network");
+const { send, sendRequest } = require("../../../adapters/network");
+const {
+  handleDestinationResponse
+} = require("../../../adapters/networkhandler/genericnethandler");
 
 const getSubscriptionHistory = async (endpoint, options) => {
   const requestOptions = {
@@ -10,4 +13,14 @@ const getSubscriptionHistory = async (endpoint, options) => {
   return res;
 };
 
-module.exports = { getSubscriptionHistory };
+const responseHandler = (dresponse, metadata) => {
+  return handleDestinationResponse(dresponse, metadata);
+};
+const sendData = async payload => {
+  const { metadata } = payload;
+  const res = await sendRequest(payload);
+  const parsedResponse = responseHandler(res, metadata);
+  return parsedResponse;
+};
+
+module.exports = { getSubscriptionHistory, sendData };

@@ -17,7 +17,8 @@ const {
 const {
   createPayloadMapping,
   updatePayloadMapping,
-  baseEndpoint
+  baseEndpoint,
+  currencyCodes
 } = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
@@ -81,6 +82,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
         user_id: userId,
         user_alias: userAlias
       };
+      if (!currencyCodes.includes(payload.plan_currency.toLowerCase())) {
+        payload.plan_currency = null;
+      }
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions`;
       response.headers = {
@@ -121,6 +125,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     ...payload,
     user_alias: userAlias
   };
+  if (!currencyCodes.includes(payload.plan_currency.toLowerCase())) {
+    payload.plan_currency = null;
+  }
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${baseEndpoint}/v2/subscriptions`;
   response.headers = {

@@ -3,8 +3,9 @@ const { sendRequest } = require("../../../adapters/network");
 const { trimResponse } = require("../../../adapters/utils/networkUtils");
 const { ErrorBuilder } = require("../../util/index");
 const {
-  constants: authConstants
-} = require("../../../adapters/networkhandler/auth");
+  DISABLE_DEST,
+  REFRESH_TOKEN
+} = require("../../../adapters/networkhandler/authConstants");
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -18,9 +19,9 @@ const trimBqStreamResponse = response => ({
 const getDestAuthCategory = errorCategory => {
   switch (errorCategory) {
     case "PERMISSION_DENIED":
-      return authConstants.DISABLE_DEST;
+      return DISABLE_DEST;
     case "UNAUTHENTICATED":
-      return authConstants.REFRESH_TOKEN;
+      return REFRESH_TOKEN;
     default:
       return "";
   }
@@ -46,7 +47,6 @@ const getAccessTokenFromDestRequest = payload =>
  * Reference doc for OAuth Errors
  * https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
  */
-
 const responseHandler = ({
   dresponse,
   metadata,

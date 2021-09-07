@@ -42,18 +42,15 @@ const genericpayloadValidator = payload => {
     updatedPayload.objectIDs = null;
     logger.error("objectIds must be an array of strings");
   }
+  if (payload.objectIDs && payload.objectIDs.length > 20) {
+    updatedPayload.objectIDs.splice(20);
+  }
   if (payload.timestamp) {
-    // const ts = payload.timestamp.toString();
-    // if (ts.length < 13) {
-    //   updatedPayload.timestamp = null;
-    //   logger.error("timestamp should be unix timestamp in milliseconds");
-    // } else {
     const diff = Date.now() - payload.timestamp;
     if (diff > 345600000) {
       updatedPayload.timestamp = null;
       logger.error("timestamp must be max 4 days old.");
     }
-    // }
   }
   if (payload.eventType !== "click" && payload.positions) {
     updatedPayload.positions = null;

@@ -87,6 +87,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
         payload.plan_currency = null;
       }
       payload.effective_date = toUnixTimestamp(payload.effective_date);
+      if (Number.isNaN(payload.effective_date)) {
+        payload.effective_date = null;
+      }
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
       response.headers = {
@@ -101,6 +104,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     if (valFound) {
       payload = constructPayload(message, updatePayloadMapping);
       payload.effective_date = toUnixTimestamp(payload.effective_date);
+      if (Number.isNaN(payload.effective_date)) {
+        payload.effective_date = null;
+      }
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}/`;
@@ -132,6 +138,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     payload.plan_currency = null;
   }
   payload.effective_date = toUnixTimestamp(payload.effective_date);
+  if (Number.isNaN(payload.effective_date)) {
+    payload.effective_date = null;
+  }
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
   response.headers = {

@@ -56,7 +56,7 @@ const trackResponseBuilder = (message, { Config }) => {
       // making size of object list and position list equal
       if (posLen > 0 && objLen > 0 && posLen !== objLen) {
         throw new CustomError(
-          "length of objectId and position should be equal ",
+          "length of objectId and position should be equal",
           400
         );
       }

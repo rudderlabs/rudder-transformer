@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 
 const { EventType, MappedToDestinationKey } = require("../../../constants");
@@ -101,7 +102,7 @@ function getUserAttributesObject(message, mappingJson) {
   const traits = getFieldValueFromMessage(message, "traits");
 
   // return the traits as-is if message is mapped to destination
-  if(get(message, MappedToDestinationKey)) {
+  if (get(message, MappedToDestinationKey)) {
     return traits;
   }
 
@@ -146,12 +147,11 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
-  
   // override userId with externalId in context(if present) and event is mapped to destination
-  const externalId = get(message, "context.externalId.0.id")
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination && externalId) {
-      message.userId = externalId; 
+  const externalId = get(message, "context.externalId.0.id");
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination && externalId) {
+    message.userId = externalId;
   }
 
   return buildResponse(

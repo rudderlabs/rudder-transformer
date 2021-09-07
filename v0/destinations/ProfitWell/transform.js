@@ -44,7 +44,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     );
   }
 
-  const targetUrl = `${baseEndpoint}/v2/users/${userId || userAlias}`;
+  const targetUrl = `${baseEndpoint}/v2/users/${userId || userAlias}/`;
   const res = await getSubscriptionHistory(targetUrl, {
     headers: {
       Authorization: Config.privateApiKey
@@ -57,7 +57,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (res.success) {
     // some() breaks if the callback returns true
     let subscriptionFound = true;
-    const valFound = res.response.some(element => {
+    const valFound = res.response.data.some(element => {
       if (userId === element.user_id || userAlias === element.user_alias) {
         if (subscriptionId === element.subscription_id) {
           subscriptionId = element.subscription_id;
@@ -86,7 +86,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
         payload.plan_currency = null;
       }
       response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = `${baseEndpoint}/v2/subscriptions`;
+      response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
       response.headers = {
         "Content-Type": "application/json",
         Authorization: Config.privateApiKey
@@ -100,7 +100,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       payload = constructPayload(message, updatePayloadMapping);
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
-        subscriptionAlias}`;
+        subscriptionAlias}/`;
       response.headers = {
         "Content-Type": "application/json",
         Authorization: Config.privateApiKey
@@ -129,7 +129,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     payload.plan_currency = null;
   }
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${baseEndpoint}/v2/subscriptions`;
+  response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
   response.headers = {
     "Content-Type": "application/json",
     Authorization: Config.privateApiKey

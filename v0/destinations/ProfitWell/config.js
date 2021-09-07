@@ -176,11 +176,15 @@ const currencyCodes = [
   "zwl"
 ];
 
+const isValidPlanCurrency = payload => {
+  return currencyCodes.includes(payload.plan_currency.toLowerCase());
+};
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   createPayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_CREATE.name],
   updatePayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name],
   mappingConfig,
   baseEndpoint,
-  currencyCodes
+  isValidPlanCurrency
 };

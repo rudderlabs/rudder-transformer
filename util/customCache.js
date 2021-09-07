@@ -3,7 +3,7 @@ const stdTTL = process.env.STDTTL ? parseInt(process.env.STDTTL, 10) : 0;
 const shared = process.env.SHARED === 'true';
 
 class CustomCache {
-  constructor(ttlSeconds) {
+  constructor(ttlSeconds = stdTTL) {
     this.cache = shared ? new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,

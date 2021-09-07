@@ -87,7 +87,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Authorisation failed"
+    "error": "Request Failed for Marketo (Retryable).During getting auth token"
   },
   {
     "statusCode": 400,

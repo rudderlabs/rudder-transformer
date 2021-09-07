@@ -8,11 +8,12 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-
+const sizeof = require('object-sizeof')
 const { DestHandlerMap } = require("./constants");
 const jsonDiff = require('json-diff');
 const heapdump = require("heapdump");
-const { updateTransformationCodeV1 } = require("./util/customTransforrmationsStore");
+const { updateTransformationCodeV1, myCache } = require("./util/customTransforrmationsStore");
+const { cache } = require("./util/customTransforrmationsStore-v1");
 
 require("dotenv").config();
 
@@ -313,6 +314,11 @@ if (startDestTransformer) {
           event => event.metadata.destinationId + "_" + event.metadata.sourceId
         );
       }
+      stats.counter(
+        "user_transform_function_group_size",
+        Object.entries(groupedEvents).length,
+        { processSessions }
+      );
 
       const transformedEvents = [];
       let librariesVersionIDs = [];
@@ -350,6 +356,15 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
+              stats.counter(
+                "user_transform_function_input_events",
+                destEvents.length,
+                {
+                  transformationVersionId,
+                  processSessions,
+                  ...metaTags
+                }
+              );
 
               
               let destTransformedEventsNew;
@@ -455,6 +470,11 @@ if (startDestTransformer) {
               });
 
             } finally {
+              stats.timing(
+                "user_transform_function_latency",
+                userFuncStartTime,
+                { transformationVersionId, processSessions, ...metaTags }
+              );
             }
           } else {
             const errorMessage = "Transformation VersionID not found";
@@ -566,6 +586,17 @@ router.get("/features", ctx => {
 
 router.get("/results", ctx => {
   ctx.body = finalResults;
+});
+
+router.get("/debug", ctx => {
+  ctx.body = {
+    tsize: JSON.stringify(myCache.data || '').length,
+    tkeys: Object.keys(myCache?.data || {}).length,
+    tmem: sizeof(myCache),
+    lsize: JSON.stringify(cache.data || '').length,
+    lkeys: Object.keys(cache?.data || {}).length,
+    lmem: sizeof(cache)
+  }
 });
 
 router.post("/publish", async ctx => {

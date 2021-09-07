@@ -974,8 +974,8 @@ const getMetadata = metadata => {
     sourceType: metadata.sourceType,
     destinationId: metadata.destinationId,
     destinationType: metadata.destinationType,
-    workspaceId: metadata.workspaceId,
-    namespace: metadata.namespace
+    // workspaceId: metadata.workspaceId,
+    // namespace: metadata.namespace
   };
 };
 // checks if array 2 is a subset of array 1

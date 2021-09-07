@@ -55,4 +55,4 @@ async function updateTransformationCodeV1(versionId, newVersionId, publish=false
   }
 }
 
-module.exports = { getTransformationCode, updateTransformationCodeV1 };
+module.exports = { getTransformationCode, updateTransformationCodeV1, myCache };

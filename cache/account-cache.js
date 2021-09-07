@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 const { default: axios } = require("axios");
-const moment = require("moment");
 const { CONFIG_BACKEND_URL } = require("../util/customTransforrmationsStore");
 const BaseCache = require("./base");
 
@@ -21,7 +20,7 @@ class AccountCache extends BaseCache {
   }
 
   async onExpired(k, v) {
-    // The Account Secrets like accessToken, refreshToken, expirationDate etc., are being fetched
+    // Only AccessToken is being fetched in this call
     const token = await this.getToken(k);
     this.set(k, token);
   }

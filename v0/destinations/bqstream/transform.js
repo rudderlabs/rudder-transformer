@@ -32,8 +32,9 @@ function process(event) {
   return responseWrapper({
     payload,
     method: "POST",
-    // endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudder-sai/datasets/${datasetId}/tables/${tableId}/insertAll`
-    endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudderstack-dev/datasets/${datasetId}/tables/${tableId}/insertAll`
+    // TODO: ProjectID(rudder-sai) can be referred in a more customised way!
+    endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudder-sai/datasets/${datasetId}/tables/${tableId}/insertAll`
+    // endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudderstack-dev/datasets/${datasetId}/tables/${tableId}/insertAll`
   });
 }
 

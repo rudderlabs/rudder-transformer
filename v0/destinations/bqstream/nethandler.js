@@ -64,68 +64,25 @@ const responseHandler = ({
       return trimmedResponse;
     }
 
-    if (data && data.success) {
+    if (data && !data.insertErrors) {
       // success
       return trimmedResponse;
     }
-
-    // if (data && !data.success) {
-    //   // marketo application response level failure
-    //   const { errors } = data;
-    //   if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-    //     throw new ErrorBuilder()
-    //       .setStatus(400)
-    //       .setMessage(
-    //         `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
-    //       )
-    //       .setDestinationResponse({ ...trimmedResponse, success: false })
-    //       .setMetadata(metadata)
-    //       .isTransformerNetwrokFailure(true)
-    //       .build();
-    //   } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
-    //     throw new ErrorBuilder()
-    //       .setStatus(429)
-    //       .setMessage(
-    //         `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
-    //       )
-    //       .setDestinationResponse({ ...trimmedResponse, success: false })
-    //       .setMetadata(metadata)
-    //       .isTransformerNetwrokFailure(true)
-    //       .build();
-    //   } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-    //     throw new ErrorBuilder()
-    //       .setStatus(500)
-    //       .setMessage(
-    //         `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-    //       )
-    //       .setDestinationResponse({ ...trimmedResponse, success: false })
-    //       .setMetadata(metadata)
-    //       .isTransformerNetwrokFailure(true)
-    //       .build();
-    //   }
-    //   // default failure cases (keeping retryable for now)
-    //   throw new ErrorBuilder()
-    //     .setStatus(500)
-    //     .setMessage(
-    //       `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-    //     )
-    //     .setDestinationResponse({ ...trimmedResponse, success: false })
-    //     .setMetadata(metadata)
-    //     .isTransformerNetwrokFailure(true)
-    //     .build();
-    // }
+    /**
+     * Not sure if such a scenario(http success but data not present) can happen in bigquery
+     */
     // http success but data not present
 
-    throw new ErrorBuilder()
-      .setStatus(500)
-      .setMessage(`Request Failed for Marketo (Retryable).${sourceMessage}`)
-      .setDestinationResponse({
-        ...trimmedResponse,
-        success: false
-      })
-      .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
-      .build();
+    // throw new ErrorBuilder()
+    //   .setStatus(500)
+    //   .setMessage(`Request Failed for Marketo (Retryable).${sourceMessage}`)
+    //   .setDestinationResponse({
+    //     ...trimmedResponse,
+    //     success: false
+    //   })
+    //   .setMetadata(metadata)
+    //   .isTransformerNetwrokFailure(true)
+    //   .build();
   }
   // http failure cases
   const { response } = dresponse.response;

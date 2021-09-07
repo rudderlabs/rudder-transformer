@@ -1,4 +1,5 @@
 const { send } = require("../../../adapters/network");
+const { toUnixTimestamp } = require("../../util");
 
 const getSubscriptionHistory = async (endpoint, options) => {
   const requestOptions = {
@@ -10,4 +11,12 @@ const getSubscriptionHistory = async (endpoint, options) => {
   return res;
 };
 
-module.exports = { getSubscriptionHistory };
+const unixTimestampOrNull = timestamp => {
+  const convertedTS = toUnixTimestamp(timestamp);
+  if (Number.isNaN(convertedTS)) {
+    return null;
+  }
+  return convertedTS;
+};
+
+module.exports = { getSubscriptionHistory, unixTimestampOrNull };

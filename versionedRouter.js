@@ -190,6 +190,9 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage
       });
+      stats.counter("hv_errors", 1, {
+        ...metaTags
+      });
     } finally {
       stats.timing("hv_event_latency", eventStartTime, {
         ...metaTags

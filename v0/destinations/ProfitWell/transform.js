@@ -17,13 +17,11 @@ const {
 const { ConfigCategory, mappingConfig, baseEndpoint } = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const response = defaultRequestConfig();
-
   const userId = getDestinationExternalID(message, "profitwellUserId");
   const userAlias = getFieldValueFromMessage(message, "userId");
 
   if (!userId && !userAlias) {
-    throw new CustomError("User not found", 400);
+    throw new CustomError("userId or userAlias is required for Identify", 400);
   }
 
   let subscriptionId = getDestinationExternalID(
@@ -34,6 +32,13 @@ const identifyResponseBuilder = async (message, { Config }) => {
     get(message, "traits.subscriptionAlias") ||
     get(message, "context.traits.subscriptionAlias");
 
+  if (!subscriptionId && !subscriptionAlias) {
+    throw new CustomError(
+      "subscriptionId or subscriptionAlias is required for Identify",
+      400
+    );
+  }
+
   const targetUrl = `${baseEndpoint}/v2/users/${userId || userAlias}`;
   const res = await getSubscriptionHistory(targetUrl, {
     headers: {
@@ -42,6 +47,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
   });
 
   let payload;
+  const response = defaultRequestConfig();
+
   if (res.success) {
     // some() breaks if the callback returns true
     let subscriptionFound = true;
@@ -103,6 +110,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
     }
   }
 
+  if (res.response.response.status !== 404) {
+    throw new CustomError(
+      "Failed to get subscription history for a user",
+      res.response.response.status
+    );
+  }
   logger.debug("Failed to get subscription history for a user");
 
   // userId and subscriptionId does not exist

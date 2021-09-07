@@ -179,6 +179,9 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
+        stats.counter("hv_errors", 1, {
+          ...metaTags
+        });
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`

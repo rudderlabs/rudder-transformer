@@ -1,7 +1,7 @@
 const get = require("get-value");
 const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
-const { getSubscriptionHistory } = require("./nethandler");
+const { getSubscriptionHistory } = require("./utils");
 const {
   CustomError,
   getDestinationExternalID,

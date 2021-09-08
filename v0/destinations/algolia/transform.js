@@ -28,9 +28,9 @@ const trackResponseBuilder = (message, { Config }) => {
   let payload = constructPayload(message, trackMapping);
   const eventMapping = eventTypeMapping(Config);
   payload.eventName = event;
-  if (eventMapping[event]) {
-    payload.eventType = eventMapping[event];
-  }
+  payload.eventType =
+    getValueFromMessage(message, "properties.eventType") || eventMapping[event];
+
   if (!payload.eventType) {
     throw new CustomError("eventType is mandatory for track call", 400);
   }

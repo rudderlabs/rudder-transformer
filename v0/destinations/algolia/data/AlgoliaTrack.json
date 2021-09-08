@@ -5,11 +5,6 @@
     "required": true
   },
   {
-    "destKey": "eventType",
-    "sourceKeys": "properties.eventType",
-    "required": false
-  },
-  {
     "destKey": "userToken",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,

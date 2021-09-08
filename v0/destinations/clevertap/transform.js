@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+const _ = require("lodash");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -35,6 +36,44 @@ const responseWrapper = (payload, destination) => {
   response.body.JSON = payload;
   return response;
 };
+/*
+Following behaviour is expected when data is mapped with clevertapV2Wrapper
+
+For Identify Events
+---------------RudderStack-----------------             ------------Clevertap-------------
+anonymousId(present?)				userId(present?)	 					objectId(value)			identity(value)
+true						            true						            anonymousId			    userId
+true						            false					              anonymousId			    -
+false					              true						            anonymousId			    userId
+
+For tracking events
+---------------RudderStack-----------------           ----------Clevertap---------
+anonymousId(present?)				userId(present?)					tracking with
+true						            true						          identity (value = userId)
+true						            false					            objectId (value = anonymousId)
+false					              true						          identity (value = userId)
+*/
+const clevertapV2Wrapper = (inputPayload, message, operation) => {
+  const payload = _.cloneDeep(inputPayload);
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const anonymousId = get(message, "anonymousId");
+  delete payload.d[0].identity;
+  if (operation === "identify") {
+    if (userId) {
+      payload.d[0].profileData.identity = userId;
+    }
+    payload.d[0].objectId = anonymousId || userId;
+  } else if (operation === "track") {
+    if (userId) {
+      payload.d[0].identity = userId;
+    } else {
+      payload.d[0].objectId = anonymousId;
+    }
+  } else {
+    throw new CustomError("unsupported operation", 400);
+  }
+  return payload;
+};
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
@@ -69,11 +108,21 @@ const responseBuilderSimple = (message, category, destination) => {
         }
       ]
     };
-    // In casse we have device token present we return an array of response the first object is identify payload and second
+    // enabling clevertapV2Wrapper when objectIdMapping is enabled
+    if (destination.Config.enableObjectIdMapping) {
+      payload = clevertapV2Wrapper(payload, message, "identify");
+    }
+    // In case we have device token present we return an array
+    // of response the first object is identify payload and second
     // object is the upload device token payload
+    // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
     const deviceToken = get(message, "context.device.token");
     const deviceOS = get(message, "context.os.name").toLowerCase();
-    if (deviceToken && ["ios", "android"].includes(deviceOS)) {
+    if (
+      destination.Config.enableObjectIdMapping &&
+      deviceToken &&
+      ["ios", "android"].includes(deviceOS)
+    ) {
       const tokenType = deviceOS === "android" ? "fcm" : "apns";
       const payloadForDeviceToken = {
         d: [
@@ -83,7 +132,9 @@ const responseBuilderSimple = (message, category, destination) => {
               id: deviceToken,
               type: tokenType
             },
-            objectId: getFieldValueFromMessage(message, "userId")
+            objectId:
+              get(message, "anonymousId") ||
+              getFieldValueFromMessage(message, "userIdOnly")
           }
         ]
       };
@@ -139,7 +190,10 @@ const responseBuilderSimple = (message, category, destination) => {
       d: [removeUndefinedAndNullValues(eventPayload)]
     };
   }
-
+  // enabling clevertapV2Wrapper when objectIdMapping is enabled
+  if (destination.Config.enableObjectIdMapping) {
+    payload = clevertapV2Wrapper(payload, message, "track");
+  }
   if (payload) {
     return responseWrapper(payload, destination);
   }

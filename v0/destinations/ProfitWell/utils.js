@@ -177,7 +177,7 @@ const getSubscriptionHistory = async (endpoint, options) => {
 const unixTimestampOrError = timestamp => {
   const convertedTS = toUnixTimestamp(timestamp);
   if (Number.isNaN(convertedTS)) {
-    throw new CustomError("invalid planCurrency type. Aborting.", 400);
+    throw new CustomError("invalid effectiveDate type. Aborting.", 400);
   }
   return convertedTS;
 };

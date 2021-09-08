@@ -178,7 +178,7 @@ const unixTimestampOrError = (timestamp, originalTimestamp) => {
   if (!timestamp) {
     return toUnixTimestamp(originalTimestamp);
   }
-  const convertedTS = new Date(timestamp).getTime();
+  const convertedTS = new Date(Number(timestamp)).getTime();
   if (convertedTS > 0) {
     return convertedTS;
   }

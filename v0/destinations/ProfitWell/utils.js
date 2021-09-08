@@ -1,5 +1,5 @@
 const { send } = require("../../../adapters/network");
-const { toUnixTimestamp } = require("../../util");
+const { toUnixTimestamp, CustomError } = require("../../util");
 
 const CURRENCY_CODES = [
   "aed",
@@ -174,10 +174,10 @@ const getSubscriptionHistory = async (endpoint, options) => {
   return res;
 };
 
-const unixTimestampOrNull = timestamp => {
+const unixTimestampOrError = timestamp => {
   const convertedTS = toUnixTimestamp(timestamp);
   if (Number.isNaN(convertedTS)) {
-    return null;
+    throw new CustomError("invalid planCurrency type. Aborting.", 400);
   }
   return convertedTS;
 };
@@ -188,6 +188,6 @@ const isValidPlanCurrency = planCurrency => {
 
 module.exports = {
   getSubscriptionHistory,
-  unixTimestampOrNull,
+  unixTimestampOrError,
   isValidPlanCurrency
 };

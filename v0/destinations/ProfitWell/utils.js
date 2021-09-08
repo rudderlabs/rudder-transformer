@@ -1,5 +1,5 @@
 const { send } = require("../../../adapters/network");
-const { toUnixTimestamp, CustomError } = require("../../util");
+const { CustomError } = require("../../util");
 
 const CURRENCY_CODES = [
   "aed",
@@ -175,11 +175,11 @@ const getSubscriptionHistory = async (endpoint, options) => {
 };
 
 const unixTimestampOrError = timestamp => {
-  const convertedTS = toUnixTimestamp(timestamp);
-  if (Number.isNaN(convertedTS)) {
-    throw new CustomError("invalid effectiveDate type. Aborting.", 400);
+  const convertedTS = new Date(timestamp).getTime();
+  if (convertedTS > 0) {
+    return convertedTS;
   }
-  return convertedTS;
+  throw new CustomError("invalid effectiveDate type. Aborting.", 400);
 };
 
 const isValidPlanCurrency = planCurrency => {

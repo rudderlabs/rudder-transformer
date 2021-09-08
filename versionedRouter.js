@@ -352,7 +352,6 @@ if (startDestTransformer) {
             destEvents.length && destEvents[0].metadata
               ? getMetadata(destEvents[0].metadata)
               : {};
-          console.log(metaTags, '*****');
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;

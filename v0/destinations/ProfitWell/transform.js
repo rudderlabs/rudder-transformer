@@ -85,7 +85,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
         user_id: userId,
         user_alias: userAlias
       };
-      if (!isValidPlanCurrency(payload)) {
+      if (
+        payload.plan_currency &&
+        !isValidPlanCurrency(payload.plan_currency)
+      ) {
         payload.plan_currency = null;
       }
       payload.effective_date = unixTimestampOrNull(payload.effective_date);
@@ -130,7 +133,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     ...payload,
     user_alias: userAlias
   };
-  if (!isValidPlanCurrency(payload)) {
+  if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
     payload.plan_currency = null;
   }
   payload.effective_date = unixTimestampOrNull(payload.effective_date);

@@ -1,5 +1,4 @@
 const get = require("get-value");
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   getSubscriptionHistory,
@@ -109,10 +108,28 @@ const identifyResponseBuilder = async (message, { Config }) => {
         user_alias: userAlias
       };
       if (
+        payload.plan_interval &&
+        !(
+          payload.plan_interval.toLowerCase() === "month" ||
+          payload.plan_interval.toLowerCase() === "year"
+        )
+      ) {
+        throw new CustomError("invalid format for planInterval. Aborting", 400);
+      }
+      if (
         payload.plan_currency &&
         !isValidPlanCurrency(payload.plan_currency)
       ) {
         payload.plan_currency = null;
+      }
+      if (
+        payload.status &&
+        !(
+          payload.status.toLowerCase() === "active" ||
+          payload.status.toLowerCase() === "trialing"
+        )
+      ) {
+        payload.status = null;
       }
       payload.effective_date = unixTimestampOrError(payload.effective_date);
       response.method = defaultPostRequestConfig.requestMethod;
@@ -128,6 +145,24 @@ const identifyResponseBuilder = async (message, { Config }) => {
     // updating subscription if found
     if (valFound) {
       payload = constructPayload(message, updatePayloadMapping);
+      if (
+        payload.plan_interval &&
+        !(
+          payload.plan_interval.toLowerCase() === "month" ||
+          payload.plan_interval.toLowerCase() === "year"
+        )
+      ) {
+        throw new CustomError("invalid format for planInterval. Aborting", 400);
+      }
+      if (
+        payload.status &&
+        !(
+          payload.status.toLowerCase() === "active" ||
+          payload.status.toLowerCase() === "trialing"
+        )
+      ) {
+        payload.status = null;
+      }
       payload.effective_date = unixTimestampOrError(payload.effective_date);
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${subscriptionId ||
@@ -160,8 +195,26 @@ const identifyResponseBuilder = async (message, { Config }) => {
     ...payload,
     user_alias: userAlias
   };
+  if (
+    payload.plan_interval &&
+    !(
+      payload.plan_interval.toLowerCase() === "month" ||
+      payload.plan_interval.toLowerCase() === "year"
+    )
+  ) {
+    throw new CustomError("invalid format for planInterval. Aborting", 400);
+  }
   if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
     payload.plan_currency = null;
+  }
+  if (
+    payload.status &&
+    !(
+      payload.status.toLowerCase() === "active" ||
+      payload.status.toLowerCase() === "trialing"
+    )
+  ) {
+    payload.status = null;
   }
   payload.effective_date = unixTimestampOrError(payload.effective_date);
   response.method = defaultPostRequestConfig.requestMethod;

@@ -179,7 +179,10 @@ const unixTimestampOrError = timestamp => {
   if (convertedTS > 0) {
     return convertedTS;
   }
-  throw new CustomError("invalid effectiveDate type. Aborting.", 400);
+  throw new CustomError(
+    "invalid timestamp format for effectiveDate. Aborting",
+    400
+  );
 };
 
 const isValidPlanCurrency = planCurrency => {

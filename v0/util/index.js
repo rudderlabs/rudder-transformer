@@ -969,6 +969,8 @@ function getStringValueOfJSON(json) {
 }
 
 const getMetadata = metadata => {
+  console.log(metadata);
+  console.log("*******");
   return {
     sourceId: metadata.sourceId,
     sourceType: metadata.sourceType,

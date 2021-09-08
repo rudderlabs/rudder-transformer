@@ -58,16 +58,35 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
 
   if (res.success) {
-    // some() breaks if the callback returns true
     let subscriptionFound = true;
     const valFound = res.response.data.some(element => {
-      if (userId === element.user_id || userAlias === element.user_alias) {
-        if (subscriptionId === element.subscription_id) {
+      if (userId && userId === element.user_id) {
+        if (subscriptionId && subscriptionId === element.subscription_id) {
           subscriptionId = element.subscription_id;
           subscriptionFound = true;
           return true;
         }
-        if (subscriptionAlias === element.subscription_alias) {
+        if (
+          !subscriptionId &&
+          subscriptionAlias &&
+          subscriptionAlias === element.subscription_alias
+        ) {
+          subscriptionAlias = element.subscription_alias;
+          subscriptionFound = true;
+          return true;
+        }
+        subscriptionFound = false;
+      } else if (userAlias && userAlias === element.user_alias) {
+        if (subscriptionId && subscriptionId === element.subscription_id) {
+          subscriptionId = element.subscription_id;
+          subscriptionFound = true;
+          return true;
+        }
+        if (
+          !subscriptionId &&
+          subscriptionAlias &&
+          subscriptionAlias === element.subscription_alias
+        ) {
           subscriptionAlias = element.subscription_alias;
           subscriptionFound = true;
           return true;
@@ -77,8 +96,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
       return false;
     });
 
-    // for a given userId, subscriptionId not found
     if (!subscriptionFound) {
+      // dropping event if profitwellSubscriptionId (externalId) did not
+      // match with any subscription_id
+      if (subscriptionId) {
+        throw new CustomError("profitwell subscription_id not found", 400);
+      }
       payload = constructPayload(message, createPayloadMapping);
       payload = {
         ...payload,
@@ -102,7 +125,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       return response;
     }
 
-    // userId and SubscriptionId is found
+    // updating subscription if found
     if (valFound) {
       payload = constructPayload(message, updatePayloadMapping);
       payload.effective_date = unixTimestampOrError(payload.effective_date);
@@ -118,16 +141,20 @@ const identifyResponseBuilder = async (message, { Config }) => {
     }
   }
 
+  // handler for other destination side errors
   if (res.response.response.status !== 404) {
     throw new CustomError(
       "Failed to get subscription history for a user",
       res.response.response.status
     );
   }
-  logger.debug("Failed to get subscription history for a user");
 
-  // userId and subscriptionId does not exist
-  // create new subscription for new user
+  // drop event if profitwellUserId (externalId) did not match with any user_id
+  if (userId) {
+    throw new CustomError("no user found for profitwell user_id", 400);
+  }
+
+  // create new subscription for new user with given userAlias
   payload = constructPayload(message, createPayloadMapping);
   payload = {
     ...payload,

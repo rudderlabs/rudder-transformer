@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const baseEndpoint = "https://api.profitwell.com";
+const BASE_ENDPOINT = "https://api.profitwell.com";
 
 const ConfigCategory = {
   IDENTIFY_CREATE: {
@@ -13,7 +13,7 @@ const ConfigCategory = {
   }
 };
 
-const currencyCodes = [
+const CURRENCY_CODES = [
   "aed",
   "afn",
   "all",
@@ -176,15 +176,11 @@ const currencyCodes = [
   "zwl"
 ];
 
-const isValidPlanCurrency = payload => {
-  return currencyCodes.includes(payload.plan_currency.toLowerCase());
-};
-
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   createPayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_CREATE.name],
   updatePayloadMapping: mappingConfig[ConfigCategory.IDENTIFY_UPDATE.name],
   mappingConfig,
-  baseEndpoint,
-  isValidPlanCurrency
+  BASE_ENDPOINT,
+  CURRENCY_CODES
 };

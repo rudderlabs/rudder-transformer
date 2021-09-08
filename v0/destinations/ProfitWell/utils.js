@@ -1,5 +1,6 @@
 const { send } = require("../../../adapters/network");
 const { toUnixTimestamp } = require("../../util");
+const { CURRENCY_CODES } = require("./config");
 
 const getSubscriptionHistory = async (endpoint, options) => {
   const requestOptions = {
@@ -19,4 +20,12 @@ const unixTimestampOrNull = timestamp => {
   return convertedTS;
 };
 
-module.exports = { getSubscriptionHistory, unixTimestampOrNull };
+const isValidPlanCurrency = payload => {
+  return CURRENCY_CODES.includes(payload.plan_currency.toLowerCase());
+};
+
+module.exports = {
+  getSubscriptionHistory,
+  unixTimestampOrNull,
+  isValidPlanCurrency
+};

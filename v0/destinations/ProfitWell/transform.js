@@ -1,7 +1,11 @@
 const get = require("get-value");
 const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
-const { getSubscriptionHistory, unixTimestampOrNull } = require("./utils");
+const {
+  getSubscriptionHistory,
+  unixTimestampOrNull,
+  isValidPlanCurrency
+} = require("./utils");
 const {
   CustomError,
   getDestinationExternalID,
@@ -17,8 +21,7 @@ const {
 const {
   createPayloadMapping,
   updatePayloadMapping,
-  baseEndpoint,
-  isValidPlanCurrency
+  BASE_ENDPOINT
 } = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
@@ -44,7 +47,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     );
   }
 
-  const targetUrl = `${baseEndpoint}/v2/users/${userId || userAlias}/`;
+  const targetUrl = `${BASE_ENDPOINT}/v2/users/${userId || userAlias}/`;
   const res = await getSubscriptionHistory(targetUrl, {
     headers: {
       Authorization: Config.privateApiKey
@@ -87,7 +90,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       }
       payload.effective_date = unixTimestampOrNull(payload.effective_date);
       response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
+      response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
       response.headers = {
         "Content-Type": "application/json",
         Authorization: Config.privateApiKey
@@ -101,7 +104,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       payload = constructPayload(message, updatePayloadMapping);
       payload.effective_date = unixTimestampOrNull(payload.effective_date);
       response.method = defaultPutRequestConfig.requestMethod;
-      response.endpoint = `${baseEndpoint}/v2/subscriptions/${subscriptionId ||
+      response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}/`;
       response.headers = {
         "Content-Type": "application/json",
@@ -132,7 +135,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
   payload.effective_date = unixTimestampOrNull(payload.effective_date);
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${baseEndpoint}/v2/subscriptions/`;
+  response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {
     "Content-Type": "application/json",
     Authorization: Config.privateApiKey

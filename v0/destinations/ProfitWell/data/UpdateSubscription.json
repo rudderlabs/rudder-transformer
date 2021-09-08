@@ -21,11 +21,7 @@
   },
   {
     "destKey": "effective_date",
-    "sourceKeys": [
-      "traits.effectiveDate",
-      "context.traits.effectiveDate",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["traits.effectiveDate", "context.traits.effectiveDate"],
     "required": true
   }
 ]

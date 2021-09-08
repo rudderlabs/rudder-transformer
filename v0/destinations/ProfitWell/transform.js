@@ -96,8 +96,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
     });
 
     if (!subscriptionFound) {
+      // for a given userId, subscriptionId not found
       // dropping event if profitwellSubscriptionId (externalId) did not
-      // match with any subscription_id
+      // match with any subscription_id at destination
       if (subscriptionId) {
         throw new CustomError("profitwell subscription_id not found", 400);
       }
@@ -131,7 +132,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
       ) {
         payload.status = null;
       }
-      payload.effective_date = unixTimestampOrError(payload.effective_date);
+      payload.effective_date = unixTimestampOrError(
+        payload.effective_date,
+        message.originalTimestamp
+      );
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
       response.headers = {
@@ -142,7 +146,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       return response;
     }
 
-    // updating subscription if found
+    // for a given userId, subscription is found at dest.
     if (valFound) {
       payload = constructPayload(message, updatePayloadMapping);
       if (
@@ -163,7 +167,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
       ) {
         payload.status = null;
       }
-      payload.effective_date = unixTimestampOrError(payload.effective_date);
+      payload.effective_date = unixTimestampOrError(
+        payload.effective_date,
+        message.originalTimestamp
+      );
       response.method = defaultPutRequestConfig.requestMethod;
       response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${subscriptionId ||
         subscriptionAlias}/`;
@@ -216,7 +223,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(payload.effective_date);
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    message.originalTimestamp
+  );
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {

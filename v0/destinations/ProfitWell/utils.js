@@ -1,5 +1,5 @@
 const { send } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { CustomError, toUnixTimestamp } = require("../../util");
 
 const CURRENCY_CODES = [
   "aed",
@@ -174,7 +174,10 @@ const getSubscriptionHistory = async (endpoint, options) => {
   return res;
 };
 
-const unixTimestampOrError = timestamp => {
+const unixTimestampOrError = (timestamp, originalTimestamp) => {
+  if (!timestamp) {
+    return toUnixTimestamp(originalTimestamp);
+  }
   const convertedTS = new Date(timestamp).getTime();
   if (convertedTS > 0) {
     return convertedTS;

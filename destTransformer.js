@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const { router } = require("./versionedRouter");
 const cluster = require("./util/cluster");
+const CacheFactory = require("./cache/factory");
 
 const clusterEnabled = true;
 
@@ -18,6 +19,7 @@ app.use(
 );
 
 app.use(router.routes()).use(router.allowedMethods());
+const AccountCache = CacheFactory.createCache("account");
 
 if (clusterEnabled) {
   cluster.start(PORT, app);

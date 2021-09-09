@@ -3,10 +3,11 @@ const NodeCache = require("node-cache");
 class BaseCache extends NodeCache {
   // For more information on the options please check the documentation for node-cache
   // https://www.npmjs.com/package/node-cache
+  // eslint-disable-next-line no-useless-constructor
   constructor(cacheOptions) {
     super(cacheOptions);
     this.callbacks = {
-      expired: this.onExpired,
+      // expired: this.onExpired,
       del: this.onDeleted
     };
 
@@ -19,9 +20,9 @@ class BaseCache extends NodeCache {
     // a callback for del event fired in node-cache
   }
 
-  async onExpired(_k, _v) {
-    // a callback for expired event fired in node-cache
-  }
+  // async onExpired(_k, _v) {
+  //   // a callback for expired event fired in node-cache
+  // }
 }
 
 module.exports = BaseCache;

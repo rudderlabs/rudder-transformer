@@ -38,6 +38,15 @@ function process(event) {
   });
 }
 
+/**
+ * This function puts the accessToken information in the transformed response
+ * to facilitate for a successfully authorised event
+ *
+ * @param {*} AccountCache - Instance of node-cache to get the access token information
+ * @param {*} event - The event on which transformation is being performed
+ * @param {*} response - Transformation Response
+ * @returns Transformation Response bound with token information(may not be required as such)
+ */
 async function processAuth(AccountCache, event, response) {
   // OAuth for BQStream destination
   const { workspaceId } = event.metadata;

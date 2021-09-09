@@ -1,11 +1,15 @@
+/* eslint-disable no-param-reassign */
 const getValue = require("get-value");
 const { sendRequest } = require("../../../adapters/network");
 const { trimResponse } = require("../../../adapters/utils/networkUtils");
 const { ErrorBuilder } = require("../../util/index");
+const CacheFactory = require("../../../cache/factory");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+
+const AccountCache = CacheFactory.createCache("account");
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -48,6 +52,7 @@ const getAccessTokenFromDestRequest = payload =>
  * https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
  */
 const responseHandler = ({
+  tokenInfo,
   dresponse,
   metadata,
   sourceMessage,
@@ -65,6 +70,10 @@ const responseHandler = ({
     }
 
     if (data && !data.insertErrors) {
+      if (tokenInfo) {
+        // Refresh is successful, refreshed token information is being set here
+        AccountCache.setToken(tokenInfo);
+      }
       // success
       return trimmedResponse;
     }
@@ -107,14 +116,23 @@ const putAccessTokenIntoPayload = (payload, accessToken) => {
 
 const sendData = async payload => {
   const { metadata, accessToken: aToken } = payload;
+  let tokenInfo;
   if (aToken) {
-    putAccessTokenIntoPayload(payload, aToken);
-    // eslint-disable-next-line no-param-reassign
+    const accountInfo = JSON.parse(aToken);
+    putAccessTokenIntoPayload(payload, accountInfo.accessToken);
+    tokenInfo = {
+      accountId: payload.accountId,
+      workspaceId: payload.workspaceId,
+      ...accountInfo
+    };
     delete payload.accessToken;
+    delete payload.accountId;
+    delete payload.workspaceId;
   }
   const res = await sendRequest(payload);
   const accessToken = getAccessTokenFromDestRequest(payload);
   const parsedResponse = responseHandler({
+    tokenInfo,
     dresponse: res,
     metadata,
     accessToken

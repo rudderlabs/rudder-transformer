@@ -8,20 +8,32 @@ class CacheFactory {
     throw new Error("Cannot set cache variable directly");
   }
 
-  static createCache(cacheKey, key, options = {}) {
+  static createCachePerTransformerWorker(cacheKey, key, options = {}) {
     if (!CacheFactory.cache[cacheKey]) {
       switch (key.toLowerCase()) {
         case 'account':
           CacheFactory.cache[cacheKey] = new AccountCache(options);
-          break;
-        case 'order':
-          CacheFactory.cache[cacheKey] = new OrderCache(options);
           break;
         default:
           return null;
       }
     }
     return CacheFactory.cache[cacheKey];
+  }
+
+
+  static createCache(key, options = {}) {
+    const lowerCaseKey = key.toLowerCase();
+    if (!CacheFactory.cache[lowerCaseKey]) {
+      switch (key.toLowerCase()) {
+        case 'account':
+          CacheFactory.cache[lowerCaseKey] = new AccountCache(options);
+          break;
+        default:
+          return null;
+      }
+    }
+    return CacheFactory.cache[lowerCaseKey];
   }
 }
 

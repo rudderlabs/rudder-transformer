@@ -12,11 +12,9 @@ const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 const CacheFactory = require("./cache/factory");
-const cluster = require("./util/cluster");
 const { isOAuthSupported } = require("./v0/util");
 
-const procInfo = cluster.processInfo();
-const AccountCache = CacheFactory.createCache(procInfo.pid, "account");
+const AccountCache = CacheFactory.createCache("account");
 
 const versions = ["v0"];
 const API_VERSION = "1";

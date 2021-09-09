@@ -7,36 +7,31 @@
     "statusCode": 400,
     "error": "no user found for profitwell user_id"
   },
-  [
-    {
-      "output": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.profitwell.com/v2/subscriptions/",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "9270161a8e5abaa0e56efddfd9dbcb62"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "subscription_alias": "samual",
-            "email": "sample@sample.com",
-            "plan_id": "23",
-            "plan_interval": "month",
-            "plan_currency": "usd",
-            "status": "active",
-            "value": "23",
-            "user_alias": "sp_245",
-            "effective_date": 1609748704
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.profitwell.com/v2/subscriptions/",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "9270161a8e5abaa0e56efddfd9dbcb62"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "subscription_alias": "samual",
+        "email": "sample@sample.com",
+        "plan_id": "23",
+        "plan_interval": "month",
+        "plan_currency": "usd",
+        "status": "active",
+        "value": "23",
+        "user_alias": "sp_245",
+        "effective_date": 1609748704
       },
-      "statusCode": 200
-    }
-  ]
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
 ]

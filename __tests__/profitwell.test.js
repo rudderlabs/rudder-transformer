@@ -1,11 +1,14 @@
+const { mockaxios } = require("../__mocks__/network");
 const integration = "profitwell";
 const name = "ProfitWell";
+const version = "v0";
 
 const fs = require("fs");
 const path = require("path");
-const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+
+// Processor Test files
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
 );
@@ -24,6 +27,17 @@ const outputRouterDataFile = fs.readFileSync(
 );
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
+
+jest.mock("../adapters/network", () => {
+  const originalModule = jest.requireActual("../adapters/network");
+
+  //Mock the default export and named export 'send'
+  return {
+    __esModule: true,
+    ...originalModule,
+    send: jest.fn(mockaxios)
+  };
+});
 
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {

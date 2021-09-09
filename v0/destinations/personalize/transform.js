@@ -258,7 +258,7 @@ const processEvent = async (message, destination) => {
       throw new CustomError("Message type not supported", 400);
   }
 
-  if (eventChoice) {
+  if (eventChoice && eventChoice !== "PutEvents") {
     wrappedResponse = {
       payload: response,
       choice: eventChoice

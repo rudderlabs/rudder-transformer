@@ -82,6 +82,12 @@ function get(url, options) {
   if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/unidentified_user@gmail.com")){
     return {status : 404 };
   }
+  if(url.includes("https://api.profitwell.com/v2/users/pwu_LAMtV50INuRk")){
+    return {status : 200 };
+  }
+  if(url.includes("https://api.profitwell.com/v2/users/01234")){
+    return {status : 404 };
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -113,7 +119,7 @@ function post(url, payload) {
       resolve({ status: 201 });
     });
   }
-  if( url.includes("https://api.getdrip.com/v2/1809802/subscribers")){
+  if(url.includes("https://api.getdrip.com/v2/1809802/subscribers")){
     return dripPostRequestHandler(url, payload);
   }
   return new Promise((resolve, reject) => {

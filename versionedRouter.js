@@ -59,6 +59,7 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
+const eventValidator = require("./util/eventValidation");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -142,6 +143,77 @@ async function handleDest(ctx, version, destination) {
   });
   ctx.body = respList;
   return ctx.body;
+}
+
+async function handleValidation(ctx) {
+  const requestStartTime = new Date();
+  const events = ctx.request.body;
+  const requestSize = ctx.request.get("content-length");
+  const reqParams = ctx.request.query;
+  const respList = [];
+  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    const eventStartTime = new Date();
+    try {
+      const parsedEvent = event;
+      parsedEvent.request = {query: reqParams};
+      const hv = await eventValidator.handleValidation(parsedEvent);
+      if (hv.dropEvent) {
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 400,
+          validationErrors: hv.validationErrors,
+          errors: errMessage
+        });
+        stats.counter("hv_violation_type", 1, {
+          violationType: hv.violationType,
+          ...metaTags,
+        });
+      } else {
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 200,
+          validationErrors: hv.validationErrors,
+        });
+        stats.counter("hv_errors", 1, {
+          ...metaTags
+        });
+      }
+    } catch (error) {
+      const errMessage = `Error occurred while validating : ${error}`
+      logger.error(errMessage);
+      respList.push({
+        output: event.message,
+        metadata: event.metadata,
+        statusCode: 200,
+        validationErrors: [],
+        error: errMessage
+      });
+      stats.counter("hv_errors", 1, {
+        ...metaTags
+      });
+    } finally {
+      stats.timing("hv_event_latency", eventStartTime, {
+        ...metaTags
+      });
+    }
+  }
+  ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
+
+  stats.counter("hv_events_count", events.length, {
+    ...metaTags
+  });
+  stats.counter("hv_request_size", requestSize, {
+    ...metaTags
+  });
+  stats.timing("hv_request_latency", requestStartTime, {
+    ...metaTags
+  });
 }
 
 async function routerHandleDest(ctx) {
@@ -397,6 +469,7 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -614,5 +687,9 @@ router.post("/getFailedJobs", async ctx => {
 
 router.post("/getWarningJobs", async ctx => {
   await getJobStatus(ctx, "warn");
+});
+// eg. v0/validate. will validate events as per respective tracking plans
+router.post(`/v0/validate`, async ctx => {
+  await handleValidation(ctx);
 });
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

@@ -20,7 +20,8 @@ const urlDirectoryMap = {
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
-  "api.aptrinsic.com": "gainsight_px"
+  "api.aptrinsic.com": "gainsight_px",
+  "api.profitwell.com": "profitwell"
 };
 
 const fs = require("fs");

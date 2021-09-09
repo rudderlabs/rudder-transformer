@@ -1,6 +1,6 @@
 const { mockaxios } = require("../__mocks__/network");
 const integration = "profitwell";
-const name = "ProfitWell";
+const name = "profitwell";
 const version = "v0";
 
 const fs = require("fs");

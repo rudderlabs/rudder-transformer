@@ -79,6 +79,7 @@ function get(url, options) {
   }
   if (url.includes("https://api.profitwell.com")) {
     return profitwellGetRequestHandler(url, mockData);
+  }
   if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com")){
     return Promise.resolve({status : 200 });
   }

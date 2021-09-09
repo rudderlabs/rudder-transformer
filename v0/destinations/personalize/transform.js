@@ -22,7 +22,8 @@ const putEventsHandler = (message, destination) => {
 
   if (!trackingId) {
     throw new CustomError(
-      "Tracking Id is a mandatory information to use putEvents"
+      "Tracking Id is a mandatory information to use putEvents",
+      400
     );
   }
 
@@ -161,10 +162,10 @@ const putItemsHandler = (message, destination) => {
   return response;
 };
 
-const trackRequestHandler = (message, destination, eventChoice) => {
+const trackRequestHandler = (message, destination, eventOperation) => {
   let response;
 
-  switch (eventChoice) {
+  switch (eventOperation) {
     case "PutEvents":
       response = putEventsHandler(message, destination);
       break;
@@ -173,22 +174,22 @@ const trackRequestHandler = (message, destination, eventChoice) => {
       break;
     default:
       throw new CustomError(
-        `${eventChoice} is not supported for Track Calls`,
+        `${eventOperation} is not supported for Track Calls`,
         400
       );
   }
   return response;
 };
 
-const identifyRequestHandler = (message, destination, eventChoice) => {
+const identifyRequestHandler = (message, destination, eventOperation) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const { customMappings, datasetARN } = destination.Config;
 
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
-  if (eventChoice !== "PutUsers") {
+  if (eventOperation !== "PutUsers") {
     throw new CustomError(
-      `This Message Type does not support ${eventChoice}. Aborting message.`,
+      `This Message Type does not support ${eventOperation}. Aborting message.`,
       400
     );
   }
@@ -235,8 +236,9 @@ const identifyRequestHandler = (message, destination, eventChoice) => {
 
 const processEvent = async (message, destination) => {
   let response;
-  let { eventChoice } = destination.Config;
-  eventChoice = eventChoice || "PutEvents";
+  let wrappedResponse;
+  const { eventChoice } = destination.Config;
+  const eventOperation = eventChoice || "PutEvents";
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -247,18 +249,25 @@ const processEvent = async (message, destination) => {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyRequestHandler(message, destination, eventChoice);
+      response = identifyRequestHandler(message, destination, eventOperation);
       break;
     case EventType.TRACK:
-      response = trackRequestHandler(message, destination, eventChoice);
+      response = trackRequestHandler(message, destination, eventOperation);
       break;
     default:
       throw new CustomError("Message type not supported", 400);
   }
-  const wrappedResponse = {
-    payload: response,
-    choice: eventChoice
-  };
+
+  if (eventChoice) {
+    wrappedResponse = {
+      payload: response,
+      choice: eventChoice
+    };
+  } else {
+    // this is done to make it comaptible with the older version of rudder-server
+    wrappedResponse = response;
+  }
+
   return wrappedResponse;
 };
 

@@ -77,22 +77,13 @@ function get(url, options) {
   if (url.includes("https://api.delighted.com/v1/people.json")) {
     return delightedGetRequestHandler(options);
   }
-  if (
-    url.includes(
-      "https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com"
-    )
-  ) {
-    return { status: 200 };
-  }
-  if (
-    url.includes(
-      "https://api.getdrip.com/v2/1809802/subscribers/unidentified_user@gmail.com"
-    )
-  ) {
-    return { status: 404 };
-  }
   if (url.includes("https://api.profitwell.com")) {
     return profitwellGetRequestHandler(url, mockData);
+  if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com")){
+    return Promise.resolve({status : 200 });
+  }
+  if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/unidentified_user@gmail.com")){
+    return Promise.reject({status : 404 });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

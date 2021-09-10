@@ -50,10 +50,10 @@ function process(event) {
 async function processAuth(AccountCache, event, response) {
   // OAuth for BQStream destination
   const { workspaceId } = event.metadata;
-  const { accountId } = event.destination.Config;
+  const { rudderAccountId } = event.destination.Config;
   const oAuthToken = await AccountCache.getTokenFromCache(
     workspaceId,
-    accountId
+    rudderAccountId
   );
   response.headers.Authorization = `Bearer ${oAuthToken}`;
   return response;

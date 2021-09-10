@@ -23,7 +23,7 @@ const {
 } = require("../../util");
 
 /*
-Following behaviour is expected when data is mapped with clevertapV2Wrapper
+Following behaviour is expected when "enableObjectIdMapping" is enabled
 
 For Identify Events
 ---------------RudderStack-----------------             ------------Clevertap-------------
@@ -40,6 +40,7 @@ true						            false					            objectId (value = anonymousId)
 false					              true						          identity (value = userId)
 */
 
+// wraps to default request config
 const responseWrapper = (payload, destination) => {
   const response = defaultRequestConfig();
   // If the acount belongs to specific regional server,
@@ -56,6 +57,7 @@ const responseWrapper = (payload, destination) => {
   return response;
 };
 
+// generates clevertap identify payload with both objectId and identity
 const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const anonymousId = get(message, "anonymousId");
@@ -74,6 +76,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
   return payload;
 };
 
+// generates clevertap identify payload with only identity
 const mapIdentifyPayload = (message, profile) => {
   const payload = {
     d: [
@@ -87,6 +90,7 @@ const mapIdentifyPayload = (message, profile) => {
   return payload;
 };
 
+// generates clevertap tracking payload with objectId or identity
 const mapTrackPayloadWithObjectId = (message, eventPayload) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const anonymousId = get(message, "anonymousId");
@@ -98,10 +102,12 @@ const mapTrackPayloadWithObjectId = (message, eventPayload) => {
   return eventPayload;
 };
 
+// generates clevertap tracking payload with only identity
 const mapTrackPayload = (message, eventPayload) => {
   eventPayload.identity = getFieldValueFromMessage(message, "userId");
   return eventPayload;
 };
+
 // Here we are creating the profileData info for identify calls
 // ---------------------------------------------------------------------
 const getClevertapProfile = (message, category) => {
@@ -206,15 +212,19 @@ const responseBuilderSimple = (message, category, destination) => {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
     eventPayload.type = "event";
+
+    // setting identification for tracking payload here based on destination config
     if (destination.Config.enableObjectIdMapping) {
       eventPayload = mapTrackPayloadWithObjectId(message, eventPayload);
     } else {
       eventPayload = mapTrackPayload(message, eventPayload);
     }
+
     payload = {
       d: [removeUndefinedAndNullValues(eventPayload)]
     };
   }
+
   if (payload) {
     return responseWrapper(payload, destination);
   }

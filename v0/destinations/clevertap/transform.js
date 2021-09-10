@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const _ = require("lodash");
 const get = require("get-value");
@@ -21,21 +22,6 @@ const {
   CustomError
 } = require("../../util");
 
-const responseWrapper = (payload, destination) => {
-  const response = defaultRequestConfig();
-  // If the acount belongs to specific regional server,
-  // we need to modify the url endpoint based on dest config.
-  // Source: https://developer.clevertap.com/docs/idc
-  response.endpoint = getEndpoint(destination);
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "X-CleverTap-Account-Id": destination.Config.accountId,
-    "X-CleverTap-Passcode": destination.Config.passcode,
-    "Content-Type": "application/json"
-  };
-  response.body.JSON = payload;
-  return response;
-};
 /*
 Following behaviour is expected when data is mapped with clevertapV2Wrapper
 
@@ -53,26 +39,91 @@ true						            true						          identity (value = userId)
 true						            false					            objectId (value = anonymousId)
 false					              true						          identity (value = userId)
 */
-const clevertapV2Wrapper = (inputPayload, message, operation) => {
-  const payload = _.cloneDeep(inputPayload);
+
+const responseWrapper = (payload, destination) => {
+  const response = defaultRequestConfig();
+  // If the acount belongs to specific regional server,
+  // we need to modify the url endpoint based on dest config.
+  // Source: https://developer.clevertap.com/docs/idc
+  response.endpoint = getEndpoint(destination);
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "X-CleverTap-Account-Id": destination.Config.accountId,
+    "X-CleverTap-Passcode": destination.Config.passcode,
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = payload;
+  return response;
+};
+
+const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const anonymousId = get(message, "anonymousId");
-  delete payload.d[0].identity;
-  if (operation === "identify") {
-    if (userId) {
-      payload.d[0].profileData.identity = userId;
-    }
-    payload.d[0].objectId = anonymousId || userId;
-  } else if (operation === "track") {
-    if (userId) {
-      payload.d[0].identity = userId;
-    } else {
-      payload.d[0].objectId = anonymousId;
-    }
-  } else {
-    throw new CustomError("unsupported operation", 400);
+  if (userId) {
+    profile.identity = userId;
   }
+  const payload = {
+    d: [
+      {
+        type: "profile",
+        profileData: profile,
+        objectId: anonymousId || userId
+      }
+    ]
+  };
   return payload;
+};
+
+const mapIdentifyPayload = (message, profile) => {
+  const payload = {
+    d: [
+      {
+        type: "profile",
+        profileData: profile,
+        identity: getFieldValueFromMessage(message, "userId")
+      }
+    ]
+  };
+  return payload;
+};
+
+const mapTrackPayloadWithObjectId = (message, eventPayload) => {
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const anonymousId = get(message, "anonymousId");
+  if (userId) {
+    eventPayload.identity = userId;
+  } else {
+    eventPayload.objectId = anonymousId;
+  }
+  return eventPayload;
+};
+
+const mapTrackPayload = (message, eventPayload) => {
+  eventPayload.identity = getFieldValueFromMessage(message, "userId");
+  return eventPayload;
+};
+// Here we are creating the profileData info for identify calls
+// ---------------------------------------------------------------------
+const getClevertapProfile = (message, category) => {
+  let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // Extract other K-V property from traits about user custom properties
+  if (
+    !get(profile, "Name") &&
+    getFieldValueFromMessage(message, "firstName") &&
+    getFieldValueFromMessage(message, "lastName")
+  ) {
+    profile.Name = `${getFieldValueFromMessage(
+      message,
+      "firstName"
+    )} ${getFieldValueFromMessage(message, "lastName")}`;
+  }
+  profile = extractCustomFields(
+    message,
+    profile,
+    ["traits", "context.traits"],
+    CLEVERTAP_DEFAULT_EXCLUSION
+  );
+  return removeUndefinedAndNullValues(profile);
 };
 
 const responseBuilderSimple = (message, category, destination) => {
@@ -81,67 +132,38 @@ const responseBuilderSimple = (message, category, destination) => {
   // Source: https://developer.clevertap.com/docs/upload-user-profiles-api
   // ---------------------------------------------------------------------
   if (category.type === "identify") {
-    let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-    // Extract other K-V property from traits about user custom properties
-    if (
-      !get(profile, "Name") &&
-      getFieldValueFromMessage(message, "firstName") &&
-      getFieldValueFromMessage(message, "lastName")
-    ) {
-      profile.Name = `${getFieldValueFromMessage(
-        message,
-        "firstName"
-      )} ${getFieldValueFromMessage(message, "lastName")}`;
-    }
-    profile = extractCustomFields(
-      message,
-      profile,
-      ["traits", "context.traits"],
-      CLEVERTAP_DEFAULT_EXCLUSION
-    );
-    payload = {
-      d: [
-        {
-          identity: getFieldValueFromMessage(message, "userId"),
-          type: "profile",
-          profileData: removeUndefinedAndNullValues(profile)
-        }
-      ]
-    };
-    // enabling clevertapV2Wrapper when objectIdMapping is enabled
+    const profile = getClevertapProfile(message, category);
     if (destination.Config.enableObjectIdMapping) {
-      payload = clevertapV2Wrapper(payload, message, "identify");
-    }
-    // In case we have device token present we return an array
-    // of response the first object is identify payload and second
-    // object is the upload device token payload
-    // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
-    const deviceToken = get(message, "context.device.token");
-    const deviceOS = get(message, "context.os.name").toLowerCase();
-    if (
-      destination.Config.enableObjectIdMapping &&
-      deviceToken &&
-      ["ios", "android"].includes(deviceOS)
-    ) {
-      const tokenType = deviceOS === "android" ? "fcm" : "apns";
-      const payloadForDeviceToken = {
-        d: [
-          {
-            type: "token",
-            tokenData: {
-              id: deviceToken,
-              type: tokenType
-            },
-            objectId:
-              get(message, "anonymousId") ||
-              getFieldValueFromMessage(message, "userIdOnly")
-          }
-        ]
-      };
-      const respArr = [];
-      respArr.push(responseWrapper(payload, destination)); // identify
-      respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
-      return respArr;
+      payload = mapIdentifyPayloadWithObjectId(message, profile);
+      // In case we have device token present we return an array
+      // of response the first object is identify payload and second
+      // object is the upload device token payload
+      // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
+      const deviceToken = get(message, "context.device.token");
+      const deviceOS = get(message, "context.os.name").toLowerCase();
+      if (deviceToken && ["ios", "android"].includes(deviceOS)) {
+        const tokenType = deviceOS === "android" ? "fcm" : "apns";
+        const payloadForDeviceToken = {
+          d: [
+            {
+              type: "token",
+              tokenData: {
+                id: deviceToken,
+                type: tokenType
+              },
+              objectId:
+                get(message, "anonymousId") ||
+                getFieldValueFromMessage(message, "userIdOnly")
+            }
+          ]
+        };
+        const respArr = [];
+        respArr.push(responseWrapper(payload, destination)); // identify
+        respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
+        return respArr;
+      }
+    } else {
+      payload = mapIdentifyPayload(message, profile);
     }
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
@@ -168,8 +190,7 @@ const responseBuilderSimple = (message, category, destination) => {
         evtData: constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]
-        ),
-        identity: getFieldValueFromMessage(message, "userId")
+        )
       };
       eventPayload.evtData = extractCustomFields(
         message,
@@ -184,15 +205,15 @@ const responseBuilderSimple = (message, category, destination) => {
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
-
     eventPayload.type = "event";
+    if (destination.Config.enableObjectIdMapping) {
+      eventPayload = mapTrackPayloadWithObjectId(message, eventPayload);
+    } else {
+      eventPayload = mapTrackPayload(message, eventPayload);
+    }
     payload = {
       d: [removeUndefinedAndNullValues(eventPayload)]
     };
-  }
-  // enabling clevertapV2Wrapper when objectIdMapping is enabled
-  if (destination.Config.enableObjectIdMapping) {
-    payload = clevertapV2Wrapper(payload, message, "track");
   }
   if (payload) {
     return responseWrapper(payload, destination);

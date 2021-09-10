@@ -248,7 +248,7 @@
     "error": "Either Dataset ARN is not correctly entered or invalid"
   },
   {
-    "error": "Dataset ARN is a mandatory information to use putUsers"
+    "error": "Dataset ARN is a mandatory information to use putItems"
   },
   {
     "error": "PutUsers is not supported for Track Calls"

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
 const { sendRequest } = require("../../../adapters/network");
-const { trimResponse } = require("../../../adapters/utils/networkUtils");
+const { trimResponse, nodeSysErrorToStatus } = require("../../../adapters/utils/networkUtils");
 const { ErrorBuilder } = require("../../util/index");
 const CacheFactory = require("../../../cache/factory");
 const {
@@ -19,7 +19,17 @@ const trimBqStreamResponse = response => ({
   data: getValue(response, "response.response.data"), // Incase of errors, this contains error data
   success: getValue(response, "suceess")
 });
-
+/**
+ * Obtains the Destination OAuth Error Category based on the error code obtained from destination
+ *
+ * - If an error code is such that the user will not be allowed inside the destination,
+ * such error codes fall under DISABLE_DESTINATION
+ * - If an error code is such that upon refresh we can get a new token which can be used to send event,
+ * such error codes fall under REFRESH_TOKEN category
+ * - If an error code doesn't fall under both categories, we can return an empty string
+ * @param {string} errorCategory - The error code obtained from the destination
+ * @returns Destination OAuth Error Category
+ */
 const getDestAuthCategory = errorCategory => {
   switch (errorCategory) {
     case "PERMISSION_DENIED":
@@ -35,7 +45,7 @@ const getDestAuthCategory = errorCategory => {
  * Gets accessToken information from the destination request
  * This is used to send the information to the token endpoint for refreshing purposes
  *
- * @param {*} payload - Request to the destination will contain accessToken for OAuth supported destinations
+ * @param {Object} payload - Request to the destination will contain accessToken for OAuth supported destinations
  * @returns Access token from the request
  */
 const getAccessTokenFromDestRequest = payload =>
@@ -59,6 +69,10 @@ const responseHandler = ({
   authRequest,
   accessToken
 } = {}) => {
+  if (tokenInfo) {
+    // Refresh is successful, refreshed token information is being set here
+    AccountCache.setToken(tokenInfo);
+  }
   // success case
   if (dresponse.success) {
     const trimmedResponse = trimResponse(dresponse);
@@ -70,17 +84,12 @@ const responseHandler = ({
     }
 
     if (data && !data.insertErrors) {
-      if (tokenInfo) {
-        // Refresh is successful, refreshed token information is being set here
-        AccountCache.setToken(tokenInfo);
-      }
       // success
       return trimmedResponse;
     }
     /**
      * Not sure if such a scenario(http success but data not present) can happen in bigquery
      */
-    // http success but data not present
 
     // throw new ErrorBuilder()
     //   .setStatus(500)
@@ -95,20 +104,38 @@ const responseHandler = ({
   }
   // http failure cases
   const { response } = dresponse.response;
-  const destAuthCategory = getDestAuthCategory(response.data.error.status);
-  const temp = trimBqStreamResponse(dresponse);
-  throw new ErrorBuilder()
-    .setStatus(temp.status || 500)
-    .setMessage(temp.statusText)
-    .setAuthErrorCategory(destAuthCategory)
-    .setDestinationResponse({ ...temp, success: false })
-    .setMetadata(metadata)
-    .setAccessToken(accessToken)
-    .isTransformerNetwrokFailure(true)
-    .build();
+  if (!response && dresponse.response && dresponse.response.code) {
+    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
+    throw new ErrorBuilder()
+      .setStatus(nodeSysErr.status || 500)
+      .setMessage(nodeSysErr.message)
+      .setAuthErrorCategory("")
+      .setMetadata(metadata)
+      .isTransformerNetwrokFailure(true)
+      .build();
+  } else {
+    const destAuthCategory = getDestAuthCategory(response.data.error.status);
+    const temp = trimBqStreamResponse(dresponse);
+    throw new ErrorBuilder()
+      .setStatus(temp.status || 500)
+      .setMessage(temp.statusText)
+      .setAuthErrorCategory(destAuthCategory)
+      .setDestinationResponse({ ...temp, success: false })
+      .setMetadata(metadata)
+      .setAccessToken(accessToken)
+      .isTransformerNetwrokFailure(true)
+      .build();
+  }
 };
-// This should be used only for OAuth Destinations
-// For re-trial of event in case a Refresh token request takes place
+
+/**
+ * This function sets the refreshed access token into the header for bqstream destination
+ *
+ * Note: This should be used only for OAuth Destinations.
+ * For re-trial of event in case a Refresh token request takes place
+ * @param {Object} payload - The event payload
+ * @param {*} accessToken - AccessToken, this is more like a refreshed Access Token
+ */
 const putAccessTokenIntoPayload = (payload, accessToken) => {
   const request = payload;
   request.headers.Authorization = `Bearer ${accessToken}`;

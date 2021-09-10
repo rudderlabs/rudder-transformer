@@ -21,7 +21,6 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
-const { includes } = require("lodash");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -110,6 +109,21 @@ function responseBuilderSimple(
   return response;
 }
 
+async function getSaleforceIdForRecord(
+  authorizationData,
+  objectType,
+  identifierType,
+  identifierValue
+) {
+  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
+
+  const objSearchResponse = await axios.get(objSearchUrl, {
+    headers: { Authorization: authorizationData.token }
+  });
+
+  return get(objSearchResponse, "data.searchRecords.0.Id");
+}
+
 // Check for externalId field under context and look for probable Salesforce objects
 // We'll make separate requests for every Salesforce Object types present under externalIds
 //
@@ -132,7 +146,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
 
   // get externalId
   const externalIds = get(message, "context.externalId");
-  const mappedToDestination = get(message, MappedToDestinationKey)
+  const mappedToDestination = get(message, MappedToDestinationKey);
 
   // if externalIds are present look for type `Salesforce-`
   if (externalIds && Array.isArray(externalIds) && !mappedToDestination) {
@@ -148,22 +162,38 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   }
 
   // Support All salesforce objects, do not fallback to lead in case event is mapped to destination
-  if(mappedToDestination) {
+  if (mappedToDestination) {
     const { id, type, identifierType } = get(message, "context.externalId.0");
-    
-    if(!id || !type || !identifierType || !type.toLowerCase().includes('salesforce')) {
-      throw new CustomError("Invalid externalId. id, type, identifierType must be provided", 400);
+
+    if (
+      !id ||
+      !type ||
+      !identifierType ||
+      !type.toLowerCase().includes("salesforce")
+    ) {
+      throw new CustomError(
+        "Invalid externalId. id, type, identifierType must be provided",
+        400
+      );
     }
-    
-    const objectType = type.toLowerCase().replace("salesforce-", "")
+
+    const objectType = type.toLowerCase().replace("salesforce-", "");
     let salesforceId = id;
-    
+
     // Fetch the salesforce Id if the identifierType is not ID
-    if(identifierType.toUpperCase() !== "ID") {
-      salesforceId = await getSaleforceIdForRecord(authorizationData, objectType, identifierType, id);
+    if (identifierType.toUpperCase() !== "ID") {
+      salesforceId = await getSaleforceIdForRecord(
+        authorizationData,
+        objectType,
+        identifierType,
+        id
+      );
     }
-    
-    salesforceMaps.push({salesforceType: objectType, salesforceId: salesforceId});
+
+    salesforceMaps.push({
+      salesforceType: objectType,
+      salesforceId
+    });
   }
 
   // if nothing is present consider it as a Lead Object
@@ -213,18 +243,6 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
   return salesforceMaps;
 }
 
-async function getSaleforceIdForRecord(authorizationData, objectType, identifierType, identifierValue) {
-  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-
-  const objSearchResponse = await axios.get(objSearchUrl, {
-    headers: { Authorization: authorizationData.token }
-  });
-
-  let recordId = get(objSearchResponse, "data.searchRecords.0.Id");
-
-  return recordId;
-}
-
 // Function for handling identify events
 async function processIdentify(message, authorizationData, mapProperty) {
   // check the traits before hand
@@ -235,10 +253,14 @@ async function processIdentify(message, authorizationData, mapProperty) {
 
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  const identifierType = get(message, "context.externalId.0.type")
-  if(mappedToDestination && identifierType && identifierType.toLowerCase !== 'id') {
-    addExternalIdToTraits(message)
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  const identifierType = get(message, "context.externalId.0.type");
+  if (
+    mappedToDestination &&
+    identifierType &&
+    identifierType.toLowerCase !== "id"
+  ) {
+    addExternalIdToTraits(message);
   }
 
   // if traits is correct, start processing

@@ -9,8 +9,9 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(val, options) {
-  if (options.rsAlterStringToText === "true") {
-    if (val && val.length > RSStringLimit) {
+  if (options.rsAlterStringToText === "true" && val) {
+    const stringifiedVal = Array.isArray(val) ? JSON.stringify(val) : val;
+    if (stringifiedVal.length > RSStringLimit) {
       return "text";
     }
   }

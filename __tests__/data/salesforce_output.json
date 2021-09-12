@@ -18,6 +18,7 @@
           "Title": "VP of Derp",
           "FirstName": "Peter",
           "LastName": "Gibbons",
+          "Name": "Peter Gibbons",
           "PostalCode": "94115",
           "City": "east greenwich",
           "Country": "USA",
@@ -50,6 +51,7 @@
           "Title": "VP of Derp",
           "FirstName": "Peter",
           "LastName": "Gibbons",
+          "Name": "Peter Gibbons",
           "PostalCode": "94115",
           "City": "east greenwich",
           "Country": "USA",
@@ -82,6 +84,7 @@
           "Title": "VP of Derp",
           "FirstName": "Peter",
           "LastName": "Gibbons",
+          "Name": "Peter Gibbons",
           "PostalCode": "94115",
           "City": "east greenwich",
           "Country": "USA",
@@ -119,6 +122,7 @@
           "Title": "VP of Derp",
           "FirstName": "Peter",
           "LastName": "Gibbons",
+          "Name": "Peter Gibbons",
           "PostalCode": "94115",
           "City": "east greenwich",
           "Country": "USA",
@@ -249,6 +253,7 @@
           "Title": "VP of Derp",
           "FirstName": "Peter",
           "LastName": "Gibbons",
+          "Name": "Peter Gibbons",
           "PostalCode": "94115",
           "City": "east greenwich",
           "Country": "USA",
@@ -260,7 +265,7 @@
         "FORM": {}
       },
       "files": {}
-    } 
+    }
   ]
 ]
 

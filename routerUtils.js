@@ -1,6 +1,9 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 const _ = require("lodash");
+const { lstatSync, readdirSync } = require("fs");
+const logger = require("./logger");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 
 let areFunctionsEnabled = -1;
 const functionsEnabled = () => {
@@ -40,7 +43,7 @@ async function handleDestinationNetwork(version, destination, ctx) {
     return ctx.body;
   }
   let response;
-  // logger.info("Request recieved for destination", destination);
+  logger.info("Request recieved for destination", destination);
   try {
     response = await destNetHandler.sendData(ctx.request.body);
   } catch (err) {
@@ -59,7 +62,38 @@ async function handleDestinationNetwork(version, destination, ctx) {
   return ctx.body;
 }
 
+const isDirectory = source => {
+  return lstatSync(source).isDirectory();
+};
+
+const getIntegrations = type =>
+  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
+
+const getDestHandler = (version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
+  return require(`./${version}/destinations/${dest}/transform`);
+};
+
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
 module.exports = {
+  getIntegrations,
+  getDestHandler,
+  getDestFileUploadHandler,
+  getPollStatusHandler,
+  getJobStatusHandler,
   handleDestinationNetwork,
   userTransformHandler
 };

@@ -375,66 +375,94 @@
       "files": {}
     }
   ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.clevertap.com/1/upload",
-      "headers": {
-        "X-CleverTap-Account-Id": "476550467",
-        "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "Content-Type": "application/json"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "d": [
-            {
-              "objectId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
-              "type": "profile",
-              "profileData": {
-                "Email": "ankur4gmail",
-                "Name": "Ankur4 Mittal",
-                "Phone": "8260294239",
-                "identity": "ankur4"
-              }
-            }
-          ]
-        },
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.clevertap.com/1/upload",
+    "headers": {
+      "X-CleverTap-Account-Id": "476550467",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.clevertap.com/1/upload",
-      "headers": {
-        "X-CleverTap-Account-Id": "476550467",
-        "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "Content-Type": "application/json"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "d": [
-            {
-              "type": "token",
-              "tokenData": {
-                "id": "frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf",
-                "type": "apns"
-              },
-              "objectId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+    "params": {},
+    "body": {
+      "JSON": {
+        "d": [
+          {
+            "identity": "ankur4",
+            "type": "profile",
+            "profileData": {
+              "Email": "ankur4gmail",
+              "Name": "Ankur4 Mittal",
+              "Phone": "8260294239"
             }
-          ]
-        },
-        "XML": {},
-        "FORM": {}
+          }
+        ]
       },
-      "files": {}
-    }
-  ]
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "type": "event",
+            "evtData": {
+              "country_region": "India",
+              "test": "abc"
+            },
+            "evtName": "Random",
+            "objectId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "X-CleverTap-Account-Id": "476550467"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "type": "event",
+            "evtData": {
+              "country_region": "India",
+              "test": "abc"
+            },
+            "evtName": "Random 2",
+            "identity": "ankur4"
+          }
+        ]
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "X-CleverTap-Account-Id": "476550467"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  }
 ]

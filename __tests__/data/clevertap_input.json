@@ -5,7 +5,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -68,7 +68,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -94,7 +94,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -119,7 +119,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -142,7 +142,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -164,7 +164,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -187,7 +187,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -281,7 +281,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": false,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -304,7 +304,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -367,7 +367,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":false
+        "enableObjectIdMapping": false
       }
     },
     "message": {
@@ -430,7 +430,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":true
+        "enableObjectIdMapping": true
       }
     },
     "message": {
@@ -501,7 +501,7 @@
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
         "trackAnonymous": true,
-        "enableObjectIdMapping":true
+        "enableObjectIdMapping": true
       }
     },
     "message": {
@@ -527,7 +527,7 @@
           "type": "iOS",
           "model": "iPhone",
           "manufacturer": "Apple",
-          "token":"frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf"
+          "token": "frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf"
         },
         "locale": "en-US",
         "screen": {
@@ -539,8 +539,7 @@
           "name": "Ankur4 Mittal",
           "email": "ankur4gmail",
           "phone": "8260294239",
-          "userId": "ankur4",
-          "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+          "userId": "ankur4"
         },
         "library": {
           "name": "rudder-ios-library",
@@ -557,11 +556,52 @@
       },
       "rudderId": "f5bb9c22-4987-4ef2-9b58-52788035ffb7",
       "messageId": "1619006730-60fa60c0-3c77-4de7-95d4-e7dc58214947",
-      "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
       "integrations": {
         "All": true
       },
       "originalTimestamp": "2021-04-21T12:05:30.330Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": true
+      }
+    },
+    "message": {
+      "event": "Random",
+      "properties": {
+        "country_region": "India",
+        "test": "abc"
+      },
+      "receivedAt": "2021-08-20T12:49:07.691Z",
+      "rudderId": "138c4214-b537-4f77-9dea-9abde70b5147",
+      "type": "track",
+      "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": true
+      }
+    },
+    "message": {
+      "event": "Random 2",
+      "properties": {
+        "country_region": "India",
+        "test": "abc"
+      },
+      "receivedAt": "2021-08-20T12:49:07.691Z",
+      "rudderId": "138c4214-b537-4f77-9dea-9abde70b5147",
+      "type": "track",
+      "userId": "ankur4"
     }
   }
 ]

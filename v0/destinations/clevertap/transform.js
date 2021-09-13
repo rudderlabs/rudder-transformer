@@ -27,15 +27,15 @@ Following behaviour is expected when "enableObjectIdMapping" is enabled
 
 For Identify Events
 ---------------RudderStack-----------------             ------------Clevertap-------------
-anonymousId(present?)				userId(present?)	 					objectId(value)			identity(value)
-true						            true						            anonymousId			    userId
-true						            false					              anonymousId			    -
-false					              true						            anonymousId			    userId
+anonymousId(present?)				userId(present?)	 					objectId(value)			        identity(value)
+true						            true						            anonymousId			              userId
+true						            false					              anonymousId			              -
+false					              true						            (clevertap_generated_uuid)		userId
 
 For tracking events
 ---------------RudderStack-----------------           ----------Clevertap---------
 anonymousId(present?)				userId(present?)					tracking with
-true						            true						          identity (value = userId)
+true						            true						          objectId (value = anonymousId)
 true						            false					            objectId (value = anonymousId)
 false					              true						          identity (value = userId)
 */

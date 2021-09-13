@@ -61,19 +61,24 @@ const responseWrapper = (payload, destination) => {
 const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const anonymousId = get(message, "anonymousId");
-  if (userId) {
-    profile.identity = userId;
-  }
   const payload = {
-    d: [
-      {
-        type: "profile",
-        profileData: profile,
-        objectId: anonymousId || userId
-      }
-    ]
+    type: "profile",
+    profileData: profile
   };
-  return payload;
+  // If anonymousId is present prioritising to set it as objectId
+  if (anonymousId) {
+    payload.objectId = anonymousId;
+    // If userId is present we set it as identity inside profiledData
+    if (userId) {
+      payload.profileData.identity = userId;
+    }
+  } else if (userId) {
+    // If only userId present set it as identity in root of payload
+    payload.identity = userId;
+  }
+  return {
+    d: [payload]
+  };
 };
 
 // generates clevertap identify payload with only identity
@@ -94,10 +99,15 @@ const mapIdentifyPayload = (message, profile) => {
 const mapTrackPayloadWithObjectId = (message, eventPayload) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const anonymousId = get(message, "anonymousId");
-  if (userId) {
+  if (anonymousId) {
+    // If anonymousId is present set it as objectId in root
+    eventPayload.objectId = anonymousId;
+  } else if (userId) {
+    // If userId is present set it as identity in root
     eventPayload.identity = userId;
   } else {
-    eventPayload.objectId = anonymousId;
+    // Flow should not reach here fail safety
+    throw CustomError("Unable to process without anonymousId or userId", 400);
   }
   return eventPayload;
 };
@@ -145,9 +155,14 @@ const responseBuilderSimple = (message, category, destination) => {
       // of response the first object is identify payload and second
       // object is the upload device token payload
       // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
+      // also anoymousId should be present to map it with objectId
       const deviceToken = get(message, "context.device.token");
       const deviceOS = get(message, "context.os.name").toLowerCase();
-      if (deviceToken && ["ios", "android"].includes(deviceOS)) {
+      if (
+        get(message, "anonymousId") &&
+        deviceToken &&
+        ["ios", "android"].includes(deviceOS)
+      ) {
         const tokenType = deviceOS === "android" ? "fcm" : "apns";
         const payloadForDeviceToken = {
           d: [
@@ -157,9 +172,7 @@ const responseBuilderSimple = (message, category, destination) => {
                 id: deviceToken,
                 type: tokenType
               },
-              objectId:
-                get(message, "anonymousId") ||
-                getFieldValueFromMessage(message, "userIdOnly")
+              objectId: get(message, "anonymousId")
             }
           ]
         };

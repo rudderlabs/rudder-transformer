@@ -539,8 +539,7 @@
           "name": "Ankur4 Mittal",
           "email": "ankur4gmail",
           "phone": "8260294239",
-          "userId": "ankur4",
-          "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
+          "userId": "ankur4"
         },
         "library": {
           "name": "rudder-ios-library",
@@ -557,7 +556,6 @@
       },
       "rudderId": "f5bb9c22-4987-4ef2-9b58-52788035ffb7",
       "messageId": "1619006730-60fa60c0-3c77-4de7-95d4-e7dc58214947",
-      "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
       "integrations": {
         "All": true
       },
@@ -603,7 +601,6 @@
       "receivedAt": "2021-08-20T12:49:07.691Z",
       "rudderId": "138c4214-b537-4f77-9dea-9abde70b5147",
       "type": "track",
-      "anonymousId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
       "userId": "ankur4"
     }
   }

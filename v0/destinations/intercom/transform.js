@@ -109,6 +109,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.endpoint = category.endpoint;
   response.headers = {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${destination.Config.apiKey}`,
     Accept: "application/json"
   };
   response.userId = message.anonymousId;

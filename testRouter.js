@@ -77,14 +77,16 @@ getDestinations().forEach(async dest => {
                   transformationVersionId,
                   librariesVersionIDs
                 );
-                // console.log(destTransformedEvents);
-                const { transformedEvent } = destTransformedEvents[0];
-                response.user_transformed_payload = transformedEvent;
-                // console.log(transformedEvent);
-                ev.message = transformedEvent;
+                const userTransformedEvent = destTransformedEvents[0];
+                if (userTransformedEvent.error) {
+                  throw new Error(userTransformedEvent.error);
+                }
+
+                response.user_transformed_payload =
+                  userTransformedEvent.transformedEvent;
+                ev.message = userTransformedEvent.transformedEvent;
               } catch (err) {
                 errorFound = true;
-                // console.log(error);
                 response.user_transformed_payload = {
                   error: err.message || JSON.stringify(err)
                 };

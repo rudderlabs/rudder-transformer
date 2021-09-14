@@ -290,7 +290,6 @@ const processEvent = (message, destination) => {
   let response;
   const respList = [];
   const toSendEvents = [];
-  let maxUserCountNumber;
   let wrappedResponse = {};
   let { userSchema } = destination.Config
   const {
@@ -304,9 +303,9 @@ const processEvent = (message, destination) => {
       400
     );
   }
-  try {
-    maxUserCountNumber = parseInt(maxUserCount, 10);
-  } catch (error) {
+  const maxUserCountNumber = parseInt(maxUserCount, 10);
+
+  if (Number.isNaN(maxUserCountNumber)) {
     throw new CustomError("Batch size must be an Integer.", 400);
   }
   if (message.type.toLowerCase() !== "audiencelist") {

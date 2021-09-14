@@ -1,7 +1,10 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
 const { sendRequest } = require("../../../adapters/network");
-const { trimResponse, nodeSysErrorToStatus } = require("../../../adapters/utils/networkUtils");
+const {
+  trimResponse,
+  nodeSysErrorToStatus
+} = require("../../../adapters/utils/networkUtils");
 const { ErrorBuilder } = require("../../util/index");
 const CacheFactory = require("../../../cache/factory");
 const {
@@ -113,8 +116,22 @@ const responseHandler = ({
       .setMetadata(metadata)
       .isTransformerNetwrokFailure(true)
       .build();
-  } else {
+  } else if (response) {
     const destAuthCategory = getDestAuthCategory(response.data.error.status);
+    const temp = trimBqStreamResponse(dresponse);
+    throw new ErrorBuilder()
+      .setStatus(temp.status || 500)
+      .setMessage(temp.statusText)
+      .setAuthErrorCategory(destAuthCategory)
+      .setDestinationResponse({ ...temp, success: false })
+      .setMetadata(metadata)
+      .setAccessToken(accessToken)
+      .isTransformerNetwrokFailure(true)
+      .build();
+  } else {
+    const destAuthCategory = getDestAuthCategory(
+      dresponse.response.data.insertErrors[0].errors[0].reason
+    );
     const temp = trimBqStreamResponse(dresponse);
     throw new ErrorBuilder()
       .setStatus(temp.status || 500)
@@ -136,25 +153,28 @@ const responseHandler = ({
  * @param {Object} payload - The event payload
  * @param {*} accessToken - AccessToken, this is more like a refreshed Access Token
  */
-const putAccessTokenIntoPayload = (payload, accessToken) => {
+const putAccessTokenIntoPayload = payload => {
   const request = payload;
-  request.headers.Authorization = `Bearer ${accessToken}`;
+  request.headers.Authorization = `Bearer ${payload.accessToken}`;
 };
 
 const sendData = async payload => {
-  const { metadata, accessToken: aToken } = payload;
+  const { metadata } = payload;
   let tokenInfo;
-  if (aToken) {
-    const accountInfo = JSON.parse(aToken);
-    putAccessTokenIntoPayload(payload, accountInfo.accessToken);
+  if (payload.accessToken) {
+    putAccessTokenIntoPayload(payload);
     tokenInfo = {
       accountId: payload.accountId,
       workspaceId: payload.workspaceId,
-      ...accountInfo
+      expirationDate: payload.expirationDate,
+      accessToken: payload.accessToken
     };
     delete payload.accessToken;
     delete payload.accountId;
     delete payload.workspaceId;
+    if (payload.expirationDate) {
+      delete payload.expirationDate;
+    }
   }
   const res = await sendRequest(payload);
   const accessToken = getAccessTokenFromDestRequest(payload);

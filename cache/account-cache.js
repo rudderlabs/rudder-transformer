@@ -49,13 +49,9 @@ class AccountCache extends BaseCache {
   }
 
   async onExpired(k, v) {
-    try {
-      // Only AccessToken is being fetched in this call
-      const tokenInfo = await this.getToken(k);
-      this.set(k, tokenInfo);
-    } catch (error) {
-      logger.error(error);
-    }
+    // Access Token & Expiration Date is being fetched in this call
+    const tokenInfo = await this.getToken(k);
+    this.set(k, tokenInfo);
   }
 
   async getTokenFromCache(workspaceId, accountId) {

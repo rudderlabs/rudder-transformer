@@ -1,4 +1,5 @@
 const sha256 = require("sha256");
+const get = require("get-value")
 
 const {
   defaultRequestConfig,
@@ -22,6 +23,9 @@ const {
   typeFields,
   subTypeFields
 } = require("./config");
+
+const logger = require("../../../logger");
+const { MappedToDestinationKey } = require("../../../constants");
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
@@ -223,12 +227,20 @@ const prepareResponse = (
 ) => {
   const {
     accessToken,
-    userSchema,
     disableFormat,
     type,
     subType,
     isRaw
   } = destination.Config;
+  let { userSchema } = destination.Config;
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  
+  // If mapped to destination, use the mapped fields instead of destination userschema
+ if(mappedToDestination) {
+    userSchema = getSchemaForEventMappedToDest(message)
+  }
+
+  const { properties } = message;
   const prepareParams = {};
   // creating the parameters field
   const paramsPayload = {};
@@ -263,14 +275,25 @@ const prepareResponse = (
   return prepareParams;
 };
 
+const getSchemaForEventMappedToDest = (message) => {
+  let mappedSchema = get(message, "context.destinationFields")
+  if(!mappedSchema) {
+    throw new CustomError("context.destinationFields is required property for events mapped to destination ", 400)
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(",")
+  userSchema = userSchema.map((field) => field.trim())
+  return userSchema
+}
+
 const processEvent = (message, destination) => {
   let response;
   const respList = [];
   const toSendEvents = [];
   let maxUserCountNumber;
   let wrappedResponse = {};
+  let { userSchema } = destination.Config
   const {
-    userSchema,
     isHashRequired,
     audienceId,
     maxUserCount
@@ -286,7 +309,7 @@ const processEvent = (message, destination) => {
   } catch (error) {
     throw new CustomError("Batch size must be an Integer.", 400);
   }
-  if (message.type !== "audiencelist") {
+  if (message.type.toLowerCase() !== "audiencelist") {
     throw new CustomError(` ${message.type} call is not supported `, 400);
   }
   const operationAudienceId = audienceId;
@@ -294,6 +317,13 @@ const processEvent = (message, destination) => {
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new CustomError("Audience ID is a mandatory field", 400);
   }
+
+  const mappedToDestination = get(message, MappedToDestinationKey)
+ // If mapped to destination, use the mapped fields instead of destination userschema
+ if(mappedToDestination) {
+    userSchema = getSchemaForEventMappedToDest(message)
+  }
+
 
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {

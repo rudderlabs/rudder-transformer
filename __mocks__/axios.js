@@ -77,10 +77,10 @@ function get(url, options) {
     return delightedGetRequestHandler(options);
   }
   if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com")){
-    return {status : 200 };
+    return Promise.resolve({status : 200 });
   }
   if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/unidentified_user@gmail.com")){
-    return {status : 404 };
+    return Promise.reject({status : 404 });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

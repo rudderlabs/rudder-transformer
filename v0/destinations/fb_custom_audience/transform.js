@@ -275,17 +275,6 @@ const prepareResponse = (
   return prepareParams;
 };
 
-const getSchemaForEventMappedToDest = (message) => {
-  let mappedSchema = get(message, "context.destinationFields")
-  if(!mappedSchema) {
-    throw new CustomError("context.destinationFields is required property for events mapped to destination ", 400)
-  }
-  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
-  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(",")
-  userSchema = userSchema.map((field) => field.trim())
-  return userSchema
-}
-
 const processEvent = (message, destination) => {
   let response;
   const respList = [];
@@ -428,5 +417,17 @@ const processRouterDest = inputs => {
   });
   return flattenMap(respList);
 };
+
+const getSchemaForEventMappedToDest = (message) => {
+  let mappedSchema = get(message, "context.destinationFields")
+  if(!mappedSchema) {
+    throw new CustomError("context.destinationFields is required property for events mapped to destination ", 400)
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(",")
+  userSchema = userSchema.map((field) => field.trim())
+  return userSchema
+}
+
 
 module.exports = { process, processRouterDest };

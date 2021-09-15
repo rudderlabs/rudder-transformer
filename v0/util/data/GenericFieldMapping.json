@@ -11,6 +11,7 @@
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
+  "properties": ["properties"],
   "groupId": ["groupId", "traits.groupId"],
   "groupTraits": ["traits", "context.traits"],
   "userId": [

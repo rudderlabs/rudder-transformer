@@ -5,6 +5,8 @@ const _ = require("lodash");
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
+const logEnabled = (process.env.ENABLE_CT_ERROR_LOGS === "true");
+
 const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
@@ -86,7 +88,7 @@ async function createIvm(code, libraryVersionIds) {
               }
               if (!isObject(transformedOutput)) {
                 return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-              } 
+              }
               outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
               return;
             } catch (error) {
@@ -128,6 +130,7 @@ async function createIvm(code, libraryVersionIds) {
   await jail.set(
     "_fetch",
     new ivm.Reference(async (resolve, ...args) => {
+      const currTime = new Date().getTime()
       try {
         const res = await fetch(...args);
         const data = await res.json();
@@ -135,9 +138,16 @@ async function createIvm(code, libraryVersionIds) {
           new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
+        if (logEnabled) {
+          console.log("Got error: " + error)
+        }
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy("ERROR").copyInto()
         ]);
+      }
+      if (logEnabled) {
+        diff = new Date().getTime() - currTime
+        console.log("Time took in ms: " + diff)
       }
     })
   );

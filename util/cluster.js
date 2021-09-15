@@ -67,7 +67,7 @@ function start(port, app) {
           }
           worker.send({
             ...msg,
-            value: existingCacheValue
+            value: cache.get(msg.key)
           });
         }
       });

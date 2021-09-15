@@ -23,8 +23,8 @@ class PodCache {
   }
 
   getTokenUrl() {
-    const [accountId, workspaceId] = this.event.key.split("|");
-    return `${CONFIG_BACKEND_URL}/dest/workspaces/${workspaceId}/accounts/${accountId}/token`;
+    const [rudderAccountId, workspaceId] = this.event.key.split("|");
+    return `${CONFIG_BACKEND_URL}/dest/workspaces/${workspaceId}/accounts/${rudderAccountId}/token`;
   }
 
   async getToken() {

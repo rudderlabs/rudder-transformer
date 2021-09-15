@@ -6,14 +6,11 @@ const {
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");
 const { ErrorBuilder } = require("../../util/index");
-const CacheFactory = require("../../../cache/factory");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const PodCache = require("../../../cache/pod-cache");
-
-const AccountCache = CacheFactory.createCache("account");
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -75,7 +72,7 @@ const responseHandler = ({
 } = {}) => {
   if (tokenInfo) {
     const podCache = new PodCache(
-      `${tokenInfo.accountId}|${tokenInfo.workspaceId}`
+      `${tokenInfo.rudderAccountId}|${tokenInfo.workspaceId}`
     );
     // Refresh is successful, refreshed token information is being set here
     podCache.setTokenInfoIntoCache({
@@ -171,13 +168,13 @@ const sendData = async payload => {
   if (payload.accessToken) {
     putAccessTokenIntoPayload(payload);
     tokenInfo = {
-      accountId: payload.accountId,
+      rudderAccountId: payload.rudderAccountId,
       workspaceId: payload.workspaceId,
       expirationDate: payload.expirationDate,
       accessToken: payload.accessToken
     };
     delete payload.accessToken;
-    delete payload.accountId;
+    delete payload.rudderAccountId;
     delete payload.workspaceId;
     if (payload.expirationDate) {
       delete payload.expirationDate;

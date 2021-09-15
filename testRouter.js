@@ -45,6 +45,7 @@ getDestinations().forEach(async dest => {
         throw new Error("events array is required in payload");
       }
       const respList = [];
+      ctx.set("apiVersion", API_VERSION);
       await Promise.all(
         events.map(async event => {
           const { message, destination, stage, libraries } = event;
@@ -118,7 +119,8 @@ getDestinations().forEach(async dest => {
               };
             }
           }
-          if (stage.dest_response) {
+          if (stage.dest_transform && stage.dest_response) {
+            // send event to destination only after transformation
             if (!errorFound) {
               const ctxMock = {
                 request: {
@@ -144,7 +146,6 @@ getDestinations().forEach(async dest => {
           respList.push(response);
         })
       );
-      ctx.set("apiVersion", API_VERSION);
       ctx.body = respList;
     } catch (err) {
       // fallback error response

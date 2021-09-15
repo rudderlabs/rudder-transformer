@@ -11,10 +11,8 @@ const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
-const CacheFactory = require("./cache/factory");
 const { isOAuthSupported } = require("./v0/util");
-
-const AccountCache = CacheFactory.createCache("account");
+const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
 const API_VERSION = "1";
@@ -68,7 +66,6 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
-const eventValidator = require("./util/eventValidation");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -112,7 +109,7 @@ async function handleDest(ctx, version, destination) {
         let respEvents = await destHandler.process(parsedEvent);
         // if destination needs OAuth, processAuth should be implemented
         if (isOAuthSupported(parsedEvent.destination, destHandler)) {
-          await destHandler.processAuth(AccountCache, parsedEvent, respEvents);
+          await destHandler.processAuth(parsedEvent, respEvents);
         }
 
         if (respEvents) {
@@ -172,10 +169,10 @@ async function handleValidation(ctx) {
     const eventStartTime = new Date();
     try {
       const parsedEvent = event;
-      parsedEvent.request = {query: reqParams};
+      parsedEvent.request = { query: reqParams };
       const hv = await eventValidator.handleValidation(parsedEvent);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,
@@ -185,21 +182,21 @@ async function handleValidation(ctx) {
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,
-          ...metaTags,
+          ...metaTags
         });
       } else {
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 200,
-          validationErrors: hv.validationErrors,
+          validationErrors: hv.validationErrors
         });
         stats.counter("hv_errors", 1, {
           ...metaTags
         });
       }
     } catch (error) {
-      const errMessage = `Error occurred while validating : ${error}`
+      const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
       respList.push({
         output: event.message,
@@ -328,7 +325,7 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(
           events,
-          event => event.metadata.destinationId + "_" + event.metadata.sourceId
+          event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
         );
       }
       stats.counter(

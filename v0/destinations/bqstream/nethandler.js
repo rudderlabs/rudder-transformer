@@ -11,6 +11,7 @@ const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+const PodCache = require("../../../cache/pod-cache");
 
 const AccountCache = CacheFactory.createCache("account");
 
@@ -73,8 +74,14 @@ const responseHandler = ({
   accessToken
 } = {}) => {
   if (tokenInfo) {
+    const podCache = new PodCache(
+      `${tokenInfo.accountId}|${tokenInfo.workspaceId}`
+    );
     // Refresh is successful, refreshed token information is being set here
-    AccountCache.setToken(tokenInfo);
+    podCache.setTokenInfoIntoCache({
+      accessToken: tokenInfo.accessToken,
+      expirationDate: tokenInfo.expirationDate
+    });
   }
   // success case
   if (dresponse.success) {

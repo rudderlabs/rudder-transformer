@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
+const PodCache = require("../../../cache/pod-cache");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig
 } = require("../../util");
+
 
 const responseWrapper = response => {
   const resp = defaultRequestConfig();
@@ -47,15 +49,13 @@ function process(event) {
  * @param {*} response - Transformation Response
  * @returns Transformation Response bound with token information(may not be required as such)
  */
-async function processAuth(AccountCache, event, response) {
+async function processAuth(event, response) {
   // OAuth for BQStream destination
   const { workspaceId } = event.metadata;
   const { rudderAccountId } = event.destination.Config;
-  const oAuthToken = await AccountCache.getTokenFromCache(
-    workspaceId,
-    rudderAccountId
-  );
-  response.headers.Authorization = `Bearer ${oAuthToken}`;
+  const podCache = new PodCache(`${rudderAccountId}|${workspaceId}`);
+  const oAuthToken = await podCache.getTokenFromCache();
+  response.headers.Authorization = `Bearer ${oAuthToken.value.accessToken}`;
   return response;
 }
 

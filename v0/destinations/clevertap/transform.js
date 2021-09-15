@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+const _ = require("lodash");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -18,6 +20,60 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
+
+const responseWrapper = (payload, destination) => {
+  const response = defaultRequestConfig();
+  // If the acount belongs to specific regional server,
+  // we need to modify the url endpoint based on dest config.
+  // Source: https://developer.clevertap.com/docs/idc
+  response.endpoint = getEndpoint(destination);
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "X-CleverTap-Account-Id": destination.Config.accountId,
+    "X-CleverTap-Passcode": destination.Config.passcode,
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = payload;
+  return response;
+};
+/*
+Following behaviour is expected when data is mapped with clevertapV2Wrapper
+
+For Identify Events
+---------------RudderStack-----------------             ------------Clevertap-------------
+anonymousId(present?)				userId(present?)	 					objectId(value)			identity(value)
+true						            true						            anonymousId			    userId
+true						            false					              anonymousId			    -
+false					              true						            anonymousId			    userId
+
+For tracking events
+---------------RudderStack-----------------           ----------Clevertap---------
+anonymousId(present?)				userId(present?)					tracking with
+true						            true						          identity (value = userId)
+true						            false					            objectId (value = anonymousId)
+false					              true						          identity (value = userId)
+*/
+const clevertapV2Wrapper = (inputPayload, message, operation) => {
+  const payload = _.cloneDeep(inputPayload);
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const anonymousId = get(message, "anonymousId");
+  delete payload.d[0].identity;
+  if (operation === "identify") {
+    if (userId) {
+      payload.d[0].profileData.identity = userId;
+    }
+    payload.d[0].objectId = anonymousId || userId;
+  } else if (operation === "track") {
+    if (userId) {
+      payload.d[0].identity = userId;
+    } else {
+      payload.d[0].objectId = anonymousId;
+    }
+  } else {
+    throw new CustomError("unsupported operation", 400);
+  }
+  return payload;
+};
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
@@ -43,7 +99,6 @@ const responseBuilderSimple = (message, category, destination) => {
       ["traits", "context.traits"],
       CLEVERTAP_DEFAULT_EXCLUSION
     );
-
     payload = {
       d: [
         {
@@ -53,6 +108,41 @@ const responseBuilderSimple = (message, category, destination) => {
         }
       ]
     };
+    // enabling clevertapV2Wrapper when objectIdMapping is enabled
+    if (destination.Config.enableObjectIdMapping) {
+      payload = clevertapV2Wrapper(payload, message, "identify");
+    }
+    // In case we have device token present we return an array
+    // of response the first object is identify payload and second
+    // object is the upload device token payload
+    // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
+    const deviceToken = get(message, "context.device.token");
+    const deviceOS = get(message, "context.os.name").toLowerCase();
+    if (
+      destination.Config.enableObjectIdMapping &&
+      deviceToken &&
+      ["ios", "android"].includes(deviceOS)
+    ) {
+      const tokenType = deviceOS === "android" ? "fcm" : "apns";
+      const payloadForDeviceToken = {
+        d: [
+          {
+            type: "token",
+            tokenData: {
+              id: deviceToken,
+              type: tokenType
+            },
+            objectId:
+              get(message, "anonymousId") ||
+              getFieldValueFromMessage(message, "userIdOnly")
+          }
+        ]
+      };
+      const respArr = [];
+      respArr.push(responseWrapper(payload, destination)); // identify
+      respArr.push(responseWrapper(payloadForDeviceToken, destination)); // device token
+      return respArr;
+    }
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
     // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
@@ -100,21 +190,12 @@ const responseBuilderSimple = (message, category, destination) => {
       d: [removeUndefinedAndNullValues(eventPayload)]
     };
   }
-
+  // enabling clevertapV2Wrapper when objectIdMapping is enabled
+  if (destination.Config.enableObjectIdMapping) {
+    payload = clevertapV2Wrapper(payload, message, "track");
+  }
   if (payload) {
-    const response = defaultRequestConfig();
-    // If the acount belongs to specific regional server,
-    // we need to modify the url endpoint based on dest config.
-    // Source: https://developer.clevertap.com/docs/idc
-    response.endpoint = getEndpoint(destination);
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "X-CleverTap-Account-Id": destination.Config.accountId,
-      "X-CleverTap-Passcode": destination.Config.passcode,
-      "Content-Type": "application/json"
-    };
-    response.body.JSON = payload;
-    return response;
+    return responseWrapper(payload, destination);
   }
   // fail-safety for developer error
   throw new CustomError("Payload could not be constructed", 400);

@@ -486,6 +486,10 @@ const responseBuilderSimple = (message, category, destination) => {
           customData = { ...customData };
           commonData.event_name = "PageView";
           break;
+        case "otherStandard":
+          customData = { ...customData };
+          commonData.event_name = category.event;
+          break;
         default:
           throw new CustomError("This standard event does not exist", 400);
       }
@@ -622,6 +626,7 @@ const processEvent = (message, destination) => {
         case "SubmitApplication":
         case "Subscribe":
           category = CONFIG_CATEGORIES.OTHER_STANDARD;
+          category.event = checkEvent;
           break;
         case "PageView":
           category = CONFIG_CATEGORIES.PAGE_VIEW;

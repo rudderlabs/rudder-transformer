@@ -1,12 +1,12 @@
-const { sendRequest } = require("../network");
+const { proxyRequest } = require("../network");
 const { nodeSysErrorToStatus, trimResponse } = require("../utils/networkUtils");
-const { ErrorBuilder } = require("../../v0/util/index");
+const ErrorBuilder = require("../../v0/util/error");
 /**
- * network handler as a fall back for all destination nethandlers, this file provides abstraction for all the network comms btw
- * dest transformer along with dest specific reqeusts from server to actual APIs
+ * network handler as a fall back for all destination nethandlers, this file provides abstraction
+ * for all the network comms btw dest transformer along with dest specific reqeusts from server to actual APIs
  *
  * --sendData-- is the mandatory function for destination requests to be proxied through transformer
- * --and responseHandler should always be accompanied with sendData for parsing the destination response
+ * and responseHandler should always be accompanied with sendData for parsing the destination response
  * to formatted response for server.
  *
  */
@@ -29,21 +29,21 @@ const { ErrorBuilder } = require("../../v0/util/index");
  *   "message" : "simplified message for understanding"
  * }
  */
-const handleDestinationResponse = (dresponse, metadata) => {
+const handleDestinationResponse = (clientResponse, metadata) => {
   let status;
-  let handledResponse;
+  let trimmedResponse;
 
-  if (dresponse.success) {
+  if (clientResponse.success) {
     // success case
-    handledResponse = trimResponse(dresponse);
-    if (handledResponse.status >= 200 && handledResponse.status < 300) {
+    trimmedResponse = trimResponse(clientResponse);
+    if (trimmedResponse.status >= 200 && trimmedResponse.status < 300) {
       status = 200;
     } else {
-      status = handledResponse.status;
+      status = trimmedResponse.status;
     }
-    const message = handledResponse.statusText;
+    const message = trimmedResponse.statusText;
     const destination = {
-      ...handledResponse,
+      ...trimmedResponse,
       success: true
     };
     const apiLimit = {
@@ -60,30 +60,35 @@ const handleDestinationResponse = (dresponse, metadata) => {
   }
 
   // failure case
-  const { response } = dresponse.response;
-  if (!response && dresponse.response && dresponse.response.code) {
-    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
+  const { response } = clientResponse.response;
+  if (!response && clientResponse.response && clientResponse.response.code) {
+    const nodeSysErr = nodeSysErrorToStatus(clientResponse.response.code);
     throw new ErrorBuilder()
       .setStatus(nodeSysErr.status || 500)
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   } else {
-    const temp = trimResponse(dresponse.response);
+    const temp = trimResponse(clientResponse.response);
     throw new ErrorBuilder()
       .setStatus(temp.status || 500)
       .setMessage(temp.statusText)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
 };
 
+/**
+ * sendData is the entry point of proxying reqeust server to destination using transformer
+ * @param {*} payload
+ * @returns
+ */
 const sendData = async payload => {
   const { metadata } = payload;
-  const res = await sendRequest(payload);
+  const res = await proxyRequest(payload);
   const parsedResponse = handleDestinationResponse(res, metadata); // Mandatory
   return parsedResponse;
 };

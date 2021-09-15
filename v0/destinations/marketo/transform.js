@@ -26,7 +26,11 @@ const {
 } = require("../../util");
 const Cache = require("../../util/cache");
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
-const { sendGetRequest, sendPostRequest } = require("./nethandler");
+const {
+  marketoResponseHandler,
+  sendGetRequest,
+  sendPostRequest
+} = require("./nethandler");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -43,22 +47,22 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 const getAuthToken = async formattedDestination => {
   return authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
-    const resp = await sendGetRequest(
-      `https://${accountId}.mktorest.com/identity/oauth/token`,
-      // `https://httpstat.us/200`,
-      {
-        params: {
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: "client_credentials"
+    const response = marketoResponseHandler({
+      clientResponse: await sendGetRequest(
+        `https://${accountId}.mktorest.com/identity/oauth/token`,
+        {
+          params: {
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: "client_credentials"
+          }
         }
-      },
-      "During getting auth token",
-      true
-    );
-    if (resp) {
+      ),
+      sourceMessage: "During fetching auth token"
+    });
+    if (response && response.data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return resp.access_token;
+      return response.data.access_token;
     }
     stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
@@ -93,24 +97,26 @@ const createOrUpdateLead = async (
       action: "create"
     });
     const { accountId } = formattedDestination;
-    const resp = await sendPostRequest(
-      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-      // `https://httpstat.us/200`,
-      {
-        action: "createOrUpdate",
-        input: [attribute],
-        lookupField: userId ? "userId" : "anonymousId"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-type": "application/json"
+    const response = marketoResponseHandler({
+      clientResponse: await sendPostRequest(
+        `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+        // `https://httpstat.us/200`,
+        {
+          action: "createOrUpdate",
+          input: [attribute],
+          lookupField: userId ? "userId" : "anonymousId"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-type": "application/json"
+          }
         }
-      },
-      "During lookup lead"
-    );
-    if (resp) {
-      const { result } = resp;
+      ),
+      sourceMessage: "During lookup lead"
+    });
+    if (response && response.data) {
+      const { result } = response.data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }
@@ -127,17 +133,19 @@ const createOrUpdateLead = async (
 const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
   return emailLeadCache.get(email, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
-    const resp = await sendGetRequest(
-      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
-      // `https://httpstat.us/200`,
-      {
-        params: { filterValues: email, filterType: "email" },
-        headers: { Authorization: `Bearer ${token}` }
-      },
-      "During lead look up using email"
-    );
-    if (resp) {
-      const { result } = resp;
+    const response = marketoResponseHandler({
+      clientResponse: await sendGetRequest(
+        `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
+        // `https://httpstat.us/200`,
+        {
+          params: { filterValues: email, filterType: "email" },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      ),
+      sourceMessage: "During lead look up using email"
+    });
+    if (response && response.data) {
+      const { result } = response.data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }
@@ -160,19 +168,21 @@ const lookupLeadUsingId = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
-    const resp = await sendGetRequest(
-      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
-      {
-        params: {
-          filterValues: userId || anonymousId,
-          filterType: userId ? "userId" : "anonymousId"
-        },
-        headers: { Authorization: `Bearer ${token}` }
-      },
-      "During lead look up using userId"
-    );
-    if (resp) {
-      const { result } = resp;
+    const response = marketoResponseHandler({
+      clientResponse: await sendGetRequest(
+        `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
+        {
+          params: {
+            filterValues: userId || anonymousId,
+            filterType: userId ? "userId" : "anonymousId"
+          },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      ),
+      sourceMessage: "During lead look up using userId"
+    });
+    if (response.data) {
+      const { result } = response.data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }

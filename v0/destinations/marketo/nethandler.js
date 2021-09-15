@@ -1,27 +1,30 @@
-const { send, sendRequest } = require("../../../adapters/network");
+const {
+  proxyRequest,
+  httpGET,
+  httpPOST
+} = require("../../../adapters/network");
 const {
   nodeSysErrorToStatus,
   trimResponse
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const ErrorBuilder = require("../../util/error");
 
 const MARKETO_RETRYABLE_CODES = ["600", "601", "602", "604", "611"];
 const MARKETO_ABORTABLE_CODES = ["603", "605", "609", "610"];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 
-const responseHandler = ({
-  dresponse,
+const marketoResponseHandler = ({
+  clientResponse,
   metadata,
-  sourceMessage,
-  authRequest
+  sourceMessage
 } = {}) => {
   // success case
-  if (dresponse.success) {
-    const trimmedResponse = trimResponse(dresponse);
+  if (clientResponse.success) {
+    const trimmedResponse = trimResponse(clientResponse);
     const { data } = trimmedResponse;
 
-    if (data && authRequest) {
-      // for authentication requests
+    // for authentication requests
+    if (data && data.access_token) {
       return trimmedResponse;
     }
 
@@ -41,7 +44,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -51,7 +54,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -61,7 +64,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       }
       // default failure cases (keeping retryable for now)
@@ -72,7 +75,7 @@ const responseHandler = ({
         )
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     }
     // http success but data not present
@@ -84,79 +87,57 @@ const responseHandler = ({
         success: false
       })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
   // http failure cases
-  const { response } = dresponse.response;
-  if (!response && dresponse.response && dresponse.response.code) {
-    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
+  const { response } = clientResponse.response;
+  if (!response && clientResponse.response && clientResponse.response.code) {
+    const nodeSysErr = nodeSysErrorToStatus(clientResponse.response.code);
     throw new ErrorBuilder()
       .setStatus(nodeSysErr.status || 500)
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   } else {
-    const temp = trimResponse(dresponse.response);
+    const temp = trimResponse(clientResponse.response);
     throw new ErrorBuilder()
       .setStatus(temp.status || 500)
       .setMessage(temp.statusText)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
 };
 
-const sendGetRequest = async (
-  url,
-  options,
-  sourceMessage,
-  authRequest = false
-) => {
-  const requestOptions = {
-    url,
-    method: "get",
-    ...options
-  };
-
-  const res = await send(requestOptions);
-  const parsedResponse = responseHandler({
-    dresponse: res,
-    sourceMessage,
-    authRequest
-  });
-  return parsedResponse.data;
+const sendGetRequest = async (url, options) => {
+  let clientResponse;
+  try {
+    const response = await httpGET(url, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
+  return clientResponse;
 };
 
-const sendPostRequest = async (
-  url,
-  data,
-  options,
-  sourceMessage,
-  authRequest = false
-) => {
-  const requestOptions = {
-    url,
-    data,
-    method: "post",
-    ...options
-  };
-
-  const res = await send(requestOptions);
-  const parsedResponse = responseHandler({
-    dresponse: res,
-    sourceMessage,
-    authRequest
-  });
-  return parsedResponse.data;
+const sendPostRequest = async (url, data, options) => {
+  let clientResponse;
+  try {
+    const response = await httpPOST(url, data, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
+  return clientResponse;
 };
 
 const sendData = async payload => {
   const { metadata } = payload;
-  const res = await sendRequest(payload);
-  const parsedResponse = responseHandler({ dresponse: res, metadata });
+  const res = await proxyRequest(payload);
+  const parsedResponse = marketoResponseHandler({ dresponse: res, metadata });
   return {
     status: parsedResponse.status,
     destination: {
@@ -172,4 +153,9 @@ const sendData = async payload => {
   };
 };
 
-module.exports = { sendData, sendGetRequest, sendPostRequest };
+module.exports = {
+  marketoResponseHandler,
+  sendData,
+  sendGetRequest,
+  sendPostRequest
+};

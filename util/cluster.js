@@ -3,7 +3,7 @@ const numCPUs = require("os").cpus().length;
 const util = require("util");
 const logger = require("../logger");
 const gracefulShutdown = require('http-graceful-shutdown');
-const numWorkers = process.env.NUM_PROCS || numCPUs
+const numWorkers = 1
 
 function processInfo() {
   return {

@@ -20,6 +20,26 @@ const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
 };
 
+const transformDestination = dest => {
+  function capitalize(s) {
+    return s === "id"
+      ? s.toUpperCase()
+      : s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  const transformedObj = {};
+  const { destinationDefinition } = dest;
+  Object.keys(dest).forEach(key => {
+    transformedObj[capitalize(key)] = dest[key];
+  });
+
+  const destDef = {};
+  Object.keys(destinationDefinition).forEach(key => {
+    destDef[capitalize(key)] = destinationDefinition[key];
+  });
+  transformedObj.DestinationDefinition = destDef;
+  return transformedObj;
+};
+
 // Test Router request payload
 // {
 //   "events": [
@@ -51,7 +71,7 @@ getDestinations().forEach(async dest => {
           const { message, destination, stage, libraries } = event;
           const ev = {
             message,
-            destination,
+            destination: transformDestination(destination),
             libraries
           };
 
@@ -66,15 +86,15 @@ getDestinations().forEach(async dest => {
               );
             }
             const transformationVersionId =
-              event.destination &&
-              event.destination.Transformations &&
-              event.destination.Transformations[0] &&
-              event.destination.Transformations[0].versionId;
+              ev.destination &&
+              ev.destination.Transformations &&
+              ev.destination.Transformations[0] &&
+              ev.destination.Transformations[0].versionId;
 
             if (transformationVersionId) {
               try {
                 const destTransformedEvents = await userTransformHandler(
-                  [event],
+                  [ev],
                   transformationVersionId,
                   librariesVersionIDs
                 );
@@ -93,7 +113,6 @@ getDestinations().forEach(async dest => {
                 };
               }
             } else {
-              errorFound = true;
               response.user_transformed_payload = {
                 error: "Transformation VersionID not found"
               };

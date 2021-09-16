@@ -41,6 +41,7 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
 const getAuthToken = async formattedDestination => {
+  console.log(formattedDestination)
   return authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const resp = await sendGetRequest(

@@ -195,8 +195,7 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
         userTransformedEvents = await userTransformHandlerV1(
           events,
           res,
-          libraryVersionIDs,
-          versionId
+          libraryVersionIDs
         );
       } else {
         userTransformedEvents = await runUserTransform(

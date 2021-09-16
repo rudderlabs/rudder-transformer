@@ -496,11 +496,6 @@ if (startDestTransformer) {
                 }
                 logger.info(finalResults);
               } else {
-                let test = destTransformedEvents = await userTransformHandler()(
-                  destEvents,
-                  "1yDqk8qyuYPc59NcjWMPKhUDo04",
-                  librariesVersionIDs
-                );
                 throw new Error('Filtered out');
               }
               

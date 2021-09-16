@@ -126,6 +126,7 @@ getDestinations().forEach(async dest => {
                 const transformedOutput = await desthandler.process(ev);
                 response.dest_transformed_payload = transformedOutput;
               } catch (err) {
+                // console.log("****ERR**********", err)
                 errorFound = true;
                 response.dest_transformed_payload = {
                   error: err.message || JSON.stringify(err)
@@ -152,9 +153,10 @@ getDestinations().forEach(async dest => {
               const { output } = ctxMock.body;
               response = {
                 ...response,
-                destination_response: output.destination.data,
+                destination_response: output.destination,
                 destination_response_status: output.destination.status
               };
+              // console.log("DEST_RESPONSE ", response)
             } else {
               response.destination_response = {
                 error:

@@ -43,7 +43,8 @@ function calculateMsFromIvmTime(value) {
 async function userTransformHandlerV1(
   events,
   userTransformation,
-  libraryVersionIds
+  libraryVersionIds,
+  versionId
 ) {
   /*
  Transform VM aquire mode is
@@ -67,7 +68,8 @@ async function userTransformHandlerV1(
       logger.debug(`Isolate VM being created... `);
       isolatevmFactory = await getFactory(
         userTransformation.code,
-        libraryVersionIds
+        libraryVersionIds,
+        versionId
       );
       isolatevm = await isolatevmFactory.create();
       logger.debug(`Isolate VM created... `);

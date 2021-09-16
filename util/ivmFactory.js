@@ -12,7 +12,7 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
   return module;
 }
 
-async function createIvm(code, libraryVersionIds) {
+async function createIvm(code, libraryVersionIds, versionId) {
   const createIvmStartTime = new Date();
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
@@ -132,7 +132,7 @@ async function createIvm(code, libraryVersionIds) {
         const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
-        stats.timing("fetch_call_duration", fetchStartTime);
+        stats.timing("fetch_call_duration", fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);
@@ -269,10 +269,10 @@ async function createIvm(code, libraryVersionIds) {
   };
 }
 
-async function getFactory(code, libraryVersionIds) {
+async function getFactory(code, libraryVersionIds, versionId) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds);
+      return createIvm(code, libraryVersionIds, versionId);
     },
     destroy: async client => {
       await client.isolate.dispose();

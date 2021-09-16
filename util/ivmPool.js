@@ -24,7 +24,8 @@ async function getPool(userTransformation, libraryVersionIds) {
     }
     const factory = await getFactory(
       userTransformation.code,
-      libraryVersionIds
+      libraryVersionIds,
+      versionId
     );
     transformationPoolCache[versionId] = genericPool.createPool(factory, opts);
     transformationLibraryCache[versionId] = sortedLibrariesIdString;

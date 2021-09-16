@@ -2,7 +2,6 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
-const logger = require("../logger");
 
 const logEnabled = (process.env.ENABLE_CT_ERROR_LOGS === "true");
 
@@ -22,7 +21,7 @@ async function runUserTransform(events, code, eventsMetadata) {
   await jail.set(
     "_fetch",
     new ivm.Reference(async (resolve, ...args) => {
-      const currTime = new Date().getTime()
+      const currTime = new Date().getTime();
       try {
         const res = await fetch(...args);
         const data = await res.json();
@@ -31,15 +30,15 @@ async function runUserTransform(events, code, eventsMetadata) {
         ]);
       } catch (error) {
         if (logEnabled) {
-          console.log("Got error: " + JSON.stringify(error) + " Events Metadata: " + eventsMetadata)
+          console.log("Got error: " + JSON.stringify(error) + " Events Metadata: " + eventsMetadata);
         }
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy("ERROR").copyInto()
         ]);
       }
       if (logEnabled) {
-        diff = new Date().getTime() - currTime
-        console.log("Took: " + diff + " Events Metadata: " + eventsMetadata)
+        diff = new Date().getTime() - currTime;
+        console.log("Took: " + diff + " Events Metadata: " + eventsMetadata);
       }
     })
   );

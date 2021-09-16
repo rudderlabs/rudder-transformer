@@ -129,8 +129,10 @@ async function createIvm(code, libraryVersionIds) {
     "_fetch",
     new ivm.Reference(async (resolve, ...args) => {
       try {
+        const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
+        stats.timing("fetch_call_duration", fetchStartTime);
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);

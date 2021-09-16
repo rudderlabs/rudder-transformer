@@ -39,7 +39,7 @@ const brazeResponseHandler = (clientResponse, metadata) => {
         .setMessage(trimmedResponse.statusText)
         .setDestinationResponse({
           ...trimmedResponse,
-          status: trimmedResponse.status
+          success: false
         })
         .setMetadata(metadata)
         .isTransformerNetworkFailure(true)
@@ -52,7 +52,19 @@ const sendData = async payload => {
   const { metadata } = payload;
   const res = await proxyRequest(payload);
   const parsedResponse = brazeResponseHandler(res, metadata);
-  return parsedResponse;
+  return {
+    status: parsedResponse.status,
+    destination: {
+      ...parsedResponse,
+      success: true
+    },
+    apiLimit: {
+      available: "",
+      resetAt: ""
+    },
+    metadata,
+    message: parsedResponse.statusText || "Request Processed Successfully"
+  };
 };
 
 module.exports = { sendData };

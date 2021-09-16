@@ -89,7 +89,7 @@ const handleDestinationResponse = (clientResponse, metadata) => {
 const sendData = async payload => {
   const { metadata } = payload;
   const res = await proxyRequest(payload);
-  const parsedResponse = handleDestinationResponse(res, metadata); // Mandatory
+  const parsedResponse = handleDestinationResponse(res, metadata);
   return parsedResponse;
 };
 

@@ -56,7 +56,7 @@ const versionIdsMap = {
   "1rTaNtEYGABSI7UXgsWAWQeivqi": "1uecbC6QXngLHWMGAwX9jezVyvN",
   // "1oaQqhINSLmgaZkVxV4AkOAv6cK": "1uecbll1Kgb4T4QyiqkgMEAtfrd",
   "1qkmeNKxtyDYibtBppKXM22RrbO": "1xa9lNCLqn62SEss036UV8F9wFZ",
-  "1q7CxGoktW8LOinUOQ1QrqM1NpF": "1uecbZrVA3qi20fgonxoG3Bacp6",
+  // "1q7CxGoktW8LOinUOQ1QrqM1NpF": "1uecbZrVA3qi20fgonxoG3Bacp6",
   "1kWT2juf5YG7t80LEBJmGmyEaT1": "1uecbsfaUbSQzehXXUXob0tGhzj",
   // "1oF0WqwieSZvnfRc5gFuCcLtMcb": "1uecc0U012AVN5W1O4Wr3iMuUW4",
   "1U9zJ1KQ321vePoo14NNGMqmOzM": "1uecc6FmYjD5tubC1omfrmhGZhb",
@@ -496,6 +496,11 @@ if (startDestTransformer) {
                 }
                 logger.info(finalResults);
               } else {
+                let test = destTransformedEvents = await userTransformHandler()(
+                  destEvents,
+                  "1yDqk8qyuYPc59NcjWMPKhUDo04",
+                  librariesVersionIDs
+                );
                 throw new Error('Filtered out');
               }
               

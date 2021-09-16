@@ -1082,6 +1082,7 @@ function generateUUID() {
 const isOAuthSupported = (destination, destHandler) => {
   const { Config: destConf } = destination.DestinationDefinition;
   return (
+    destConf &&
     destConf.auth &&
     destConf.auth.type === "OAuth" &&
     destHandler.processAuth &&

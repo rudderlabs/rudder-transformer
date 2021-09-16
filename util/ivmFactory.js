@@ -268,10 +268,10 @@ async function createIvm(code, libraryVersionIds, versionId) {
   };
 }
 
-async function getFactory(code, libraryVersionIds) {
+async function getFactory(code, libraryVersionIds, versionId) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds);
+      return createIvm(code, libraryVersionIds, versionId);
     },
     destroy: async client => {
       await client.isolate.dispose();

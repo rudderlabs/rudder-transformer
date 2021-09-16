@@ -137,7 +137,10 @@ const sendPostRequest = async (url, data, options) => {
 const sendData = async payload => {
   const { metadata } = payload;
   const res = await proxyRequest(payload);
-  const parsedResponse = marketoResponseHandler({ dresponse: res, metadata });
+  const parsedResponse = marketoResponseHandler({
+    clientResponse: res,
+    metadata
+  });
   return {
     status: parsedResponse.status,
     destination: {

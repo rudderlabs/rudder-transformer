@@ -2,8 +2,9 @@ const { fetchWithProxy } = require("./fetch");
 const NodeCache = require("node-cache");
 const logger = require("../logger");
 const stats = require("./stats");
+const CustomCache = require("./customCache");
 
-const myCache = new NodeCache();
+const myCache = new CustomCache();
 
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";

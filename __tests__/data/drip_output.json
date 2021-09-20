@@ -175,7 +175,7 @@
     "files": {}
   },
   {
-    "error": "User creation mode is disabled and user does not exist. Track call aborted."
+    "error": "Error occurred while checking user : "
   },
   {
     "version": "1",

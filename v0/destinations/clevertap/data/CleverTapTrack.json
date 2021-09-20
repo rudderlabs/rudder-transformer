@@ -5,12 +5,6 @@
     "required": true
   },
   {
-    "destKey": "identity",
-    "sourceKeys": "userId",
-    "required": true,
-    "sourceFromGenericMap": true
-  },
-  {
     "destKey": "evtData",
     "sourceKeys": "properties",
     "required": true,

@@ -153,7 +153,7 @@ getDestinations().forEach(async dest => {
               const { output } = ctxMock.body;
               response = {
                 ...response,
-                destination_response: output.destination,
+                destination_response: output.destination.response, // to be changed to output.destination.data
                 destination_response_status: output.destination.status
               };
               // console.log("DEST_RESPONSE ", response)

@@ -9,6 +9,7 @@ const {
 const { rudderProperties } = require(`./data/warehouse/props.js`);
 const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
 const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
+const { keyBy } = require("lodash");
 
 const version = "v0";
 const integrations = [
@@ -436,24 +437,24 @@ describe("context ip", () => {
         const received = transformer.process(i);
         expect(
           received[0].metadata.columns[
-            integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integrations[index], "context_ip")
           ]
         ).toBe("string");
         expect(
           received[0].data[
-            integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integrations[index], "context_ip")
           ]
         ).toEqual("new_ip");
 
         if (received[1]) {
           expect(
             received[1].metadata.columns[
-              integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integrations[index], "context_ip")
             ]
           ).toBe("string");
           expect(
             received[1].data[
-              integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integrations[index], "context_ip")
             ]
           ).toEqual("new_ip");
         }
@@ -471,23 +472,23 @@ describe("context ip", () => {
         const received = transformer.process(i);
         expect(
           received[0].metadata.columns[
-            integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integrations[index], "context_ip")
           ]
         ).toBe("string");
         expect(
           received[0].data[
-            integrationCasedString(integrations[index], "context_ip")
+          integrationCasedString(integrations[index], "context_ip")
           ]
         ).toEqual("requested_ip");
         if (received[1]) {
           expect(
             received[1].metadata.columns[
-              integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integrations[index], "context_ip")
             ]
           ).toBe("string");
           expect(
             received[1].data[
-              integrationCasedString(integrations[index], "context_ip")
+            integrationCasedString(integrations[index], "context_ip")
             ]
           ).toEqual("requested_ip");
         }
@@ -632,12 +633,12 @@ describe("id column datatype for users table", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "user_id")
+        integrationCasedString(integrations[index], "user_id")
         ]
       ).toEqual("int");
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+        integrationCasedString(integrations[index], "id")
         ]
       ).toEqual("int");
     });
@@ -649,12 +650,12 @@ describe("id column datatype for users table", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "user_id")
+        integrationCasedString(integrations[index], "user_id")
         ]
       ).toEqual("float");
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+        integrationCasedString(integrations[index], "id")
         ]
       ).toEqual("float");
     });
@@ -768,7 +769,7 @@ describe("handle recordId from cloud sources", () => {
       ).toEqual(i.message.messageId);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+        integrationCasedString(integrations[index], "id")
         ]
       ).toEqual("string");
     });
@@ -784,18 +785,18 @@ describe("handle recordId from cloud sources", () => {
       const received = transformer.process(i);
       expect(
         received[0].metadata.columns[
-          integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integrations[index], "record_id")
         ]
       ).toEqual("string");
       expect(
         received[0].data[
-          integrationCasedString(integrations[index], "record_id")
+        integrationCasedString(integrations[index], "record_id")
         ]
       ).toBe("42");
 
       expect(
         received[1].metadata.columns[
-          integrationCasedString(integrations[index], "id")
+        integrationCasedString(integrations[index], "id")
         ]
       ).toEqual("int");
       expect(
@@ -941,6 +942,80 @@ describe("Add receivedAt for events missing it", () => {
           integrationCasedString(integrations[index], "received_at")
         );
       });
+    });
+  });
+});
+
+
+describe("Truncate all strings to 512 chars", () => {
+  it("should truncate all strings to 512 chars if rsAlterStringToText is false", () => {
+    let i = input("track");
+    let expectedVals = {
+      "k_1": "1234567890",
+      "k_2": "start123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234end",
+      "k_3": JSON.stringify([{ "k31": "v31" }, { "k32": "v32" }]),
+      "k_4_k_1": "v1"
+    }
+    i.message.properties = {
+      "k1": "1234567890",
+      "k2": "start123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234end1234567890",
+      "k3": [{ "k31": "v31" }, { "k32": "v32" }],
+      "k4": { "k1": "v1" }
+    }
+
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+
+      Object.keys(expectedVals).forEach(key => {
+        // console.log(received[1].metadata.columns)
+        expect(received[1].metadata.columns).toHaveProperty(
+          integrationCasedString(integrations[index], key),
+          "string"
+        );
+        expect(received[1].data).toHaveProperty(
+          integrationCasedString(integrations[index], key),
+          expectedVals[key]
+        );
+      })
+    });
+  });
+
+  it("should not truncate all strings to 512 chars for resdhift if rsAlterStringToText is true", () => {
+    let i = input("track");
+    let expectedVals = {
+      "k_1": "1234567890",
+      "k_2": "start123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234end1234567890",
+      "k_3": JSON.stringify([{ "k31": "v31" }, { "k32": "v32" }]),
+      "k_4_k_1": "v1"
+    };
+    let expectedTypes = {
+      "k_1": "string",
+      "k_2": "text",
+      "k_3": "string",
+      "k_4_k_1": "string"
+    };
+    i.message.properties = {
+      "k1": "1234567890",
+      "k2": "start123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234end1234567890",
+      "k3": [{ "k31": "v31" }, { "k32": "v32" }],
+      "k4": { "k1": "v1" }
+    };
+
+    let rsTransformer = transformers.filter((_, index) => integrations[index] === "rs")[0];
+    i.request.query.rsAlterStringToText = "true";
+
+    const received = rsTransformer.process(i);
+
+    Object.keys(expectedVals).forEach(key => {
+      // console.log(received[1].metadata.columns)
+      expect(received[1].metadata.columns).toHaveProperty(
+        integrationCasedString("rs", key),
+        expectedTypes[key]
+      );
+      expect(received[1].data).toHaveProperty(
+        integrationCasedString("rs", key),
+        expectedVals[key]
+      );
     });
   });
 });

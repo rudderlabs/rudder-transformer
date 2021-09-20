@@ -9,42 +9,49 @@ const { authCacheEventName } = require("../constants");
 
 /**
  * This is more like a centralised cache for a pod
- * Please use this, in case pod level centralisation is needed
+ * Please use this, in case caching is needed at pod level
  */
 class PodCache {
   constructor(key) {
     if (!key) {
       throw new CustomError("'key' property is required", 400);
     }
-    this.event = {
+    this.cacheEvent = {
       key,
       type: "get"
     };
   }
 
   getTokenUrl() {
-    const [rudderAccountId, workspaceId] = this.event.key.split("|");
-    return `${CONFIG_BACKEND_URL}/dest/workspaces/${workspaceId}/accounts/${rudderAccountId}/token`;
+    const [rudderAccountId, workspaceId] = this.cacheEvent.key.split("|");
+    return `/dest/workspaces/${workspaceId}/accounts/${rudderAccountId}/token`;
   }
 
-  async getToken() {
+  async getToken(workspaceToken) {
     const tokenUrl = this.getTokenUrl();
-    const { data: secret } = await axios.post(tokenUrl);
+    const cpAxios = axios.create({
+      baseURL: CONFIG_BACKEND_URL,
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${workspaceToken}`
+      }
+    });
+    const { data: secret } = await cpAxios.post(tokenUrl);
     return {
       accessToken: secret.accessToken,
       expirationDate: secret.expirationDate
     };
   }
 
-  async getTokenFromCache() {
+  async getTokenFromCache(workspaceToken) {
     const promCacheEvEmitter = promisifiedEventEmitter(
       cacheEventEmitter,
       authCacheEventName,
-      { ...this.event }
+      { ...this.cacheEvent }
     );
     let result = await promCacheEvEmitter;
     if (!result.value) {
-      const tokenInfo = await this.getToken();
+      const tokenInfo = await this.getToken(workspaceToken);
       result = await this.setTokenInfoIntoCache(tokenInfo);
     }
     return result;
@@ -55,7 +62,7 @@ class PodCache {
       cacheEventEmitter,
       authCacheEventName,
       {
-        ...this.event,
+        ...this.cacheEvent,
         type: "update",
         value: tokenInfo
       }

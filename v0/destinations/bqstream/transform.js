@@ -51,10 +51,10 @@ function process(event) {
  */
 async function processAuth(event, response) {
   // OAuth for BQStream destination
-  const { workspaceId } = event.metadata;
+  const { workspaceId, cpAuthToken: workspaceToken } = event.metadata;
   const { rudderAccountId } = event.destination.Config;
   const podCache = new PodCache(`${rudderAccountId}|${workspaceId}`);
-  const oAuthToken = await podCache.getTokenFromCache();
+  const oAuthToken = await podCache.getTokenFromCache(workspaceToken);
   response.headers.Authorization = `Bearer ${oAuthToken.value.accessToken}`;
   return response;
 }

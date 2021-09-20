@@ -208,9 +208,22 @@ function setDataFromInputAndComputeColumnTypes(
       }
 
       const datatype = getDataType(val, options);
-      if (datatype === "datetime") {
-        val = new Date(val).toISOString();
+      switch(datatype) {
+        case "datetime":
+          val = new Date(val).toISOString();
+          break;
+        case "string":
+          // stringify val if the value type is not string already
+          if (typeof(val) !== "string") {
+            val = JSON.stringify(val)
+          }
+          // truncate value to 512 chars if rsAlterStringToText is false
+          if(options.rsAlterStringToText !== "true" && val.length > 512) {
+            val = val.substring(0, 512);
+          }
+          break;
       }
+
       let safeKey = utils.transformColumnName(options.provider, prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(options.provider, safeKey);

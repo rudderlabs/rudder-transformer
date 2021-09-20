@@ -6,6 +6,7 @@ const {
 const { CONFIG_BACKEND_URL } = require("../util/customTransforrmationsStore");
 const { CustomError } = require("../v0/util");
 const { authCacheEventName } = require("../constants");
+const { send } = require("../adapters/network");
 
 /**
  * This is more like a centralised cache for a pod
@@ -29,18 +30,22 @@ class PodCache {
 
   async getToken(workspaceToken) {
     const tokenUrl = this.getTokenUrl();
-    const cpAxios = axios.create({
-      baseURL: CONFIG_BACKEND_URL,
+    const cpRequestOptions = {
+      url: CONFIG_BACKEND_URL + tokenUrl,
       method: "POST",
       headers: {
         Authorization: `Basic ${workspaceToken}`
       }
-    });
-    const { data: secret } = await cpAxios.post(tokenUrl);
-    return {
-      accessToken: secret.accessToken,
-      expirationDate: secret.expirationDate
     };
+    const { success, response } = await send(cpRequestOptions);
+    if (success) {
+      const { data: secret } = response;
+      return {
+        accessToken: secret.accessToken,
+        expirationDate: secret.expirationDate
+      };
+    }
+    throw new CustomError(response, 400);
   }
 
   async getTokenFromCache(workspaceToken) {

@@ -9,7 +9,8 @@ const {
   formatConfig,
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC
+  FETCH_TOKEN_METRIC,
+  DESTINATION
 } = require("./config");
 const {
   isDefined,
@@ -21,11 +22,16 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  isDefinedAndNotNull,
-  CustomError
+  isDefinedAndNotNull
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const Cache = require("../../util/cache");
-const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
+const {
+  USER_LEAD_CACHE_TTL,
+  AUTH_CACHE_TTL,
+  TRANSFORMER_STAGE,
+  STATS_PRIORITY
+} = require("../../util/constant");
 const {
   marketoResponseHandler,
   sendGetRequest,
@@ -58,7 +64,8 @@ const getAuthToken = async formattedDestination => {
           }
         }
       ),
-      sourceMessage: "During fetching auth token"
+      sourceMessage: "During fetching auth token",
+      stage: TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
@@ -113,7 +120,8 @@ const createOrUpdateLead = async (
           }
         }
       ),
-      sourceMessage: "During lookup lead"
+      sourceMessage: "During lookup lead",
+      stage: TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       const { result } = response.data;
@@ -142,7 +150,8 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
           headers: { Authorization: `Bearer ${token}` }
         }
       ),
-      sourceMessage: "During lead look up using email"
+      sourceMessage: "During lead look up using email",
+      stage: TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       const { result } = response.data;
@@ -179,7 +188,8 @@ const lookupLeadUsingId = async (
           headers: { Authorization: `Bearer ${token}` }
         }
       ),
-      sourceMessage: "During lead look up using userId"
+      sourceMessage: "During lead look up using userId",
+      stage: TRANSFORMER_STAGE.TRANSFORM
     });
     if (response.data) {
       const { result } = response.data;
@@ -231,10 +241,15 @@ const getLeadId = async (message, formattedDestination, token) => {
         message.anonymousId
       );
     } else {
-      throw new CustomError(
-        "Lead creation is turned off on the dashboard",
-        400
-      );
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Lead creation is turned off on the dashboard")
+        .statsIncrement("transformation_and_proxy_errors", 1, {
+          DESTINATION,
+          stage: TRANSFORMER_STAGE.TRANSFORM,
+          priority: STATS_PRIORITY.P2
+        })
+        .build();
     }
   }
 
@@ -245,11 +260,17 @@ const getLeadId = async (message, formattedDestination, token) => {
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-
-    throw new CustomError(
-      "lookup failure - either anonymousId or userId or both fields are not created in marketo",
-      400
-    );
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        "lookup failure - either anonymousId or userId or both fields are not created in marketo"
+      )
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
 
   return leadId;
@@ -268,7 +289,15 @@ const processIdentify = async (message, formattedDestination, token) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError("Invalid traits value for Marketo", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid traits value for Marketo")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -324,15 +353,28 @@ const processTrack = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!(trackAnonymousEvents || userId)) {
-    throw new CustomError(
-      "Anonymous event tracking is turned off and invalid userId",
-      400
-    );
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Anonymous event tracking is turned off and invalid userId")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
 
   const activityTypeId = customActivityEventMap[message.event];
   if (!activityTypeId) {
-    throw new CustomError("Event is not mapped to Custom Activity", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Event is not mapped to Custom Activity")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
 
   const primaryKeyPropName = customActivityPrimaryKeyMap[message.event];
@@ -341,7 +383,15 @@ const processTrack = async (message, formattedDestination, token) => {
     `properties.${primaryKeyPropName}`
   );
   if (!primaryAttributeValue) {
-    throw new CustomError("Primary Key value is invalid for the event", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Primary Key value is invalid for the event")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
 
   // get leadId
@@ -392,10 +442,15 @@ const responseWrapper = response => {
 
 const processEvent = async (message, destination, token) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Message Type is not present. Aborting message.")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P3
+      })
+      .build();
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatConfig(destination);
@@ -409,7 +464,15 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Message type not supported")
+        .statsIncrement("transformation_and_proxy_errors", 1, {
+          DESTINATION,
+          stage: TRANSFORMER_STAGE.TRANSFORM,
+          priority: STATS_PRIORITY.P3
+        })
+        .build();
   }
 
   // wrap response for router processing
@@ -419,7 +482,15 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new CustomError("Authorisation failed", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Authorisation failed")
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage: TRANSFORMER_STAGE.TRANSFORM,
+        priority: STATS_PRIORITY.P2
+      })
+      .build();
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;

@@ -1,3 +1,5 @@
+const stats = require("../../util/stats");
+
 function ErrorBuilder() {
   this.err = new Error();
 
@@ -10,8 +12,8 @@ function ErrorBuilder() {
     return this;
   };
 
-  this.setDestinationResponse = destination => {
-    this.err.destination = destination;
+  this.setDestinationResponse = destinationResponse => {
+    this.err.destinationResponse = destinationResponse;
     return this;
   };
 
@@ -30,11 +32,41 @@ function ErrorBuilder() {
     return this;
   };
 
+  this.setFailureAt = arg => {
+    this.err.failureAt = arg;
+    return this;
+  };
+
   this.setErrorResponse = () => {
     this.err.response = {
       status: this.err.status,
       message: this.err.message
     };
+    return this;
+  };
+
+  this.statsTiming = (name, start, tags = {}) => {
+    stats.timing(name, start, tags);
+    return this;
+  };
+
+  this.statsIncrement = (name, delta = 1, tags = {}) => {
+    stats.increment(name, delta, tags);
+    return this;
+  };
+
+  this.statsDecrement = (name, delta = -1, tags = {}) => {
+    stats.decrement(name, delta, tags);
+    return this;
+  };
+
+  this.statsCounter = (name, delta, tags = {}) => {
+    stats.counter(name, delta, tags);
+    return this;
+  };
+
+  this.statsGauge = (name, value, tags = {}) => {
+    stats.gauge(name, value, tags);
     return this;
   };
 

@@ -1,3 +1,4 @@
+const { STATS_PRIORITY, TRANSFORMER_STAGE } = require("../../util/constant");
 const {
   proxyRequest,
   httpGET,
@@ -9,14 +10,16 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
 
-const MARKETO_RETRYABLE_CODES = ["600", "601", "602", "604", "611"];
-const MARKETO_ABORTABLE_CODES = ["603", "605", "609", "610"];
+const MARKETO_RETRYABLE_CODES = ["601", "602", "604", "611"];
+const MARKETO_ABORTABLE_CODES = ["600", "603", "605", "609", "610"];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
+const { DESTINATION } = require("./config");
 
 const marketoResponseHandler = ({
   clientResponse,
   metadata,
-  sourceMessage
+  sourceMessage,
+  stage
 } = {}) => {
   // success case
   if (clientResponse.success) {
@@ -44,7 +47,12 @@ const marketoResponseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetworkFailure(true)
+          .setFailureAt(stage)
+          .statsIncrement("transformation_and_proxy_errors", 1, {
+            DESTINATION,
+            stage,
+            priority: STATS_PRIORITY.P1
+          })
           .build();
       } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -54,7 +62,12 @@ const marketoResponseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetworkFailure(true)
+          .setFailureAt(stage)
+          .statsIncrement("transformation_and_proxy_errors", 1, {
+            DESTINATION,
+            stage,
+            priority: STATS_PRIORITY.P3
+          })
           .build();
       } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -64,7 +77,12 @@ const marketoResponseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetworkFailure(true)
+          .setFailureAt(stage)
+          .statsIncrement("transformation_and_proxy_errors", 1, {
+            DESTINATION,
+            stage,
+            priority: STATS_PRIORITY.P3
+          })
           .build();
       }
       // default failure cases (keeping retryable for now)
@@ -75,7 +93,12 @@ const marketoResponseHandler = ({
         )
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetworkFailure(true)
+        .setFailureAt(stage)
+        .statsIncrement("transformation_and_proxy_errors", 1, {
+          DESTINATION,
+          stage,
+          priority: STATS_PRIORITY.P3
+        })
         .build();
     }
     // http success but data not present
@@ -87,7 +110,12 @@ const marketoResponseHandler = ({
         success: false
       })
       .setMetadata(metadata)
-      .isTransformerNetworkFailure(true)
+      .setFailureAt(stage)
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage,
+        priority: STATS_PRIORITY.P3
+      })
       .build();
   }
   // http failure cases
@@ -98,7 +126,12 @@ const marketoResponseHandler = ({
       .setStatus(nodeSysErr.status || 500)
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetworkFailure(true)
+      .setFailureAt(stage)
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage,
+        priority: STATS_PRIORITY.P1
+      })
       .build();
   } else {
     const temp = trimResponse(clientResponse.response);
@@ -107,7 +140,12 @@ const marketoResponseHandler = ({
       .setMessage(temp.statusText)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
-      .isTransformerNetworkFailure(true)
+      .setFailureAt(stage)
+      .statsIncrement("transformation_and_proxy_errors", 1, {
+        DESTINATION,
+        stage,
+        priority: STATS_PRIORITY.P1
+      })
       .build();
   }
 };
@@ -139,7 +177,8 @@ const sendData = async payload => {
   const res = await proxyRequest(payload);
   const parsedResponse = marketoResponseHandler({
     clientResponse: res,
-    metadata
+    metadata,
+    stage: TRANSFORMER_STAGE.PROXY
   });
   return {
     status: parsedResponse.status,

@@ -480,7 +480,12 @@ if (networkMode) {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
       router.post(`/network/${destination}/proxy`, async ctx => {
+        const startTime = new Date();
         await handleDestinationNetwork(version, destination, ctx);
+        stats.timing("transformer_proxy_latency", startTime, {
+          destination,
+          version
+        });
       });
     });
   });

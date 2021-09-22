@@ -55,7 +55,11 @@ function processEvent(event) {
 
 function process(events) {
   const responses = [];
-  events.forEach(event => {
+  let eventList = events;
+  if (!Array.isArray(events)) {
+    eventList = [events];
+  }
+  eventList.forEach(event => {
     try {
       const resp = processEvent(event);
       if (resp) {

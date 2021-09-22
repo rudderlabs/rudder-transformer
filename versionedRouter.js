@@ -1,6 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -8,8 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
-const heapdump = require("heapdump");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -20,6 +20,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
+const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
 
 const router = new Router();
 
@@ -37,6 +38,28 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
+const getDestNetHander = (version, dest) => {
+  const destination = _.toLower(dest);
+  let destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
+  if (!destNetHandler && !destNetHandler.sendData) {
+    destNetHandler = require("./adapters/genericnethandler");
+  }
+  return destNetHandler;
+};
+
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
+const eventValidator = require("./util/eventValidation");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -120,6 +143,77 @@ async function handleDest(ctx, version, destination) {
   });
   ctx.body = respList;
   return ctx.body;
+}
+
+async function handleValidation(ctx) {
+  const requestStartTime = new Date();
+  const events = ctx.request.body;
+  const requestSize = ctx.request.get("content-length");
+  const reqParams = ctx.request.query;
+  const respList = [];
+  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    const eventStartTime = new Date();
+    try {
+      const parsedEvent = event;
+      parsedEvent.request = {query: reqParams};
+      const hv = await eventValidator.handleValidation(parsedEvent);
+      if (hv.dropEvent) {
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 400,
+          validationErrors: hv.validationErrors,
+          errors: errMessage
+        });
+        stats.counter("hv_violation_type", 1, {
+          violationType: hv.violationType,
+          ...metaTags,
+        });
+      } else {
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 200,
+          validationErrors: hv.validationErrors,
+        });
+        stats.counter("hv_errors", 1, {
+          ...metaTags
+        });
+      }
+    } catch (error) {
+      const errMessage = `Error occurred while validating : ${error}`
+      logger.error(errMessage);
+      respList.push({
+        output: event.message,
+        metadata: event.metadata,
+        statusCode: 200,
+        validationErrors: [],
+        error: errMessage
+      });
+      stats.counter("hv_errors", 1, {
+        ...metaTags
+      });
+    } finally {
+      stats.timing("hv_event_latency", eventStartTime, {
+        ...metaTags
+      });
+    }
+  }
+  ctx.body = respList;
+  ctx.set("apiVersion", API_VERSION);
+
+  stats.counter("hv_events_count", events.length, {
+    ...metaTags
+  });
+  stats.counter("hv_request_size", requestSize, {
+    ...metaTags
+  });
+  stats.timing("hv_request_latency", requestStartTime, {
+    ...metaTags
+  });
 }
 
 async function routerHandleDest(ctx) {
@@ -348,7 +442,7 @@ if (startDestTransformer) {
           }
         })
       );
-      logger.info(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
@@ -375,6 +469,7 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -416,6 +511,28 @@ if (startSourceTransformer) {
         });
         stats.increment("source_transform_requests", 1, { source, version });
       });
+    });
+  });
+}
+
+async function handleDestinationNetwork(version, ctx) {
+  const { destination } = ctx.request.body;
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.sendData) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support transformer proxy`;
+    return ctx.body;
+  }
+  const resp = await destNetHandler.sendData(ctx.request.body);
+  ctx.body = { output: resp };
+  return ctx.body;
+}
+
+if (networkMode) {
+  versions.forEach(version => {
+    router.post("/network/proxy", async ctx => {
+      await handleDestinationNetwork(version, ctx);
     });
   });
 }
@@ -473,9 +590,106 @@ router.post("/batch", ctx => {
 
 router.get("/heapdump", ctx => {
   heapdump.writeSnapshot((err, filename) => {
-    console.log("Heap dump written to", filename);
+    logger.debug("Heap dump written to", filename);
   });
   ctx.body = "OK";
 });
 
+const fileUpload = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getDestFileUploadHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processFileData(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload.",
+      metadata: error.response ? error.response.metadata : null
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const pollStatus = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getPollStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+  let response;
+  if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  try {
+    response = await destFileUploadHandler.processPolling(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const getJobStatus = async (ctx, type) => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getJobStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processJobStatus(
+      ctx.request.body,
+      type
+    );
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+router.post("/fileUpload", async ctx => {
+  await fileUpload(ctx);
+});
+
+router.post("/pollStatus", async ctx => {
+  await pollStatus(ctx);
+});
+
+router.post("/getFailedJobs", async ctx => {
+  await getJobStatus(ctx, "fail");
+});
+
+router.post("/getWarningJobs", async ctx => {
+  await getJobStatus(ctx, "warn");
+});
+// eg. v0/validate. will validate events as per respective tracking plans
+router.post(`/v0/validate`, async ctx => {
+  await handleValidation(ctx);
+});
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

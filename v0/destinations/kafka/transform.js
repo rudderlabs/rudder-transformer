@@ -1,3 +1,20 @@
+function batch(destEvents) {
+  const respList = [];
+  const batchedRequest = [];
+  const metadata = [];
+  destEvents.forEach(event => {
+    metadata.push(event.metadata);
+    batchedRequest.push(event.message);
+  });
+  respList.push({
+    batchedRequest,
+    metadata,
+    destination: destEvents[0].destination
+  });
+
+  return respList;
+}
+
 function process(event) {
   const result = {
     message: event.message,
@@ -6,4 +23,4 @@ function process(event) {
   return result;
 }
 
-exports.process = process;
+module.exports = { process, batch };

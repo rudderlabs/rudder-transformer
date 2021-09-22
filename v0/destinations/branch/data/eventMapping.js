@@ -37,7 +37,12 @@ const CommerceEventConfig = {
     "Checkout Started": "INITIATE_PURCHASE",
     "Payment Info Entered": "ADD_PAYMENT_INFO",
     "Order Completed": "ADD_PAYMENT_INFO",
-    "Spend Credits": "SPEND_CREDITS"
+    "Spend Credits": "SPEND_CREDITS",
+    "Promotion Viewed": "VIEW_AD",
+    "Promotion Clicked": "CLICK_AD",
+    "Checkout Started": "PURCHASE",
+    "Order Completed": "PURCHASE",
+    "Reserve": "RESERVE"
   },
   event_data: [
     "transaction_id",
@@ -57,7 +62,9 @@ const ContentEventConfig = {
     "Product Viewed": "VIEW_ITEM",
     "Product List Viewed": "VIEW_ITEMS",
     "Product Reviewed": "RATE",
-    "Product Shared": "SHARE"
+    "Product Shared": "SHARE",
+    "Initiate Stream": "INITIATE_STREAM",
+    "Complete Stream": "COMPLETE_STREAM"
   },
   event_data: ["search_query", "description"],
   content_items: product
@@ -68,7 +75,11 @@ const LifecycleEventConfig = {
     "Complete Registration": "COMPLETE_REGISTRATION",
     "Complete Tutorial": "COMPLETE_TUTORIAL",
     "Achieve Level": "ACHIEVE_LEVEL",
-    "Unlock Achievement": "UNLOCK_ACHIEVEMENT"
+    "Unlock Achievement": "UNLOCK_ACHIEVEMENT",
+    "Invite": "INVITE",
+    "Login": "LOGIN",
+    "Start Trial": "START_TRIAL",
+    "Subscribe": "SUBSCRIBE"
   },
   event_data: ["description"]
 };

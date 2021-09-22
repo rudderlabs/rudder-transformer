@@ -27,6 +27,7 @@
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
     "@ndhoule/extend": "^2.0.0",
+    "ajv": "^8.6.1",
     "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
@@ -53,11 +54,13 @@
     "moment-timezone": "^0.5.32",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
-    "set-value": "^3.0.2",
+    "object-hash": "^2.2.0",
+    "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^0.7.24",
+    "uuid": "^8.3.2",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

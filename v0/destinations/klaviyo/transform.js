@@ -1,7 +1,7 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
-const axios = require("axios");
 const logger = require("../../../logger");
 const { EventType, WhiteListedTraits } = require("../../../constants");
 const {
@@ -24,6 +24,7 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
+const { addToList } = require("./nethandler");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -60,25 +61,19 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
       : destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
-  try {
-    const res = await axios.post(
-      targetUrl,
-      {
-        api_key: destination.Config.privateApiKey,
-        profiles: [profile]
-      },
-      {
-        headers: {
-          "Content-Type": "application/json"
-        }
+  // send network request
+  await addToList(
+    targetUrl,
+    {
+      api_key: destination.Config.privateApiKey,
+      profiles: [profile]
+    },
+    {
+      headers: {
+        "Content-Type": "application/json"
       }
-    );
-    if (res.status !== 200) {
-      logger.debug("Unable to add User to List");
     }
-  } catch (err) {
-    logger.debug(err);
-  }
+  );
 };
 
 // ---------------------
@@ -95,9 +90,14 @@ const identifyRequestHandler = async (message, category, destination) => {
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     destination.Config.privateApiKey
   ) {
-    addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
+    await addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
     if (get(traitsInfo.properties, "subscribe") === true) {
-      addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
+      await addUserToList(
+        message,
+        traitsInfo,
+        LIST_CONF.SUBSCRIBE,
+        destination
+      );
     }
   } else {
     logger.info(
@@ -207,25 +207,19 @@ const groupRequestHandler = async (message, category, destination) => {
     if (!profile.$consent) {
       profile.$consent = destination.Config.consent;
     }
-    try {
-      const res = await axios.post(
-        targetUrl,
-        {
-          api_key: destination.Config.privateApiKey,
-          profiles: [profile]
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+    // send network request
+    await addToList(
+      targetUrl,
+      {
+        api_key: destination.Config.privateApiKey,
+        profiles: [profile]
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
         }
-      );
-      if (res.status !== 200) {
-        logger.debug("Unable to add User to List");
       }
-    } catch (err) {
-      logger.debug(err);
-    }
+    );
   }
   delete profile.sms_consent;
   delete profile.$consent;

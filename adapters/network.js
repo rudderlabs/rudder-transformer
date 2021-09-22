@@ -32,15 +32,17 @@ const networkClientConfigs = {
   // `httpAgent` and `httpsAgent` define a custom agent to be used when performing http
   httpAgent: new http.Agent({
     keepAlive: true,
-    maxSockets: 100,
-    maxTotalSockets: 100
+    keepAliveMsecs: 2000,
+    maxSockets: 1000,
+    maxTotalSockets: 5000
   }),
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
   httpsAgent: new https.Agent({
     keepAlive: true,
-    maxSockets: 100,
-    maxTotalSockets: 100
+    keepAliveMsecs: 2000,
+    maxSockets: 1000,
+    maxTotalSockets: 5000
   })
 };
 

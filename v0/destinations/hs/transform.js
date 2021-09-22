@@ -11,9 +11,11 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  returnArrayOfSubarrays,
+  defaultBatchRequestConfig
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const { ConfigCategory, mappingConfig, MAX_BATCH_SIZE } = require("./config");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -45,7 +47,7 @@ async function getProperties(destination) {
         );
       }
       throw new CustomError(
-        "Failed to get hubspot properties : indvalid response",
+        "Failed to get hubspot properties : invalid response",
         500
       );
     }
@@ -161,9 +163,9 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
-  const mappedToDestination = get(message, MappedToDestinationKey)
+  const mappedToDestination = get(message, MappedToDestinationKey);
   //If mapped to destination, Add externalId to traits
-  if(mappedToDestination) {
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
@@ -212,6 +214,44 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+const batch = destEvents => {
+  const batchedResponse = [];
+  const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
+
+  arrayChunks.forEach(chunk => {
+    const respList = [];
+    const metadata = [];
+
+    // extracting the apiKey, hubID and destination value
+    // from the first event in a batch
+    const { message, destination } = chunk[0];
+    const { apiKey } = destination.Config;
+    let endpoint = get(message, "endpoint");
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    chunk.forEach(ev => {
+      respList.push(ev.message.body.JSON.events);
+      metadata.push(ev.metadata);
+    });
+
+    endpoint += `/?hapikey=${apiKey}`;
+
+    batchEventResponse.batchedRequest.body.JSON = { events: respList };
+    batchEventResponse.batchedRequest.endpoint = endpoint;
+    batchEventResponse.batchedRequest.headers = {
+      "Content-Type": "application/json"
+    };
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponse.push(batchEventResponse);
+  });
+
+  return batchedResponse;
+};
+
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
@@ -248,4 +288,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, batch };

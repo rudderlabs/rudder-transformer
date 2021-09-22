@@ -1,5 +1,5 @@
 const sha256 = require("sha256");
-const get = require("get-value")
+const get = require("get-value");
 
 const {
   defaultRequestConfig,
@@ -24,8 +24,23 @@ const {
   subTypeFields
 } = require("./config");
 
-const logger = require("../../../logger");
 const { MappedToDestinationKey } = require("../../../constants");
+
+const getSchemaForEventMappedToDest = message => {
+  const mappedSchema = get(message, "context.destinationFields");
+  if (!mappedSchema) {
+    throw new CustomError(
+      "context.destinationFields is required property for events mapped to destination ",
+      400
+    );
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema)
+    ? mappedSchema
+    : mappedSchema.split(",");
+  userSchema = userSchema.map(field => field.trim());
+  return userSchema;
+};
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
@@ -233,14 +248,13 @@ const prepareResponse = (
     isRaw
   } = destination.Config;
   let { userSchema } = destination.Config;
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  
+  const mappedToDestination = get(message, MappedToDestinationKey);
+
   // If mapped to destination, use the mapped fields instead of destination userschema
- if(mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message)
+  if (mappedToDestination) {
+    userSchema = getSchemaForEventMappedToDest(message);
   }
 
-  const { properties } = message;
   const prepareParams = {};
   // creating the parameters field
   const paramsPayload = {};
@@ -280,12 +294,8 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
-  let { userSchema } = destination.Config
-  const {
-    isHashRequired,
-    audienceId,
-    maxUserCount
-  } = destination.Config;
+  let { userSchema } = destination.Config;
+  const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -306,12 +316,11 @@ const processEvent = (message, destination) => {
     throw new CustomError("Audience ID is a mandatory field", 400);
   }
 
-  const mappedToDestination = get(message, MappedToDestinationKey)
- // If mapped to destination, use the mapped fields instead of destination userschema
- if(mappedToDestination) {
-    userSchema = getSchemaForEventMappedToDest(message)
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // If mapped to destination, use the mapped fields instead of destination userschema
+  if (mappedToDestination) {
+    userSchema = getSchemaForEventMappedToDest(message);
   }
-
 
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {
@@ -417,17 +426,5 @@ const processRouterDest = inputs => {
   });
   return flattenMap(respList);
 };
-
-const getSchemaForEventMappedToDest = (message) => {
-  let mappedSchema = get(message, "context.destinationFields")
-  if(!mappedSchema) {
-    throw new CustomError("context.destinationFields is required property for events mapped to destination ", 400)
-  }
-  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
-  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(",")
-  userSchema = userSchema.map((field) => field.trim())
-  return userSchema
-}
-
 
 module.exports = { process, processRouterDest };

@@ -4,6 +4,7 @@ const http = require("http");
 const https = require("https");
 const axios = require("axios");
 const _ = require("lodash");
+const log = require("../logger");
 
 const send = async options => {
   // here the options argument K-Vs will take priority over requestOptions
@@ -109,7 +110,7 @@ const sendRequest = async request => {
       // TODO:
       break;
     default:
-      throw new Error(`body format ${format} not supported`);
+      log.debug(`body format ${payloadFormat} not supported`);
   }
   const rOptions = {
     url: endpoint,

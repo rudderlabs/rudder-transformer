@@ -1,6 +1,5 @@
 const get = require("get-value");
 const set = require("set-value");
-const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
@@ -16,6 +15,7 @@ const {
   defaultBatchRequestConfig
 } = require("../../util");
 const { ConfigCategory, mappingConfig, MAX_BATCH_SIZE } = require("./config");
+const { getAllContactProperties } = require("./util");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -34,7 +34,7 @@ async function getProperties(destination) {
     const { apiKey } = destination.Config;
     const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
     try {
-      response = await axios.get(url);
+      response = await getAllContactProperties(url);
     } catch (err) {
       // check if exists err.response && err.response.status else 500
 

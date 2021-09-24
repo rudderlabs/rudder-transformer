@@ -30,20 +30,19 @@ function getKey(key) {
 
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
-    let response;
     const { apiKey } = destination.Config;
     const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
-    try {
-      response = await getAllContactProperties(url);
-    } catch (err) {
-      // check if exists err.response && err.response.status else 500
 
-      if (err.response) {
+    const response = await getAllContactProperties(url);
+
+    if (!response.success) {
+      // check if exists err.response && err.response.status else 500
+      if (response.response.response.data) {
         throw new CustomError(
-          JSON.stringify(err.response.data) ||
-            JSON.stringify(err.response.statusText) ||
+          JSON.stringify(response.response.response.data) ||
+            JSON.stringify(response.response.response.statusText) ||
             "Failed to get hubspot properties",
-          err.response.status || 500
+          response.response.response.status || 500
         );
       }
       throw new CustomError(
@@ -53,7 +52,7 @@ async function getProperties(destination) {
     }
 
     const propertyMap = {};
-    response.data.forEach(element => {
+    response.response.data.forEach(element => {
       propertyMap[element.name] = element.type;
     });
     hubSpotPropertyMap = propertyMap;

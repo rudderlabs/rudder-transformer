@@ -14,10 +14,8 @@ const {
   returnArrayOfSubarrays,
   defaultBatchRequestConfig
 } = require("../../util");
-const { ConfigCategory, mappingConfig, MAX_BATCH_SIZE } = require("./config");
+const { hSIdentifyConfigJson, MAX_BATCH_SIZE } = require("./config");
 const { getAllContactProperties } = require("./util");
-
-const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 let hubSpotPropertyMap = {};
 
@@ -40,7 +38,6 @@ async function getProperties(destination) {
       if (response.response.response.data) {
         throw new CustomError(
           JSON.stringify(response.response.response.data) ||
-            JSON.stringify(response.response.response.statusText) ||
             "Failed to get hubspot properties",
           response.response.response.status || 500
         );
@@ -163,7 +160,7 @@ async function processTrack(message, destination) {
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  //If mapped to destination, Add externalId to traits
+  // If mapped to destination, Add externalId to traits
   if (mappedToDestination) {
     addExternalIdToTraits(message);
   }

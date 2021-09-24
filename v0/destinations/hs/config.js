@@ -1,16 +1,15 @@
 const { getMappingConfig } = require("../../util");
 
-const ConfigCategory = {
+const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "HSIdentifyConfig"
   }
 };
 
 const MAX_BATCH_SIZE = 1000;
-const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  ConfigCategory,
   MAX_BATCH_SIZE,
-  mappingConfig
+  hSIdentifyConfigJson: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
 };

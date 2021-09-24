@@ -85,8 +85,7 @@ function updateTraitsObject(property, traitsObject, actionKey) {
 
 function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
   traitsObject[actionKey] = {};
-  configPropertyTrait
-    .forEach(traitsElement => {
+  configPropertyTrait.forEach(traitsElement => {
       const property = traitsElement.traits;
       traitsObject = updateTraitsObject(property, traitsObject, actionKey);
     });

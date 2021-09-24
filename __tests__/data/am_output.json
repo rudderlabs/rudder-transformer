@@ -16,7 +16,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "device_id": "123456",
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "app_name": "RudderLabs JavaScript SDK",
@@ -69,7 +69,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "device_id": "00000000000000000000000000",
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "app_name": "RudderLabs JavaScript SDK",
@@ -126,7 +126,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "device_id": "00000000000000000000000000",
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "app_name": "RudderLabs JavaScript SDK",
@@ -186,7 +186,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "device_id": "00000000000000000000000000",
             "insert_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
             "app_name": "RudderLabs JavaScript SDK",
@@ -237,7 +237,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "device_id": "123456",
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "app_name": "RudderLabs JavaScript SDK",
@@ -443,7 +443,7 @@
               "os_name": "Chrome",
               "os_version": "85.0.4183.121",
               "platform": "Web",
-              "device_model": "Mac",
+              "device_model": "Mac OS",
               "device_id": "my-anonymous-id-new",
               "app_name": "RudderLabs JavaScript SDK",
               "app_version": "1.1.5",
@@ -1574,7 +1574,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1626,7 +1626,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1676,7 +1676,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1726,7 +1726,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1776,7 +1776,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
-            "device_model": "Mac",
+            "device_model": "Mac OS",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1815,5 +1815,39 @@
     },
     "files": {},
     "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "123456",
+            "user_properties": {
+              "$add": {}
+             },
+            "event_type": "$identify",
+            "session_id": "1598597129",
+            "time": 0,
+            "user_id": "ubcdfghi0001"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
   }
 ]

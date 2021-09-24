@@ -85,15 +85,16 @@ function updateTraitsObject(property, traitsObject, actionKey) {
 
 function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
   traitsObject[actionKey] = {};
-  configPropertyTrait.forEach(traitsElement => {
-    const property = traitsElement.traits;
-    traitsObject = updateTraitsObject(property, traitsObject, actionKey);
-  });
+  configPropertyTrait
+    .forEach(traitsElement => {
+      const property = traitsElement.traits;
+      traitsObject = updateTraitsObject(property, traitsObject, actionKey);
+    });
   return traitsObject;
 }
 
 function handleTraits(messageTrait, destination) {
-  let traitsObject = JSON.parse(JSON.stringify(messageTrait));
+  let traitsObject = JSON.parse(JSON.stringify(messageTrait)) ?? {};
 
   if (destination.Config.traitsToIncrement) {
     const actionKey = "$add";

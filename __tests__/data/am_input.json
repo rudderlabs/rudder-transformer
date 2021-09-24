@@ -1912,5 +1912,28 @@
         ]
       }
     }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "userId": "ubcdfghi0001",
+      "anonymousId": "123456",
+      "session_id": "1598597129",
+      "context": {
+        "library": {
+          "name": "http"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "traitsToIncrement": [
+          {
+            "traits": "age"
+          }
+        ]
+      }
+    }
   }
 ]

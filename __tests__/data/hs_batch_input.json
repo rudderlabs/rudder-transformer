@@ -6,7 +6,7 @@
           "XML": {},
           "FORM": {},
           "JSON": {
-            "events": [
+            "properties": [
               {
                 "property": "firstname",
                 "value": "HubSpot"
@@ -72,7 +72,7 @@
           "XML": {},
           "FORM": {},
           "JSON": {
-            "events": [
+            "properties": [
               {
                 "property": "firstname",
                 "value": "Sam"

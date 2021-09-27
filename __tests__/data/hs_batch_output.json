@@ -6,7 +6,7 @@
           "XML": {},
           "FORM": {},
           "JSON": {
-            "events": [
+            "properties": [
               [
                 {
                   "property": "firstname",

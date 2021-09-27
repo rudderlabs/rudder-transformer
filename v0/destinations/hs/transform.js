@@ -64,7 +64,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
-    traits = getFieldValueFromMessage(message, "properties");
+    traits = message.properties
   }
 
   if (traits) {

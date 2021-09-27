@@ -975,12 +975,9 @@ function getStringValueOfJSON(json) {
 
 const getMetadata = metadata => {
   return {
-    sourceId: metadata.sourceId,
     sourceType: metadata.sourceType,
-    destinationId: metadata.destinationId,
     destinationType: metadata.destinationType,
-    workspaceId: metadata.workspaceId,
-    namespace: metadata.namespace
+    k8_namespace: metadata.namespace
   };
 };
 // checks if array 2 is a subset of array 1

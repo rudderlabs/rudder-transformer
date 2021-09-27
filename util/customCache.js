@@ -1,6 +1,7 @@
 const NodeCache = require("node-cache");
 const stdTTL = process.env.STDTTL ? parseInt(process.env.STDTTL, 10) : 0;
-const shared = process.env.SHARED === 'true';
+const shared = process.env.ON_DEMAND_ISOLATE_VM
+  ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true" : false;
 
 class CustomCache {
   constructor(ttlSeconds = stdTTL) {

@@ -128,6 +128,9 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )
       );
     }
+    if (message && message.anonymousId) {
+      set(rawPayload, "anonymous_id", message.anonymousId);
+    }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
@@ -206,6 +209,12 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )} Screen`;
       } else {
         trimmedEvName = truncate(evName, 100);
+      }
+      const anonymousId = message.anonymousId ? message.anonymousId : undefined;
+      if (!anonymousId) {
+        throw new Error("Anonymous id/ user id is required");
+      } else {
+        rawPayload.anonymous_id = anonymousId;
       }
       set(rawPayload, "name", trimmedEvName);
     }

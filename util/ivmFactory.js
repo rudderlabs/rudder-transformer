@@ -171,7 +171,7 @@ async function createIvm(code, libraryVersionIds, versionId) {
         // doesn't make a difference who requests the copy, the result is the same.
         // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
         // return value or thrown exception from 'log'.
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),

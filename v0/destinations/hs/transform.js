@@ -226,13 +226,13 @@ const batch = destEvents => {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      respList.push(ev.message.body.JSON.events);
+      respList.push(ev.message.body.JSON.properties);
       metadata.push(ev.metadata);
     });
 
     endpoint += `/?hapikey=${apiKey}`;
 
-    batchEventResponse.batchedRequest.body.JSON = { events: respList };
+    batchEventResponse.batchedRequest.body.JSON = { properties: respList };
     batchEventResponse.batchedRequest.endpoint = endpoint;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"

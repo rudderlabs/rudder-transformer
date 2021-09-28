@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { fetchWithTimeout } = require("./fetch");
 
 async function runUserTransform(events, code, eventsMetadata, versionId) {
   const tags = {
@@ -22,18 +23,18 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async (resolve, ...args) => {
+    new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithTimeout(...args);
         const data = await res.json();
         stats.timing("fetch_call_duration", fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto()
+        reject.applyIgnored(undefined, [
+          new ivm.ExternalCopy(error).copyInto()
         ]);
       }
     })
@@ -73,9 +74,10 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
         // doesn't make a difference who requests the copy, the result is the same.
         // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
         // return value or thrown exception from 'log'.
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
+            new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

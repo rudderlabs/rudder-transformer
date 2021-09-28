@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const HttpsProxyAgent = require('https-proxy-agent');
 const _ = require('lodash')
+const TIMEOUT = process.env.FETCH_TIMEOUT ? parseInt(process.env.FETCH_TIMEOUT) : 0;
 
 const fetchWithProxy =(url, options = {}) => {
   const instanceOptions = {
@@ -18,4 +19,14 @@ const fetchWithProxy =(url, options = {}) => {
   }
 };
 
-exports.fetchWithProxy = fetchWithProxy;
+const fetchWithTimeout = async (...args) => {
+  return new Promise((resolve, reject) => {
+    fetch(...args).then(resolve, reject);
+
+    if (TIMEOUT) {
+      setTimeout(reject, TIMEOUT, new Error("Timeout"));
+    }
+  })
+};
+
+module.exports = { fetchWithProxy, fetchWithTimeout }

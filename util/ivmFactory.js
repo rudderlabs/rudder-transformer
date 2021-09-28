@@ -4,6 +4,7 @@ const _ = require("lodash");
 
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
+const { fetchWithTimeout } = require("./fetch");
 
 const isolateVmMem = 8;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -127,18 +128,18 @@ async function createIvm(code, libraryVersionIds, versionId) {
   await jail.set("_ivm", ivm);
   await jail.set(
     "_fetch",
-    new ivm.Reference(async (resolve, ...args) => {
+    new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithTimeout(...args);
         const data = await res.json();
         stats.timing("fetch_call_duration", fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto()
+        reject.applyIgnored(undefined, [
+          new ivm.ExternalCopy(error).copyInto()
         ]);
       }
     })
@@ -173,6 +174,7 @@ async function createIvm(code, libraryVersionIds, versionId) {
         return new Promise(resolve => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
+            new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

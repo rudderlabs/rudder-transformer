@@ -34,7 +34,8 @@ const networkClientConfigs = {
     keepAlive: true,
     keepAliveMsecs: 5000,
     maxSockets: 5000,
-    maxTotalSockets: 10000
+    maxTotalSockets: 10000,
+    maxFreeSockets: 1000
   }),
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
@@ -42,7 +43,8 @@ const networkClientConfigs = {
     keepAlive: true,
     keepAliveMsecs: 5000,
     maxSockets: 5000,
-    maxTotalSockets: 10000
+    maxTotalSockets: 10000,
+    maxFreeSockets: 1000
   })
 };
 

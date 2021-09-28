@@ -1795,5 +1795,136 @@
         "apiKey": "19f0f734e3bb87a44596"
       }
     }
+  },
+  {
+    "message": {
+      "anonymousId": "ruchira-100-anon",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "173",
+          "name": "MyWallSt Debug",
+          "namespace": "com.rubicoin.Invest",
+          "version": "6.2"
+        },
+        "device": {
+          "attTrackingStatus": 0,
+          "id": "6fdb629d-4f18-4f3e-943a-3f6f482b331e",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "Ales' iPhone",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "rudder-ios-library",
+          "version": "1.0.19"
+        },
+        "locale": "en-DE",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.8"
+        },
+        "screen": {
+          "density": 3,
+          "height": 375,
+          "width": 812
+        },
+        "timezone": "Europe/Prague",
+        "traits": {
+          "anonymousId": "6fdb629d-4f18-4f3e-943a-3f6f482b331e",
+          "userId": "6a540d50-c4dc-4694-beca-d16de113a1c4-1618384106.8700438"
+        }
+      },
+      "event": "Home: Viewed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1632314412-e724167f-13bd-455b-943d-dd765a7810fe",
+      "originalTimestamp": "2021-09-22T12:40:12.220Z",
+      "properties": {},
+      "rudderId": "782cdb50-e2b9-45fc-9d22-07fe792dcfba",
+      "sentAt": "2021-09-22T12:40:14.453Z",
+      "type": "track",
+      "userId": "ruchira-user-id-100"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "abc",
+        "apiKey": "xyz"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "ruchira-100-anon",
+      "userId": "ruchira-user-id-100",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "email": "test@gmail.com",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": true,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
   }
 ]

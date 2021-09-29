@@ -89,12 +89,14 @@
         "type": "REST",
         "files": {},
         "method": "POST",
-        "params": {},
+        "params": {
+          "hapikey": "eu2-6764-38yt-4457-9b46-6t2d3675823f"
+        },
         "headers": {
           "Content-Type": "application/json"
         },
         "version": "1",
-        "endpoint": "https://api.hubapi.com/contacts/v1/contact/batch/?hapikey=eu2-6764-38yt-4457-9b46-6t2d3675823f"
+        "endpoint": "https://api.hubapi.com/contacts/v1/contact/batch/"
       },
       "metadata": [{ "job_id": 1 }, { "job_id": 2 }],
       "destination": {

@@ -1,0 +1,52 @@
+[
+  {
+    "destKey": "personalizations",
+    "sourceKeys": "properties.personalizations",
+    "required": true
+  },
+  {
+    "destKey": "from",
+    "sourceKeys": "properties.from",
+    "required": true
+  },
+  {
+    "destKey": "subject",
+    "sourceKeys": "properties.subject",
+    "required": false
+  },
+  {
+    "destKey": "content",
+    "sourceKeys": "properties.content",
+    "required": true
+  },
+  {
+    "destKey": "attachments",
+    "sourceKeys": "properties.attachments",
+    "required": false
+  },
+  {
+    "destKey": "categories",
+    "sourceKeys": "properties.categories",
+    "required": false
+  },
+  {
+    "destKey": "send_at",
+    "sourceKeys": "properties.sendAt",
+    "required": false
+  },
+  {
+    "destKey": "batch_id",
+    "sourceKeys": "properties.batchId",
+    "required": false
+  },
+  {
+    "destKey": "asm",
+    "sourceKeys": "properties.asm",
+    "required": false
+  },
+  {
+    "destKey": "ip_pool_name",
+    "sourceKeys": "properties.IPPoolName",
+    "required": false
+  }
+]

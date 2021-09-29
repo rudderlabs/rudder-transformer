@@ -8,6 +8,10 @@
           "JSON": {
             "properties": [
               {
+                "value": "testhubspot1@email.com",
+                "property": "email"
+              },
+              {
                 "property": "firstname",
                 "value": "HubSpot"
               },
@@ -73,6 +77,10 @@
           "FORM": {},
           "JSON": {
             "properties": [
+              {
+                "value": "testhubspot2@email.com",
+                "property": "email"
+              },
               {
                 "property": "firstname",
                 "value": "Sam"

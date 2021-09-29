@@ -212,9 +212,9 @@ function process(event) {
 const batch = destEvents => {
   const batchedResponse = [];
 
-  const arrayChunksIdentify = [];
   let i = 0;
   const n = destEvents.length;
+  const arrayChunksIdentify = [];
   let chunks = [];
   while (i < n) {
     if (destEvents[i].message.method === "GET") {
@@ -242,7 +242,6 @@ const batch = destEvents => {
   }
 
   arrayChunksIdentify.forEach(chunk => {
-    const emailBatch = [];
     const identifyResponseBodyJson = [];
     const metadata = [];
 
@@ -251,19 +250,21 @@ const batch = destEvents => {
     const { destination } = chunk[0];
     const { apiKey } = destination.Config;
     const params = { hapikey: apiKey };
+
     const endpoint = "https://api.hubapi.com/contacts/v1/contact/batch/";
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      emailBatch.push(ev.message.body.JSON.properties[0].value);
-      identifyResponseBodyJson.push(ev.message.body.JSON.properties);
+      const email = ev.message.body.JSON.properties[0].value;
+      ev.message.body.JSON.properties.shift();
+      identifyResponseBodyJson.push({
+        email,
+        properties: ev.message.body.JSON.properties
+      });
       metadata.push(ev.metadata);
     });
 
-    batchEventResponse.batchedRequest.body.JSON = {
-      email: emailBatch,
-      properties: identifyResponseBodyJson
-    };
+    batchEventResponse.batchedRequest.body.JSON = identifyResponseBodyJson;
 
     batchEventResponse.batchedRequest.endpoint = endpoint;
     batchEventResponse.batchedRequest.headers = {

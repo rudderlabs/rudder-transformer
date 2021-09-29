@@ -5,9 +5,10 @@
         "body": {
           "XML": {},
           "FORM": {},
-          "JSON": {
-            "properties": [
-              [
+          "JSON": [
+            {
+              "email": "testhubspot1@email.com",
+              "properties": [
                 {
                   "property": "firstname",
                   "value": "HubSpot"
@@ -44,8 +45,11 @@
                   "property": "zip",
                   "value": "02139"
                 }
-              ],
-              [
+              ]
+            },
+            {
+              "email": "testhubspot2@email.com",
+              "properties": [
                 {
                   "property": "firstname",
                   "value": "Sam"
@@ -83,8 +87,8 @@
                   "value": "02140"
                 }
               ]
-            ]
-          }
+            }
+          ]
         },
         "type": "REST",
         "files": {},

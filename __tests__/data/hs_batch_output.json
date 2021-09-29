@@ -5,9 +5,73 @@
         "body": {
           "XML": {},
           "FORM": {},
+          "JSON": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "GET",
+        "params": {
+          "_a": "25092175",
+          "_n": "test track event HS",
+          "email": "testhubspot1@email.com",
+          "firstname": "Test Hubspot"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://track.hubspot.com/v1/event"
+      },
+      "metadata": [{ "job_id": 1 }],
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "apiKey": "eu2-6764-38yt-4457-9b46-6t2d3675823f",
+          "hubID": "35056412"
+        }
+      }
+    },
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "GET",
+        "params": {
+          "_a": "25092175",
+          "_n": "test track event HS",
+          "email": "testhubspot4@email.com",
+          "firstname": "Samual Hubspot"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://track.hubspot.com/v1/event"
+      },
+      "metadata": [{ "job_id": 4 }],
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "apiKey": "eu2-6764-38yt-4457-9b46-6t2d3675823f",
+          "hubID": "35056412"
+        }
+      }
+    },
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
           "JSON": [
             {
-              "email": "testhubspot1@email.com",
+              "email": "testhubspot2@email.com",
               "properties": [
                 {
                   "property": "firstname",
@@ -48,7 +112,7 @@
               ]
             },
             {
-              "email": "testhubspot2@email.com",
+              "email": "testhubspot3@email.com",
               "properties": [
                 {
                   "property": "firstname",
@@ -102,7 +166,7 @@
         "version": "1",
         "endpoint": "https://api.hubapi.com/contacts/v1/contact/batch/"
       },
-      "metadata": [{ "job_id": 1 }, { "job_id": 2 }],
+      "metadata": [{ "job_id": 2 }, { "job_id": 3 }],
       "destination": {
         "ID": "a",
         "url": "a",

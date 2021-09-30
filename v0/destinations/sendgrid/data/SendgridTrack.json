@@ -40,13 +40,8 @@
     "required": false
   },
   {
-    "destKey": "asm",
-    "sourceKeys": "properties.asm",
-    "required": false
-  },
-  {
-    "destKey": "ip_pool_name",
-    "sourceKeys": "properties.IPPoolName",
+    "destKey": "reply_to_list",
+    "sourceKeys": "properties.replyToList",
     "required": false
   }
 ]

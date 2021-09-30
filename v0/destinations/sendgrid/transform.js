@@ -30,38 +30,38 @@ const trackResponseBuilder = async (message, { Config }) => {
     getDestinationExternalID(message, "replyToName") || Config.replyToName;
 
   payload.asm = {};
-  payload.asm.group_id = Config.asm.groupId;
+  payload.asm.group_id = Config.group;
   const groupsToDisplay = createList(Config);
   payload.asm.groups_to_display =
     groupsToDisplay.length > 0 ? groupsToDisplay : null;
 
-  payload.mail_settings = {};
-  payload.mail_settings.bypass_list_management = {};
-  payload.mail_settings.bypass_list_management.enable =
-    Config.mailSettings.bypassListManagement;
+  payload.ip_pool_name = Config.IPPoolName;
+  payload.mail_settings = {
+    bypass_list_management: {},
+    footer: {},
+    sandbox_mode: {}
+  };
+  payload.mail_settings.bypass_list_management.enable = Config.bypassList;
+  payload.mail_settings.footer.enable = Config.footer;
+  payload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
 
-  payload.mail_settings.footer = {};
-  payload.mail_settings.footer.enable = Config.mailSettings.footer;
-
-  payload.mail_settings.sandbox_mode = {};
-  payload.mail_settings.sandbox_mode.enable = Config.mailSettings.sandboxMode;
-
-  payload.tracking_settings = {};
-  payload.tracking_settings.click_tracking = {};
-  payload.tracking_settings.click_tracking.enable =
-    Config.trackingSettings.clickTracking;
+  payload.tracking_settings = {
+    click_tracking: {},
+    open_tracking: {},
+    subscription_tracking: {}
+  };
+  payload.tracking_settings.click_tracking.enable = Config.clickTracking;
   payload.tracking_settings.click_tracking.enable_text =
-    Config.trackingSettings.clickTracking.enableText;
+    Config.clickTrackingEnableText;
 
-  payload.tracking_settings.open_tracking = {};
-  payload.tracking_settings.open_tracking.enable =
-    Config.trackingSettings.openTracking.enable;
-  payload.tracking_settings.open_tracking.substitution_tag =
-    Config.trackingSettings.openTracking.substitutionTag;
-
+  payload.tracking_settings.open_tracking.enable = Config.openTracking;
+  if (Config.openTrackingSubstitutionTag) {
+    payload.tracking_settings.open_tracking.substitution_tag =
+      Config.openTrackingSubstitutionTag;
+  }
   payload.tracking_settings.subscription_tracking = {};
   payload.tracking_settings.subscription_tracking.enable =
-    Config.tracking_settings.subscriptionTracking;
+    Config.subscriptionTracking;
 
   const response = defaultRequestConfig();
   response.headers = {

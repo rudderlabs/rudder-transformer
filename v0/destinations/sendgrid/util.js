@@ -69,10 +69,10 @@ const eventValidity = (Config, event) => {
 
 const createList = Config => {
   const asmList = [];
-  if (Config.asm.groupsToDisplay.length > 0) {
-    Config.asm.groupsToDisplay.forEach(groups => {
+  if (Config.groupsToDisplay.length > 0) {
+    Config.groupsToDisplay.forEach(groups => {
       if (groups.groupId.trim()) {
-        asmList.push(groups.groupId);
+        asmList.push(groups.groupId.trim());
       }
     });
   }

@@ -4,6 +4,7 @@
       "XML": {},
       "JSON": {
         "_timestamp": 1571043797,
+        "anonymous_id": "123456",
         "city": "NY",
         "state": "CA",
         "street": "",
@@ -88,6 +89,7 @@
     "body": {
       "XML": {},
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -183,6 +185,7 @@
     "body": {
       "XML": {},
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -337,6 +340,7 @@
       "XML": {},
       "JSON": {
         "_timestamp": 1571043797,
+        "anonymous_id": "123456",
         "city": "NY",
         "state": "CA",
         "street": "",
@@ -420,6 +424,7 @@
     "body": {
       "XML": {},
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -515,6 +520,7 @@
     "body": {
       "XML": {},
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -675,6 +681,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
@@ -702,6 +709,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
@@ -717,5 +725,55 @@
     "files": {},
     "userId": "00000000000000000000000000",
     "statusCode": 200
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/ruchira-user-id-100/events",
+    "headers": {
+        "Authorization": "Basic YWJjOnh5eg=="
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "data": {},
+            "name": "Home: Viewed",
+            "type": "event",
+            "timestamp": 1632314412
+        },
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "ruchira-user-id-100",
+    "statusCode": 200
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "PUT",
+  "endpoint": "https://track-eu.customer.io/api/v1/customers/ruchira-user-id-100",
+  "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+  },
+  "params": {},
+  "body": {
+      "JSON": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": "",
+          "email": "test@gmail.com",
+          "_timestamp": 1571043797,
+          "anonymous_id": "ruchira-100-anon"
+      },
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {},
+  "userId": "ruchira-user-id-100",
+  "statusCode": 200
+}
 ]

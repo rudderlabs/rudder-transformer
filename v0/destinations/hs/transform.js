@@ -11,7 +11,6 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  returnArrayOfSubarrays,
   defaultBatchRequestConfig
 } = require("../../util");
 const { hSIdentifyConfigJson, MAX_BATCH_SIZE } = require("./config");
@@ -212,31 +211,66 @@ function process(event) {
 
 const batch = destEvents => {
   const batchedResponse = [];
-  const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
 
-  arrayChunks.forEach(chunk => {
-    const respList = [];
+  let i = 0;
+  const n = destEvents.length;
+  const arrayChunksIdentify = [];
+  let chunks = [];
+  while (i < n) {
+    if (destEvents[i].message.method === "GET") {
+      const { message, metadata, destination } = destEvents[i];
+      const endpoint = get(message, "endpoint");
+
+      const response = defaultBatchRequestConfig();
+      response.batchedRequest.headers = message.headers;
+      response.batchedRequest.endpoint = endpoint;
+      response.batchedRequest.body = message.body;
+      response.batchedRequest.params = message.params;
+      response.batchedRequest.method = defaultGetRequestConfig.requestMethod;
+      response.metadata = [metadata];
+      response.destination = destination;
+
+      batchedResponse.push(response);
+    } else {
+      chunks.push(destEvents[i]);
+    }
+    i += 1;
+    if (chunks.length && (chunks.length === MAX_BATCH_SIZE || i === n)) {
+      arrayChunksIdentify.push(chunks);
+      chunks = [];
+    }
+  }
+
+  arrayChunksIdentify.forEach(chunk => {
+    const identifyResponseBodyJson = [];
     const metadata = [];
 
-    // extracting the apiKey, hubID and destination value
+    // extracting destination, apiKey value
     // from the first event in a batch
-    const { message, destination } = chunk[0];
+    const { destination } = chunk[0];
     const { apiKey } = destination.Config;
-    let endpoint = get(message, "endpoint");
+    const params = { hapikey: apiKey };
+
+    const endpoint = "https://api.hubapi.com/contacts/v1/contact/batch/";
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      respList.push(ev.message.body.JSON.properties);
+      const email = ev.message.body.JSON.properties[0].value;
+      ev.message.body.JSON.properties.shift();
+      identifyResponseBodyJson.push({
+        email,
+        properties: ev.message.body.JSON.properties
+      });
       metadata.push(ev.metadata);
     });
 
-    endpoint += `/?hapikey=${apiKey}`;
+    batchEventResponse.batchedRequest.body.JSON = identifyResponseBodyJson;
 
-    batchEventResponse.batchedRequest.body.JSON = { properties: respList };
     batchEventResponse.batchedRequest.endpoint = endpoint;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"
     };
+    batchEventResponse.batchedRequest.params = params;
     batchEventResponse = {
       ...batchEventResponse,
       metadata,

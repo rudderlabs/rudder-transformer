@@ -57,22 +57,17 @@ class PodCache {
     let result = await promCacheEvEmitter;
     if (!result.value) {
       const tokenInfo = await this.getToken(workspaceToken);
-      result = await this.setTokenInfoIntoCache(tokenInfo);
+      result = await promisifiedEventEmitter(
+        cacheEventEmitter,
+        authCacheEventName,
+        {
+          ...this.cacheEvent,
+          type: "update",
+          value: tokenInfo
+        }
+      );
     }
     return result;
-  }
-
-  async setTokenInfoIntoCache(tokenInfo) {
-    const updPromCacheEvEmitter = promisifiedEventEmitter(
-      cacheEventEmitter,
-      authCacheEventName,
-      {
-        ...this.cacheEvent,
-        type: "update",
-        value: tokenInfo
-      }
-    );
-    return updPromCacheEvEmitter;
   }
 }
 

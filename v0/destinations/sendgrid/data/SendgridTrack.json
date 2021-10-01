@@ -1,10 +1,5 @@
 [
   {
-    "destKey": "personalizations",
-    "sourceKeys": "properties.personalizations",
-    "required": true
-  },
-  {
     "destKey": "from",
     "sourceKeys": "properties.from",
     "required": true

@@ -8,7 +8,7 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getDestinationExternalID
+  getIntegrationsObj
 } = require("../../util");
 const { ENDPOINT, trackMapping } = require("./config");
 const { payloadValidator, eventValidity, createList } = require("./util");
@@ -21,13 +21,23 @@ const trackResponseBuilder = async (message, { Config }) => {
   event = event.trim().toLowerCase();
   eventValidity(Config, event);
   let payload = constructPayload(message, trackMapping);
-  payload = payloadValidator(payload);
+  const integrationsObj = getIntegrationsObj(message, "sendgrid");
+
+  payload.personalizations = integrationsObj.personalizations;
 
   payload.reply_to = {};
-  payload.reply_to.email =
-    getDestinationExternalID(message, "replyToEmail") || Config.replyToEmail;
-  payload.reply_to.name =
-    getDestinationExternalID(message, "replyToName") || Config.replyToName;
+  payload.reply_to.email = Config.replyToEmail;
+  payload.reply_to.name = Config.replyToName;
+
+  if (integrationsObj.replyTo) {
+    if (integrationsObj.replyTo.email) {
+      payload.reply_to.email = integrationsObj.replyTo.email;
+    }
+    if (integrationsObj.replyTo.name) {
+      payload.reply_to.name = integrationsObj.replyTo.name;
+    }
+  }
+  payload = payloadValidator(payload);
 
   payload.asm = {};
   payload.asm.group_id = Config.group;
@@ -36,19 +46,45 @@ const trackResponseBuilder = async (message, { Config }) => {
     groupsToDisplay.length > 0 ? groupsToDisplay : null;
 
   payload.ip_pool_name = Config.IPPoolName;
-  payload.mail_settings = {
-    bypass_list_management: {},
-    footer: {},
-    sandbox_mode: {}
-  };
-  payload.mail_settings.bypass_list_management.enable = Config.bypassList;
-  payload.mail_settings.footer.enable = Config.footer;
-  payload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
+  if (integrationsObj.mailSettings) {
+    const intObjMail = integrationsObj.mailSettings;
+    payload.mail_settings = {
+      bypass_list_management: {},
+      bypass_spam_management: {},
+      bypass_bounce_management: {},
+      bypass_unsubscribe_management: {},
+      footer: {},
+      sandbox_mode: {}
+    };
+    if (intObjMail.bypassListManagement) {
+      payload.mail_settings.bypass_list_management.enable =
+        intObjMail.bypassListManagement;
+    } else {
+      if (intObjMail.bypassSpamManagement) {
+        payload.bypass_spam_management.enable = intObjMail.bypassSpamManagement;
+      }
+      if (intObjMail.bypassBounceManagement) {
+        payload.bypass_bounce_management.enable =
+          intObjMail.bypassBounceManagement;
+      }
+      if (intObjMail.bypassUnsubscribeManagement) {
+        payload.bypass_unsubscribe_management.enable =
+          intObjMail.bypassUnsubscribeManagement;
+      }
+    }
+    if (intObjMail.footer) {
+      payload.mail_settings.footer.enable = intObjMail.footer;
+    }
+    if (intObjMail.sandboxMode) {
+      payload.mail_settings.sandbox_mode.enable = intObjMail.sandboxMode;
+    }
+  }
 
   payload.tracking_settings = {
     click_tracking: {},
     open_tracking: {},
-    subscription_tracking: {}
+    subscription_tracking: {},
+    ganalytics: {}
   };
   payload.tracking_settings.click_tracking.enable = Config.clickTracking;
   payload.tracking_settings.click_tracking.enable_text =
@@ -61,6 +97,17 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.tracking_settings.subscription_tracking = {};
   payload.tracking_settings.subscription_tracking.enable =
     Config.subscriptionTracking;
+  payload.tracking_settings.subscription_tracking.text = Config.text;
+  payload.tracking_settings.subscription_tracking.html = Config.html;
+  payload.tracking_settings.subscription_tracking.substitution_tag =
+    Config.substitutionTag;
+
+  payload.tracking_settings.ganalytics.enable = Config.ganalytics;
+  payload.tracking_settings.ganalytics.utm_source = Config.utmSource;
+  payload.tracking_settings.ganalytics.utm_medium = Config.utmMedium;
+  payload.tracking_settings.ganalytics.utm_term = Config.utmTerm;
+  payload.tracking_settings.ganalytics.utm_content = Config.utmContent;
+  payload.tracking_settings.ganalytics.utm_campaign = Config.utmCampaign;
 
   const response = defaultRequestConfig();
   response.headers = {

@@ -49,6 +49,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
  * @returns {Object}
  *
  * Gets the event schema.
+ * Note: Currently we are only supporting tracks. Later we need to add for identify and group.
  */
 async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId) {
     var eventSchema;

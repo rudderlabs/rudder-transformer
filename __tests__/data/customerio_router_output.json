@@ -12,6 +12,7 @@
         "params": {},
         "body": {
           "JSON": {
+            "anonymous_id": "123456",
             "city": "NY",
             "country": "USA",
             "postalCode": 712136,

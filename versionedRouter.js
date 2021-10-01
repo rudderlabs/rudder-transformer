@@ -374,7 +374,6 @@ if (startDestTransformer) {
                 "user_transform_function_input_events",
                 destEvents.length,
                 {
-                  transformationVersionId,
                   processSessions,
                   ...metaTags
                 }

@@ -42,7 +42,7 @@ async function getLibraryCodeV1(versionId) {
   const library = libraryCache[versionId];
   if (library) return library;
   const tags = {
-    transformerVersionId: versionId,
+    libraryVersionId: versionId,
     version: 1
   };
   try {

@@ -54,17 +54,12 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     var eventSchema;
     try {
         const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
-
-        if (eventType !== "track") {
-            if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
-                eventSchema = tp.rules[eventType];
-            }
-        } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
+        if (eventType === "track" && Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
             const {events} = tp.rules;
             for (var i = 0; i < events.length; i++) {
                 // eventName will be unique
                 if (events[i].name === eventName) {
-                    eventSchema = events[i].rules.rules;
+                    eventSchema = events[i].rules;
                     break;
                 }
             }

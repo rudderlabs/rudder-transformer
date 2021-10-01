@@ -45,6 +45,11 @@ function ErrorBuilder() {
     return this;
   };
 
+  this.isExplicit = arg => {
+    this.err.isExplicit = arg;
+    return this;
+  };
+
   this.statsTiming = (name, start, tags = {}) => {
     stats.timing(name, start, tags);
     return this;

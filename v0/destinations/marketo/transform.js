@@ -244,8 +244,9 @@ const getLeadId = async (message, formattedDestination, token) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Lead creation is turned off on the dashboard")
+        .isExplicit(true)
         .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
+          destination: DESTINATION,
           stage: TRANSFORMER_STAGE.TRANSFORM,
           priority: STATS_PRIORITY.P2
         })
@@ -265,8 +266,9 @@ const getLeadId = async (message, formattedDestination, token) => {
       .setMessage(
         "lookup failure - either anonymousId or userId or both fields are not created in marketo"
       )
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -292,8 +294,9 @@ const processIdentify = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Invalid traits value for Marketo")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -356,8 +359,9 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Anonymous event tracking is turned off and invalid userId")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -369,8 +373,9 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Event is not mapped to Custom Activity")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -386,8 +391,9 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Primary Key value is invalid for the event")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -445,8 +451,9 @@ const processEvent = async (message, destination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Message Type is not present. Aborting message.")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P3
       })
@@ -467,8 +474,9 @@ const processEvent = async (message, destination, token) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Message type not supported")
+        .isExplicit(true)
         .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
+          destination: DESTINATION,
           stage: TRANSFORMER_STAGE.TRANSFORM,
           priority: STATS_PRIORITY.P3
         })
@@ -485,8 +493,9 @@ const process = async event => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Authorisation failed")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })

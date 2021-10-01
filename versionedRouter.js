@@ -9,6 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
+const { TRANSFORMER_STAGE, STATS_PRIORITY } = require("./v0/util/constant");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
@@ -131,6 +132,13 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
+        if (error.isExplicit) {
+          stats.increment("transformation_and_proxy_errors", 1, {
+            destination,
+            version,
+            ...metaTags
+          });
+        }
         stats.increment("dest_transform_errors", 1, {
           destination,
           version,
@@ -212,8 +220,8 @@ if (startDestTransformer) {
             : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version,
-          ...metaTags
+          stage: TRANSFORMER_STAGE.TRANSFORM,
+          priority: STATS_PRIORITY.P1
         });
         stats.increment("dest_transform_requests", 1, {
           destination,

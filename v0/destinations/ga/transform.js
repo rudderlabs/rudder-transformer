@@ -143,8 +143,9 @@ function processPageViews(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage(`Invalid Url: ${documentUrl}`)
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P2
           })
@@ -539,8 +540,9 @@ function processProductListEvent(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage("unknown ProductListEvent type")
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P2
           })
@@ -637,8 +639,9 @@ function processProductEvent(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage("unknown ProductEvent type")
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P2
           })
@@ -691,8 +694,9 @@ function processTransactionEvent(message, destination) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("unknown TransactionEvent type")
+        .isExplicit(true)
         .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
+          destination: DESTINATION,
           stage: TRANSFORMER_STAGE.TRANSFORM,
           priority: STATS_PRIORITY.P2
         })
@@ -732,8 +736,9 @@ function processTransactionEvent(message, destination) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("No product information supplied for transaction event")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P2
       })
@@ -778,8 +783,9 @@ function processEComGenericEvent(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage("unknown TransactionEvent type")
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P2
           })
@@ -809,8 +815,9 @@ function processSingleMessage(message, destination) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Message type is not present")
+      .isExplicit(true)
       .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
+        destination: DESTINATION,
         stage: TRANSFORMER_STAGE.TRANSFORM,
         priority: STATS_PRIORITY.P3
       })
@@ -830,8 +837,9 @@ function processSingleMessage(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage("server side identify is not on")
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P3
           })
@@ -852,8 +860,9 @@ function processSingleMessage(message, destination) {
         throw new ErrorBuilder()
           .setStatus(400)
           .setMessage("Event name is not present/is not a string")
+          .isExplicit(true)
           .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
+            destination: DESTINATION,
             stage: TRANSFORMER_STAGE.TRANSFORM,
             priority: STATS_PRIORITY.P2
           })
@@ -943,8 +952,9 @@ function processSingleMessage(message, destination) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("message type not supported")
+        .isExplicit(true)
         .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
+          destination: DESTINATION,
           stage: TRANSFORMER_STAGE.TRANSFORM,
           priority: STATS_PRIORITY.P3
         })
@@ -962,14 +972,7 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new Error(error.message || "Unknown error", error.status || 400);
-  }
-
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {

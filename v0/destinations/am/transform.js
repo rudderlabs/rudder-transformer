@@ -450,8 +450,9 @@ function processSingleMessage(message, destination) {
           throw new ErrorBuilder()
             .setStatus(400)
             .setMessage("Group call parameters are not valid")
+            .isExplicit(true)
             .statsIncrement("transformation_and_proxy_errors", 1, {
-              DESTINATION,
+              destination: DESTINATION,
               stage: TRANSFORMER_STAGE.TRANSFORM,
               priority: STATS_PRIORITY.P2
             })
@@ -486,8 +487,9 @@ function processSingleMessage(message, destination) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("message type not supported")
+        .isExplicit(true)
         .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
+          destination: DESTINATION,
           stage: TRANSFORMER_STAGE.TRANSFORM,
           priority: STATS_PRIORITY.P3
         })

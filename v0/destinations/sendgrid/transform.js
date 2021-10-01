@@ -55,10 +55,9 @@ const trackResponseBuilder = async (message, { Config }) => {
     Config.clickTrackingEnableText;
 
   payload.tracking_settings.open_tracking.enable = Config.openTracking;
-  if (Config.openTrackingSubstitutionTag) {
-    payload.tracking_settings.open_tracking.substitution_tag =
-      Config.openTrackingSubstitutionTag;
-  }
+  payload.tracking_settings.open_tracking.substitution_tag =
+    Config.openTrackingSubstitutionTag;
+
   payload.tracking_settings.subscription_tracking = {};
   payload.tracking_settings.subscription_tracking.enable =
     Config.subscriptionTracking;

@@ -12,9 +12,11 @@ const payloadValidator = payload => {
     throw new CustomError("personalization field cannot be empty", 400);
   }
   const personalizationsArr = [];
-  payload.personalizations.forEach(keys => {
+  payload.personalizations.forEach((keys, index) => {
     if (keys.to && keys.to.email && (payload.subject || keys.subject)) {
       personalizationsArr.push(keys);
+    } else {
+      logger.error(`item at index ${index} dropped. to field is mandatory`);
     }
   });
   if (payload.personalizations.length !== personalizationsArr.length) {
@@ -25,7 +27,7 @@ const payloadValidator = payload => {
       updatedPayload.attachments = null;
       logger.error("content and filename are required for attachments");
     }
-    if (isValidBase64(payload.attachments.content)) {
+    if (!isValidBase64(payload.attachments.content)) {
       updatedPayload.attachments = null;
       logger.error("content should be base64 encoded");
     }
@@ -34,6 +36,10 @@ const payloadValidator = payload => {
     payload.content.forEach((content, index) => {
       if (!content.text || !content.value) {
         updatedPayload.content.splice(index, 1);
+      } else {
+        logger.error(
+          `item at index ${index} dropped. content and value are mandatory`
+        );
       }
     });
   }

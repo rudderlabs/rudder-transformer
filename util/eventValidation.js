@@ -112,7 +112,7 @@ async function validate(event) {
             eventSchemaCache.set(schemaHash, validateEvent);
         }
 
-        const valid = validateEvent(event.message.properties);
+        const valid = validateEvent(event.message);
         if (valid) {
             return [];
         }

@@ -152,6 +152,11 @@ const getClevertapProfile = (message, category) => {
     ["traits", "context.traits"],
     CLEVERTAP_DEFAULT_EXCLUSION
   );
+
+  if (profile.ts && !Number(profile.ts)) {
+    profile.ts = toUnixTimestamp(profile.ts);
+  }
+
   return removeUndefinedAndNullValues(profile);
 };
 
@@ -226,28 +231,22 @@ const responseBuilderSimple = (message, category, destination) => {
         ts: get(message, "properties.ts")
       };
 
-      // If timestamp is not in unix format
-      if (eventPayload.ts && !Number(eventPayload.ts)) {
-        eventPayload.ts = toUnixTimestamp(eventPayload.ts);
-      }
-
       eventPayload.evtData = extractCustomFields(
         message,
         eventPayload.evtData,
         ["properties"],
         ["checkout_id", "revenue", "products"]
       );
+
+      if (eventPayload.evtData.ts && !Number(eventPayload.evtData.ts)) {
+        eventPayload.evtData.ts = toUnixTimestamp(eventPayload.evtData.ts);
+      }
     }
     // For other type of events we need to follow payload for sending events
     // Source: https://developer.clevertap.com/docs/upload-events-api
     // ----------------------------------------------------------------------
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-      // If timestamp is not in unix format
-      if (eventPayload.ts && !Number(eventPayload.ts)) {
-        eventPayload.ts = toUnixTimestamp(eventPayload.ts);
-      }
     }
     eventPayload.type = "event";
 
@@ -256,6 +255,11 @@ const responseBuilderSimple = (message, category, destination) => {
       eventPayload = mapTrackPayloadWithObjectId(message, eventPayload);
     } else {
       eventPayload = mapTrackPayload(message, eventPayload);
+    }
+
+    // If timestamp is not in unix format
+    if (eventPayload.ts && !Number(eventPayload.ts)) {
+      eventPayload.ts = toUnixTimestamp(eventPayload.ts);
     }
 
     payload = {

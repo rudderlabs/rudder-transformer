@@ -244,7 +244,7 @@
         "currency": "USD",
         "discount": 1.5,
         "order_id": "1234",
-        "ts": 1468308340,
+        "ts": "2021-03-10T11:59:22.080Z",
         "products": [
           {
             "sku": "G-32",
@@ -655,7 +655,7 @@
         "graduate": true,
         "married": true,
         "customerType": "Prime",
-        "ts": 1468308340,
+        "ts": "2021-03-10T11:59:22.080Z",
         "msg_push": true,
         "msgSms": true,
         "msgemail": true,

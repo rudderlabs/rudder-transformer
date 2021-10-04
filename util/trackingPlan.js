@@ -49,13 +49,17 @@ async function getTrackingPlan(tpId, version, workspaceId) {
  * @returns {Object}
  *
  * Gets the event schema.
- * Note: Currently we are only supporting tracks. Later we need to add for identify and group.
  */
 async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId) {
     var eventSchema;
     try {
         const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
-        if (eventType === "track" && Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
+
+        if (eventType !== "track") {
+            if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
+                eventSchema = tp.rules[eventType];
+            }
+        } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
             const {events} = tp.rules;
             for (var i = 0; i < events.length; i++) {
                 // eventName will be unique

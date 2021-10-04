@@ -32,7 +32,7 @@ const networkClientConfigs = {
   // `httpAgent` and `httpsAgent` define a custom agent to be used when performing http
   httpAgent: new http.Agent({
     keepAlive: true,
-    maxSockets: 100,
+    maxSockets: 1000,
     maxFreeSockets: 100
   }),
 

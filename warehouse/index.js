@@ -463,8 +463,19 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
   ]
 */
 
+/*
+* Adds source and destination specific information into context
+* */
+function enhanceContextWithSourceDestInfo(context, metadata) {
+  context.sourceId = metadata.sourceId;
+  context.sourceType = metadata.sourceType;
+  context.destinationId = metadata.destinationId;
+  context.destinationType = metadata.destinationType;
+}
+
 function processWarehouseMessage(message, options) {
-  const utils = getVersionedUtils(options.whSchemaVersion);
+  const utils =
+      getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
 
   const responses = [];
@@ -474,6 +485,9 @@ function processWarehouseMessage(message, options) {
     const randomID = uuidv4();
     message.messageId = `auto-${randomID}`;
   }
+
+  // Adding source and destination specific information.
+  enhanceContextWithSourceDestInfo(message.context, options.metadata)
 
   if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
     message.receivedAt =

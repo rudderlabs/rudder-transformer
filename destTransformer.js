@@ -21,20 +21,16 @@ app.use(
 
 app.use(router.routes()).use(router.allowedMethods());
 
-const options = {
-  key: fs.readFileSync("./transformer.key"),
-  cert: fs.readFileSync("./transformer.crt")
-};
-
 if (clusterEnabled) {
   cluster.start(PORT, app);
 } else {
   // app.listen(PORT);
-  http2.createServer(options, app.callback()).listen(PORT, err => {
-    if (err) {
-      throw new Error(err);
-    }
-    logger.info(`Listening on port ${PORT}`);
-  });
-  // logger.info(`Listening on Port: ${PORT}`);
+  const options = {
+    key: fs.readFileSync("./server.key"),
+    cert: fs.readFileSync("./server.crt")
+  };
+  http2
+    .createSecureServer(options, app.callback())
+    .listen(PORT, err => console.log(err));
+  logger.info(`Listening on Port: ${PORT}`);
 }

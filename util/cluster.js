@@ -1,9 +1,12 @@
 const cluster = require("cluster");
+const fs = require("fs");
+const http2 = require("http2");
 const numCPUs = require("os").cpus().length;
 const util = require("util");
+const gracefulShutdown = require("http-graceful-shutdown");
 const logger = require("../logger");
-const gracefulShutdown = require('http-graceful-shutdown');
-const numWorkers = process.env.NUM_PROCS || numCPUs
+
+const numWorkers = process.env.NUM_PROCS || numCPUs;
 
 function processInfo() {
   return {
@@ -63,7 +66,19 @@ function start(port, app) {
     });
     
   } else {
-    server = app.listen(port);
+    // server = app.listen(port);
+    const options = {
+      key: fs.readFileSync("./server.key"),
+      cert: fs.readFileSync("./server.crt")
+    };
+    const server = 
+      http2
+        .createSecureServer(options, app.callback())
+        .listen(port, err => {
+          if (err) {
+            logger.info(`Error occured while starting worker: ${err}`);
+          }
+        });
     gracefulShutdown(server,
       {
         signals: 'SIGINT SIGTERM',

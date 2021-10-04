@@ -39,7 +39,7 @@ const networkClientConfigs = {
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
   httpsAgent: new https.Agent({
     keepAlive: true,
-    maxSockets: 100,
+    maxSockets: 1000,
     maxFreeSockets: 100
   })
 };

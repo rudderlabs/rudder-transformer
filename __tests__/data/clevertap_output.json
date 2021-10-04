@@ -183,10 +183,12 @@
               "currency": "USD",
               "discount": 1.5,
               "order_id": "1234",
+              "ts": 1468308340,
               "shipping": 22,
               "Charged ID": "12345",
               "affiliation": "Apple Store"
             },
+            "ts": 1468308340,
             "evtName": "Charged",
             "identity": "riverjohn"
           }

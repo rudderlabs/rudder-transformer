@@ -18,7 +18,8 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  toUnixTimestamp
 } = require("../../util");
 
 /*
@@ -65,6 +66,12 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
     profileData: profile,
     ts: get(message, "traits.ts") || get(message, "context.traits.ts")
   };
+
+  // If timestamp is not in unix format
+  if (payload.ts && !Number(payload.ts)) {
+    payload.ts = toUnixTimestamp(payload.ts);
+  }
+
   // If anonymousId is present prioritising to set it as objectId
   if (anonymousId) {
     payload.objectId = anonymousId;
@@ -93,6 +100,11 @@ const mapIdentifyPayload = (message, profile) => {
       }
     ]
   };
+
+  // If timestamp is not in unix format
+  if (payload.d[0].ts && !Number(payload.d[0].ts)) {
+    payload.d[0].ts = toUnixTimestamp(payload.d[0].ts);
+  }
   return payload;
 };
 
@@ -213,6 +225,12 @@ const responseBuilderSimple = (message, category, destination) => {
         ),
         ts: get(message, "properties.ts")
       };
+
+      // If timestamp is not in unix format
+      if (eventPayload.ts && !Number(eventPayload.ts)) {
+        eventPayload.ts = toUnixTimestamp(eventPayload.ts);
+      }
+
       eventPayload.evtData = extractCustomFields(
         message,
         eventPayload.evtData,
@@ -225,6 +243,11 @@ const responseBuilderSimple = (message, category, destination) => {
     // ----------------------------------------------------------------------
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+      // If timestamp is not in unix format
+      if (eventPayload.ts && !Number(eventPayload.ts)) {
+        eventPayload.ts = toUnixTimestamp(eventPayload.ts);
+      }
     }
     eventPayload.type = "event";
 

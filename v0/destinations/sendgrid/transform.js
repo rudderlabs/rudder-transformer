@@ -1,17 +1,25 @@
+const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
   getValueFromMessage,
-  constructPayload,
   getErrorRespEvents,
   getSuccessRespEvents,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getIntegrationsObj
+  getIntegrationsObj,
+  isEmptyObject
 } = require("../../util");
-const { ENDPOINT, trackMapping } = require("./config");
-const { payloadValidator, eventValidity, createList } = require("./util");
+const { ENDPOINT } = require("./config");
+const {
+  payloadValidator,
+  eventValidity,
+  createList,
+  createContent,
+  createAttachments,
+  constructFields
+} = require("./util");
 
 const trackResponseBuilder = async (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
@@ -20,15 +28,33 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   event = event.trim().toLowerCase();
   eventValidity(Config, event);
-  let payload = constructPayload(message, trackMapping);
+  let payload = {};
   const integrationsObj = getIntegrationsObj(message, "sendgrid");
-
+  if (!integrationsObj) {
+    logger.error("integration object not found");
+  }
   payload.personalizations = integrationsObj.personalizations;
 
-  payload.reply_to = {};
-  payload.reply_to.email = Config.replyToEmail;
-  payload.reply_to.name = Config.replyToName;
+  payload.subject = integrationsObj.subject
+    ? integrationsObj.subject
+    : Config.subject;
+  const attachments = createAttachments(Config);
+  if (attachments.length > 0) {
+    payload.attachments = attachments;
+  }
+  const content = createContent(Config);
+  if (content.length > 0) {
+    payload.content = content;
+  }
+  payload = constructFields(integrationsObj, payload);
 
+  payload.reply_to = {};
+  if (Config.replyToEmail) {
+    payload.reply_to.email = Config.replyToEmail;
+  }
+  if (Config.replyToName) {
+    payload.reply_to.name = Config.replyToName;
+  }
   if (integrationsObj.replyTo) {
     if (integrationsObj.replyTo.email) {
       payload.reply_to.email = integrationsObj.replyTo.email;
@@ -38,24 +64,38 @@ const trackResponseBuilder = async (message, { Config }) => {
     }
   }
   payload = payloadValidator(payload);
-
   payload.asm = {};
-  payload.asm.group_id = Config.group;
+  if (
+    Config.group &&
+    !isNaN(Number(Config.group)) &&
+    Number.isInteger(Number(Config.group))
+  ) {
+    payload.asm.group_id = Number(Config.group);
+  }
   const groupsToDisplay = createList(Config);
   payload.asm.groups_to_display =
     groupsToDisplay.length > 0 ? groupsToDisplay : null;
-
-  payload.ip_pool_name = Config.IPPoolName;
+  if (
+    Config.IPPoolName &&
+    Config.IPPoolName.length > 2 &&
+    Config.IPPoolName.length < 64
+  ) {
+    payload.ip_pool_name = Config.IPPoolName;
+  }
+  payload.mail_settings = {
+    bypass_list_management: {},
+    bypass_spam_management: {},
+    bypass_bounce_management: {},
+    bypass_unsubscribe_management: {},
+    footer: {},
+    sandbox_mode: {}
+  };
+  payload.mail_settings.footer.enable = Config.footer;
+  payload.mail_settings.footer.text = Config.footerText;
+  payload.mail_settings.footer.html = Config.footerHtml;
+  payload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
   if (integrationsObj.mailSettings) {
     const intObjMail = integrationsObj.mailSettings;
-    payload.mail_settings = {
-      bypass_list_management: {},
-      bypass_spam_management: {},
-      bypass_bounce_management: {},
-      bypass_unsubscribe_management: {},
-      footer: {},
-      sandbox_mode: {}
-    };
     if (intObjMail.bypassListManagement) {
       payload.mail_settings.bypass_list_management.enable =
         intObjMail.bypassListManagement;
@@ -75,10 +115,32 @@ const trackResponseBuilder = async (message, { Config }) => {
     if (intObjMail.footer) {
       payload.mail_settings.footer.enable = intObjMail.footer;
     }
+    if (intObjMail.footerText) {
+      payload.mail_settings.footer.text = intObjMail.footerText;
+    }
+    if (intObjMail.footerHtml) {
+      payload.mail_settings.footer.html = intObjMail.footerHtml;
+    }
     if (intObjMail.sandboxMode) {
       payload.mail_settings.sandbox_mode.enable = intObjMail.sandboxMode;
     }
   }
+  if (isEmptyObject(payload.mail_settings.bypass_list_management)) {
+    delete payload.mail_settings.bypass_list_management;
+  }
+
+  if (isEmptyObject(payload.mail_settings.bypass_spam_management)) {
+    delete payload.mail_settings.bypass_spam_management;
+  }
+  if (isEmptyObject(payload.mail_settings.bypass_bounce_management)) {
+    delete payload.mail_settings.bypass_bounce_management;
+  }
+  if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
+    delete payload.mail_settings.bypass_unsubscribe_management;
+  }
+  payload.mail_settings.footer = removeUndefinedAndNullValues(
+    payload.mail_settings.footer
+  );
 
   payload.tracking_settings = {
     click_tracking: {},
@@ -96,22 +158,39 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   payload.tracking_settings.subscription_tracking = {};
   payload.tracking_settings.subscription_tracking.enable =
-    Config.subscriptionTracking;
-  payload.tracking_settings.subscription_tracking.text = Config.text;
-  payload.tracking_settings.subscription_tracking.html = Config.html;
+    Config.subscriptionTracking || false;
+  payload.tracking_settings.subscription_tracking.text = Config.text || null;
+  payload.tracking_settings.subscription_tracking.html = Config.html || null;
   payload.tracking_settings.subscription_tracking.substitution_tag =
-    Config.substitutionTag;
+    Config.substitutionTag || null;
 
   payload.tracking_settings.ganalytics.enable = Config.ganalytics;
-  payload.tracking_settings.ganalytics.utm_source = Config.utmSource;
-  payload.tracking_settings.ganalytics.utm_medium = Config.utmMedium;
-  payload.tracking_settings.ganalytics.utm_term = Config.utmTerm;
-  payload.tracking_settings.ganalytics.utm_content = Config.utmContent;
-  payload.tracking_settings.ganalytics.utm_campaign = Config.utmCampaign;
+  payload.tracking_settings.ganalytics.utm_source = Config.utmSource || null;
+  payload.tracking_settings.ganalytics.utm_medium = Config.utmMedium || null;
+  payload.tracking_settings.ganalytics.utm_term = Config.utmTerm || null;
+  payload.tracking_settings.ganalytics.utm_content = Config.utmContent || null;
+  payload.tracking_settings.ganalytics.utm_campaign =
+    Config.utmCampaign || null;
+
+  payload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
+    payload.tracking_settings.ganalytics
+  );
+  payload.tracking_settings.subscription_tracking = removeUndefinedAndNullValues(
+    payload.tracking_settings.subscription_tracking
+  );
+  payload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
+    payload.tracking_settings.ganalytics
+  );
+  payload.asm = removeUndefinedAndNullValues(payload.asm);
+  if (isEmptyObject(payload.asm)) {
+    delete payload.asm;
+  }
+  payload = removeUndefinedAndNullValues(payload);
 
   const response = defaultRequestConfig();
   response.headers = {
-    Authorization: `Bearer ${Config.apiKey}`
+    Authorization: `Bearer ${Config.apiKey}`,
+    "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINT;

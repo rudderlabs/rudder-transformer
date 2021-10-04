@@ -153,10 +153,6 @@ const getClevertapProfile = (message, category) => {
     CLEVERTAP_DEFAULT_EXCLUSION
   );
 
-  if (profile.ts && !Number(profile.ts)) {
-    profile.ts = toUnixTimestamp(profile.ts);
-  }
-
   return removeUndefinedAndNullValues(profile);
 };
 
@@ -235,12 +231,8 @@ const responseBuilderSimple = (message, category, destination) => {
         message,
         eventPayload.evtData,
         ["properties"],
-        ["checkout_id", "revenue", "products"]
+        ["checkout_id", "revenue", "products", "ts"]
       );
-
-      if (eventPayload.evtData.ts && !Number(eventPayload.evtData.ts)) {
-        eventPayload.evtData.ts = toUnixTimestamp(eventPayload.evtData.ts);
-      }
     }
     // For other type of events we need to follow payload for sending events
     // Source: https://developer.clevertap.com/docs/upload-events-api

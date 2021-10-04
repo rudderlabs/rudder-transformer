@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-const _ = require("lodash");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -63,7 +62,8 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const anonymousId = get(message, "anonymousId");
   const payload = {
     type: "profile",
-    profileData: profile
+    profileData: profile,
+    ts: get(message, "traits.ts") || get(message, "context.traits.ts")
   };
   // If anonymousId is present prioritising to set it as objectId
   if (anonymousId) {
@@ -88,6 +88,7 @@ const mapIdentifyPayload = (message, profile) => {
       {
         type: "profile",
         profileData: profile,
+        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
         identity: getFieldValueFromMessage(message, "userId")
       }
     ]
@@ -144,7 +145,7 @@ const getClevertapProfile = (message, category) => {
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
-  // For identify type of events we require a specific trype of payload
+  // For identify type of events we require a specific type of payload
   // Source: https://developer.clevertap.com/docs/upload-user-profiles-api
   // ---------------------------------------------------------------------
   if (category.type === "identify") {
@@ -209,7 +210,8 @@ const responseBuilderSimple = (message, category, destination) => {
         evtData: constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]
-        )
+        ),
+        ts: get(message, "properties.ts")
       };
       eventPayload.evtData = extractCustomFields(
         message,

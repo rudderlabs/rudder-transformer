@@ -6,6 +6,7 @@ const {
   SpecedTraits,
   TraitsMapping
 } = require("../../../constants");
+const { TRANSFORMER_STAGE, STATS_PRIORITY } = require("../../util/constant");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -17,10 +18,11 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   removeUndefinedAndNullValues
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
+  DESTINATION,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
@@ -445,7 +447,16 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new CustomError("Group call parameters are not valid", 400);
+          throw new ErrorBuilder()
+            .setStatus(400)
+            .setMessage("Group call parameters are not valid")
+            .isExplicit(true)
+            .statsIncrement("transformation_and_proxy_errors", 1, {
+              destination: DESTINATION,
+              stage: TRANSFORMER_STAGE.TRANSFORM,
+              priority: STATS_PRIORITY.P2
+            })
+            .build();
         }
       }
       break;
@@ -473,7 +484,16 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new CustomError("message type not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("message type not supported")
+        .isExplicit(true)
+        .statsIncrement("transformation_and_proxy_errors", 1, {
+          destination: DESTINATION,
+          stage: TRANSFORMER_STAGE.TRANSFORM,
+          priority: STATS_PRIORITY.P3
+        })
+        .build();
   }
   return responseBuilderSimple(
     groupInfo,
@@ -761,11 +781,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.status ? error.status : error.code ? error.code : 500,
           error.message || "Error occurred while processing payload."
         );
       }

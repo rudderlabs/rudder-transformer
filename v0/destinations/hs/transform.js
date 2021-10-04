@@ -212,13 +212,11 @@ function process(event) {
 const batch = destEvents => {
   const batchedResponse = [];
 
-  let i = 0;
-  const n = destEvents.length;
-  const arrayChunksIdentify = [];
   let chunks = [];
-  while (i < n) {
-    if (destEvents[i].message.method === "GET") {
-      const { message, metadata, destination } = destEvents[i];
+  const arrayChunksIdentify = [];
+  destEvents.forEach((event, index) => {
+    if (event.message.method === "GET") {
+      const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
       const response = defaultBatchRequestConfig();
@@ -232,14 +230,16 @@ const batch = destEvents => {
 
       batchedResponse.push(response);
     } else {
-      chunks.push(destEvents[i]);
+      chunks.push(event);
     }
-    i += 1;
-    if (chunks.length && (chunks.length === MAX_BATCH_SIZE || i === n)) {
+    if (
+      chunks.length &&
+      (chunks.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+    ) {
       arrayChunksIdentify.push(chunks);
       chunks = [];
     }
-  }
+  });
 
   arrayChunksIdentify.forEach(chunk => {
     const identifyResponseBodyJson = [];

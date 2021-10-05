@@ -27,6 +27,8 @@ const maxColumnsInEvent = parseInt(
   10
 );
 
+const WH_POPULATE_CONTEXT_INFO = process.env.WH_POPULATE_CONTEXT_INFO || true;
+
 const getDataType = (val, options) => {
   const type = typeof val;
   switch (type) {
@@ -467,6 +469,9 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 * Adds source and destination specific information into context
 * */
 function enhanceContextWithSourceDestInfo(message, metadata) {
+  if (!WH_POPULATE_CONTEXT_INFO) {
+    return;
+  }
   if (!metadata) {
     return;
   }

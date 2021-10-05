@@ -64,7 +64,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
             for (var i = 0; i < events.length; i++) {
                 // eventName will be unique
                 if (events[i].name === eventName) {
-                    eventSchema = events[i].rules.rules;
+                    eventSchema = events[i].rules;
                     break;
                 }
             }

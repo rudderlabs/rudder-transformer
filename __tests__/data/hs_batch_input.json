@@ -110,16 +110,16 @@
           "JSON": {
             "properties": [
               {
-                "value": "testhubspot3@email.com",
-                "property": "email"
-              },
-              {
                 "property": "firstname",
                 "value": "Sam"
               },
               {
                 "property": "lastname",
                 "value": "Robbin"
+              },
+              {
+                "property": "email",
+                "value": "testhubspot3@email.com"
               },
               {
                 "property": "website",

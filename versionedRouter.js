@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-const heapdump = require("heapdump");
+// const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -644,12 +644,12 @@ router.post("/batch", ctx => {
   batchHandler(ctx);
 });
 
-router.get("/heapdump", ctx => {
-  heapdump.writeSnapshot((err, filename) => {
-    logger.debug("Heap dump written to", filename);
-  });
-  ctx.body = "OK";
-});
+// router.get("/heapdump", ctx => {
+//   heapdump.writeSnapshot((err, filename) => {
+//     logger.debug("Heap dump written to", filename);
+//   });
+//   ctx.body = "OK";
+// });
 
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;

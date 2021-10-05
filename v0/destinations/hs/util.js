@@ -9,6 +9,15 @@ const getAllContactProperties = async endpoint => {
   return res;
 };
 
+const getEmailAndUpdatedProps = properties => {
+  const index = properties.findIndex(prop => prop.property === "email");
+  return {
+    email: properties[index].value,
+    updatedProperties: properties.filter((prop, i) => i !== index)
+  };
+};
+
 module.exports = {
-  getAllContactProperties
+  getAllContactProperties,
+  getEmailAndUpdatedProps
 };

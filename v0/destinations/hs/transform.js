@@ -13,8 +13,12 @@ const {
   addExternalIdToTraits,
   defaultBatchRequestConfig
 } = require("../../util");
-const { hSIdentifyConfigJson, MAX_BATCH_SIZE } = require("./config");
-const { getAllContactProperties } = require("./util");
+const {
+  hSIdentifyConfigJson,
+  MAX_BATCH_SIZE,
+  BATCH_CONTACT_ENDPOINT
+} = require("./config");
+const { getAllContactProperties, getEmailAndUpdatedProps } = require("./util");
 
 let hubSpotPropertyMap = {};
 
@@ -251,12 +255,15 @@ const batch = destEvents => {
     const { apiKey } = destination.Config;
     const params = { hapikey: apiKey };
 
-    const endpoint = "https://api.hubapi.com/contacts/v1/contact/batch/";
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      const email = ev.message.body.JSON.properties[0].value;
-      ev.message.body.JSON.properties.shift();
+      // const email = getEmailFromBatchProps(ev.message.body.JSON.properties);
+      const { email, updatedProperties } = getEmailAndUpdatedProps(
+        ev.message.body.JSON.properties
+      );
+      ev.message.body.JSON.properties = updatedProperties;
+      // ev.message.body.JSON.properties.shift();
       identifyResponseBodyJson.push({
         email,
         properties: ev.message.body.JSON.properties
@@ -266,7 +273,7 @@ const batch = destEvents => {
 
     batchEventResponse.batchedRequest.body.JSON = identifyResponseBodyJson;
 
-    batchEventResponse.batchedRequest.endpoint = endpoint;
+    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"
     };

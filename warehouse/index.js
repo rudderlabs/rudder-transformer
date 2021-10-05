@@ -477,8 +477,7 @@ function enhanceContextWithSourceDestInfo(context, metadata) {
 }
 
 function processWarehouseMessage(message, options) {
-  const utils =
-      getVersionedUtils(options.whSchemaVersion);
+  const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
 
   const responses = [];

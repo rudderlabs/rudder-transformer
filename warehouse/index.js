@@ -467,6 +467,9 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 * Adds source and destination specific information into context
 * */
 function enhanceContextWithSourceDestInfo(context, metadata) {
+  if (!context || !metadata) {
+    return
+  }
   context.sourceId = metadata.sourceId;
   context.sourceType = metadata.sourceType;
   context.destinationId = metadata.destinationId;

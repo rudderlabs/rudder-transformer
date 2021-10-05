@@ -258,12 +258,10 @@ const batch = destEvents => {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      // const email = getEmailFromBatchProps(ev.message.body.JSON.properties);
       const { email, updatedProperties } = getEmailAndUpdatedProps(
         ev.message.body.JSON.properties
       );
       ev.message.body.JSON.properties = updatedProperties;
-      // ev.message.body.JSON.properties.shift();
       identifyResponseBodyJson.push({
         email,
         properties: ev.message.body.JSON.properties

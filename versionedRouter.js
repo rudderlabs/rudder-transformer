@@ -423,17 +423,6 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-<<<<<<< HEAD
-=======
-              stats.counter(
-                "user_transform_function_input_events",
-                destEvents.length,
-                {
-                  processSessions,
-                  ...metaTags
-                }
-              );
->>>>>>> cf579982d3319377e991383dbc5a1984fd369e43
 
               
               let destTransformedEventsNew;

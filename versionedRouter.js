@@ -386,11 +386,6 @@ if (startDestTransformer) {
           event => event.metadata.destinationId + "_" + event.metadata.sourceId
         );
       }
-      stats.counter(
-        "user_transform_function_group_size",
-        Object.entries(groupedEvents).length,
-        { processSessions }
-      );
 
       const transformedEvents = [];
       let librariesVersionIDs = [];
@@ -428,15 +423,6 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter(
-                "user_transform_function_input_events",
-                destEvents.length,
-                {
-                  transformationVersionId,
-                  processSessions,
-                  ...metaTags
-                }
-              );
 
               
               let destTransformedEventsNew;
@@ -542,11 +528,7 @@ if (startDestTransformer) {
               });
 
             } finally {
-              stats.timing(
-                "user_transform_function_latency",
-                userFuncStartTime,
-                { transformationVersionId, processSessions, ...metaTags }
-              );
+
             }
           } else {
             const errorMessage = "Transformation VersionID not found";

@@ -1,4 +1,3 @@
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -9,16 +8,19 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getIntegrationsObj,
-  isEmptyObject
+  isEmptyObject,
+  extractCustomFields
 } = require("../../util");
-const { ENDPOINT } = require("./config");
+const { ENDPOINT, TRACK_EXCLUSION_FIELDS } = require("./config");
 const {
   payloadValidator,
-  eventValidity,
+  isValidEvent,
   createList,
   createContent,
   createAttachments,
-  constructFields
+  constructFields,
+  createMailSettings,
+  createTrackSettings
 } = require("./util");
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -27,17 +29,16 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("event is required for track call", 400);
   }
   event = event.trim().toLowerCase();
-  eventValidity(Config, event);
+  const flag = isValidEvent(Config, event);
+  if (!flag) {
+    throw new CustomError("event not configured on dashboard", 400);
+  }
   let payload = {};
   const integrationsObj = getIntegrationsObj(message, "sendgrid");
-  if (!integrationsObj) {
-    logger.error("integration object not found");
-  }
   payload.personalizations = integrationsObj.personalizations;
 
-  payload.subject = integrationsObj.subject
-    ? integrationsObj.subject
-    : Config.subject;
+  payload.subject = integrationsObj.subject || Config.subject;
+
   const attachments = createAttachments(Config);
   if (attachments.length > 0) {
     payload.attachments = attachments;
@@ -63,11 +64,11 @@ const trackResponseBuilder = async (message, { Config }) => {
       payload.reply_to.name = integrationsObj.replyTo.name;
     }
   }
-  payload = payloadValidator(payload);
+
   payload.asm = {};
   if (
     Config.group &&
-    !isNaN(Number(Config.group)) &&
+    !Number.isNaN(Number(Config.group)) &&
     Number.isInteger(Number(Config.group))
   ) {
     payload.asm.group_id = Number(Config.group);
@@ -77,114 +78,31 @@ const trackResponseBuilder = async (message, { Config }) => {
     groupsToDisplay.length > 0 ? groupsToDisplay : null;
   if (
     Config.IPPoolName &&
-    Config.IPPoolName.length > 2 &&
-    Config.IPPoolName.length < 64
+    Config.IPPoolName.length >= 2 &&
+    Config.IPPoolName.length <= 64
   ) {
     payload.ip_pool_name = Config.IPPoolName;
   }
-  payload.mail_settings = {
-    bypass_list_management: {},
-    bypass_spam_management: {},
-    bypass_bounce_management: {},
-    bypass_unsubscribe_management: {},
-    footer: {},
-    sandbox_mode: {}
-  };
-  payload.mail_settings.footer.enable = Config.footer;
-  payload.mail_settings.footer.text = Config.footerText;
-  payload.mail_settings.footer.html = Config.footerHtml;
-  payload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
-  if (integrationsObj.mailSettings) {
-    const intObjMail = integrationsObj.mailSettings;
-    if (intObjMail.bypassListManagement) {
-      payload.mail_settings.bypass_list_management.enable =
-        intObjMail.bypassListManagement;
-    } else {
-      if (intObjMail.bypassSpamManagement) {
-        payload.bypass_spam_management.enable = intObjMail.bypassSpamManagement;
-      }
-      if (intObjMail.bypassBounceManagement) {
-        payload.bypass_bounce_management.enable =
-          intObjMail.bypassBounceManagement;
-      }
-      if (intObjMail.bypassUnsubscribeManagement) {
-        payload.bypass_unsubscribe_management.enable =
-          intObjMail.bypassUnsubscribeManagement;
-      }
-    }
-    if (intObjMail.footer) {
-      payload.mail_settings.footer.enable = intObjMail.footer;
-    }
-    if (intObjMail.footerText) {
-      payload.mail_settings.footer.text = intObjMail.footerText;
-    }
-    if (intObjMail.footerHtml) {
-      payload.mail_settings.footer.html = intObjMail.footerHtml;
-    }
-    if (intObjMail.sandboxMode) {
-      payload.mail_settings.sandbox_mode.enable = intObjMail.sandboxMode;
-    }
-  }
-  if (isEmptyObject(payload.mail_settings.bypass_list_management)) {
-    delete payload.mail_settings.bypass_list_management;
-  }
 
-  if (isEmptyObject(payload.mail_settings.bypass_spam_management)) {
-    delete payload.mail_settings.bypass_spam_management;
-  }
-  if (isEmptyObject(payload.mail_settings.bypass_bounce_management)) {
-    delete payload.mail_settings.bypass_bounce_management;
-  }
-  if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
-    delete payload.mail_settings.bypass_unsubscribe_management;
-  }
-  payload.mail_settings.footer = removeUndefinedAndNullValues(
-    payload.mail_settings.footer
-  );
-
-  payload.tracking_settings = {
-    click_tracking: {},
-    open_tracking: {},
-    subscription_tracking: {},
-    ganalytics: {}
-  };
-  payload.tracking_settings.click_tracking.enable = Config.clickTracking;
-  payload.tracking_settings.click_tracking.enable_text =
-    Config.clickTrackingEnableText;
-
-  payload.tracking_settings.open_tracking.enable = Config.openTracking;
-  payload.tracking_settings.open_tracking.substitution_tag =
-    Config.openTrackingSubstitutionTag;
-
-  payload.tracking_settings.subscription_tracking = {};
-  payload.tracking_settings.subscription_tracking.enable =
-    Config.subscriptionTracking || false;
-  payload.tracking_settings.subscription_tracking.text = Config.text || null;
-  payload.tracking_settings.subscription_tracking.html = Config.html || null;
-  payload.tracking_settings.subscription_tracking.substitution_tag =
-    Config.substitutionTag || null;
-
-  payload.tracking_settings.ganalytics.enable = Config.ganalytics;
-  payload.tracking_settings.ganalytics.utm_source = Config.utmSource || null;
-  payload.tracking_settings.ganalytics.utm_medium = Config.utmMedium || null;
-  payload.tracking_settings.ganalytics.utm_term = Config.utmTerm || null;
-  payload.tracking_settings.ganalytics.utm_content = Config.utmContent || null;
-  payload.tracking_settings.ganalytics.utm_campaign =
-    Config.utmCampaign || null;
-
-  payload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
-    payload.tracking_settings.ganalytics
-  );
-  payload.tracking_settings.subscription_tracking = removeUndefinedAndNullValues(
-    payload.tracking_settings.subscription_tracking
-  );
-  payload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
-    payload.tracking_settings.ganalytics
-  );
+  payload = createMailSettings(payload, integrationsObj, Config);
+  payload = createTrackSettings(payload, Config);
   payload.asm = removeUndefinedAndNullValues(payload.asm);
   if (isEmptyObject(payload.asm)) {
     delete payload.asm;
   }
+  if (!payload.custom_args) {
+    let customFields = {};
+    customFields = extractCustomFields(
+      message,
+      customFields,
+      ["integrations.sendgrid"],
+      TRACK_EXCLUSION_FIELDS
+    );
+    if (!isEmptyObject(customFields)) {
+      payload.custom_args = customFields;
+    }
+  }
+  payload = payloadValidator(payload);
   payload = removeUndefinedAndNullValues(payload);
 
   const response = defaultRequestConfig();

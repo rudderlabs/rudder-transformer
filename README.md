@@ -46,3 +46,4 @@ If you want to run the RudderStack Transformer (without the user functions) insi
 ## Contact Us
 
 If you come across any issues while setting up or running the RudderStack Transformer, feel free to start a conversation on our [Slack](https://resources.rudderstack.com/join-rudderstack-slack) channel.
+

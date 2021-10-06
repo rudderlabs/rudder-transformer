@@ -2,22 +2,9 @@ const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
 const util = require("util");
 const gracefulShutdown = require("http-graceful-shutdown");
-const { EventEmitter } = require("events");
 const logger = require("../logger");
-const CacheFactory = require("../cache/factory");
-const { authCacheEventName } = require("../constants");
 
-const cacheEventEmitter = new EventEmitter();
 const numWorkers = process.env.NUM_PROCS || numCPUs;
-
-const promisifiedEventEmitter = (evEmitter, eventName, ...args) => {
-  const promise = new Promise((resolve, reject) => {
-    evEmitter.emit(eventName, ...args);
-    evEmitter.on("end", resolve);
-    evEmitter.on("error", reject);
-  });
-  return promise;
-};
 
 function processInfo() {
   return {
@@ -51,26 +38,9 @@ function start(port, app) {
       cluster.fork();
     }
 
-    const cache = new CacheFactory().createCache("account");
     cluster.on("online", worker => {
       logger.info(`Worker ${worker.process.pid} is online`);
       // To provide caching at pod-level
-      worker.on("message", msg => {
-        if (worker.process.pid === msg.pid) {
-          const existingCacheValue = cache.get(msg.key);
-          if (msg.type === "update") {
-            if (typeof existingCacheValue === "object") {
-              cache.set(msg.key, { ...existingCacheValue, ...msg.value });
-            } else {
-              cache.set(msg.key, msg.value);
-            }
-          }
-          worker.send({
-            ...msg,
-            value: cache.get(msg.key)
-          });
-        }
-      });
     });
     let isShuttingDown = false;
     cluster.on("exit", worker => {
@@ -93,17 +63,6 @@ function start(port, app) {
   } else {
     const server = app.listen(port);
 
-    // For caching at pod-level
-    cacheEventEmitter.on(authCacheEventName, cache => {
-      process.send({
-        ...cache,
-        pid: process.pid
-      });
-    });
-    process.on("message", retMsg => {
-      cacheEventEmitter.emit("end", retMsg);
-    });
-
     gracefulShutdown(server, {
       signals: "SIGINT SIGTERM",
       timeout: 30000, // timeout: 30 secs
@@ -117,7 +76,5 @@ function start(port, app) {
 
 module.exports = {
   start,
-  processInfo,
-  cacheEventEmitter,
-  promisifiedEventEmitter
+  processInfo
 };

@@ -47,13 +47,11 @@ const WhiteListedTraits = [
 ];
 
 const MappedToDestinationKey = "context.mappedToDestination";
-const authCacheEventName = "oAuthCache";
 
 module.exports = {
   EventType,
   SpecedTraits,
   TraitsMapping,
   WhiteListedTraits,
-  MappedToDestinationKey,
-  authCacheEventName
+  MappedToDestinationKey
 };

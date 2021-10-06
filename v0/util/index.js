@@ -1081,16 +1081,19 @@ function generateUUID() {
   });
 }
 
-const isOAuthSupported = (destination, destHandler) => {
+const isOAuthDestination = destination => {
   const { Config: destConf } = destination.DestinationDefinition;
+  return destConf && destConf.auth && destConf.auth.type === "OAuth";
+};
+
+const isOAuthSupported = (destination, destHandler) => {
   return (
-    destConf &&
-    destConf.auth &&
-    destConf.auth.type === "OAuth" &&
+    isOAuthDestination(destination) &&
     destHandler.processAuth &&
     typeof destHandler.processAuth === "function"
   );
 };
+
 
 // ========================================================================
 // EXPORTS
@@ -1158,5 +1161,6 @@ module.exports = {
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   generateUUID,
-  isOAuthSupported
+  isOAuthSupported,
+  isOAuthDestination
 };

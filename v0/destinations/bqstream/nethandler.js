@@ -10,7 +10,6 @@ const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const PodCache = require("../../../cache/pod-cache");
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -63,23 +62,12 @@ const getAccessTokenFromDestRequest = payload =>
  * https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
  */
 const responseHandler = ({
-  tokenInfo,
   dresponse,
   metadata,
   sourceMessage,
   authRequest,
   accessToken
 } = {}) => {
-  if (tokenInfo) {
-    const podCache = new PodCache(
-      `${tokenInfo.rudderAccountId}|${tokenInfo.workspaceId}`
-    );
-    // Refresh is successful, refreshed token information is being set here
-    podCache.setTokenInfoIntoCache({
-      accessToken: tokenInfo.accessToken,
-      expirationDate: tokenInfo.expirationDate
-    });
-  }
   // success case
   if (dresponse.success) {
     const trimmedResponse = trimResponse(dresponse);
@@ -164,18 +152,9 @@ const putAccessTokenIntoPayload = payload => {
 
 const sendData = async payload => {
   const { metadata } = payload;
-  let tokenInfo;
   if (payload.accessToken) {
     putAccessTokenIntoPayload(payload);
-    tokenInfo = {
-      rudderAccountId: payload.rudderAccountId,
-      workspaceId: payload.workspaceId,
-      expirationDate: payload.expirationDate,
-      accessToken: payload.accessToken
-    };
     delete payload.accessToken;
-    delete payload.rudderAccountId;
-    delete payload.workspaceId;
     if (payload.expirationDate) {
       delete payload.expirationDate;
     }
@@ -183,7 +162,6 @@ const sendData = async payload => {
   const res = await sendRequest(payload);
   const accessToken = getAccessTokenFromDestRequest(payload);
   const parsedResponse = responseHandler({
-    tokenInfo,
     dresponse: res,
     metadata,
     accessToken

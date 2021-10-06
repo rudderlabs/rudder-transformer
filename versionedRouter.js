@@ -11,7 +11,6 @@ const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
-const { isOAuthSupported } = require("./v0/util");
 const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
@@ -107,10 +106,6 @@ async function handleDest(ctx, version, destination) {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         let respEvents = await destHandler.process(parsedEvent);
-        // if destination needs OAuth, processAuth should be implemented
-        if (isOAuthSupported(parsedEvent.destination, destHandler)) {
-          await destHandler.processAuth(parsedEvent, respEvents);
-        }
 
         if (respEvents) {
           if (!Array.isArray(respEvents)) {

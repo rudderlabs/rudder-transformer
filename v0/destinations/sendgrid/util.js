@@ -113,7 +113,7 @@ const createList = Config => {
 const createContent = Config => {
   const contentList = [];
   if (Config.contents && Config.contents.length > 0) {
-    const len = Config.attachments.length - 1;
+    const len = Config.contents.length - 1;
     Config.contents.forEach((content, index) => {
       if (content.type && content.value) {
         contentList.push(content);

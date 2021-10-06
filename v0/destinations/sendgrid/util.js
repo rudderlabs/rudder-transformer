@@ -47,8 +47,11 @@ const payloadValidator = payload => {
       }
     });
   }
-  if (!payload.from.email) {
-    throw new CustomError("email is required inside from object", 400);
+  if (!payload.from) {
+    throw new CustomError("from is required field", 400);
+  }
+  if (payload.from && !payload.from.email) {
+    throw new CustomError("email inside from object is required", 400);
   }
   if (payload.categories) {
     payload.categories.forEach((category, index) => {
@@ -68,7 +71,7 @@ const payloadValidator = payload => {
     logger.error("reply_to object requires email field");
     delete updatedPayload.reply_to;
   }
-  if (payload.asm && !payload.asm.groupId) {
+  if (payload.asm && !payload.asm.group_id) {
     logger.error("group Id parameter is required in asm");
     delete updatedPayload.asm;
   }
@@ -78,11 +81,13 @@ const payloadValidator = payload => {
 const isValidEvent = (Config, event) => {
   let flag = false;
   Config.eventNamesSettings.some(eventName => {
-    if (eventName.event && eventName.event.trim().length !== 0) {
-      if (eventName.event.trim().toLowerCase() === event) {
-        flag = true;
-        return true;
-      }
+    if (
+      eventName.event &&
+      eventName.event.trim().length !== 0 &&
+      eventName.event.trim().toLowerCase() === event
+    ) {
+      flag = true;
+      return true;
     }
   });
   return flag;
@@ -93,6 +98,7 @@ const createList = Config => {
   if (Config.groupsToDisplay && Config.groupsToDisplay.length > 0) {
     Config.groupsToDisplay.forEach(groups => {
       if (
+        groups.groupId &&
         groups.groupId.trim() &&
         !Number.isNaN(Number(groups.groupId)) &&
         Number.isInteger(Number(groups.groupId))
@@ -107,10 +113,11 @@ const createList = Config => {
 const createContent = Config => {
   const contentList = [];
   if (Config.contents && Config.contents.length > 0) {
+    const len = Config.attachments.length - 1;
     Config.contents.forEach((content, index) => {
       if (content.type && content.value) {
         contentList.push(content);
-      } else {
+      } else if (index < len) {
         logger.error(
           `item at index ${index} dropped. type and value are required fields`
         );
@@ -123,10 +130,11 @@ const createContent = Config => {
 const createAttachments = Config => {
   const attachmentList = [];
   if (Config.attachments && Config.attachments.length > 0) {
+    const len = Config.attachments.length - 1;
     Config.attachments.forEach((attachment, index) => {
       if (attachment.content && attachment.type) {
         attachmentList.push(attachment);
-      } else {
+      } else if (index < len) {
         logger.error(
           `item at index ${index} dropped. content and type are required fields`
         );
@@ -229,8 +237,23 @@ const createMailSettings = (payload, iObj, Config) => {
   if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
     delete updatedPayload.mail_settings.bypass_unsubscribe_management;
   }
+  if (
+    updatedPayload.mail_settings.footer.text &&
+    updatedPayload.mail_settings.footer.text.length < 1
+  ) {
+    updatedPayload.mail_settings.footer.text = null;
+  }
+  if (
+    updatedPayload.mail_settings.footer.html &&
+    updatedPayload.mail_settings.footer.html.length < 1
+  ) {
+    updatedPayload.mail_settings.footer.html = null;
+  }
   updatedPayload.mail_settings.footer = removeUndefinedAndNullValues(
     payload.mail_settings.footer
+  );
+  updatedPayload.mail_settings = removeUndefinedAndNullValues(
+    payload.mail_settings
   );
   return updatedPayload;
 };
@@ -249,7 +272,7 @@ const createTrackSettings = (payload, Config) => {
 
   updatedPayload.tracking_settings.open_tracking.enable = Config.openTracking;
   updatedPayload.tracking_settings.open_tracking.substitution_tag =
-    Config.openTrackingSubstitutionTag;
+    Config.openTrackingSubstitutionTag || null;
 
   updatedPayload.tracking_settings.subscription_tracking = {};
   updatedPayload.tracking_settings.subscription_tracking.enable =
@@ -280,6 +303,12 @@ const createTrackSettings = (payload, Config) => {
   );
   updatedPayload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
     payload.tracking_settings.ganalytics
+  );
+  updatedPayload.tracking_settings.open_tracking = removeUndefinedAndNullValues(
+    payload.tracking_settings.open_tracking
+  );
+  updatedPayload.tracking_settings = removeUndefinedAndNullValues(
+    payload.tracking_settings
   );
   return updatedPayload;
 };

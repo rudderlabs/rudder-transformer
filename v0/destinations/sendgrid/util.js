@@ -132,7 +132,7 @@ const createAttachments = Config => {
   if (Config.attachments && Config.attachments.length > 0) {
     const len = Config.attachments.length - 1;
     Config.attachments.forEach((attachment, index) => {
-      if (attachment.content && attachment.type) {
+      if (attachment.content && attachment.filename) {
         attachmentList.push(attachment);
       } else if (index < len) {
         logger.error(

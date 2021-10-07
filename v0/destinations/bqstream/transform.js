@@ -22,6 +22,9 @@ async function processAuth(event, response) {
   if (!oauthAccessToken) {
     throw new CustomError("Invalid access token", 400);
   }
+  if (!response.headers) {
+    response.headers = {};
+  }
   response.headers.Authorization = `Bearer ${oauthAccessToken}`;
   return response;
 }
@@ -40,7 +43,7 @@ async function process(event) {
   const { properties } = message;
   const {
     destination: {
-      Config: { datasetId, tableId }
+      Config: { datasetId, tableId, projectId }
     },
     destination
   } = event;
@@ -56,7 +59,7 @@ async function process(event) {
     payload,
     method: "POST",
     // TODO: ProjectID(rudder-sai) can be referred in a more customised way!
-    endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudder-sai/datasets/${datasetId}/tables/${tableId}/insertAll`
+    endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`
     // endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudderstack-dev/datasets/${datasetId}/tables/${tableId}/insertAll`
   };
   if (isOAuthDestination(destination)) {

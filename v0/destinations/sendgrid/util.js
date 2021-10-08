@@ -3,7 +3,8 @@ const {
   CustomError,
   isObject,
   isEmptyObject,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 
 const isValidBase64 = content => {
@@ -13,25 +14,30 @@ const isValidBase64 = content => {
 
 const payloadValidator = payload => {
   const updatedPayload = payload;
-  if (payload.personalizations.length < 1) {
+
+  if (!payload.template_id) {
+    if (!payload.content) {
+      throw new CustomError("Either template id or content is required.", 400);
+    }
+  }
+  if (payload.personalizations && payload.personalizations.length < 1) {
     throw new CustomError("personalization field cannot be empty", 400);
   }
-  payload.personalizations.forEach((keys, index) => {
-    const personalizationsArr = [];
-    if (keys.to && (payload.subject || keys.subject)) {
-      keys.to.forEach(keyto => {
-        if (keyto.email) {
-          personalizationsArr.push(keyto);
-        }
-      });
-    } else {
-      logger.error(`item at index ${index} dropped. to field is mandatory`);
-    }
-    updatedPayload.personalizations[index].to = personalizationsArr;
-    if (keys.subject) {
-      updatedPayload.personalizations[index].subject = keys.subject;
-    }
-  });
+  if (payload.personalizations) {
+    payload.personalizations.forEach((keys, index) => {
+      const personalizationsArr = [];
+      if (keys.to && (payload.subject || keys.subject)) {
+        keys.to.forEach(keyto => {
+          if (keyto.email) {
+            personalizationsArr.push(keyto);
+          }
+        });
+      } else {
+        logger.error(`item at index ${index} dropped. to field is mandatory`);
+      }
+      updatedPayload.personalizations[index].to = personalizationsArr;
+    });
+  }
   if (payload.attachments) {
     payload.attachments.forEach((attachment, index) => {
       if (!attachment.content || !attachment.filename) {
@@ -67,12 +73,18 @@ const payloadValidator = payload => {
   if (payload.subject && payload.subject.length < 1) {
     delete updatedPayload.subject;
   }
+  if (isEmptyObject(payload.reply_to)) {
+    delete updatedPayload.reply_to;
+  }
   if (payload.reply_to && !payload.reply_to.email) {
     logger.error("reply_to object requires email field");
     delete updatedPayload.reply_to;
   }
-  if (payload.asm && !payload.asm.group_id) {
+  if (payload.asm && payload.asm.groups_to_display && !payload.asm.group_id) {
     logger.error("group Id parameter is required in asm");
+    delete updatedPayload.asm;
+  }
+  if (isEmptyObject(payload.asm)) {
     delete updatedPayload.asm;
   }
   return updatedPayload;
@@ -133,7 +145,7 @@ const createAttachments = Config => {
     const len = Config.attachments.length - 1;
     Config.attachments.forEach((attachment, index) => {
       if (attachment.content && attachment.filename) {
-        attachmentList.push(attachment);
+        attachmentList.push(removeUndefinedAndNullAndEmptyValues(attachment));
       } else if (index < len) {
         logger.error(
           `item at index ${index} dropped. content and type are required fields`
@@ -144,39 +156,6 @@ const createAttachments = Config => {
   return attachmentList;
 };
 
-const constructFields = (iObj, payload) => {
-  const updatedPayload = payload;
-  const fieldArr = [
-    "from",
-    "categories",
-    "sendAt",
-    "batchId",
-    "replyToLists",
-    "attachments",
-    "content",
-    "templateId",
-    "headers",
-    "customArgs"
-  ];
-  const fields = [
-    "from",
-    "categories",
-    "send_at",
-    "batch_id",
-    "reply_to_lists",
-    "attachments",
-    "content",
-    "template_id",
-    "headers",
-    "custom_args"
-  ];
-  fieldArr.forEach((key, index) => {
-    if (iObj[key]) {
-      updatedPayload[fields[index]] = iObj[key];
-    }
-  });
-  return updatedPayload;
-};
 const createMailSettings = (payload, iObj, Config) => {
   const updatedPayload = payload;
   updatedPayload.mail_settings = {
@@ -192,22 +171,22 @@ const createMailSettings = (payload, iObj, Config) => {
   updatedPayload.mail_settings.footer.html = Config.footerHtml;
   updatedPayload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
 
-  if (iObj.mailSettings) {
+  if (iObj && iObj.mailSettings) {
     const intObjMail = iObj.mailSettings;
     if (intObjMail.bypassListManagement) {
       updatedPayload.mail_settings.bypass_list_management.enable =
         intObjMail.bypassListManagement;
     } else {
       if (intObjMail.bypassSpamManagement) {
-        updatedPayload.bypass_spam_management.enable =
+        updatedPayload.mail_settings.bypass_spam_management.enable =
           intObjMail.bypassSpamManagement;
       }
       if (intObjMail.bypassBounceManagement) {
-        updatedPayload.bypass_bounce_management.enable =
+        updatedPayload.mail_settings.bypass_bounce_management.enable =
           intObjMail.bypassBounceManagement;
       }
       if (intObjMail.bypassUnsubscribeManagement) {
-        updatedPayload.bypass_unsubscribe_management.enable =
+        updatedPayload.mail_settings.bypass_unsubscribe_management.enable =
           intObjMail.bypassUnsubscribeManagement;
       }
     }
@@ -237,20 +216,15 @@ const createMailSettings = (payload, iObj, Config) => {
   if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
     delete updatedPayload.mail_settings.bypass_unsubscribe_management;
   }
-  if (
-    updatedPayload.mail_settings.footer.text &&
-    updatedPayload.mail_settings.footer.text.length < 1
-  ) {
+  if (updatedPayload.mail_settings.footer.text.length < 1) {
     updatedPayload.mail_settings.footer.text = null;
   }
-  if (
-    updatedPayload.mail_settings.footer.html &&
-    updatedPayload.mail_settings.footer.html.length < 1
-  ) {
+
+  if (updatedPayload.mail_settings.footer.html.length < 1) {
     updatedPayload.mail_settings.footer.html = null;
   }
   updatedPayload.mail_settings.footer = removeUndefinedAndNullValues(
-    payload.mail_settings.footer
+    updatedPayload.mail_settings.footer
   );
   updatedPayload.mail_settings = removeUndefinedAndNullValues(
     payload.mail_settings
@@ -313,13 +287,45 @@ const createTrackSettings = (payload, Config) => {
   return updatedPayload;
 };
 
+const fieldsFromConfig = (payload, Config) => {
+  const updatedPayload = payload;
+  if (!payload.from) {
+    updatedPayload.from = {};
+    updatedPayload.from.email = Config.fromEmail;
+    updatedPayload.from.name = Config.fromName ? Config.fromName : null;
+    updatedPayload.from = removeUndefinedAndNullValues(updatedPayload.from);
+  }
+  if (Config.templateId && !payload.template_id) {
+    updatedPayload.template_id = Config.templateId;
+  }
+  const attachments = createAttachments(Config);
+  if (attachments.length > 0 && !payload.attachments) {
+    updatedPayload.attachments = attachments;
+  }
+  const content = createContent(Config);
+  if (content.length > 0 && !payload.content) {
+    updatedPayload.content = content;
+  }
+  if (!payload.subject) {
+    updatedPayload.subject = Config.subject;
+  }
+  if (!payload.reply_to) {
+    updatedPayload.reply_to = {};
+    updatedPayload.reply_to.email = Config.replyToEmail
+      ? Config.replyToEmail
+      : null;
+    updatedPayload.reply_to.name = Config.replyToName
+      ? Config.replyToName
+      : null;
+  }
+  return updatedPayload;
+};
+
 module.exports = {
   payloadValidator,
   isValidEvent,
   createList,
-  createContent,
-  createAttachments,
-  constructFields,
   createMailSettings,
-  createTrackSettings
+  createTrackSettings,
+  fieldsFromConfig
 };

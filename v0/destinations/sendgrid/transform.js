@@ -9,61 +9,57 @@ const {
   defaultPostRequestConfig,
   getIntegrationsObj,
   isEmptyObject,
-  extractCustomFields
+  extractCustomFields,
+  constructPayload
 } = require("../../util");
-const { ENDPOINT, TRACK_EXCLUSION_FIELDS } = require("./config");
+const {
+  ENDPOINT,
+  TRACK_EXCLUSION_FIELDS,
+  MIN_POOL_LENGTH,
+  MAX_POOL_LENGTH,
+  trackMapping
+} = require("./config");
 const {
   payloadValidator,
   isValidEvent,
   createList,
-  createContent,
-  createAttachments,
-  constructFields,
   createMailSettings,
-  createTrackSettings
+  createTrackSettings,
+  fieldsFromConfig
 } = require("./util");
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
     throw new CustomError("event is required for track call", 400);
   }
   event = event.trim().toLowerCase();
-  const flag = isValidEvent(Config, event);
-  if (!flag) {
+  if (!isValidEvent(Config, event)) {
     throw new CustomError("event not configured on dashboard", 400);
   }
   let payload = {};
+  // all the properties are to be passed inside integrations object
   const integrationsObj = getIntegrationsObj(message, "sendgrid");
-  payload.personalizations = integrationsObj.personalizations;
-
-  payload.subject = integrationsObj.subject || Config.subject;
-
-  const attachments = createAttachments(Config);
-  if (attachments.length > 0) {
-    payload.attachments = attachments;
-  }
-  const content = createContent(Config);
-  if (content.length > 0) {
-    payload.content = content;
-  }
-  payload = constructFields(integrationsObj, payload);
-
-  payload.reply_to = {};
-  if (Config.replyToEmail) {
-    payload.reply_to.email = Config.replyToEmail;
-  }
-  if (Config.replyToName) {
-    payload.reply_to.name = Config.replyToName;
-  }
-  if (integrationsObj.replyTo) {
-    if (integrationsObj.replyTo.email) {
-      payload.reply_to.email = integrationsObj.replyTo.email;
+  if (!integrationsObj) {
+    if (!Config.mailFromTraits) {
+      throw new CustomError("integration object not found", 400);
     }
-    if (integrationsObj.replyTo.name) {
-      payload.reply_to.name = integrationsObj.replyTo.name;
+    const email = getValueFromMessage(message, [
+      "traits.email",
+      "context.traits.email"
+    ]);
+    if (!email) {
+      throw new CustomError(
+        "unable to create personalization object. email not found",
+        400
+      );
     }
+    payload.personalizations = [{ to: [{}] }];
+    payload.personalizations[0].to[0].email = email;
+  } else {
+    payload = constructPayload(message, trackMapping);
   }
+  payload = fieldsFromConfig(payload, Config);
 
   payload.asm = {};
   if (
@@ -76,26 +72,28 @@ const trackResponseBuilder = async (message, { Config }) => {
   const groupsToDisplay = createList(Config);
   payload.asm.groups_to_display =
     groupsToDisplay.length > 0 ? groupsToDisplay : null;
+
   if (
     Config.IPPoolName &&
-    Config.IPPoolName.length >= 2 &&
-    Config.IPPoolName.length <= 64
+    Config.IPPoolName.length >= MIN_POOL_LENGTH &&
+    Config.IPPoolName.length <= MAX_POOL_LENGTH
   ) {
     payload.ip_pool_name = Config.IPPoolName;
   }
-
+  payload.reply_to = removeUndefinedAndNullValues(payload.reply_to);
+  payload.asm = removeUndefinedAndNullValues(payload.asm);
   payload = createMailSettings(payload, integrationsObj, Config);
   payload = createTrackSettings(payload, Config);
-  payload.asm = removeUndefinedAndNullValues(payload.asm);
-  if (isEmptyObject(payload.asm)) {
-    delete payload.asm;
-  }
   if (!payload.custom_args) {
     let customFields = {};
     customFields = extractCustomFields(
       message,
       customFields,
-      ["integrations.sendgrid"],
+      [
+        "integrations.sendgrid",
+        "integrations.Sendgrid",
+        "integrations.SENDGRID"
+      ],
       TRACK_EXCLUSION_FIELDS
     );
     if (!isEmptyObject(customFields)) {

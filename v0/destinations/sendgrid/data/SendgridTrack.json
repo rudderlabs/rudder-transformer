@@ -1,34 +1,67 @@
-// [
-//   {
-//     "destKey": "from",
-//     "sourceKeys": "properties.from",
-//     "required": true
-//   },
-  
-  
-//   {
-//     "destKey": "attachments",
-//     "sourceKeys": "properties.attachments",
-//     "required": false
-//   },
-//   {
-//     "destKey": "categories",
-//     "sourceKeys": "properties.categories",
-//     "required": false
-//   },
-//   {
-//     "destKey": "send_at",
-//     "sourceKeys": "properties.sendAt",
-//     "required": false
-//   },
-//   {
-//     "destKey": "batch_id",
-//     "sourceKeys": "properties.batchId",
-//     "required": false
-//   },
-//   {
-//     "destKey": "reply_to_list",
-//     "sourceKeys": "properties.replyToList",
-//     "required": false
-//   }
-// ]
+[
+  {
+    "destKey": "from",
+    "sourceKeys": ["integrations.Sendgrid.from","integrations.SENDGRID.from","integrations.sendgrid.from"],
+    "required": false
+  },
+  {
+    "destKey": "attachments",
+    "sourceKeys": ["integrations.Sendgrid.attachments","integrations.SENDGRID.attachments","integrations.sendgrid.attachments"],
+    "required": false
+  },
+  {
+    "destKey": "categories",
+    "sourceKeys": ["integrations.Sendgrid.categories","integrations.SENDGRID.categories","integrations.sendgrid.categories"],
+    "required": false
+  },
+  {
+    "destKey": "send_at",
+    "sourceKeys": ["integrations.Sendgrid.sendAt","integrations.SENDGRID.sendAt","integrations.sendgrid.sendAt"],
+    "required": false
+  },
+  {
+    "destKey": "batch_id",
+    "sourceKeys": ["integrations.Sendgrid.batchId","integrations.SENDGRID.batchId","integrations.sendgrid.batchId"],
+    "required": false
+  },
+  {
+    "destKey": "reply_to_list",
+    "sourceKeys": ["integrations.Sendgrid.replyToList","integrations.SENDGRID.replyToList","integrations.sendgrid.replyToList"],
+    "required": false
+  },
+  {
+    "destKey": "content",
+    "sourceKeys": ["integrations.Sendgrid.content","integrations.SENDGRID.content","integrations.sendgrid.content"],
+    "required": false
+  },
+  {
+    "destKey": "template_id",
+    "sourceKeys": ["integrations.Sendgrid.templateId","integrations.SENDGRID.templateId","integrations.sendgrid.templateId"],
+    "required": false
+  },
+  {
+    "destKey": "headers",
+    "sourceKeys": ["integrations.Sendgrid.headers","integrations.SENDGRID.headers","integrations.sendgrid.headers"],
+    "required": false
+  },
+  {
+    "destKey": "custom_args",
+    "sourceKeys": ["integrations.Sendgrid.customArgs","integrations.SENDGRID.customArgs","integrations.sendgrid.customArgs"],
+    "required": false
+  },
+  {
+    "destKey": "personalizations",
+    "sourceKeys": ["integrations.Sendgrid.personalizations","integrations.SENDGRID.personalizations","integrations.sendgrid.personalizations"],
+    "required": false
+  },
+  {
+    "destKey": "subject",
+    "sourceKeys": ["integrations.Sendgrid.subject","integrations.SENDGRID.subject","integrations.sendgrid.subject"],
+    "required": false
+  },
+  {
+    "destKey": "reply_to",
+    "sourceKeys": ["integrations.Sendgrid.replyTo","integrations.SENDGRID.replyTo","integrations.sendgrid.replyTo"],
+    "required": false
+  }
+]

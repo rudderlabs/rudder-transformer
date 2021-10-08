@@ -1,23 +1,8 @@
-const { getMappingConfig, getHashFromArray } = require("../../util");
-
 const BASE_URL = "https://graph.facebook.com/v11.0";
-
-function getAudienceId(messageEvent, destination) {
-  const { eventAudienceMapping } = destination.Config;
-  const hashMap = getHashFromArray(eventAudienceMapping, "from", "to", "false");
-
-  return hashMap[messageEvent] || hashMap["*"];
-}
 
 function getEndPoint(audienceId) {
   return `${BASE_URL}/${audienceId}/users`;
 }
-
-const CONFIG_CATEGORIES = {
-  EVENT: { name: "eventConfig" },
-  SESSION: { name: "sessionField" },
-  DATA_SOURCE: { name: "data_sourceConfig" }
-};
 
 const schemaFields = [
   "EMAIL_SHA256",
@@ -39,22 +24,84 @@ const schemaFields = [
   "MADID",
   "COUNTRY"
 ];
-// as per real time experimentation maximum 500 users can be added at a time
-const MAX_USER_COUNT = 500;
-const sessionBlockField = ["session_id", "batch_seq", "last_batch_flag"];
-const USER_ADD = "userListAdd";
-const USER_DELETE = "userListDelete";
 
-const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const typeFields = [
+  "UNKNOWN",
+  "FILE_IMPORTED",
+  "EVENT_BASED",
+  "SEED_BASED",
+  "THIRD_PARTY_IMPORTED",
+  "COPY_PASTE",
+  "CONTACT_IMPORTER",
+  "HOUSEHOLD_AUDIENCE"
+];
+
+const subTypeFields = [
+  "ANYTHING",
+  "NOTHING",
+  "HASHES",
+  "USER_IDS",
+  "HASHES_OR_USER_IDS",
+  "MOBILE_ADVERTISER_IDS",
+  "EXTERNAL_IDS",
+  "MULTI_HASHES",
+  "TOKENS",
+  "EXTERNAL_IDS_MIX",
+  "HOUSEHOLD_EXPANSION",
+  "WEB_PIXEL_HITS",
+  "MOBILE_APP_EVENTS",
+  "MOBILE_APP_COMBINATION_EVENTS",
+  "VIDEO_EVENTS",
+  "WEB_PIXEL_COMBINATION_EVENTS",
+  "PLATFORM",
+  "MULTI_DATA_EVENTS",
+  "IG_BUSINESS_EVENTS",
+  "STORE_VISIT_EVENTS",
+  "INSTANT_ARTICLE_EVENTS",
+  "FB_EVENT_SIGNALS",
+  "ENGAGEMENT_EVENT_USERS",
+  "FACEBOOK_WIFI_EVENTS",
+  "CUSTOM_AUDIENCE_USERS",
+  "PAGE_FANS",
+  "CONVERSION_PIXEL_HITS",
+  "APP_USERS",
+  "S_EXPR",
+  "DYNAMIC_RULE",
+  "CAMPAIGN_CONVERSIONS",
+  "WEB_PIXEL_HITS_CUSTOM_AUDIENCE_USERS",
+  "MOBILE_APP_CUSTOM_AUDIENCE_USERS",
+  "COMBINATION_CUSTOM_AUDIENCE_USERS",
+  "VIDEO_EVENT_USERS",
+  "FB_PIXEL_HITS",
+  "IG_PROMOTED_POST",
+  "PLACE_VISITS",
+  "OFFLINE_EVENT_USERS",
+  "EXPANDED_AUDIENCE",
+  "SEED_LIST",
+  "PARTNER_CATEGORY_USERS",
+  "PAGE_SMART_AUDIENCE",
+  "MULTICOUNTRY_COMBINATION",
+  "PLATFORM_USERS",
+  "MULTI_EVENT_SOURCE",
+  "SMART_AUDIENCE",
+  "LOOKALIKE_PLATFORM",
+  "SIGNAL_SOURCE",
+  "MAIL_CHIMP_EMAIL_HASHES",
+  "CONSTANT_CONTACTS_EMAIL_HASHES",
+  "COPY_PASTE_EMAIL_HASHES",
+  "CONTACT_IMPORTER",
+  "DATA_FILE"
+];
+// as per real time experimentation maximum 500 users can be added at a time
+// const MAX_USER_COUNT = 500; (using from destination definition)
+const USER_ADD = "add";
+const USER_DELETE = "remove";
 
 module.exports = {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
   getEndPoint,
   schemaFields,
-  sessionBlockField,
   USER_ADD,
   USER_DELETE,
-  MAX_USER_COUNT,
-  getAudienceId
+  typeFields,
+  subTypeFields
 };

@@ -697,8 +697,13 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
       );
 
       if (value || value === 0 || value === false) {
-        // set the value only if correct
-        set(payload, destKey, value);
+        if (destKey) {
+          // set the value only if correct
+          set(payload, destKey, value);
+        } else {
+          // to set to root and flatten later
+          payload[""] = value;
+        }
       } else if (required) {
         // throw error if reqired value is missing
         throw new Error(
@@ -968,12 +973,9 @@ function getStringValueOfJSON(json) {
 
 const getMetadata = metadata => {
   return {
-    sourceId: metadata.sourceId,
     sourceType: metadata.sourceType,
-    destinationId: metadata.destinationId,
     destinationType: metadata.destinationType,
-    workspaceId: metadata.workspaceId,
-    namespace: metadata.namespace
+    k8_namespace: metadata.namespace
   };
 };
 // checks if array 2 is a subset of array 1

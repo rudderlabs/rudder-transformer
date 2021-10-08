@@ -2,8 +2,13 @@ const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
+const stats = require("./stats");
 
-async function runUserTransform(events, code, eventsMetadata) {
+async function runUserTransform(events, code, eventsMetadata, versionId) {
+  const tags = {
+    transformerVersionId: versionId,
+    version: 0
+  };
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
@@ -19,8 +24,10 @@ async function runUserTransform(events, code, eventsMetadata) {
     "_fetch",
     new ivm.Reference(async (resolve, ...args) => {
       try {
+        const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
+        stats.timing("fetch_call_duration", fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy(data).copyInto()
         ]);
@@ -133,6 +140,8 @@ async function runUserTransform(events, code, eventsMetadata) {
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get("transform");
+  // stat
+  stats.counter("events_into_vm", events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
@@ -192,7 +201,8 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
         userTransformedEvents = await runUserTransform(
           eventMessages,
           res.code,
-          eventsMetadata
+          eventsMetadata,
+          versionId
         );
         userTransformedEvents = userTransformedEvents.map(ev => ({
           transformedEvent: ev,

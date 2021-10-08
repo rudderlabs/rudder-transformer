@@ -10,7 +10,8 @@ const {isEmptyObject} = require("../v0/util");
 const defaultOptions = {
     strictRequired: true,
     allErrors: true,
-    verbose: true
+    verbose: true,
+    allowUnionTypes: true
     // removeAdditional: false, // "all" - it purges extra properties from event,
     // useDefaults: false
 };
@@ -112,7 +113,7 @@ async function validate(event) {
             eventSchemaCache.set(schemaHash, validateEvent);
         }
 
-        const valid = validateEvent(event.message.properties);
+        const valid = validateEvent(event.message);
         if (valid) {
             return [];
         }

@@ -4,7 +4,8 @@ const {
   isObject,
   isEmptyObject,
   removeUndefinedAndNullValues,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullAndEmptyValues,
+  isEmpty
 } = require("../../util");
 
 const isValidBase64 = content => {
@@ -216,11 +217,11 @@ const createMailSettings = (payload, iObj, Config) => {
   if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
     delete updatedPayload.mail_settings.bypass_unsubscribe_management;
   }
-  if (updatedPayload.mail_settings.footer.text.length < 1) {
+  if (isEmpty(updatedPayload.mail_settings.footer.text)) {
     updatedPayload.mail_settings.footer.text = null;
   }
 
-  if (updatedPayload.mail_settings.footer.html.length < 1) {
+  if (isEmpty(updatedPayload.mail_settings.footer.html)) {
     updatedPayload.mail_settings.footer.html = null;
   }
   updatedPayload.mail_settings.footer = removeUndefinedAndNullValues(

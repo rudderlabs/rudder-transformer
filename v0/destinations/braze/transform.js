@@ -110,7 +110,7 @@ function getUserAttributesObject(message, mappingJson) {
     let value = get(traits, mappingJson[destKey]);
     if (value !== undefined) {
       // handle gender special case
-      if (destKey === "gender") {
+      if (destKey === "gender" && value) {
         value = formatGender(value);
       }
       data[destKey] = value;

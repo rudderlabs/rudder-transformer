@@ -115,6 +115,12 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
+  return inputs.map(input => getSuccessRespEvents(
+      process(input),
+      [input.metadata],
+      input.destination
+    ))
+
   const respList = await Promise.all(
     inputs.map(async input => {
       try {

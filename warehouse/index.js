@@ -27,6 +27,8 @@ const maxColumnsInEvent = parseInt(
   10
 );
 
+const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+
 const getDataType = (val, options) => {
   const type = typeof val;
   switch (type) {
@@ -463,6 +465,25 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
   ]
 */
 
+/*
+* Adds source and destination specific information into context
+* */
+function enhanceContextWithSourceDestInfo(message, metadata) {
+  if (!WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT) {
+    return;
+  }
+  if (!metadata) {
+    return;
+  }
+  context = message.context || {};
+  context.sourceId = metadata.sourceId;
+  context.sourceType = metadata.sourceType;
+  context.destinationId = metadata.destinationId;
+  context.destinationType = metadata.destinationType;
+
+  message.context = context
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
@@ -474,6 +495,9 @@ function processWarehouseMessage(message, options) {
     const randomID = uuidv4();
     message.messageId = `auto-${randomID}`;
   }
+
+  // Adding source and destination specific information.
+  enhanceContextWithSourceDestInfo(message, options.metadata)
 
   if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
     message.receivedAt =

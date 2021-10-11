@@ -10,7 +10,8 @@ const {isEmptyObject} = require("../v0/util");
 const defaultOptions = {
     strictRequired: true,
     allErrors: true,
-    verbose: true
+    verbose: true,
+    allowUnionTypes: true
     // removeAdditional: false, // "all" - it purges extra properties from event,
     // useDefaults: false
 };

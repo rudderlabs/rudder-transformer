@@ -1,4 +1,3 @@
-const { STATS_PRIORITY, TRANSFORMER_STAGE } = require("../../util/constant");
 const {
   proxyRequest,
   httpGET,
@@ -6,8 +5,10 @@ const {
 } = require("../../../adapters/network");
 const {
   nodeSysErrorToStatus,
-  trimResponse
+  trimResponse,
+  getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 
 const MARKETO_RETRYABLE_CODES = ["601", "602", "604", "611"];
@@ -48,11 +49,16 @@ const marketoResponseHandler = ({
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .setFailureAt(stage)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
-            stage,
-            priority: STATS_PRIORITY.P1
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+              meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+            }
+          )
           .build();
       } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -63,11 +69,16 @@ const marketoResponseHandler = ({
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .setFailureAt(stage)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
-            stage,
-            priority: STATS_PRIORITY.P3
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+              meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
+            }
+          )
           .build();
       } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -78,11 +89,16 @@ const marketoResponseHandler = ({
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
           .setFailureAt(stage)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            DESTINATION,
-            stage,
-            priority: STATS_PRIORITY.P3
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+              meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+            }
+          )
           .build();
       }
       // default failure cases (keeping retryable for now)
@@ -94,11 +110,16 @@ const marketoResponseHandler = ({
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
         .setFailureAt(stage)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          DESTINATION,
-          stage,
-          priority: STATS_PRIORITY.P3
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+          }
+        )
         .build();
     }
     // http success but data not present
@@ -111,11 +132,16 @@ const marketoResponseHandler = ({
       })
       .setMetadata(metadata)
       .setFailureAt(stage)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
-        stage,
-        priority: STATS_PRIORITY.P3
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+        }
+      )
       .build();
   }
   // http failure cases
@@ -127,11 +153,16 @@ const marketoResponseHandler = ({
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
       .setFailureAt(stage)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
-        stage,
-        priority: STATS_PRIORITY.P1
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(nodeSysErr.status || 500)
+        }
+      )
       .build();
   } else {
     const temp = trimResponse(clientResponse.response);
@@ -141,11 +172,16 @@ const marketoResponseHandler = ({
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
       .setFailureAt(stage)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        DESTINATION,
-        stage,
-        priority: STATS_PRIORITY.P1
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(temp.status || 500)
+        }
+      )
       .build();
   }
 };
@@ -178,7 +214,7 @@ const sendData = async payload => {
   const parsedResponse = marketoResponseHandler({
     clientResponse: res,
     metadata,
-    stage: TRANSFORMER_STAGE.PROXY
+    stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.PROXY
   });
   return {
     status: parsedResponse.status,

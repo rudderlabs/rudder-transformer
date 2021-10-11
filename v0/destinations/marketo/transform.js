@@ -29,8 +29,7 @@ const Cache = require("../../util/cache");
 const {
   USER_LEAD_CACHE_TTL,
   AUTH_CACHE_TTL,
-  TRANSFORMER_STAGE,
-  STATS_PRIORITY
+  TRANSFORMER_METRIC
 } = require("../../util/constant");
 const {
   marketoResponseHandler,
@@ -65,7 +64,7 @@ const getAuthToken = async formattedDestination => {
         }
       ),
       sourceMessage: "During fetching auth token",
-      stage: TRANSFORMER_STAGE.TRANSFORM
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
@@ -121,7 +120,7 @@ const createOrUpdateLead = async (
         }
       ),
       sourceMessage: "During lookup lead",
-      stage: TRANSFORMER_STAGE.TRANSFORM
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       const { result } = response.data;
@@ -151,7 +150,7 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
         }
       ),
       sourceMessage: "During lead look up using email",
-      stage: TRANSFORMER_STAGE.TRANSFORM
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     });
     if (response && response.data) {
       const { result } = response.data;
@@ -189,7 +188,7 @@ const lookupLeadUsingId = async (
         }
       ),
       sourceMessage: "During lead look up using userId",
-      stage: TRANSFORMER_STAGE.TRANSFORM
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     });
     if (response.data) {
       const { result } = response.data;
@@ -245,11 +244,18 @@ const getLeadId = async (message, formattedDestination, token) => {
         .setStatus(400)
         .setMessage("Lead creation is turned off on the dashboard")
         .isExplicit(true)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          destination: DESTINATION,
-          stage: TRANSFORMER_STAGE.TRANSFORM,
-          priority: STATS_PRIORITY.P2
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                .CONFIGURATION
+          }
+        )
         .build();
     }
   }
@@ -267,11 +273,18 @@ const getLeadId = async (message, formattedDestination, token) => {
         "lookup failure - either anonymousId or userId or both fields are not created in marketo"
       )
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
+        }
+      )
       .build();
   }
 
@@ -295,11 +308,17 @@ const processIdentify = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Invalid traits value for Marketo")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        }
+      )
       .build();
   }
 
@@ -360,11 +379,18 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Anonymous event tracking is turned off and invalid userId")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        }
+      )
       .build();
   }
 
@@ -374,11 +400,18 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Event is not mapped to Custom Activity")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        }
+      )
       .build();
   }
 
@@ -392,11 +425,18 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Primary Key value is invalid for the event")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        }
+      )
       .build();
   }
 
@@ -452,11 +492,17 @@ const processEvent = async (message, destination, token) => {
       .setStatus(400)
       .setMessage("Message Type is not present. Aborting message.")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P3
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        }
+      )
       .build();
   }
   const messageType = message.type.toLowerCase();
@@ -475,11 +521,17 @@ const processEvent = async (message, destination, token) => {
         .setStatus(400)
         .setMessage("Message type not supported")
         .isExplicit(true)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          destination: DESTINATION,
-          stage: TRANSFORMER_STAGE.TRANSFORM,
-          priority: STATS_PRIORITY.P3
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          }
+        )
         .build();
   }
 
@@ -494,11 +546,15 @@ const process = async event => {
       .setStatus(400)
       .setMessage("Authorisation failed")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
+        }
+      )
       .build();
   }
   const response = await processEvent(event.message, event.destination, token);

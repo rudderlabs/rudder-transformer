@@ -6,7 +6,7 @@ const {
   SpecedTraits,
   TraitsMapping
 } = require("../../../constants");
-const { TRANSFORMER_STAGE, STATS_PRIORITY } = require("../../util/constant");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -451,11 +451,18 @@ function processSingleMessage(message, destination) {
             .setStatus(400)
             .setMessage("Group call parameters are not valid")
             .isExplicit(true)
-            .statsIncrement("transformation_and_proxy_errors", 1, {
-              destination: DESTINATION,
-              stage: TRANSFORMER_STAGE.TRANSFORM,
-              priority: STATS_PRIORITY.P2
-            })
+            .statsIncrement(
+              TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+              1,
+              {
+                destination: DESTINATION,
+                stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+                scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+                meta:
+                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                    .INSTRUMENTATION
+              }
+            )
             .build();
         }
       }
@@ -488,11 +495,17 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .isExplicit(true)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          destination: DESTINATION,
-          stage: TRANSFORMER_STAGE.TRANSFORM,
-          priority: STATS_PRIORITY.P3
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          }
+        )
         .build();
   }
   return responseBuilderSimple(

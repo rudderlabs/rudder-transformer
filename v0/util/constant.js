@@ -8,21 +8,44 @@ const AUTH_CACHE_TTL = process.env.MARKETO_AUTH_CACHE_TTL
 
 const API_CALL = "api_call_count";
 
-const STATS_PRIORITY = {
-  P1: "priority_one",
-  P2: "priority_two",
-  P3: "priority_three"
-};
-
-const TRANSFORMER_STAGE = {
-  TRANSFORM: "transform",
-  PROXY: "proxy"
+const TRANSFORMER_METRIC = {
+  MEASUREMENT: {
+    INTEGRATION_ERROR_METRIC: "integration_error_metric"
+  },
+  TRANSFORMER_STAGE: {
+    TRANSFORM: "transform",
+    PROXY: "proxy"
+  },
+  MEASUREMENT_TYPE: {
+    API: {
+      SCOPE: "api",
+      META: {
+        ABORTABLE: "abortable",
+        RETRYABLE: "retryable",
+        THROTTLED: "throttled"
+      }
+    },
+    TRANSFORMATION: {
+      SCOPE: "transformation",
+      META: {
+        BAD_EVENT: "badEvent",
+        BAD_PARAM: "badParam",
+        INSTRUMENTATION: "instrumentation",
+        CONFIGURATION: "configuration"
+      }
+    },
+    AUTHORIZATION: {
+      SCOPE: "authorization"
+    },
+    EXCEPTION: {
+      SCOPE: "exception"
+    }
+  }
 };
 
 module.exports = {
   API_CALL,
   AUTH_CACHE_TTL,
-  STATS_PRIORITY,
-  TRANSFORMER_STAGE,
+  TRANSFORMER_METRIC,
   USER_LEAD_CACHE_TTL
 };

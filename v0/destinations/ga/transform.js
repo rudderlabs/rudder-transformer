@@ -10,7 +10,7 @@ const {
   nameToEventMap,
   DESTINATION
 } = require("./config");
-const { TRANSFORMER_STAGE, STATS_PRIORITY } = require("../../util/constant");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const {
   removeUndefinedAndNullValues,
@@ -144,11 +144,18 @@ function processPageViews(message, destination) {
           .setStatus(400)
           .setMessage(`Invalid Url: ${documentUrl}`)
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P2
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
           .build();
       }
     }
@@ -541,11 +548,18 @@ function processProductListEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductListEvent type")
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P2
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
           .build();
     }
     const { products } = message.properties;
@@ -640,11 +654,18 @@ function processProductEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductEvent type")
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P2
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
           .build();
     }
 
@@ -695,11 +716,17 @@ function processTransactionEvent(message, destination) {
         .setStatus(400)
         .setMessage("unknown TransactionEvent type")
         .isExplicit(true)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          destination: DESTINATION,
-          stage: TRANSFORMER_STAGE.TRANSFORM,
-          priority: STATS_PRIORITY.P2
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+          }
+        )
         .build();
   }
 
@@ -737,11 +764,17 @@ function processTransactionEvent(message, destination) {
       .setStatus(400)
       .setMessage("No product information supplied for transaction event")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P2
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        }
+      )
       .build();
   }
 
@@ -784,11 +817,18 @@ function processEComGenericEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown TransactionEvent type")
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P2
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
           .build();
     }
   }
@@ -816,11 +856,17 @@ function processSingleMessage(message, destination) {
       .setStatus(400)
       .setMessage("Message type is not present")
       .isExplicit(true)
-      .statsIncrement("transformation_and_proxy_errors", 1, {
-        destination: DESTINATION,
-        stage: TRANSFORMER_STAGE.TRANSFORM,
-        priority: STATS_PRIORITY.P3
-      })
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        }
+      )
       .build();
   }
   let customParams = {};
@@ -838,11 +884,18 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("server side identify is not on")
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P3
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            }
+          )
           .build();
       }
       break;
@@ -861,11 +914,18 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("Event name is not present/is not a string")
           .isExplicit(true)
-          .statsIncrement("transformation_and_proxy_errors", 1, {
-            destination: DESTINATION,
-            stage: TRANSFORMER_STAGE.TRANSFORM,
-            priority: STATS_PRIORITY.P2
-          })
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_EVENT
+            }
+          )
           .build();
       }
       if (enhancedEcommerce) {
@@ -953,11 +1013,17 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .isExplicit(true)
-        .statsIncrement("transformation_and_proxy_errors", 1, {
-          destination: DESTINATION,
-          stage: TRANSFORMER_STAGE.TRANSFORM,
-          priority: STATS_PRIORITY.P3
-        })
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          }
+        )
         .build();
   }
 

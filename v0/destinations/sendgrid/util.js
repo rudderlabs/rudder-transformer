@@ -21,8 +21,8 @@ const payloadValidator = payload => {
       throw new CustomError("Either template id or content is required.", 400);
     }
   }
-  if (payload.personalizations && payload.personalizations.length < 1) {
-    throw new CustomError("personalization field cannot be empty", 400);
+  if (!payload.personalizations || isEmpty(payload.personalizations)) {
+    throw new CustomError("personalizations field cannot be empty", 400);
   }
   if (payload.personalizations) {
     payload.personalizations.forEach((keys, index) => {

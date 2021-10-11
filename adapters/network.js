@@ -9,8 +9,12 @@ const { removeUndefinedAndNullValues } = require("../v0/util/index");
 
 const agentArgs = removeUndefinedAndNullValues({
   keepAlive: true,
-  maxSockets: process.env.NETWORK_AGENT_MAX_SOCKET,
+  maxSockets: process.env.NETWORK_AGENT_MAX_SOCKET
+    ? Number.parseInt(process.env.NETWORK_AGENT_MAX_SOCKET, 10)
+    : undefined,
   maxFreeSockets: process.env.NETWORK_AGENT_MAX_FREE_SOCKET
+    ? Number.parseInt(process.env.NETWORK_AGENT_MAX_FREE_SOCKET, 10)
+    : undefined
 });
 
 console.log(agentArgs);

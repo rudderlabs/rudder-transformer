@@ -22,8 +22,12 @@ const payloadValidator = payload => {
     }
   }
   if (!payload.personalizations || isEmpty(payload.personalizations)) {
-    throw new CustomError("personalizations field cannot be empty", 400);
+    throw new CustomError(
+      "personalizations field cannot be missing or empty",
+      400
+    );
   }
+
   if (payload.personalizations) {
     payload.personalizations.forEach((keys, index) => {
       const personalizationsArr = [];

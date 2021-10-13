@@ -34,8 +34,8 @@ const TRANSFORMER_METRIC = {
         CONFIGURATION: "configuration"
       }
     },
-    AUTHORIZATION: {
-      SCOPE: "authorization"
+    AUTHENTICATION: {
+      SCOPE: "authentication"
     },
     EXCEPTION: {
       SCOPE: "exception"

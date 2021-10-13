@@ -15,5 +15,10 @@
     "metadata": {
       "defaultValue": {}
     }
+  },
+  {
+    "destKey": "ts",
+    "sourceKeys": "properties.ts",
+    "required": false
   }
 ]

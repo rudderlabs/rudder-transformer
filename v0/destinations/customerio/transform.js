@@ -5,9 +5,11 @@ const truncate = require("truncate-utf8-bytes");
 const {
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  MappedToDestinationKey
 } = require("../../../constants");
 const {
+  adduserIdFromExternalId,
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
@@ -52,6 +54,12 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   let endpoint;
   let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
+  // override userId with externalId in context(if present) and event is mapped to destination
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if (mappedToDestination) {
+    adduserIdFromExternalId(message)
+  }
+
   const userId =
     message.userId && message.userId !== "" ? message.userId : undefined;
 

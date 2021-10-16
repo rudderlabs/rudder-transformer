@@ -9,6 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
@@ -132,11 +133,18 @@ async function handleDest(ctx, version, destination) {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         });
-        stats.increment("dest_transform_errors", 1, {
-          destination,
-          version,
-          ...metaTags
-        });
+        // stats for non-explicit exceptions
+        if (!error.isExplicit) {
+          stats.increment(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+            }
+          );
+        }
       }
     })
   );
@@ -162,10 +170,10 @@ async function handleValidation(ctx) {
     const eventStartTime = new Date();
     try {
       const parsedEvent = event;
-      parsedEvent.request = {query: reqParams};
+      parsedEvent.request = { query: reqParams };
       const hv = await eventValidator.handleValidation(parsedEvent);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,
@@ -175,21 +183,21 @@ async function handleValidation(ctx) {
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,
-          ...metaTags,
+          ...metaTags
         });
       } else {
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 200,
-          validationErrors: hv.validationErrors,
+          validationErrors: hv.validationErrors
         });
         stats.counter("hv_errors", 1, {
           ...metaTags
         });
       }
     } catch (error) {
-      const errMessage = `Error occurred while validating : ${error}`
+      const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
       respList.push({
         output: event.message,
@@ -284,7 +292,6 @@ if (startDestTransformer) {
             : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version,
           ...metaTags
         });
         stats.increment("dest_transform_requests", 1, {
@@ -552,7 +559,12 @@ if (networkMode) {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
       router.post(`/network/${destination}/proxy`, async ctx => {
+        const startTime = new Date();
         await handleDestinationNetwork(version, destination, ctx);
+        stats.timing("transformer_proxy_latency", startTime, {
+          destination,
+          version
+        });
       });
     });
   });

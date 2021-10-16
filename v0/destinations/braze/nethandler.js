@@ -1,14 +1,14 @@
-const { sendRequest } = require("../../../adapters/network");
+const { proxyRequest } = require("../../../adapters/network");
 const {
   trimResponse,
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const ErrorBuilder = require("../../util/error");
 
 // eslint-disable-next-line consistent-return
-const responseHandler = (dresponse, metadata) => {
-  if (dresponse.success) {
-    const trimmedResponse = trimResponse(dresponse);
+const brazeResponseHandler = (clientResponse, metadata) => {
+  if (clientResponse.success) {
+    const trimmedResponse = trimResponse(clientResponse);
     const { data } = trimmedResponse;
 
     if (data.errors && data.errors.length > 0) {
@@ -17,29 +17,32 @@ const responseHandler = (dresponse, metadata) => {
         .setMessage("Braze Request Failed")
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     } else {
       return trimmedResponse;
     }
   } else {
-    const { response } = dresponse.response;
-    if (!response && dresponse.response && dresponse.response.code) {
-      const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
+    const { response } = clientResponse.response;
+    if (!response && clientResponse.response && clientResponse.response.code) {
+      const nodeSysErr = nodeSysErrorToStatus(clientResponse.response.code);
       throw new ErrorBuilder()
         .setStatus(nodeSysErr.status || 500)
         .setMessage(nodeSysErr.message)
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     } else {
-      const temp = trimResponse(dresponse.response);
+      const trimmedResponse = trimResponse(clientResponse.response);
       throw new ErrorBuilder()
-        .setStatus(temp.status || 500)
-        .setMessage(temp.statusText)
-        .setDestinationResponse({ ...temp, status: temp.status })
+        .setStatus(trimmedResponse.status || 500)
+        .setMessage(trimmedResponse.statusText)
+        .setDestinationResponse({
+          ...trimmedResponse,
+          success: false
+        })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     }
   }
@@ -47,9 +50,21 @@ const responseHandler = (dresponse, metadata) => {
 
 const sendData = async payload => {
   const { metadata } = payload;
-  const res = await sendRequest(payload);
-  const parsedResponse = responseHandler(res, metadata); // Mandatory to have a handler here
-  return parsedResponse;
+  const res = await proxyRequest(payload);
+  const parsedResponse = brazeResponseHandler(res, metadata);
+  return {
+    status: parsedResponse.status,
+    destination: {
+      ...parsedResponse,
+      success: true
+    },
+    apiLimit: {
+      available: "",
+      resetAt: ""
+    },
+    metadata,
+    message: parsedResponse.statusText || "Request Processed Successfully"
+  };
 };
 
 module.exports = { sendData };

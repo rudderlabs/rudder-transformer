@@ -7,8 +7,11 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
+  DESTINATION
 } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
@@ -18,8 +21,7 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getErrorRespEvents,
-  getSuccessRespEvents,
-  CustomError
+  getSuccessRespEvents
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -138,7 +140,23 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new CustomError(`Invalid Url: ${documentUrl}`, 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage(`Invalid Url: ${documentUrl}`)
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
+          .build();
       }
     }
   }
@@ -526,7 +544,23 @@ function processProductListEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown ProductListEvent type", 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("unknown ProductListEvent type")
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
+          .build();
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
@@ -616,7 +650,23 @@ function processProductEvent(message, destination) {
         parameters.pa = "remove";
         break;
       default:
-        throw new CustomError("unknown ProductEvent type", 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("unknown ProductEvent type")
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
+          .build();
     }
 
     // add produt level custom dimensions and metrics to parameters
@@ -662,7 +712,22 @@ function processTransactionEvent(message, destination) {
       parameters.pa = "refund";
       break;
     default:
-      throw new CustomError("unknown TransactionEvent type", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("unknown TransactionEvent type")
+        .isExplicit(true)
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+          }
+        )
+        .build();
   }
 
   // One of total/revenue/value should be there
@@ -695,10 +760,22 @@ function processTransactionEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
-    throw new CustomError(
-      "No product information supplied for transaction event",
-      400
-    );
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("No product information supplied for transaction event")
+      .isExplicit(true)
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        }
+      )
+      .build();
   }
 
   // TODO: parameters.ec missing message.properties check and All value?
@@ -736,7 +813,23 @@ function processEComGenericEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown TransactionEvent type", 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("unknown TransactionEvent type")
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            }
+          )
+          .build();
     }
   }
   const { products } = message.properties;
@@ -759,7 +852,22 @@ function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
   if (!messageType) {
-    throw new CustomError("Message type is not present", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Message type is not present")
+      .isExplicit(true)
+      .statsIncrement(
+        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+        1,
+        {
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        }
+      )
+      .build();
   }
   let customParams = {};
   let category;
@@ -772,7 +880,23 @@ function processSingleMessage(message, destination) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
-        throw new CustomError("server side identify is not on", 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("server side identify is not on")
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            }
+          )
+          .build();
       }
       break;
     case EventType.PAGE:
@@ -786,7 +910,23 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK: {
       let eventName = message.event;
       if (!(typeof eventName === "string" || eventName instanceof String)) {
-        throw new CustomError("Event name is not present/is not a string", 400);
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("Event name is not present/is not a string")
+          .isExplicit(true)
+          .statsIncrement(
+            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+            1,
+            {
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_EVENT
+            }
+          )
+          .build();
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();
@@ -869,7 +1009,22 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new CustomError("message type not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("message type not supported")
+        .isExplicit(true)
+        .statsIncrement(
+          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
+          1,
+          {
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          }
+        )
+        .build();
   }
 
   return responseBuilderSimple(
@@ -883,14 +1038,7 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new Error(error.message || "Unknown error", error.status || 400);
-  }
-
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {

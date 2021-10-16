@@ -66,6 +66,7 @@ const getJobStatusHandler = (version, dest) => {
 };
 
 const eventValidator = require("./util/eventValidation");
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -569,6 +570,50 @@ if (networkMode) {
     });
   });
 }
+
+async function handleResponseTransform(version, destination, ctx) {
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.responseTransform) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support transformer proxy`;
+    return ctx.body;
+  }
+  let response;
+  logger.info(
+    "Request recieved for response transform for destination",
+    destination
+  );
+  try {
+    response = await destNetHandler.responseTransform(ctx.request.body);
+  } catch (err) {
+    response = {
+      status: 400,
+      error: err.message || "Error occurred while processing payload."
+    };
+    if (err.networkFailure) {
+      response = { ...err };
+    }
+  }
+
+  ctx.body = { output: response };
+  ctx.status = response.status;
+  return ctx.body;
+}
+
+versions.forEach(version => {
+  const destinations = getIntegrations(`${version}/destinations`);
+  destinations.forEach(destination => {
+    router.post(`/transform/${destination}/response`, async ctx => {
+      const startTime = new Date();
+      await handleResponseTransform(version, destination, ctx);
+      stats.timing("transformer_response_transform_latency", startTime, {
+        destination,
+        version
+      });
+    });
+  });
+});
 
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";

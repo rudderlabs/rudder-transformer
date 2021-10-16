@@ -67,4 +67,26 @@ const sendData = async payload => {
   };
 };
 
-module.exports = { sendData };
+const responseTransform = destResponse => {
+  const respBody = JSON.parse(destResponse.Body);
+  if (respBody.errors && respBody.errors.length > 0) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Braze Request Failed")
+      .setDestinationResponse({ ...respBody, success: false })
+      .isTransformerNetworkFailure(true)
+      .build();
+  }
+  const status = destResponse.Status;
+  const message = respBody.message || "Event delivered successfuly";
+  const destination = { ...respBody, status: destResponse.Status };
+  const { apiLimit } = respBody;
+  return {
+    status,
+    message,
+    destination,
+    apiLimit
+  };
+};
+
+module.exports = { sendData, responseTransform };

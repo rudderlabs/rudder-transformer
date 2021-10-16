@@ -93,4 +93,17 @@ const sendData = async payload => {
   return parsedResponse;
 };
 
-module.exports = { handleDestinationResponse, sendData };
+const responseTransform = destResponse => {
+  const respBody = JSON.parse(destResponse.Body);
+  const status = destResponse.Status;
+  const message = respBody.message || "Event delivered successfuly";
+  const destination = { ...respBody, status: destResponse.Status };
+  const { apiLimit } = respBody;
+  return {
+    status,
+    message,
+    destination,
+    apiLimit
+  };
+};
+module.exports = { handleDestinationResponse, responseTransform, sendData };

@@ -7,7 +7,7 @@ const {
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues,
+  removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError
@@ -46,7 +46,7 @@ function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(properties);
+  response.body.JSON = removeUndefinedValues(properties);
   return {
     ...response,
     headers: {
@@ -109,9 +109,9 @@ function getUserAttributesObject(message, mappingJson) {
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(traits, mappingJson[destKey]);
-    if (value) {
+    if (value !== undefined) {
       // handle gender special case
-      if (destKey === "gender") {
+      if (destKey === "gender" && value) {
         value = formatGender(value);
       }
       data[destKey] = value;
@@ -136,7 +136,7 @@ function getUserAttributesObject(message, mappingJson) {
       // if traitKey is not reserved add the value to final output
       if (reservedKeys.indexOf(traitKey) === -1) {
         const value = get(traits, traitKey);
-        if (value) {
+        if (value !== undefined) {
           data[traitKey] = value;
         }
       }

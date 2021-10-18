@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -25,7 +26,8 @@ const {
   createList,
   createMailSettings,
   createTrackSettings,
-  fieldsFromConfig
+  generatePayloadFromConfig,
+  requiredFieldValidator
 } = require("./util");
 
 const trackResponseBuilder = (message, { Config }) => {
@@ -54,13 +56,12 @@ const trackResponseBuilder = (message, { Config }) => {
         400
       );
     }
-    payload.personalizations = [{ to: [{}] }];
-    payload.personalizations[0].to[0].email = email;
+    payload.personalizations = [{ to: [{ email: email }] }];
   } else {
     payload = constructPayload(message, trackMapping);
   }
-  payload = fieldsFromConfig(payload, Config);
-
+  payload = generatePayloadFromConfig(payload, Config);
+  requiredFieldValidator(payload);
   payload.asm = {};
   if (
     Config.group &&

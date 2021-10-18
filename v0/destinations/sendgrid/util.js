@@ -13,11 +13,9 @@ const isValidBase64 = content => {
   return re.test(String(content));
 };
 
-const payloadValidator = payload => {
-  const updatedPayload = payload;
-
+const requiredFieldValidator = payload => {
   if (!payload.template_id) {
-    if (!payload.content) {
+    if (!payload.content || (payload.content && isEmpty(payload.content))) {
       throw new CustomError("Either template id or content is required.", 400);
     }
   }
@@ -27,6 +25,16 @@ const payloadValidator = payload => {
       400
     );
   }
+  if (!payload.from) {
+    throw new CustomError("from is required field", 400);
+  }
+  if (payload.from && !payload.from.email) {
+    throw new CustomError("email inside from object is required", 400);
+  }
+};
+
+const payloadValidator = payload => {
+  const updatedPayload = payload;
 
   if (payload.personalizations) {
     payload.personalizations.forEach((keys, index) => {
@@ -58,16 +66,10 @@ const payloadValidator = payload => {
       }
     });
   }
-  if (!payload.from) {
-    throw new CustomError("from is required field", 400);
-  }
-  if (payload.from && !payload.from.email) {
-    throw new CustomError("email inside from object is required", 400);
-  }
   if (payload.categories) {
     payload.categories.forEach((category, index) => {
       if (typeof category !== "string") {
-        updatedPayload.categories[index] = String(category);
+        updatedPayload.categories[index] = JSON.stringify(category);
       }
     });
     payload.categories.splice(10);
@@ -292,7 +294,7 @@ const createTrackSettings = (payload, Config) => {
   return updatedPayload;
 };
 
-const fieldsFromConfig = (payload, Config) => {
+const generatePayloadFromConfig = (payload, Config) => {
   const updatedPayload = payload;
   if (!payload.from) {
     updatedPayload.from = {};
@@ -303,15 +305,27 @@ const fieldsFromConfig = (payload, Config) => {
   if (Config.templateId && !payload.template_id) {
     updatedPayload.template_id = Config.templateId;
   }
-  const attachments = createAttachments(Config);
-  if (attachments.length > 0 && !payload.attachments) {
-    updatedPayload.attachments = attachments;
+  if (
+    !payload.attachments ||
+    (payload.attachments && isEmpty(payload.attachments))
+  ) {
+    const attachments = createAttachments(Config);
+    if (attachments.length > 0) {
+      updatedPayload.attachments = attachments;
+    } else {
+      delete updatedPayload.attachments;
+    }
   }
-  const content = createContent(Config);
-  if (content.length > 0 && !payload.content) {
-    updatedPayload.content = content;
+
+  if (!payload.content || (payload.content && isEmpty(payload.content))) {
+    const content = createContent(Config);
+    if (content.length > 0) {
+      updatedPayload.content = content;
+    } else {
+      delete updatedPayload.content;
+    }
   }
-  if (!payload.subject) {
+  if (!payload.subject || (payload.subject && isEmpty(payload.subject))) {
     updatedPayload.subject = Config.subject;
   }
   if (!payload.reply_to) {
@@ -332,5 +346,6 @@ module.exports = {
   createList,
   createMailSettings,
   createTrackSettings,
-  fieldsFromConfig
+  generatePayloadFromConfig,
+  requiredFieldValidator
 };

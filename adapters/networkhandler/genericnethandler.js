@@ -94,7 +94,12 @@ const sendData = async payload => {
 };
 
 const responseTransform = destResponse => {
-  const respBody = JSON.parse(destResponse.Body);
+  let respBody;
+  try {
+    respBody = JSON.parse(destResponse.Body);
+  } catch (err) {
+    respBody = JSON.stringify(destResponse.Body);
+  }
   const status = destResponse.Status;
   const message = respBody.message || "Event delivered successfuly";
   const destination = { ...respBody, status: destResponse.Status };

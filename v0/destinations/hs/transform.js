@@ -214,34 +214,35 @@ function process(event) {
 }
 
 const batch = destEvents => {
-  const batchedResponse = [];
+  const batchedResponseList = [];
 
-  let chunks = [];
+  let eventsChunk = [];
   const arrayChunksIdentify = [];
   destEvents.forEach((event, index) => {
     if (event.message.method === "GET") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
-      const response = defaultBatchRequestConfig();
-      response.batchedRequest.headers = message.headers;
-      response.batchedRequest.endpoint = endpoint;
-      response.batchedRequest.body = message.body;
-      response.batchedRequest.params = message.params;
-      response.batchedRequest.method = defaultGetRequestConfig.requestMethod;
-      response.metadata = [metadata];
-      response.destination = destination;
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultGetRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
 
-      batchedResponse.push(response);
+      batchedResponseList.push(batchedResponse);
     } else {
-      chunks.push(event);
+      eventsChunk.push(event);
     }
     if (
-      chunks.length &&
-      (chunks.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+      eventsChunk.length &&
+      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
     ) {
-      arrayChunksIdentify.push(chunks);
-      chunks = [];
+      arrayChunksIdentify.push(eventsChunk);
+      eventsChunk = [];
     }
   });
 
@@ -281,10 +282,10 @@ const batch = destEvents => {
       metadata,
       destination
     };
-    batchedResponse.push(batchEventResponse);
+    batchedResponseList.push(batchEventResponse);
   });
 
-  return batchedResponse;
+  return batchedResponseList;
 };
 
 const processRouterDest = async inputs => {

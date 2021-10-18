@@ -3,13 +3,27 @@ const getValue = require("get-value");
 const { sendRequest } = require("../../../adapters/network");
 const {
   trimResponse,
-  nodeSysErrorToStatus
+  nodeSysErrorToStatus,
+  getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const DestinationRespBuilder = require("../../util/destination-response");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+
+const DESTINATION_NAME = "bqstream";
+
+const formResponseObject = destResp => {
+  /**
+   * '{\n  "kind": "bigquery#tableDataInsertAllResponse"\n}\n' --- Success
+   */
+  const response = JSON.parse(destResp);
+  return {
+    response
+  };
+};
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -68,73 +82,89 @@ const responseHandler = ({
   authRequest,
   accessToken
 } = {}) => {
-  // success case
-  if (dresponse.success) {
-    const trimmedResponse = trimResponse(dresponse);
-    const { data } = trimmedResponse;
-
-    if (data && authRequest) {
-      // for authentication requests
-      return trimmedResponse;
-    }
-
-    if (data && !data.insertErrors) {
-      // success
-      return trimmedResponse;
-    }
-    /**
-     * Not sure if such a scenario(http success but data not present) can happen in bigquery
-     */
-
-    // throw new ErrorBuilder()
-    //   .setStatus(500)
-    //   .setMessage(`Request Failed for Marketo (Retryable).${sourceMessage}`)
-    //   .setDestinationResponse({
-    //     ...trimmedResponse,
-    //     success: false
-    //   })
-    //   .setMetadata(metadata)
-    //   .isTransformerNetwrokFailure(true)
-    //   .build();
-  }
-  // http failure cases
-  const { response } = dresponse.response;
-  if (!response && dresponse.response && dresponse.response.code) {
-    const nodeSysErr = nodeSysErrorToStatus(dresponse.response.code);
-    throw new ErrorBuilder()
-      .setStatus(nodeSysErr.status || 500)
-      .setMessage(nodeSysErr.message)
+  const isSuccess =
+    !dresponse.error ||
+    !dresponse.insertErrors ||
+    (dresponse.insertErrors && dresponse.insertErrors.length === 0);
+  if (isSuccess) {
+    return new DestinationRespBuilder()
+      .setStatus(200)
+      .setMessage("Request Processed successfully")
       .setAuthErrorCategory("")
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
-      .build();
-  } else if (response) {
-    const destAuthCategory = getDestAuthCategory(response.data.error.status);
-    const temp = trimBqStreamResponse(dresponse);
-    throw new ErrorBuilder()
-      .setStatus(temp.status || 500)
-      .setMessage(temp.statusText)
-      .setAuthErrorCategory(destAuthCategory)
-      .setDestinationResponse({ ...temp, success: false })
-      .setMetadata(metadata)
-      .setAccessToken(accessToken)
-      .isTransformerNetwrokFailure(true)
-      .build();
-  } else {
-    const destAuthCategory = getDestAuthCategory(
-      dresponse.response.data.insertErrors[0].errors[0].reason
-    );
-    const temp = trimBqStreamResponse(dresponse);
-    throw new ErrorBuilder()
-      .setStatus(temp.status || 500)
-      .setMessage(temp.statusText)
-      .setAuthErrorCategory(destAuthCategory)
-      .setDestinationResponse({ ...temp, success: false })
-      .setMetadata(metadata)
-      .setAccessToken(accessToken)
-      .isTransformerNetwrokFailure(true)
+      .isFailure(!isSuccess)
+      .setStatTags({
+        destination: DESTINATION_NAME,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(200)
+      })
+      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_SUCCESS_METRIC)
       .build();
   }
+  /**
+    {
+      "status" : 429,
+      "destination": {
+        "response": "",
+        "status": 200/400...
+      },
+      "apiLimit" {
+        "available": 455,
+        "resetAt": timestamp
+      },
+      "metadata": {},
+      "message" : "simplified message for understannding"
+    }
+   */
+  /** Reference-Link: https://cloud.google.com/bigquery/docs/error-messages */
+  if (dresponse.error) {
+    const destAuthCategory = getDestAuthCategory(dresponse.error.status);
+    throw new DestinationRespBuilder()
+      .setStatus(dresponse.error.code)
+      .setMessage(dresponse.error.message)
+      .setDestinationResponse({ ...dresponse, success: !isSuccess })
+      .setMetadata(metadata)
+      .setAuthErrorCategory(destAuthCategory)
+      .isFailure(!isSuccess)
+      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
+      .setStatTags({
+        destination: DESTINATION_NAME,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(dresponse.error.code)
+      })
+      .build();
+  } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
+    const temp = trimBqStreamResponse(dresponse);
+    throw new DestinationRespBuilder()
+      .setStatus(500)
+      .setMessage("Problem during insert operation")
+      .setAuthErrorCategory("")
+      .setDestinationResponse({ ...dresponse, success: !isSuccess })
+      .setMetadata(metadata)
+      .setAccessToken(accessToken)
+      .isFailure(!isSuccess)
+      .setStatTags({
+        destination: DESTINATION_NAME,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(temp.status || 500)
+      })
+      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
+      .build();
+  }
+  throw new DestinationRespBuilder()
+    .setStatus(400)
+    .setMessage("Problem during insert operation")
+    .setAuthErrorCategory("")
+    .setDestinationResponse({ ...dresponse, success: !isSuccess })
+    .isFailure(!isSuccess)
+    .setStatTags({
+      destination: DESTINATION_NAME,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+      meta: getDynamicMeta(400)
+    })
+    .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
+    .setMetadata(metadata)
+    .build();
 };
 
 /**
@@ -181,4 +211,40 @@ const sendData = async payload => {
   };
 };
 
-module.exports = { sendData };
+const responseTransform = async ({
+  payload,
+  dResponse,
+  status: statusCode
+}) => {
+  const { metadata } = payload;
+  if (payload.accessToken) {
+    putAccessTokenIntoPayload(payload);
+    delete payload.accessToken;
+    if (payload.expirationDate) {
+      delete payload.expirationDate;
+    }
+  }
+  const accessToken = getAccessTokenFromDestRequest(payload);
+  const parsedResponse = responseHandler({
+    dresponse: JSON.parse(dResponse),
+    metadata,
+    accessToken
+  });
+  return {
+    status: parsedResponse.status,
+    destination: {
+      response: parsedResponse.data,
+      status: statusCode
+    },
+    apiLimit: {
+      available: "",
+      resetAt: ""
+    },
+    metadata,
+    message: parsedResponse.statusText || "Request Processed Successfully",
+    statName: parsedResponse.statName,
+    statTags: parsedResponse.statTags
+  };
+};
+
+module.exports = { sendData, responseTransform };

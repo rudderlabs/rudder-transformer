@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -73,4 +74,15 @@ const trimResponse = response => {
   };
 };
 
-module.exports = { nodeSysErrorToStatus, trimResponse };
+// Returns dynamic Meta based on Status Code as Input
+const getDynamicMeta = statusCode => {
+  if (statusCode === 500) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+  }
+  if (statusCode === 429) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+  }
+  return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
+};
+
+module.exports = { nodeSysErrorToStatus, trimResponse, getDynamicMeta };

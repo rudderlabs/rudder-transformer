@@ -22,6 +22,7 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
+const responseTransform = process.env.TRAMNSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
 
@@ -601,19 +602,21 @@ async function handleResponseTransform(version, destination, ctx) {
   return ctx.body;
 }
 
-versions.forEach(version => {
-  const destinations = getIntegrations(`${version}/destinations`);
-  destinations.forEach(destination => {
-    router.post(`/transform/${destination}/response`, async ctx => {
-      const startTime = new Date();
-      await handleResponseTransform(version, destination, ctx);
-      stats.timing("transformer_response_transform_latency", startTime, {
-        destination,
-        version
+if (responseTransform) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(`/transform/${destination}/response`, async ctx => {
+        const startTime = new Date();
+        await handleResponseTransform(version, destination, ctx);
+        stats.timing("transformer_response_transform_latency", startTime, {
+          destination,
+          version
+        });
       });
     });
   });
-});
+}
 
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
@@ -770,4 +773,11 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
-module.exports = { router, handleDest, routerHandleDest, batchHandler };
+module.exports = {
+  router,
+  handleDest,
+  routerHandleDest,
+  batchHandler,
+  handleResponseTransform,
+  handleDestinationNetwork
+};

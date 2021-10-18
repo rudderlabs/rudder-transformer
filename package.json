@@ -20,13 +20,15 @@
     "lint-json-fix": "npx eslint --ext .json --fix .",
     "merge-check": "npm run verify || exit 1; codecov",
     "start": "node destTransformer.js",
-    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify; npx jest versionedRouter --type=all",
+    "testDestinations": "npx jest --runInBand --detectOpenHandles --coverage --notify",
+    "testVersionedRouter" : "npx jest versionedRouter --type=all --detectOpenHandles --notify",
     "testVersioned": "npx jest versionedRouter --destName=braze --type=batch",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
     "@ndhoule/extend": "^2.0.0",
+    "ajv": "^8.6.1",
     "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
@@ -54,11 +56,13 @@
     "moment-timezone": "^0.5.32",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.1",
-    "set-value": "^3.0.2",
+    "object-hash": "^2.2.0",
+    "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^0.7.24",
+    "uuid": "^8.3.2",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
@@ -77,6 +81,6 @@
     "prettier": "^1.18.2"
   },
   "precommit": {
-    "run": "lint, test"
+    "run": "lint, testDestinations, testVersioned"
   }
 }

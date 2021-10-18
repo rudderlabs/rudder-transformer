@@ -1,0 +1,260 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "subscribers": [
+          {
+            "email": "test1@gmail.com",
+            "first_name": "James",
+            "last_name": "Doe",
+            "phone": "237416221",
+            "ip_address": "0.0.0.0",
+            "custom_fields": {
+              "filter1": "filterval1"
+            }
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "error": "dripId or email is required for the call"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "subscribers": [
+          {
+            "email": "test1@gmail.com",
+            "first_name": "James",
+            "last_name": "Doe",
+            "phone": "237416221",
+            "ip_address": "0.0.0.0",
+            "custom_fields": {
+              "filter1": "filterval1",
+              "filter2": "filterval2"
+            }
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/campaigns/915194776/subscribers",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "subscribers": [
+          {
+            "email": "test1@gmail.com",
+            "starting_email_index": 1
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/events",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "email": "user1@gmail.com",
+            "properties": {
+              "field1": "val1"
+            },
+            "action": "testing",
+            "occurred_at": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "error": "Event name is required"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/events",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "email": "identified_user@gmail.com",
+            "properties": {
+              "field1": "val1"
+            },
+            "action": "testing",
+            "occurred_at": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/events",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "email": "identified_user@gmail.com",
+            "properties": {
+              "field1": "val1"
+            },
+            "action": "testing",
+            "occurred_at": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "error": "Error occurred while checking user : "
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v3/1809802/shopper_activity/order",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "action": "placed",
+        "email": "identified_user@gmail.com",
+        "occurred_at": "2019-10-14T09:03:17.562Z",
+        "order_id": "456445746",
+        "provider": "my_custom_order"
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v3/1809802/shopper_activity/order",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "action": "placed",
+        "email": "identified_user@gmail.com",
+        "occurred_at": "2019-10-14T09:03:17.562Z",
+        "order_id": "456445746",
+        "provider": "my_custom_order",
+        "items": [
+          {
+            "name": "shirt",
+            "price": 11.16
+          }
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/events",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "action": "checkout",
+            "email": "identified_user@gmail.com",
+            "occurred_at": "2019-10-14T09:03:17.562Z",
+            "properties":{
+              "field2":"val2"
+            }
+          }
+        ]
+      }
+    },
+    "files": {}
+  }
+]

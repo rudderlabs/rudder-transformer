@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
+const { v4: uuidv4 } = require("uuid");
 
 const {
   isObject,
@@ -25,6 +26,8 @@ const maxColumnsInEvent = parseInt(
   process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
   10
 );
+
+const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
 
 const getDataType = (val, options) => {
   const type = typeof val;
@@ -178,7 +181,10 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
+    if (
+      isObject(input[key]) &&
+      (options.sourceCategory !== "cloud" || level < 3)
+    ) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -195,10 +201,14 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
-      if (options.sourceCategory === 'cloud' && level >= 3 && isObject(input[key])) {
+      if (
+        options.sourceCategory === "cloud" &&
+        level >= 3 &&
+        isObject(input[key])
+      ) {
         val = JSON.stringify(val);
       }
-      
+
       const datatype = getDataType(val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
@@ -244,7 +254,7 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event)
+    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -260,7 +270,8 @@ const fullEventColumnTypeByProvider = {
   postgres: "json",
   mssql: "json",
   azure_synapse: "json",
-  clickhouse: "string"
+  clickhouse: "string",
+  s3_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
@@ -454,12 +465,46 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
   ]
 */
 
+/*
+* Adds source and destination specific information into context
+* */
+function enhanceContextWithSourceDestInfo(message, metadata) {
+  if (!WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT) {
+    return;
+  }
+  if (!metadata) {
+    return;
+  }
+  context = message.context || {};
+  context.sourceId = metadata.sourceId;
+  context.sourceType = metadata.sourceType;
+  context.destinationId = metadata.destinationId;
+  context.destinationType = metadata.destinationType;
+
+  message.context = context
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
 
   const responses = [];
   const eventType = message.type.toLowerCase();
+
+  if (isBlank(message.messageId)) {
+    const randomID = uuidv4();
+    message.messageId = `auto-${randomID}`;
+  }
+
+  // Adding source and destination specific information.
+  enhanceContextWithSourceDestInfo(message, options.metadata)
+
+  if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
+    message.receivedAt =
+      options.metadata && options.metadata.receivedAt
+        ? options.metadata.receivedAt
+        : new Date().toISOString();
+  }
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {

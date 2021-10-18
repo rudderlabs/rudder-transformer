@@ -67,7 +67,8 @@ async function userTransformHandlerV1(
       logger.debug(`Isolate VM being created... `);
       isolatevmFactory = await getFactory(
         userTransformation.code,
-        libraryVersionIds
+        libraryVersionIds,
+        userTransformation.versionId
       );
       isolatevm = await isolatevmFactory.create();
       logger.debug(`Isolate VM created... `);

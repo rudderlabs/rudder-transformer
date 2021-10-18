@@ -1,12 +1,12 @@
 const get = require("get-value");
 
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues,
+  removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError
@@ -45,7 +45,7 @@ function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(properties);
+  response.body.JSON = removeUndefinedValues(properties);
   return {
     ...response,
     headers: {
@@ -100,12 +100,17 @@ function getUserAttributesObject(message, mappingJson) {
   // get traits from message
   const traits = getFieldValueFromMessage(message, "traits");
 
+  // return the traits as-is if message is mapped to destination
+  if(get(message, MappedToDestinationKey)) {
+    return traits;
+  }
+
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(traits, mappingJson[destKey]);
-    if (value) {
+    if (value !== undefined) {
       // handle gender special case
-      if (destKey === "gender") {
+      if (destKey === "gender" && value) {
         value = formatGender(value);
       }
       data[destKey] = value;
@@ -130,7 +135,7 @@ function getUserAttributesObject(message, mappingJson) {
       // if traitKey is not reserved add the value to final output
       if (reservedKeys.indexOf(traitKey) === -1) {
         const value = get(traits, traitKey);
-        if (value) {
+        if (value !== undefined) {
           data[traitKey] = value;
         }
       }
@@ -141,6 +146,14 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
+  
+  // override userId with externalId in context(if present) and event is mapped to destination
+  const externalId = get(message, "context.externalId.0.id")
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  if(mappedToDestination && externalId) {
+      message.userId = externalId; 
+  }
+
   return buildResponse(
     message,
     destination,

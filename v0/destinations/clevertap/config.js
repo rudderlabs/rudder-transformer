@@ -38,7 +38,8 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "anonymousId",
   "avatar",
   "userId",
-  "id"
+  "id",
+  "ts"
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

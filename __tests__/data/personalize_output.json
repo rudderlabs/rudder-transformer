@@ -139,7 +139,9 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": ["abc"],
+        "impression": [
+          "abc"
+        ],
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
     ]
@@ -156,7 +158,9 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": ["abc"],
+        "impression": [
+          "abc"
+        ],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
@@ -174,7 +178,10 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": ["2", "3"],
+        "impression": [
+          "2",
+          "3"
+        ],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
@@ -192,10 +199,82 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": ["2", "3"],
+        "impression": [
+          "2",
+          "3"
+        ],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
     ]
+  },
+  {
+    "payload": {
+      "datasetArn": "arn:aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup/USERS",
+      "users": [
+        {
+          "userId": "123456",
+          "properties": {
+            "typeOfMovie": "art film",
+            "numberOfRatings": "13"
+          }
+        }
+      ]
+    },
+    "choice": "PutUsers"
+  },
+  {
+    "payload": {
+      "datasetArn": "arn:aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup/ITEMS",
+      "items": [
+        {
+          "properties": {
+            "typeOfMovie": "Art Film",
+            "numberOfRatings": "checking with webapp change"
+          },
+          "itemId": "1"
+        }
+      ]
+    },
+    "choice": "PutItems"
+  },
+  {
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "error": "Mapped property typeOfMovie not found"
+  },
+  {
+    "error": "Either Dataset ARN is not correctly entered or invalid"
+  },
+  {
+    "error": "Dataset ARN is a mandatory information to use putItems"
+  },
+  {
+    "error": "PutUsers is not supported for Track Calls"
+  },
+  {
+    "error": "Tracking Id is a mandatory information to use putEvents"
+  },
+  {
+    "error": "itemId is a mandatory property for using PutItems"
+  },
+  {
+    "error": " Cannot process if no event name specified"
+  },
+  {
+    "error": "This Message Type does not support PutItems. Aborting message."
+  },
+  {
+    "error": "Dataset ARN is a mandatory information to use putUsers"
+  },
+  {
+    "error": "Either Dataset ARN is not correctly entered or invalid."
+  },
+  {
+    "error": "Mapped property numberOfRatings not found"
+  },
+  {
+    "error": "Message type not supported"
   }
 ]

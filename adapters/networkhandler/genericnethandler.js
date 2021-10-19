@@ -67,7 +67,7 @@ const handleDestinationResponse = (dresponse, metadata) => {
       .setStatus(nodeSysErr.status || 500)
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   } else {
     const temp = trimResponse(dresponse.response);
@@ -76,7 +76,7 @@ const handleDestinationResponse = (dresponse, metadata) => {
       .setMessage(temp.statusText)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
 };

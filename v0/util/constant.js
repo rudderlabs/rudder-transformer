@@ -23,7 +23,8 @@ const TRANSFORMER_METRIC = {
       META: {
         ABORTABLE: "abortable",
         RETRYABLE: "retryable",
-        THROTTLED: "throttled"
+        THROTTLED: "throttled",
+        SUCCESS: "success"
       }
     },
     TRANSFORMATION: {

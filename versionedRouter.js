@@ -572,7 +572,7 @@ if (networkMode) {
   });
 }
 
-async function handleResponseTransform(version, destination, ctx) {
+function handleResponseTransform(version, destination, ctx) {
   const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
   if (!destNetHandler || !destNetHandler.responseTransform) {
@@ -586,7 +586,7 @@ async function handleResponseTransform(version, destination, ctx) {
     destination
   );
   try {
-    response = await destNetHandler.responseTransform(ctx.request.body);
+    response = destNetHandler.responseTransform(ctx.request.body);
   } catch (err) {
     response = {
       status: 400,
@@ -608,7 +608,7 @@ if (responseTransform) {
     destinations.forEach(destination => {
       router.post(`/transform/${destination}/response`, async ctx => {
         const startTime = new Date();
-        await handleResponseTransform(version, destination, ctx);
+        handleResponseTransform(version, destination, ctx);
         stats.timing("transformer_response_transform_latency", startTime, {
           destination,
           version

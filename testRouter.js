@@ -177,7 +177,7 @@ getDestinations().forEach(async dest => {
   });
 });
 
-testRouter.get(`/${version}/check`, ctx => {
+testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
 });
 

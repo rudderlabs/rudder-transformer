@@ -41,7 +41,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -51,7 +51,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
         throw new ErrorBuilder()
@@ -61,7 +61,7 @@ const responseHandler = ({
           )
           .setDestinationResponse({ ...trimmedResponse, success: false })
           .setMetadata(metadata)
-          .isTransformerNetwrokFailure(true)
+          .isTransformerNetworkFailure(true)
           .build();
       }
       // default failure cases (keeping retryable for now)
@@ -72,7 +72,7 @@ const responseHandler = ({
         )
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     }
     // http success but data not present
@@ -84,7 +84,7 @@ const responseHandler = ({
         success: false
       })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
   // http failure cases
@@ -95,7 +95,7 @@ const responseHandler = ({
       .setStatus(nodeSysErr.status || 500)
       .setMessage(nodeSysErr.message)
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   } else {
     const temp = trimResponse(dresponse.response);
@@ -104,7 +104,7 @@ const responseHandler = ({
       .setMessage(temp.statusText)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
-      .isTransformerNetwrokFailure(true)
+      .isTransformerNetworkFailure(true)
       .build();
   }
 };

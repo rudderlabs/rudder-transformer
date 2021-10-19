@@ -17,7 +17,7 @@ const responseHandler = (dresponse, metadata) => {
         .setMessage("Braze Request Failed")
         .setDestinationResponse({ ...trimmedResponse, success: false })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     } else {
       return trimmedResponse;
@@ -30,7 +30,7 @@ const responseHandler = (dresponse, metadata) => {
         .setStatus(nodeSysErr.status || 500)
         .setMessage(nodeSysErr.message)
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     } else {
       const temp = trimResponse(dresponse.response);
@@ -39,7 +39,7 @@ const responseHandler = (dresponse, metadata) => {
         .setMessage(temp.statusText)
         .setDestinationResponse({ ...temp, status: temp.status })
         .setMetadata(metadata)
-        .isTransformerNetwrokFailure(true)
+        .isTransformerNetworkFailure(true)
         .build();
     }
   }

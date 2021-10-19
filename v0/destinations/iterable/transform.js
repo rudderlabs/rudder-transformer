@@ -1,4 +1,5 @@
-const { EventType } = require("../../../constants");
+const { get } = require("lodash");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const { ConfigCategory, mappingConfig } = require("./config");
 const {
   removeUndefinedValues,
@@ -7,7 +8,8 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -46,6 +48,10 @@ function constructPayloadItem(message, category, destination) {
       validateMandatoryField(rawPayload);
       break;
     case "identify":
+      // If mapped to destination, Add externalId to traits
+      if (get(message, MappedToDestinationKey)) {
+        addExternalIdToTraits(message);
+      }
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;

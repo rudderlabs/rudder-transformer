@@ -177,4 +177,8 @@ getDestinations().forEach(async dest => {
   });
 });
 
+testRouter.get(`/${version}/check`, ctx => {
+  ctx.body = "OK";
+});
+
 module.exports = { testRouter };

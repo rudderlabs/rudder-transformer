@@ -1,6 +1,6 @@
 const { sendRequest } = require("../network");
 const { nodeSysErrorToStatus, trimResponse } = require("../utils/networkUtils");
-const { ErrorBuilder } = require("../../v0/util/index");
+const { ErrorBuilder } = require("../../v0/util/response-builders");
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction for all the network comms btw
  * dest transformer along with dest specific reqeusts from server to actual APIs

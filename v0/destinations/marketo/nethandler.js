@@ -3,7 +3,7 @@ const {
   nodeSysErrorToStatus,
   trimResponse
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const { ErrorBuilder } = require("../../util/response-builders");
 
 const MARKETO_RETRYABLE_CODES = ["600", "601", "602", "604", "611"];
 const MARKETO_ABORTABLE_CODES = ["603", "605", "609", "610"];

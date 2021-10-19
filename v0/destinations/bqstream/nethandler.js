@@ -1,12 +1,10 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
 const { sendRequest } = require("../../../adapters/network");
+const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const {
-  trimResponse,
-  nodeSysErrorToStatus,
-  getDynamicMeta
-} = require("../../../adapters/utils/networkUtils");
-const DestinationRespBuilder = require("../../util/destination-response");
+  DestinationResponseBuilder: DestinationRespBuilder
+} = require("../../util/response-builders");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
@@ -14,16 +12,6 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const DESTINATION_NAME = "bqstream";
-
-const formResponseObject = destResp => {
-  /**
-   * '{\n  "kind": "bigquery#tableDataInsertAllResponse"\n}\n' --- Success
-   */
-  const response = JSON.parse(destResp);
-  return {
-    response
-  };
-};
 
 const trimBqStreamResponse = response => ({
   code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
@@ -211,11 +199,7 @@ const sendData = async payload => {
   };
 };
 
-const responseTransform = async ({
-  payload,
-  dResponse,
-  status: statusCode
-}) => {
+const responseTransform = async ({ payload, dResponse, status }) => {
   const { metadata } = payload;
   if (payload.accessToken) {
     putAccessTokenIntoPayload(payload);
@@ -234,7 +218,7 @@ const responseTransform = async ({
     status: parsedResponse.status,
     destination: {
       response: parsedResponse.data,
-      status: statusCode
+      status
     },
     apiLimit: {
       available: "",

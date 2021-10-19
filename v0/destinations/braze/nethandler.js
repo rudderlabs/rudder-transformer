@@ -3,7 +3,7 @@ const {
   trimResponse,
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");
-const { ErrorBuilder } = require("../../util/index");
+const { ErrorBuilder } = require("../../util/response-builders");
 
 // eslint-disable-next-line consistent-return
 const responseHandler = (dresponse, metadata) => {

@@ -736,11 +736,9 @@ async function handleResponseTransform(version, destination, ctx) {
   } catch (err) {
     response = {
       status: 400,
-      error: err.message || "Error occurred while processing payload."
+      error: err.message || "Error occurred while processing payload.",
+      ...err
     };
-    if (err.networkFailure) {
-      response = { ...err };
-    }
   }
 
   ctx.body = { output: { ...response } };

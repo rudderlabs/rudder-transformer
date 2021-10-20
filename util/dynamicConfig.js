@@ -10,8 +10,9 @@ function getDynamicConfig(event) {
       value = value.replace("}}", "").trim();
       if (value.includes("||")) {
         const path = value.split("||")[0].trim();
-        if (get(event, path)) {
-          Config[field] = get(event, path);
+        const getFieldVal = get(event, path);
+        if (getFieldVal) {
+          Config[field] = getFieldVal;
         } else {
           Config[field] = JSON.parse(value.split("||")[1].trim());
         }

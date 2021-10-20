@@ -238,7 +238,8 @@ const prepareResponse = (
   message,
   destination,
   isHashRequired = true,
-  allowedAudienceArray
+  allowedAudienceArray,
+  userSchema
 ) => {
   const {
     accessToken,
@@ -247,14 +248,12 @@ const prepareResponse = (
     subType,
     isRaw
   } = destination.Config;
-  let { userSchema } = destination.Config;
-  if (!Array.isArray(userSchema)) {
-    userSchema = [userSchema];
-  }
+
   const mappedToDestination = get(message, MappedToDestinationKey);
 
   // If mapped to destination, use the mapped fields instead of destination userschema
   if (mappedToDestination) {
+    // eslint-disable-next-line no-param-reassign
     userSchema = getSchemaForEventMappedToDest(message);
   }
 
@@ -351,7 +350,7 @@ const processEvent = (message, destination) => {
         destination,
         isHashRequired,
         allowedAudienceArray,
-        USER_DELETE
+        userSchema
       );
       wrappedResponse = {
         responseField: response,
@@ -373,7 +372,7 @@ const processEvent = (message, destination) => {
         destination,
         isHashRequired,
         allowedAudienceArray,
-        USER_ADD
+        userSchema
       );
       wrappedResponse = {
         responseField: response,

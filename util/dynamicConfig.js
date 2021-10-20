@@ -1,19 +1,6 @@
-function dotNotate(obj, target, prefix) {
-  (target = target || {}), (prefix = prefix || "");
-
-  Object.keys(obj).forEach(key => {
-    if (typeof obj[key] === "object" && obj[key] !== null) {
-      dotNotate(obj[key], target, prefix + key + ".");
-    } else {
-      return (target[prefix + key] = obj[key]);
-    }
-  });
-
-  return target;
-}
+const get = require("get-value");
 
 function getDynamicConfig(event) {
-  const dotEvent = dotNotate(event);
   const { Config } = event.destination;
 
   Object.keys(Config).forEach(field => {
@@ -23,8 +10,8 @@ function getDynamicConfig(event) {
       value = value.replace("}}", "").trim();
       if (value.includes("||")) {
         const path = value.split("||")[0].trim();
-        if (dotEvent[path]) {
-          Config[field] = dotEvent[path];
+        if (get(event, path)) {
+          Config[field] = get(event, path);
         } else {
           Config[field] = JSON.parse(value.split("||")[1].trim());
         }

@@ -248,6 +248,9 @@ const prepareResponse = (
     isRaw
   } = destination.Config;
   let { userSchema } = destination.Config;
+  if (!Array.isArray(userSchema)) {
+    userSchema = [userSchema];
+  }
   const mappedToDestination = get(message, MappedToDestinationKey);
 
   // If mapped to destination, use the mapped fields instead of destination userschema
@@ -320,6 +323,11 @@ const processEvent = (message, destination) => {
   // If mapped to destination, use the mapped fields instead of destination userschema
   if (mappedToDestination) {
     userSchema = getSchemaForEventMappedToDest(message);
+  }
+
+  // When one single schema field is added in the webapp, it does not appear to be an array
+  if (!Array.isArray(userSchema)) {
+    userSchema = [userSchema];
   }
 
   // when configured schema field is different from the allowed fields

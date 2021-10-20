@@ -2,6 +2,7 @@ const integration = "af";
 const name = "AppsFlyer";
 const fs = require("fs");
 const path = require("path");
+
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);

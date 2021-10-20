@@ -1,1 +1,172 @@
-[{"statusCode": 400, "error": "message type not supported"}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}", "eventName": "page", "ip": "0.0.0.0", "os": "", "appsflyer_id": "afUid", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "{\"user_actual_role\":\"system_admin,system_user\",\"user_actual_id\":12345}", "eventName": "testtrackevenths", "ip": "0.0.0.0", "os": "", "appsflyer_id": "afUid", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}, {"statusCode": 400, "error": "Appsflyer id is not set. Rejecting the event"}, {"statusCode": 400, "error": "Appsflyer id is not set. Rejecting the event"}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}", "eventName": "page", "ip": "0.0.0.0", "os": "", "appsflyer_id": "some_other2345_sample_external_id", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}", "eventName": "page", "ip": "0.0.0.0", "os": "", "appsflyer_id": "afUid", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}", "eventName": "page", "ip": "0.0.0.0", "os": "", "appsflyer_id": "afUid", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}, {"statusCode": 400, "error": "Invalid app endpoint"}, {"statusCode": 400, "error": "Invalid app endpoint"}, {"statusCode": 400, "error": "Invalid app endpoint"}, {"statusCode": 400, "error": "Invalid app endpoint"}, {"statusCode": 400, "error": "Invalid app endpoint"}, {"version": "1", "type": "REST", "method": "POST", "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app", "headers": {"Content-Type": "application/json", "authentication": "ef1d42390426e3f7c90ac78272e74344"}, "params": {}, "body": {"JSON": {"eventValue": "", "eventName": "page", "ip": "0.0.0.0", "os": "", "appsflyer_id": "afUid", "app_version_name": "1.0.0", "bundleIdentifier": "com.rudderlabs.javascript", "sharing_filter": "all"}, "XML": {}, "FORM": {}}, "files": {}}]
+[
+  { "statusCode": 400, "error": "message type not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "afUid",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "{\"user_actual_role\":\"system_admin,system_user\",\"user_actual_id\":12345}",
+        "eventName": "testtrackevenths",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "afUid",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Appsflyer id is not set. Rejecting the event"
+  },
+  {
+    "statusCode": 400,
+    "error": "Appsflyer id is not set. Rejecting the event"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "some_other2345_sample_external_id",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "afUid",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "afUid",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  { "statusCode": 400, "error": "Invalid app endpoint" },
+  { "statusCode": 400, "error": "Invalid app endpoint" },
+  { "statusCode": 400, "error": "Invalid app endpoint" },
+  { "statusCode": 400, "error": "Invalid app endpoint" },
+  { "statusCode": 400, "error": "Invalid app endpoint" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.test.app",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "eventValue": "",
+        "eventName": "page",
+        "ip": "0.0.0.0",
+        "os": "",
+        "appsflyer_id": "afUid",
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "sharing_filter": "all"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

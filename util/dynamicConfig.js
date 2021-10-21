@@ -1,4 +1,5 @@
 const get = require("get-value");
+const unset = require('unset-value');
 
 function getDynamicConfig(event) {
   const { Config } = event.destination;
@@ -13,6 +14,7 @@ function getDynamicConfig(event) {
         const getFieldVal = get(event, path);
         if (getFieldVal) {
           Config[field] = getFieldVal;
+          unset(event, path);
         } else {
           Config[field] = JSON.parse(value.split("||")[1].trim());
         }

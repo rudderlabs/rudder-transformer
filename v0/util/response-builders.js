@@ -32,6 +32,11 @@ function DestinationResponseBuilder() {
     return this;
   };
 
+  this.setAccessToken = token => {
+    this.response.accessToken = token;
+    return this;
+  };
+
   this.setFailureAt = arg => {
     this.response.failureAt = arg;
     return this;
@@ -165,6 +170,11 @@ function ErrorBuilder() {
 
   this.statsGauge = (name, value, tags = {}) => {
     stats.gauge(name, value, tags);
+    return this;
+  };
+
+  this.setAccessToken = token => {
+    this.err.accessToken = token;
     return this;
   };
 

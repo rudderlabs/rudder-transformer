@@ -71,9 +71,9 @@ const responseHandler = ({
   accessToken
 } = {}) => {
   const isSuccess =
-    !dresponse.error ||
-    !dresponse.insertErrors ||
-    (dresponse.insertErrors && dresponse.insertErrors.length === 0);
+    !dresponse.error &&
+    (!dresponse.insertErrors ||
+      (dresponse.insertErrors && dresponse.insertErrors.length === 0));
   if (isSuccess) {
     return new DestinationRespBuilder()
       .setStatus(200)

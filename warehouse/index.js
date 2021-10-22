@@ -254,7 +254,9 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
+    !isRudderSourcesEvent(event) &&
+    options.provider !== "s3_datalake" &&
+    options.prvoider !== "datalake"
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -271,7 +273,8 @@ const fullEventColumnTypeByProvider = {
   mssql: "json",
   azure_synapse: "json",
   clickhouse: "string",
-  s3_datalake: "string"
+  s3_datalake: "string",
+  datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
@@ -757,8 +760,8 @@ function processWarehouseMessage(message, options) {
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")
       ] = message.receivedAt
-        ? new Date(message.receivedAt).toISOString()
-        : new Date().toISOString();
+          ? new Date(message.receivedAt).toISOString()
+          : new Date().toISOString();
       usersColumnTypes[utils.safeColumnName(options.provider, "received_at")] =
         "datetime";
 

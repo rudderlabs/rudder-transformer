@@ -1542,5 +1542,6 @@
     "WHERE": true,
     "WINDOW": true,
     "WITH": true
-  }
+  },
+  "DATALAKE": {}
 }

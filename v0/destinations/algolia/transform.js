@@ -1,3 +1,4 @@
+const { set } = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -7,7 +8,9 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util/index");
 
 const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
@@ -114,6 +117,83 @@ const process = event => {
   return response;
 };
 
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
+  const successList = [];
+  const errorList = [];
+  inputChunks.forEach(chunk => {
+    const eventsList = [];
+    const metadataList = [];
+
+    // using the first destination Config in chunk for
+    // transforming the events in one chunk into a batch
+    const { destination } = chunk[0];
+    chunk.forEach(async input => {
+      try {
+        set(input, "destination", destination);
+        // input.destination = destination;
+        const transformedEvent = process(input);
+        eventsList.push(...transformedEvent.body.JSON.events);
+        metadataList.push(input.metadata);
+      } catch (error) {
+        errorList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          )
+        );
+      }
+    });
+
+    // setting up the batched request json here
+    const batchedRequest = defaultRequestConfig();
+    batchedRequest.endpoint = ENDPOINT;
+    batchedRequest.headers = {
+      "X-Algolia-Application-Id": destination.Config.applicationId,
+      "X-Algolia-API-Key": destination.Config.apiKey
+    };
+    batchedRequest.body.JSON = { events: eventsList };
+
+    successList.push(
+      getSuccessRespEvents(batchedRequest, metadataList, destination, true)
+    );
+  });
+  return [...errorList, ...successList];
+
+  // const respList = await Promise.all(
+  //   inputs.map(async input => {
+  //     try {
+  //       return getSuccessRespEvents(
+  //         await process(input),
+  //         [input.metadata],
+  //         input.destination
+  //       );
+  //     } catch (error) {
+  //       return getErrorRespEvents(
+  //         [input.metadata],
+  //         error.response
+  //           ? error.response.status
+  //           : error.code
+  //           ? error.code
+  //           : 400,
+  //         error.message || "Error occurred while processing payload."
+  //       );
+  //     }
+  //   })
+  // );
+  // return respList;
+};
+
 const batch = destEvents => {
   const batchedResponse = [];
   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
@@ -150,4 +230,4 @@ const batch = destEvents => {
   return batchedResponse;
 };
 
-module.exports = { process, batch };
+module.exports = { process, batch, processRouterDest };

@@ -25,7 +25,10 @@ const {
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
-  const os = get(message, "context.os.name");
+  let os;
+  if (message.context.os) {
+    os = get(message, "context.os.name");
+  }
   if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
   } else if (os && os.toLowerCase() === "ios" && appleAppId) {

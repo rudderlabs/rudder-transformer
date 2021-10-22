@@ -95,6 +95,11 @@ function DestinationResponseBuilder() {
     return this;
   };
 
+  this.setDestinationResponse = destinationResponse => {
+    this.response.destinationResponse = destinationResponse;
+    return this;
+  };
+
   this.build = () => this.response;
 }
 

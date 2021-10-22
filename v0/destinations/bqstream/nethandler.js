@@ -107,8 +107,9 @@ const responseHandler = ({
   /** Reference-Link: https://cloud.google.com/bigquery/docs/error-messages */
   if (dresponse.error) {
     const destAuthCategory = getDestAuthCategory(dresponse.error.status);
+    const status = destAuthCategory ? 500 : dresponse.error.code;
     throw new DestinationRespBuilder()
-      .setStatus(dresponse.error.code)
+      .setStatus(status)
       .setMessage(dresponse.error.message)
       .setDestinationResponse({ ...dresponse, success: !isSuccess })
       .setMetadata(metadata)
@@ -118,13 +119,13 @@ const responseHandler = ({
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(dresponse.error.code)
+        meta: getDynamicMeta(status)
       })
       .build();
   } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
     const temp = trimBqStreamResponse(dresponse);
     throw new DestinationRespBuilder()
-      .setStatus(500)
+      .setStatus(400)
       .setMessage("Problem during insert operation")
       .setAuthErrorCategory("")
       .setDestinationResponse({ ...dresponse, success: !isSuccess })
@@ -134,14 +135,14 @@ const responseHandler = ({
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(temp.status || 500)
+        meta: getDynamicMeta(temp.status || 400)
       })
       .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
       .build();
   }
   throw new DestinationRespBuilder()
     .setStatus(400)
-    .setMessage("Problem during insert operation")
+    .setMessage("Unhandled error type while sending to destination")
     .setAuthErrorCategory("")
     .setDestinationResponse({ ...dresponse, success: !isSuccess })
     .isFailure(!isSuccess)

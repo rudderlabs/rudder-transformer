@@ -160,8 +160,8 @@ const sendData = async payload => {
   return {
     status: parsedResponse.status,
     destination: {
-      response: parsedResponse.data,
-      status: parsedResponse.status
+      ...parsedResponse,
+      success: true
     },
     apiLimit: {
       available: "",

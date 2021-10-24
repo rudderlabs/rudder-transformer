@@ -271,7 +271,8 @@ const fullEventColumnTypeByProvider = {
   mssql: "json",
   azure_synapse: "json",
   clickhouse: "string",
-  s3_datalake: "string"
+  s3_datalake: "string",
+  deltalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {

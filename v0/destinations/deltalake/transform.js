@@ -1,6 +1,6 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
-const snowflake = "deltalake";
+const deltalake = "deltalake";
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
@@ -11,7 +11,7 @@ function getDataTypeOverride(val, options) {}
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
-  const provider = snowflake;
+  const provider = deltalake;
   return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,

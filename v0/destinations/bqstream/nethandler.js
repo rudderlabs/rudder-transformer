@@ -79,6 +79,7 @@ const responseHandler = ({
       .setStatus(200)
       .setMessage("Request Processed successfully")
       .setAuthErrorCategory("")
+      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setMetadata(metadata)
       .isFailure(!isSuccess)
       .setStatTags({
@@ -111,7 +112,7 @@ const responseHandler = ({
     throw new DestinationRespBuilder()
       .setStatus(status)
       .setMessage(dresponse.error.message)
-      .setDestinationResponse({ ...dresponse, success: !isSuccess })
+      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setMetadata(metadata)
       .setAuthErrorCategory(destAuthCategory)
       .isFailure(!isSuccess)
@@ -128,7 +129,7 @@ const responseHandler = ({
       .setStatus(400)
       .setMessage("Problem during insert operation")
       .setAuthErrorCategory("")
-      .setDestinationResponse({ ...dresponse, success: !isSuccess })
+      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setMetadata(metadata)
       .setAccessToken(accessToken)
       .isFailure(!isSuccess)
@@ -144,7 +145,7 @@ const responseHandler = ({
     .setStatus(400)
     .setMessage("Unhandled error type while sending to destination")
     .setAuthErrorCategory("")
-    .setDestinationResponse({ ...dresponse, success: !isSuccess })
+    .setDestinationResponse({ ...dresponse, success: isSuccess })
     .isFailure(!isSuccess)
     .setStatTags({
       destination: DESTINATION_NAME,

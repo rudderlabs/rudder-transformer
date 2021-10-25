@@ -581,18 +581,14 @@ function handleResponseTransform(version, destination, ctx) {
     return ctx.body;
   }
   let response;
-  logger.info(
-    "Request recieved for response transform for destination",
-    destination
-  );
   try {
     response = destNetHandler.responseTransform(ctx.request.body);
   } catch (err) {
     response = {
       status: 400,
-      error: err.message || "Error occurred while processing payload."
+      error: err.message || "Error occurred while processing response."
     };
-    if (err.networkFailure) {
+    if (err.responseTransformFailure) {
       response = { ...err };
     }
   }

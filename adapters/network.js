@@ -22,8 +22,6 @@ const agentArgs = removeUndefinedAndNullValues({
     : Number.parseInt(process.env.NETWORK_AGENT_MAX_FREE_SOCKET, 10)
 });
 
-console.log(agentArgs);
-
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request

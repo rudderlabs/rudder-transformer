@@ -12,7 +12,7 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 
 const MARKETO_RETRYABLE_CODES = ["601", "602", "604", "611"];
-const MARKETO_ABORTABLE_CODES = ["600", "603", "605", "609", "610"];
+const MARKETO_ABORTABLE_CODES = ["600", "603", "605", "609", "610", "612"];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
 
@@ -150,7 +150,7 @@ const marketoResponseHandler = ({
     const nodeSysErr = nodeSysErrorToStatus(clientResponse.response.code);
     throw new ErrorBuilder()
       .setStatus(nodeSysErr.status || 500)
-      .setMessage(nodeSysErr.message)
+      .setMessage(`Error occured ${sourceMessage} Error: ${nodeSysErr.message}`)
       .setMetadata(metadata)
       .setFailureAt(stage)
       .statsIncrement(
@@ -168,7 +168,7 @@ const marketoResponseHandler = ({
     const temp = trimResponse(clientResponse.response);
     throw new ErrorBuilder()
       .setStatus(temp.status || 500)
-      .setMessage(temp.statusText)
+      .setMessage(`Error occured ${sourceMessage} Error: ${temp.statusText}`)
       .setDestinationResponse({ ...temp, success: false })
       .setMetadata(metadata)
       .setFailureAt(stage)
@@ -231,9 +231,67 @@ const sendData = async payload => {
   };
 };
 
+const responseTransform = destResponse => {
+  let respBody;
+  try {
+    respBody = JSON.parse(destResponse.Body);
+  } catch (err) {
+    respBody = JSON.stringify(destResponse.Body);
+  }
+  if (respBody && !respBody.success) {
+    // marketo application response level failure
+    const { errors } = respBody;
+    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Aborted).`
+        )
+        .setDestinationResponse({ ...respBody, status: destResponse.Status })
+        .isTransformResponseFailure(true)
+        .build();
+    } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(429)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Throttled).`
+        )
+        .setDestinationResponse({ ...respBody, status: destResponse.Status })
+        .isTransformResponseFailure(true)
+        .build();
+    } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(500)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Retryable).`
+        )
+        .setDestinationResponse({ ...respBody, status: destResponse.Status })
+        .isTransformResponseFailure(true)
+        .build();
+    }
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(`Request Failed for Marketo, ${errors[0].message} (Aborted).`)
+      .setDestinationResponse({ ...respBody, status: destResponse.Status })
+      .isTransformResponseFailure(true)
+      .build();
+  }
+  const status = destResponse.Status;
+  const message = respBody.message || "Event delivered successfuly";
+  const destination = { ...respBody, status: destResponse.Status };
+  const { apiLimit } = respBody;
+  return {
+    status,
+    message,
+    destination,
+    apiLimit
+  };
+};
+
 module.exports = {
   marketoResponseHandler,
   sendData,
+  responseTransform,
   sendGetRequest,
   sendPostRequest
 };

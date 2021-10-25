@@ -74,7 +74,7 @@ const responseTransform = destResponse => {
       .setStatus(400)
       .setMessage("Braze Request Failed")
       .setDestinationResponse({ ...respBody, success: false })
-      .isTransformerNetworkFailure(true)
+      .isTransformResponseFailure(true)
       .build();
   }
   const status = destResponse.Status;

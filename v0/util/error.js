@@ -27,6 +27,11 @@ function ErrorBuilder() {
     return this;
   };
 
+  this.isTransformResponseFailure = arg => {
+    this.err.responseTransformFailure = arg;
+    return this;
+  };
+
   this.isTransformerNetworkFailure = arg => {
     this.err.networkFailure = arg;
     return this;

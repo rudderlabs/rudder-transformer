@@ -510,5 +510,69 @@
       },
       "files": {}
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "DELETE",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
+      "headers": {},
+      "params": {
+        "access_token": "ABC",
+        "payload": {
+          "is_raw": true,
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "DOBM"
+          ],
+          "data": [
+            [
+              "2"
+            ]
+          ]
+        }
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://graph.facebook.com/v11.0/aud1/users",
+      "headers": {},
+      "params": {
+        "access_token": "ABC",
+        "payload": {
+          "is_raw": true,
+          "data_source": {
+            "type": "UNKNOWN",
+            "sub_type": "ANYTHING"
+          },
+          "schema": [
+            "DOBM"
+          ],
+          "data": [
+            [
+              "2"
+            ]
+          ]
+        }
+      },
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]

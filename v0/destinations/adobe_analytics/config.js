@@ -14,7 +14,7 @@ const formatDestinationConfig = config => {
     productMerchEventToAdobeEvent: getHashFromArray(
       config.productMerchEventToAdobeEvent
     ),
-    eventMerchProperties: getHashFromArray(config.eventMerchProperties),
+    eventMerchProperties: config.eventMerchProperties,
     eventMerchEventToAdobeEvent: getHashFromArray(
       config.eventMerchEventToAdobeEvent
     ),

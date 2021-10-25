@@ -18,7 +18,6 @@ const {
 const responseBuilderSimple = async (message, destination, basicPayload) => {
   const payload = constructPayload(message, commonConfig);
   const { context, properties } = message;
-
   // handle contextData
   const { contextDataPrefix, contextDataMapping } = destination;
   const cDataPrefix = contextDataPrefix ? `${contextDataPrefix}` : "";
@@ -85,6 +84,12 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     Object.keys(properties).forEach(key => {
       if (listMapping[key] && listDelimiter[key]) {
         let val = get(message, `properties.${key}`);
+        if (typeof val !== "string" && !Array.isArray(val)) {
+          throw new CustomError(
+            "List Mapping properties variable is neither a string nor an array",
+            400
+          );
+        }
         if (typeof val === "string") {
           val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
         } else {
@@ -124,6 +129,12 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     Object.keys(properties).forEach(key => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);
+        if (typeof val !== "string" && !Array.isArray(val)) {
+          throw new CustomError(
+            "prop variable is neither a string nor an array",
+            400
+          );
+        }
         const delimeter = propsDelimiter[key] || "|";
         if (typeof val === "string") {
           val = val.replace(/\s*,+\s*/g, delimeter);
@@ -243,11 +254,13 @@ const processTrackEvent = (
     });
   }
 
-  if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
-    productMerchEventToAdobeEvent.forEach(value => {
-      adobeEventArr.push(value);
-    });
-  }
+  // if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
+  //   productMerchEventToAdobeEvent.forEach(value => {
+  //     // this is an object not an array
+  //     // TypeError: productMerchEventToAdobeEvent.forEach is not a function
+  //     adobeEventArr.push(value);
+  //   });
+  // }
 
   // product string section
   const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
@@ -284,11 +297,13 @@ const processTrackEvent = (
             const v = get(properties, key[1]);
             if (isDefinedAndNotNull(v)) {
               adobeProdEvent.forEach(val => {
+                // TypeError: adobeProdEvent.forEach is not a function, that means it is not an array, should we forcefully make it an array?
                 merchMap.push(`${val}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
             adobeProdEvent.forEach(val => {
+              // TypeError: adobeProdEvent.forEach is not a function, same as the previous
               merchMap.push(
                 `${val}=${properties[rudderProp.productMerchProperties]}`
               );
@@ -432,7 +447,6 @@ const process = async event => {
     default:
       throw new Error("Message type is not supported");
   }
-
   if (payload) {
     const response = await responseBuilderSimple(
       message,

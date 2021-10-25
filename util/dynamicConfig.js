@@ -5,10 +5,10 @@ function getDynamicConfig(event) {
   const { Config } = event.destination;
 
   Object.keys(Config).forEach(field => {
-    let value = Config[field].toString();
+    let value = Config[field].toString().trim();
     if (value.startsWith("{{") && value.endsWith("}}")) {
       value = value.replace("{{", "");
-      value = value.replace("}}", "").trim();
+      value = value.replace("}}", "");
       if (value.includes("||")) {
         const path = value.split("||")[0].trim();
         const getFieldVal = get(event, path);

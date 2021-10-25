@@ -169,29 +169,6 @@ const processRouterDest = async inputs => {
     );
   });
   return [...errorList, ...successList];
-
-  // const respList = await Promise.all(
-  //   inputs.map(async input => {
-  //     try {
-  //       return getSuccessRespEvents(
-  //         await process(input),
-  //         [input.metadata],
-  //         input.destination
-  //       );
-  //     } catch (error) {
-  //       return getErrorRespEvents(
-  //         [input.metadata],
-  //         error.response
-  //           ? error.response.status
-  //           : error.code
-  //           ? error.code
-  //           : 400,
-  //         error.message || "Error occurred while processing payload."
-  //       );
-  //     }
-  //   })
-  // );
-  // return respList;
 };
 
 const batch = destEvents => {

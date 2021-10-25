@@ -37,17 +37,26 @@ const batchOutputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_batch_output.json`)
 );
 
-const batchInputData = JSON.parse(batchInputDataFile);
-const batchExpectedData = JSON.parse(batchOutputDataFile);
+// const batchInputData = JSON.parse(batchInputDataFile);
+// const batchExpectedData = JSON.parse(batchOutputDataFile);
 
-batchInputData.forEach((input, index) => {
-  test(`${name} Batching ${index}`, () => {
-    const output = transformer.batch(input);
-    //console.log(output);
-    expect(Array.isArray(output)).toEqual(true);
-    expect(output.length).toEqual(batchExpectedData[index].length);
-    output.forEach((input, indexInner) => {
-      expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-    })
-  });
+// batchInputData.forEach((input, index) => {
+//   test(`${name} Batching ${index}`, () => {
+//     const output = transformer.batch(input);
+//     //console.log(output);
+//     expect(Array.isArray(output)).toEqual(true);
+//     expect(output.length).toEqual(batchExpectedData[index].length);
+//     output.forEach((input, indexInner) => {
+//       expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
+//     })
+//   });
+// });
+
+// Batching using routerTransform
+test('Batching', async () => {
+  const batchInputData = JSON.parse(batchInputDataFile);
+  const batchExpectedData = JSON.parse(batchOutputDataFile);
+  const output = await transformer.processRouterDest(batchInputData);
+  expect(Array.isArray(output)).toEqual(true);
+  expect(output).toEqual(batchExpectedData);
 });

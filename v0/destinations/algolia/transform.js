@@ -1,3 +1,4 @@
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -7,7 +8,9 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util/index");
 
 const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
@@ -114,40 +117,58 @@ const process = event => {
   return response;
 };
 
-const batch = destEvents => {
-  const batchedResponse = [];
-  const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
 
-  arrayChunks.forEach(chunk => {
-    const respList = [];
-    const metadata = [];
+  const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
+  const successList = [];
+  const errorList = [];
+  inputChunks.forEach(chunk => {
+    const eventsList = [];
+    const metadataList = [];
 
-    // extracting the apiKey, applicationId and destination value
-    // from the first event in a batch
+    // using the first destination Config in chunk for
+    // transforming the events in one chunk into a batch
     const { destination } = chunk[0];
-    const { apiKey, applicationId } = destination.Config;
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    chunk.forEach(ev => {
-      respList.push(ev.message.body.JSON.events[0]);
-      metadata.push(ev.metadata);
+    chunk.forEach(async input => {
+      try {
+        set(input, "destination", destination);
+        // input.destination = destination;
+        const transformedEvent = process(input);
+        eventsList.push(...transformedEvent.body.JSON.events);
+        metadataList.push(input.metadata);
+      } catch (error) {
+        errorList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          )
+        );
+      }
     });
 
-    batchEventResponse.batchedRequest.body.JSON = { events: respList };
-    batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-    batchEventResponse.batchedRequest.headers = {
-      "X-Algolia-Application-Id": applicationId,
-      "X-Algolia-API-Key": apiKey
+    // setting up the batched request json here
+    const batchedRequest = defaultRequestConfig();
+    batchedRequest.endpoint = ENDPOINT;
+    batchedRequest.headers = {
+      "X-Algolia-Application-Id": destination.Config.applicationId,
+      "X-Algolia-API-Key": destination.Config.apiKey
     };
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
-    batchedResponse.push(batchEventResponse);
-  });
+    batchedRequest.body.JSON = { events: eventsList };
 
-  return batchedResponse;
+    successList.push(
+      getSuccessRespEvents(batchedRequest, metadataList, destination, true)
+    );
+  });
+  return [...errorList, ...successList];
 };
 
-module.exports = { process, batch };
+module.exports = { process, processRouterDest };

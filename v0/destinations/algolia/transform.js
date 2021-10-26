@@ -171,40 +171,4 @@ const processRouterDest = async inputs => {
   return [...errorList, ...successList];
 };
 
-const batch = destEvents => {
-  const batchedResponse = [];
-  const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
-
-  arrayChunks.forEach(chunk => {
-    const respList = [];
-    const metadata = [];
-
-    // extracting the apiKey, applicationId and destination value
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { apiKey, applicationId } = destination.Config;
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    chunk.forEach(ev => {
-      respList.push(ev.message.body.JSON.events[0]);
-      metadata.push(ev.metadata);
-    });
-
-    batchEventResponse.batchedRequest.body.JSON = { events: respList };
-    batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-    batchEventResponse.batchedRequest.headers = {
-      "X-Algolia-Application-Id": applicationId,
-      "X-Algolia-API-Key": apiKey
-    };
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
-    batchedResponse.push(batchEventResponse);
-  });
-
-  return batchedResponse;
-};
-
-module.exports = { process, batch, processRouterDest };
+module.exports = { process, processRouterDest };

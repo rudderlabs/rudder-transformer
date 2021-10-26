@@ -345,11 +345,11 @@ const processRouterDest = async inputs => {
     })
   );
 
-  let batchedResponseList;
+  let batchedResponseList = [];
   if (successRespList.length) {
     batchedResponseList = await batch(successRespList);
   }
   return [...batchedResponseList, ...ErrorRespList];
 };
 
-module.exports = { process, processRouterDest, batch };
+module.exports = { process, processRouterDest };

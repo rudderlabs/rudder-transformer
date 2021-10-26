@@ -16,7 +16,7 @@ function getDynamicConfig(event) {
             Config[field] = getFieldVal;
             unset(event, path);
           } else {
-            Config[field] = JSON.parse(value.split("||")[1].trim());
+            Config[field] = JSON.parse(value.split("||")[1].trim()).toString();
           }
         }
       }

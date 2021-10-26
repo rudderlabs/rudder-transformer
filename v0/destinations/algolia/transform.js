@@ -8,7 +8,6 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
-  defaultBatchRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util/index");

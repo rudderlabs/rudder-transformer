@@ -115,6 +115,7 @@ const responseHandler = ({
       .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setMetadata(metadata)
       .setAuthErrorCategory(destAuthCategory)
+      .setAccessToken(accessToken)
       .isFailure(!isSuccess)
       .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
       .setStatTags({
@@ -145,6 +146,7 @@ const responseHandler = ({
     .setStatus(400)
     .setMessage("Unhandled error type while sending to destination")
     .setAuthErrorCategory("")
+    .setAccessToken(accessToken)
     .setDestinationResponse({ ...dresponse, success: isSuccess })
     .isFailure(!isSuccess)
     .setStatTags({

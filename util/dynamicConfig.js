@@ -24,7 +24,7 @@ function getDynamicConfig(event) {
   return event;
 }
 function processDynamicConfig(event, type) {
-  if (type === "router") {
+  if (type === "router" || type === "batch") {
     const eventRetArr = [];
     event.forEach(e => {
       const newEvent = getDynamicConfig(e);

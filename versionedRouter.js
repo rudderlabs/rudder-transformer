@@ -570,6 +570,7 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {

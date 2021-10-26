@@ -154,18 +154,20 @@ const processRouterDest = async inputs => {
       }
     });
 
-    // setting up the batched request json here
-    const batchedRequest = defaultRequestConfig();
-    batchedRequest.endpoint = ENDPOINT;
-    batchedRequest.headers = {
-      "X-Algolia-Application-Id": destination.Config.applicationId,
-      "X-Algolia-API-Key": destination.Config.apiKey
-    };
-    batchedRequest.body.JSON = { events: eventsList };
+    if (eventsList.length !== 0) {
+      // setting up the batched request json here
+      const batchedRequest = defaultRequestConfig();
+      batchedRequest.endpoint = ENDPOINT;
+      batchedRequest.headers = {
+        "X-Algolia-Application-Id": destination.Config.applicationId,
+        "X-Algolia-API-Key": destination.Config.apiKey
+      };
+      batchedRequest.body.JSON = { events: eventsList };
 
-    successList.push(
-      getSuccessRespEvents(batchedRequest, metadataList, destination, true)
-    );
+      successList.push(
+        getSuccessRespEvents(batchedRequest, metadataList, destination, true)
+      );
+    }
   });
   return [...errorList, ...successList];
 };

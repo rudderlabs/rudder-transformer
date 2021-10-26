@@ -65,7 +65,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
-    traits = message.properties
+    traits = message.properties;
   }
 
   if (traits) {
@@ -216,7 +216,7 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-const batch = destEvents => {
+function batch(destEvents) {
   const batchedResponseList = [];
 
   let eventsChunk = [];
@@ -236,7 +236,13 @@ const batch = destEvents => {
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 
-      batchedResponseList.push(batchedResponse);
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
     } else {
       eventsChunk.push(event);
     }
@@ -285,11 +291,18 @@ const batch = destEvents => {
       metadata,
       destination
     };
-    batchedResponseList.push(batchEventResponse);
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
   });
 
   return batchedResponseList;
-};
+}
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
@@ -297,34 +310,46 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const successRespList = [];
+  const ErrorRespList = [];
+  await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          successRespList.push({
+            message: input.message,
+            metadata: input.metadata,
+            destination: input.destination
+          });
+        } else {
+          // event is not transformed
+          successRespList.push({
+            message: await processSingleMessage(
+              input.message,
+              input.destination
+            ),
+            metadata: input.metadata,
+            destination: input.destination
+          });
         }
-
-        // event is not transformed
-        return getSuccessRespEvents(
-          await processSingleMessage(input.message, input.destination),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+        ErrorRespList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response ? error.response.status : 500, // default to retryable
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+
+  let batchedResponseList;
+  if (successRespList.length) {
+    batchedResponseList = await batch(successRespList);
+  }
+  return [...batchedResponseList, ...ErrorRespList];
 };
 
 module.exports = { process, processRouterDest, batch };

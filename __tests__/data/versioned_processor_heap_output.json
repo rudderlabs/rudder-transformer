@@ -1,4 +1,66 @@
 [
+    {
+        "output": {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://heapanalytics.com/api/add_user_properties",
+            "headers": {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "identity": "sampath",
+                    "properties": {
+                        "anonymousId": "sampath",
+                        "email": "sampath@gmail.com"
+                    },
+                    "app_id": "<APP_ID>"
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "sampath"
+        },
+        "metadata": {
+            "jobId": 2
+        },
+        "statusCode": 200
+    },
+    {
+        "output": {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://heapanalytics.com/api/add_user_properties",
+            "headers": {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "identity": "sampath",
+                    "properties": {
+                        "anonymousId": "sampath",
+                        "email": "sampath@gmail.com"
+                    },
+                    "app_id": "Test_App_Id"
+                },
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {},
+            "userId": "sampath"
+        },
+        "metadata": {
+            "jobId": 2
+        },
+        "statusCode": 200
+    },
   {
       "output": {
           "version": "1",

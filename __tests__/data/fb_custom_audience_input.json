@@ -403,5 +403,74 @@
         "request": {
             "query": {}
         }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "audiencelist",
+            "properties": {
+                "listData": {
+                    "add": [
+                        {
+                            "EMAIL": "shrouti@abc.com",
+                            "DOBM": "2",
+                            "DOBD": "13",
+                            "DOBY": "2013",
+                            "PHONE": "@09432457768",
+                            "GEN": "f",
+                            "FI": "Ms.",
+                            "MOBILE_ADVERTISER_ID": "ABC",
+                            "ZIP": "ZIP ",
+                            "ST": "123abc ",
+                            "COUNTRY": "IN"
+                        }
+                    ],
+                    "remove": [
+                        {
+                            "EMAIL": "shrouti@abc.com",
+                            "DOBM": "2",
+                            "DOBD": "13",
+                            "DOBY": "2013",
+                            "PHONE": "@09432457768",
+                            "GEN": "f",
+                            "FI": "Ms.",
+                            "MOBILE_ADVERTISER_ID": "ABC",
+                            "ZIP": "ZIP ",
+                            "ST": "123abc ",
+                            "COUNTRY": "IN"
+                        }
+                    ]
+                }
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "accessToken": "ABC",
+                "userSchema": "DOBM",
+                "isHashRequired": false,
+                "disableFormat": false,
+                "audienceId": "aud1",
+                "isRaw": true,
+                "type": "UNKNOWN",
+                "subType": "ANYTHING",
+                "maxUserCount": "50"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
     }
 ]

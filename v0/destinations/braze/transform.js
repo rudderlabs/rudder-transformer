@@ -109,9 +109,9 @@ function getUserAttributesObject(message, mappingJson) {
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(traits, mappingJson[destKey]);
-    if (value !== undefined) {
+    if (value) {
       // handle gender special case
-      if (destKey === "gender" && value) {
+      if (destKey === "gender") {
         value = formatGender(value);
       }
       data[destKey] = value;

@@ -17,7 +17,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 
 const {
@@ -55,9 +56,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
   // override userId with externalId in context(if present) and event is mapped to destination
-  const mappedToDestination = get(message, MappedToDestinationKey)
+  const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
-    adduserIdFromExternalId(message)
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
   }
 
   const userId =

@@ -216,7 +216,7 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-function batch(destEvents) {
+function batchEvents(destEvents) {
   const batchedResponseList = [];
 
   let eventsChunk = [];
@@ -347,7 +347,7 @@ const processRouterDest = async inputs => {
 
   let batchedResponseList = [];
   if (successRespList.length) {
-    batchedResponseList = await batch(successRespList);
+    batchedResponseList = await batchEvents(successRespList);
   }
   return [...batchedResponseList, ...ErrorRespList];
 };

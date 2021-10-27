@@ -29,6 +29,17 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+// Router Test files
+// and batching using routerTransform
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {
@@ -42,17 +53,6 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-
-  // Router Test files
-  // and batching using routerTransform
-  const inputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_input.json`)
-  );
-  const outputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_output.json`)
-  );
-  const inputRouterData = JSON.parse(inputRouterDataFile);
-  const expectedRouterData = JSON.parse(outputRouterDataFile);
 
   describe("Router Tests", () => {
     it("Payload", async () => {

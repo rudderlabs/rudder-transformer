@@ -171,7 +171,10 @@ const responseBuilderSimple = (message, category, destination) => {
       // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
       // also anoymousId should be present to map it with objectId
       const deviceToken = get(message, "context.device.token");
-      const deviceOS = get(message, "context.os.name").toLowerCase();
+      let deviceOS = get(message, "context.os.name");
+      if (deviceOS) {
+        deviceOS = deviceOS.toLowerCase();
+      }
       if (
         get(message, "anonymousId") &&
         deviceToken &&

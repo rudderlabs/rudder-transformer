@@ -1,22 +1,10 @@
-const { send, sendRequest } = require("../../../adapters/network");
+const { sendRequest } = require("../../../adapters/network");
 const {
   handleDestinationResponse
 } = require("../../../adapters/networkhandler/genericnethandler");
 
 const responseHandler = (dresponse, metadata) => {
   return handleDestinationResponse(dresponse, metadata);
-};
-
-const addToList = async (endpoint, payload, options) => {
-  const requestOptions = {
-    url: endpoint,
-    data: payload,
-    method: "post",
-    ...options
-  };
-  const res = await send(requestOptions);
-  const parsedResponse = responseHandler(res); // This is optional or a separate handler can be written
-  return parsedResponse;
 };
 
 const sendData = async payload => {
@@ -26,4 +14,4 @@ const sendData = async payload => {
   return parsedResponse;
 };
 
-module.exports = { sendData, addToList };
+module.exports = { sendData };

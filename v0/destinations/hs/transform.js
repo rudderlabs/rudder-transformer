@@ -1,5 +1,6 @@
 const get = require("get-value");
 const set = require("set-value");
+const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
@@ -10,15 +11,11 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits,
-  defaultBatchRequestConfig
+  addExternalIdToTraits
 } = require("../../util");
-const {
-  hSIdentifyConfigJson,
-  MAX_BATCH_SIZE,
-  BATCH_CONTACT_ENDPOINT
-} = require("./config");
-const { getAllContactProperties, getEmailAndUpdatedProps } = require("./util");
+const { ConfigCategory, mappingConfig } = require("./config");
+
+const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 let hubSpotPropertyMap = {};
 
@@ -31,28 +28,30 @@ function getKey(key) {
 
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
+    let response;
     const { apiKey } = destination.Config;
     const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
-
-    const response = await getAllContactProperties(url);
-
-    if (!response.success) {
+    try {
+      response = await axios.get(url);
+    } catch (err) {
       // check if exists err.response && err.response.status else 500
-      if (response.response.response.data) {
+
+      if (err.response) {
         throw new CustomError(
-          JSON.stringify(response.response.response.data) ||
+          JSON.stringify(err.response.data) ||
+            JSON.stringify(err.response.statusText) ||
             "Failed to get hubspot properties",
-          response.response.response.status || 500
+          err.response.status || 500
         );
       }
       throw new CustomError(
-        "Failed to get hubspot properties : invalid response",
+        "Failed to get hubspot properties : indvalid response",
         500
       );
     }
 
     const propertyMap = {};
-    response.response.data.forEach(element => {
+    response.data.forEach(element => {
       propertyMap[element.name] = element.type;
     });
     hubSpotPropertyMap = propertyMap;
@@ -65,7 +64,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
-    traits = message.properties;
+    traits = message.properties
   }
 
   if (traits) {
@@ -165,9 +164,9 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  // If mapped to destination, Add externalId to traits
-  if (mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey)
+  //If mapped to destination, Add externalId to traits
+  if(mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
@@ -216,140 +215,40 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-function batchEvents(destEvents) {
-  const batchedResponseList = [];
-
-  let eventsChunk = [];
-  const arrayChunksIdentify = [];
-  destEvents.forEach((event, index) => {
-    if (event.message.method === "GET") {
-      const { message, metadata, destination } = event;
-      const endpoint = get(message, "endpoint");
-
-      const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers;
-      batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = message.body;
-      batchedResponse.batchedRequest.params = message.params;
-      batchedResponse.batchedRequest.method =
-        defaultGetRequestConfig.requestMethod;
-      batchedResponse.metadata = [metadata];
-      batchedResponse.destination = destination;
-
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          batchedResponse.batchedRequest,
-          batchedResponse.metadata,
-          batchedResponse.destination
-        )
-      );
-    } else {
-      eventsChunk.push(event);
-    }
-    if (
-      eventsChunk.length &&
-      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
-    ) {
-      arrayChunksIdentify.push(eventsChunk);
-      eventsChunk = [];
-    }
-  });
-
-  arrayChunksIdentify.forEach(chunk => {
-    const identifyResponseBodyJson = [];
-    const metadata = [];
-
-    // extracting destination, apiKey value
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-    const params = { hapikey: apiKey };
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    chunk.forEach(ev => {
-      const { email, updatedProperties } = getEmailAndUpdatedProps(
-        ev.message.body.JSON.properties
-      );
-      ev.message.body.JSON.properties = updatedProperties;
-      identifyResponseBodyJson.push({
-        email,
-        properties: ev.message.body.JSON.properties
-      });
-      metadata.push(ev.metadata);
-    });
-
-    batchEventResponse.batchedRequest.body.JSON = identifyResponseBodyJson;
-
-    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
-    batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json"
-    };
-    batchEventResponse.batchedRequest.params = params;
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true
-      )
-    );
-  });
-
-  return batchedResponseList;
-}
-
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const successRespList = [];
-  const ErrorRespList = [];
-  await Promise.all(
+  const respList = await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          successRespList.push({
-            message: input.message,
-            metadata: input.metadata,
-            destination: input.destination
-          });
-        } else {
-          // event is not transformed
-          successRespList.push({
-            message: await processSingleMessage(
-              input.message,
-              input.destination
-            ),
-            metadata: input.metadata,
-            destination: input.destination
-          });
-        }
-      } catch (error) {
-        ErrorRespList.push(
-          getErrorRespEvents(
+          return getSuccessRespEvents(
+            input.message,
             [input.metadata],
-            error.response ? error.response.status : 500, // default to retryable
-            error.message || "Error occurred while processing payload."
-          )
+            input.destination
+          );
+        }
+
+        // event is not transformed
+        return getSuccessRespEvents(
+          await processSingleMessage(input.message, input.destination),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response.status : 500, // default to retryable
+          error.message || "Error occurred while processing payload."
         );
       }
     })
   );
-
-  let batchedResponseList = [];
-  if (successRespList.length) {
-    batchedResponseList = await batchEvents(successRespList);
-  }
-  return [...batchedResponseList, ...ErrorRespList];
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

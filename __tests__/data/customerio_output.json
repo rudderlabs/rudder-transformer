@@ -775,5 +775,51 @@
   "files": {},
   "userId": "ruchira-user-id-100",
   "statusCode": 200
-}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/xaviercharles@hotmail.com",
+    "headers": {
+      "Authorization": "Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "last_name": "xavier",
+        "first_name": "charles",
+        "email": "xaviercharles@hotmail.com",
+        "_timestamp": 1635325796
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "xaviercharles@hotmail.com",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/xaviercharles",
+    "headers": {
+      "Authorization": "Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "last_name": "xavier",
+        "first_name": "charles",
+        "id": "xaviercharles",
+        "_timestamp": 1635325796
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "xaviercharles",
+    "statusCode": 200
+  }
 ]

@@ -36,7 +36,7 @@ if (typeArg){
       )
     );
         }catch(error){
-          throw new Error("destination/type not valid");
+          throw new Error("destination/type not valid" + error);
         }
   }
   if (type === "router") {

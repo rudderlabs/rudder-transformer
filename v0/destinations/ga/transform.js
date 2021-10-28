@@ -925,4 +925,12 @@ const processRouterDest = inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+const responseTransform = input => {
+  return {
+    status: 200,
+    destination: { ...input },
+    message: "Processed Successfully"
+  };
+};
+
+module.exports = { process, processRouterDest, responseTransform };

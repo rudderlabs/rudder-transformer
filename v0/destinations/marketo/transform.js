@@ -24,9 +24,9 @@ const {
   isDefinedAndNotNull,
   CustomError
 } = require("../../util");
-const { getAxiosResponse, postAxiosResponse } = require("../../util/network");
 const Cache = require("../../util/cache");
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
+const { sendGetRequest, sendPostRequest } = require("./nethandler");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -43,7 +43,7 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 const getAuthToken = async formattedDestination => {
   return authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
-    const resp = await getAxiosResponse(
+    const resp = await sendGetRequest(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
       // `https://httpstat.us/200`,
       {
@@ -53,10 +53,8 @@ const getAuthToken = async formattedDestination => {
           grant_type: "client_credentials"
         }
       },
-      formattedDestination.responseRules
-        ? formattedDestination.responseRules
-        : null,
-      "During getting auth token"
+      "During getting auth token",
+      true
     );
     if (resp) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
@@ -95,7 +93,7 @@ const createOrUpdateLead = async (
       action: "create"
     });
     const { accountId } = formattedDestination;
-    const resp = await postAxiosResponse(
+    const resp = await sendPostRequest(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
       {
@@ -109,7 +107,6 @@ const createOrUpdateLead = async (
           "Content-type": "application/json"
         }
       },
-      formattedDestination ? formattedDestination.responseRules : null,
       "During lookup lead"
     );
     if (resp) {
@@ -130,14 +127,13 @@ const createOrUpdateLead = async (
 const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
   return emailLeadCache.get(email, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
-    const resp = await getAxiosResponse(
+    const resp = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
       {
         params: { filterValues: email, filterType: "email" },
         headers: { Authorization: `Bearer ${token}` }
       },
-      formattedDestination ? formattedDestination.responseRules : null,
       "During lead look up using email"
     );
     if (resp) {
@@ -164,7 +160,7 @@ const lookupLeadUsingId = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
-    const resp = await getAxiosResponse(
+    const resp = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       {
         params: {
@@ -173,7 +169,6 @@ const lookupLeadUsingId = async (
         },
         headers: { Authorization: `Bearer ${token}` }
       },
-      formattedDestination ? formattedDestination.responseRules : null,
       "During lead look up using userId"
     );
     if (resp) {
@@ -433,7 +428,7 @@ const processRouterDest = async inputs => {
   } catch (error) {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.response ? error.response.status : 500, // default to retryable
+      error.status ? error.status : 500, // default to retryable
       error.message || "Error occurred while processing payload."
     );
     return [respEvents];
@@ -463,11 +458,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 500,
+          error.status ? error.status : error.code ? error.code : 500,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -476,4 +467,62 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+const responseTransform = input => {
+  const MARKETO_RETRYABLE_CODES = ["600", "601", "602", "604", "611"];
+  const MARKETO_ABORTABLE_CODES = ["603", "605", "609", "610", "612"];
+  const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
+
+  if (input.success) {
+    return {
+      status: 200,
+      destination: { ...input },
+      message: "Processed Successfully"
+    };
+  }
+
+  if (!input.success) {
+    // marketo application response level failure
+    const { errors } = input;
+
+    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 400,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Aborted)`,
+        networkFailure: true
+      };
+    }
+    if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 429,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Throttled)`,
+        networkFailure: true
+      };
+    }
+    if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 500,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Retryable)`,
+        networkFailure: true
+      };
+    }
+    // default case
+    return {
+      status: 500,
+      destination: { ...input },
+      message: `Request Failed for Marketo, ${errors[0].message} (Retryable)`,
+      networkFailure: true
+    };
+  }
+  // success is falsey
+  return {
+    status: 500,
+    destination: { ...input },
+    message: `Request Failed for Marketo,(Retryable)`,
+    networkFailure: true
+  };
+};
+
+module.exports = { process, processRouterDest, responseTransform };

@@ -716,6 +716,62 @@
         "FORM": {}
     },
     "files": {}
-}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/users/update",
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "lynnanderson@smith.net",
+        "dataFields": {
+          "administrative_unit": "Minnesota",
+          "am_pm": "AM",
+          "boolean": true,
+          "firstname": "Jacqueline",
+          "pPower": "AM",
+          "userId": "Jacqueline",
+          "email": "lynnanderson@smith.net"
+        },
+        "userId": "lynnanderson@smith.net",
+        "preferUserId": true,
+        "mergeNestedObjects": true
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/users/update",
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "dataFields": {
+          "price": "GB",
+          "userId": "Matthew"
+        },
+        "userId": "Matthew",
+        "preferUserId": true,
+        "mergeNestedObjects": true
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
 ]
 

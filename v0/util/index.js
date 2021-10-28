@@ -1008,7 +1008,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-
+const adduserIdFromExternalId = (message) => {
+  const externalId = get(message, "context.externalId.0.id")
+  if (externalId) {
+    message.userId = externalId;
+  }
+}
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1080,6 +1085,7 @@ module.exports = {
   ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,

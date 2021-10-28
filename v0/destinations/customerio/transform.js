@@ -128,6 +128,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )
       );
     }
+    // anonymous_id needs to be sent for identify calls to merge with any previous anon track calls
+    if (message && message.anonymousId) {
+      set(rawPayload, "anonymous_id", message.anonymousId);
+    }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
   } else {
@@ -206,6 +210,14 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )} Screen`;
       } else {
         trimmedEvName = truncate(evName, 100);
+      }
+      // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked
+      // This will help in merging for subsequent calls
+      const anonymousId = message.anonymousId ? message.anonymousId : undefined;
+      if (!anonymousId) {
+        throw new Error("Anonymous id/ user id is required");
+      } else {
+        rawPayload.anonymous_id = anonymousId;
       }
       set(rawPayload, "name", trimmedEvName);
     }

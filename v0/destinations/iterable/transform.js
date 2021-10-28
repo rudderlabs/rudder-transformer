@@ -9,7 +9,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  adduserIdFromExternalId
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -51,6 +52,7 @@ function constructPayloadItem(message, category, destination) {
       // If mapped to destination, Add externalId to traits
       if (get(message, MappedToDestinationKey)) {
         addExternalIdToTraits(message);
+        adduserIdFromExternalId(message);
       }
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;

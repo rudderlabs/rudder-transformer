@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -773,4 +774,12 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, batch };
+const responseTransform = input => {
+  return {
+    status: 200,
+    destination: { ...input },
+    message: "Processed Successfully"
+  };
+};
+
+module.exports = { process, processRouterDest, batch, responseTransform };
